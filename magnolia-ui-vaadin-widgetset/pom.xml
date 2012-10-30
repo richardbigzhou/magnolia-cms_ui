@@ -13,95 +13,38 @@
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-vaadin-integration</artifactId>
+      <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>info.magnolia</groupId>
-      <artifactId>magnolia-rendering</artifactId>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-widget-editor</artifactId>
+      <version>${project.version}</version>
     </dependency>
+    <!-- explicit dep on gwt-user is needed else we get lots of skipped invalid unit errors during gwt compilation-->
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>icepush</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.icefaces</groupId>
-      <artifactId>icepush</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.icepush</groupId>
-      <artifactId>icepush-gwt</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addon</groupId>
-      <artifactId>confirmdialog</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>super-dev-mode-for-vaadin-6</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>widget-rpc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>autoreplacefield</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.googlecode.mgwt</groupId>
-      <artifactId>mgwt</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>gwt-graphics</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>css-tools</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>customfield</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addon</groupId>
-      <artifactId>propertytranslator</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
+     </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <!-- Compile custom GWT components or widget dependencies with the GWT
-        compiler -->
+      <!-- Compile custom GWT components or widget dependencies with the GWT compiler -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <version>${gwtVersion}</version>
         <configuration>
           <!-- put the created resources on the classpath -->
-          <webappDirectory>target/classes/VAADIN/widgetsets</webappDirectory>
-          <!-- the target/classes directory is cleaned regularly. You can use
-            mvn gwt:compile -Dgwt.inplace to store the output in the resource folder -->
+          <webappDirectory>${project.build.outputDirectory}/VAADIN/widgetsets</webappDirectory>
           <warSourceDirectory>src/main/resources/VAADIN/widgetsets</warSourceDirectory>
+          <inplace>${inplace}</inplace>
           <!-- this is not a webapp -->
           <noServer>true</noServer>
           <module>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</module>
           <runTarget>.magnolia/admincentral</runTarget>
-          <!-- draftCompile>true</draftCompile -->
+          <draftCompile>${draftCompile}</draftCompile>
         </configuration>
         <executions>
           <execution>
@@ -122,108 +65,27 @@
           <skip>true</skip>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.zeroturnaround</groupId>
-        <artifactId>jrebel-maven-plugin</artifactId>
-        <configuration>
-          <relativePath>../${basedir}</relativePath>
-          <rootPath>$${admincentral.root}</rootPath>
-        </configuration>
-    </plugin>
-    <!-- do not apply Magnolia's checkstyle constraints to the patched Vaadin class.-->
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-checkstyle-plugin</artifactId>
-      <configuration>
-        <excludes>**\/*VScrollTable.java</excludes>
-      </configuration>
-    </plugin>
    </plugins>
   </build>
 
   <profiles>
+   <profile>
+      <id>gwt-compile-production</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <draftCompile>false</draftCompile>
+        <inplace>false</inplace>
+      </properties>
+    </profile>
+
     <profile>
-    <!--
-      We currently need to maintain a patched version of Vaadin's VScrollTable.java due to some limitations regarding extensibility
-      in the original class and which Vaadin cannot handle at the moment (TODO add Vaadin tickets raised by Magnolia about this, if any).
-      Here what we do is
-        1) extract VScrollTable.java sources from the vaadin core jar dependency.
-        2) apply our own patch (see src/main/patches/vscrolltable.txt) to the class's original sources.
-        3) rename the original VScrollTable.java to VScrollTablePatched.java which our code will use instead of the original.
-      -->
-      <id>patch-vaadin-vscrolltable</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>unpack-vaadin-scrolltable-src</id>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>com.vaadin</groupId>
-                      <artifactId>vaadin</artifactId>
-                      <version>${vaadinVersion}</version>
-                      <type>jar</type>
-                      <classifier>sources</classifier>
-                      <overWrite>true</overWrite>
-                      <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
-                    </artifactItem>
-                  </artifactItems>
-                  <includes>**\/*VScrollTable.java</includes>
-                </configuration>
-              </execution>
-            </executions>
-           </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-patch-plugin</artifactId>
-            <version>1.1.1</version>
-            <configuration>
-              <patches>
-                <patch>vscrolltable.txt</patch>
-              </patches>
-            </configuration>
-            <executions>
-              <execution>
-                <id>patch</id>
-                <goals>
-                  <goal>apply</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>groovy-maven-plugin</artifactId>
-            <version>1.4</version>
-            <executions>
-              <execution>
-                <phase>process-sources</phase>
-                <goals>
-                  <goal>execute</goal>
-                </goals>
-                <!-- Rename patched VScrollTable.java -->
-                <configuration>
-                  <source>
-                    def path = "${project.build.sourceDirectory}/com/vaadin/terminal/gwt/client/ui/"
-                    //println "path is $path"
-                    def originalFile = new java.io.File(path + "VScrollTable.java")
-                    def renamedFile = new java.io.File(path + "VScrollTablePatched.java")
-                    println "Renaming ${originalFile.name} to ${renamedFile.name}..."
-                    originalFile.renameTo(renamedFile)
-                  </source>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
+      <id>gwt-compile-draft-inplace</id>
+      <properties>
+        <draftCompile>true</draftCompile>
+        <inplace>true</inplace>
+      </properties>
     </profile>
   </profiles>
 

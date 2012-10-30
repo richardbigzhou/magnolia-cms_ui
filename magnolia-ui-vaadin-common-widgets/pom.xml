@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>info.magnolia.ui</groupId>
+    <artifactId>magnolia-ui-project</artifactId>
+    <version>5.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
+  <name>magnolia-ui-vaadin-common-widgets</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-vaadin-integration</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-rendering</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>icepush</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.icefaces</groupId>
+      <artifactId>icepush</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.icepush</groupId>
+      <artifactId>icepush-gwt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addon</groupId>
+      <artifactId>confirmdialog</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>super-dev-mode-for-vaadin-6</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>widget-rpc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>autoreplacefield</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.mgwt</groupId>
+      <artifactId>mgwt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>gwt-graphics</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>css-tools</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>customfield</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addon</groupId>
+      <artifactId>propertytranslator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <index>true</index>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+            <manifestEntries>
+              <Vaadin-Package-Version>1</Vaadin-Package-Version>
+              <Vaadin-Widgetsets>
+                info.magnolia.ui.vaadin.gwt.CommonWidgetSet
+              </Vaadin-Widgetsets>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.atlassian.maven.plugins</groupId>
+        <artifactId>maven-clover2-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <resources>
+                  <resource>
+                    <directory>src/main/java</directory>
+                    <includes>
+                      <!-- include sources -->
+                      <include>**/*.java</include>
+                      <!-- include widgetset -->
+                      <include>**/*.gwt.xml</include>
+                      <!-- include public folder -->
+                      <include>**/public/**</include>
+                    </includes>
+                  </resource>
+             </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+    <!--
+      We currently need to maintain a patched version of Vaadin's VScrollTable.java due to some limitations regarding extensibility
+      in the original class and which Vaadin cannot handle at the moment (TODO add Vaadin tickets raised by Magnolia about this, if any).
+      Here what we do is
+        1) extract VScrollTable.java sources from the vaadin core jar dependency.
+        2) apply our own patch (see src/main/patches/vscrolltable.txt) to the class's original sources.
+        3) rename the original VScrollTable.java to VScrollTablePatched.java which our code will use instead of the original.
+      -->
+      <id>patch-vaadin-vscrolltable</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack-vaadin-scrolltable-src</id>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>com.vaadin</groupId>
+                      <artifactId>vaadin</artifactId>
+                      <version>${vaadinVersion}</version>
+                      <type>jar</type>
+                      <classifier>sources</classifier>
+                      <overWrite>true</overWrite>
+                      <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                  <includes>**\/*VScrollTable.java</includes>
+                </configuration>
+              </execution>
+            </executions>
+           </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-patch-plugin</artifactId>
+            <configuration>
+              <patches>
+                <patch>vscrolltable.txt</patch>
+              </patches>
+            </configuration>
+            <executions>
+              <execution>
+                <id>patch</id>
+                <goals>
+                  <goal>apply</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>groovy-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <!-- Rename patched VScrollTable.java -->
+                <configuration>
+                  <source>
+                    import java.io.File
+
+                    def path = "${project.build.sourceDirectory}/com/vaadin/terminal/gwt/client/ui/"
+                    //println "path is $path"
+                    def originalFile = new File(path + "VScrollTable.java")
+                    def renamedFile = new File(path + "VScrollTablePatched.java")
+                    println "Renaming ${originalFile.name} to ${renamedFile.name}..."
+                    originalFile.renameTo(renamedFile)
+                  </source>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>
