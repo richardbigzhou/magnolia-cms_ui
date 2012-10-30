@@ -39,7 +39,6 @@ import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -59,7 +58,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private ItemTypeDefinition groupingItemType;
 
-    private final List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
+    private List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
 
     private ActionbarDefinition actionbar;
 
@@ -70,7 +69,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     private ImageProvider imageProvider;
 
     private boolean includeProperties = false;
-    
+
     @Override
     public String getName() {
         return name;
@@ -134,10 +133,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         columns.add(columnDefinition);
     }
 
-    public void setColumns(Collection<ColumnDefinition> columns) {
-        for (ColumnDefinition treeColumn : columns) {
-            this.addColumn(treeColumn);
-        }
+    public void setColumns(List<ColumnDefinition> columns) {
+        this.columns = columns;
     }
 
     @Override

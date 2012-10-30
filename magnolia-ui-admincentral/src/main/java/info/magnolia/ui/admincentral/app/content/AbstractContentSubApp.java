@@ -67,7 +67,6 @@ import javax.inject.Named;
  * <li>{@link #locationChanged(Location)}
  * <li>{@link #updateActionbar(ActionbarPresenter)}
  * </ul>
- * A number of static utility methods for dealing with the {@link Location} object is also provided.
  *
  * @see ContentWorkbenchPresenter
  * @see ContentAppView
