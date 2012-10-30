@@ -171,10 +171,11 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
         if (getVisibleApp() != null) {
             // do not hide app if closing
             if (!isClosing()) {
-                getVisibleApp().setVisible(false);
+                getVisibleApp().getElement().getStyle().setVisibility(Visibility.HIDDEN);
             }
         }
         w.setVisible(true);
+        w.getElement().getStyle().clearVisibility();
     }
 
     @Override
@@ -232,10 +233,10 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
                                 public void execute(JQueryWrapper query) {
                                     query.setCss("-webkit-transform", "");
                                     query.setCss("left", "");
-                                    query.setCss("opacity", "0");
-                                    query.setCss("visibility", "hidden");
+                                    // query.setCss("opacity", "0");
+                                    // query.setCss("visibility", "hidden");
                                     // do not trigger transitions
-                                    doSetVisibleApp(newVisibleWidget);
+                                    setVisibleApp(newVisibleWidget);
                                     dropZIndeces();
                                 }
                             }));
@@ -302,11 +303,10 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
                 "-webkit-transform",
                 "translate3d(" + (translationValue + getVisibleApp().getOffsetWidth()) + "px,0,0)");
         }
-        nextWidget.getElement().getStyle().setVisibility(isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
-        previousWidget.getElement().getStyle().setVisibility(!isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
-
-        nextWidget.getElement().getStyle().setOpacity(isNext || nextWidget == previousWidget ? 1 : 0);
-        previousWidget.getElement().getStyle().setOpacity(!isNext || nextWidget == previousWidget ? 1 : 0);
+        nextWidget.getElement().getStyle().setVisibility(isNext || nextWidget == previousWidget ?
+            Visibility.VISIBLE : Visibility.HIDDEN);
+        previousWidget.getElement().getStyle().setVisibility(!isNext || nextWidget ==
+            previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
     }
 
     private Widget getNextWidget() {
@@ -323,7 +323,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
     private void dropZIndeces() {
         final Iterator<Widget> it = iterator();
         while (it.hasNext()) {
-            it.next().getElement().getStyle().setProperty("zIndex", "");
+            it.next().getElement().getStyle().clearZIndex();
         }
     }
 

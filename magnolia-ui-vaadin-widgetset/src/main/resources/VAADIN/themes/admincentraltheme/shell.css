@@ -100,13 +100,9 @@ button.action-close {
     overflow:visible;
 }
 
-.v-viewport-shellapps {
-	z-index:200;
-}
-
-.v-viewport-apps {
-	z-index:100;
-}
+.v-viewport-shellapps {z-index:200;}
+.v-viewport-apps {z-index:100;}
+.v-viewport-dialog {z-index:500; top:0; padding-top:60px;}
 
 .v-viewport-apps > .app,
 .v-viewport-shellapps > div {
@@ -114,15 +110,6 @@ button.action-close {
 	top:0;
 	bottom:0;
 	height:auto !important;
-}
-
-.v-dialog-viewport {
-	position: absolute;
-    overflow: visible;
-    top: 60px;
-    width: 100%;
-    bottom: 0;
-	z-index:500 !important;
 }
 
 .v-shell-app {

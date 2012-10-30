@@ -33,21 +33,23 @@
  */
 package info.magnolia.ui.widget.magnoliashell.viewport;
 
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
-
 import info.magnolia.ui.widget.magnoliashell.BaseMagnoliaShell;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.VDialogViewport;
 
+import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.ClientWidget.LoadStyle;
+
+
 /**
- * Dialogs viewport server side implementation. 
- *
+ * Dialogs viewport server side implementation.
+ * 
  */
 @ClientWidget(value = VDialogViewport.class, loadStyle = LoadStyle.EAGER)
-public class DialogViewport extends ShellViewport{
-    
+public class DialogViewport extends ShellViewport {
+
     public DialogViewport(BaseMagnoliaShell shell) {
         super(shell);
+        addStyleName("dialog");
     }
-    
+
 }

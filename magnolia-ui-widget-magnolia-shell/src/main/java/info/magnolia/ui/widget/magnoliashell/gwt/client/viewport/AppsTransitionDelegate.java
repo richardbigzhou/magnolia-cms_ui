@@ -39,6 +39,7 @@ import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryCallback;
 import info.magnolia.ui.widget.jquerywrapper.gwt.client.JQueryWrapper;
 import info.magnolia.ui.widget.magnoliashell.gwt.client.viewport.TransitionDelegate.BaseTransitionDelegate;
 
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
@@ -60,12 +61,10 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
 
     @Override
     public void setVisibleApp(VShellViewport viewport, final Widget app) {
-        final Callbacks callbacks = Callbacks.create();
-
         // zoom-in if switching to a different running app, from appslauncher only
         // closing an app doesn't zoom-in the next app
         // running apps are all hidden explicitely except current one
-        if (!viewport.isClosing() && !app.isVisible()) {
+        if (!viewport.isClosing() && Visibility.HIDDEN.getCssName().equals(app.getElement().getStyle().getVisibility())) {
             viewport.doSetVisibleApp(app);
 
             app.addStyleName("zoom-in");
@@ -73,13 +72,11 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
 
                 @Override
                 public void run() {
-                    callbacks.fire();
                     app.removeStyleName("zoom-in");
                 }
             }.schedule(500);
         } else {
             viewport.doSetVisibleApp(app);
-            callbacks.fire();
         }
     }
 

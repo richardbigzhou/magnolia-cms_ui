@@ -59,6 +59,7 @@
   padding: 0;
   position: absolute;
   width: 720px;
+  z-index:201; /* one more than curtain */
 }
 
 .dialog-footer {
