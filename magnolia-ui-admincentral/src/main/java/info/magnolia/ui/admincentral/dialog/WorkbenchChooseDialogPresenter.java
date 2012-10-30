@@ -49,10 +49,10 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
     
     private final ChooseDialogView pickerView;
     
-    public WorkbenchChooseDialogPresenter(DialogActionFactory actionFactory, ChooseDialogView view, EventBus eventBus) {
-        super(view, eventBus);
+    public WorkbenchChooseDialogPresenter(DialogActionFactory actionFactory, ChooseDialogView view, EventBus workbenchEventBus) {
+        super(view, workbenchEventBus);
         this.pickerView = view;
-        eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+        workbenchEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
                 currentValue = event.getItem();

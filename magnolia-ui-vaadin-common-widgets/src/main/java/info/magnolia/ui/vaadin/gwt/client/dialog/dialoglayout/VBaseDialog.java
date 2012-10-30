@@ -55,9 +55,9 @@ import com.vaadin.terminal.gwt.client.VConsole;
  */
 public class VBaseDialog extends Composite implements VAbstractDialog, Container, ClientSideHandler, HasWidgets, VBaseDialogView.Presenter {
 
-    private VBaseDialogView view = createView();
+    private final VBaseDialogView view = createView();
     
-    private ClientSideProxy proxy = new ClientSideProxy(this) {{
+    private final ClientSideProxy proxy = new ClientSideProxy(this) {{
         register("addAction", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
@@ -127,7 +127,9 @@ public class VBaseDialog extends Composite implements VAbstractDialog, Container
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
-        view.asWidget().setHeight(height);
+        if (view != null) {
+            view.asWidget().setHeight(height);
+        }
     }
     
     @Override

@@ -76,7 +76,6 @@ public interface WorkbenchDefinition extends Serializable {
 
     ComponentProviderConfiguration getComponents();
 
-
     ImageProvider getImageProvider();
 
     /**

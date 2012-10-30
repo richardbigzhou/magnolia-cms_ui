@@ -50,7 +50,7 @@ import org.vaadin.addon.propertytranslator.PropertyTranslator;
 @SuppressWarnings("unchecked")
 public class IdentifierToPathTranslator extends PropertyTranslator {
     private static final Logger log = LoggerFactory.getLogger(IdentifierToPathTranslator.class);
-    private String workspace;
+    private final String workspace;
 
     public IdentifierToPathTranslator(String workspace) {
         this.workspace = workspace;
@@ -71,6 +71,7 @@ public class IdentifierToPathTranslator extends PropertyTranslator {
             res = session.getNodeByIdentifier(uuid.toString()).getPath();
         } catch (RepositoryException e) {
             log.error("Unable to convert UUID to Path",e);
+            return uuid;
         }
         return res;
     }
@@ -88,6 +89,7 @@ public class IdentifierToPathTranslator extends PropertyTranslator {
             res = session.getNode(path.toString()).getIdentifier();
         } catch (RepositoryException e) {
             log.error("Unable to convert Path to UUID",e);
+            return path;
         }
         return res;
     }

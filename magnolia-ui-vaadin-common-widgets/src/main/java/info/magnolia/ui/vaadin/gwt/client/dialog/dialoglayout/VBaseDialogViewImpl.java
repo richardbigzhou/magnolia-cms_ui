@@ -64,9 +64,9 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
     
     private Widget content;
     
-    private VDialogHeader header = new VDialogHeader(createHeaderCallback());
+    private final VDialogHeader header = new VDialogHeader(createHeaderCallback());
     
-    private Element contentEl = DOM.createDiv();
+    private final Element contentEl = DOM.createDiv();
     
     private final Element footerEl = DOM.createDiv();
     

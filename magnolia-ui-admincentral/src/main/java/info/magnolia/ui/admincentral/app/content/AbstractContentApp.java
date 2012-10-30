@@ -51,19 +51,20 @@ import com.vaadin.data.Item;
  */
 public abstract class AbstractContentApp extends AbstractApp {
 
-    private ChooseDialogFactory pickerDialogFactory;
+    private final ChooseDialogFactory chooseDialogFactory;
 
     @Inject
     private Shell shell;
     
     @Inject
+
     public AbstractContentApp(AppContext appContext, ChooseDialogFactory pickerDialogFactory) {
         super(appContext);
-        this.pickerDialogFactory = pickerDialogFactory;
+        this.chooseDialogFactory = pickerDialogFactory;
     }
 
     public ChooseDialogPresenter<Item> openChooseDialog() {
-        final WorkbenchChooseDialogPresenter picker = pickerDialogFactory.createWorkbenchChooseDialog();
+        final WorkbenchChooseDialogPresenter picker = chooseDialogFactory.createWorkbenchChooseDialog();
         ((MagnoliaShell)shell).openDialog(picker);
         return picker;
     }

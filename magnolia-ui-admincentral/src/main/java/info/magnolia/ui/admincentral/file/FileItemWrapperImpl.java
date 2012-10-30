@@ -63,7 +63,7 @@ import com.vaadin.ui.Label;
  */
 public class FileItemWrapperImpl implements FileItemWrapper {
 
-    //File Properties
+    // File Properties
     private byte[] binaryData;
     private long fileSize;
     private String mimeType;
@@ -75,22 +75,23 @@ public class FileItemWrapperImpl implements FileItemWrapper {
     protected JcrItemNodeAdapter jcrItem;
 
     /**
-     * Initialize bean properties based on the jcrItem.
-     * If the jcrItem is new, create all necessary properties.
+     * Initialize bean properties based on the jcrItem. If the jcrItem is new,
+     * create all necessary properties.
      */
     public FileItemWrapperImpl(JcrItemNodeAdapter jcrItem) {
         this.jcrItem = jcrItem;
-        if(jcrItem instanceof JcrNewNodeAdapter) {
+        if (jcrItem instanceof JcrNewNodeAdapter) {
             initJcrItemProperty(jcrItem);
-        }else {
+        } else {
             fileName = (String) jcrItem.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue();
             Property data = jcrItem.getItemProperty(MgnlNodeType.JCR_DATA);
             if (data != null) {
                 binaryData = (byte[]) data.getValue();
                 fileSize = (Long) jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).getValue();
                 mimeType = (String) jcrItem.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue();
-                if(isImage()) {
-                    imageSize  = new ImageSize((Long)jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue(), (Long)jcrItem.getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue());
+                if (isImage()) {
+                    imageSize = new ImageSize((Long) jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue(), (Long) jcrItem
+                            .getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue());
                     width = imageSize.getWidth();
                     height = imageSize.getHeight();
                 }
@@ -116,25 +117,31 @@ public class FileItemWrapperImpl implements FileItemWrapper {
         jcrItem.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED).setValue(new GregorianCalendar(TimeZone.getDefault()));
         jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(fileSize);
         jcrItem.getItemProperty(FileProperties.PROPERTY_EXTENSION).setValue(PathUtil.getExtension(fileName));
-        if(isImage()) {
+        if (isImage()) {
             jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).setValue(width);
             jcrItem.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(height);
         }
     }
-
 
     /**
      * Initialize a JcrNode Adapter with the mandatory File property.
      */
     protected void initJcrItemProperty(JcrItemNodeAdapter jcrItem) {
         jcrItem.addItemProperty(MgnlNodeType.JCR_DATA, DefaultPropertyUtil.newDefaultProperty(MgnlNodeType.JCR_DATA, "Binary", null));
-        jcrItem.addItemProperty(FileProperties.PROPERTY_FILENAME, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_FILENAME, "String", null));
-        jcrItem.addItemProperty(FileProperties.PROPERTY_CONTENTTYPE, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_CONTENTTYPE, "String", null));
-        jcrItem.addItemProperty(FileProperties.PROPERTY_LASTMODIFIED, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_LASTMODIFIED, "Date", null));
-        jcrItem.addItemProperty(FileProperties.PROPERTY_SIZE, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_SIZE, "Long", null));
-        jcrItem.addItemProperty(FileProperties.PROPERTY_EXTENSION, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_EXTENSION, "String", null));
-        jcrItem.addItemProperty(FileProperties.PROPERTY_WIDTH, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_WIDTH, "Long", null));
-        jcrItem.addItemProperty(FileProperties.PROPERTY_HEIGHT, DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_HEIGHT, "Long", null));
+        jcrItem.addItemProperty(FileProperties.PROPERTY_FILENAME,
+                DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_FILENAME, "String", null));
+        jcrItem.addItemProperty(FileProperties.PROPERTY_CONTENTTYPE,
+                DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_CONTENTTYPE, "String", null));
+        jcrItem.addItemProperty(FileProperties.PROPERTY_LASTMODIFIED,
+                DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_LASTMODIFIED, "Date", null));
+        jcrItem.addItemProperty(FileProperties.PROPERTY_SIZE,
+                DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_SIZE, "Long", null));
+        jcrItem.addItemProperty(FileProperties.PROPERTY_EXTENSION,
+                DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_EXTENSION, "String", null));
+        jcrItem.addItemProperty(FileProperties.PROPERTY_WIDTH,
+                DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_WIDTH, "Long", null));
+        jcrItem.addItemProperty(FileProperties.PROPERTY_HEIGHT,
+                DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_HEIGHT, "Long", null));
 
     }
 
@@ -143,11 +150,11 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      */
     @Override
     public void updateProperties(FileBuffer receiver) {
-        binaryData = (byte[])receiver.getValue();
+        binaryData = (byte[]) receiver.getValue();
         fileName = receiver.getLastFileName();
         fileSize = receiver.getLastFileSize();
         mimeType = receiver.getLastMimeType();
-        if(isImage()) {
+        if (isImage()) {
             imageSize = ImageSize.valueOf(new ByteArrayInputStream(getBinaryData()));
             width = imageSize.getWidth();
             height = imageSize.getHeight();
@@ -162,7 +169,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
         binaryData = null;
         fileName = null;
         fileSize = -1;
-        if(isImage()) {
+        if (isImage()) {
             imageSize = null;
             width = -1;
             height = -1;
@@ -175,7 +182,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      */
     @Override
     public Component createPreview(Application application) {
-        if(isImage()) {
+        if (isImage()) {
             return createImagePreview(application);
         } else {
             return createFilePreview();
@@ -187,15 +194,13 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      */
     private Component createImagePreview(Application application) {
         ImageSize scaledImageSize = imageSize.scaleToFitIfLarger(150, 150);
-        final byte[] pngData = (byte[]) getBinaryData();
-        @SuppressWarnings("serial")
-        Resource imageResource = new StreamResource(
-            new StreamResource.StreamSource() {
-                @Override
-                public InputStream getStream() {
-                    return new ByteArrayInputStream(pngData);
-                }
-            }, "", application){
+        final byte[] pngData = getBinaryData();
+        Resource imageResource = new StreamResource(new StreamResource.StreamSource() {
+            @Override
+            public InputStream getStream() {
+                return new ByteArrayInputStream(pngData);
+            }
+        }, "", application) {
             @Override
             public String getMIMEType() {
                 return getMimeType();
@@ -227,30 +232,30 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      */
     private String resolveIconClassName() {
         String iconeClassName = "icon-file";
-        if(mimeType.contains("application/pdf")) {
-            return iconeClassName+"-pdf";
+        if (mimeType.contains("application/pdf")) {
+            return iconeClassName + "-pdf";
         }
-        if(mimeType.matches("application.*(msword)")) {
-            return iconeClassName+"-word";
+        if (mimeType.matches("application.*(msword)")) {
+            return iconeClassName + "-word";
         }
-        if(mimeType.matches("application.*(excel|xls)")) {
-            return iconeClassName+"-excel";
+        if (mimeType.matches("application.*(excel|xls)")) {
+            return iconeClassName + "-excel";
         }
-        if(mimeType.matches("application.*(powerpoint)")) {
-            return iconeClassName+"-powerpoint";
+        if (mimeType.matches("application.*(powerpoint)")) {
+            return iconeClassName + "-powerpoint";
         }
-        if(mimeType.contains("text/")) {
-            return iconeClassName+"-text";
+        if (mimeType.contains("text/")) {
+            return iconeClassName + "-text";
         }
-        if(mimeType.contains("image/")) {
-            return iconeClassName+"-image";
+        if (mimeType.contains("image/")) {
+            return iconeClassName + "-image";
         }
         return iconeClassName;
     }
 
     @Override
     public boolean isImage() {
-        return mimeType!=null && mimeType.matches("image.*");
+        return mimeType != null && mimeType.matches("image.*");
     }
 
     @Override
@@ -277,6 +282,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
     public String getFileName() {
         return fileName;
     }
+
     @Override
     public long getFileSize() {
         return fileSize;

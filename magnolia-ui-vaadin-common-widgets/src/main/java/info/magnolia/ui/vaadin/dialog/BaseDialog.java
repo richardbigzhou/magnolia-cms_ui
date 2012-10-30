@@ -245,4 +245,8 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
         }
     }
 
+    public void clearCallbacks() {
+        actionCallbackMap.clear();
+    }
+
 }

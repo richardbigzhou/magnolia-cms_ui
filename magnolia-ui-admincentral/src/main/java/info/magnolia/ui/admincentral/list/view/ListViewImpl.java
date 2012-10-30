@@ -39,12 +39,14 @@ import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.grid.MagnoliaTable;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
-import info.magnolia.ui.vaadin.grid.MagnoliaTable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -175,41 +177,37 @@ public class ListViewImpl implements ListView {
     }
 
     private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
+        final List<String> columnOrder = new ArrayList<String>();
+        final Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
+        while (iterator.hasNext()) {
+            ColumnDefinition column = iterator.next();
+            if (!workbenchDefinition.isDialogWorkbench() || column.isDisplayInDialog()) {
+                String columnName = column.getName();
+                final String columnProperty = (column.getPropertyName() != null) ? column.getPropertyName() : columnName;
 
-        ArrayList<String> columnOrder = new ArrayList<String>();
-
-        for (ColumnDefinition column : workbenchDefinition.getColumns()) {
-
-            if (workbenchDefinition.isDialogWorkbench() && !column.isDisplayInDialog()) {
-                continue;
-            }
-
-            String columnName = column.getName();
-            final String columnProperty = (column.getPropertyName() != null) ? column.getPropertyName() : columnName;
-
-            //FIXME fgrilli workaround for conference
-            //when setting cols width in dialogs we are forced to use explicit px value instead of expand ratios, which for some reason don't work
-            if (workbenchDefinition.isDialogWorkbench()) {
-                table.setColumnWidth(columnProperty, 300);
-            } else {
-                if (column.getWidth() > 0) {
-                    table.setColumnWidth(columnProperty, column.getWidth());
+                //FIXME fgrilli workaround for conference
+                //when setting cols width in dialogs we are forced to use explicit px value instead of expand ratios, which for some reason don't work
+                if(workbenchDefinition.isDialogWorkbench()) {
+                    table.setColumnWidth(columnProperty, 300);
                 } else {
-                    table.setColumnExpandRatio(columnProperty, column.getExpandRatio());
+                    if(column.getWidth() > 0 ) {
+                        table.setColumnWidth(columnProperty, column.getWidth());
+                    } else {
+                        table.setColumnExpandRatio(columnProperty, column.getExpandRatio());
+                    }
                 }
-            }
-
-            table.setColumnHeader(columnProperty, column.getLabel());
-            container.addContainerProperty(columnProperty, column.getType(), "");
-            //Set formatter
-            if (StringUtils.isNotBlank(column.getFormatterClass())) {
-                try {
-                    table.addGeneratedColumn(columnProperty, (ColumnFormatter) componentProvider.newInstance(Class.forName(column.getFormatterClass()), column));
-                } catch (ClassNotFoundException e) {
-                    log.error("Not able to create the Formatter", e);
+                table.setColumnHeader(columnProperty, column.getLabel());
+                container.addContainerProperty(columnProperty, column.getType(), "");
+                //Set Formatter
+                if(StringUtils.isNotBlank(column.getFormatterClass())) {
+                    try {
+                        table.addGeneratedColumn(columnProperty, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
+                   } catch (ClassNotFoundException e) {
+                        log.error("Not able to create the Formatter",e);
+                   }
                 }
+                columnOrder.add(columnProperty);
             }
-            columnOrder.add(columnProperty);
         }
 
         table.setContainerDataSource(container);

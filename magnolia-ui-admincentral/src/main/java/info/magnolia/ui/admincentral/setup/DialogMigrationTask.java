@@ -71,7 +71,7 @@ public class DialogMigrationTask  extends AbstractTask {
 
     private static final Logger log = LoggerFactory.getLogger(DialogMigrationTask.class);
     private final String moduleName;
-    private HashSet<Property> extendsAndReferenceProperty = new HashSet<Property>();
+    private final HashSet<Property> extendsAndReferenceProperty = new HashSet<Property>();
 
     public DialogMigrationTask(String moduleName) {
         super("Dialog Migration for 5.x","Migrate dialog for the following module: "+moduleName);
@@ -217,9 +217,18 @@ public class DialogMigrationTask  extends AbstractTask {
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition");
             }else if(fieldNode.getProperty("controlType").getString().equals("dam")){
+                
                 fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.FileUploadFieldDefinition");
+                fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.LinkFieldDefinition");
+                fieldNode.setProperty("description", "Select an asset");
+                fieldNode.setProperty("identifier", "true");
+                fieldNode.setProperty("label", "Image");
+                fieldNode.setProperty("repository", "data");
+                fieldNode.setProperty("type", "String");
+                fieldNode.setProperty("workspace", "dam");
                 fieldNode.setProperty("allowedMimeType", "image.*");
+                fieldNode.setProperty("appName", "assets");
+            
             }else if(fieldNode.getProperty("controlType").getString().equals("hidden")){
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.HiddenFieldDefinition");

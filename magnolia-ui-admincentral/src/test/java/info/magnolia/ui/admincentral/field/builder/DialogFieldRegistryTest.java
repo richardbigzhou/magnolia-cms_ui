@@ -36,11 +36,6 @@ package info.magnolia.ui.admincentral.field.builder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.node2bean.Node2BeanProcessor;
-import info.magnolia.jcr.node2bean.Node2BeanTransformer;
-import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
-import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
-import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.objectfactory.ObservedComponentFactory;
 import info.magnolia.repository.RepositoryConstants;
@@ -76,11 +71,6 @@ public class DialogFieldRegistryTest  extends RepositoryTestCase  {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        // Node2Bean setup
-        TypeMappingImpl typeMapping = new TypeMappingImpl();
-        Node2BeanTransformer transformer = new Node2BeanTransformerImpl();
-        ComponentsTestUtil.setInstance(Node2BeanProcessor.class, new Node2BeanProcessorImpl(typeMapping, transformer));
-
         ComponentsTestUtil.setImplementation(DefinitionToImplementationMapping.class, DefinitionToImplementationMapping.class);
         String dummyDialog =
             "/modules/ui-admincentral/dialogFieldRegistry.class="+DialogFieldRegistry.class.getName()+"\n" +
