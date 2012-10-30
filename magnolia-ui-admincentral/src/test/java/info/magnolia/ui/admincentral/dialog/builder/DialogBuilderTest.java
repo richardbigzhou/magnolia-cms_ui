@@ -42,6 +42,12 @@ import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
+import info.magnolia.jcr.node2bean.Node2BeanProcessor;
+import info.magnolia.jcr.node2bean.Node2BeanTransformer;
+import info.magnolia.jcr.node2bean.TypeMapping;
+import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
+import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
+import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -75,8 +81,11 @@ public class DialogBuilderTest {
 
     @Before
     public void setUp() {
-        DefaultMessagesManager manager = new DefaultMessagesManager();
-        ComponentsTestUtil.setInstance(MessagesManager.class, manager);
+
+        ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
+        ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
+        ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
+        ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
         SystemContext systemContext = mock(SystemContext.class);
         when(systemContext.getLocale()).thenReturn(new Locale("en"));
         ComponentsTestUtil.setInstance(SystemContext.class, systemContext);
