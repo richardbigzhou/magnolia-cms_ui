@@ -64,29 +64,30 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
         loadCKEditor();
     }
 
+    @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         super.updateFromUIDL(uidl, client);
-        
+
         //list of plugin events that server is interested of handling.
         if(uidl.hasAttribute(VAR_EVENTNAMES)) {
             pluginEvents = Arrays.asList(
                     uidl.getStringArrayAttribute(VAR_EVENTNAMES)
                     );
-            
+
             for(String eventName: pluginEvents) {
                 this.editor.addListener(this, eventName);
             }
         }
-        
+
         //Server wants to send an event to a plugin.
         if(uidl.hasAttribute(VAR_FIRE_PLUGIN_EVENT)) {
             this.editor.fire(
-                    uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT), 
+                    uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT),
                     uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT_VALUE)
                     );
         }
     }
-    
+
     /**
      * Will be invoked from CK plugins.
      */
@@ -94,13 +95,13 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
     public void onPluginEvent(String eventName, String data) {
         if(pluginEvents.contains(eventName)) {
             clientToServer.updateVariable(
-                    paintableId, 
-                    VAR_EVENT_PREFIX+eventName, 
-                    data==null?"":data, 
+                    paintableId,
+                    VAR_EVENT_PREFIX+eventName,
+                    data==null?"":data,
                     true);
         }
     }
-    
+
     /**
      * Initializes CKEditor if not done already and get editor instance
      * injected.
@@ -119,16 +120,16 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
     }
 
     protected void setEditor(JavaScriptObject editor) {
-        this.editor = (VMagnoliaRichTextEditor)editor;        
+        this.editor = (VMagnoliaRichTextEditor)editor;
     }
 
     /*
-     * This method hides a hack. Base class owns privately an instance of 
+     * This method hides a hack. Base class owns privately an instance of
      * CKEditor editor field. Editor object needs to be accessed or else it
      * would not be possible to handle events from custom made CKEditor
      * plugins. As a workaround this method adds a listener for creation of
      * editor objects and if an editor is created inside DIV element with id
-     * matching paintableId member of this class, then this editor is the one 
+     * matching paintableId member of this class, then this editor is the one
      * from the base class => we got access to the private member we need.
      */
     private static native void injectEditorTo(final VMagnoliaRichTextField listener)
@@ -144,7 +145,7 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
 
         $wnd.CKEDITOR.on('instanceCreated', createdEvent);
      }-*/;
-    
+
     /*
      * Needed by the hack above
      */
