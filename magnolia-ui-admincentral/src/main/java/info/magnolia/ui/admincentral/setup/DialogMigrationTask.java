@@ -219,7 +219,7 @@ public class DialogMigrationTask  extends AbstractTask {
             }else if(fieldNode.getProperty("controlType").getString().equals("dam")){
                 
                 fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.LinkFieldDefinition");
+                fieldNode.setProperty("class", "info.magnolia.dam.app.assets.field.definition.AssetLinkFieldDefinition");
                 fieldNode.setProperty("description", "Select an asset");
                 fieldNode.setProperty("identifier", "true");
                 fieldNode.setProperty("label", "Image");
