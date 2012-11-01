@@ -39,11 +39,7 @@ import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
 
 /**
  * Default configured implementation for the WorkbenchDefinition.
@@ -58,9 +54,11 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private String defaultOrder;
 
-    private List<ItemTypeDefinition> itemTypes = new ArrayList<ItemTypeDefinition>();
+    private ItemTypeDefinition mainItemType;
 
-    private final Map<String, ColumnDefinition> columns = new LinkedHashMap<String, ColumnDefinition>();
+    private ItemTypeDefinition groupingItemType;
+
+    private List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
 
     private ActionbarDefinition actionbar;
 
@@ -69,7 +67,9 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     private boolean dialogWorkbench = false;
 
     private ImageProvider imageProvider;
-    
+
+    private boolean includeProperties = false;
+
     @Override
     public String getName() {
         return name;
@@ -77,6 +77,33 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public ItemTypeDefinition getMainItemType() {
+        return mainItemType;
+    }
+
+    @Override
+    public boolean includeProperties() {
+        return includeProperties;
+    }
+
+    public void setIncludeProperties(boolean includeProperties) {
+        this.includeProperties = includeProperties;
+    }
+
+    public void setMainItemType(ItemTypeDefinition mainItemType) {
+        this.mainItemType = mainItemType;
+    }
+
+    @Override
+    public ItemTypeDefinition getGroupingItemType() {
+        return groupingItemType;
+    }
+
+    public void setGroupingItemType(ItemTypeDefinition groupingItemType) {
+        this.groupingItemType = groupingItemType;
     }
 
     @Override
@@ -98,41 +125,16 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     }
 
     @Override
-    public List<ItemTypeDefinition> getItemTypes() {
-        return itemTypes;
+    public List<ColumnDefinition> getColumns() {
+        return columns;
     }
 
-    public void setItemTypes(List<ItemTypeDefinition> itemTypes) {
-        this.itemTypes = itemTypes;
+    public void addColumn(ColumnDefinition columnDefinition) {
+        columns.add(columnDefinition);
     }
 
-    public boolean addItemType(ItemTypeDefinition itemTypeDefinition) {
-        return itemTypes.add(itemTypeDefinition);
-    }
-
-    @Override
-    public String getItemTypesFilter() {
-        final StringBuilder builder = new StringBuilder(" ");
-        for (ItemTypeDefinition item : itemTypes) {
-            builder.append(" ")
-                    .append(item.getItemType() + (itemTypes.indexOf(item) < itemTypes.size() - 1 ? " | " : ""));
-        }
-        return builder.toString();
-    }
-
-    @Override
-    public ColumnDefinition getColumn(String columnId) {
-        return columns.get(columnId);
-    }
-
-    @Override
-    public Collection<ColumnDefinition> getColumns() {
-        return columns.values();
-    }
-
-
-    public void addColumn(ColumnDefinition treeColumn) {
-        columns.put(treeColumn.getLabel(), treeColumn);
+    public void setColumns(List<ColumnDefinition> columns) {
+        this.columns = columns;
     }
 
     @Override

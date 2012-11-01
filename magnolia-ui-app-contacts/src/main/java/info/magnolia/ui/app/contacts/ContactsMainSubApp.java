@@ -39,17 +39,16 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
-import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -60,8 +59,8 @@ public class ContactsMainSubApp extends AbstractContentSubApp {
     private static final Logger log = LoggerFactory.getLogger(ContactsMainSubApp.class);
 
     @Inject
-    public ContactsMainSubApp(final AppContext appContext, ContactsView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
-        super(appContext, view, workbench, subAppEventBus);
+    public ContactsMainSubApp(final SubAppContext subAppContext, ContactsView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
+        super(subAppContext, view, workbench, subAppEventBus);
     }
 
     @Override

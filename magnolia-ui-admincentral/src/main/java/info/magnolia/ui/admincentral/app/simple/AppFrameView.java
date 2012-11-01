@@ -51,9 +51,9 @@ public class AppFrameView implements View {
      */
     public interface Listener {
 
-        void onActiveTabSet(MagnoliaTab tab);
+        void onActiveTabSet(String tabId);
 
-        void onTabClosed(MagnoliaTab tab);
+        void onTabClosed(String tabId);
     }
 
     private final MagnoliaTabSheet tabsheet = new MagnoliaTabSheet() {
@@ -61,14 +61,14 @@ public class AppFrameView implements View {
         @Override
         public void onActiveTabSet(String tabId) {
             super.onActiveTabSet(tabId);
-            listener.onActiveTabSet(super.getTabById(tabId));
+            listener.onActiveTabSet(tabId);
         }
 
         @Override
         protected void closeTab(String tabId) {
             MagnoliaTab tab = super.getTabById(tabId);
             super.closeTab(tabId);
-            listener.onTabClosed(tab);
+            listener.onTabClosed(tabId);
         }
     };
 
@@ -84,12 +84,12 @@ public class AppFrameView implements View {
         this.listener = listener;
     }
 
-    public MagnoliaTab addTab(ComponentContainer cc, String caption, boolean closable) {
+    public String addTab(ComponentContainer cc, String caption, boolean closable) {
         final MagnoliaTab tab = new MagnoliaTab(caption, cc);
         tabsheet.addComponent(tab);
         tabsheet.setTabClosable(tab, closable);
         tabsheet.setActiveTab(tab);
-        return tab;
+        return tab.getTabId();
     }
 
     public void closeTab(ComponentContainer cc) {
@@ -101,11 +101,15 @@ public class AppFrameView implements View {
         return tabsheet;
     }
 
-    public void setActiveTab(MagnoliaTab tab) {
-        tabsheet.setActiveTab(tab);
+    public void setActiveTabId(String tabId) {
+        tabsheet.setActiveTabId(tabId);
     }
 
     public MagnoliaTab getActiveTab() {
         return tabsheet.getActiveTab();
+    }
+
+    public String getActiveTabId() {
+        return tabsheet.getActiveTabId();
     }
 }

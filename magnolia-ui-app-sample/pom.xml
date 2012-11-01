@@ -10,15 +10,23 @@
   <artifactId>magnolia-ui-app-sample</artifactId>
   <packaging>jar</packaging>
   <name>magnolia-ui-app-sample</name>
+    <build>
+    <plugins>
+      <plugin>
+        <groupId>org.zeroturnaround</groupId>
+        <artifactId>jrebel-maven-plugin</artifactId>
+        <configuration>
+          <relativePath>../${basedir}</relativePath>
+          <rootPath>$${admincentral.root}</rootPath>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-admincentral</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin</artifactId>
     </dependency>
   </dependencies>
 </project>

@@ -59,6 +59,7 @@
   padding: 0;
   position: absolute;
   width: 720px;
+  z-index:201; /* one more than curtain */
 }
 
 .dialog-footer {
@@ -305,6 +306,11 @@ fieldset {
     border-left: 0px;
     display:block !important;
     height: 0; /*needed by FF*/
+}
+
+/*do not display hr on under last tab when in show-all mode*/
+.v-shell-tab:last-child fieldset hr {
+    display: none !important;
 }
 
 .v-dialog-field-container .v-datefield {

@@ -38,14 +38,14 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
-import info.magnolia.ui.app.pages.PagesApp;
 import info.magnolia.ui.app.pages.PagesAppDescriptor;
 import info.magnolia.ui.app.pages.action.AddComponentActionDefinition;
 import info.magnolia.ui.app.pages.action.EditElementActionDefinition;
 import info.magnolia.ui.app.pages.action.EditPageActionDefinition;
 import info.magnolia.ui.app.pages.action.PreviewPageActionDefinition;
+import info.magnolia.ui.app.pages.editor.location.PagesLocation;
 import info.magnolia.ui.framework.app.AbstractSubApp;
-import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
@@ -57,19 +57,15 @@ import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditor;
 import info.magnolia.ui.vaadin.editor.PageEditorParameters;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -91,20 +87,18 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
 
     private String caption;
 
-    private final PagesAppDescriptor appDescriptor;
-
     private final WorkbenchActionFactory actionFactory;
 
     @Inject
-    public PagesEditorSubApp(final AppContext appContext, final PagesEditorSubAppView view, final @Named("subapp") EventBus eventBus,
+    public PagesEditorSubApp(final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named("subapp") EventBus eventBus,
         final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
+        super(subAppContext, view);
 
         this.view = view;
         this.view.setListener(this);
         this.eventBus = eventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
-        this.appDescriptor = (PagesAppDescriptor) appContext.getAppDescriptor();
         this.actionFactory = actionFactory;
 
         bindHandlers();
@@ -117,13 +111,15 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
 
     @Override
     public View start(Location location) {
+        PagesLocation pagesLocation = PagesLocation.wrap(location);
+        super.start(pagesLocation);
 
-        ActionbarDefinition actionbarDefinition = appDescriptor.getEditor().getActionbar();
+        ActionbarDefinition actionbarDefinition = ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getEditor().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
         view.setActionbarView(actionbar);
         view.setPageEditorView(pageEditorPresenter.start());
 
-        goToLocation(location);
+        goToLocation(pagesLocation);
         updateActions();
         return view;
     }
@@ -140,16 +136,27 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     }
 
     @Override
+    public boolean supportsLocation(Location location) {
+        return getCurrentLocation().getNodePath().equals(PagesLocation.wrap(location).getNodePath());
+    }
+
+    @Override
+    protected PagesLocation getCurrentLocation() {
+        return PagesLocation.wrap(currentLocation);
+    }
+
+    @Override
     public void locationChanged(Location location) {
-        goToLocation(location);
+        PagesLocation pagesLocation = PagesLocation.wrap(location);
+        super.locationChanged(pagesLocation);
+        goToLocation(pagesLocation);
         updateActions();
     }
 
-    private void goToLocation(Location location) {
-        List<String> locationTokens = parseLocationToken(location);
+    private void goToLocation(PagesLocation location) {
 
-        if (isLocationChanged(locationTokens)) {
-            setPageEditorParameters(locationTokens);
+        if (isLocationChanged(location)) {
+            setPageEditorParameters(location);
             if (parameters.isPreview()) {
                 showPreview();
             } else {
@@ -158,17 +165,17 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
         }
     }
 
-    private void setPageEditorParameters(List<String> locationTokens) {
-        boolean isPreview = isPreview(locationTokens);
-        String path = getEditorPath(locationTokens);
+    private void setPageEditorParameters(PagesLocation location) {
+        boolean isPreview = location.getMode().equals("preview");
+        String path = location.getNodePath();
 
         this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, isPreview);
         this.caption = getPageTitle(path);
     }
 
-    private boolean isLocationChanged(List<String> locationTokens) {
-        boolean isPreview = isPreview(locationTokens);
-        String path = getEditorPath(locationTokens);
+    private boolean isLocationChanged(PagesLocation location) {
+        boolean isPreview = location.getMode().equals("preview");
+        String path = location.getNodePath();
 
         if (parameters != null && (parameters.getNodePath().equals(path) && parameters.isPreview() == isPreview)) {
             return false;
@@ -179,7 +186,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     private String getPageTitle(String path) {
         String caption = null;
         try {
-            Session session = MgnlContext.getJCRSession(appDescriptor.getWorkbench().getWorkspace());
+            Session session = MgnlContext.getJCRSession(((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace());
             Node node = session.getNode(path);
             caption = node.getProperty("title").getString();
         } catch (RepositoryException e) {
@@ -220,28 +227,28 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
                     ActionDefinition actionDefinition = event.getActionDefinition();
                     if (actionDefinition instanceof EditElementActionDefinition) {
                         pageEditorPresenter.editComponent(
-                            appDescriptor.getWorkbench().getWorkspace(),
+                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
                             pageEditorPresenter.getSelectedElement().getPath(),
                             pageEditorPresenter.getSelectedElement().getDialog());
                     } else if (actionDefinition instanceof AddComponentActionDefinition) {
                         // casting to AreaElement, because this action is only defined for areas
                         pageEditorPresenter.newComponent(
-                            appDescriptor.getWorkbench().getWorkspace(),
+                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
                             pageEditorPresenter.getSelectedElement().getPath(),
                             ((PageEditor.AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
                     } else if (actionDefinition instanceof DeleteItemActionDefinition) {
-                        pageEditorPresenter.deleteComponent(appDescriptor.getWorkbench().getWorkspace(), pageEditorPresenter
+                        pageEditorPresenter.deleteComponent(((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(), pageEditorPresenter
                             .getSelectedElement()
                             .getPath());
                     } else if (actionDefinition instanceof PreviewPageActionDefinition || actionDefinition instanceof EditPageActionDefinition) {
                         actionbarPresenter.createAndExecuteAction(
                             actionDefinition,
-                            appDescriptor.getWorkbench().getWorkspace(),
+                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
                             parameters.getNodePath());
                     } else {
                         actionbarPresenter.createAndExecuteAction(
                             actionDefinition,
-                            appDescriptor.getWorkbench().getWorkspace(),
+                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
                             pageEditorPresenter.getSelectedElement().getPath());
                     }
 
@@ -288,70 +295,14 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
         });
     }
 
-    // Location token handling, format is editor;<editorPath>:<previewMode>
-
-    public static boolean supportsLocation(Location location) {
-        List<String> parts = parseLocationToken(location);
-        return parts.size() >= 1 && parts.get(0).equals("editor");
-    }
 
     public static DefaultLocation createLocation(String editorPath, String previewToken) {
-        String token = "editor;" + editorPath;
+        String token = editorPath ;
         if (StringUtils.isNotEmpty(previewToken)) {
             token += ":" + previewToken;
         }
-        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", token);
+
+        return new PagesLocation(token);
     }
 
-    public static String getSubAppId(Location location) {
-        List<String> parts = parseLocationToken(location);
-        return parts.get(0) + ";" + parts.get(1);
-    }
-
-    public static String getEditorPath(List<String> locationTokens) {
-        return locationTokens.size() >= 2 ? locationTokens.get(1) : "";
-    }
-
-    public static boolean isPreview(List<String> locationTokens) {
-        return locationTokens.size() >= 3 ? locationTokens.get(2).equals(PagesApp.PREVIEW_TOKEN) : false;
-    }
-
-    private static List<String> parseLocationToken(Location location) {
-
-        ArrayList<String> parts = new ArrayList<String>();
-
-        DefaultLocation l = (DefaultLocation) location;
-        String token = l.getToken();
-
-        // "editor"
-        int i = token.indexOf(';');
-        if (i == -1) {
-            return new ArrayList<String>();
-        }
-        String subAppName = token.substring(0, i);
-        if (!subAppName.equals(PagesApp.EDITOR_TOKEN)) {
-            return new ArrayList<String>();
-        }
-        parts.add(subAppName);
-        token = token.substring(i + 1);
-
-        // editorPath
-        i = token.indexOf(':');
-        if (i == -1) {
-            if (token.length() == 0) {
-                return new ArrayList<String>();
-            }
-            parts.add(token);
-            return parts;
-        }
-        parts.add(token.substring(0, i));
-        token = token.substring(i + 1);
-
-        // previewMode
-        if (token.length() > 0) {
-            parts.add(token);
-        }
-
-        return parts;
-    }
 }

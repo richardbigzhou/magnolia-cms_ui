@@ -58,6 +58,7 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.RowIterator;
 
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,8 +77,6 @@ import com.vaadin.data.Property;
 public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrContainer.class);
-
-    public static final String ITEM_ICON_PROPERTY_ID = "mgnl_item_icon";
 
     private Set<ItemSetChangeListener> itemSetChangeListeners;
 
@@ -111,11 +110,14 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private static final Long LONG_ZERO = Long.valueOf(0);
 
+    /** Item type to use if no other is properly defined. **/
+    protected static final String DEFAULT_MAIN_ITEM_TYPE = MgnlNodeType.NT_CONTENT;
+
     private static final String QUERY_LANGUAGE = Query.JCR_JQOM;
 
-    protected static final String CONTENT_SELECTOR_NAME = "content";
+    protected static final String SELECTOR_NAME = "t";
 
-    protected static final String SELECT_CONTENT = "select * from [" + MgnlNodeType.NT_CONTENT + "] as " + CONTENT_SELECTOR_NAME;
+    protected static final String SELECT_TEMPLATE = "select * from [%s] as " + SELECTOR_NAME;
 
     protected static final String ORDER_BY = " order by ";
 
@@ -123,16 +125,16 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String DESCENDING_KEYWORD = " desc";
 
-    protected static final String JOIN_METADATA = " inner join [" + MgnlNodeType.NT_METADATA + "] as metaData on ischildnode(metaData,content) ";
-
     protected static final String METADATA_SELECTOR_NAME = "metaData";
+
+    protected static final String JOIN_METADATA = " inner join [" + MgnlNodeType.NT_METADATA + "] as "+ METADATA_SELECTOR_NAME +" on ischildnode("+ METADATA_SELECTOR_NAME +"," + SELECTOR_NAME + ") ";
 
     /**
      * Caution: this property gets special treatment as we'll have to call a function to be able to order by it.
      */
     protected static final String NAME_PROPERTY = "jcrName";
 
-    protected static final String JCR_NAME_FUNCTION = "name(" + CONTENT_SELECTOR_NAME + ")";
+    protected static final String JCR_NAME_FUNCTION = "name(" + SELECTOR_NAME + ")";
 
     protected static final String METADATA_NODE_NAME = MetaData.DEFAULT_META_NODE + "/";
 
@@ -253,8 +255,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             if(!jcrSession.itemExists((String) itemId)) {
                 return null;
             }
-            Node node = (Node) jcrSession.getItem((String) itemId);
-            return new JcrNodeAdapter(node);
+            javax.jcr.Item item = jcrSession.getItem((String) itemId);
+            return item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((javax.jcr.Property) item);
         } catch (RepositoryException e) {
             log.error("", e);
             return null;
@@ -522,7 +524,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         final RowIterator iterator = queryResult.getRows();
         long rowCount = currentOffset;
         while (iterator.hasNext()) {
-            Node node = iterator.nextRow().getNode(CONTENT_SELECTOR_NAME);
+            Node node = iterator.nextRow().getNode(SELECTOR_NAME);
             final String id = node.getPath();
             log.debug("Adding node {} to cached items.", id);
             itemIndexes.put(rowCount++, id);
@@ -549,7 +551,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * @see AbstractJcrContainer#getPage()
      */
     protected String constructJCRQuery(final boolean considerSorting) {
-        final StringBuilder stmt = new StringBuilder(SELECT_CONTENT);
+        final String select = String.format(SELECT_TEMPLATE, getMainItemTypeAsString());
+        final StringBuilder stmt = new StringBuilder(select);
         if (considerSorting) {
             if (sorters.isEmpty()) {
                 // no sorters set - use defaultOrder (always ascending)
@@ -575,13 +578,26 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                     propertyName = propertyName.substring(METADATA_NODE_NAME.length());
                     stmt.append(METADATA_SELECTOR_NAME);
                 } else {
-                    stmt.append(CONTENT_SELECTOR_NAME);
+                    stmt.append(SELECTOR_NAME);
                 }
                 stmt.append(".[").append(propertyName).append("]").append(sortOrder).append(", ");
             }
             stmt.delete(stmt.lastIndexOf(","), stmt.length());
         }
         return stmt.toString();
+    }
+
+    /**
+     * @return the mainItemType as String - in case it's not properly configured we'll report via log and use a default
+     */
+    protected String getMainItemTypeAsString() {
+        String mainItemType = DEFAULT_MAIN_ITEM_TYPE;
+        if (workbenchDefinition.getMainItemType() != null && StringUtils.isNotBlank(workbenchDefinition.getMainItemType().getItemType())) {
+            mainItemType = workbenchDefinition.getMainItemType().getItemType();
+        } else {
+            log.warn("WorkbenchDefinition {} does not properly define a MainItemType - hence we'll use the default value '{}'.", workbenchDefinition.getName(), DEFAULT_MAIN_ITEM_TYPE);
+        }
+        return mainItemType;
     }
 
     /**

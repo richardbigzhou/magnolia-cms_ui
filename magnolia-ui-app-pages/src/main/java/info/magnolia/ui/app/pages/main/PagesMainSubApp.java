@@ -36,7 +36,7 @@ package info.magnolia.ui.app.pages.main;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
-import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.instantpreview.InstantPreviewDispatcher;
 
@@ -56,8 +56,8 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
     private final InstantPreviewDispatcher dispatcher;
 
     @Inject
-    public PagesMainSubApp(final AppContext appContext, PagesMainView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus, InstantPreviewDispatcher dispatcher) {
-        super(appContext,view, workbench, subAppEventBus);
+    public PagesMainSubApp(final SubAppContext subappContext, PagesMainView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus, InstantPreviewDispatcher dispatcher) {
+        super(subappContext,view, workbench, subAppEventBus);
         this.view = view;
         this.view.setListener(this);
         this.dispatcher = dispatcher;

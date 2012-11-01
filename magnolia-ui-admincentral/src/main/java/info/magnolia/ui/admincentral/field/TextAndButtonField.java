@@ -52,15 +52,15 @@ import com.vaadin.ui.TextField;
  */
 public class TextAndButtonField extends CustomField {
 
-    private Button selectButton;
+    private final Button selectButton;
     
-    private TextField textField;
+    private final TextField textField;
     
-    private PropertyTranslator translator;
+    private final PropertyTranslator translator;
     
-    private String buttonCaptionNew;
+    private final String buttonCaptionNew;
     
-    private String buttonCaptionOther;
+    private final String buttonCaptionOther;
 
     public TextAndButtonField(PropertyTranslator translator, String buttonCaptionNew, String buttonCaptionOther) {
         this.translator = translator;
@@ -70,6 +70,7 @@ public class TextAndButtonField extends CustomField {
         textField = new TextField();
         textField.setSizeUndefined();
         textField.addStyleName("small-textfield");
+        textField.setImmediate(true);
         
         selectButton = new NativeButton();
         selectButton.addStyleName("btn-dialog btn-dialog-select");

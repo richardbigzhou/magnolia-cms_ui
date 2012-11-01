@@ -1,0 +1,15 @@
+<module>
+<!-- WS Compiler: manually edited -->
+     <!-- gecko handles Iframe loading and DOMContentLoaded event correctly-->
+    <replace-with class="info.magnolia.ui.vaadin.gwt.client.editor.jsni.GenericFrameEventHandler">
+        <when-type-is class="info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler"/>
+    </replace-with>
+
+    <!-- webkit workaround for: https://bugs.webkit.org/show_bug.cgi?id=33604 -->
+    <replace-with class="info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler">
+        <when-type-is class="info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler"/>
+        <any>
+            <when-property-is name="user.agent" value="safari"/>
+        </any>
+    </replace-with>
+</module>

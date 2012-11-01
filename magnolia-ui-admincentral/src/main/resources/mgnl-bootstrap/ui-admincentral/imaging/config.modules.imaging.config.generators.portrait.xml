@@ -46,7 +46,7 @@
       <sv:value>b9c6dd35-dd6f-4603-a87a-a9a7e2edc55d</sv:value>
     </sv:property>
     <sv:property sv:name="formatName" sv:type="String">
-      <sv:value>png</sv:value>
+      <sv:value>jpg</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -71,7 +71,7 @@
         <sv:value>2009-05-11T18:47:13.400+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-        <sv:value>2012-09-27T19:15:27.939+02:00</sv:value>
+        <sv:value>2012-10-26T11:57:47.812+02:00</sv:value>
       </sv:property>
     </sv:node>
   </sv:node>
@@ -156,16 +156,16 @@
         <sv:value>c65d0435-ae4b-475b-8cc6-13146641515d</sv:value>
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
-        <sv:value>info.magnolia.imaging.operations.cropresize.AutoCropAndResize</sv:value>
+        <sv:value>info.magnolia.imaging.operations.cropresize.BoundedResize</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
-      <sv:property sv:name="targetHeight" sv:type="String">
-        <sv:value>250</sv:value>
+      <sv:property sv:name="maxHeight" sv:type="String">
+        <sv:value>300</sv:value>
       </sv:property>
-      <sv:property sv:name="targetWidth" sv:type="String">
-        <sv:value>200</sv:value>
+      <sv:property sv:name="maxWidth" sv:type="String">
+        <sv:value>230</sv:value>
       </sv:property>
       <sv:node sv:name="MetaData">
         <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -184,7 +184,7 @@
           <sv:value>2012-09-25T11:48:51.040+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
-          <sv:value>2012-09-27T19:18:30.810+02:00</sv:value>
+          <sv:value>2012-10-30T17:25:10.223+01:00</sv:value>
         </sv:property>
       </sv:node>
     </sv:node>

@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.view.View;
 
 
 /**
@@ -43,7 +44,72 @@ import info.magnolia.ui.framework.location.Location;
  */
 public abstract class AbstractSubApp implements SubApp {
 
+
+    protected Location currentLocation;
+    private final SubAppContext subAppContext;
+    private final View view;
+
+    protected AbstractSubApp(final SubAppContext subAppContext, final View view) {
+        if(subAppContext == null || view == null) {
+            throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", ContentAppView = " + view);
+        }
+        this.subAppContext = subAppContext;
+        this.view = view;
+    }
+
+    @Override
+    public View start(Location location) {
+        currentLocation = location;
+        onSubAppStart();
+        return view;
+    }
+
     @Override
     public void locationChanged(Location location) {
+        currentLocation = location;
     }
+
+    /**
+     * This method is being called by the AppController when iterating over opened subApps.
+     * The subApp itself decides whether it supports the current location based on parameters or
+     * whether the appController should launch a new instance of the subApp.
+     */
+
+    @Override
+    public boolean supportsLocation(Location location) {
+        return true;
+    }
+
+    /**
+     * This hook-up method is called on {@link #start(info.magnolia.ui.framework.location.Location)} and enables subclasses to perform additional work before the view is displayed.
+     * The default implementation does nothing.
+     */
+    protected void onSubAppStart() { }
+
+    public SubAppContext getSubAppContext() {
+        return subAppContext;
+    }
+
+    @Override
+    public String getSubAppId() {
+        return subAppContext.getSubAppId();
+    }
+
+    public View getView() {
+        return view;
+    }
+
+    public AppContext getAppContext() {
+        return subAppContext.getAppContext();
+    }
+
+    @Override
+    public String getCaption() {
+        return getAppContext().getAppDescriptor().getLabel();
+    }
+
+    protected Location getCurrentLocation() {
+        return currentLocation;
+    }
+
 }

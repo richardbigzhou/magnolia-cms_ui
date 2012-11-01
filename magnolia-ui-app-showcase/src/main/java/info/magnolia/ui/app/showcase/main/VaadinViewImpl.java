@@ -87,8 +87,8 @@ public class VaadinViewImpl implements VaadinView {
 
     private static final long serialVersionUID = 4937209277244291844L;
 
-    VerticalLayout layout;
-
+    private final VerticalLayout layout;
+   
     public VaadinViewImpl() {
         layout = new VerticalLayout();
         layout.setSpacing(true);
@@ -461,6 +461,7 @@ public class VaadinViewImpl implements VaadinView {
 
         Button button = new Button("Button");
         grid.addComponent(button);
+
 
         button = new Button("Button with link style");
         button.setStyleName(BaseTheme.BUTTON_LINK);

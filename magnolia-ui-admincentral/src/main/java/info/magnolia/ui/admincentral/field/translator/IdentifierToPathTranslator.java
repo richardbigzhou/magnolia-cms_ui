@@ -50,7 +50,7 @@ import org.vaadin.addon.propertytranslator.PropertyTranslator;
 @SuppressWarnings("unchecked")
 public class IdentifierToPathTranslator extends PropertyTranslator {
     private static final Logger log = LoggerFactory.getLogger(IdentifierToPathTranslator.class);
-    private String workspace;
+    private final String workspace;
 
     public IdentifierToPathTranslator(String workspace) {
         this.workspace = workspace;

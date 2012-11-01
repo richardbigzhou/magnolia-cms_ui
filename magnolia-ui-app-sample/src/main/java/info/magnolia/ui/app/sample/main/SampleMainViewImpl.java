@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.app.sample.main;
 
+import info.magnolia.ui.framework.view.View;
+
 import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
-
-import info.magnolia.ui.framework.view.View;
 
 /**
  * View implementation of the main tab in sample app.
@@ -46,7 +46,8 @@ import info.magnolia.ui.framework.view.View;
 public class SampleMainViewImpl implements SampleMainView {
 
     private Listener listener;
-    private HorizontalSplitPanel layout;
+    
+    private final HorizontalSplitPanel layout;
 
     @Inject
     public SampleMainViewImpl() {

@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import java.util.Locale;
-
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.ui.admincentral.dialog.AbstractDialogItem;
 import info.magnolia.ui.admincentral.field.FieldBuilder;
@@ -46,6 +44,8 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.util.Locale;
 
 import javax.jcr.Node;
 
@@ -213,7 +213,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
      * If i18n is set to true, prefix the property name by the current language
      * (fr_, de_) if the current language is not the default one.
      */
-    private String getPropertyName() {
+    protected String getPropertyName() {
         if(definition.isI18n()) {
             Locale locale = getMessages().getLocale();
             boolean isFallbackLanguage = i18nContentSupport.getFallbackLocale().equals(locale);
