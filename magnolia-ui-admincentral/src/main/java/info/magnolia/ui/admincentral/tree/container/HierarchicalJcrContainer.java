@@ -33,19 +33,28 @@
  */
 package info.magnolia.ui.admincentral.tree.container;
 
+import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
-import info.magnolia.ui.vaadin.integration.jcr.container.JcrContainerSource;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,15 +68,27 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     private static final Logger log = LoggerFactory.getLogger(HierarchicalJcrContainer.class);
 
-    public HierarchicalJcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
-        super(jcrContainerSource, workbenchDefinition);
+    private static class ItemNameComparator implements Comparator<Item> {
+        @Override
+        public int compare(Item lhs, Item rhs) {
+            try {
+                return lhs.getName().compareTo(rhs.getName());
+            } catch (RepositoryException e) {
+                throw new RuntimeRepositoryException(e);
+            }
+        }
+    }
+
+
+    public HierarchicalJcrContainer(WorkbenchDefinition workbenchDefinition) {
+        super(workbenchDefinition);
     }
 
     @Override
     public Collection<String> getChildren(Object itemId) {
         try {
             long start = System.currentTimeMillis();
-            Collection<Item> children = getJcrContainerSource().getChildren(getJcrContainerSource().getItemByPath((String) itemId));
+            Collection<Item> children = getChildren(getItemByPath((String) itemId));
             log.debug("Fetched {} children in {}ms", children.size(), System.currentTimeMillis() - start);
             return createContainerIds(children);
         }
@@ -79,7 +100,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     @Override
     public String getParent(Object itemId) {
         try {
-            Item item = getJcrContainerSource().getItemByPath((String) itemId);
+            Item item = getItemByPath((String) itemId);
             if (item.isNode() && item.getDepth() == 0) {
                 return null;
             }
@@ -93,7 +114,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     @Override
     public Collection<String> rootItemIds() {
         try {
-            return createContainerIds(getJcrContainerSource().getRootItemIds());
+            return createContainerIds(getRootItemIds());
         }
         catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
@@ -109,7 +130,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     @Override
     public boolean areChildrenAllowed(Object itemId) {
         try {
-            return getJcrContainerSource().getItemByPath((String)itemId).isNode();
+            return getItemByPath((String)itemId).isNode();
         } catch (RepositoryException re) {
             return false;
         }
@@ -123,7 +144,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     @Override
     public boolean isRoot(Object itemId) {
         try {
-            return getJcrContainerSource().isRoot(getJcrContainerSource().getItemByPath((String) itemId));
+            return isRoot(getItemByPath((String) itemId));
         }
         catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
@@ -133,7 +154,8 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     @Override
     public boolean hasChildren(Object itemId) {
         try {
-            return getJcrContainerSource().hasChildren(getJcrContainerSource().getItemByPath((String) itemId));
+            final Item item = getItemByPath((String) itemId);
+            return item.isNode() && !getChildren(item).isEmpty();
         }
         catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
@@ -142,7 +164,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     protected Collection<String> createContainerIds(Collection<Item> children) throws RepositoryException {
         ArrayList<String> ids = new ArrayList<String>();
-        for (javax.jcr.Item child : children) {
+        for (Item child : children) {
             ids.add(child.getPath());
         }
         return ids;
@@ -152,6 +174,147 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     public List<String> getSortableContainerPropertyIds() {
         //at present tree view is not sortable
         return Collections.emptyList();
+    }
+
+
+    public Collection<Item> getChildren(Item item) throws RepositoryException {
+        if (!item.isNode()) {
+            return Collections.emptySet();
+        }
+
+        Node node = (Node) item;
+
+        ArrayList<Item> items = new ArrayList<Item>();
+
+        ArrayList<Node> mainItemTypeNodes = new ArrayList<Node>();
+        ArrayList<Node> groupingItemTypeNodes = new ArrayList<Node>();
+        NodeIterator iterator = node.getNodes();
+        final String mainItemTypeName = getMainItemTypeAsString();
+        final String groupingItemTypeName = getWorkbenchDefinition().getGroupingItemType() == null ? null : getWorkbenchDefinition().getGroupingItemType().getItemType();
+        String currentNodeTypeName;
+        while (iterator.hasNext()) {
+            Node next = iterator.nextNode();
+            currentNodeTypeName = next.getPrimaryNodeType().getName();
+            if (mainItemTypeName.equals(currentNodeTypeName)) {
+                mainItemTypeNodes.add(next);
+            }
+            if (groupingItemTypeName != null && groupingItemTypeName.equals(currentNodeTypeName)) {
+                groupingItemTypeNodes.add(next);
+            }
+        }
+        // TODO This behaviour is optional in old AdminCentral, you can set a custom comparator.
+        ItemNameComparator itemNameComparator = new ItemNameComparator();
+        Collections.sort(mainItemTypeNodes, itemNameComparator);
+
+        Collections.sort(groupingItemTypeNodes, itemNameComparator);
+
+        items.addAll(groupingItemTypeNodes);
+        items.addAll(mainItemTypeNodes);
+
+        if (getWorkbenchDefinition().includeProperties()) {
+            ArrayList<Property> properties = new ArrayList<Property>();
+            PropertyIterator propertyIterator = node.getProperties();
+            while (propertyIterator.hasNext()) {
+                Property property = propertyIterator.nextProperty();
+                if (!property.getName().startsWith(MgnlNodeType.JCR_PREFIX)) {
+                    properties.add(property);
+                }
+            }
+            Collections.sort(properties, itemNameComparator);
+            items.addAll(properties);
+        }
+
+        return Collections.unmodifiableCollection(items);
+    }
+
+    public Collection<Item> getRootItemIds() throws RepositoryException {
+        return getChildren(getRootNode());
+    }
+
+    public boolean isRoot(Item item) throws RepositoryException {
+        if (!item.isNode()) {
+            return false;
+        }
+        int depthOfRootNodesInTree = getRootNode().getDepth() + 1;
+        return item.getDepth() <= depthOfRootNodesInTree;
+    }
+
+    public Item getItemByPath(String path) throws RepositoryException {
+        String absolutePath = getPathInWorkspace(path);
+        return getSession().getItem(absolutePath);
+    }
+
+    // Move operations performed by drag-n-drop in JcrBrowser
+
+    // TODO these move methods need to be commands instead
+
+    public boolean moveItem(Item source, Item target) throws RepositoryException {
+        if(!basicMoveCheck(source,target)) {
+            return false;
+        }
+        NodeUtil.moveNode((Node) source, (Node) target);
+        source.getSession().save();
+
+        return true;
+    }
+
+    public boolean moveItemBefore(Item source, Item target) throws RepositoryException {
+        if(!basicMoveCheck(source,target)) {
+            return false;
+        }
+
+        NodeUtil.moveNodeBefore((Node)source, (Node)target);
+        source.getSession().save();
+
+        return true;
+    }
+
+    public boolean moveItemAfter(Item source, Item target) throws RepositoryException {
+        if(!basicMoveCheck(source,target)) {
+            return false;
+        }
+
+        NodeUtil.moveNodeAfter((Node)source, (Node)target);
+        source.getSession().save();
+
+        return true;
+    }
+
+    /**
+     * Perform basic check.
+     */
+    private boolean basicMoveCheck(Item source, Item target) throws RepositoryException {
+        // One or both are not node... do nothing
+        if (!target.isNode() && !source.isNode()) {
+            return false;
+        }
+        // Source and origin are the same... do nothing
+        if (target.getPath().equals(source.getPath())) {
+            return false;
+        }
+        // Source can not be a child of target.
+        return !target.getPath().startsWith(source.getPath());
+    }
+
+    /**
+     * Only used in tests.
+     */
+    String getPathInTree(Item item) throws RepositoryException {
+        String base = getWorkbenchDefinition().getPath();
+        return "/".equals(base) ? item.getPath() : StringUtils.substringAfter(item.getPath(), base);
+    }
+
+    private Session getSession() throws RepositoryException {
+        return MgnlContext.getJCRSession(getWorkspace());
+    }
+
+    private Node getRootNode() throws RepositoryException {
+        return getSession().getNode(getWorkbenchDefinition().getPath());
+    }
+
+    private String getPathInWorkspace(String pathInTree) {
+        String base = getWorkbenchDefinition().getPath();
+        return "/".equals(base) ? pathInTree : base + pathInTree;
     }
 
 }

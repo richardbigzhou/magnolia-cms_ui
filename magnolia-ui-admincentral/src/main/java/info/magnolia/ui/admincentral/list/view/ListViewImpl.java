@@ -42,7 +42,6 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
-import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -77,12 +76,11 @@ public class ListViewImpl implements ListView {
 
     private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
-    public ListViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel, ComponentProvider componentProvider, FlatJcrContainer container) {
+    public ListViewImpl(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider, FlatJcrContainer container) {
         table = new MagnoliaTable();
         table.setSizeFull();
 
-        // next two lines are required to make the browser (Table) react on selection change via
-        // mouse
+        // next two lines are required to make the browser (Table) react on selection change via mouse
         table.setImmediate(true);
         table.setNullSelectionAllowed(false);
         // table.setMultiSelectMode(MultiSelectMode.DEFAULT);
@@ -132,8 +130,7 @@ public class ListViewImpl implements ListView {
 
     @Override
     public void refresh() {
-        // This will update the row count and display the newly
-        // created items.
+        // This will update the row count and display the newly created items.
         container.refresh();
         container.fireItemSetChange();
     }

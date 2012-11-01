@@ -37,7 +37,6 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
-import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -64,9 +63,9 @@ public class TreeViewImpl implements TreeView {
 
     private Set<?> defaultValue = null;
 
-    public TreeViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel,ComponentProvider componentProvider) {
+    public TreeViewImpl(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
 
-        jcrBrowser = new WorkbenchTreeTable(workbenchDefinition, treeModel, componentProvider);
+        jcrBrowser = new WorkbenchTreeTable(workbenchDefinition, componentProvider);
         jcrBrowser.setImmediate(true);
         jcrBrowser.setNullSelectionAllowed(true);
         jcrBrowser.setSizeFull();
