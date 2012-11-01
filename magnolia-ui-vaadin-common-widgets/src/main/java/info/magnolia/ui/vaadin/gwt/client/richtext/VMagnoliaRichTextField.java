@@ -39,7 +39,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.Window;
+//import com.google.gwt.user.client.Window;
 
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService;
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField;
@@ -60,6 +60,7 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
     public static final String VAR_FIRE_PLUGIN_EVENT_VALUE = "firePluginEventValue";
     protected VMagnoliaRichTextEditor editor;
     public List<String> pluginEvents;
+    ValueMap customPlugins = null;
 
     public VMagnoliaRichTextField() {
         super();
@@ -71,6 +72,15 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         super.updateFromUIDL(uidl, client);
 
+        /* External plugins has to be loaded after CKEDITOR instance
+        have been created but before editor instance is created.
+        Store external plugins into member and let CKEditor loader
+        to pick up them. Server side component has the responsibility
+        to send this attribute early enough. */
+        if(uidl.hasAttribute(VAR_SERVERPLUGINS)) {
+            customPlugins = uidl.getMapAttribute(VAR_SERVERPLUGINS);
+        }
+        
         //list of plugin events that server is interested of handling.
         if(uidl.hasAttribute(VAR_EVENTNAMES)) {
             pluginEvents = Arrays.asList(
@@ -79,14 +89,6 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
 
             for(String eventName: pluginEvents) {
                 this.editor.addListener(this, eventName);
-            }
-        }
-
-        if(uidl.hasAttribute(VAR_SERVERPLUGINS)) {
-            ValueMap plugins = uidl.getMapAttribute(VAR_SERVERPLUGINS);
-            for(String key: plugins.getKeySet()) {
-                Window.alert("loading: "+key+" , "+plugins.getString(key));
-                //loadExternalPlugin(key, plugins.getString(key));                
             }
         }
 
@@ -99,8 +101,8 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
         }
     }
 
-    private static native void loadExternalPlugin(String pluginName, String path) /*-{        
-       $wnd.CKEDITOR.plugins.addExternal( pluginName, path );
+    private static native void loadExternalPlugin(String pluginName, String path) /*-{    
+       $wnd.CKEDITOR.plugins.addExternal( pluginName, path, 'plugin.js' );
     }-*/;
 
     /**
@@ -126,11 +128,24 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
             CKEditorService.loadLibrary(new ScheduledCommand() {
                 @Override
                 public void execute() {
+                    loadPlugins();
                     injectEditorTo(VMagnoliaRichTextField.this);
                 }
             });
         } else {
+            loadPlugins();
             injectEditorTo(this);
+        }
+    }
+    
+    /**
+     * Load plugins from custom path
+     */
+    private void loadPlugins() {
+        if(customPlugins != null) {
+            for(String key: customPlugins.getKeySet()) {
+              loadExternalPlugin(key, customPlugins.getString(key));                
+          }
         }
     }
 
@@ -148,10 +163,7 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
      * from the base class => we got access to the private member we need.
      */
     private static native void injectEditorTo(final VMagnoliaRichTextField listener)
-    /*-{
-        alert('f1');
-        $wnd.CKEDITOR.plugins.addExternal('magnolialink', '/VAADIN/js/ckeditor/plugins/magnolialink/', 'plugin.js' );
-        alert('f2');
+    /*-{        
         var createdEvent = function(e) {            
             var listenerInstanceId = listener.@info.magnolia.ui.vaadin.gwt.client.richtext.VMagnoliaRichTextField::getPaintableId()();
             var editorInstanceId = e.editor.element.getId();

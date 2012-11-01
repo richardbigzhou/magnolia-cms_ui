@@ -94,10 +94,11 @@ public class RichTextFieldBuilder extends
         toolbars.add(new ToolbarGroup("objects", new String[] { "Image",
                 "Table" }));
         toolbars.add(new ToolbarGroup("special",
-                new String[] { "Undo", "Redo" }));
+                new String[] { "Undo", "Redo", "CustomPlugin" }));
         config.addToolbarLine(toolbars);
-        config.addPlugin("magnolialink", "/VAADIN/js/ckeditor/plugins/magnolialink/");
+        config.addPlugin("customplugin", "/VAADIN/js/customplugin/");
         config.addListenedEvent("reqMagnoliaLink");
+        config.addListenedEvent("customStuffHappened");
         
         richtexteditor = new MagnoliaRichTextField(config);
         richtexteditor.addListener(new MagnoliaRichTextField.PluginListener() {
@@ -106,6 +107,8 @@ public class RichTextFieldBuilder extends
             public void onPluginEvent(String eventName, String value) {
                 if (eventName.equals("reqMagnoliaLink")) {
                     openLinkDialog();
+                } else if(eventName.equals("customStuffHappened")) {
+                    richtexteditor.firePluginEvent("serverSendToCustomPlugin", "hello client");
                 }
             }
         });

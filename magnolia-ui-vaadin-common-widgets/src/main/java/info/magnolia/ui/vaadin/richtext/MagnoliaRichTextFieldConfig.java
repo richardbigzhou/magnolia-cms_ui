@@ -54,7 +54,7 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
     private Map<String, String> serverSidePlugins = new HashMap<String, String>();
 
     public MagnoliaRichTextFieldConfig() {
-//        addToExtraPlugins("magnolialink");
+        addToExtraPlugins("magnolialink");        
         addToRemovePlugins("elementspath");
     }
     
@@ -100,6 +100,7 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
     }
 
     public void addPlugin(String pluginName, String source) {
+        addToExtraPlugins(pluginName);
         this.serverSidePlugins.put(pluginName, source);
     }
     

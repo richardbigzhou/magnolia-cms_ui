@@ -74,6 +74,7 @@ public class MagnoliaRichTextField extends CKEditorTextField {
     public MagnoliaRichTextField(MagnoliaRichTextFieldConfig config) {
         super(config);
         this.config = config;
+        serverPlugins = config.getServerPlugins();
     }
 
     @Override
@@ -84,7 +85,7 @@ public class MagnoliaRichTextField extends CKEditorTextField {
             //Editor is ready
             if(variables.containsKey(VCKEditorTextField.VAR_VERSION)) {
                 customEvents = config.getListenedEvents();
-                serverPlugins = config.getServerPlugins();
+                
                 requestRepaint();
             }
             
