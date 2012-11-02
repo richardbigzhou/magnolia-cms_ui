@@ -40,7 +40,6 @@ import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 
 import java.util.ArrayList;
@@ -55,7 +54,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Item;
 import com.vaadin.event.Transferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
@@ -74,11 +72,8 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
 
     private final HierarchicalJcrContainer container;
 
-    private final TreeModel treeModel;
-
-    public WorkbenchTreeTable(WorkbenchDefinition workbenchDefinition, TreeModel treeModel, ComponentProvider componentProvider) {
+    public WorkbenchTreeTable(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
         super();
-        this.treeModel = treeModel;
 
         setSizeFull();
         setEditable(false);
@@ -88,7 +83,7 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
         setImmediate(true);
         addDragAndDrop();
 
-        container = new HierarchicalJcrContainer(treeModel, workbenchDefinition);
+        this.container = container;
         buildColumns(workbenchDefinition, componentProvider);
     }
 
@@ -116,23 +111,22 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
                             log.debug("DropLocation is null. Do nothing.");
                             log.debug("DropLocation: {}", location.name());
 
-                            HierarchicalJcrContainer containerWrapper = (HierarchicalJcrContainer) getContainerDataSource();
                             // Drop right on an item -> make it a child -
                             if (location == VerticalDropLocation.MIDDLE) {
                                 JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
                                 JcrItemAdapter targetItem = (JcrItemAdapter) container.getItem(targetItemId);
-                                if (treeModel.moveItem(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
+                                if (container.moveItem(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
                                     setParent(sourceItemId, targetItemId);
                                 }
                             }
                             // Drop at the top of a subtree -> make it previous
                             else if (location == VerticalDropLocation.TOP) {
-                                Object parentId = containerWrapper.getParent(targetItemId);
+                                Object parentId = container.getParent(targetItemId);
                                 if (parentId != null) {
-                                    log.debug("Parent: {}", containerWrapper.getItem(parentId));
+                                    log.debug("Parent: {}", container.getItem(parentId));
                                     JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
                                     JcrItemAdapter targetItem = (JcrItemAdapter) container.getItem(targetItemId);
-                                    if (treeModel.moveItemBefore(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
+                                    if (container.moveItemBefore(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
                                         setParent(sourceItemId, targetItemId);
                                     }
                                 }
@@ -140,11 +134,11 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
 
                             // Drop below another item -> make it next
                             else if (location == VerticalDropLocation.BOTTOM) {
-                                Object parentId = containerWrapper.getParent(targetItemId);
+                                Object parentId = container.getParent(targetItemId);
                                 if (parentId != null) {
                                     JcrItemAdapter sourceItem = (JcrItemAdapter) container.getItem(sourceItemId);
                                     JcrItemAdapter targetItem = (JcrItemAdapter) container.getItem(targetItemId);
-                                    if (treeModel.moveItemAfter(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
+                                    if (container.moveItemAfter(sourceItem.getJcrItem(), targetItem.getJcrItem())) {
                                         setParent(sourceItemId, targetItemId);
                                     }
                                 }
@@ -170,26 +164,13 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
                 setCollapsed(parent, false);
                 parent = container.getParent(parent);
             }
-            // finally expand the root else children won't be visibile.
+            // finally expand the root else children won't be visible.
             setCollapsed(parent, false);
         }
         // Set this multi select component to have only this one item selected
         final Set<Object> set = new HashSet<Object>();
         set.add(itemId);
         setValue(set);
-    }
-
-    public void refresh() {
-        container.fireItemSetChange();
-    }
-
-    public void updateItem(final Item item) {
-        final String itemId = ((JcrItemAdapter) item).getItemId();
-        if (container.containsId(itemId)) {
-            container.fireItemSetChange();
-        } else {
-            log.warn("No item found for id [{}]", itemId);
-        }
     }
 
     private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
@@ -203,8 +184,7 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
             final String columnProperty = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
             // FIXME fgrilli workaround for conference
             // when setting cols width in dialogs we are forced to use explicit
-            // px value instead of expand ratios, which for some reason don't
-            // work
+            // px value instead of expand ratios, which for some reason don't work
             if (workbenchDefinition.isDialogWorkbench()) {
                 setColumnWidth(columnProperty, 300);
             } else {
@@ -231,5 +211,4 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
         setContainerDataSource(container);
         setVisibleColumns(columnOrder.toArray());
     }
-
 }

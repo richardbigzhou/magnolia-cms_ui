@@ -82,8 +82,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private Set<PropertySetChangeListener> propertySetChangeListeners;
 
-    private final JcrContainerSource jcrContainerSource;
-
     private int size = Integer.MIN_VALUE;
 
     /** Page length = number of items contained in one page. */
@@ -138,8 +136,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String METADATA_NODE_NAME = MetaData.DEFAULT_META_NODE + "/";
 
-    public AbstractJcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
-        this.jcrContainerSource = jcrContainerSource;
+    public AbstractJcrContainer(WorkbenchDefinition workbenchDefinition) {
         this.workbenchDefinition = workbenchDefinition;
 
         for (ColumnDefinition columnDefinition : workbenchDefinition.getColumns()) {
@@ -159,6 +156,10 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                 sortableProperties.add(propertyName);
             }
         }
+    }
+
+    protected WorkbenchDefinition getWorkbenchDefinition() {
+        return workbenchDefinition;
     }
 
     @Override
@@ -431,10 +432,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     public boolean removeItem(Object itemId) throws UnsupportedOperationException {
         fireItemSetChange();
         return true;
-    }
-
-    protected JcrContainerSource getJcrContainerSource() {
-        return jcrContainerSource;
     }
 
     /************************************/
