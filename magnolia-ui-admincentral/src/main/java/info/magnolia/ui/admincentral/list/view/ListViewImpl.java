@@ -66,6 +66,8 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class ListViewImpl implements ListView {
 
+    private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
+
     private ContentView.Listener listener;
 
     private final Table table;
@@ -73,8 +75,6 @@ public class ListViewImpl implements ListView {
     private final VerticalLayout margin = new VerticalLayout();
 
     private final AbstractJcrContainer container;
-
-    private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
     public ListViewImpl(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider, FlatJcrContainer container) {
         table = new MagnoliaTable();

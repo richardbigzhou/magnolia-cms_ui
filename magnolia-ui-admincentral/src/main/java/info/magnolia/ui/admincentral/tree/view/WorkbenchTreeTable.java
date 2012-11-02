@@ -54,7 +54,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Item;
 import com.vaadin.event.Transferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
@@ -73,7 +72,7 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
 
     private final HierarchicalJcrContainer container;
 
-    public WorkbenchTreeTable(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
+    public WorkbenchTreeTable(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
         super();
 
         setSizeFull();
@@ -84,7 +83,7 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
         setImmediate(true);
         addDragAndDrop();
 
-        container = new HierarchicalJcrContainer(workbenchDefinition);
+        this.container = container;
         buildColumns(workbenchDefinition, componentProvider);
     }
 
@@ -165,26 +164,13 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
                 setCollapsed(parent, false);
                 parent = container.getParent(parent);
             }
-            // finally expand the root else children won't be visibile.
+            // finally expand the root else children won't be visible.
             setCollapsed(parent, false);
         }
         // Set this multi select component to have only this one item selected
         final Set<Object> set = new HashSet<Object>();
         set.add(itemId);
         setValue(set);
-    }
-
-    public void refresh() {
-        container.fireItemSetChange();
-    }
-
-    public void updateItem(final Item item) {
-        final String itemId = ((JcrItemAdapter) item).getItemId();
-        if (container.containsId(itemId)) {
-            container.fireItemSetChange();
-        } else {
-            log.warn("No item found for id [{}]", itemId);
-        }
     }
 
     private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {

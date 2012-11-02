@@ -35,7 +35,9 @@ package info.magnolia.ui.admincentral.tree.view;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.content.view.ContentView;
+import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 
 import java.util.HashSet;
@@ -47,83 +49,88 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * Vaadin UI component that displays a tree.
- *
  */
 public class TreeViewImpl implements TreeView {
 
-    private final WorkbenchTreeTable jcrBrowser;
+    private static final Logger log = LoggerFactory.getLogger(TreeViewImpl.class);
+
+    private final WorkbenchTreeTable treeTable;
 
     private final VerticalLayout margin = new VerticalLayout();
 
     private ContentView.Listener listener;
 
+    private final HierarchicalJcrContainer container;
+
     private Set<?> defaultValue = null;
 
-    public TreeViewImpl(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
+    public TreeViewImpl(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
+        this.container = container;
+        treeTable = new WorkbenchTreeTable(workbenchDefinition, componentProvider, container);
+        treeTable.setImmediate(true);
+        treeTable.setNullSelectionAllowed(true);
+        treeTable.setSizeFull();
 
-        jcrBrowser = new WorkbenchTreeTable(workbenchDefinition, componentProvider);
-        jcrBrowser.setImmediate(true);
-        jcrBrowser.setNullSelectionAllowed(true);
-        jcrBrowser.setSizeFull();
-
-        jcrBrowser.addListener(new TreeTable.ValueChangeListener() {
+        treeTable.addListener(new TreeTable.ValueChangeListener() {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
                 if (defaultValue == null && event.getProperty().getValue() instanceof Set) {
-                    defaultValue = (Set<?>)event.getProperty().getValue();
+                    defaultValue = (Set<?>) event.getProperty().getValue();
                 }
                 final Object value = event.getProperty().getValue();
                 if (value instanceof String) {
                     presenterOnItemSelection(String.valueOf(value));
                 } else if (value instanceof Set) {
-                    final Set< ? > set = new HashSet<Object>((Set< ? >) value);
+                    final Set<?> set = new HashSet<Object>((Set<?>) value);
                     set.removeAll(defaultValue);
                     if (set.size() == 1) {
                         presenterOnItemSelection(String.valueOf(set.iterator().next()));
-                    } else if(set.size() == 0) {
+                    } else if (set.size() == 0) {
                         presenterOnItemSelection(null);
-                        jcrBrowser.setValue(null);
+                        treeTable.setValue(null);
                     }
                 }
             }
         });
         
-        jcrBrowser.addListener(new ItemClickEvent.ItemClickListener() {
+        treeTable.addListener(new ItemClickEvent.ItemClickListener() {
             private Object previousSelection;
-        
+
             @Override
             public void itemClick(ItemClickEvent event) {
                 Object currentSelection = event.getItemId();
-                if(event.isDoubleClick()) {
+                if (event.isDoubleClick()) {
                     presenterOnDoubleClick(String.valueOf(event.getItemId()));
                 } else {
                     //toggle will deselect
-                    if(previousSelection == currentSelection) {
-                       jcrBrowser.setValue(null);
+                    if (previousSelection == currentSelection) {
+                        treeTable.setValue(null);
                     }
                 }
-                
+
                 previousSelection = currentSelection;
             }
         });
         margin.setSizeFull();
         margin.setStyleName("mgnl-content-view");
-        margin.addComponent(jcrBrowser);
+        margin.addComponent(treeTable);
     }
 
     private void presenterOnItemSelection(String id) {
         if (listener != null) {
-            listener.onItemSelection(jcrBrowser.getItem(id));
+            listener.onItemSelection(treeTable.getItem(id));
         }
     }
     private void presenterOnDoubleClick(String id) {
         if (listener != null) {
-            listener.onDoubleClick(jcrBrowser.getItem(id));
+            listener.onDoubleClick(treeTable.getItem(id));
         }
     }
 
@@ -133,12 +140,12 @@ public class TreeViewImpl implements TreeView {
      */
     @Override
     public void select(String path) {
-        jcrBrowser.select(path);
+        treeTable.select(path);
     }
 
     @Override
     public void refresh() {
-        jcrBrowser.refresh();
+        container.refresh();
     }
 
     @Override
@@ -158,7 +165,12 @@ public class TreeViewImpl implements TreeView {
 
     @Override
     public void refreshItem(final Item item) {
-        jcrBrowser.updateItem(item);
+        final String itemId = ((JcrItemAdapter) item).getItemId();
+        if (container.containsId(itemId)) {
+            container.fireItemSetChange();
+        } else {
+            log.warn("No item found for id [{}]", itemId);
+        }
     }
 
     @Override
