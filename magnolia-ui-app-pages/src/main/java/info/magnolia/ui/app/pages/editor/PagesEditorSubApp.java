@@ -36,9 +36,9 @@ package info.magnolia.ui.app.pages.editor;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
-import info.magnolia.ui.app.pages.PagesAppDescriptor;
 import info.magnolia.ui.app.pages.action.AddComponentActionDefinition;
 import info.magnolia.ui.app.pages.action.EditElementActionDefinition;
 import info.magnolia.ui.app.pages.action.EditPageActionDefinition;
@@ -114,7 +114,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
         PagesLocation pagesLocation = PagesLocation.wrap(location);
         super.start(pagesLocation);
 
-        ActionbarDefinition actionbarDefinition = ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getEditor().getActionbar();
+        ActionbarDefinition actionbarDefinition = ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
         view.setActionbarView(actionbar);
         view.setPageEditorView(pageEditorPresenter.start());
@@ -186,7 +186,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     private String getPageTitle(String path) {
         String caption = null;
         try {
-            Session session = MgnlContext.getJCRSession(((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace());
+            Session session = MgnlContext.getJCRSession(((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace());
             Node node = session.getNode(path);
             caption = node.getProperty("title").getString();
         } catch (RepositoryException e) {
@@ -227,28 +227,28 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
                     ActionDefinition actionDefinition = event.getActionDefinition();
                     if (actionDefinition instanceof EditElementActionDefinition) {
                         pageEditorPresenter.editComponent(
-                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
+                                ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
                             pageEditorPresenter.getSelectedElement().getPath(),
                             pageEditorPresenter.getSelectedElement().getDialog());
                     } else if (actionDefinition instanceof AddComponentActionDefinition) {
                         // casting to AreaElement, because this action is only defined for areas
                         pageEditorPresenter.newComponent(
-                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
+                                ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
                             pageEditorPresenter.getSelectedElement().getPath(),
                             ((PageEditor.AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
                     } else if (actionDefinition instanceof DeleteItemActionDefinition) {
-                        pageEditorPresenter.deleteComponent(((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(), pageEditorPresenter
+                        pageEditorPresenter.deleteComponent(((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(), pageEditorPresenter
                             .getSelectedElement()
                             .getPath());
                     } else if (actionDefinition instanceof PreviewPageActionDefinition || actionDefinition instanceof EditPageActionDefinition) {
                         actionbarPresenter.createAndExecuteAction(
                             actionDefinition,
-                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
+                                ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
                             parameters.getNodePath());
                     } else {
                         actionbarPresenter.createAndExecuteAction(
                             actionDefinition,
-                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
+                                ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
                             pageEditorPresenter.getSelectedElement().getPath());
                     }
 

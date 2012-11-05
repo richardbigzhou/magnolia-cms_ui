@@ -59,4 +59,6 @@ public interface SubAppContext {
     String getTabId();
 
     Location getLocation();
+
+    SubAppDescriptor getSubAppDescriptor();
 }

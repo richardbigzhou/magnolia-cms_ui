@@ -33,25 +33,23 @@
  */
 package info.magnolia.ui.app.contacts.cconf.app;
 
-import info.magnolia.ui.admincentral.app.content.ConfiguredContentAppDescriptor;
-import info.magnolia.ui.app.contacts.cconf.workbench.WorkbenchBuilder;
+import info.magnolia.ui.admincentral.app.content.ConfiguredContentSubAppDescriptor;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
-import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 
 /**
  * Builder used to build a content app descriptor.
  */
 public class ContentAppBuilder {
 
-    private ConfiguredContentAppDescriptor descriptor;
+    private ConfiguredAppDescriptor descriptor;
 
     public ContentAppBuilder() {
-        descriptor = new ConfiguredContentAppDescriptor();
+        descriptor = new ConfiguredAppDescriptor();
     }
 
     public ContentAppBuilder(String name) {
-        descriptor = new ConfiguredContentAppDescriptor();
+        descriptor = new ConfiguredAppDescriptor();
         descriptor.setName(name);
     }
 
@@ -80,14 +78,9 @@ public class ContentAppBuilder {
         return this;
     }
 
-    public WorkbenchBuilder workbench() {
-        ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
-        descriptor.setWorkbench(workbenchDefinition);
-        return new WorkbenchBuilder(workbenchDefinition);
-    }
 
     public SubAppBuilder subApp(String name) {
-        ConfiguredSubAppDescriptor subAppDescriptor = new ConfiguredSubAppDescriptor();
+        ConfiguredContentSubAppDescriptor subAppDescriptor = new ConfiguredContentSubAppDescriptor();
         subAppDescriptor.setName(name);
         descriptor.addSubApp(subAppDescriptor);
         return new SubAppBuilder(subAppDescriptor);

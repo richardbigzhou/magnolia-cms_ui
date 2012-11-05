@@ -51,8 +51,8 @@
 			<implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
 		</type-mapping>
 		<type-mapping>
-			<type>info.magnolia.ui.admincentral.app.content.ContentAppDescriptor</type>
-			<implementation>info.magnolia.ui.admincentral.app.content.ConfiguredContentAppDescriptor</implementation>
+			<type>info.magnolia.ui.framework.app.AppDescriptor</type>
+			<implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
 		</type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.SubAppDescriptor</type>

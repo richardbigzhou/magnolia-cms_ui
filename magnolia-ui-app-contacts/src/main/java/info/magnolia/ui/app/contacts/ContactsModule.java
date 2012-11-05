@@ -50,6 +50,7 @@ import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarGroupBuilder;
 import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarSectionBuilder;
 import info.magnolia.ui.app.contacts.cconf.app.App;
 import info.magnolia.ui.app.contacts.cconf.app.ContentAppBuilder;
+import info.magnolia.ui.app.contacts.cconf.app.SubAppBuilder;
 import info.magnolia.ui.app.contacts.cconf.dialog.AbstractFieldBuilder;
 import info.magnolia.ui.app.contacts.cconf.dialog.Dialog;
 import info.magnolia.ui.app.contacts.cconf.dialog.DialogBuilder;
@@ -92,7 +93,9 @@ public class ContactsModule implements ModuleLifecycle {
 
         app.label("Contacts").icon("icon-people").appClass(ContactsApp.class).categoryName("MANAGE");
 
-        WorkbenchBuilder workbench = app.workbench().workspace("contacts").root("/").defaultOrder("jcrName");
+        SubAppBuilder subApp = app.subApp("main").subAppClass(ContactsMainSubApp.class).defaultSubApp();
+
+        WorkbenchBuilder workbench = subApp.workbench().workspace("contacts").root("/").defaultOrder("jcrName");
         workbench.groupingItemType("mgnl:folder").icon("/.resources/icons/16/folders.gif");
         workbench.mainItemType("mgnl:contact").icon("/.resources/icons/16/pawn_glass_yellow.gif");
         workbench.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(ContactNameColumnFormatter.class);
@@ -129,7 +132,6 @@ public class ContactsModule implements ModuleLifecycle {
         folderEditActions.item("edit").label("Edit folder").icon("icon-edit").action(editFolderAction);
         folderEditActions.item("delete").label("Delete folder").icon("icon-delete").action(new DeleteItemActionDefinition());
 
-        app.subApp("main").subAppClass(ContactsMainSubApp.class).defaultSubApp();
         app.subApp("detail").subAppClass(ContactsMainSubApp.class);
     }
 

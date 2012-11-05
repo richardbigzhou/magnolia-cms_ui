@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.admincentral.app.content.ConfiguredContentAppDescriptor;
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-
+import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
- * The pages app descriptor which exposes the descriptor for the editor subapp.
- * @see {@link PagesSubAppDescriptor}.
- *
+ * ContentSubAppDescriptor.
  */
-public class PagesAppDescriptor extends ConfiguredContentAppDescriptor {
+public interface ContentSubAppDescriptor extends SubAppDescriptor {
 
-    private static final long serialVersionUID = 1L;
+    WorkbenchDefinition getWorkbench();
 
-    private PagesSubAppDescriptor editor;
-
-    public PagesSubAppDescriptor getEditor() {
-        return editor;
-    }
-
-    public void setEditor(PagesSubAppDescriptor editor) {
-        this.editor = editor;
-    }
-
-    /**
-     * Exposes an {@link ActionbarDefinition} specific to the subapp.
-     */
-    public static class PagesSubAppDescriptor extends ConfiguredAppDescriptor {
-
-        private static final long serialVersionUID = 1L;
-
-        private ActionbarDefinition actionbar;
-
-        public ActionbarDefinition getActionbar() {
-            return actionbar;
-        }
-
-        public void setActionbar(ActionbarDefinition actionbar) {
-            this.actionbar = actionbar;
-        }
-    }
 }

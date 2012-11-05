@@ -37,7 +37,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
+
+import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
 import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
@@ -68,8 +69,8 @@ public class ContentPresenterTest {
     public void  setUp() {
         contentViewBuilder = mock(ContentViewBuilder.class);
         context = mock(AppContext.class);
-        final ContentAppDescriptor descr = mock(ContentAppDescriptor.class);
-        when(context.getAppDescriptor()).thenReturn(descr);
+        final ContentSubAppDescriptor descr = mock(ContentSubAppDescriptor.class);
+        when(context.getDefaultSubAppDescriptor()).thenReturn(descr);
         final WorkbenchDefinition workbench = mock(WorkbenchDefinition.class);
         when(descr.getWorkbench()).thenReturn(workbench);
         when(workbench.getWorkspace()).thenReturn(TEST_WORKSPACE_NAME);
@@ -84,7 +85,7 @@ public class ContentPresenterTest {
         // GIVEN see setUp
 
         // WHEN
-        final ContentPresenter presenter = new ContentPresenter(contentViewBuilder, context, eventBus, shell);
+        final ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
         presenter.onItemSelection(item);
 
         // THEN
@@ -98,7 +99,7 @@ public class ContentPresenterTest {
         // GIVEN see setUp
 
         // WHEN
-        final ContentPresenter presenter = new ContentPresenter(contentViewBuilder, context, eventBus, shell);
+        final ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
         presenter.onDoubleClick(item);
 
         // THEN

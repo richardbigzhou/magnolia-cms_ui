@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,18 +33,13 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
-import com.rits.cloning.Cloner;
-
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
-
 /**
- * Base implementation for content app descriptor.
- * 
+ * ConfiguredContentSubAppDescriptor.
  */
-@SuppressWarnings("serial")
-public class ConfiguredContentAppDescriptor extends ConfiguredAppDescriptor implements ContentAppDescriptor {
+public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescriptor implements ContentSubAppDescriptor {
 
     private WorkbenchDefinition workbench;
 
@@ -53,16 +48,8 @@ public class ConfiguredContentAppDescriptor extends ConfiguredAppDescriptor impl
         return workbench;
     }
 
-    public void setWorkbench(WorkbenchDefinition workbench) {
-        this.workbench = workbench;
-    }
-
-    @Override
-    public WorkbenchDefinition getWorkbenchCopy() {
-        if (workbench != null) {
-            return new Cloner().deepClone(workbench);
-        }
-        return null;
+    public void setWorkbench(WorkbenchDefinition workBench) {
+        this.workbench = workBench;
     }
 
 }
