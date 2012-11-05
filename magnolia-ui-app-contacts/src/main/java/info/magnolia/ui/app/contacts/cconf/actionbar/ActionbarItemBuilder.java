@@ -41,14 +41,10 @@ import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarItemDefini
  */
 public class ActionbarItemBuilder {
 
-    private ConfiguredActionbarItemDefinition definition;
+    private ConfiguredActionbarItemDefinition definition = new ConfiguredActionbarItemDefinition();
 
-    public ActionbarItemBuilder() {
-        this.definition = new ConfiguredActionbarItemDefinition();
-    }
-
-    public ActionbarItemBuilder(ConfiguredActionbarItemDefinition definition) {
-        this.definition = definition;
+    public ActionbarItemBuilder(String name) {
+        this.definition.setName(name);
     }
 
     public ConfiguredActionbarItemDefinition exec() {

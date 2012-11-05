@@ -43,18 +43,9 @@ import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
  */
 public class ItemTypeBuilder {
 
-    private ConfiguredItemTypeDefinition definition;
-
-    public ItemTypeBuilder() {
-        definition = new ConfiguredItemTypeDefinition();
-    }
-
-    public ItemTypeBuilder(ConfiguredItemTypeDefinition definition) {
-        this.definition = definition;
-    }
+    private ConfiguredItemTypeDefinition definition = new ConfiguredItemTypeDefinition();
 
     public ItemTypeBuilder(String itemType) {
-        definition = new ConfiguredItemTypeDefinition();
         definition.setItemType(itemType);
     }
 

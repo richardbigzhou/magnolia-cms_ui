@@ -45,17 +45,12 @@ import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.contacts.action.AddFolderActionDefinition;
 import info.magnolia.ui.app.contacts.cconf.CodeConfigurationUtils;
-import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarBuilder;
-import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarGroupBuilder;
-import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarSectionBuilder;
 import info.magnolia.ui.app.contacts.cconf.app.App;
 import info.magnolia.ui.app.contacts.cconf.app.ContentAppBuilder;
-import info.magnolia.ui.app.contacts.cconf.app.SubAppBuilder;
 import info.magnolia.ui.app.contacts.cconf.dialog.AbstractFieldBuilder;
 import info.magnolia.ui.app.contacts.cconf.dialog.Dialog;
 import info.magnolia.ui.app.contacts.cconf.dialog.DialogBuilder;
 import info.magnolia.ui.app.contacts.cconf.dialog.TabBuilder;
-import info.magnolia.ui.app.contacts.cconf.workbench.WorkbenchBuilder;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
 import info.magnolia.ui.app.contacts.dialog.action.SaveContactDialogActionDefinition;
@@ -91,48 +86,58 @@ public class ContactsModule implements ModuleLifecycle {
     @App("contacts")
     public void contactsApp(ContentAppBuilder app) {
 
-        app.label("Contacts").icon("icon-people").appClass(ContactsApp.class).categoryName("MANAGE");
-
-        SubAppBuilder subApp = app.subApp("main").subAppClass(ContactsMainSubApp.class).defaultSubApp();
-
-        WorkbenchBuilder workbench = subApp.workbench().workspace("contacts").root("/").defaultOrder("jcrName");
-        workbench.groupingItemType("mgnl:folder").icon("/.resources/icons/16/folders.gif");
-        workbench.mainItemType("mgnl:contact").icon("/.resources/icons/16/pawn_glass_yellow.gif");
-        workbench.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(ContactNameColumnFormatter.class);
-        workbench.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false);
-        workbench.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50);
-        workbench.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true);
-
         DefaultImageProvider imageProvider = new DefaultImageProvider();
         imageProvider.setOriginalImageNodeName("photo");
-        workbench.imageProvider(imageProvider);
 
-        ActionbarBuilder actionbar = workbench.actionbar().defaultAction("edit");
-
-        ActionbarSectionBuilder contactsActions = actionbar.section("contactsActions").label("Contacts");
-        ActionbarGroupBuilder addActions = contactsActions.group("addActions");
         CreateDialogActionDefinition addContactAction = new CreateDialogActionDefinition();
         addContactAction.setNodeType("mgnl:contact");
         addContactAction.setDialogName("ui-contacts-app:contact");
-        addActions.item("addContact").label("New contact").icon("icon-add-item").action(addContactAction);
-        addActions.item("addFolder").label("New folder").icon("icon-add-item").action(new AddFolderActionDefinition());
-        ActionbarGroupBuilder editActions = contactsActions.group("editActions");
+
         EditDialogActionDefinition editContactAction = new EditDialogActionDefinition();
         editContactAction.setDialogName("ui-contacts-app:contact");
-        editActions.item("edit").label("Edit contact").icon("icon-edit").action(editContactAction);
-        editActions.item("delete").label("Delete contact").icon("icon-delete").action(new DeleteItemActionDefinition());
 
-        ActionbarSectionBuilder folderActions = actionbar.section("folderActions").label("Folder");
-        ActionbarGroupBuilder folderAddActions = folderActions.group("addActions");
-        folderAddActions.item("addContact").label("New contact").icon("icon-add-item").action(addContactAction);
-        folderAddActions.item("addFolder").label("New folder").icon("icon-add-item").action(new AddFolderActionDefinition());
-        ActionbarGroupBuilder folderEditActions = folderActions.group("editActions");
         EditDialogActionDefinition editFolderAction = new EditDialogActionDefinition();
         editFolderAction.setDialogName("ui-contacts-app:folder");
-        folderEditActions.item("edit").label("Edit folder").icon("icon-edit").action(editFolderAction);
-        folderEditActions.item("delete").label("Delete folder").icon("icon-delete").action(new DeleteItemActionDefinition());
 
-        app.subApp("detail").subAppClass(ContactsMainSubApp.class);
+        app.label("Contacts").icon("icon-people").appClass(ContactsApp.class).categoryName("MANAGE")
+                .subApps(
+                        app.subApp("main").subAppClass(ContactsMainSubApp.class).defaultSubApp()
+                                .workbench(app.workbench().workspace("contacts").root("/").defaultOrder("jcrName")
+                                        .groupingItemType(app.itemType("mgnl:folder").icon("/.resources/icons/16/folders.gif"))
+                                        .mainItemType(app.itemType("mgnl:contact").icon("/.resources/icons/16/pawn_glass_yellow.gif"))
+                                        .imageProvider(imageProvider)
+                                        .columns(
+                                                app.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(ContactNameColumnFormatter.class),
+                                                app.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),
+                                                app.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
+                                                app.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true)
+                                        )
+                                        .actionbar(app.actionbar().defaultAction("edit")
+                                                .sections(
+                                                        app.section("contactsActions").label("Contacts")
+                                                                .groups(
+                                                                        app.group("addActions").items(
+                                                                                app.item("addContact").label("New contact").icon("icon-add-item").action(addContactAction),
+                                                                                app.item("addFolder").label("New folder").icon("icon-add-item").action(new AddFolderActionDefinition())),
+                                                                        app.group("editActions").items(
+                                                                                app.item("edit").label("Edit contact").icon("icon-edit").action(editContactAction),
+                                                                                app.item("delete").label("Delete contact").icon("icon-delete").action(new DeleteItemActionDefinition()))
+                                                                ),
+                                                        app.section("folderActions").label("Folder")
+                                                                .groups(
+                                                                        app.group("addActions").items(
+                                                                                app.item("addContact").label("New contact").icon("icon-add-item").action(addContactAction),
+                                                                                app.item("addFolder").label("New folder").icon("icon-add-item").action(new AddFolderActionDefinition())),
+                                                                        app.group("editActions").items(
+                                                                                app.item("edit").label("Edit folder").icon("icon-edit").action(editFolderAction),
+                                                                                app.item("delete").label("Delete folder").icon("icon-delete").action(new DeleteItemActionDefinition()))
+                                                                )
+                                                )
+                                        )
+                                ),
+
+                        app.subApp("detail").subAppClass(ContactsMainSubApp.class)
+                );
     }
 
     @Dialog("ui-contacts-app:folder")

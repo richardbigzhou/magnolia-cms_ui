@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.app.contacts.cconf.app;
 
-import info.magnolia.ui.admincentral.app.content.ConfiguredContentSubAppDescriptor;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 
@@ -42,14 +41,9 @@ import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
  */
 public class AppBuilder {
 
-    private ConfiguredAppDescriptor descriptor;
-
-    public AppBuilder() {
-        descriptor = new ConfiguredAppDescriptor();
-    }
+    private ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
 
     public AppBuilder(String name) {
-        descriptor = new ConfiguredAppDescriptor();
         descriptor.setName(name);
     }
 
@@ -79,10 +73,14 @@ public class AppBuilder {
     }
 
     public SubAppBuilder subApp(String name) {
-        ConfiguredContentSubAppDescriptor subAppDescriptor = new ConfiguredContentSubAppDescriptor();
-        subAppDescriptor.setName(name);
-        descriptor.addSubApp(subAppDescriptor);
-        return new SubAppBuilder(subAppDescriptor);
+        return new SubAppBuilder(name);
+    }
+
+    public AppBuilder subApps(SubAppBuilder... builders) {
+        for (SubAppBuilder builder : builders) {
+            descriptor.addSubApp(builder.exec());
+        }
+        return this;
     }
 
     public AppDescriptor exec() {

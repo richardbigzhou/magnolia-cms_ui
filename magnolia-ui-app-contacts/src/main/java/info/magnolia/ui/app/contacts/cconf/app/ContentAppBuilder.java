@@ -33,23 +33,25 @@
  */
 package info.magnolia.ui.app.contacts.cconf.app;
 
-import info.magnolia.ui.admincentral.app.content.ConfiguredContentSubAppDescriptor;
+import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarBuilder;
+import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarGroupBuilder;
+import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarItemBuilder;
+import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarSectionBuilder;
+import info.magnolia.ui.app.contacts.cconf.workbench.ColumnBuilder;
+import info.magnolia.ui.app.contacts.cconf.workbench.ItemTypeBuilder;
+import info.magnolia.ui.app.contacts.cconf.workbench.WorkbenchBuilder;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 
 /**
  * Builder used to build a content app descriptor.
  */
 public class ContentAppBuilder {
 
-    private ConfiguredAppDescriptor descriptor;
-
-    public ContentAppBuilder() {
-        descriptor = new ConfiguredAppDescriptor();
-    }
+    private ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
 
     public ContentAppBuilder(String name) {
-        descriptor = new ConfiguredAppDescriptor();
         descriptor.setName(name);
     }
 
@@ -78,15 +80,48 @@ public class ContentAppBuilder {
         return this;
     }
 
-
     public SubAppBuilder subApp(String name) {
-        ConfiguredContentSubAppDescriptor subAppDescriptor = new ConfiguredContentSubAppDescriptor();
-        subAppDescriptor.setName(name);
-        descriptor.addSubApp(subAppDescriptor);
-        return new SubAppBuilder(subAppDescriptor);
+        return new SubAppBuilder(name);
+    }
+
+    public ContentAppBuilder subApps(SubAppBuilder... builders) {
+        for (SubAppBuilder builder : builders) {
+            descriptor.addSubApp(builder.exec());
+        }
+        return this;
     }
 
     public AppDescriptor exec() {
         return descriptor;
+    }
+
+    // TODO need to move these to a builder/cfg of its own
+
+    public WorkbenchBuilder workbench() {
+        return new WorkbenchBuilder();
+    }
+
+    public ItemTypeBuilder itemType(String itemType) {
+        return new ItemTypeBuilder(itemType);
+    }
+
+    public <T extends AbstractColumnDefinition> ColumnBuilder<T> column(T definition) {
+        return new ColumnBuilder<T>(definition);
+    }
+
+    public ActionbarBuilder actionbar() {
+        return new ActionbarBuilder();
+    }
+
+    public ActionbarSectionBuilder section(String name) {
+        return new ActionbarSectionBuilder(name);
+    }
+
+    public ActionbarGroupBuilder group(String name) {
+        return new ActionbarGroupBuilder(name);
+    }
+
+    public ActionbarItemBuilder item(String name) {
+        return new ActionbarItemBuilder(name);
     }
 }

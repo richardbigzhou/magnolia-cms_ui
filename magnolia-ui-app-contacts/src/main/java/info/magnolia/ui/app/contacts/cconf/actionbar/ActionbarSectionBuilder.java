@@ -34,7 +34,6 @@
 package info.magnolia.ui.app.contacts.cconf.actionbar;
 
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition;
 
 /**
@@ -42,18 +41,9 @@ import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDef
  */
 public class ActionbarSectionBuilder {
 
-    private ConfiguredActionbarSectionDefinition definition;
-
-    public ActionbarSectionBuilder() {
-        definition = new ConfiguredActionbarSectionDefinition();
-    }
-
-    public ActionbarSectionBuilder(ConfiguredActionbarSectionDefinition definition) {
-        this.definition = definition;
-    }
+    private ConfiguredActionbarSectionDefinition definition = new ConfiguredActionbarSectionDefinition();
 
     public ActionbarSectionBuilder(String name) {
-        definition = new ConfiguredActionbarSectionDefinition();
         definition.setName(name);
     }
 
@@ -76,12 +66,5 @@ public class ActionbarSectionBuilder {
             definition.addGroup(group.exec());
         }
         return this;
-    }
-
-    public ActionbarGroupBuilder group(String name) {
-        ConfiguredActionbarGroupDefinition groupDefinition = new ConfiguredActionbarGroupDefinition();
-        groupDefinition.setName(name);
-        definition.addGroup(groupDefinition);
-        return new ActionbarGroupBuilder(groupDefinition);
     }
 }

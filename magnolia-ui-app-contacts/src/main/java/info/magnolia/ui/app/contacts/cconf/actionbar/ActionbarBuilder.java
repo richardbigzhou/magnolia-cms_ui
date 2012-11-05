@@ -35,22 +35,13 @@ package info.magnolia.ui.app.contacts.cconf.actionbar;
 
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition;
 
 /**
  * Builder for building an actionbar definition.
  */
 public class ActionbarBuilder {
 
-    private ConfiguredActionbarDefinition definition;
-
-    public ActionbarBuilder() {
-        definition = new ConfiguredActionbarDefinition();
-    }
-
-    public ActionbarBuilder(ConfiguredActionbarDefinition definition) {
-        this.definition = definition;
-    }
+    private ConfiguredActionbarDefinition definition = new ConfiguredActionbarDefinition();
 
     public ActionbarBuilder defaultAction(String defaultAction) {
         definition.setDefaultAction(defaultAction);
@@ -66,12 +57,5 @@ public class ActionbarBuilder {
 
     public ActionbarDefinition exec() {
         return definition;
-    }
-
-    public ActionbarSectionBuilder section(String name) {
-        ConfiguredActionbarSectionDefinition sectionDefinition = new ConfiguredActionbarSectionDefinition();
-        sectionDefinition.setName(name);
-        definition.addSection(sectionDefinition);
-        return new ActionbarSectionBuilder(sectionDefinition);
     }
 }

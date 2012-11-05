@@ -34,10 +34,7 @@
 package info.magnolia.ui.app.contacts.cconf.workbench;
 
 import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarBuilder;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition;
-import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
-import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 
 /**
@@ -45,15 +42,7 @@ import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition
  */
 public class WorkbenchBuilder {
 
-    private ConfiguredWorkbenchDefinition definition;
-
-    public WorkbenchBuilder() {
-        this.definition = new ConfiguredWorkbenchDefinition();
-    }
-
-    public WorkbenchBuilder(ConfiguredWorkbenchDefinition definition) {
-        this.definition = definition;
-    }
+    private ConfiguredWorkbenchDefinition definition = new ConfiguredWorkbenchDefinition();
 
     public WorkbenchBuilder workspace(String workspace) {
         definition.setWorkspace(workspace);
@@ -65,6 +54,11 @@ public class WorkbenchBuilder {
         return this;
     }
 
+    public WorkbenchBuilder defaultOrder(String defaultOrder) {
+        definition.setDefaultOrder(defaultOrder);
+        return this;
+    }
+
     public WorkbenchBuilder columns(ColumnBuilder... columns) {
         for (ColumnBuilder column : columns) {
             definition.addColumn(column.exec());
@@ -72,37 +66,22 @@ public class WorkbenchBuilder {
         return this;
     }
 
-    public ActionbarBuilder actionbar() {
-        ConfiguredActionbarDefinition actionbarDefinition = new ConfiguredActionbarDefinition();
-        definition.setActionbar(actionbarDefinition);
-        return new ActionbarBuilder(actionbarDefinition);
-    }
-
     public ConfiguredWorkbenchDefinition exec() {
         return definition;
     }
 
-    public ItemTypeBuilder groupingItemType(String itemType) {
-        ConfiguredItemTypeDefinition itemTypeDefinition = new ConfiguredItemTypeDefinition();
-        itemTypeDefinition.setItemType(itemType);
-        definition.setGroupingItemType(itemTypeDefinition);
-        return new ItemTypeBuilder(itemTypeDefinition);
+    public WorkbenchBuilder actionbar(ActionbarBuilder builder) {
+        this.definition.setActionbar(builder.exec());
+        return this;
     }
 
-    public ItemTypeBuilder mainItemType(String itemType) {
-        ConfiguredItemTypeDefinition itemTypeDefinition = new ConfiguredItemTypeDefinition();
-        itemTypeDefinition.setItemType(itemType);
-        definition.setMainItemType(itemTypeDefinition);
-        return new ItemTypeBuilder(itemTypeDefinition);
+    public WorkbenchBuilder groupingItemType(ItemTypeBuilder itemType) {
+        definition.setGroupingItemType(itemType.exec());
+        return this;
     }
 
-    public ColumnBuilder column(AbstractColumnDefinition columnDefinition) {
-        definition.addColumn(columnDefinition);
-        return new ColumnBuilder<AbstractColumnDefinition>(columnDefinition);
-    }
-
-    public WorkbenchBuilder defaultOrder(String defaultOrder) {
-        definition.setDefaultOrder(defaultOrder);
+    public WorkbenchBuilder mainItemType(ItemTypeBuilder itemType) {
+        definition.setMainItemType(itemType.exec());
         return this;
     }
 

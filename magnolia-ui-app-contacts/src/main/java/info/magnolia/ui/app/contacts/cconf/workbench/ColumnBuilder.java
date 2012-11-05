@@ -39,8 +39,8 @@ import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 /**
  * Builder for building a column definition.
  *
- * @see WorkbenchBuilder
  * @param <T> type of field definition
+ * @see WorkbenchBuilder
  */
 public class ColumnBuilder<T extends AbstractColumnDefinition> {
 
