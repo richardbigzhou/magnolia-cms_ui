@@ -36,22 +36,15 @@ package info.magnolia.ui.admincentral.list.container;
 
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
-import info.magnolia.ui.vaadin.integration.jcr.container.JcrContainerSource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A flat implementation of {@link info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer} where relationships are not taken into account.
  */
 public class FlatJcrContainer extends AbstractJcrContainer {
-    
-    private static final Logger log = LoggerFactory.getLogger(FlatJcrContainer.class);
     /**
      * Constructor for {@link FlatJcrContainer}.
      */
-    public FlatJcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
-        super(jcrContainerSource, workbenchDefinition);
-
+    public FlatJcrContainer(WorkbenchDefinition workbenchDefinition) {
+        super(workbenchDefinition);
     }
 }

@@ -34,8 +34,6 @@
 package info.magnolia.ui.admincentral.thumbnail.view;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.ui.model.thumbnail.ImageProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
@@ -43,16 +41,9 @@ import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailDblClickListener;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailSelectionListener;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,26 +59,22 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private static final Logger log = LoggerFactory.getLogger(LazyThumbnailViewImpl.class);
 
-    private WorkbenchDefinition workbenchDefinition;
+    private ThumbnailContainer container;
+
+    private final WorkbenchDefinition workbenchDefinition;
 
     private Listener listener;
 
-    private LazyThumbnailLayout layout;
+    private final LazyThumbnailLayout layout;
 
-    private ImageProvider imageProvider;
+    private final VerticalLayout margin = new VerticalLayout();
 
-    private String jcrSQL2QueryStatement;
-
-    private VerticalLayout margin = new VerticalLayout();
-
-    public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ImageProvider imageProvider) {
+    public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailContainer container) {
         this.workbenchDefinition = definition;
         this.layout = new LazyThumbnailLayout();
-        this.imageProvider = imageProvider;
+        this.container = container;
         layout.setSizeFull();
         layout.addStyleName("mgnl-workbench-thumbnail-view");
-
-        jcrSQL2QueryStatement = prepareJcrSQL2Query();
 
         layout.addThumbnailSelectionListener(new ThumbnailSelectionListener() {
             @Override
@@ -122,8 +109,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public final void refresh() {
-        final List<String> uuids = getAllIdentifiers(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
-        final ThumbnailContainer container = new ThumbnailContainer(imageProvider, uuids);
+        this.container = new ThumbnailContainer(workbenchDefinition);
         container.setWorkspaceName(workbenchDefinition.getWorkspace());
         container.setThumbnailHeight(73);
         container.setThumbnailWidth(73);
@@ -144,36 +130,6 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     @Override
     public Component asVaadinComponent() {
         return margin;
-    }
-
-    /**
-     * @return a List of JCR identifiers for all the nodes recursively found under <code>initialPath</code>. This method is called in {@link LazyThumbnailViewImpl#refresh()}.
-     * You can override it, if you need a different strategy than the default one to fetch the identifiers of the nodes for which thumbnails need to be displayed.
-     * @see ThumbnailContainer
-     * @see LazyThumbnailLayout#refresh()
-     */
-    protected List<String> getAllIdentifiers(final String workspaceName, final String initialPath) {
-        List<String> uuids = new ArrayList<String>();
-        try {
-            QueryManager qm = MgnlContext.getJCRSession(workspaceName).getWorkspace().getQueryManager();
-            Query q = qm.createQuery(jcrSQL2QueryStatement, Query.JCR_SQL2);
-
-            log.debug("Executing query statement [{}] on workspace [{}]", jcrSQL2QueryStatement, workspaceName);
-            long start = System.currentTimeMillis();
-
-            QueryResult queryResult = q.execute();
-            NodeIterator iter = queryResult.getNodes();
-
-            while(iter.hasNext()) {
-               uuids.add(iter.nextNode().getIdentifier());
-            }
-
-            log.debug("Done collecting {} nodes in {}ms", uuids.size(), System.currentTimeMillis() - start);
-
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
-        return uuids;
     }
 
     private String prepareJcrSQL2Query(){
