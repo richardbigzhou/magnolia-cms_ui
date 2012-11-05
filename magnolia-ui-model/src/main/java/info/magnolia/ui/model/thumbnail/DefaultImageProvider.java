@@ -57,7 +57,15 @@ public class DefaultImageProvider implements ImageProvider {
 
     private final String PORTRAIT_GENERATOR = "portrait";
     private final String THUMBNAIL_GENERATOR = "thumbnail";
+    private final String LARGE_GENERATOR = "large";
 
+
+    @Override
+    public String getLargePath(final String workspace, final String path) {
+        Node node = SessionUtil.getNode(workspace, path);
+
+        return getGeneratorImagePath(workspace, node, LARGE_GENERATOR);
+    }
 
     @Override
     public String getPortraitPath(final String workspace, final String path) {
@@ -71,6 +79,16 @@ public class DefaultImageProvider implements ImageProvider {
         Node node = SessionUtil.getNode(workspace, path);
 
         return getGeneratorImagePath(workspace, node, THUMBNAIL_GENERATOR);
+    }
+
+
+
+
+    @Override
+    public String getLargePathByIdentifier(String workspace, String identifier) {
+        Node node = SessionUtil.getNodeByIdentifier(workspace, identifier);
+
+        return getGeneratorImagePath(workspace, node, LARGE_GENERATOR);
     }
 
     @Override

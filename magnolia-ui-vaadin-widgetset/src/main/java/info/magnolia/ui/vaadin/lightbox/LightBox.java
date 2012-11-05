@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.thumbnail;
+package info.magnolia.ui.vaadin.lightbox;
+
+import info.magnolia.ui.vaadin.gwt.client.lightbox.VLightBox;
+
+import com.vaadin.terminal.PaintException;
+import com.vaadin.terminal.PaintTarget;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.ClientWidget.LoadStyle;
 
 
 /**
- * Defines a provider for Thumbnail images.
+ * Lightbox displays one or more assets in a simple popup.
  */
-public interface ImageProvider {
+@SuppressWarnings("serial")
+@ClientWidget(value = VLightBox.class, loadStyle = LoadStyle.EAGER)
+public class LightBox extends AbstractComponent {
 
-    static final String ORIGINAL_IMAGE_NODE_NAME = "originalImage";
-    static final String IMAGING_SERVLET_PATH = ".imaging";
-    static final String IMAGE_EXTENSION = "png";
+    String imagePath = null;
 
-    String getLargePath(String workspace, String path);
+    public LightBox(String imageUrl) {
 
-    String getPortraitPath(String workspace, String path);
+    }
 
-    String getThumbnailPath(String workspace, String path);
+    @Override
+    public void paintContent(PaintTarget target) throws PaintException {
+        if (imagePath != null) {
+            target.addAttribute("imagePath", imagePath);
+        }
 
-    String getLargePathByIdentifier(String workspace, String uuid);
+        super.paintContent(target);
+    }
 
-    String getPortraitPathByIdentifier(String workspace, String uuid);
 
-    String getThumbnailPathByIdentifier(String workspace, String uuid);
+    public void setImage(String imagePath) {
 
-    /**
-     * Defaults to {@value #ORIGINAL_IMAGE_NODE_NAME}.
-     */
-    String getOriginalImageNodeName();
+        this.imagePath = imagePath;
+        requestRepaint();
+    }
 
-    void setOriginalImageNodeName(String originalImageNodeName);
 
-    /**
-     * Defaults to {@value #IMAGING_SERVLET_PATH}.
-     */
-    String getImagingServletPath();
-
-    void setImagingServletPath(String imagingServletPath);
-
-    /**
-     * Defaults to {@value #IMAGE_EXTENSION}.
-     */
-    String getImageExtension();
-
-    void setImageExtension(String imageExtension);
 }

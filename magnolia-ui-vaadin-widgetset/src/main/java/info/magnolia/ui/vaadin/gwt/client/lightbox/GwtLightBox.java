@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.thumbnail;
+package info.magnolia.ui.vaadin.gwt.client.lightbox;
+
+
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /**
- * Defines a provider for Thumbnail images.
+ * The GwtLightBox widget.
  */
-public interface ImageProvider {
+public class GwtLightBox extends Widget {
 
-    static final String ORIGINAL_IMAGE_NODE_NAME = "originalImage";
-    static final String IMAGING_SERVLET_PATH = ".imaging";
-    static final String IMAGE_EXTENSION = "png";
+    private static final String CLASSNAME = "lightbox";
 
-    String getLargePath(String workspace, String path);
+    private static final int SIZE_DEFAULT = 24;
 
-    String getPortraitPath(String workspace, String path);
+    private final Element root = DOM.createDiv();
+    private final Element image = DOM.createImg();
 
-    String getThumbnailPath(String workspace, String path);
+    VerticalPanel panel = new VerticalPanel();
 
-    String getLargePathByIdentifier(String workspace, String uuid);
+    //private final  Image image = new Image();
 
-    String getPortraitPathByIdentifier(String workspace, String uuid);
+    public GwtLightBox() {
+        setElement(root);
+        setStylePrimaryName(CLASSNAME);
 
-    String getThumbnailPathByIdentifier(String workspace, String uuid);
+        //root.appendChild(image);
+        //image.setAttribute("src", "");
 
-    /**
-     * Defaults to {@value #ORIGINAL_IMAGE_NODE_NAME}.
-     */
-    String getOriginalImageNodeName();
+        //root.add(image);
+    }
 
-    void setOriginalImageNodeName(String originalImageNodeName);
+    public void updateImageUrl(String imageUrl){
+        image.setAttribute("src", imageUrl);
+    }
 
-    /**
-     * Defaults to {@value #IMAGING_SERVLET_PATH}.
-     */
-    String getImagingServletPath();
+    public void updateColor(String value) {
+        root.getStyle().setColor(value);
+    }
 
-    void setImagingServletPath(String imagingServletPath);
 
-    /**
-     * Defaults to {@value #IMAGE_EXTENSION}.
-     */
-    String getImageExtension();
 
-    void setImageExtension(String imageExtension);
+
 }
