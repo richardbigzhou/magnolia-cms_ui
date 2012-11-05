@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
 
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.container.JcrContainerSource;
 
 /**
  * The jcr container backing the search view. It provides only the subset of items returned by the current search.
@@ -52,8 +51,8 @@ public class SearchJcrContainer extends FlatJcrContainer{
 
     private String fullTextExpression;
 
-    public SearchJcrContainer(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
-        super(jcrContainerSource, workbenchDefinition);
+    public SearchJcrContainer(WorkbenchDefinition workbenchDefinition) {
+        super(workbenchDefinition);
     }
 
     @Override

@@ -78,7 +78,6 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
 
     private JcrContainerTestImpl jcrContainer;
     private ConfiguredWorkbenchDefinition workbenchDefinition;
-    private TreeModel treeModel;
     private String workspace = "config";
     private String colName1 = "name";
     private String colName2 = "shortname";
@@ -115,31 +114,13 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
 
         configuredWorkbench.setDefaultOrder(colName2);
 
-        treeModel = new TreeModel(configuredWorkbench);
-
-        jcrContainer = new JcrContainerTestImpl(treeModel, configuredWorkbench);
+        jcrContainer = new JcrContainerTestImpl(configuredWorkbench);
         workbenchDefinition = configuredWorkbench;
 
         //Init session
         session = MgnlContext.getSystemContext().getJCRSession(workspace);
         rootNode = session.getRootNode();
     }
-
-    @Test
-    public void testInit() {
-        // GIVEN
-
-        // WHEN
-
-        // THEN
-        // Get initialized resources
-        assertEquals(treeModel, jcrContainer.getJcrContainerSource());
-        assertEquals(workspace, jcrContainer.getWorkspace());
-        assertEquals(1, jcrContainer.getSortableContainerPropertyIds().size());
-        assertEquals(colName1, jcrContainer.getSortableContainerPropertyIds().get(0));
-    }
-
-
 
     @Test
     public void testGetItem() throws Exception {
@@ -513,8 +494,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
      */
     public class JcrContainerTestImpl extends AbstractJcrContainer {
 
-        public JcrContainerTestImpl(JcrContainerSource jcrContainerSource, WorkbenchDefinition workbenchDefinition) {
-            super(jcrContainerSource, workbenchDefinition);
+        public JcrContainerTestImpl(WorkbenchDefinition workbenchDefinition) {
+            super(workbenchDefinition);
         }
     }
 }
