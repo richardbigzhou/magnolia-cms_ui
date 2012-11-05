@@ -33,41 +33,20 @@
  */
 package info.magnolia.ui.app.contacts.cconf.dialog;
 
-import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
-
 /**
- * Builder for building an option for a select field.
+ * Config object creating builders for dialog fields.
  */
-public class OptionBuilder {
+public class FieldsConfig {
 
-    private final SelectFieldOptionDefinition definition = new SelectFieldOptionDefinition();
-
-    public OptionBuilder value(String value) {
-        definition.setValue(value);
-        return this;
+    public TextFieldBuilder textField(String name) {
+        return new TextFieldBuilder(name);
     }
 
-    public OptionBuilder selected(boolean selected) {
-        definition.setSelected(selected);
-        return this;
+    public SelectFieldBuilder selectField(String name) {
+        return new SelectFieldBuilder(name);
     }
 
-    public OptionBuilder selected() {
-        definition.setSelected(true);
-        return this;
-    }
-
-    public OptionBuilder label(String label) {
-        definition.setLabel(label);
-        return this;
-    }
-
-    public OptionBuilder iconSrc(String iconSrc) {
-        definition.setIconSrc(iconSrc);
-        return this;
-    }
-
-    public SelectFieldOptionDefinition exec() {
-        return definition;
+    public FileUploadFieldBuilder fileUploadField(String name) {
+        return new FileUploadFieldBuilder(name);
     }
 }

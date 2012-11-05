@@ -33,17 +33,15 @@
  */
 package info.magnolia.ui.app.contacts.cconf.dialog;
 
-import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
 
 /**
  * Builder for building a dialog definition.
  */
 public class DialogBuilder {
 
-    private ConfiguredDialogDefinition definition = new ConfiguredDialogDefinition();
+    private final ConfiguredDialogDefinition definition = new ConfiguredDialogDefinition();
 
     public DialogBuilder(String id) {
         definition.setId(id);
@@ -64,21 +62,21 @@ public class DialogBuilder {
         return this;
     }
 
-    public TabBuilder tab(String name) {
-        ConfiguredTabDefinition tabDefinition = new ConfiguredTabDefinition();
-        tabDefinition.setName(name);
-        definition.addTab(tabDefinition);
-        return new TabBuilder(tabDefinition);
-    }
-
     public DialogDefinition exec() {
         return definition;
     }
 
-    public DialogActionBuilder dialogAction(String name) {
-        ConfiguredDialogActionDefinition dialogActionDefinition = new ConfiguredDialogActionDefinition();
-        dialogActionDefinition.setName(name);
-        definition.addAction(dialogActionDefinition);
-        return new DialogActionBuilder(dialogActionDefinition);
+    public DialogBuilder tabs(TabBuilder... builders) {
+        for (TabBuilder builder : builders) {
+            definition.addTab(builder.exec());
+        }
+        return this;
+    }
+
+    public DialogBuilder actions(DialogActionBuilder... builders) {
+        for (DialogActionBuilder builder : builders) {
+            definition.addAction(builder.exec());
+        }
+        return this;
     }
 }

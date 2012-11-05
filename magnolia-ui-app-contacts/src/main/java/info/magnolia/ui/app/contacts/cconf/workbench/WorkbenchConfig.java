@@ -31,43 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.dialog;
+package info.magnolia.ui.app.contacts.cconf.workbench;
 
-import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 
 /**
- * Builder for building an option for a select field.
+ * Config object creating builders for workbench related definitions.
  */
-public class OptionBuilder {
+public class WorkbenchConfig {
 
-    private final SelectFieldOptionDefinition definition = new SelectFieldOptionDefinition();
-
-    public OptionBuilder value(String value) {
-        definition.setValue(value);
-        return this;
+    public WorkbenchBuilder workbench() {
+        return new WorkbenchBuilder();
     }
 
-    public OptionBuilder selected(boolean selected) {
-        definition.setSelected(selected);
-        return this;
+    public ItemTypeBuilder itemType(String itemType) {
+        return new ItemTypeBuilder(itemType);
     }
 
-    public OptionBuilder selected() {
-        definition.setSelected(true);
-        return this;
-    }
-
-    public OptionBuilder label(String label) {
-        definition.setLabel(label);
-        return this;
-    }
-
-    public OptionBuilder iconSrc(String iconSrc) {
-        definition.setIconSrc(iconSrc);
-        return this;
-    }
-
-    public SelectFieldOptionDefinition exec() {
-        return definition;
+    public <T extends AbstractColumnDefinition> ColumnBuilder<T> column(T definition) {
+        return new ColumnBuilder<T>(definition);
     }
 }

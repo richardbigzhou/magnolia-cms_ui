@@ -33,10 +33,7 @@
  */
 package info.magnolia.ui.app.contacts.cconf.dialog;
 
-import java.util.List;
-
 import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
-import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
 /**
@@ -44,10 +41,10 @@ import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidat
  */
 public class SelectFieldBuilder extends AbstractFieldBuilder {
 
-    private SelectFieldDefinition definition;
+    private final SelectFieldDefinition definition = new SelectFieldDefinition();
 
-    public SelectFieldBuilder(SelectFieldDefinition definition) {
-        this.definition = definition;
+    public SelectFieldBuilder(String name) {
+        this.definition.setName(name);
     }
 
     @Override
@@ -55,8 +52,10 @@ public class SelectFieldBuilder extends AbstractFieldBuilder {
         return definition;
     }
 
-    public SelectFieldBuilder options(List<SelectFieldOptionDefinition> options) {
-        getDefinition().setOptions(options);
+    public SelectFieldBuilder options(OptionBuilder... builders) {
+        for (OptionBuilder builder : builders) {
+            getDefinition().addOption(builder.exec());
+        }
         return this;
     }
 
@@ -83,13 +82,6 @@ public class SelectFieldBuilder extends AbstractFieldBuilder {
     public SelectFieldBuilder filteringMode(int filteringMode) {
         getDefinition().setFilteringMode(filteringMode);
         return this;
-    }
-
-    public OptionBuilder option(String name) {
-        SelectFieldOptionDefinition optionDefinition = new SelectFieldOptionDefinition();
-        optionDefinition.setName(name);
-        getDefinition().addOption(optionDefinition);
-        return new OptionBuilder(optionDefinition);
     }
 
     // Overrides for methods in parent class changing return type to allow method chaining

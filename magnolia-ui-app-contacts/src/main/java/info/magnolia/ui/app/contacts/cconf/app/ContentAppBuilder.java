@@ -33,16 +33,8 @@
  */
 package info.magnolia.ui.app.contacts.cconf.app;
 
-import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarBuilder;
-import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarGroupBuilder;
-import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarItemBuilder;
-import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarSectionBuilder;
-import info.magnolia.ui.app.contacts.cconf.workbench.ColumnBuilder;
-import info.magnolia.ui.app.contacts.cconf.workbench.ItemTypeBuilder;
-import info.magnolia.ui.app.contacts.cconf.workbench.WorkbenchBuilder;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 
 /**
  * Builder used to build a content app descriptor.
@@ -93,35 +85,5 @@ public class ContentAppBuilder {
 
     public AppDescriptor exec() {
         return descriptor;
-    }
-
-    // TODO need to move these to a builder/cfg of its own
-
-    public WorkbenchBuilder workbench() {
-        return new WorkbenchBuilder();
-    }
-
-    public ItemTypeBuilder itemType(String itemType) {
-        return new ItemTypeBuilder(itemType);
-    }
-
-    public <T extends AbstractColumnDefinition> ColumnBuilder<T> column(T definition) {
-        return new ColumnBuilder<T>(definition);
-    }
-
-    public ActionbarBuilder actionbar() {
-        return new ActionbarBuilder();
-    }
-
-    public ActionbarSectionBuilder section(String name) {
-        return new ActionbarSectionBuilder(name);
-    }
-
-    public ActionbarGroupBuilder group(String name) {
-        return new ActionbarGroupBuilder(name);
-    }
-
-    public ActionbarItemBuilder item(String name) {
-        return new ActionbarItemBuilder(name);
     }
 }

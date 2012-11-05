@@ -35,16 +35,17 @@ package info.magnolia.ui.app.contacts.cconf.dialog;
 
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
+import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 
 /**
  * Builder for building a dialog action.
  */
 public class DialogActionBuilder {
 
-    private final ConfiguredDialogActionDefinition definition;
+    private final ConfiguredDialogActionDefinition definition = new ConfiguredDialogActionDefinition();
 
-    public DialogActionBuilder(ConfiguredDialogActionDefinition definition) {
-        this.definition = definition;
+    public DialogActionBuilder(String name) {
+        this.definition.setName(name);
     }
 
     public DialogActionBuilder label(String label) {
@@ -55,5 +56,9 @@ public class DialogActionBuilder {
     public DialogActionBuilder action(ActionDefinition actionDefinition) {
         definition.setActionDefinition(actionDefinition);
         return this;
+    }
+
+    public DialogActionDefinition exec() {
+        return definition;
     }
 }

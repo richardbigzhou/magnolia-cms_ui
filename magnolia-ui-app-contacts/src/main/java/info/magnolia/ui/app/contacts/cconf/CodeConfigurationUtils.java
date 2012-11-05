@@ -43,11 +43,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarConfig;
 import info.magnolia.ui.app.contacts.cconf.app.App;
 import info.magnolia.ui.app.contacts.cconf.app.AppBuilder;
 import info.magnolia.ui.app.contacts.cconf.app.ContentAppBuilder;
 import info.magnolia.ui.app.contacts.cconf.dialog.Dialog;
 import info.magnolia.ui.app.contacts.cconf.dialog.DialogBuilder;
+import info.magnolia.ui.app.contacts.cconf.dialog.DialogConfig;
+import info.magnolia.ui.app.contacts.cconf.workbench.WorkbenchConfig;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.registry.AppDescriptorProvider;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
@@ -111,6 +114,8 @@ public class CodeConfigurationUtils {
 
                     if (parameterType.equals(DialogBuilder.class)) {
                         parameters[parameterIndex] = dialogBuilder;
+                    } else if (parameterType.equals(DialogConfig.class)) {
+                        parameters[parameterIndex] = new DialogConfig();
                     } else {
                         throw new RegistrationException("Unable to resolve parameter " + parameterIndex + " for method " + method);
                     }
@@ -162,12 +167,18 @@ public class CodeConfigurationUtils {
                         parameters[parameterIndex] = contentAppBuilder = new ContentAppBuilder(name);
                     } else if (parameterType.equals(AppBuilder.class)) {
                         parameters[parameterIndex] = appBuilder = new AppBuilder(name);
+                    } else if (parameterType.equals(DialogConfig.class)) {
+                        parameters[parameterIndex] = new DialogConfig();
+                    } else if (parameterType.equals(WorkbenchConfig.class)) {
+                        parameters[parameterIndex] = new WorkbenchConfig();
+                    } else if (parameterType.equals(ActionbarConfig.class)) {
+                        parameters[parameterIndex] = new ActionbarConfig();
                     } else {
                         throw new RegistrationException("Unable to resolve parameter " + parameterIndex + " for method " + method);
                     }
                 }
 
-                Object returnValue = invokeMethod(method, instance, contentAppBuilder);
+                Object returnValue = invokeMethod(method, instance, parameters);
                 if (returnValue instanceof AppDescriptor) {
                     return (AppDescriptor) returnValue;
                 }

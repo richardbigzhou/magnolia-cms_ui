@@ -41,10 +41,10 @@ import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidat
  */
 public class TextFieldBuilder extends AbstractFieldBuilder {
 
-    private TextFieldDefinition definition;
+    private final TextFieldDefinition definition = new TextFieldDefinition();
 
-    public TextFieldBuilder(TextFieldDefinition definition) {
-        this.definition = definition;
+    public TextFieldBuilder(String name) {
+        this.definition.setName(name);
     }
 
     @Override

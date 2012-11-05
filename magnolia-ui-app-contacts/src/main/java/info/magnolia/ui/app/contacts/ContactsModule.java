@@ -45,12 +45,14 @@ import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.contacts.action.AddFolderActionDefinition;
 import info.magnolia.ui.app.contacts.cconf.CodeConfigurationUtils;
+import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarConfig;
 import info.magnolia.ui.app.contacts.cconf.app.App;
 import info.magnolia.ui.app.contacts.cconf.app.ContentAppBuilder;
 import info.magnolia.ui.app.contacts.cconf.dialog.AbstractFieldBuilder;
 import info.magnolia.ui.app.contacts.cconf.dialog.Dialog;
 import info.magnolia.ui.app.contacts.cconf.dialog.DialogBuilder;
-import info.magnolia.ui.app.contacts.cconf.dialog.TabBuilder;
+import info.magnolia.ui.app.contacts.cconf.dialog.DialogConfig;
+import info.magnolia.ui.app.contacts.cconf.workbench.WorkbenchConfig;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
 import info.magnolia.ui.app.contacts.dialog.action.SaveContactDialogActionDefinition;
@@ -84,7 +86,7 @@ public class ContactsModule implements ModuleLifecycle {
     }
 
     @App("contacts")
-    public void contactsApp(ContentAppBuilder app) {
+    public void contactsApp(ContentAppBuilder app, WorkbenchConfig wbcfg, ActionbarConfig abcfg) {
 
         DefaultImageProvider imageProvider = new DefaultImageProvider();
         imageProvider.setOriginalImageNodeName("photo");
@@ -102,35 +104,35 @@ public class ContactsModule implements ModuleLifecycle {
         app.label("Contacts").icon("icon-people").appClass(ContactsApp.class).categoryName("MANAGE")
                 .subApps(
                         app.subApp("main").subAppClass(ContactsMainSubApp.class).defaultSubApp()
-                                .workbench(app.workbench().workspace("contacts").root("/").defaultOrder("jcrName")
-                                        .groupingItemType(app.itemType("mgnl:folder").icon("/.resources/icons/16/folders.gif"))
-                                        .mainItemType(app.itemType("mgnl:contact").icon("/.resources/icons/16/pawn_glass_yellow.gif"))
+                                .workbench(wbcfg.workbench().workspace("contacts").root("/").defaultOrder("jcrName")
+                                        .groupingItemType(wbcfg.itemType("mgnl:folder").icon("/.resources/icons/16/folders.gif"))
+                                        .mainItemType(wbcfg.itemType("mgnl:contact").icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                                         .imageProvider(imageProvider)
                                         .columns(
-                                                app.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(ContactNameColumnFormatter.class),
-                                                app.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),
-                                                app.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
-                                                app.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true)
+                                                wbcfg.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(ContactNameColumnFormatter.class),
+                                                wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),
+                                                wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
+                                                wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true)
                                         )
-                                        .actionbar(app.actionbar().defaultAction("edit")
+                                        .actionbar(abcfg.actionbar().defaultAction("edit")
                                                 .sections(
-                                                        app.section("contactsActions").label("Contacts")
+                                                        abcfg.section("contactsActions").label("Contacts")
                                                                 .groups(
-                                                                        app.group("addActions").items(
-                                                                                app.item("addContact").label("New contact").icon("icon-add-item").action(addContactAction),
-                                                                                app.item("addFolder").label("New folder").icon("icon-add-item").action(new AddFolderActionDefinition())),
-                                                                        app.group("editActions").items(
-                                                                                app.item("edit").label("Edit contact").icon("icon-edit").action(editContactAction),
-                                                                                app.item("delete").label("Delete contact").icon("icon-delete").action(new DeleteItemActionDefinition()))
+                                                                        abcfg.group("addActions").items(
+                                                                                abcfg.item("addContact").label("New contact").icon("icon-add-item").action(addContactAction),
+                                                                                abcfg.item("addFolder").label("New folder").icon("icon-add-item").action(new AddFolderActionDefinition())),
+                                                                        abcfg.group("editActions").items(
+                                                                                abcfg.item("edit").label("Edit contact").icon("icon-edit").action(editContactAction),
+                                                                                abcfg.item("delete").label("Delete contact").icon("icon-delete").action(new DeleteItemActionDefinition()))
                                                                 ),
-                                                        app.section("folderActions").label("Folder")
+                                                        abcfg.section("folderActions").label("Folder")
                                                                 .groups(
-                                                                        app.group("addActions").items(
-                                                                                app.item("addContact").label("New contact").icon("icon-add-item").action(addContactAction),
-                                                                                app.item("addFolder").label("New folder").icon("icon-add-item").action(new AddFolderActionDefinition())),
-                                                                        app.group("editActions").items(
-                                                                                app.item("edit").label("Edit folder").icon("icon-edit").action(editFolderAction),
-                                                                                app.item("delete").label("Delete folder").icon("icon-delete").action(new DeleteItemActionDefinition()))
+                                                                        abcfg.group("addActions").items(
+                                                                                abcfg.item("addContact").label("New contact").icon("icon-add-item").action(addContactAction),
+                                                                                abcfg.item("addFolder").label("New folder").icon("icon-add-item").action(new AddFolderActionDefinition())),
+                                                                        abcfg.group("editActions").items(
+                                                                                abcfg.item("edit").label("Edit folder").icon("icon-edit").action(editFolderAction),
+                                                                                abcfg.item("delete").label("Delete folder").icon("icon-delete").action(new DeleteItemActionDefinition()))
                                                                 )
                                                 )
                                         )
@@ -174,39 +176,48 @@ public class ContactsModule implements ModuleLifecycle {
     }
 
     @Dialog("ui-contacts-app:contact")
-    public void contactDialog(DialogBuilder dialog) {
-        dialog.description("Define the contact information");
+    public void contactDialog(DialogBuilder dialog, DialogConfig cfg) {
 
-        TabBuilder personalTab = dialog.tab("Personal").label("Personal Tab");
-        personalTab.textField("salutation").label("Salutation").description("Define Salutation");
-        personalTab.textField("firstName").label("First name").description("Please enter the contact first name. Field is mandatory").required();
-        personalTab.textField("lastName").label("Last name").description("Please enter the contact last name. Field is mandatory").required();
-        personalTab.fileUploadField("fileUpload").label("Image").preview().imageNodeName("photo");
-        personalTab.textField("photoCaption").label("Image caption").description("Please define an image caption");
-        personalTab.textField("photoAltText").label("Image alt text").description("Please define an image alt text");
+        RegexpValidatorDefinition digitsOnly = new RegexpValidatorDefinition();
+        digitsOnly.setPattern("[0-9]+");
+        digitsOnly.setErrorMessage("validation.message.only.digits");
 
-        TabBuilder companyTab = dialog.tab("Company").label("Company Tab");
-        companyTab.textField("organizationName").label("Organization name").description("Enter the organization name").required();
-        companyTab.textField("organizationUnitName").label("Organization unit name").description("Enter the organization unit name");
-        companyTab.textField("streetAddress").label("Street Address").description("Please enter the company street address").rows(2);
-        RegexpValidatorDefinition digitOnly = new RegexpValidatorDefinition();
-        digitOnly.setPattern("[0-9]+");
-        digitOnly.setErrorMessage("validation.message.only.digits");
-        companyTab.textField("zipCode").label("ZIP code").description("Please enter the zip code (only digits)").validator(digitOnly);
-        companyTab.textField("city").label("City").description("Please enter the company city  ");
-        companyTab.textField("country").label("Country").description("Please enter the company country");
-
-        TabBuilder contactsTab = dialog.tab("Contacts").label("Contact Tab");
-        contactsTab.textField("officePhoneNr").label("Office phone").description("Please enter the office phone number");
-        contactsTab.textField("officeFaxNr").label("Office Fax Nr.").description("Please enter the office fax number");
-        contactsTab.textField("mobilePhoneNr").label("Mobile Phone").description("Please enter the mobile phone number");
         EmailValidatorDefinition emailValidator = new EmailValidatorDefinition();
         emailValidator.setErrorMessage("validation.message.non.valid.email");
-        contactsTab.textField("email").label("E-Mail address").description("Please enter the email address").required().validator(emailValidator);
-        contactsTab.textField("website").label("Website").description("Please enter the Website");
 
-        dialog.dialogAction("commit").label("save changes").action(new SaveContactDialogActionDefinition());
-        dialog.dialogAction("cancel").label("cancel").action(new CancelDialogActionDefinition());
+        dialog.description("Define the contact information")
+                .tabs(
+                        cfg.tab("Personal").label("Personal Tab")
+                                .fields(
+                                        cfg.fields.textField("salutation").label("Salutation").description("Define Salutation"),
+                                        cfg.fields.textField("firstName").label("First name").description("Please enter the contact first name. Field is mandatory").required(),
+                                        cfg.fields.textField("lastName").label("Last name").description("Please enter the contact last name. Field is mandatory").required(),
+                                        cfg.fields.fileUploadField("fileUpload").label("Image").preview().imageNodeName("photo"),
+                                        cfg.fields.textField("photoCaption").label("Image caption").description("Please define an image caption"),
+                                        cfg.fields.textField("photoAltText").label("Image alt text").description("Please define an image alt text")
+                                ),
+                        cfg.tab("Company").label("Company Tab")
+                                .fields(
+                                        cfg.fields.textField("organizationName").label("Organization name").description("Enter the organization name").required(),
+                                        cfg.fields.textField("organizationUnitName").label("Organization unit name").description("Enter the organization unit name"),
+                                        cfg.fields.textField("streetAddress").label("Street Address").description("Please enter the company street address").rows(2),
+                                        cfg.fields.textField("zipCode").label("ZIP code").description("Please enter the zip code (only digits)").validator(digitsOnly),
+                                        cfg.fields.textField("city").label("City").description("Please enter the company city  "),
+                                        cfg.fields.textField("country").label("Country").description("Please enter the company country")
+                                ),
+                        cfg.tab("Contacts").label("Contact Tab")
+                                .fields(
+                                        cfg.fields.textField("officePhoneNr").label("Office phone").description("Please enter the office phone number"),
+                                        cfg.fields.textField("officeFaxNr").label("Office Fax Nr.").description("Please enter the office fax number"),
+                                        cfg.fields.textField("mobilePhoneNr").label("Mobile Phone").description("Please enter the mobile phone number"),
+                                        cfg.fields.textField("email").label("E-Mail address").description("Please enter the email address").required().validator(emailValidator),
+                                        cfg.fields.textField("website").label("Website").description("Please enter the Website")
+                                )
+                )
+                .actions(
+                        cfg.action("commit").label("save changes").action(new SaveContactDialogActionDefinition()),
+                        cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
+                );
     }
 
     @Override

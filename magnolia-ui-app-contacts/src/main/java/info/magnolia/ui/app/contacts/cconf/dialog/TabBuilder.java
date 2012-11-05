@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.app.contacts.cconf.dialog;
 
-import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
-import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
-import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
 
 /**
@@ -43,10 +40,10 @@ import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
  */
 public class TabBuilder {
 
-    private ConfiguredTabDefinition definition = new ConfiguredTabDefinition();
+    private final ConfiguredTabDefinition definition = new ConfiguredTabDefinition();
 
-    public TabBuilder(ConfiguredTabDefinition definition) {
-        this.definition = definition;
+    public TabBuilder(String name) {
+        definition.setName(name);
     }
 
     public TabBuilder label(String label) {
@@ -59,28 +56,14 @@ public class TabBuilder {
         return this;
     }
 
+    public TabBuilder fields(AbstractFieldBuilder... builders) {
+        for (AbstractFieldBuilder builder : builders) {
+            definition.addField(builder.exec());
+        }
+        return this;
+    }
+
     public ConfiguredTabDefinition exec() {
         return definition;
-    }
-
-    public TextFieldBuilder textField(String name) {
-        TextFieldDefinition textFieldDefinition = new TextFieldDefinition();
-        textFieldDefinition.setName(name);
-        definition.addField(textFieldDefinition);
-        return new TextFieldBuilder(textFieldDefinition);
-    }
-
-    public SelectFieldBuilder selectField(String name) {
-        SelectFieldDefinition selectFieldDefinition = new SelectFieldDefinition();
-        selectFieldDefinition.setName(name);
-        definition.addField(selectFieldDefinition);
-        return new SelectFieldBuilder(selectFieldDefinition);
-    }
-
-    public FileUploadFieldBuilder fileUploadField(String name) {
-        FileUploadFieldDefinition fileUploadFieldDefinition = new FileUploadFieldDefinition();
-        fileUploadFieldDefinition.setName(name);
-        definition.addField(fileUploadFieldDefinition);
-        return new FileUploadFieldBuilder(fileUploadFieldDefinition);
     }
 }

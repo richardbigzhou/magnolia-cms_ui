@@ -31,43 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.dialog;
-
-import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+package info.magnolia.ui.app.contacts.cconf.actionbar;
 
 /**
- * Builder for building an option for a select field.
+ * Config object creating builders for actionbar related definitions.
  */
-public class OptionBuilder {
+public class ActionbarConfig {
 
-    private final SelectFieldOptionDefinition definition = new SelectFieldOptionDefinition();
-
-    public OptionBuilder value(String value) {
-        definition.setValue(value);
-        return this;
+    public ActionbarBuilder actionbar() {
+        return new ActionbarBuilder();
     }
 
-    public OptionBuilder selected(boolean selected) {
-        definition.setSelected(selected);
-        return this;
+    public ActionbarSectionBuilder section(String name) {
+        return new ActionbarSectionBuilder(name);
     }
 
-    public OptionBuilder selected() {
-        definition.setSelected(true);
-        return this;
+    public ActionbarGroupBuilder group(String name) {
+        return new ActionbarGroupBuilder(name);
     }
 
-    public OptionBuilder label(String label) {
-        definition.setLabel(label);
-        return this;
-    }
-
-    public OptionBuilder iconSrc(String iconSrc) {
-        definition.setIconSrc(iconSrc);
-        return this;
-    }
-
-    public SelectFieldOptionDefinition exec() {
-        return definition;
+    public ActionbarItemBuilder item(String name) {
+        return new ActionbarItemBuilder(name);
     }
 }

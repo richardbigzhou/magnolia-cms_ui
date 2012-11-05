@@ -34,6 +34,7 @@
 package info.magnolia.ui.app.contacts.cconf.dialog;
 
 import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
 /**
@@ -111,5 +112,9 @@ public abstract class AbstractFieldBuilder {
     public AbstractFieldBuilder validator(ConfiguredFieldValidatorDefinition validatorDefinition) {
         getDefinition().addValidator(validatorDefinition);
         return this;
+    }
+
+    public FieldDefinition exec() {
+        return getDefinition();
     }
 }

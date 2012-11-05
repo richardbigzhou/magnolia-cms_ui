@@ -41,10 +41,10 @@ import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidat
  */
 public class FileUploadFieldBuilder extends AbstractFieldBuilder {
 
-    private FileUploadFieldDefinition definition;
+    private final FileUploadFieldDefinition definition = new FileUploadFieldDefinition();
 
-    public FileUploadFieldBuilder(FileUploadFieldDefinition definition) {
-        this.definition = definition;
+    public FileUploadFieldBuilder(String name) {
+        this.definition.setName(name);
     }
 
     @Override
