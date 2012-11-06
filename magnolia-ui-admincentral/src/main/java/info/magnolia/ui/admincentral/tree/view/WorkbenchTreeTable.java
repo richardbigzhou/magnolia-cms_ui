@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.tree.view;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.column.ColumnFormatter;
 import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -50,7 +49,6 @@ import java.util.Set;
 
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -197,12 +195,8 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
             setColumnHeader(columnProperty, column.getLabel());
             container.addContainerProperty(columnProperty, column.getType(), "");
             // Set Formatter
-            if (StringUtils.isNotBlank(column.getFormatterClass())) {
-                try {
-                    addGeneratedColumn(columnProperty,(ColumnFormatter) componentProvider.newInstance(Class.forName(column.getFormatterClass()), column));
-                } catch (ClassNotFoundException e) {
-                    log.error("Not able to create the Formatter", e);
-                }
+            if (column.getFormatterClass() != null) {
+                addGeneratedColumn(columnProperty, componentProvider.newInstance(column.getFormatterClass(), column));
             } else {
                 container.addContainerProperty(columnProperty, column.getType(), "");
             }

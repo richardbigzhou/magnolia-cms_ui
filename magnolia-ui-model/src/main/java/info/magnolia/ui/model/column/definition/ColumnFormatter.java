@@ -31,12 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.column;
+package info.magnolia.ui.model.column.definition;
+
 import com.vaadin.ui.Table;
 
 /**
  * Common definition for Column formatter.
  */
-public interface ColumnFormatter extends Table.ColumnGenerator{
+public interface ColumnFormatter extends Table.ColumnGenerator {
 
 }

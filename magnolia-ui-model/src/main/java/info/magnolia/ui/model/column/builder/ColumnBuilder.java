@@ -34,6 +34,7 @@
 package info.magnolia.ui.model.column.builder;
 
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
+import info.magnolia.ui.model.column.definition.ColumnFormatter;
 
 /**
  * Builder for building a column definition.
@@ -74,7 +75,7 @@ public class ColumnBuilder<T extends AbstractColumnDefinition> {
         return this;
     }
 
-    public ColumnBuilder<T> formatterClass(String formatterClass) {
+    public ColumnBuilder<T> formatterClass(Class<? extends ColumnFormatter> formatterClass) {
         definition.setFormatterClass(formatterClass);
         return this;
     }
