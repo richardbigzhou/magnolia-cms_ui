@@ -192,6 +192,7 @@
               <patches>
                 <patch>vscrolltable.txt</patch>
               </patches>
+            <strip>3</strip>
             </configuration>
             <executions>
               <execution>
