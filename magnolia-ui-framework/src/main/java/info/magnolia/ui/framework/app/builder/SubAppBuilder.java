@@ -31,39 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.dialog;
+package info.magnolia.ui.framework.app.builder;
 
-import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
 
 /**
- * Builder for building a tab definition.
+ * Builder used to build a content app descriptor.
  */
-public class TabBuilder {
+public class SubAppBuilder {
 
-    private final ConfiguredTabDefinition definition = new ConfiguredTabDefinition();
+    private ConfiguredSubAppDescriptor descriptor = new ConfiguredSubAppDescriptor();
 
-    public TabBuilder(String name) {
-        definition.setName(name);
+    public SubAppBuilder(String name) {
+        this.descriptor.setName(name);
     }
 
-    public TabBuilder label(String label) {
-        definition.setLabel(label);
+    public SubAppBuilder subAppClass(Class<? extends SubApp> subAppClass) {
+        descriptor.setSubAppClass(subAppClass);
         return this;
     }
 
-    public TabBuilder i18nBasename(String i18nBasename) {
-        definition.setI18nBasename(i18nBasename);
+    public SubAppBuilder defaultSubApp() {
+        descriptor.setDefault(true);
         return this;
     }
 
-    public TabBuilder fields(AbstractFieldBuilder... builders) {
-        for (AbstractFieldBuilder builder : builders) {
-            definition.addField(builder.exec());
-        }
-        return this;
-    }
-
-    public ConfiguredTabDefinition exec() {
-        return definition;
+    public SubAppDescriptor exec() {
+        return descriptor;
     }
 }

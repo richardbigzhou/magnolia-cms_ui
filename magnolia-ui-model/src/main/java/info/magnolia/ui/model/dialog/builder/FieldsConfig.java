@@ -31,59 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.app;
-
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+package info.magnolia.ui.model.dialog.builder;
 
 /**
- * Builder used to build an app descriptor.
+ * Config object creating builders for dialog fields.
  */
-public class AppBuilder {
+public class FieldsConfig {
 
-    private ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
-
-    public AppBuilder(String name) {
-        descriptor.setName(name);
+    public TextFieldBuilder textField(String name) {
+        return new TextFieldBuilder(name);
     }
 
-    public AppBuilder label(String label) {
-        descriptor.setLabel(label);
-        return this;
+    public SelectFieldBuilder selectField(String name) {
+        return new SelectFieldBuilder(name);
     }
 
-    public AppBuilder icon(String icon) {
-        descriptor.setIcon(icon);
-        return this;
-    }
-
-    public AppBuilder appClass(Class<? extends info.magnolia.ui.framework.app.App> appClass) {
-        descriptor.setAppClass(appClass);
-        return this;
-    }
-
-    public AppBuilder categoryName(String categoryName) {
-        descriptor.setCategoryName(categoryName);
-        return this;
-    }
-
-    public AppBuilder enabled(boolean enabled) {
-        descriptor.setEnabled(enabled);
-        return this;
-    }
-
-    public SubAppBuilder subApp(String name) {
-        return new SubAppBuilder(name);
-    }
-
-    public AppBuilder subApps(SubAppBuilder... builders) {
-        for (SubAppBuilder builder : builders) {
-            descriptor.addSubApp(builder.exec());
-        }
-        return this;
-    }
-
-    public AppDescriptor exec() {
-        return descriptor;
+    public FileUploadFieldBuilder fileUploadField(String name) {
+        return new FileUploadFieldBuilder(name);
     }
 }

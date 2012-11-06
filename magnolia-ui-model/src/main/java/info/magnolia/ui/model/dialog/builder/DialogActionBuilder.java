@@ -31,31 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.actionbar;
+package info.magnolia.ui.model.dialog.builder;
 
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
+import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 
 /**
- * Builder for building an actionbar definition.
+ * Builder for building a dialog action.
  */
-public class ActionbarBuilder {
+public class DialogActionBuilder {
 
-    private ConfiguredActionbarDefinition definition = new ConfiguredActionbarDefinition();
+    private final ConfiguredDialogActionDefinition definition = new ConfiguredDialogActionDefinition();
 
-    public ActionbarBuilder defaultAction(String defaultAction) {
-        definition.setDefaultAction(defaultAction);
+    public DialogActionBuilder(String name) {
+        this.definition.setName(name);
+    }
+
+    public DialogActionBuilder label(String label) {
+        definition.setLabel(label);
         return this;
     }
 
-    public ActionbarBuilder sections(ActionbarSectionBuilder... sections) {
-        for (ActionbarSectionBuilder section : sections) {
-            definition.addSection(section.exec());
-        }
+    public DialogActionBuilder action(ActionDefinition actionDefinition) {
+        definition.setActionDefinition(actionDefinition);
         return this;
     }
 
-    public ActionbarDefinition exec() {
+    public DialogActionDefinition exec() {
         return definition;
     }
 }

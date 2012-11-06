@@ -31,20 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.app;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+package info.magnolia.ui.model.dialog.builder;
 
 /**
- * Annotations used on methods on a module class that provide an app descriptor.
+ * Config object creating builders for dialog related definitions.
  */
-@Target(ElementType.METHOD)
-@Retention(RUNTIME)
-public @interface App {
+public class DialogConfig {
 
-    String value();
+    public final FieldsConfig fields = new FieldsConfig();
+
+    public TabBuilder tab(String name) {
+        return new TabBuilder(name);
+    }
+
+    public DialogActionBuilder action(String name) {
+        return new DialogActionBuilder(name);
+    }
 }

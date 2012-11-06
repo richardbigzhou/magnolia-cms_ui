@@ -31,22 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.dialog;
+package info.magnolia.ui.model.actionbar.builder;
+
+import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
+import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition;
 
 /**
- * Config object creating builders for dialog fields.
+ * Builder for building an actionbar section definition.
  */
-public class FieldsConfig {
+public class ActionbarSectionBuilder {
 
-    public TextFieldBuilder textField(String name) {
-        return new TextFieldBuilder(name);
+    private ConfiguredActionbarSectionDefinition definition = new ConfiguredActionbarSectionDefinition();
+
+    public ActionbarSectionBuilder(String name) {
+        definition.setName(name);
     }
 
-    public SelectFieldBuilder selectField(String name) {
-        return new SelectFieldBuilder(name);
+    public ActionbarSectionBuilder label(String label) {
+        definition.setLabel(label);
+        return this;
     }
 
-    public FileUploadFieldBuilder fileUploadField(String name) {
-        return new FileUploadFieldBuilder(name);
+    public ActionbarSectionDefinition exec() {
+        return definition;
+    }
+
+    public ActionbarSectionBuilder i18nBasename(String i18nBasename) {
+        definition.setI18nBasename(i18nBasename);
+        return this;
+    }
+
+    public ActionbarSectionBuilder groups(ActionbarGroupBuilder... groups) {
+        for (ActionbarGroupBuilder group : groups) {
+            definition.addGroup(group.exec());
+        }
+        return this;
     }
 }

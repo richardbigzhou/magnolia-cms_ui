@@ -31,52 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.dialog;
+package info.magnolia.ui.model.dialog.builder;
 
-import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 
 /**
- * Builder for building a dialog definition.
+ * Builder for building an option for a select field.
  */
-public class DialogBuilder {
+public class OptionBuilder {
 
-    private final ConfiguredDialogDefinition definition = new ConfiguredDialogDefinition();
+    private final SelectFieldOptionDefinition definition = new SelectFieldOptionDefinition();
 
-    public DialogBuilder(String id) {
-        definition.setId(id);
+    public OptionBuilder value(String value) {
+        definition.setValue(value);
+        return this;
     }
 
-    public DialogBuilder label(String label) {
+    public OptionBuilder selected(boolean selected) {
+        definition.setSelected(selected);
+        return this;
+    }
+
+    public OptionBuilder selected() {
+        definition.setSelected(true);
+        return this;
+    }
+
+    public OptionBuilder label(String label) {
         definition.setLabel(label);
         return this;
     }
 
-    public DialogBuilder i18nBasename(String i18nBasename) {
-        definition.setI18nBasename(i18nBasename);
+    public OptionBuilder iconSrc(String iconSrc) {
+        definition.setIconSrc(iconSrc);
         return this;
     }
 
-    public DialogBuilder description(String description) {
-        definition.setDescription(description);
-        return this;
-    }
-
-    public DialogDefinition exec() {
+    public SelectFieldOptionDefinition exec() {
         return definition;
-    }
-
-    public DialogBuilder tabs(TabBuilder... builders) {
-        for (TabBuilder builder : builders) {
-            definition.addTab(builder.exec());
-        }
-        return this;
-    }
-
-    public DialogBuilder actions(DialogActionBuilder... builders) {
-        for (DialogActionBuilder builder : builders) {
-            definition.addAction(builder.exec());
-        }
-        return this;
     }
 }

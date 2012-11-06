@@ -31,20 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.dialog;
+package info.magnolia.ui.model.actionbar.builder;
+
+import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
+import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition;
 
 /**
- * Config object creating builders for dialog related definitions.
+ * Builder for building an actionbar group definition.
  */
-public class DialogConfig {
+public class ActionbarGroupBuilder {
 
-    public final FieldsConfig fields = new FieldsConfig();
+    private ConfiguredActionbarGroupDefinition definition = new ConfiguredActionbarGroupDefinition();
 
-    public TabBuilder tab(String name) {
-        return new TabBuilder(name);
+    public ActionbarGroupBuilder(String name) {
+        definition.setName(name);
     }
 
-    public DialogActionBuilder action(String name) {
-        return new DialogActionBuilder(name);
+    public ActionbarGroupDefinition exec() {
+        return definition;
+    }
+
+    public ActionbarGroupBuilder items(ActionbarItemBuilder... items) {
+        for (ActionbarItemBuilder item : items) {
+            definition.addItem(item.exec());
+        }
+        return this;
     }
 }

@@ -31,9 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.workbench;
+package info.magnolia.ui.model.workbench.builder;
 
-import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarBuilder;
+import info.magnolia.ui.model.actionbar.builder.ActionbarBuilder;
+import info.magnolia.ui.model.column.builder.ColumnBuilder;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 

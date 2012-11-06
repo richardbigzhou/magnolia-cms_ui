@@ -31,24 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.workbench;
+package info.magnolia.ui.model.workbench.builder;
 
-import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
+import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
+import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 
 /**
- * Config object creating builders for workbench related definitions.
+ * Builder for building an item type definition.
+ *
+ * @see WorkbenchBuilder
  */
-public class WorkbenchConfig {
+public class ItemTypeBuilder {
 
-    public WorkbenchBuilder workbench() {
-        return new WorkbenchBuilder();
+    private ConfiguredItemTypeDefinition definition = new ConfiguredItemTypeDefinition();
+
+    public ItemTypeBuilder(String itemType) {
+        definition.setItemType(itemType);
     }
 
-    public ItemTypeBuilder itemType(String itemType) {
-        return new ItemTypeBuilder(itemType);
+    public ItemTypeBuilder icon(String icon) {
+        definition.setIcon(icon);
+        return this;
     }
 
-    public <T extends AbstractColumnDefinition> ColumnBuilder<T> column(T definition) {
-        return new ColumnBuilder<T>(definition);
+    public ItemTypeDefinition exec() {
+        return definition;
     }
 }

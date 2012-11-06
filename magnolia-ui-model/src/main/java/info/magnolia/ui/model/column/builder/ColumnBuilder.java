@@ -31,43 +31,65 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.dialog;
+package info.magnolia.ui.model.column.builder;
 
-import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 
 /**
- * Builder for building an option for a select field.
+ * Builder for building a column definition.
+ *
+ * @param <T> type of field definition
+ * @see info.magnolia.ui.model.workbench.builder.WorkbenchBuilder
  */
-public class OptionBuilder {
+public class ColumnBuilder<T extends AbstractColumnDefinition> {
 
-    private final SelectFieldOptionDefinition definition = new SelectFieldOptionDefinition();
+    private T definition;
 
-    public OptionBuilder value(String value) {
-        definition.setValue(value);
+    public ColumnBuilder(T definition) {
+        this.definition = definition;
+    }
+
+    public ColumnBuilder<T> name(String name) {
+        definition.setName(name);
         return this;
     }
 
-    public OptionBuilder selected(boolean selected) {
-        definition.setSelected(selected);
-        return this;
-    }
-
-    public OptionBuilder selected() {
-        definition.setSelected(true);
-        return this;
-    }
-
-    public OptionBuilder label(String label) {
+    public ColumnBuilder<T> label(String label) {
         definition.setLabel(label);
         return this;
     }
 
-    public OptionBuilder iconSrc(String iconSrc) {
-        definition.setIconSrc(iconSrc);
+    public ColumnBuilder<T> expandRatio(float expandRatio) {
+        definition.setExpandRatio(expandRatio);
         return this;
     }
 
-    public SelectFieldOptionDefinition exec() {
+    public ColumnBuilder<T> width(int width) {
+        definition.setWidth(width);
+        return this;
+    }
+
+    public ColumnBuilder<T> sortable(boolean sortable) {
+        definition.setSortable(sortable);
+        return this;
+    }
+
+    public ColumnBuilder<T> formatterClass(String formatterClass) {
+        definition.setFormatterClass(formatterClass);
+        return this;
+    }
+
+    public ColumnBuilder<T> propertyName(String propertyName) {
+        definition.setPropertyName(propertyName);
+        return this;
+    }
+
+    public ColumnBuilder<T> displayInDialog(boolean displayInDialog) {
+        definition.setDisplayInDialog(displayInDialog);
+        return this;
+    }
+
+    public T exec() {
         return definition;
     }
 }

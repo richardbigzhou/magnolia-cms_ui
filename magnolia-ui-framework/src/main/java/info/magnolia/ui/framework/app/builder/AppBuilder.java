@@ -31,66 +31,59 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.workbench;
+package info.magnolia.ui.framework.app.builder;
 
-import info.magnolia.ui.admincentral.column.ColumnFormatter;
-import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 
 /**
- * Builder for building a column definition.
- *
- * @param <T> type of field definition
- * @see WorkbenchBuilder
+ * Builder used to build an app descriptor.
  */
-public class ColumnBuilder<T extends AbstractColumnDefinition> {
+public class AppBuilder {
 
-    private T definition;
+    private ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
 
-    public ColumnBuilder(T definition) {
-        this.definition = definition;
+    public AppBuilder(String name) {
+        descriptor.setName(name);
     }
 
-    public ColumnBuilder<T> name(String name) {
-        definition.setName(name);
+    public AppBuilder label(String label) {
+        descriptor.setLabel(label);
         return this;
     }
 
-    public ColumnBuilder<T> label(String label) {
-        definition.setLabel(label);
+    public AppBuilder icon(String icon) {
+        descriptor.setIcon(icon);
         return this;
     }
 
-    public ColumnBuilder<T> expandRatio(float expandRatio) {
-        definition.setExpandRatio(expandRatio);
+    public AppBuilder appClass(Class<? extends info.magnolia.ui.framework.app.App> appClass) {
+        descriptor.setAppClass(appClass);
         return this;
     }
 
-    public ColumnBuilder<T> width(int width) {
-        definition.setWidth(width);
+    public AppBuilder categoryName(String categoryName) {
+        descriptor.setCategoryName(categoryName);
         return this;
     }
 
-    public ColumnBuilder<T> sortable(boolean sortable) {
-        definition.setSortable(sortable);
+    public AppBuilder enabled(boolean enabled) {
+        descriptor.setEnabled(enabled);
         return this;
     }
 
-    public ColumnBuilder<T> formatterClass(Class<? extends ColumnFormatter> formatterClass) {
-        definition.setFormatterClass(formatterClass.getName());
+    public SubAppBuilder subApp(String name) {
+        return new SubAppBuilder(name);
+    }
+
+    public AppBuilder subApps(SubAppBuilder... builders) {
+        for (SubAppBuilder builder : builders) {
+            descriptor.addSubApp(builder.exec());
+        }
         return this;
     }
 
-    public ColumnBuilder<T> propertyName(String propertyName) {
-        definition.setPropertyName(propertyName);
-        return this;
-    }
-
-    public ColumnBuilder<T> displayInDialog(boolean displayInDialog) {
-        definition.setDisplayInDialog(displayInDialog);
-        return this;
-    }
-
-    public T exec() {
-        return definition;
+    public AppDescriptor exec() {
+        return descriptor;
     }
 }

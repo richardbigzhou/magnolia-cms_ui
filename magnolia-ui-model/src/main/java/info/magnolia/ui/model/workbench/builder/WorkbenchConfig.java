@@ -31,40 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.actionbar;
+package info.magnolia.ui.model.workbench.builder;
 
-import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition;
+import info.magnolia.ui.model.column.builder.ColumnBuilder;
+import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 
 /**
- * Builder for building an actionbar section definition.
+ * Config object creating builders for workbench related definitions.
  */
-public class ActionbarSectionBuilder {
+public class WorkbenchConfig {
 
-    private ConfiguredActionbarSectionDefinition definition = new ConfiguredActionbarSectionDefinition();
-
-    public ActionbarSectionBuilder(String name) {
-        definition.setName(name);
+    public WorkbenchBuilder workbench() {
+        return new WorkbenchBuilder();
     }
 
-    public ActionbarSectionBuilder label(String label) {
-        definition.setLabel(label);
-        return this;
+    public ItemTypeBuilder itemType(String itemType) {
+        return new ItemTypeBuilder(itemType);
     }
 
-    public ActionbarSectionDefinition exec() {
-        return definition;
-    }
-
-    public ActionbarSectionBuilder i18nBasename(String i18nBasename) {
-        definition.setI18nBasename(i18nBasename);
-        return this;
-    }
-
-    public ActionbarSectionBuilder groups(ActionbarGroupBuilder... groups) {
-        for (ActionbarGroupBuilder group : groups) {
-            definition.addGroup(group.exec());
-        }
-        return this;
+    public <T extends AbstractColumnDefinition> ColumnBuilder<T> column(T definition) {
+        return new ColumnBuilder<T>(definition);
     }
 }

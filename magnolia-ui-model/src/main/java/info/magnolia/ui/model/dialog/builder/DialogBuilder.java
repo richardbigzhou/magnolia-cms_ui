@@ -31,30 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.workbench;
+package info.magnolia.ui.model.dialog.builder;
 
-import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
-import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
+import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
+import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 
 /**
- * Builder for building an item type definition.
- *
- * @see WorkbenchBuilder
+ * Builder for building a dialog definition.
  */
-public class ItemTypeBuilder {
+public class DialogBuilder {
 
-    private ConfiguredItemTypeDefinition definition = new ConfiguredItemTypeDefinition();
+    private final ConfiguredDialogDefinition definition = new ConfiguredDialogDefinition();
 
-    public ItemTypeBuilder(String itemType) {
-        definition.setItemType(itemType);
+    public DialogBuilder(String id) {
+        definition.setId(id);
     }
 
-    public ItemTypeBuilder icon(String icon) {
-        definition.setIcon(icon);
+    public DialogBuilder label(String label) {
+        definition.setLabel(label);
         return this;
     }
 
-    public ItemTypeDefinition exec() {
+    public DialogBuilder i18nBasename(String i18nBasename) {
+        definition.setI18nBasename(i18nBasename);
+        return this;
+    }
+
+    public DialogBuilder description(String description) {
+        definition.setDescription(description);
+        return this;
+    }
+
+    public DialogDefinition exec() {
         return definition;
+    }
+
+    public DialogBuilder tabs(TabBuilder... builders) {
+        for (TabBuilder builder : builders) {
+            definition.addTab(builder.exec());
+        }
+        return this;
+    }
+
+    public DialogBuilder actions(DialogActionBuilder... builders) {
+        for (DialogActionBuilder builder : builders) {
+            definition.addAction(builder.exec());
+        }
+        return this;
     }
 }

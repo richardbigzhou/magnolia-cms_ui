@@ -31,59 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.app;
+package info.magnolia.ui.admincentral.app.content.builder;
 
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.admincentral.app.content.ConfiguredContentSubAppDescriptor;
+import info.magnolia.ui.model.workbench.builder.WorkbenchBuilder;
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.app.SubAppDescriptor;
 
 /**
- * Builder used to build a content app descriptor.
+ * Builder used to build a sub app descriptor.
  */
-public class ContentAppBuilder {
+public class ContentSubAppBuilder {
 
-    private ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
+    private ConfiguredContentSubAppDescriptor descriptor = new ConfiguredContentSubAppDescriptor();
 
-    public ContentAppBuilder(String name) {
-        descriptor.setName(name);
+    public ContentSubAppBuilder(String name) {
+        this.descriptor.setName(name);
     }
 
-    public ContentAppBuilder label(String label) {
-        descriptor.setLabel(label);
+    public ContentSubAppBuilder subAppClass(Class<? extends SubApp> subAppClass) {
+        descriptor.setSubAppClass(subAppClass);
         return this;
     }
 
-    public ContentAppBuilder icon(String icon) {
-        descriptor.setIcon(icon);
+    public ContentSubAppBuilder defaultSubApp() {
+        descriptor.setDefault(true);
         return this;
     }
 
-    public ContentAppBuilder appClass(Class<? extends info.magnolia.ui.framework.app.App> appClass) {
-        descriptor.setAppClass(appClass);
+    public ContentSubAppBuilder workbench(WorkbenchBuilder builder) {
+        descriptor.setWorkbench(builder.exec());
         return this;
     }
 
-    public ContentAppBuilder categoryName(String categoryName) {
-        descriptor.setCategoryName(categoryName);
-        return this;
-    }
-
-    public ContentAppBuilder enabled(boolean enabled) {
-        descriptor.setEnabled(enabled);
-        return this;
-    }
-
-    public SubAppBuilder subApp(String name) {
-        return new SubAppBuilder(name);
-    }
-
-    public ContentAppBuilder subApps(SubAppBuilder... builders) {
-        for (SubAppBuilder builder : builders) {
-            descriptor.addSubApp(builder.exec());
-        }
-        return this;
-    }
-
-    public AppDescriptor exec() {
+    public SubAppDescriptor exec() {
         return descriptor;
     }
 }

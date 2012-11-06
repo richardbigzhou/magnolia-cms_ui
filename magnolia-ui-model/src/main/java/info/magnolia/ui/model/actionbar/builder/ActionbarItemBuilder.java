@@ -31,40 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.app;
+package info.magnolia.ui.model.actionbar.builder;
 
-import info.magnolia.ui.admincentral.app.content.ConfiguredContentSubAppDescriptor;
-import info.magnolia.ui.app.contacts.cconf.workbench.WorkbenchBuilder;
-import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarItemDefinition;
 
 /**
- * Builder used to build a sub app descriptor.
+ * Builder for building an actionbar item definition.
  */
-public class SubAppBuilder {
+public class ActionbarItemBuilder {
 
-    private ConfiguredContentSubAppDescriptor descriptor = new ConfiguredContentSubAppDescriptor();
+    private ConfiguredActionbarItemDefinition definition = new ConfiguredActionbarItemDefinition();
 
-    public SubAppBuilder(String name) {
-        this.descriptor.setName(name);
+    public ActionbarItemBuilder(String name) {
+        this.definition.setName(name);
     }
 
-    public SubAppBuilder subAppClass(Class<? extends SubApp> subAppClass) {
-        descriptor.setSubAppClass(subAppClass);
+    public ConfiguredActionbarItemDefinition exec() {
+        return definition;
+    }
+
+    public ActionbarItemBuilder label(String label) {
+        definition.setLabel(label);
         return this;
     }
 
-    public SubAppBuilder defaultSubApp() {
-        descriptor.setDefault(true);
+    public ActionbarItemBuilder i18nBasename(String i18nBasename) {
+        definition.setI18nBasename(i18nBasename);
         return this;
     }
 
-    public SubAppBuilder workbench(WorkbenchBuilder builder) {
-        descriptor.setWorkbench(builder.exec());
+    public ActionbarItemBuilder icon(String icon) {
+        definition.setIcon(icon);
         return this;
     }
 
-    public SubAppDescriptor exec() {
-        return descriptor;
+    public ActionbarItemBuilder description(String description) {
+        definition.setDescription(description);
+        return this;
+    }
+
+    public ActionbarItemBuilder action(ActionDefinition actionDefinition) {
+        definition.setActionDefinition(actionDefinition);
+        return this;
     }
 }

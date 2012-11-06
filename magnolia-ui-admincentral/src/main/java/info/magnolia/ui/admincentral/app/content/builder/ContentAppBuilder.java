@@ -31,48 +31,59 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.actionbar;
+package info.magnolia.ui.admincentral.app.content.builder;
 
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarItemDefinition;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 
 /**
- * Builder for building an actionbar item definition.
+ * Builder used to build a content app descriptor.
  */
-public class ActionbarItemBuilder {
+public class ContentAppBuilder {
 
-    private ConfiguredActionbarItemDefinition definition = new ConfiguredActionbarItemDefinition();
+    private ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
 
-    public ActionbarItemBuilder(String name) {
-        this.definition.setName(name);
+    public ContentAppBuilder(String name) {
+        descriptor.setName(name);
     }
 
-    public ConfiguredActionbarItemDefinition exec() {
-        return definition;
-    }
-
-    public ActionbarItemBuilder label(String label) {
-        definition.setLabel(label);
+    public ContentAppBuilder label(String label) {
+        descriptor.setLabel(label);
         return this;
     }
 
-    public ActionbarItemBuilder i18nBasename(String i18nBasename) {
-        definition.setI18nBasename(i18nBasename);
+    public ContentAppBuilder icon(String icon) {
+        descriptor.setIcon(icon);
         return this;
     }
 
-    public ActionbarItemBuilder icon(String icon) {
-        definition.setIcon(icon);
+    public ContentAppBuilder appClass(Class<? extends info.magnolia.ui.framework.app.App> appClass) {
+        descriptor.setAppClass(appClass);
         return this;
     }
 
-    public ActionbarItemBuilder description(String description) {
-        definition.setDescription(description);
+    public ContentAppBuilder categoryName(String categoryName) {
+        descriptor.setCategoryName(categoryName);
         return this;
     }
 
-    public ActionbarItemBuilder action(ActionDefinition actionDefinition) {
-        definition.setActionDefinition(actionDefinition);
+    public ContentAppBuilder enabled(boolean enabled) {
+        descriptor.setEnabled(enabled);
         return this;
+    }
+
+    public ContentSubAppBuilder subApp(String name) {
+        return new ContentSubAppBuilder(name);
+    }
+
+    public ContentAppBuilder subApps(ContentSubAppBuilder... builders) {
+        for (ContentSubAppBuilder builder : builders) {
+            descriptor.addSubApp(builder.exec());
+        }
+        return this;
+    }
+
+    public AppDescriptor exec() {
+        return descriptor;
     }
 }

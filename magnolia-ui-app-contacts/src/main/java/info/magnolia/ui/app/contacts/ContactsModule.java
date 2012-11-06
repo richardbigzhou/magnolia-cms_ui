@@ -37,24 +37,22 @@ import javax.inject.Inject;
 
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
-import info.magnolia.ui.admincentral.column.StatusColumnFormatter;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.contacts.action.AddFolderActionDefinition;
-import info.magnolia.ui.app.contacts.cconf.CodeConfigurationUtils;
-import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarConfig;
-import info.magnolia.ui.app.contacts.cconf.app.App;
-import info.magnolia.ui.app.contacts.cconf.app.ContentAppBuilder;
-import info.magnolia.ui.app.contacts.cconf.dialog.AbstractFieldBuilder;
-import info.magnolia.ui.app.contacts.cconf.dialog.Dialog;
-import info.magnolia.ui.app.contacts.cconf.dialog.DialogBuilder;
-import info.magnolia.ui.app.contacts.cconf.dialog.DialogConfig;
-import info.magnolia.ui.app.contacts.cconf.workbench.WorkbenchConfig;
+import info.magnolia.ui.admincentral.app.CodeConfigurationUtils;
+import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
+import info.magnolia.ui.framework.app.builder.App;
+import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
+import info.magnolia.ui.model.dialog.builder.AbstractFieldBuilder;
+import info.magnolia.ui.model.dialog.builder.Dialog;
+import info.magnolia.ui.model.dialog.builder.DialogBuilder;
+import info.magnolia.ui.model.dialog.builder.DialogConfig;
+import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
-import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
 import info.magnolia.ui.app.contacts.dialog.action.SaveContactDialogActionDefinition;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
@@ -109,9 +107,9 @@ public class ContactsModule implements ModuleLifecycle {
                                         .mainItemType(wbcfg.itemType("mgnl:contact").icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                                         .imageProvider(imageProvider)
                                         .columns(
-                                                wbcfg.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(ContactNameColumnFormatter.class),
+                                                wbcfg.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass("info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter"),
                                                 wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),
-                                                wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
+                                                wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass("info.magnolia.ui.admincentral.column.StatusColumnFormatter").width(50),
                                                 wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true)
                                         )
                                         .actionbar(abcfg.actionbar().defaultAction("edit")

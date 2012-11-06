@@ -31,26 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf.actionbar;
+package info.magnolia.ui.model.dialog.builder;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Config object creating builders for actionbar related definitions.
+ * Annotation used on methods on a module class that provides a dialog definition.
  */
-public class ActionbarConfig {
+@Target(ElementType.METHOD)
+@Retention(RUNTIME)
+public @interface Dialog {
 
-    public ActionbarBuilder actionbar() {
-        return new ActionbarBuilder();
-    }
-
-    public ActionbarSectionBuilder section(String name) {
-        return new ActionbarSectionBuilder(name);
-    }
-
-    public ActionbarGroupBuilder group(String name) {
-        return new ActionbarGroupBuilder(name);
-    }
-
-    public ActionbarItemBuilder item(String name) {
-        return new ActionbarItemBuilder(name);
-    }
+    String value();
 }

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.cconf;
+package info.magnolia.ui.admincentral.app;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -43,14 +43,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarConfig;
-import info.magnolia.ui.app.contacts.cconf.app.App;
-import info.magnolia.ui.app.contacts.cconf.app.AppBuilder;
-import info.magnolia.ui.app.contacts.cconf.app.ContentAppBuilder;
-import info.magnolia.ui.app.contacts.cconf.dialog.Dialog;
-import info.magnolia.ui.app.contacts.cconf.dialog.DialogBuilder;
-import info.magnolia.ui.app.contacts.cconf.dialog.DialogConfig;
-import info.magnolia.ui.app.contacts.cconf.workbench.WorkbenchConfig;
+import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
+import info.magnolia.ui.framework.app.builder.App;
+import info.magnolia.ui.framework.app.builder.AppBuilder;
+import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
+import info.magnolia.ui.model.dialog.builder.Dialog;
+import info.magnolia.ui.model.dialog.builder.DialogBuilder;
+import info.magnolia.ui.model.dialog.builder.DialogConfig;
+import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.registry.AppDescriptorProvider;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
