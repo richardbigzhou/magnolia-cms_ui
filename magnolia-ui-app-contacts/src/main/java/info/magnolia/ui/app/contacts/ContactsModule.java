@@ -227,47 +227,4 @@ public class ContactsModule implements ModuleLifecycle {
     @Override
     public void stop(ModuleLifecycleContext moduleLifecycleContext) {
     }
-
-    /**
-     * Field definition for fancy media example field.
-     */
-    private static class FancyMediaFieldDefinition extends ConfiguredFieldDefinition {
-
-        private int fanciness;
-
-        public int getFanciness() {
-            return fanciness;
-        }
-
-        public void setFanciness(int fanciness) {
-            this.fanciness = fanciness;
-        }
-    }
-
-    /**
-     * Builder for fancy media example field.
-     */
-    public static class FancyMediaFieldBuilder extends AbstractFieldBuilder {
-
-        private FancyMediaFieldDefinition definition;
-
-        public FancyMediaFieldBuilder(FancyMediaFieldDefinition definition) {
-            this.definition = definition;
-        }
-
-        public FancyMediaFieldBuilder(ConfiguredTabDefinition tabDefinition, String name) {
-            definition = new FancyMediaFieldDefinition();
-            definition.setName(name);
-        }
-
-        @Override
-        protected FancyMediaFieldDefinition getDefinition() {
-            return definition;
-        }
-
-        public FancyMediaFieldBuilder fanciness(int fanciness) {
-            getDefinition().setFanciness(fanciness);
-            return this;
-        }
-    }
 }
