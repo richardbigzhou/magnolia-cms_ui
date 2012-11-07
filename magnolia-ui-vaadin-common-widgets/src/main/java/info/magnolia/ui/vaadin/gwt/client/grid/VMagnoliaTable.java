@@ -58,6 +58,8 @@ import com.vaadin.terminal.gwt.client.MouseEventDetails;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.Util;
 import com.vaadin.terminal.gwt.client.ui.VScrollTablePatched;
+import com.vaadin.terminal.gwt.client.ui.VScrollTablePatched.VScrollTableBody.VScrollTableRow;
+import com.vaadin.terminal.gwt.client.ui.dd.DDUtil;
 import com.vaadin.terminal.gwt.client.ui.dd.VDragAndDropManager;
 import com.vaadin.terminal.gwt.client.ui.dd.VDragEvent;
 import com.vaadin.terminal.gwt.client.ui.dd.VTransferable;
@@ -83,6 +85,16 @@ public class VMagnoliaTable extends VScrollTablePatched {
     }
     
     @Override
+    protected HeaderCell createHeaderCell(String colId, String headerText) {
+        return new MagnoliaHeaderCell(colId, headerText);
+    }
+    
+    @Override
+    protected VScrollTableDropHandler createScrollTableDropHandler() {
+        return new MagnoliaScrollTableDropHandler();
+    }
+    
+    @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         super.updateFromUIDL(uidl, client);
         
@@ -96,6 +108,30 @@ public class VMagnoliaTable extends VScrollTablePatched {
         this.multiselectmode = multiselectmode;
     }
     
+    /**
+     * Extend header cell to contain caption text.
+     */
+    public class MagnoliaHeaderCell extends HeaderCell {
+        private Element caption = null;
+        
+        public MagnoliaHeaderCell(String colId, String headerText) {
+            super(colId, headerText);
+            caption = DOM.createSpan();
+            captionContainer.appendChild(caption);
+            setText(headerText);
+        }
+        
+        @Override
+        public void setText(String headerText) {
+            if(caption != null) {
+                caption.setInnerHTML(headerText);
+            }
+        }
+    }
+    
+    /**
+     * Extension of VScrollTableBody.
+     */
     public class MagnoliaTableBody extends VScrollTableBody {
         
         @Override
@@ -113,6 +149,9 @@ public class VMagnoliaTable extends VScrollTablePatched {
             return super.getColWidth(columnIndex+1);
         }
         
+        /**
+         * Extend VScrollTableRow to contain selection checkbox.
+         */
         public class MagnoliaTableRow extends VScrollTableRow {
             private CheckBox selectionCheckBox = null;
             private ValueChangeHandler<Boolean> selectionCheckBoxValueChangeHandler = null;
@@ -239,7 +278,7 @@ public class VMagnoliaTable extends VScrollTablePatched {
                     int childIndex = DOM.getChildIndex(getElement(),
                             targetTdOrTr);
                     String colKey = null;
-                    colKey = tHead.getHeaderCell(childIndex).getColKey();
+                    colKey = tHead.getHeaderCell(childIndex - 1).getColKey();
                     client.updateVariable(paintableId, "clickedColKey", colKey,
                             false);
                 }
@@ -259,9 +298,9 @@ public class VMagnoliaTable extends VScrollTablePatched {
                 transferable.setDragSource(VMagnoliaTable.this);
                 transferable.setData("itemId", "" + rowKey);
                 NodeList<TableCellElement> cells = rowElement.getCells();
-                for (int i = 0; i < cells.getLength(); i++) {
+                for (int i = 1; i < cells.getLength(); i++) {
                     if (cells.getItem(i).isOrHasChild(targetTdOrTr)) {
-                        HeaderCell headerCell = tHead.getHeaderCell(i);
+                        HeaderCell headerCell = tHead.getHeaderCell(i - 1);
                         transferable.setData("propertyId", headerCell.cid);
                         break;
                     }
@@ -328,6 +367,42 @@ public class VMagnoliaTable extends VScrollTablePatched {
         }
     }
     
+    /**
+     * Extension of scroll table drop handler to fix indexing.
+     */
+    public class MagnoliaScrollTableDropHandler extends VScrollTableDropHandler {
+        @Override
+        protected void updateDropDetails(VDragEvent drag) {
+            dropDetails = new TableDDDetails();
+            Element elementOver = drag.getElementOver();
+
+            VScrollTableRow row = Util.findWidget(elementOver, getRowClass());
+            if (row != null) {
+                dropDetails.overkey = row.rowKey;
+                Element tr = row.getElement();
+                Element element = elementOver;
+                while (element != null && element.getParentElement() != tr) {
+                    element = (Element) element.getParentElement();
+                }
+                int childIndex = DOM.getChildIndex(tr, element);
+                dropDetails.colkey = tHead.getHeaderCell(childIndex - 1)
+                        .getColKey();
+                dropDetails.dropLocation = DDUtil.getVerticalDropLocation(
+                        row.getElement(), drag.getCurrentGwtEvent(), 0.2);
+            }
+
+            drag.getDropDetails().put("itemIdOver", dropDetails.overkey + "");
+            drag.getDropDetails().put(
+                    "detail",
+                    dropDetails.dropLocation != null ? dropDetails.dropLocation
+                            .toString() : null);
+
+        } 
+    }
+    
+    /**
+     * Extend TableHead to contain select all checkbox.
+     */
     public class MagnoliaTableHead extends TableHead {
         private CheckBox selectAll = null;
         
