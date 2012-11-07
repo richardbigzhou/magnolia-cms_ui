@@ -41,9 +41,10 @@ import info.magnolia.ui.admincentral.list.view.ListViewImpl;
 import info.magnolia.ui.admincentral.search.container.SearchJcrContainer;
 import info.magnolia.ui.admincentral.search.view.SearchViewImpl;
 import info.magnolia.ui.admincentral.thumbnail.view.LazyThumbnailViewImpl;
+import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailContainer;
+import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
 import info.magnolia.ui.admincentral.tree.view.TreeViewImpl;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
 
 import java.io.Serializable;
 
@@ -64,20 +65,20 @@ public class ContentViewBuilderImpl implements ContentViewBuilder, Serializable 
 
     @Override
     public ContentView build(final WorkbenchDefinition workbenchDefinition, final ViewType type) {
-        // FIXME the model should be set by the presenter
-        final TreeModel treeModel = new TreeModel(workbenchDefinition);
         switch (type) {
 
             case TREE:
-                return componentProvider.newInstance(TreeViewImpl.class, workbenchDefinition, treeModel);
+                final HierarchicalJcrContainer hierarchicalContainer = new HierarchicalJcrContainer(workbenchDefinition);
+                return componentProvider.newInstance(TreeViewImpl.class, workbenchDefinition, hierarchicalContainer);
             case LIST:
-                final FlatJcrContainer container = new FlatJcrContainer(treeModel, workbenchDefinition);
-                return componentProvider.newInstance(ListViewImpl.class, workbenchDefinition, treeModel, container);
+                final FlatJcrContainer flatContainer = new FlatJcrContainer(workbenchDefinition);
+                return componentProvider.newInstance(ListViewImpl.class, workbenchDefinition, flatContainer);
             case SEARCH:
-                final SearchJcrContainer searchContainer = new SearchJcrContainer(treeModel, workbenchDefinition);
-                return componentProvider.newInstance(SearchViewImpl.class, workbenchDefinition, treeModel, searchContainer);
+                final SearchJcrContainer searchContainer = new SearchJcrContainer(workbenchDefinition);
+                return componentProvider.newInstance(SearchViewImpl.class, workbenchDefinition, searchContainer);
             case THUMBNAIL:
-                return componentProvider.newInstance(LazyThumbnailViewImpl.class, workbenchDefinition,workbenchDefinition.getImageProvider());
+                final ThumbnailContainer thumbnailContainer = new ThumbnailContainer(workbenchDefinition);
+                return componentProvider.newInstance(LazyThumbnailViewImpl.class, workbenchDefinition, thumbnailContainer);
             default:
                 throw new RuntimeException("The provided view type ["+ type + "] is not valid.");
        }
