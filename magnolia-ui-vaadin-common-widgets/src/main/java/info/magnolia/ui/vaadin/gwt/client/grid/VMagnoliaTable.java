@@ -65,7 +65,10 @@ import com.vaadin.terminal.gwt.client.ui.dd.VDragEvent;
 import com.vaadin.terminal.gwt.client.ui.dd.VTransferable;
 
 /**
- * TODO dlipp: this type is to be streamlined. See SCRUM-1776 for additional info.
+ * Magnolia table extends VScrollTable in a way that
+ * out-of-the-box version of it would not allow. Therefore
+ * maven build will patch the VScrollTable to reveal
+ * it's private members.
  */
 public class VMagnoliaTable extends VScrollTablePatched {
     static int checkboxWidth = -1;
@@ -153,23 +156,31 @@ public class VMagnoliaTable extends VScrollTablePatched {
          * Extend VScrollTableRow to contain selection checkbox.
          */
         public class MagnoliaTableRow extends VScrollTableRow {
-            private CheckBox selectionCheckBox = null;
-            private ValueChangeHandler<Boolean> selectionCheckBoxValueChangeHandler = null;
+            private CheckBox selectionCheckBox;
             
             public MagnoliaTableRow(UIDL uidl, char[] aligns) {
                 super(uidl, aligns);
-                privateConstruction();
             }
 
             public MagnoliaTableRow() {
                 super();
+            }
+            
+            /**
+             * Minor hack. Construction has to happen
+             * during base class construction and this
+             * method is called by the base class constructor.
+             */
+            @Override
+            protected void setElement(com.google.gwt.user.client.Element elem) {
+                super.setElement(elem);
                 privateConstruction();
             }
             
             private void privateConstruction() {
                 selectionCheckBox = new CheckBox();
                 selectionCheckBox.setValue(selected, false);
-                selectionCheckBoxValueChangeHandler = new ValueChangeHandler<Boolean>() {
+                ValueChangeHandler<Boolean> selectionCheckBoxValueChangeHandler = new ValueChangeHandler<Boolean>() {
 
                     @Override
                     public void onValueChange(ValueChangeEvent<Boolean> event) {
@@ -200,13 +211,9 @@ public class VMagnoliaTable extends VScrollTablePatched {
                 selectionCheckBox.addValueChangeHandler(selectionCheckBoxValueChangeHandler);
                 selectionCheckBox.addStyleName("v-selection-cb");
                 
-//                rowElement.appendChild(td);
-                rowElement.insertFirst(td);
+                rowElement.appendChild(td);
                 getChildren().add(selectionCheckBox);
-//                getChildren().insert(selectionCheckBox, 0);
-                
-                VMagnoliaTable.this.adopt(selectionCheckBox);
-                
+                VMagnoliaTable.this.adopt(selectionCheckBox);               
                                  
                  final TouchDelegate delegate = new TouchDelegate(this);
                  delegate.addTouchHandler(new MultiTapRecognizer(delegate, 1, 2));
@@ -243,15 +250,7 @@ public class VMagnoliaTable extends VScrollTablePatched {
             
             @Override
             public void toggleSelection() {
-                selected = !selected;
-                selectionChanged = true;
-                if (selected) {
-                    selectedRowKeys.add(String.valueOf(rowKey));
-                    addStyleName("v-selected");
-                } else {
-                    removeStyleName("v-selected");
-                    selectedRowKeys.remove(String.valueOf(rowKey));
-                }
+                super.toggleSelection();
                 
                 if(selectionCheckBox != null) {
                     selectionCheckBox.setValue(selected, false);
