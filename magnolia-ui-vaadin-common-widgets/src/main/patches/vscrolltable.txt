@@ -1,6 +1,6 @@
 diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k2/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java
 --- k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java	2012-11-06 13:18:07.000000000 +0200
-+++ k2/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java	2012-11-07 09:14:42.000000000 +0200
++++ k2/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java	2012-11-07 14:06:42.000000000 +0200
 @@ -82,7 +82,7 @@
  import com.vaadin.terminal.gwt.client.Util;
  import com.vaadin.terminal.gwt.client.VConsole;
@@ -42,7 +42,7 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
  
      /*
       * When scrolling and selecting at the same time, the selections are not in
-@@ -209,13 +221,13 @@
+@@ -209,7 +221,7 @@
      /*
       * Helper to store selection range start in when using the keyboard
       */
@@ -51,13 +51,6 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
  
      /*
       * Flag for notifying when the selection has changed and should be sent to
-      * the server
-      */
--    private boolean selectionChanged = false;
-+    protected boolean selectionChanged = false;
- 
-     /*
-      * The speed (in pixels) which the scrolling scrolls vertically/horizontally
 @@ -325,7 +337,7 @@
       */
      private boolean headerChangedDuringUpdate = false;
@@ -76,12 +69,9 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
      private int firstvisible = 0;
      private boolean sortAscending;
      private String sortColumn;
-@@ -458,9 +470,9 @@
-     private String width = "";
-     private boolean rendering = false;
+@@ -460,7 +472,7 @@
      private boolean hasFocus = false;
--    private int dragmode;
-+    protected int dragmode;
+     private int dragmode;
  
 -    private int multiselectmode;
 +    protected int multiselectmode;
@@ -106,15 +96,6 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
              }
              dropHandler.updateAcceptRules(ac);
          }
-@@ -1658,7 +1670,7 @@
-         return selectMode == Table.SELECT_MODE_SINGLE;
-     }
- 
--    private boolean isMultiSelectModeAny() {
-+    protected boolean isMultiSelectModeAny() {
-         return selectMode == Table.SELECT_MODE_MULTI;
-     }
- 
 @@ -1667,7 +1679,7 @@
                  && multiselectmode == MULTISELECT_MODE_DEFAULT;
      }
@@ -133,15 +114,6 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
  
          Element sortIndicator = DOM.createDiv();
  
-@@ -2343,7 +2355,7 @@
-         Element floatingCopyOfHeaderCell;
- 
-         private boolean sortable = false;
--        private final String cid;
-+        public final String cid;
-         private boolean dragging;
- 
-         private int dragStartX;
 @@ -2552,7 +2564,7 @@
                      handleCaptionEvent(event);
                      boolean stopPropagation = true;
@@ -226,15 +198,6 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
  
          /**
           * Due some optimizations row height measuring is deferred and initial
-@@ -4065,7 +4085,7 @@
- 
-         Element container = DOM.createDiv();
- 
--        TableSectionElement tBodyElement = Document.get().createTBodyElement();
-+        public TableSectionElement tBodyElement = Document.get().createTBodyElement();
-         Element table = DOM.createTable();
- 
-         private int firstRendered;
 @@ -4326,7 +4346,7 @@
                  // This is a generated row.
                  return new VScrollTableGeneratedRow(uidl, aligns2);
@@ -268,21 +231,7 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
                          tBodyElement.appendChild(scrollTableRow.getElement());
                          getRowHeight(forceUpdate);
                          tBodyElement.removeChild(scrollTableRow.getElement());
-@@ -4588,7 +4608,7 @@
-             }
-         }
- 
--        private int cellExtraWidth = -1;
-+        protected int cellExtraWidth = -1;
- 
-         /**
-          * Method to return the space used for cell paddings + border.
-@@ -4600,11 +4620,11 @@
-             return cellExtraWidth;
-         }
- 
--        private void detectExtrawidth() {
-+        protected void detectExtrawidth() {
+@@ -4604,14 +4624,14 @@
              NodeList<TableRowElement> rows = tBodyElement.getRows();
              if (rows.getLength() == 0) {
                  /* need to temporary add empty row and detect */
@@ -291,17 +240,15 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
                  tBodyElement.appendChild(scrollTableRow.getElement());
                  detectExtrawidth();
                  tBodyElement.removeChild(scrollTableRow.getElement());
-@@ -4680,14 +4700,14 @@
-                 Container {
- 
-             private static final int TOUCHSCROLL_TIMEOUT = 100;
--            private static final int DRAGMODE_MULTIROW = 2;
-+            protected static final int DRAGMODE_MULTIROW = 2;
-             protected ArrayList<Widget> childWidgets = new ArrayList<Widget>();
--            private boolean selected = false;
--            protected final int rowKey;
-+            protected boolean selected = false;
-+            public final int rowKey;
+             } else {
+                 boolean noCells = false;
+                 TableRowElement item = rows.getItem(0);
+-                TableCellElement firstTD = item.getCells().getItem(0);
++                TableCellElement firstTD = item.getCells().getItem(1);
+                 if (firstTD == null) {
+                     // content is currently empty, we need to add a fake cell
+                     // for measuring
+@@ -4687,7 +4707,7 @@
              private List<UIDL> pendingComponentPaints;
  
              private String[] actionKeys = null;
@@ -345,18 +292,24 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
                  }
  
                  td.appendChild(container);
-@@ -5044,9 +5064,9 @@
-              *            Whether the event is sent immediately
-              * @return Whether a click event was sent
+@@ -5046,7 +5066,7 @@
               */
--            private boolean handleClickEvent(Event event, Element targetTdOrTr,
-+            protected boolean handleClickEvent(Event event, Element targetTdOrTr,
+             private boolean handleClickEvent(Event event, Element targetTdOrTr,
                      boolean immediate) {
 -                if (!client.hasEventListeners(VScrollTable.this,
 +                if (!client.hasEventListeners(VScrollTablePatched.this,
                          ITEM_CLICK_EVENT_ID)) {
                      // Don't send an event if nobody is listening
                      return false;
+@@ -5061,7 +5081,7 @@
+                     int childIndex = DOM.getChildIndex(getElement(),
+                             targetTdOrTr);
+                     String colKey = null;
+-                    colKey = tHead.getHeaderCell(childIndex).getColKey();
++                    colKey = tHead.getHeaderCell(childIndex - 1).getColKey();
+                     client.updateVariable(paintableId, "clickedColKey", colKey,
+                             false);
+                 }
 @@ -5090,22 +5110,22 @@
  
                      if (!containsWidget) {
@@ -393,15 +346,26 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
                                                  ITEM_CLICK_EVENT_ID))) {
                              /*
                               * Prevent browser context menu only if there are
-@@ -5553,7 +5573,7 @@
-             protected void startRowDrag(Event event, final int type,
+@@ -5550,15 +5570,15 @@
+                 return false;
+             }
+ 
+-            protected void startRowDrag(Event event, final int type,
++            private void startRowDrag(Event event, final int type,
                      Element targetTdOrTr) {
                  VTransferable transferable = new VTransferable();
 -                transferable.setDragSource(VScrollTable.this);
 +                transferable.setDragSource(VScrollTablePatched.this);
                  transferable.setData("itemId", "" + rowKey);
                  NodeList<TableCellElement> cells = rowElement.getCells();
-                 for (int i = 0; i < cells.getLength(); i++) {
+-                for (int i = 0; i < cells.getLength(); i++) {
++                for (int i = 1; i < cells.getLength(); i++) {
+                     if (cells.getItem(i).isOrHasChild(targetTdOrTr)) {
+-                        HeaderCell headerCell = tHead.getHeaderCell(i);
++                        HeaderCell headerCell = tHead.getHeaderCell(i - 1);
+                         transferable.setData("propertyId", headerCell.cid);
+                         break;
+                     }
 @@ -6243,7 +6263,7 @@
                  int heightBefore = getOffsetHeight();
                  scrollBodyPanel.setHeight(bodyHeight + "px");
@@ -411,48 +375,15 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
                  }
              }
              scrollBody.reLayoutComponents();
-@@ -6538,10 +6558,10 @@
-         return dropHandler;
-     }
- 
--    private static class TableDDDetails {
--        int overkey = -1;
--        VerticalDropLocation dropLocation;
--        String colkey;
-+    public static class TableDDDetails {
-+        public int overkey = -1;
-+        public VerticalDropLocation dropLocation;
-+        public String colkey;
- 
-         @Override
-         public boolean equals(Object obj) {
-@@ -6563,7 +6583,7 @@
-     public class VScrollTableDropHandler extends VAbstractDropHandler {
- 
-         private static final String ROWSTYLEBASE = "v-table-row-drag-";
--        private TableDDDetails dropDetails;
-+        protected TableDDDetails dropDetails;
-         private TableDDDetails lastEmphasized;
- 
-         @Override
-@@ -6572,7 +6592,7 @@
-             super.dragEnter(drag);
-         }
- 
--        private void updateDropDetails(VDragEvent drag) {
-+        protected void updateDropDetails(VDragEvent drag) {
-             dropDetails = new TableDDDetails();
-             Element elementOver = drag.getElementOver();
- 
-@@ -6599,7 +6619,7 @@
- 
-         }
- 
--        private Class<? extends Widget> getRowClass() {
-+        protected Class<? extends Widget> getRowClass() {
-             // get the row type this way to make dd work in derived
-             // implementations
-             return scrollBody.iterator().next().getClass();
+@@ -6585,7 +6605,7 @@
+                     element = (Element) element.getParentElement();
+                 }
+                 int childIndex = DOM.getChildIndex(tr, element);
+-                dropDetails.colkey = tHead.getHeaderCell(childIndex)
++                dropDetails.colkey = tHead.getHeaderCell(childIndex - 1)
+                         .getColKey();
+                 dropDetails.dropLocation = DDUtil.getVerticalDropLocation(
+                         row.getElement(), drag.getCurrentGwtEvent(), 0.2);
 @@ -6686,7 +6706,7 @@
  
          @Override

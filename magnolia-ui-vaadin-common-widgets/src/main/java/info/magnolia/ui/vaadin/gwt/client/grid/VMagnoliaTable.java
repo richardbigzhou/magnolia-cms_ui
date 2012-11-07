@@ -33,19 +33,12 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.grid;
 
-import java.util.Iterator;
-
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.dom.client.TableCellElement;
-import com.google.gwt.dom.client.TableRowElement;
-import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapEvent;
@@ -54,15 +47,9 @@ import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapRecognizer;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.BrowserInfo;
-import com.vaadin.terminal.gwt.client.MouseEventDetails;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.Util;
 import com.vaadin.terminal.gwt.client.ui.VScrollTablePatched;
-import com.vaadin.terminal.gwt.client.ui.VScrollTablePatched.VScrollTableBody.VScrollTableRow;
-import com.vaadin.terminal.gwt.client.ui.dd.DDUtil;
-import com.vaadin.terminal.gwt.client.ui.dd.VDragAndDropManager;
-import com.vaadin.terminal.gwt.client.ui.dd.VDragEvent;
-import com.vaadin.terminal.gwt.client.ui.dd.VTransferable;
 
 /**
  * Magnolia table extends VScrollTable in a way that
@@ -90,11 +77,6 @@ public class VMagnoliaTable extends VScrollTablePatched {
     @Override
     protected HeaderCell createHeaderCell(String colId, String headerText) {
         return new MagnoliaHeaderCell(colId, headerText);
-    }
-    
-    @Override
-    protected VScrollTableDropHandler createScrollTableDropHandler() {
-        return new MagnoliaScrollTableDropHandler();
     }
     
     @Override
@@ -129,6 +111,32 @@ public class VMagnoliaTable extends VScrollTablePatched {
             if(caption != null) {
                 caption.setInnerHTML(headerText);
             }
+        }
+    }
+    
+    /**
+     * Extend TableHead to contain select all checkbox.
+     */
+    public class MagnoliaTableHead extends TableHead {
+        private CheckBox selectAll = null;
+        
+        public MagnoliaTableHead() {
+            super();
+            selectAll = new CheckBox();
+            div.appendChild(selectAll.getElement());
+            getChildren().add(selectAll);
+            adopt(selectAll);
+            selectAll.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+                @Override
+                public void onValueChange(ValueChangeEvent<Boolean> event) {
+                    client.updateVariable(paintableId, "selectAll", event.getValue(), true);
+                }
+            });
+            selectAll.addStyleName("v-select-all"); 
+        }
+        
+        public CheckBox getSelectAllCB() {
+            return selectAll;
         }
     }
     
@@ -179,7 +187,7 @@ public class VMagnoliaTable extends VScrollTablePatched {
             
             private void privateConstruction() {
                 selectionCheckBox = new CheckBox();
-                selectionCheckBox.setValue(selected, false);
+                selectionCheckBox.setValue(isSelected(), false);
                 ValueChangeHandler<Boolean> selectionCheckBoxValueChangeHandler = new ValueChangeHandler<Boolean>() {
 
                     @Override
@@ -253,175 +261,11 @@ public class VMagnoliaTable extends VScrollTablePatched {
                 super.toggleSelection();
                 
                 if(selectionCheckBox != null) {
-                    selectionCheckBox.setValue(selected, false);
+                    selectionCheckBox.setValue(isSelected(), false);
                 }
                 MagnoliaTableHead head = (MagnoliaTableHead)tHead;
                 head.getSelectAllCB().setValue(selectedRowKeys.size() == scrollBody.renderedRows.size(), false);
             }
-            
-            @Override
-            protected boolean handleClickEvent(Event event, Element targetTdOrTr,
-                    boolean immediate) {
-                if (!client.hasEventListeners(VMagnoliaTable.this,
-                        ITEM_CLICK_EVENT_ID)) {
-                    // Don't send an event if nobody is listening
-                    return false;
-                }
-
-                // This row was clicked
-                client.updateVariable(paintableId, "clickedKey", "" + rowKey,
-                        false);
-
-                if (getElement() == targetTdOrTr.getParentElement()) {
-                    // A specific column was clicked
-                    int childIndex = DOM.getChildIndex(getElement(),
-                            targetTdOrTr);
-                    String colKey = null;
-                    colKey = tHead.getHeaderCell(childIndex - 1).getColKey();
-                    client.updateVariable(paintableId, "clickedColKey", colKey,
-                            false);
-                }
-
-                MouseEventDetails details = new MouseEventDetails(event);
-
-                client.updateVariable(paintableId, "clickEvent",
-                        details.toString(), immediate);
-
-                return true;
-            }
-            
-            @Override
-            protected void startRowDrag(Event event, final int type,
-                    Element targetTdOrTr) {
-                VTransferable transferable = new VTransferable();
-                transferable.setDragSource(VMagnoliaTable.this);
-                transferable.setData("itemId", "" + rowKey);
-                NodeList<TableCellElement> cells = rowElement.getCells();
-                for (int i = 1; i < cells.getLength(); i++) {
-                    if (cells.getItem(i).isOrHasChild(targetTdOrTr)) {
-                        HeaderCell headerCell = tHead.getHeaderCell(i - 1);
-                        transferable.setData("propertyId", headerCell.cid);
-                        break;
-                    }
-                }
-
-                VDragEvent ev = VDragAndDropManager.get().startDrag(
-                        transferable, event, true);
-                if (dragmode == DRAGMODE_MULTIROW && isMultiSelectModeAny()
-                        && selectedRowKeys.contains("" + rowKey)) {
-                    ev.createDragImage(
-                            (Element) scrollBody.tBodyElement.cast(), true);
-                    Element dragImage = ev.getDragImage();
-                    int i = 0;
-                    for (Iterator<Widget> iterator = scrollBody.iterator(); iterator
-                            .hasNext();) {
-                        VScrollTableRow next = (VScrollTableRow) iterator
-                                .next();
-                        Element child = (Element) dragImage.getChild(i++);
-                        if (!selectedRowKeys.contains("" + next.rowKey)) {
-                            child.getStyle().setVisibility(Visibility.HIDDEN);
-                        }
-                    }
-                } else {
-                    ev.createDragImage(getElement(), true);
-                }
-                if (type == Event.ONMOUSEDOWN) {
-                    event.preventDefault();
-                }
-                event.stopPropagation();
-            }
-        }
-        
-        @Override
-        protected void detectExtrawidth() {
-            NodeList<TableRowElement> rows = tBodyElement.getRows();
-            if (rows.getLength() == 0) {
-                /* need to temporary add empty row and detect */
-                VScrollTableRow scrollTableRow = createScrollTableRow();
-                tBodyElement.appendChild(scrollTableRow.getElement());
-                detectExtrawidth();
-                tBodyElement.removeChild(scrollTableRow.getElement());
-            } else {
-                boolean noCells = false;
-                TableRowElement item = rows.getItem(0);
-                TableCellElement firstTD = item.getCells().getItem(1);
-                if (firstTD == null) {
-                    // content is currently empty, we need to add a fake cell
-                    // for measuring
-                    noCells = true;
-                    VScrollTableRow next = (VScrollTableRow) iterator().next();
-                    boolean sorted = tHead.getHeaderCell(0) != null ? tHead
-                            .getHeaderCell(0).isSorted() : false;
-                    next.addCell(null, "", ALIGN_LEFT, "", true, sorted);
-                    firstTD = item.getCells().getItem(0);
-                }
-                com.google.gwt.dom.client.Element wrapper = firstTD
-                        .getFirstChildElement();
-                cellExtraWidth = firstTD.getOffsetWidth()
-                        - wrapper.getOffsetWidth();
-                if (noCells) {
-                    firstTD.getParentElement().removeChild(firstTD);
-                }
-            }
-        }
-    }
-    
-    /**
-     * Extension of scroll table drop handler to fix indexing.
-     */
-    public class MagnoliaScrollTableDropHandler extends VScrollTableDropHandler {
-        @Override
-        protected void updateDropDetails(VDragEvent drag) {
-            dropDetails = new TableDDDetails();
-            Element elementOver = drag.getElementOver();
-
-            VScrollTableRow row = Util.findWidget(elementOver, getRowClass());
-            if (row != null) {
-                dropDetails.overkey = row.rowKey;
-                Element tr = row.getElement();
-                Element element = elementOver;
-                while (element != null && element.getParentElement() != tr) {
-                    element = (Element) element.getParentElement();
-                }
-                int childIndex = DOM.getChildIndex(tr, element);
-                dropDetails.colkey = tHead.getHeaderCell(childIndex - 1)
-                        .getColKey();
-                dropDetails.dropLocation = DDUtil.getVerticalDropLocation(
-                        row.getElement(), drag.getCurrentGwtEvent(), 0.2);
-            }
-
-            drag.getDropDetails().put("itemIdOver", dropDetails.overkey + "");
-            drag.getDropDetails().put(
-                    "detail",
-                    dropDetails.dropLocation != null ? dropDetails.dropLocation
-                            .toString() : null);
-
-        } 
-    }
-    
-    /**
-     * Extend TableHead to contain select all checkbox.
-     */
-    public class MagnoliaTableHead extends TableHead {
-        private CheckBox selectAll = null;
-        
-        public MagnoliaTableHead() {
-            super();
-            selectAll = new CheckBox();
-            div.appendChild(selectAll.getElement());
-            getChildren().add(selectAll);
-            adopt(selectAll);
-            selectAll.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-                @Override
-                public void onValueChange(ValueChangeEvent<Boolean> event) {
-                    client.updateVariable(paintableId, "selectAll", event.getValue(), true);
-                }
-            });
-            selectAll.addStyleName("v-select-all"); 
-        }
-        
-        public CheckBox getSelectAllCB() {
-            return selectAll;
         }
     }
 }
