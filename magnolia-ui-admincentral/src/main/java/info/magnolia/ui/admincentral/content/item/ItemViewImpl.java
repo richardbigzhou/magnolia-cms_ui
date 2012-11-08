@@ -31,34 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.admincentral.content.item;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Label;
 
 /**
- * PageEditorParameters.
+ * ItemViewImpl.
  */
-public class PageEditorParameters {
+public class ItemViewImpl implements ItemView {
 
-    private final String contextPath;
+    private CssLayout root = new CssLayout();
 
-    private final String nodePath;
-
-    private final String action;
-
-    public PageEditorParameters(String contextPath, String nodePath, String action) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.action = action;
+    public ItemViewImpl() {
+        root.addComponent(new Label("test"));
     }
 
-    public String getContextPath() {
-        return contextPath;
+    @Override
+    public void setListener(Listener listener) {
+
     }
 
-    public String getNodePath() {
-        return nodePath;
+    @Override
+    public void refresh() {
+
     }
 
-    public String getAction() {
-        return action;
+    @Override
+    public void refreshItem(Item item) {
+
+    }
+
+    @Override
+    public ViewType getViewType() {
+        return ViewType.VIEW;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return root;
     }
 }

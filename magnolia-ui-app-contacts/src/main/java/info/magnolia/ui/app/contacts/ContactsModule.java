@@ -38,6 +38,7 @@ import javax.inject.Inject;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.admincentral.column.StatusColumnFormatter;
+import info.magnolia.ui.admincentral.content.action.EditItemActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
@@ -59,6 +60,7 @@ import info.magnolia.ui.app.contacts.cconf.workbench.WorkbenchBuilder;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
 import info.magnolia.ui.app.contacts.dialog.action.SaveContactDialogActionDefinition;
+import info.magnolia.ui.app.contacts.item.ContactsItemSubApp;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
 import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
@@ -117,8 +119,9 @@ public class ContactsModule implements ModuleLifecycle {
         addActions.item("addContact").label("New contact").icon("icon-add-item").action(addContactAction);
         addActions.item("addFolder").label("New folder").icon("icon-add-item").action(new AddFolderActionDefinition());
         ActionbarGroupBuilder editActions = contactsActions.group("editActions");
-        EditDialogActionDefinition editContactAction = new EditDialogActionDefinition();
-        editContactAction.setDialogName("ui-contacts-app:contact");
+        EditItemActionDefinition editContactAction = new EditItemActionDefinition();
+        editContactAction.setAppId("contacts");
+        editContactAction.setSubAppId("item");
         editActions.item("edit").label("Edit contact").icon("icon-edit").action(editContactAction);
         editActions.item("delete").label("Delete contact").icon("icon-delete").action(new DeleteItemActionDefinition());
 
@@ -132,7 +135,18 @@ public class ContactsModule implements ModuleLifecycle {
         folderEditActions.item("edit").label("Edit folder").icon("icon-edit").action(editFolderAction);
         folderEditActions.item("delete").label("Delete folder").icon("icon-delete").action(new DeleteItemActionDefinition());
 
-        app.subApp("detail").subAppClass(ContactsMainSubApp.class);
+
+        subApp = app.subApp("item").subAppClass(ContactsItemSubApp.class);
+
+        workbench = subApp.workbench().workspace("contacts").formName("ui-contacts-app:contact");
+
+        imageProvider = new DefaultImageProvider();
+        imageProvider.setOriginalImageNodeName("photo");
+        workbench.imageProvider(imageProvider);
+
+        actionbar = workbench.actionbar().defaultAction("edit");
+
+
     }
 
     @Dialog("ui-contacts-app:folder")

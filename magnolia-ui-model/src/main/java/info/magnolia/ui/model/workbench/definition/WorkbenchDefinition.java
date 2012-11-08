@@ -88,4 +88,6 @@ public interface WorkbenchDefinition extends Serializable {
      * @return the property (or comma separated list of properties) to be applied when no other order is requested.
      */
     String getDefaultOrder();
+
+    String getFormName();
 }

@@ -31,34 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.admincentral.content.action;
+
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * PageEditorParameters.
+ * EditItemActionDefinition.
  */
-public class PageEditorParameters {
+public class EditItemActionDefinition implements ActionDefinition {
 
-    private final String contextPath;
 
-    private final String nodePath;
+    private String appId;
 
-    private final String action;
+    private String subAppId;
 
-    public PageEditorParameters(String contextPath, String nodePath, String action) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.action = action;
+    public String getAppId() {
+        return appId;
     }
 
-    public String getContextPath() {
-        return contextPath;
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 
-    public String getNodePath() {
-        return nodePath;
+    public String getSubAppId() {
+        return subAppId;
     }
 
-    public String getAction() {
-        return action;
+    public void setSubAppId(String subAppId) {
+        this.subAppId = subAppId;
     }
 }

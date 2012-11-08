@@ -68,6 +68,7 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
             if (!NodeUtil.isNodeType(nodeToEdit, MgnlNodeType.NT_CONTENT)) {
                 return;
             }
+
             locationController.goTo(PagesEditorSubApp.createLocation(nodeToEdit.getPath(), null));
 
         } catch (RepositoryException e) {

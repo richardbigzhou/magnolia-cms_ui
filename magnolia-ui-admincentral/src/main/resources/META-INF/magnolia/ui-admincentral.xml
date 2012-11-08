@@ -234,6 +234,10 @@
 			<type>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder</type>
 			<implementation>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderImpl</implementation>
 		</component>
+    <component>
+      <type>info.magnolia.ui.admincentral.content.item.ItemView</type>
+      <implementation>info.magnolia.ui.admincentral.content.item.ItemViewImpl</implementation>
+    </component>
 		<component>
 			<type>info.magnolia.ui.admincentral.field.builder.DialogFieldFactory</type>
 			<implementation>info.magnolia.ui.admincentral.field.builder.DialogFieldFactory</implementation>

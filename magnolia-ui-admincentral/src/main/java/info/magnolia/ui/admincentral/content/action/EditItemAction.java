@@ -31,34 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.admincentral.content.action;
+
+import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
+import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * PageEditorParameters.
+ * EditItemAction.
  */
-public class PageEditorParameters {
+public class EditItemAction extends ActionBase<EditItemActionDefinition> {
 
-    private final String contextPath;
+    private final Node nodeToEdit;
+    private final LocationController locationController;
 
-    private final String nodePath;
-
-    private final String action;
-
-    public PageEditorParameters(String contextPath, String nodePath, String action) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.action = action;
+    public EditItemAction(EditItemActionDefinition definition, Node nodeToEdit, LocationController locationController) {
+        super(definition);
+        this.nodeToEdit = nodeToEdit;
+        this.locationController = locationController;
     }
 
-    public String getContextPath() {
-        return contextPath;
-    }
+    @Override
+    public void execute() throws ActionExecutionException {
+        try {
 
-    public String getNodePath() {
-        return nodePath;
-    }
+            final String path = nodeToEdit.getPath();
+            ItemLocation location = new ItemLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), path);
+            locationController.goTo(location);
 
-    public String getAction() {
-        return action;
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException("Could not execute EditItemAction: ", e);
+        }
     }
 }

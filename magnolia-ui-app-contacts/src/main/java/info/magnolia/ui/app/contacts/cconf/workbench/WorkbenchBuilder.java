@@ -60,6 +60,11 @@ public class WorkbenchBuilder {
         return this;
     }
 
+    public WorkbenchBuilder formName(String formName) {
+        definition.setFormName(formName);
+        return this;
+    }
+
     public WorkbenchBuilder root(String path) {
         definition.setPath(path);
         return this;

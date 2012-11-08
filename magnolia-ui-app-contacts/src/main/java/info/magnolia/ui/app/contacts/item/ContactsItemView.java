@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.content;
+package info.magnolia.ui.app.contacts.item;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 
 /**
- * View for content apps.
+ * ContactsItemView.
  */
-public interface ContentAppView extends View {
-
-    void setWorkbenchView(View workbenchView);
+public interface ContactsItemView extends WorkbenchSubAppView {
 }

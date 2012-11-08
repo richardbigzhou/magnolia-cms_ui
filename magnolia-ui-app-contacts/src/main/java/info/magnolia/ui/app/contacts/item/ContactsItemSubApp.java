@@ -31,34 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.app.contacts.item;
+
+import info.magnolia.ui.admincentral.app.content.AbstractItemSubApp;
+import info.magnolia.ui.admincentral.workbench.ItemWorkbenchPresenter;
+import info.magnolia.ui.framework.app.SubAppContext;
+
+import javax.inject.Inject;
 
 /**
- * PageEditorParameters.
+ * ContactsItemSubApp.
  */
-public class PageEditorParameters {
+public class ContactsItemSubApp extends AbstractItemSubApp {
 
-    private final String contextPath;
-
-    private final String nodePath;
-
-    private final String action;
-
-    public PageEditorParameters(String contextPath, String nodePath, String action) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.action = action;
+    @Inject
+    public ContactsItemSubApp(final SubAppContext subAppContext, final ContactsItemView view, final ItemWorkbenchPresenter workbench) {
+        super(subAppContext, view, workbench);
     }
 
-    public String getContextPath() {
-        return contextPath;
-    }
-
-    public String getNodePath() {
-        return nodePath;
-    }
-
-    public String getAction() {
-        return action;
-    }
 }

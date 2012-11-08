@@ -433,8 +433,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
                 return;
             }
 
-            openSubApp(location);
-
             app.locationChanged(location);
         }
 

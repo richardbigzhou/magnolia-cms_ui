@@ -53,7 +53,7 @@ public class AbstractContentSubAppTest {
     private static final String query = "qux*";
 
     private AppContext appContext;
-    private ContentAppView view;
+    private WorkbenchSubAppView view;
     private ContentWorkbenchPresenter workbench;
     private EventBus subAppEventBus;
     private DummyContentSubApp subApp;
@@ -64,7 +64,7 @@ public class AbstractContentSubAppTest {
         appContext = mock(AppContext.class);
         subAppContext = mock(SubAppContext.class);
 
-        view = mock(ContentAppView.class);
+        view = mock(WorkbenchSubAppView.class);
         workbench = mock(ContentWorkbenchPresenter.class);
 
         ActionbarPresenter actionbar = new ActionbarPresenter(subAppEventBus, appContext);
@@ -77,7 +77,7 @@ public class AbstractContentSubAppTest {
     private class DummyContentSubApp extends AbstractContentSubApp {
         public int foo = 0;
 
-        public DummyContentSubApp(SubAppContext subAppContext, ContentAppView view, ContentWorkbenchPresenter workbench, EventBus subAppEventBus) {
+        public DummyContentSubApp(SubAppContext subAppContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, EventBus subAppEventBus) {
             super(subAppContext, view, workbench, subAppEventBus);
         }
 

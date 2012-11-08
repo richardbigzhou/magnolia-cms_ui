@@ -54,6 +54,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private String defaultOrder;
 
+    private String formName;
+
     private ItemTypeDefinition mainItemType;
 
     private ItemTypeDefinition groupingItemType;
@@ -77,6 +79,15 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String getFormName() {
+        return formName;
+    }
+
+    public void setFormName(String formName) {
+        this.formName = formName;
     }
 
     @Override

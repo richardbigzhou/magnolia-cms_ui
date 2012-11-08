@@ -36,7 +36,10 @@ package info.magnolia.ui.app.pages.editor;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.app.content.AbstractItemSubApp;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
+import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
+import info.magnolia.ui.admincentral.content.item.ItemView;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.pages.action.AddComponentActionDefinition;
@@ -44,7 +47,6 @@ import info.magnolia.ui.app.pages.action.EditElementActionDefinition;
 import info.magnolia.ui.app.pages.action.EditPageActionDefinition;
 import info.magnolia.ui.app.pages.action.PreviewPageActionDefinition;
 import info.magnolia.ui.app.pages.editor.location.PagesLocation;
-import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -71,7 +73,7 @@ import javax.jcr.Session;
 /**
  * PagesEditorSubApp.
  */
-public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubAppView.Listener {
+public class PagesEditorSubApp extends AbstractItemSubApp implements PagesEditorSubAppView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
@@ -92,7 +94,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     @Inject
     public PagesEditorSubApp(final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named("subapp") EventBus eventBus,
         final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
-        super(subAppContext, view);
+        super(subAppContext, view, null);
 
         this.view = view;
         this.view.setListener(this);
@@ -111,15 +113,15 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
 
     @Override
     public View start(Location location) {
-        PagesLocation pagesLocation = PagesLocation.wrap(location);
-        super.start(pagesLocation);
+        ItemLocation itemLocation = ItemLocation.wrap(location);
+        super.start(itemLocation);
 
         ActionbarDefinition actionbarDefinition = ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
         view.setActionbarView(actionbar);
         view.setPageEditorView(pageEditorPresenter.start());
 
-        goToLocation(pagesLocation);
+        goToLocation(itemLocation);
         updateActions();
         return view;
     }
@@ -137,47 +139,46 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
 
     @Override
     public boolean supportsLocation(Location location) {
-        return getCurrentLocation().getNodePath().equals(PagesLocation.wrap(location).getNodePath());
-    }
-
-    @Override
-    protected PagesLocation getCurrentLocation() {
-        return PagesLocation.wrap(currentLocation);
+        return getCurrentLocation().getNodePath().equals(ItemLocation.wrap(location).getNodePath());
     }
 
     @Override
     public void locationChanged(Location location) {
-        PagesLocation pagesLocation = PagesLocation.wrap(location);
-        super.locationChanged(pagesLocation);
-        goToLocation(pagesLocation);
+        ItemLocation itemLocation = ItemLocation.wrap(location);
+        super.locationChanged(itemLocation);
+        goToLocation(itemLocation);
         updateActions();
     }
 
-    private void goToLocation(PagesLocation location) {
+    private void goToLocation(ItemLocation location) {
 
         if (isLocationChanged(location)) {
             setPageEditorParameters(location);
-            if (parameters.isPreview()) {
-                showPreview();
-            } else {
-                showEditor();
+            switch (location.getViewType()) {
+                case VIEW:
+                    showPreview();
+                    break;
+                case EDIT:
+                default:
+                    showEditor();
+                    break;
             }
         }
     }
 
-    private void setPageEditorParameters(PagesLocation location) {
-        boolean isPreview = location.getMode().equals("preview");
+    private void setPageEditorParameters(ItemLocation location) {
+        ItemView.ViewType action = location.getViewType();
         String path = location.getNodePath();
 
-        this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, isPreview);
+        this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, action.getText());
         this.caption = getPageTitle(path);
     }
 
-    private boolean isLocationChanged(PagesLocation location) {
-        boolean isPreview = location.getMode().equals("preview");
+    private boolean isLocationChanged(ItemLocation location) {
+        ItemView.ViewType action = location.getViewType();
         String path = location.getNodePath();
 
-        if (parameters != null && (parameters.getNodePath().equals(path) && parameters.isPreview() == isPreview)) {
+        if (parameters != null && (parameters.getNodePath().equals(path) && parameters.getAction().equals(action.getText()))) {
             return false;
         }
         return true;

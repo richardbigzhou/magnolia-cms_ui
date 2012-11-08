@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,34 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.admincentral.app.content;
+
+import info.magnolia.ui.framework.view.View;
 
 /**
- * PageEditorParameters.
+ * View for Workbench subApps. Used for ContentSubApps and ItemSubapps.
  */
-public class PageEditorParameters {
+public interface WorkbenchSubAppView extends View {
 
-    private final String contextPath;
-
-    private final String nodePath;
-
-    private final String action;
-
-    public PageEditorParameters(String contextPath, String nodePath, String action) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.action = action;
-    }
-
-    public String getContextPath() {
-        return contextPath;
-    }
-
-    public String getNodePath() {
-        return nodePath;
-    }
-
-    public String getAction() {
-        return action;
-    }
+    void setWorkbenchView(View workbenchView);
 }

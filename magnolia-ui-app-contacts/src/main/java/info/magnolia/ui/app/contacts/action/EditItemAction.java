@@ -31,34 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.app.contacts.action;
+
+import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
+import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
+
+import javax.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * PageEditorParameters.
+ * EditItemAction.
  */
-public class PageEditorParameters {
+public class EditItemAction extends ActionBase<EditItemActionDefinition> {
 
-    private final String contextPath;
+    private Node nodeToEdit;
+    private LocationController locationController;
 
-    private final String nodePath;
-
-    private final String action;
-
-    public PageEditorParameters(String contextPath, String nodePath, String action) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.action = action;
+    @Inject
+    public EditItemAction(EditItemActionDefinition definition, Node nodeToEdit, LocationController locationController) {
+        super(definition);
+        this.nodeToEdit = nodeToEdit;
+        this.locationController = locationController;
     }
 
-    public String getContextPath() {
-        return contextPath;
-    }
+    @Override
+    public void execute() throws ActionExecutionException {
+        try {
 
-    public String getNodePath() {
-        return nodePath;
-    }
+            final String path = nodeToEdit.getPath();
+            ItemLocation location = new ItemLocation("contacts", "item", path);
+            locationController.goTo(location);
 
-    public String getAction() {
-        return action;
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+
     }
 }

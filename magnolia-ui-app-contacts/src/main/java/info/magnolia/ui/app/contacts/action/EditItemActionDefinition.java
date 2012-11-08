@@ -31,34 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.app.contacts.action;
+
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * PageEditorParameters.
+ * EditItemActionDefinition.
  */
-public class PageEditorParameters {
-
-    private final String contextPath;
-
-    private final String nodePath;
-
-    private final String action;
-
-    public PageEditorParameters(String contextPath, String nodePath, String action) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.action = action;
-    }
-
-    public String getContextPath() {
-        return contextPath;
-    }
-
-    public String getNodePath() {
-        return nodePath;
-    }
-
-    public String getAction() {
-        return action;
-    }
+public interface EditItemActionDefinition extends ActionDefinition{
 }

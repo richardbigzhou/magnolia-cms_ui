@@ -31,34 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.app.contacts.item;
+
+import com.vaadin.ui.Component;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * PageEditorParameters.
+ * ContactsItemViewImpl.
  */
-public class PageEditorParameters {
+public class ContactsItemViewImpl implements ContactsItemView {
 
-    private final String contextPath;
 
-    private final String nodePath;
+    private View workbenchView;
 
-    private final String action;
-
-    public PageEditorParameters(String contextPath, String nodePath, String action) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.action = action;
+    @Override
+    public Component asVaadinComponent() {
+        return workbenchView.asVaadinComponent();
     }
 
-    public String getContextPath() {
-        return contextPath;
-    }
-
-    public String getNodePath() {
-        return nodePath;
-    }
-
-    public String getAction() {
-        return action;
+    @Override
+    public void setWorkbenchView(View workbenchView) {
+        this.workbenchView = workbenchView;
     }
 }

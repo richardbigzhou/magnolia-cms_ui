@@ -31,34 +31,49 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.admincentral.workbench;
+
+import com.vaadin.ui.ComponentContainer;
+import info.magnolia.ui.admincentral.content.item.ItemView;
+import info.magnolia.ui.admincentral.content.view.ContentView;
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 /**
- * PageEditorParameters.
+ * ItemWorkbenchView.
  */
-public class PageEditorParameters {
+public interface ItemWorkbenchView  extends ComponentContainer, View {
 
-    private final String contextPath;
+    void setItemView(View itemView);
 
-    private final String nodePath;
+    /**
+     * Listener interface for events concerning the workbench.
+     */
+    interface Listener {
 
-    private final String action;
+        void onViewTypeChanged(ItemView.ViewType viewType);
 
-    public PageEditorParameters(String contextPath, String nodePath, String action) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.action = action;
     }
 
-    public String getContextPath() {
-        return contextPath;
-    }
+    void setListener(Listener listener);
 
-    public String getNodePath() {
-        return nodePath;
-    }
+    void setViewType(ItemView.ViewType type);
 
-    public String getAction() {
-        return action;
-    }
+
+    /**
+     * Refreshes the current view.
+     */
+    void refresh();
+
+    /**
+     * Use this method to add sub views hosted by this view.
+     */
+    void addItemView(ItemView.ViewType type, ItemView view);
+
+    /**
+     * Use this method to add an action bar to this sub app view.
+     */
+    void setActionbarView(ActionbarView actionbar);
+
+    ContentView getSelectedView();
 }
