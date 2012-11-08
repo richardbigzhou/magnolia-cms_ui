@@ -1,6 +1,6 @@
-diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k2/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java
+diff -wur k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k2/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java
 --- k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java	2012-11-06 13:18:07.000000000 +0200
-+++ k2/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java	2012-11-07 14:06:42.000000000 +0200
++++ k2/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java	2012-11-08 09:59:41.000000000 +0200
 @@ -82,7 +82,7 @@
  import com.vaadin.terminal.gwt.client.Util;
  import com.vaadin.terminal.gwt.client.VConsole;
@@ -231,7 +231,7 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
                          tBodyElement.appendChild(scrollTableRow.getElement());
                          getRowHeight(forceUpdate);
                          tBodyElement.removeChild(scrollTableRow.getElement());
-@@ -4604,14 +4624,14 @@
+@@ -4604,7 +4624,7 @@
              NodeList<TableRowElement> rows = tBodyElement.getRows();
              if (rows.getLength() == 0) {
                  /* need to temporary add empty row and detect */
@@ -240,14 +240,6 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
                  tBodyElement.appendChild(scrollTableRow.getElement());
                  detectExtrawidth();
                  tBodyElement.removeChild(scrollTableRow.getElement());
-             } else {
-                 boolean noCells = false;
-                 TableRowElement item = rows.getItem(0);
--                TableCellElement firstTD = item.getCells().getItem(0);
-+                TableCellElement firstTD = item.getCells().getItem(1);
-                 if (firstTD == null) {
-                     // content is currently empty, we need to add a fake cell
-                     // for measuring
 @@ -4687,7 +4707,7 @@
              private List<UIDL> pendingComponentPaints;
  
@@ -301,15 +293,6 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
                          ITEM_CLICK_EVENT_ID)) {
                      // Don't send an event if nobody is listening
                      return false;
-@@ -5061,7 +5081,7 @@
-                     int childIndex = DOM.getChildIndex(getElement(),
-                             targetTdOrTr);
-                     String colKey = null;
--                    colKey = tHead.getHeaderCell(childIndex).getColKey();
-+                    colKey = tHead.getHeaderCell(childIndex - 1).getColKey();
-                     client.updateVariable(paintableId, "clickedColKey", colKey,
-                             false);
-                 }
 @@ -5090,22 +5110,22 @@
  
                      if (!containsWidget) {
@@ -346,7 +329,7 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
                                                  ITEM_CLICK_EVENT_ID))) {
                              /*
                               * Prevent browser context menu only if there are
-@@ -5550,15 +5570,15 @@
+@@ -5550,10 +5570,10 @@
                  return false;
              }
  
@@ -358,14 +341,7 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
 +                transferable.setDragSource(VScrollTablePatched.this);
                  transferable.setData("itemId", "" + rowKey);
                  NodeList<TableCellElement> cells = rowElement.getCells();
--                for (int i = 0; i < cells.getLength(); i++) {
-+                for (int i = 1; i < cells.getLength(); i++) {
-                     if (cells.getItem(i).isOrHasChild(targetTdOrTr)) {
--                        HeaderCell headerCell = tHead.getHeaderCell(i);
-+                        HeaderCell headerCell = tHead.getHeaderCell(i - 1);
-                         transferable.setData("propertyId", headerCell.cid);
-                         break;
-                     }
+                 for (int i = 0; i < cells.getLength(); i++) {
 @@ -6243,7 +6263,7 @@
                  int heightBefore = getOffsetHeight();
                  scrollBodyPanel.setHeight(bodyHeight + "px");
@@ -375,15 +351,6 @@ diff -uwr k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VScrollTable.java k
                  }
              }
              scrollBody.reLayoutComponents();
-@@ -6585,7 +6605,7 @@
-                     element = (Element) element.getParentElement();
-                 }
-                 int childIndex = DOM.getChildIndex(tr, element);
--                dropDetails.colkey = tHead.getHeaderCell(childIndex)
-+                dropDetails.colkey = tHead.getHeaderCell(childIndex - 1)
-                         .getColKey();
-                 dropDetails.dropLocation = DDUtil.getVerticalDropLocation(
-                         row.getElement(), drag.getCurrentGwtEvent(), 0.2);
 @@ -6686,7 +6706,7 @@
  
          @Override

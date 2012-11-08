@@ -282,7 +282,7 @@ public class VMagnoliaTreeTable extends VMagnoliaTable {
                     treeSpacer = Document.get().createDivElement();
                     treeSpacer.getStyle().setDisplay(Display.INLINE_BLOCK);
                     treeSpacer.setClassName(classname);
-                    container.insertFirst(treeSpacer);
+                    container.insertAfter(treeSpacer, container.getFirstChild());
                     depth = rowUidl.hasAttribute("depth") ? rowUidl
                             .getIntAttribute("depth") : 0;
                     setIdent();
@@ -297,7 +297,7 @@ public class VMagnoliaTreeTable extends VMagnoliaTable {
                     return false;
                 }
                 return curColIndex == colIndexOfHierarchy
-                        + (showRowHeaders ? 2 : 1);
+                        + (showRowHeaders ? 1 : 0);
             }
 
             @Override

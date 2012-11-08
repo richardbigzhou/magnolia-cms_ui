@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.gwt.client.grid;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
@@ -157,7 +158,7 @@ public class VMagnoliaTable extends VScrollTablePatched {
         
         @Override
         public int getColWidth(int columnIndex) {
-            return super.getColWidth(columnIndex+1);
+            return super.getColWidth(columnIndex);
         }
         
         /**
@@ -165,6 +166,7 @@ public class VMagnoliaTable extends VScrollTablePatched {
          */
         public class MagnoliaTableRow extends VScrollTableRow {
             private CheckBox selectionCheckBox;
+            private boolean firstColumnInitialized;
             
             public MagnoliaTableRow(UIDL uidl, char[] aligns) {
                 super(uidl, aligns);
@@ -185,7 +187,20 @@ public class VMagnoliaTable extends VScrollTablePatched {
                 privateConstruction();
             }
             
+            @Override
+            protected void initCellWithText(String text, char align,
+                    String style, boolean textIsHTML, boolean sorted,
+                    String description, final TableCellElement td) {
+                super.initCellWithText(text, align, style, textIsHTML, sorted, description, td);
+                if(!firstColumnInitialized) {
+                    com.google.gwt.dom.client.Element container = td.getFirstChildElement();
+                    container.insertFirst(selectionCheckBox.getElement());
+                    firstColumnInitialized = true;
+                }
+            }
+                        
             private void privateConstruction() {
+                firstColumnInitialized = false;
                 selectionCheckBox = new CheckBox();
                 selectionCheckBox.setValue(isSelected(), false);
                 ValueChangeHandler<Boolean> selectionCheckBoxValueChangeHandler = new ValueChangeHandler<Boolean>() {
@@ -213,13 +228,9 @@ public class VMagnoliaTable extends VScrollTablePatched {
                         }
                     }
                 };
-                final Element td = DOM.createTD();
-                td.addClassName("v-table-cell-content");
-                td.appendChild(selectionCheckBox.getElement());
+                
                 selectionCheckBox.addValueChangeHandler(selectionCheckBoxValueChangeHandler);
                 selectionCheckBox.addStyleName("v-selection-cb");
-                
-                rowElement.appendChild(td);
                 getChildren().add(selectionCheckBox);
                 VMagnoliaTable.this.adopt(selectionCheckBox);               
                                  
@@ -244,16 +255,6 @@ public class VMagnoliaTable extends VScrollTablePatched {
                          }
                      }
                  }, MultiTapEvent.getType());                 
-            }
-            
-            @Override
-            protected void setCellWidth(int cellIx, int width) {
-                final Element cell = DOM.getChild(getElement(), cellIx + 1);
-                if (checkboxWidth < 0) {
-                    checkboxWidth = ((Element) getElement().getChild(0)).getOffsetWidth();
-                }
-                cell.getFirstChildElement().getStyle().setPropertyPx("width", cellIx == 0 ? width - checkboxWidth : width);
-                cell.getStyle().setPropertyPx("width", cellIx == 0 ? width - checkboxWidth : width);
             }
             
             @Override
