@@ -36,5 +36,15 @@
       <version>${magnoliaVersion}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+    	<groupId>info.magnolia.ui</groupId>
+    	<artifactId>magnolia-ui-framework</artifactId>
+    	<version>5.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+    	<groupId>info.magnolia.ui</groupId>
+    	<artifactId>magnolia-ui-model</artifactId>
+    	<version>5.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>

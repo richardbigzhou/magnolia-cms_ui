@@ -31,33 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security;
+package info.magnolia.ui.app.security.view;
 
-import javax.inject.Inject;
+import info.magnolia.ui.framework.view.View;
 
-import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
-import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
+import com.vaadin.ui.Component;
 
 /**
- * The Security App, extending the base content app.
+ * Groups View Implementation for the Security App.
  *
  */
-public class SecurityApp extends AbstractContentApp {
+public class GroupsViewImpl implements GroupsView {
 
-    @Inject
-    public SecurityApp(AppContext appContext, ChooseDialogFactory pickerDialogFactory) {
-        super(appContext, pickerDialogFactory);
+    private View workbenchView;
+
+    @Override
+    public Component asVaadinComponent() {
+        return workbenchView.asVaadinComponent();
     }
 
     @Override
-    public void start(Location location) {
-        super.start(location);
-        getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "groups", "" ));
-        getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "roles", "" ));
-        getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "users", "" ));
+    public void setWorkbenchView(View workbenchView) {
+        this.workbenchView = workbenchView;
     }
 
 }

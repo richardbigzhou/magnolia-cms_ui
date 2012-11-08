@@ -34,30 +34,31 @@
 package info.magnolia.ui.app.security;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
-import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
+import info.magnolia.ui.app.security.view.RolesView;
+import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.event.EventBus;
 
 /**
- * The Security App, extending the base content app.
- *
+ * Roles subapp for the Security App.
  */
-public class SecurityApp extends AbstractContentApp {
+public class SecurityRolesSubApp extends AbstractContentSubApp {
+    private static final Logger log = LoggerFactory.getLogger(SecurityRolesSubApp.class);
 
     @Inject
-    public SecurityApp(AppContext appContext, ChooseDialogFactory pickerDialogFactory) {
-        super(appContext, pickerDialogFactory);
+    public SecurityRolesSubApp(final SubAppContext subAppContext, RolesView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
+        super(subAppContext, view, workbench, subAppEventBus);
     }
 
     @Override
-    public void start(Location location) {
-        super.start(location);
-        getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "groups", "" ));
-        getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "roles", "" ));
-        getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "users", "" ));
+    public String getCaption() {
+        return "Roles";
     }
 
 }

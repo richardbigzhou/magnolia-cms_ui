@@ -31,35 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security;
+package info.magnolia.ui.app.security.view;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.admincentral.app.content.ContentAppView;
 
 /**
- * TODO: describe this type
+ * Groups View definition for the Security App.
  */
-public class SecurityMainSubApp extends AbstractContentSubApp {
-
-    private static final Logger log = LoggerFactory.getLogger(SecurityMainSubApp.class);
-
-    @Inject
-    public SecurityMainSubApp(final SubAppContext subAppContext, UsersView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
-        super(subAppContext, view, workbench, subAppEventBus);
-    }
-
-    @Override
-    public String getCaption() {
-        return "Users";
-    }
-
+public interface GroupsView extends ContentAppView {
 
 }

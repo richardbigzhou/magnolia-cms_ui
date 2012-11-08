@@ -31,13 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security;
+package info.magnolia.ui.app.security.view;
 
-import info.magnolia.ui.admincentral.app.content.ContentAppView;
+import info.magnolia.ui.framework.view.View;
+
+import com.vaadin.ui.Component;
 
 /**
- * Users View definition for the Security App.
+ * Roles view implementation for the Security App.
  */
-public interface UsersView extends ContentAppView {
+public class RolesViewImpl implements RolesView {
+
+    private View workbenchView;
+
+    @Override
+    public Component asVaadinComponent() {
+        return workbenchView.asVaadinComponent();
+    }
+
+    @Override
+    public void setWorkbenchView(View workbenchView) {
+        this.workbenchView = workbenchView;
+    }
 
 }

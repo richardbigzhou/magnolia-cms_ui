@@ -47,7 +47,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.column.AbstractColumnFormatter;
 
 /**
- * TODO: describe this type
+ * Column formatter for the user name column.
  */
 public class UserNameColumnFormatter extends AbstractColumnFormatter<UserNameColumnDefinition> {
 
