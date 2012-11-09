@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.thumbnail.view;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailContainer.ThumbnailItem;
 
 import java.util.ArrayList;
@@ -49,10 +50,13 @@ import com.vaadin.data.util.AbstractInMemoryContainer;
 import com.vaadin.data.util.AbstractProperty;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;
+//import com.vaadin.terminal.ThemeResource;
+
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
@@ -211,8 +215,56 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
 
         @Override
         public Resource getValue() {
-            final String path = workbenchDefinition.getImageProvider().getThumbnailPathByIdentifier(getWorkspaceName(), resourcePath);
-            return path == null ? null: new ExternalResource(path);
+
+            final String publicIconPath = "info/magnolia/ui/vaadin/gwt/public/img/icons/";
+
+            // Determine if it is an image.
+            String workspace = getWorkspaceName();
+            Node node = SessionUtil.getNodeByIdentifier(workspace, resourcePath);
+            String t;
+            String path;
+
+            try {
+                 t = node.getProperty("type").getString();
+            } catch (Exception e) {
+                log.warn("Could not get type from asset Node: {}", e.getMessage());
+                return null;
+            }
+
+            if ("jpg".equals(t) || "gif".equals(t) || "jpg".equals(t)){
+                path = workbenchDefinition.getImageProvider().getThumbnailPathByIdentifier(workspace, resourcePath);
+
+                return path == null ? null: new ExternalResource(path);
+            }
+
+            // Not an image - determine which icon to render
+            String icon;
+
+            if("pdf".equals(t) || "txt".equals(t) || "rtf".equals(t) ||
+                "doc".equals(t) || "zip".equals(t) || "swf".equals(t)){
+                icon = t;
+
+            }else if("mov".equals(t) || "h264".equals(t) || "mp4".equals(t) ||
+                    "flv".equals(t)){
+              icon = "video";
+
+            }else if("mp3".equals(t) || "wav".equals(t) || "ogg".equals(t) ){
+              icon = "audio";
+
+            }else{
+                icon = "unknown";
+            }
+
+            path = publicIconPath + "file-" + icon + ".svg";
+            //TODO CLZ Must be a better way to get a theme resource.
+            //TODO CLZ should be png's instead of svgs.
+            String server = MgnlContext.getContextPath() + "/" + "VAADIN/themes/admincentraltheme/";
+
+            ExternalResource img = new ExternalResource(server + "img/icons/file-" + icon + ".svg");
+            path = img.toString();
+            return img;
+
+
         }
 
         @Override
