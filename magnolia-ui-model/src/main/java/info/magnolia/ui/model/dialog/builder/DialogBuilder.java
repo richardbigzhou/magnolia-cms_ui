@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.column;
+package info.magnolia.ui.model.dialog.builder;
 
-import com.vaadin.ui.Table;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.column.definition.ColumnFormatter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-
-import javax.jcr.Item;
-
+import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
+import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 
 /**
- * Abstract ColumnFormatter implementations, initializes common attributes.
- *
- * @param <D> definition type
+ * Builder for building a dialog definition.
  */
-public abstract class AbstractColumnFormatter <D extends ColumnDefinition> implements ColumnFormatter {
+public class DialogBuilder {
 
-    protected D definition;
+    private final ConfiguredDialogDefinition definition = new ConfiguredDialogDefinition();
 
-    public AbstractColumnFormatter(D definition) {
-        this.definition = definition;
+    public DialogBuilder(String id) {
+        definition.setId(id);
     }
 
-    /**
-     * @param source table to get jcrItem from
-     * @param itemId id of the item to get
-     * @return the jcrItem with the provided id
-     */
-    protected Item getJcrItem(Table source, Object itemId) {
-        final JcrItemAdapter item = (JcrItemAdapter)source.getItem(itemId);
-        return item.getJcrItem();
+    public DialogBuilder label(String label) {
+        definition.setLabel(label);
+        return this;
+    }
+
+    public DialogBuilder i18nBasename(String i18nBasename) {
+        definition.setI18nBasename(i18nBasename);
+        return this;
+    }
+
+    public DialogBuilder description(String description) {
+        definition.setDescription(description);
+        return this;
+    }
+
+    public DialogDefinition exec() {
+        return definition;
+    }
+
+    public DialogBuilder tabs(TabBuilder... builders) {
+        for (TabBuilder builder : builders) {
+            definition.addTab(builder.exec());
+        }
+        return this;
+    }
+
+    public DialogBuilder actions(DialogActionBuilder... builders) {
+        for (DialogActionBuilder builder : builders) {
+            definition.addAction(builder.exec());
+        }
+        return this;
     }
 }

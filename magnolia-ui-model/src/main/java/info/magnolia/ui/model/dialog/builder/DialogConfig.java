@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.column;
-
-import com.vaadin.ui.Table;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.column.definition.ColumnFormatter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-
-import javax.jcr.Item;
-
+package info.magnolia.ui.model.dialog.builder;
 
 /**
- * Abstract ColumnFormatter implementations, initializes common attributes.
- *
- * @param <D> definition type
+ * Config object creating builders for dialog related definitions.
  */
-public abstract class AbstractColumnFormatter <D extends ColumnDefinition> implements ColumnFormatter {
+public class DialogConfig {
 
-    protected D definition;
+    public final FieldsConfig fields = new FieldsConfig();
 
-    public AbstractColumnFormatter(D definition) {
-        this.definition = definition;
+    public TabBuilder tab(String name) {
+        return new TabBuilder(name);
     }
 
-    /**
-     * @param source table to get jcrItem from
-     * @param itemId id of the item to get
-     * @return the jcrItem with the provided id
-     */
-    protected Item getJcrItem(Table source, Object itemId) {
-        final JcrItemAdapter item = (JcrItemAdapter)source.getItem(itemId);
-        return item.getJcrItem();
+    public DialogActionBuilder action(String name) {
+        return new DialogActionBuilder(name);
     }
 }

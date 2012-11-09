@@ -7,53 +7,44 @@
     <version>5.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>magnolia-ui-model</artifactId>
-  <name>magnolia-ui-model</name>
-  <properties>
-    <cloverCoverageThreshold>20</cloverCoverageThreshold>
-  </properties>
-
+  <artifactId>magnolia-ui-app-security</artifactId>
+  <packaging>jar</packaging>
+  <name>magnolia-ui-app-security</name>
 
   <dependencies>
     <dependency>
-      <groupId>info.magnolia</groupId>
-      <artifactId>magnolia-core</artifactId>
-      <version>${magnoliaVersion}</version>
-    </dependency>
-        <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-framework</artifactId>
+      <artifactId>magnolia-ui-admincentral</artifactId>
       <version>${project.version}</version>
     </dependency>
 
+    <!-- For Test -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit-dep</artifactId>
-      <scope>test</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <scope>test</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
-      <version>${magnoliaVersion}</version>
       <type>test-jar</type>
+      <version>${magnoliaVersion}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin</artifactId>
+    	<groupId>info.magnolia.ui</groupId>
+    	<artifactId>magnolia-ui-framework</artifactId>
+    	<version>5.0-SNAPSHOT</version>
     </dependency>
-
-    <!-- needed by some tests -->
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>test</scope>
+    	<groupId>info.magnolia.ui</groupId>
+    	<artifactId>magnolia-ui-model</artifactId>
+    	<version>5.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
-
 </project>

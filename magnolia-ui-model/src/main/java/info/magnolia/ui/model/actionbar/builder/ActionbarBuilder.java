@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.column;
+package info.magnolia.ui.model.actionbar.builder;
 
-import com.vaadin.ui.Table;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.column.definition.ColumnFormatter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-
-import javax.jcr.Item;
-
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition;
 
 /**
- * Abstract ColumnFormatter implementations, initializes common attributes.
- *
- * @param <D> definition type
+ * Builder for building an actionbar definition.
  */
-public abstract class AbstractColumnFormatter <D extends ColumnDefinition> implements ColumnFormatter {
+public class ActionbarBuilder {
 
-    protected D definition;
+    private ConfiguredActionbarDefinition definition = new ConfiguredActionbarDefinition();
 
-    public AbstractColumnFormatter(D definition) {
-        this.definition = definition;
+    public ActionbarBuilder defaultAction(String defaultAction) {
+        definition.setDefaultAction(defaultAction);
+        return this;
     }
 
-    /**
-     * @param source table to get jcrItem from
-     * @param itemId id of the item to get
-     * @return the jcrItem with the provided id
-     */
-    protected Item getJcrItem(Table source, Object itemId) {
-        final JcrItemAdapter item = (JcrItemAdapter)source.getItem(itemId);
-        return item.getJcrItem();
+    public ActionbarBuilder sections(ActionbarSectionBuilder... sections) {
+        for (ActionbarSectionBuilder section : sections) {
+            definition.addSection(section.exec());
+        }
+        return this;
+    }
+
+    public ActionbarDefinition exec() {
+        return definition;
     }
 }

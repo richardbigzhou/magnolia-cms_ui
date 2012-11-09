@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.column;
+package info.magnolia.ui.model.dialog.builder;
 
-import com.vaadin.ui.Table;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.column.definition.ColumnFormatter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-
-import javax.jcr.Item;
-
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
+import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 
 /**
- * Abstract ColumnFormatter implementations, initializes common attributes.
- *
- * @param <D> definition type
+ * Builder for building a dialog action.
  */
-public abstract class AbstractColumnFormatter <D extends ColumnDefinition> implements ColumnFormatter {
+public class DialogActionBuilder {
 
-    protected D definition;
+    private final ConfiguredDialogActionDefinition definition = new ConfiguredDialogActionDefinition();
 
-    public AbstractColumnFormatter(D definition) {
-        this.definition = definition;
+    public DialogActionBuilder(String name) {
+        this.definition.setName(name);
     }
 
-    /**
-     * @param source table to get jcrItem from
-     * @param itemId id of the item to get
-     * @return the jcrItem with the provided id
-     */
-    protected Item getJcrItem(Table source, Object itemId) {
-        final JcrItemAdapter item = (JcrItemAdapter)source.getItem(itemId);
-        return item.getJcrItem();
+    public DialogActionBuilder label(String label) {
+        definition.setLabel(label);
+        return this;
+    }
+
+    public DialogActionBuilder action(ActionDefinition actionDefinition) {
+        definition.setActionDefinition(actionDefinition);
+        return this;
+    }
+
+    public DialogActionDefinition exec() {
+        return definition;
     }
 }

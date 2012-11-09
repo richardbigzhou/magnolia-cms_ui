@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.list.view;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.column.ColumnFormatter;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
@@ -47,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -196,12 +194,8 @@ public class ListViewImpl implements ListView {
                 table.setColumnHeader(columnProperty, column.getLabel());
                 container.addContainerProperty(columnProperty, column.getType(), "");
                 //Set Formatter
-                if(StringUtils.isNotBlank(column.getFormatterClass())) {
-                    try {
-                        table.addGeneratedColumn(columnProperty, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
-                   } catch (ClassNotFoundException e) {
-                        log.error("Not able to create the Formatter",e);
-                   }
+                if (column.getFormatterClass() != null) {
+                    table.addGeneratedColumn(columnProperty, componentProvider.newInstance(column.getFormatterClass(),column));
                 }
                 columnOrder.add(columnProperty);
             }

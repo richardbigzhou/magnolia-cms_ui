@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.column;
+package info.magnolia.ui.model.actionbar.builder;
 
-import com.vaadin.ui.Table;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.column.definition.ColumnFormatter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-
-import javax.jcr.Item;
-
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarItemDefinition;
 
 /**
- * Abstract ColumnFormatter implementations, initializes common attributes.
- *
- * @param <D> definition type
+ * Builder for building an actionbar item definition.
  */
-public abstract class AbstractColumnFormatter <D extends ColumnDefinition> implements ColumnFormatter {
+public class ActionbarItemBuilder {
 
-    protected D definition;
+    private ConfiguredActionbarItemDefinition definition = new ConfiguredActionbarItemDefinition();
 
-    public AbstractColumnFormatter(D definition) {
-        this.definition = definition;
+    public ActionbarItemBuilder(String name) {
+        this.definition.setName(name);
     }
 
-    /**
-     * @param source table to get jcrItem from
-     * @param itemId id of the item to get
-     * @return the jcrItem with the provided id
-     */
-    protected Item getJcrItem(Table source, Object itemId) {
-        final JcrItemAdapter item = (JcrItemAdapter)source.getItem(itemId);
-        return item.getJcrItem();
+    public ConfiguredActionbarItemDefinition exec() {
+        return definition;
+    }
+
+    public ActionbarItemBuilder label(String label) {
+        definition.setLabel(label);
+        return this;
+    }
+
+    public ActionbarItemBuilder i18nBasename(String i18nBasename) {
+        definition.setI18nBasename(i18nBasename);
+        return this;
+    }
+
+    public ActionbarItemBuilder icon(String icon) {
+        definition.setIcon(icon);
+        return this;
+    }
+
+    public ActionbarItemBuilder description(String description) {
+        definition.setDescription(description);
+        return this;
+    }
+
+    public ActionbarItemBuilder action(ActionDefinition actionDefinition) {
+        definition.setActionDefinition(actionDefinition);
+        return this;
     }
 }

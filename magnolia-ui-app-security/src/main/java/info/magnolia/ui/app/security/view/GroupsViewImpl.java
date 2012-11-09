@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.column;
+package info.magnolia.ui.app.security.view;
 
-import com.vaadin.ui.Table;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.column.definition.ColumnFormatter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.framework.view.View;
 
-import javax.jcr.Item;
-
+import com.vaadin.ui.Component;
 
 /**
- * Abstract ColumnFormatter implementations, initializes common attributes.
+ * Groups View Implementation for the Security App.
  *
- * @param <D> definition type
  */
-public abstract class AbstractColumnFormatter <D extends ColumnDefinition> implements ColumnFormatter {
+public class GroupsViewImpl implements GroupsView {
 
-    protected D definition;
+    private View workbenchView;
 
-    public AbstractColumnFormatter(D definition) {
-        this.definition = definition;
+    @Override
+    public Component asVaadinComponent() {
+        return workbenchView.asVaadinComponent();
     }
 
-    /**
-     * @param source table to get jcrItem from
-     * @param itemId id of the item to get
-     * @return the jcrItem with the provided id
-     */
-    protected Item getJcrItem(Table source, Object itemId) {
-        final JcrItemAdapter item = (JcrItemAdapter)source.getItem(itemId);
-        return item.getJcrItem();
+    @Override
+    public void setWorkbenchView(View workbenchView) {
+        this.workbenchView = workbenchView;
     }
+
 }

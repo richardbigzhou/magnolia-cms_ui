@@ -31,25 +31,59 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.framework.app.builder;
 
-import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
-import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
-import info.magnolia.ui.framework.app.AppContext;
-
-import javax.inject.Inject;
-
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 
 /**
- * The Contacts app, extending base content app.
- *
+ * Builder used to build an app descriptor.
  */
-public class ContactsApp extends AbstractContentApp {
+public class AppBuilder {
 
+    private ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
 
-    @Inject
-    public ContactsApp(AppContext appContext, ChooseDialogFactory pickerDialogFactory) {
-        super(appContext, pickerDialogFactory);
+    public AppBuilder(String name) {
+        descriptor.setName(name);
     }
 
+    public AppBuilder label(String label) {
+        descriptor.setLabel(label);
+        return this;
+    }
+
+    public AppBuilder icon(String icon) {
+        descriptor.setIcon(icon);
+        return this;
+    }
+
+    public AppBuilder appClass(Class<? extends info.magnolia.ui.framework.app.App> appClass) {
+        descriptor.setAppClass(appClass);
+        return this;
+    }
+
+    public AppBuilder categoryName(String categoryName) {
+        descriptor.setCategoryName(categoryName);
+        return this;
+    }
+
+    public AppBuilder enabled(boolean enabled) {
+        descriptor.setEnabled(enabled);
+        return this;
+    }
+
+    public SubAppBuilder subApp(String name) {
+        return new SubAppBuilder(name);
+    }
+
+    public AppBuilder subApps(SubAppBuilder... builders) {
+        for (SubAppBuilder builder : builders) {
+            descriptor.addSubApp(builder.exec());
+        }
+        return this;
+    }
+
+    public AppDescriptor exec() {
+        return descriptor;
+    }
 }

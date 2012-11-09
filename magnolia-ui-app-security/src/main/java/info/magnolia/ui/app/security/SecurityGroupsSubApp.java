@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.column;
+package info.magnolia.ui.app.security;
 
-import com.vaadin.ui.Table;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.column.definition.ColumnFormatter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-import javax.jcr.Item;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
+import info.magnolia.ui.app.security.view.GroupsView;
+import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.event.EventBus;
 
 /**
- * Abstract ColumnFormatter implementations, initializes common attributes.
- *
- * @param <D> definition type
+ * Groups Sub App for the Security App.
  */
-public abstract class AbstractColumnFormatter <D extends ColumnDefinition> implements ColumnFormatter {
+public class SecurityGroupsSubApp extends AbstractContentSubApp {
+    private static final Logger log = LoggerFactory.getLogger(SecurityGroupsSubApp.class);
 
-    protected D definition;
-
-    public AbstractColumnFormatter(D definition) {
-        this.definition = definition;
+    @Inject
+    public SecurityGroupsSubApp(final SubAppContext subAppContext, GroupsView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
+        super(subAppContext, view, workbench, subAppEventBus);
     }
 
-    /**
-     * @param source table to get jcrItem from
-     * @param itemId id of the item to get
-     * @return the jcrItem with the provided id
-     */
-    protected Item getJcrItem(Table source, Object itemId) {
-        final JcrItemAdapter item = (JcrItemAdapter)source.getItem(itemId);
-        return item.getJcrItem();
+    @Override
+    public String getCaption() {
+        return "Groups";
     }
+
 }

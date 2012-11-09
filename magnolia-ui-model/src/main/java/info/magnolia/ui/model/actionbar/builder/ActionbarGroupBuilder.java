@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.column;
+package info.magnolia.ui.model.actionbar.builder;
 
-import com.vaadin.ui.Table;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.column.definition.ColumnFormatter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-
-import javax.jcr.Item;
-
+import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
+import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition;
 
 /**
- * Abstract ColumnFormatter implementations, initializes common attributes.
- *
- * @param <D> definition type
+ * Builder for building an actionbar group definition.
  */
-public abstract class AbstractColumnFormatter <D extends ColumnDefinition> implements ColumnFormatter {
+public class ActionbarGroupBuilder {
 
-    protected D definition;
+    private ConfiguredActionbarGroupDefinition definition = new ConfiguredActionbarGroupDefinition();
 
-    public AbstractColumnFormatter(D definition) {
-        this.definition = definition;
+    public ActionbarGroupBuilder(String name) {
+        definition.setName(name);
     }
 
-    /**
-     * @param source table to get jcrItem from
-     * @param itemId id of the item to get
-     * @return the jcrItem with the provided id
-     */
-    protected Item getJcrItem(Table source, Object itemId) {
-        final JcrItemAdapter item = (JcrItemAdapter)source.getItem(itemId);
-        return item.getJcrItem();
+    public ActionbarGroupDefinition exec() {
+        return definition;
+    }
+
+    public ActionbarGroupBuilder items(ActionbarItemBuilder... items) {
+        for (ActionbarItemBuilder item : items) {
+            definition.addItem(item.exec());
+        }
+        return this;
     }
 }

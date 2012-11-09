@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.column;
+package info.magnolia.ui.model.workbench.builder;
 
-import com.vaadin.ui.Table;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.column.definition.ColumnFormatter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-
-import javax.jcr.Item;
-
+import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
+import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 
 /**
- * Abstract ColumnFormatter implementations, initializes common attributes.
+ * Builder for building an item type definition.
  *
- * @param <D> definition type
+ * @see WorkbenchBuilder
  */
-public abstract class AbstractColumnFormatter <D extends ColumnDefinition> implements ColumnFormatter {
+public class ItemTypeBuilder {
 
-    protected D definition;
+    private ConfiguredItemTypeDefinition definition = new ConfiguredItemTypeDefinition();
 
-    public AbstractColumnFormatter(D definition) {
-        this.definition = definition;
+    public ItemTypeBuilder(String itemType) {
+        definition.setItemType(itemType);
     }
 
-    /**
-     * @param source table to get jcrItem from
-     * @param itemId id of the item to get
-     * @return the jcrItem with the provided id
-     */
-    protected Item getJcrItem(Table source, Object itemId) {
-        final JcrItemAdapter item = (JcrItemAdapter)source.getItem(itemId);
-        return item.getJcrItem();
+    public ItemTypeBuilder icon(String icon) {
+        definition.setIcon(icon);
+        return this;
+    }
+
+    public ItemTypeDefinition exec() {
+        return definition;
     }
 }

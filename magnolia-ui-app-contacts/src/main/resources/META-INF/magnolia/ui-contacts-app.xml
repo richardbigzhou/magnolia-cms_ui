@@ -60,50 +60,6 @@
   </components>
 
   <components>
-    <id>app-contacts-test</id>
-    <component>
-      <type>info.magnolia.ui.app.contacts.ContactsMainSubApp</type>
-      <implementation>info.magnolia.ui.app.contacts.ContactsMainSubApp</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.app.contacts.ContactsView</type>
-      <implementation>info.magnolia.ui.app.contacts.ContactsViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.app.contacts.item.ContactsItemSubApp</type>
-      <implementation>info.magnolia.ui.app.contacts.item.ContactsItemSubApp</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.app.contacts.item.ContactsItemView</type>
-      <implementation>info.magnolia.ui.app.contacts.item.ContactsItemViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.content.view.ContentPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.content.view.ContentPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ItemWorkbenchView</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ItemWorkbenchViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ItemWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ItemWorkbenchPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.content.item.ItemPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.content.item.ItemPresenter</implementation>
-    </component>
-  </components>
-
-  <components>
     <id>app-contacts-item</id>
     <component>
       <type>info.magnolia.ui.app.contacts.item.ContactsItemSubApp</type>

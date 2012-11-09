@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.column;
+package info.magnolia.ui.model.dialog.builder;
 
-import com.vaadin.ui.Table;
-import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.column.definition.ColumnFormatter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-
-import javax.jcr.Item;
-
+import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 
 /**
- * Abstract ColumnFormatter implementations, initializes common attributes.
- *
- * @param <D> definition type
+ * Builder for building an option for a select field.
  */
-public abstract class AbstractColumnFormatter <D extends ColumnDefinition> implements ColumnFormatter {
+public class OptionBuilder {
 
-    protected D definition;
+    private final SelectFieldOptionDefinition definition = new SelectFieldOptionDefinition();
 
-    public AbstractColumnFormatter(D definition) {
-        this.definition = definition;
+    public OptionBuilder value(String value) {
+        definition.setValue(value);
+        return this;
     }
 
-    /**
-     * @param source table to get jcrItem from
-     * @param itemId id of the item to get
-     * @return the jcrItem with the provided id
-     */
-    protected Item getJcrItem(Table source, Object itemId) {
-        final JcrItemAdapter item = (JcrItemAdapter)source.getItem(itemId);
-        return item.getJcrItem();
+    public OptionBuilder selected(boolean selected) {
+        definition.setSelected(selected);
+        return this;
+    }
+
+    public OptionBuilder selected() {
+        definition.setSelected(true);
+        return this;
+    }
+
+    public OptionBuilder label(String label) {
+        definition.setLabel(label);
+        return this;
+    }
+
+    public OptionBuilder iconSrc(String iconSrc) {
+        definition.setIconSrc(iconSrc);
+        return this;
+    }
+
+    public SelectFieldOptionDefinition exec() {
+        return definition;
     }
 }
