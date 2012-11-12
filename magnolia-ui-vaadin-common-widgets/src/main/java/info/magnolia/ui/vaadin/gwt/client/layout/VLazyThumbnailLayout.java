@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.layout;
 
+import info.magnolia.ui.vaadin.gwt.client.icon.GwtIcon;
+import info.magnolia.ui.vaadin.gwt.client.mgwt.SliderClientBundle;
 import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchMoveEvent;
 import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchRecognizer;
 import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchStartEvent;
@@ -47,6 +49,7 @@ import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -54,6 +57,8 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -65,6 +70,7 @@ import com.googlecode.mgwt.dom.client.recognizer.pinch.UIObjectToOffsetProvider;
 import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapEvent;
 import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapHandler;
 import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapRecognizer;
+import com.googlecode.mgwt.ui.client.widget.MSlider;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
@@ -74,11 +80,14 @@ import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * Client side impl of lazy asset thumbnails layout.
- *
+ * 
  */
 public class VLazyThumbnailLayout extends Composite implements Paintable, ClientSideHandler {
 
     private static final int QUERY_TIMER_DELAY = 250;
+
+    private static final int MIN_WIDTH = 50;
+    private static final int MAX_WIDTH = 230;
 
     private int thumbnailWidth = 0;
 
@@ -93,9 +102,12 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
     private final List<VThumbnail> thumbnailStubs = new ArrayList<VThumbnail>();
 
     private ScrollPanel scroller = new ScrollPanel();
+    private FlowPanel basePanel = new FlowPanel();
+
+    private SliderClientBundle thumbnailBundle = GWT.create(SliderClientBundle.class);
+    private MSlider thumbnailSizeSlider = new MSlider(thumbnailBundle.css());
 
     private CSSRule thumbnailImageStyle = CSSRule.create(".thumbnail-image");
-    
     private CSSRule thumbnailStyle = CSSRule.create(".thumbnail");
 
     private FlowPanel imageContainer = new FlowPanel();
@@ -134,11 +146,38 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
     };
 
     public VLazyThumbnailLayout() {
-        //TouchScrollDelegate.enableTouchScrolling(scroller, scroller.getElement());
-        thumbnailStyle.setProperty("margin", "3px");
+
+        // Prepare thumbnail size slider.
+        thumbnailSizeSlider.setWidth("125px");
+        GwtIcon iconSizeSmall = new GwtIcon();
+        iconSizeSmall.updateIconName("slider-min");
+        iconSizeSmall.updateSize(30);
+        iconSizeSmall.updateColor("#aaaaaa");
+
+        GwtIcon iconSizeLarge = new GwtIcon();
+        iconSizeLarge.updateIconName("slider-max");
+        iconSizeLarge.updateSize(30);
+        iconSizeLarge.updateColor("#aaaaaa");
+
+        basePanel.add(iconSizeSmall);
+        basePanel.add(thumbnailSizeSlider);
+        basePanel.add(iconSizeLarge);
+
         scroller.setWidget(imageContainer);
-        initWidget(scroller);
+        basePanel.add(scroller);
+
+        initWidget(basePanel);
+
+        thumbnailStyle.setProperty("margin", "3px");
+
+        basePanel.addStyleName("thumbnail-view-base-panel");
         scroller.addStyleName("thumbnail-scroller");
+
+        bindHandlers();
+    }
+
+    protected void bindHandlers() {
+
         scroller.addScrollHandler(new ScrollHandler() {
             @Override
             public void onScroll(ScrollEvent event) {
@@ -146,33 +185,48 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
             }
         });
 
-
         final TouchDelegate touchDelegate = new TouchDelegate(this);
         touchDelegate.addTouchHandler(new MagnoliaPinchRecognizer(touchDelegate, new UIObjectToOffsetProvider(scroller)));
         MultiTapRecognizer multitapRecognizer = new MultiTapRecognizer(touchDelegate, 1, 2);
         addHandler(new MultiTapHandler() {
             @Override
             public void onMultiTap(MultiTapEvent event) {
-                final Element element = Util.getElementFromPoint(event.getTouchStarts().get(0).get(0).getPageX(), event.getTouchStarts().get(0).get(0).getPageY());
+                final Element element = Util.getElementFromPoint(event.getTouchStarts().get(0).get(0).getPageX(), event.getTouchStarts().get(0)
+                        .get(0).getPageY());
                 final VThumbnail thumbnail = Util.findWidget(element, VThumbnail.class);
                 proxy.call("thumbnailDoubleClicked", thumbnail.getId());
             }
         }, MultiTapEvent.getType());
-        
+
         touchDelegate.addTouchHandler(multitapRecognizer);
-        
+
         addHandler(new MagnoliaPinchMoveEvent.Handler() {
             @Override
             public void onPinchMove(MagnoliaPinchMoveEvent event) {
                 double scaleFactor = 1 / event.getScaleFactor();
-                int width = Math.max((int)(ComputedStyle.parseInt(thumbnailStyle.getProperty("width")) * scaleFactor), 25);
-                int height = Math.max((int)(ComputedStyle.parseInt(thumbnailStyle.getProperty("height")) * scaleFactor), 25);
+                int width = Math.max((int) (ComputedStyle.parseInt(thumbnailStyle.getProperty("width")) * scaleFactor), 25);
+                int height = Math.max((int) (ComputedStyle.parseInt(thumbnailStyle.getProperty("height")) * scaleFactor), 25);
 
-                scroller.setVerticalScrollPosition((int)(scroller.getVerticalScrollPosition() * scaleFactor));
+                scroller.setVerticalScrollPosition((int) (scroller.getVerticalScrollPosition() * scaleFactor));
                 setThumbnailSize(width, height);
 
             }
         }, MagnoliaPinchMoveEvent.TYPE);
+
+        thumbnailSizeSlider.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Integer> event) {
+
+                double scaleFactor = (double) event.getValue() / 100.0;
+                int widthRequest = (int) (MIN_WIDTH + (MAX_WIDTH - MIN_WIDTH) * scaleFactor);
+                int width = Math.max(widthRequest, 10);
+
+                // TODO: CLZ Look into scroll synchronization -
+                // scroller.setVerticalScrollPosition((int)
+                // (scroller.getVerticalScrollPosition() * scaleFactor));
+                setThumbnailSize(width, width);
+            }
+        });
 
         addHandler(new MagnoliaPinchStartEvent.Handler() {
             @Override
@@ -228,16 +282,16 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
     }
 
     private void setThumbnailSize(int width, int height) {
-        VConsole.log("Thumbnails: setThumbnailSize: " + width + " h:"+height );
-        //ApplicationConnection.getConsole()
+        VConsole.log("Thumbnails: setThumbnailSize: " + width + " h:" + height);
+
         this.thumbnailHeight = height;
         this.thumbnailWidth = width;
+        // Scale the thumbnail divs.
         thumbnailStyle.setProperty("width", width + "px");
-        thumbnailStyle.setProperty("height", height + "px");
-        // TODO: Christopher Zimmermann - Investigate further when ios6 is available with good debug tools - or when we have desktop resizer.
-        // This should work but the images are not resizing.
-        thumbnailImageStyle.setProperty("max-width", width + "px");
-        thumbnailImageStyle.setProperty("max-height", height + "px");
+        thumbnailStyle.setProperty("height", width + "px");
+        // Scale the size of the image in the thumbnails.
+        thumbnailImageStyle.setProperty("maxWidth", width + "px");
+        thumbnailImageStyle.setProperty("maxHeight", width + "px");
 
         createStubsAndQueryThumbnails();
     }
@@ -306,7 +360,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         int thumbnailsInRow = (int) (width / (thumbnailWidth + getHorizontalMargin()) * 1d);
         int rows = (int) Math.ceil(1d * totalHeight / (thumbnailHeight + getVerticalMargin()));
         int totalThumbnailsPossible = Math.min(thumbnailAmount, thumbnailsInRow * rows);
-        return Math.max(totalThumbnailsPossible  - thumbnailStubs.size() - thumbnails.size(), 0);
+        return Math.max(totalThumbnailsPossible - thumbnailStubs.size() - thumbnails.size(), 0);
     }
 
     @Override
@@ -324,14 +378,14 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
     }
 
     public static native JsArray<VThumbnailData> parseStringArray(String json) /*-{
-        return eval('(' + json + ')');
-    }-*/;
+                                                                               return eval('(' + json + ')');
+                                                                               }-*/;
 
     private int getHorizontalMargin() {
-        return  ComputedStyle.parseInt(thumbnailStyle.getProperty("marginTop")) * 2;
+        return ComputedStyle.parseInt(thumbnailStyle.getProperty("marginTop")) * 2;
     }
 
     private int getVerticalMargin() {
-        return  ComputedStyle.parseInt(thumbnailStyle.getProperty("marginLeft")) * 2;
+        return ComputedStyle.parseInt(thumbnailStyle.getProperty("marginLeft")) * 2;
     }
 }

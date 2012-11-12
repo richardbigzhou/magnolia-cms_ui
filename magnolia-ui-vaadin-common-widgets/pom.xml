@@ -119,7 +119,7 @@
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
-            <id>copy-resources</id>
+            <id>copy-gwt-resources</id>
             <phase>process-resources</phase>
             <goals>
               <goal>copy-resources</goal>
@@ -217,7 +217,6 @@
                     import java.io.File
 
                     def path = "${project.build.sourceDirectory}/com/vaadin/terminal/gwt/client/ui/"
-                    //println "path is $path"
                     def originalFile = new File(path + "VScrollTable.java")
                     def renamedFile = new File(path + "VScrollTablePatched.java")
                     println "Renaming ${originalFile.name} to ${renamedFile.name}..."

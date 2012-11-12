@@ -33,9 +33,12 @@
  */
 package info.magnolia.ui.admincentral.thumbnail.view;
 
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailContainer.ThumbnailItem;
-import info.magnolia.ui.model.thumbnail.ImageProvider;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -47,15 +50,29 @@ import com.vaadin.data.util.AbstractInMemoryContainer;
 import com.vaadin.data.util.AbstractProperty;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;
+//import com.vaadin.terminal.ThemeResource;
+
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 
 /**
  * Container that provides thumbnails lazily.
  */
 public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resource, ThumbnailItem> implements Container.Ordered {
 
+    private static final Logger log = LoggerFactory.getLogger(ThumbnailContainer.class);
+
     public static final String THUMBNAIL_PROPERTY_ID = "thumbnail";
 
-    private ImageProvider imageProvider;
+    private WorkbenchDefinition workbenchDefinition;
 
     private String workspaceName = "";
 
@@ -63,10 +80,10 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
 
     private int thumbnailHeight = 0;
 
-    public ThumbnailContainer(ImageProvider imageProvider, List<String> uuids) {
+    public ThumbnailContainer(WorkbenchDefinition workbenchDefinition) {
         super();
-        this.imageProvider = imageProvider;
-        getAllItemIds().addAll(uuids);
+        this.workbenchDefinition = workbenchDefinition;
+        getAllItemIds().addAll(getAllIdentifiers(workbenchDefinition.getWorkspace()));
     }
 
     @Override
@@ -89,7 +106,43 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
         }
         return null;
     }
-    
+
+    private String prepareJcrSQL2Query(){
+        final String itemType = workbenchDefinition.getMainItemType().getItemType();
+        return "select * from [" + itemType + "] as t order by name(t)";
+    }
+
+    /**
+     * @return a List of JCR identifiers for all the nodes recursively found under <code>initialPath</code>. This method is called in {@link LazyThumbnailViewImpl#refresh()}.
+     * You can override it, if you need a different strategy than the default one to fetch the identifiers of the nodes for which thumbnails need to be displayed.
+     * @see info.magnolia.ui.vaadin.layout.LazyThumbnailLayout#refresh()
+     */
+    protected List<String> getAllIdentifiers(final String workspaceName) {
+        List<String> uuids = new ArrayList<String>();
+        final String query = prepareJcrSQL2Query();
+        try {
+            QueryManager qm = MgnlContext.getJCRSession(workspaceName).getWorkspace().getQueryManager();
+            Query q = qm.createQuery(prepareJcrSQL2Query(), Query.JCR_SQL2);
+
+            log.debug("Executing query statement [{}] on workspace [{}]", query, workspaceName);
+            long start = System.currentTimeMillis();
+
+            QueryResult queryResult = q.execute();
+            NodeIterator iter = queryResult.getNodes();
+
+            while(iter.hasNext()) {
+                uuids.add(iter.nextNode().getIdentifier());
+            }
+
+            log.debug("Done collecting {} nodes in {}ms", uuids.size(), System.currentTimeMillis() - start);
+
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+        return uuids;
+    }
+
+
     @Override
     public boolean addContainerProperty(Object propertyId, Class<?> type, Object defaultValue) {
         throw new UnsupportedOperationException();
@@ -162,8 +215,56 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
 
         @Override
         public Resource getValue() {
-            final String path = imageProvider.getThumbnailPathByIdentifier(getWorkspaceName(), resourcePath);
-            return path == null ? null: new ExternalResource(path);
+
+            final String publicIconPath = "info/magnolia/ui/vaadin/gwt/public/img/icons/";
+
+            // Determine if it is an image.
+            String workspace = getWorkspaceName();
+            Node node = SessionUtil.getNodeByIdentifier(workspace, resourcePath);
+            String t;
+            String path;
+
+            try {
+                 t = node.getProperty("type").getString();
+            } catch (Exception e) {
+                log.warn("Could not get type from asset Node: {}", e.getMessage());
+                return null;
+            }
+
+            if ("jpg".equals(t) || "gif".equals(t) || "jpg".equals(t)){
+                path = workbenchDefinition.getImageProvider().getThumbnailPathByIdentifier(workspace, resourcePath);
+
+                return path == null ? null: new ExternalResource(path);
+            }
+
+            // Not an image - determine which icon to render
+            String icon;
+
+            if("pdf".equals(t) || "txt".equals(t) || "rtf".equals(t) ||
+                "doc".equals(t) || "zip".equals(t) || "swf".equals(t)){
+                icon = t;
+
+            }else if("mov".equals(t) || "h264".equals(t) || "mp4".equals(t) ||
+                    "flv".equals(t)){
+              icon = "video";
+
+            }else if("mp3".equals(t) || "wav".equals(t) || "ogg".equals(t) ){
+              icon = "audio";
+
+            }else{
+                icon = "unknown";
+            }
+
+            path = publicIconPath + "file-" + icon + ".svg";
+            //TODO CLZ Must be a better way to get a theme resource.
+            //TODO CLZ should be png's instead of svgs.
+            String server = MgnlContext.getContextPath() + "/" + "VAADIN/themes/admincentraltheme/";
+
+            ExternalResource img = new ExternalResource(server + "img/icons/file-" + icon + ".svg");
+            path = img.toString();
+            return img;
+
+
         }
 
         @Override
@@ -175,7 +276,6 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
         public Class<Resource> getType() {
             return Resource.class;
         }
-
     }
 
     /**
@@ -211,6 +311,5 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
         public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
             throw new UnsupportedOperationException();
         }
-
     }
 }

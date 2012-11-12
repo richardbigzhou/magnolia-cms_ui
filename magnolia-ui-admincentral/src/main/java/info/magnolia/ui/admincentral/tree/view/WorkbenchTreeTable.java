@@ -39,8 +39,6 @@ import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -51,8 +49,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.Item;
 
 
 /**
@@ -66,11 +62,8 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
 
     private final HierarchicalJcrContainer container;
 
-    private final TreeModel treeModel;
-
-    public WorkbenchTreeTable(WorkbenchDefinition workbenchDefinition, TreeModel treeModel, ComponentProvider componentProvider) {
+    public WorkbenchTreeTable(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
         super();
-        this.treeModel = treeModel;
 
         setSizeFull();
         setEditable(false);
@@ -79,7 +72,7 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
         setColumnReorderingAllowed(false);
         setImmediate(true);
 
-        container = new HierarchicalJcrContainer(treeModel, workbenchDefinition);
+        this.container = container;
         buildColumns(workbenchDefinition, componentProvider);
     }
 
@@ -90,26 +83,13 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
                 setCollapsed(parent, false);
                 parent = container.getParent(parent);
             }
-            // finally expand the root else children won't be visibile.
+            // finally expand the root else children won't be visible.
             setCollapsed(parent, false);
         }
         // Set this multi select component to have only this one item selected
         final Set<Object> set = new HashSet<Object>();
         set.add(itemId);
         setValue(set);
-    }
-
-    public void refresh() {
-        container.fireItemSetChange();
-    }
-
-    public void updateItem(final Item item) {
-        final String itemId = ((JcrItemAdapter) item).getItemId();
-        if (container.containsId(itemId)) {
-            container.fireItemSetChange();
-        } else {
-            log.warn("No item found for id [{}]", itemId);
-        }
     }
 
     private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
@@ -123,8 +103,7 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
             final String columnProperty = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
             // FIXME fgrilli workaround for conference
             // when setting cols width in dialogs we are forced to use explicit
-            // px value instead of expand ratios, which for some reason don't
-            // work
+            // px value instead of expand ratios, which for some reason don't work
             if (workbenchDefinition.isDialogWorkbench()) {
                 setColumnWidth(columnProperty, 300);
             } else {
@@ -153,5 +132,4 @@ public class WorkbenchTreeTable extends MagnoliaTreeTable {
         setContainerDataSource(container);
         setVisibleColumns(columnOrder.toArray());
     }
-
 }

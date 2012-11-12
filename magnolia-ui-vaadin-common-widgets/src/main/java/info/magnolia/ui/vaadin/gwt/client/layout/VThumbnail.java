@@ -65,8 +65,12 @@ public class VThumbnail extends Composite {
 
     public void setData(VThumbnailData data) {
         this.data = data;
-        if (data != null &&  data.getSrc() != null) {
-            image.setUrl(data.getSrc());
+
+        if (data != null) {
+            String src = data.getSrc();
+            if (src != null) {
+                image.setUrl(data.getSrc());
+            }
         }
     }
 

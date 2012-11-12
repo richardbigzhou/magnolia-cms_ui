@@ -37,6 +37,7 @@ import org.junit.Test;
 
 import javax.jcr.PropertyType;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -74,6 +75,21 @@ public class DefaultPropertyUtilTest {
         assertEquals(today.get(Calendar.YEAR), resultsCalendar.get(Calendar.YEAR));
         assertEquals(today.get(Calendar.MONTH), resultsCalendar.get(Calendar.MONTH));
         assertEquals(today.get(Calendar.DAY_OF_MONTH), resultsCalendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+    @Test
+    public void testGetFieldTypeClass() {
+        assertEquals(String.class, DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_STRING));
+        assertEquals(Long.class, DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_LONG));
+        assertEquals(Boolean.class, DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_BOOLEAN));
+        assertEquals(Date.class, DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_DATE));
+        assertEquals(BigDecimal.class, DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_DECIMAL));
+        assertEquals(Double.class, DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_DOUBLE));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetFieldTypeClassForNotSupportedTypeBinary() {
+        DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_BINARY);
     }
 
 }
