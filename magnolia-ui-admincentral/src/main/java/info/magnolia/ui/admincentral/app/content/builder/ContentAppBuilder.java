@@ -62,11 +62,6 @@ public class ContentAppBuilder {
         return this;
     }
 
-    public ContentAppBuilder categoryName(String categoryName) {
-        descriptor.setCategoryName(categoryName);
-        return this;
-    }
-
     public ContentAppBuilder enabled(boolean enabled) {
         descriptor.setEnabled(enabled);
         return this;

@@ -41,8 +41,6 @@ import info.magnolia.ui.framework.app.AppDescriptor;
  */
 public interface AppDescriptorProvider {
 
-    public static final String DEFAULT_CATEGORY_NAME = "DEFAULT";
-
     String getName();
 
     AppDescriptor getAppDescriptor() throws RegistrationException;

@@ -102,7 +102,7 @@ public class ContactsModule implements ModuleLifecycle {
         EditDialogActionDefinition editFolderAction = new EditDialogActionDefinition();
         editFolderAction.setDialogName("ui-contacts-app:folder");
 
-        app.label("Contacts").icon("icon-people").appClass(ContactsApp.class).categoryName("MANAGE")
+        app.label("Contacts").icon("icon-people").appClass(ContactsApp.class)
                 .subApps(
                         app.subApp("main").subAppClass(ContactsMainSubApp.class).defaultSubApp()
                                 .workbench(wbcfg.workbench().workspace("contacts").root("/").defaultOrder("jcrName")

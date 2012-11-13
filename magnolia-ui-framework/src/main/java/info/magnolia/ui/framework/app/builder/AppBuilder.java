@@ -62,11 +62,6 @@ public class AppBuilder {
         return this;
     }
 
-    public AppBuilder categoryName(String categoryName) {
-        descriptor.setCategoryName(categoryName);
-        return this;
-    }
-
     public AppBuilder enabled(boolean enabled) {
         descriptor.setEnabled(enabled);
         return this;
