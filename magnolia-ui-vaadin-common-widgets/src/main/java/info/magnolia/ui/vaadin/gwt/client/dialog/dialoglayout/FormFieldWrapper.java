@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.impl.FocusImpl;
 /**
  * Wrapper widget that provides help and error indication.
  */
-public class DialogFieldWrapper extends FlowPanel implements HasFocusHandlers, HasBlurHandlers {
+public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, HasBlurHandlers {
 
     private Element label = DOM.createDiv();
 
@@ -72,7 +72,7 @@ public class DialogFieldWrapper extends FlowPanel implements HasFocusHandlers, H
 
     private Widget field = null;
 
-    public DialogFieldWrapper() {
+    public FormFieldWrapper() {
         super();
         addStyleName("v-dialog-field-section");
         root = super.getElement();

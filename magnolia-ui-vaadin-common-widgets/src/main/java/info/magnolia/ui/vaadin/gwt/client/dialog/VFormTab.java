@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.DialogFieldWrapper;
+import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.FormFieldWrapper;
 import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VFormSection;
 import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.ValidationChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.ValidationChangedEvent.Handler;
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Dialog tab.
  */
-public class VDialogTab extends VMagnoliaTab implements HasValidationChangeHanlders {
+public class VFormTab extends VMagnoliaTab implements HasValidationChangeHanlders {
 
     private VFormSection content;
 
@@ -63,11 +63,11 @@ public class VDialogTab extends VMagnoliaTab implements HasValidationChangeHanld
         super.setWidget(w);
     }
 
-    public List<DialogFieldWrapper> getFields() {
+    public List<FormFieldWrapper> getFields() {
         if (content != null) {
             return content.getFields();
         }
-        return new LinkedList<DialogFieldWrapper>();
+        return new LinkedList<FormFieldWrapper>();
     }
 
     public void setDescriptionVisible(boolean visible) {
@@ -92,7 +92,7 @@ public class VDialogTab extends VMagnoliaTab implements HasValidationChangeHanld
         return content.getErrorAmount();
     }
 
-    public List<DialogFieldWrapper> getProblematicFields() {
+    public List<FormFieldWrapper> getProblematicFields() {
         return content.getProblematicFields();
     }
 

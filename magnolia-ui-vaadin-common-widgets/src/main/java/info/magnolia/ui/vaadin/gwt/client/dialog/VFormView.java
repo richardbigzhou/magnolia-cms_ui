@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * VTabDialogView.
  */
-public interface VDialogView extends VMagnoliaTabSheetView {
+public interface VFormView extends VMagnoliaTabSheetView {
 
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.

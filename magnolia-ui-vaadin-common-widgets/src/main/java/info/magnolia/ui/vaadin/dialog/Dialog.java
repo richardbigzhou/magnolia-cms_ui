@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.dialog;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.vaadin.gwt.client.dialog.VDialog;
+import info.magnolia.ui.vaadin.gwt.client.dialog.VForm;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ import com.vaadin.ui.Field;
  * Tab Dialog.
  *
  */
-@ClientWidget(VDialog.class)
+@ClientWidget(VForm.class)
 public class Dialog extends MagnoliaTabSheet implements MagnoliaDialogView, ServerSideHandler, Item.Editor {
 
     private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");

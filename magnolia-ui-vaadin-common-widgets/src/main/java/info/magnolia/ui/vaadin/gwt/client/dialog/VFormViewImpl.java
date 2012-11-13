@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.dialog;
 
 import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogHeader.VDialogHeaderCallback;
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.DialogFieldWrapper;
+import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.FormFieldWrapper;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
@@ -62,7 +62,7 @@ import com.vaadin.terminal.gwt.client.Util;
 /**
  * VTabDialogViewImpl.
  */
-public class VDialogViewImpl extends FlowPanel implements VDialogView {
+public class VFormViewImpl extends FlowPanel implements VFormView {
 
     private static final String CLASSNAME = "dialog-panel";
 
@@ -74,7 +74,7 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
     private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
 
-    private final List<VDialogTab> dialogTabs = new ArrayList<VDialogTab>();
+    private final List<VFormTab> formTabs = new ArrayList<VFormTab>();
 
     private final Element content = DOM.createDiv();
 
@@ -82,7 +82,7 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
     private final VMagnoliaTabSheetViewImpl impl;
 
-    private DialogFieldWrapper lastShownProblematicField = null;
+    private FormFieldWrapper lastShownProblematicField = null;
 
     private EventBus eventBus;
 
@@ -93,10 +93,10 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
         public void onFocus(FocusEvent event) {
             isAFieldFocussed = true;
             final Element target = event.getRelativeElement().cast();
-            final DialogFieldWrapper field = Util.findWidget(target, DialogFieldWrapper.class);
+            final FormFieldWrapper field = Util.findWidget(target, FormFieldWrapper.class);
             if (field != null) {
                 lastShownProblematicField = null;
-                final List<DialogFieldWrapper> fields = getActiveTab().getFields();
+                final List<FormFieldWrapper> fields = getActiveTab().getFields();
                 int index = fields.indexOf(field);
                 if (index >= 0) {
                     if (field.hasError()) {
@@ -129,23 +129,23 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
         @Override
         public void jumpToNextError() {
-            VDialogTab activeTab = getActiveTab();
-            final List<DialogFieldWrapper> problematicFields = activeTab.getProblematicFields();
+            VFormTab activeTab = getActiveTab();
+            final List<FormFieldWrapper> problematicFields = activeTab.getProblematicFields();
             if (lastShownProblematicField == null && !problematicFields.isEmpty()) {
-                final DialogFieldWrapper field = problematicFields.get(0);
+                final FormFieldWrapper field = problematicFields.get(0);
                 scrollTo(field);
                 lastShownProblematicField = field;
             } else {
                 int index = problematicFields.indexOf(lastShownProblematicField) + 1;
                 if (index <= problematicFields.size() - 1) {
-                    final DialogFieldWrapper nextField = problematicFields.get(index);
+                    final FormFieldWrapper nextField = problematicFields.get(index);
                     lastShownProblematicField = nextField;
                     scrollTo(lastShownProblematicField);
                 } else {
                     final List<VMagnoliaTab> tabs = getTabs();
                     int tabIndex = tabs.indexOf(activeTab);
                     for (int i = 0; i < tabs.size() - 1; ++i) {
-                        final VDialogTab nextTab = (VDialogTab)tabs.get(++tabIndex % tabs.size());
+                        final VFormTab nextTab = (VFormTab)tabs.get(++tabIndex % tabs.size());
                         if (nextTab.getProblematicFields().size() > 0) {
                             eventBus.fireEvent(new ActiveTabChangedEvent(nextTab));
                             lastShownProblematicField = null;
@@ -159,7 +159,7 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
     private Presenter presenter;
 
-    public VDialogViewImpl(EventBus eventBus, Presenter presenter) {
+    public VFormViewImpl(EventBus eventBus, Presenter presenter) {
         super();
         this.eventBus = eventBus;
         this.presenter = presenter;
@@ -226,7 +226,7 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
     }
 
     void setDescriptionVisible(boolean isVisible) {
-        for (final VDialogTab tab : dialogTabs) {
+        for (final VFormTab tab : formTabs) {
             tab.setDescriptionVisible(isVisible);
         }
     }
@@ -271,13 +271,13 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
 
     @Override
     public void updateTab(VMagnoliaTab tab) {
-        if (!(tab instanceof VDialogTab)) {
-            throw new RuntimeException("Tab must be of VDialogTab type. You have used: " + tab.getClass());
+        if (!(tab instanceof VFormTab)) {
+            throw new RuntimeException("Tab must be of VFormTab type. You have used: " + tab.getClass());
         }
-        dialogTabs.add((VDialogTab) tab);
+        formTabs.add((VFormTab) tab);
         impl.updateTab(tab);
-        final List<DialogFieldWrapper> fields = ((VDialogTab) tab).getFields();
-        for (final DialogFieldWrapper field : fields) {
+        final List<FormFieldWrapper> fields = ((VFormTab) tab).getFields();
+        for (final FormFieldWrapper field : fields) {
             field.addFocusHandler(problematicFieldFocusHandler);
         }
     }
@@ -285,10 +285,10 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
     @Override
     public void recalculateErrors() {
         int totalProblematicFields = 0;
-        for (final VDialogTab tab : dialogTabs) {
+        for (final VFormTab tab : formTabs) {
             totalProblematicFields += tab.getErrorAmount();
-            final VDialogTab dialogTab = (VDialogTab) tab;
-            for (final DialogFieldWrapper field : dialogTab.getFields()) {
+            final VFormTab formTab = (VFormTab) tab;
+            for (final FormFieldWrapper field : formTab.getFields()) {
                 field.addFocusHandler(problematicFieldFocusHandler);
             }
         }
@@ -303,11 +303,11 @@ public class VDialogViewImpl extends FlowPanel implements VDialogView {
     }
 
     @Override
-    public VDialogTab getActiveTab() {
-        return (VDialogTab) impl.getActiveTab();
+    public VFormTab getActiveTab() {
+        return (VFormTab) impl.getActiveTab();
     }
 
-    private void scrollTo(final DialogFieldWrapper field) {
+    private void scrollTo(final FormFieldWrapper field) {
         final int top = JQueryWrapper.select(field).position().top();
         JQueryWrapper.select(getScroller()).animate(500, new AnimationSettings() {
             {

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogTab;
+import info.magnolia.ui.vaadin.gwt.client.dialog.VFormTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 
 import com.vaadin.terminal.PaintException;
@@ -44,7 +44,7 @@ import com.vaadin.ui.ClientWidget;
  * Dialog tab.
  *
  */
-@ClientWidget(VDialogTab.class)
+@ClientWidget(VFormTab.class)
 public class MagnoliaDialogTab extends MagnoliaTab {
 
     private final FormSection content;
