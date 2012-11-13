@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd">
+<module>
+  <name>ui-config-app</name>
+  <displayName>UI Config App</displayName>
+  <description>UI Config App</description>
+  <version>${project.version}</version>
+
+	<!-- Used to create an App component provider for injection of AppContext for example -->
+	<!-- id of the components should be app-'appname'. 'appname' is the name of the app configured
+	     in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
+   <components>
+    <id>app-configuration</id>
+   </components>
+
+  <components>
+    <id>app-configuration-workbench</id>
+    <component>
+      <type>info.magnolia.ui.app.config.workbench.ConfigWorkbenchSubApp</type>
+      <implementation>info.magnolia.ui.app.config.workbench.ConfigWorkbenchSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.config.workbench.ConfigWorkbenchView</type>
+      <implementation>info.magnolia.ui.app.config.workbench.ConfigWorkbenchViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
+      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.content.view.ContentPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.content.view.ContentPresenter</implementation>
+    </component>
+  </components>
+
+  <dependencies>
+    <dependency>
+      <name>ui-admincentral</name>
+      <version>5.0/*</version>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <name>magnolia</name>
+      <workspaces>
+        <workspace>config</workspace>
+      </workspaces>
+<!--       <nodeTypeFile>/mgnl-nodetypes/magnolia-config-nodetype.xml</nodeTypeFile> -->
+    </repository>
+  </repositories>
+</module>
