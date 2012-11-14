@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.admincentral.form;
 
 import info.magnolia.cms.i18n.Messages;
 
@@ -40,13 +40,13 @@ import info.magnolia.cms.i18n.Messages;
  * access to the {@link Messages} they use.
  *
  * @see Messages
- * @see AbstractDialogItem
+ * @see info.magnolia.ui.admincentral.dialog.AbstractFormItem
  */
-public interface DialogItem {
+public interface FormItem {
 
-    void setParent(DialogItem parent);
+    void setParent(FormItem parent);
 
-    DialogItem getParent();
+    FormItem getParent();
 
     Messages getMessages();
 }

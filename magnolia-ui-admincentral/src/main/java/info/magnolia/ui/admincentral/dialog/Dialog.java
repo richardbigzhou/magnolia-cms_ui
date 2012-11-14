@@ -38,10 +38,10 @@ import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 /**
  * Represents a dialog.
  *
- * @see DialogTab
+ * @see info.magnolia.ui.admincentral.form.FormTab
  * @see info.magnolia.ui.admincentral.field.FieldBuilder
  */
-public class Dialog extends AbstractDialogItem {
+public class Dialog extends AbstractFormItem {
 
     private DialogDefinition dialogDefinition;
 

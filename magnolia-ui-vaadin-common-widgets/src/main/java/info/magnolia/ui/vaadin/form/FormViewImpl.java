@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,75 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.vaadin.form;
 
-import info.magnolia.ui.model.tab.definition.TabDefinition;
-import info.magnolia.ui.vaadin.dialog.FormSection;
-
+import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
+import info.magnolia.ui.vaadin.dialog.FormSection;
+import info.magnolia.ui.vaadin.form.FormView;
+
+import java.util.List;
 
 /**
- * Represents a tab in a dialog.
- *
- * @see Dialog
- * @see info.magnolia.ui.admincentral.field.FieldBuilder
+ * FormViewImpl.
  */
-public class DialogTab extends AbstractDialogItem {
-    
-    //private static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
+public class FormViewImpl implements FormView {
 
-    private TabDefinition definition;
+    private Item itemDatasource;
 
-    private final FormSection container = new FormSection();
+    @Override
+    public void setFormDescription(String description) {
 
-    public DialogTab(TabDefinition definition) {
-        this.definition = definition;
-        //container.setStyleName(FIELD_CONTAINER_STYLE_NAME);
-    }
-
-    public void addField(Component component) {
-        this.container.addComponent(component);
-    }
-
-    public FormSection getContainer() {
-        return container;
     }
 
     @Override
-    protected String getI18nBasename() {
-        return definition.getI18nBasename();
+    public void setCaption(String caption) {
+
     }
 
-    public void setComponentHelpDescription(Field field, String helpDescription) {
-        container.setComponentHelpDescription(field, getMessage(helpDescription));
+    @Override
+    public void addFormSection(String tabName, FormSection inputFields) {
+
     }
 
+    @Override
+    public void addField(Field field) {
+
+    }
+
+    @Override
+    public void showValidation(boolean isVisible) {
+
+    }
+
+    @Override
+    public void setShowAllEnabled(boolean enabled) {
+
+    }
+
+    @Override
+    public boolean isValid() {
+        return false;
+    }
+
+    @Override
+    public List<Field> getFields() {
+        return null;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return null;
+    }
+
+    @Override
+    public void setItemDataSource(Item newDataSource) {
+        itemDatasource = newDataSource;
+    }
+
+    @Override
+    public Item getItemDataSource() {
+        return itemDatasource;
+    }
 }

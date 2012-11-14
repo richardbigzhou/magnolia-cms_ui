@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.field;
 import com.vaadin.ui.Field;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.ui.admincentral.dialog.DialogItem;
+import info.magnolia.ui.admincentral.form.FormItem;
 import info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 
@@ -56,7 +56,7 @@ import info.magnolia.ui.model.field.definition.FieldDefinition;
  * @see FieldDefinition
  * @see info.magnolia.ui.admincentral.field.builder.FieldFactory
  */
-public interface FieldBuilder extends DialogItem {
+public interface FieldBuilder extends FormItem {
 
     /**
      * Creates and initializes a Vaadin {@link Field} component.

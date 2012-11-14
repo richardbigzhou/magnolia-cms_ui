@@ -96,11 +96,6 @@ public class VForm extends VMagnoliaTabSheet implements VFormView.Presenter {
         getProxy().call("fireAction", action);
     }
 
-    @Override
-    public void closeDialog() {
-        getProxy().call("closeDialog");
-    }
-
     public void updateErrorAmount() {
         getView().recalculateErrors();
     }

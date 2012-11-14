@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.form;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.dialog.FormSection;
@@ -42,7 +43,7 @@ import java.util.List;
 /**
  * FormView.
  */
-public interface FormView extends View {
+public interface FormView extends View, Item.Editor {
 
     /**
      * Action execution callback.
@@ -50,6 +51,7 @@ public interface FormView extends View {
     interface FormActionListener {
 
         void onActionExecuted(final String actionName);
+
     }
 
     void setFormDescription(String description);

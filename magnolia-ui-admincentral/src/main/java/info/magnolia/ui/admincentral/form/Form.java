@@ -31,36 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.form;
+package info.magnolia.ui.admincentral.form;
 
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheetView;
-
-import com.google.gwt.user.client.ui.Widget;
+import info.magnolia.ui.admincentral.dialog.AbstractFormItem;
+import info.magnolia.ui.model.form.definition.FormDefinition;
 
 /**
- * VTabDialogView.
+ * Form.
  */
-public interface VFormView extends VMagnoliaTabSheetView {
+public class Form extends AbstractFormItem {
 
-    /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
-     */
-    public interface Presenter extends VMagnoliaTabSheetView.Presenter {
+    private FormDefinition formDefinition;
 
-        void fireAction(String action);
-
+    public Form(FormDefinition formDefinition) {
+        this.formDefinition = formDefinition;
     }
 
-    void setPresenter(Presenter presenter);
-
-    boolean hasChildComponent(Widget component);
-
-    void addAction(String label, String action);
-
-    void setDescription(String description);
-
-    void setCaption(String caption);
-
-    void recalculateErrors();
-
+    @Override
+    protected String getI18nBasename() {
+        return formDefinition.getI18nBasename();
+    }
 }

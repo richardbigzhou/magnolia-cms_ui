@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,61 +31,49 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.form.FormViewImpl;
+package info.magnolia.ui.admincentral.form;
+
+import info.magnolia.ui.admincentral.dialog.AbstractFormItem;
+import info.magnolia.ui.model.tab.definition.TabDefinition;
+import info.magnolia.ui.vaadin.dialog.FormSection;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
-import info.magnolia.ui.vaadin.dialog.FormSection;
-import info.magnolia.ui.vaadin.form.FormView;
-
-import java.util.List;
 
 /**
- * FormViewImpl.
+ * Represents a tab in a dialog.
+ *
+ * @see info.magnolia.ui.admincentral.dialog.Dialog
+ * @see info.magnolia.ui.admincentral.field.FieldBuilder
  */
-public class FormViewImpl implements FormView {
-    @Override
-    public void setFormDescription(String description) {
+public class FormTab extends AbstractFormItem {
+    
+    //private static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
 
+    private TabDefinition definition;
+
+    private final FormSection container = new FormSection();
+
+    public FormTab(TabDefinition definition) {
+        this.definition = definition;
+        //container.setStyleName(FIELD_CONTAINER_STYLE_NAME);
+    }
+
+    public void addField(Component component) {
+        this.container.addComponent(component);
+    }
+
+    public FormSection getContainer() {
+        return container;
     }
 
     @Override
-    public void setCaption(String caption) {
-
+    protected String getI18nBasename() {
+        return definition.getI18nBasename();
     }
 
-    @Override
-    public void addFormSection(String tabName, FormSection inputFields) {
-
+    public void setComponentHelpDescription(Field field, String helpDescription) {
+        container.setComponentHelpDescription(field, getMessage(helpDescription));
     }
 
-    @Override
-    public void addField(Field field) {
-
-    }
-
-    @Override
-    public void showValidation(boolean isVisible) {
-
-    }
-
-    @Override
-    public void setShowAllEnabled(boolean enabled) {
-
-    }
-
-    @Override
-    public boolean isValid() {
-        return false;
-    }
-
-    @Override
-    public List<Field> getFields() {
-        return null;
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return null;
-    }
 }

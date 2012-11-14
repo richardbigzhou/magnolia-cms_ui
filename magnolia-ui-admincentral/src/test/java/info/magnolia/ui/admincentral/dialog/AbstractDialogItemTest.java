@@ -80,7 +80,7 @@ public class AbstractDialogItemTest {
     @Test
     public void testEnsureMessagesContainsKeysDefinedByUIModules() throws Exception {
          //GIVEN
-         AbstractDialogItem dummyDialogItem = new AbstractDialogItem() {
+         AbstractFormItem dummyDialogItem = new AbstractFormItem() {
 
             @Override
             protected String getI18nBasename() {

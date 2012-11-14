@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.dialog;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.magnolia.ui.admincentral.form.FormItem;
 import org.apache.commons.lang.StringUtils;
 
 import info.magnolia.cms.i18n.Messages;
@@ -45,11 +46,11 @@ import info.magnolia.cms.i18n.MessagesUtil;
  * Abstract base class for dialog items, provides resolution of {@link Messages} in the hierarchical.
  *
  * @see Messages
- * @see DialogItem
+ * @see info.magnolia.ui.admincentral.form.FormItem
  */
-public abstract class AbstractDialogItem implements DialogItem {
+public abstract class AbstractFormItem implements FormItem {
 
-    private DialogItem parent;
+    private FormItem parent;
 
     private static String[] UI_BASENAMES;
 
@@ -65,12 +66,12 @@ public abstract class AbstractDialogItem implements DialogItem {
     }
 
     @Override
-    public void setParent(DialogItem parent) {
+    public void setParent(FormItem parent) {
         this.parent = parent;
     }
 
     @Override
-    public DialogItem getParent() {
+    public FormItem getParent() {
         return parent;
     }
 
