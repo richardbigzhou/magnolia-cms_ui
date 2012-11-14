@@ -137,10 +137,10 @@ public class VBaseDialog extends Composite implements Container, ClientSideHandl
         super.setWidth(width);
         view.asWidget().setWidth(width);
     }
-    
+
     @Override
     public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
-        
+
     }
 
     @Override

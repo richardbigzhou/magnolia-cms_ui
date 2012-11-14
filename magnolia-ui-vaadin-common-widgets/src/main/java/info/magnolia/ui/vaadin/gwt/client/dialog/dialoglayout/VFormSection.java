@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.VFormTab;
+import info.magnolia.ui.vaadin.gwt.client.form.VFormTab;
 
 import java.util.ArrayList;
 import java.util.Collections;

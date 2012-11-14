@@ -33,12 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogHeader;
-import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogHeader.VDialogHeaderCallback;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
@@ -46,6 +40,11 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
+import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogHeader;
+import info.magnolia.ui.vaadin.gwt.client.form.VFormHeader;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * {@link VBaseDialogViewImpl}. Implements {@link VBaseDialogView}.
@@ -124,8 +123,8 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
         return presenter;
     }
     
-    protected VDialogHeaderCallback createHeaderCallback() {
-        return new VDialogHeaderCallback() {
+    protected VDialogHeader.VDialogHeaderCallback createHeaderCallback() {
+        return new VDialogHeader.VDialogHeaderCallback() {
             
             @Override
             public void onDescriptionVisibilityChanged(boolean isVisible) {

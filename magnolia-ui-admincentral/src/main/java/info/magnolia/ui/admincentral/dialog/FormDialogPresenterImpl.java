@@ -84,7 +84,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         this.item = item;
         this.callback = callback;
         dialogBuilder.buildFormDialog(dialogFieldFactory, dialogDefinition, item, view);
-        //shell.openDialog(this);
+        shell.openDialog(this);
         return view;
     }
 

@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.dialog;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.vaadin.gwt.client.dialog.VForm;
+import info.magnolia.ui.vaadin.gwt.client.form.VForm;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
 import java.util.ArrayList;

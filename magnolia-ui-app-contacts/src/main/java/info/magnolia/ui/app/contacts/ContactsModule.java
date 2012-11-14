@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.app.contacts;
 
-import javax.inject.Inject;
-
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.ui.admincentral.app.CodeConfigurationUtils;
+import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
 import info.magnolia.ui.admincentral.column.StatusColumnFormatter;
 import info.magnolia.ui.admincentral.content.action.EditItemActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
@@ -45,23 +45,20 @@ import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.contacts.action.AddFolderActionDefinition;
-import info.magnolia.ui.admincentral.app.CodeConfigurationUtils;
-import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
-import info.magnolia.ui.app.contacts.item.ContactsItemSubApp;
-import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
-import info.magnolia.ui.framework.app.builder.App;
-import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
-import info.magnolia.ui.model.dialog.builder.Dialog;
-import info.magnolia.ui.model.dialog.builder.DialogBuilder;
-import info.magnolia.ui.model.dialog.builder.DialogConfig;
-import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
+import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
 import info.magnolia.ui.app.contacts.dialog.action.SaveContactDialogActionDefinition;
+import info.magnolia.ui.app.contacts.item.ContactsItemSubApp;
+import info.magnolia.ui.framework.app.builder.App;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
 import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
 import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
 import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
 import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
+import info.magnolia.ui.model.dialog.builder.Dialog;
+import info.magnolia.ui.model.dialog.builder.DialogBuilder;
+import info.magnolia.ui.model.dialog.builder.DialogConfig;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
@@ -70,6 +67,9 @@ import info.magnolia.ui.model.field.validation.definition.EmailValidatorDefiniti
 import info.magnolia.ui.model.field.validation.definition.RegexpValidatorDefinition;
 import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.model.thumbnail.DefaultImageProvider;
+import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
+
+import javax.inject.Inject;
 
 /**
  * Module class for the contacts module.
@@ -99,6 +99,10 @@ public class ContactsModule implements ModuleLifecycle {
         editContactAction.setAppId("contacts");
         editContactAction.setSubAppId("item");
 
+        EditDialogActionDefinition editContactActioninDialog = new EditDialogActionDefinition();
+        editContactActioninDialog.setDialogName("ui-contacts-app:contact");
+
+
         EditDialogActionDefinition editFolderAction = new EditDialogActionDefinition();
         editFolderAction.setDialogName("ui-contacts-app:folder");
 
@@ -124,7 +128,9 @@ public class ContactsModule implements ModuleLifecycle {
                                                                                 abcfg.item("addFolder").label("New folder").icon("icon-add-item").action(new AddFolderActionDefinition())),
                                                                         abcfg.group("editActions").items(
                                                                                 abcfg.item("edit").label("Edit contact").icon("icon-edit").action(editContactAction),
+                                                                                abcfg.item("editindialog").label("Edit contact in Dialog").icon("icon-edit").action(editContactActioninDialog),
                                                                                 abcfg.item("delete").label("Delete contact").icon("icon-delete").action(new DeleteItemActionDefinition()))
+
                                                                 ),
                                                         abcfg.section("folderActions").label("Folder")
                                                                 .groups(

@@ -31,12 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.action;
+package info.magnolia.ui.vaadin.gwt.client.form;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheetView;
+
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * EditItemActionDefinition.
+ * VTabDialogView.
  */
-public interface EditItemActionDefinition extends ActionDefinition{
+public interface VFormView extends VMagnoliaTabSheetView {
+
+    /**
+     * Presenter. Meant for Vaadin part of MagnoliaShell.
+     */
+    public interface Presenter extends VMagnoliaTabSheetView.Presenter {
+
+        void fireAction(String action);
+
+        void closeDialog();
+
+    }
+
+    void setPresenter(Presenter presenter);
+
+    boolean hasChildComponent(Widget component);
+
+    void addAction(String label, String action);
+
+    void setDescription(String description);
+
+    void setCaption(String caption);
+
+    void recalculateErrors();
+
 }

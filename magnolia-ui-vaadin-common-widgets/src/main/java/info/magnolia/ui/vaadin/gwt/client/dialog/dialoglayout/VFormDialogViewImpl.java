@@ -33,26 +33,25 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.VFormTab;
-import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogHeader.VDialogHeaderCallback;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.TabSetChangedEvent;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTab;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheet;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.TabSetChangedEvent.Handler;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.Util;
+import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogHeader;
+import info.magnolia.ui.vaadin.gwt.client.form.VFormTab;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.TabSetChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.TabSetChangedEvent.Handler;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTab;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheet;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@link VFormDialogViewImpl}. Implements {@link VFormDialogView}.
@@ -149,8 +148,8 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
     }
     
     @Override
-    protected VDialogHeaderCallback createHeaderCallback() {
-        return new VDialogHeaderCallback() {
+    protected VDialogHeader.VDialogHeaderCallback createHeaderCallback() {
+        return new VDialogHeader.VDialogHeaderCallback() {
 
             @Override
             public void onDescriptionVisibilityChanged(boolean isVisible) {

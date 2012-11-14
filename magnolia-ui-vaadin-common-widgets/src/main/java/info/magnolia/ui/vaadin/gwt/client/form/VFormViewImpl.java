@@ -31,9 +31,8 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog;
+package info.magnolia.ui.vaadin.gwt.client.form;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogHeader.VDialogHeaderCallback;
 import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.FormFieldWrapper;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
@@ -115,16 +114,11 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
         }
     };
 
-    private final VDialogHeader dialogHeader = new VDialogHeader(new VDialogHeaderCallback() {
+    private final VFormHeader dialogHeader = new VFormHeader(new VFormHeader.VFormHeaderCallback() {
 
         @Override
         public void onDescriptionVisibilityChanged(boolean isVisible) {
             setDescriptionVisible(isVisible);
-        }
-
-        @Override
-        public void onCloseFired() {
-            getPresenter().closeDialog();
         }
 
         @Override

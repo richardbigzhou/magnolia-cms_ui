@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog;
+package info.magnolia.ui.vaadin.gwt.client.form;
 
 import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.FormFieldWrapper;
 import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VFormSection;
