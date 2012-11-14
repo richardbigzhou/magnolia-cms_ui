@@ -88,7 +88,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench.addColumn(colDef1);
         configuredWorkbench.addColumn(colDef2);
 
-        jcrContainer = new SearchJcrContainer(null, configuredWorkbench);
+        jcrContainer = new SearchJcrContainer(configuredWorkbench);
 
         //Init session
         session = MgnlContext.getJCRSession(workspace);

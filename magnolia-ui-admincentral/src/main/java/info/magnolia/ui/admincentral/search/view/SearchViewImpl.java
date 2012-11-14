@@ -37,15 +37,14 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.list.view.ListViewImpl;
 import info.magnolia.ui.admincentral.search.container.SearchJcrContainer;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.container.TreeModel;
 
 /**
  * Search view implementation is just a special case of list view.
  */
 public class SearchViewImpl extends ListViewImpl implements SearchView {
 
-    public SearchViewImpl(WorkbenchDefinition workbenchDefinition, TreeModel treeModel, ComponentProvider componentProvider, SearchJcrContainer container) {
-        super(workbenchDefinition, treeModel, componentProvider, container);
+    public SearchViewImpl(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider, SearchJcrContainer container) {
+        super(workbenchDefinition, componentProvider, container);
     }
 
     @Override
