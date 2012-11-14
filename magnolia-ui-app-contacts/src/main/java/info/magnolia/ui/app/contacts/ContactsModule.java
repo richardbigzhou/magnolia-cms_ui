@@ -48,6 +48,7 @@ import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.contacts.action.AddFolderActionDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
+import info.magnolia.ui.app.contacts.dialog.action.SaveContactDialogActionDefinition;
 import info.magnolia.ui.app.contacts.form.action.SaveContactFormActionDefinition;
 import info.magnolia.ui.app.contacts.item.ContactsItemSubApp;
 import info.magnolia.ui.framework.app.builder.App;
@@ -58,13 +59,14 @@ import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
 import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
 import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
 import info.magnolia.ui.model.dialog.builder.Dialog;
+import info.magnolia.ui.model.dialog.builder.DialogBuilder;
+import info.magnolia.ui.model.dialog.builder.DialogConfig;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.EmailValidatorDefinition;
 import info.magnolia.ui.model.field.validation.definition.RegexpValidatorDefinition;
-import info.magnolia.ui.model.form.builder.FormBuilder;
 import info.magnolia.ui.model.form.builder.FormConfig;
 import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.model.thumbnail.DefaultImageProvider;
@@ -229,8 +231,8 @@ public class ContactsModule implements ModuleLifecycle {
         return dialog;
     }
 
-
-    private void contactForm(FormBuilder form, FormConfig cfg) {
+    @Dialog("ui-contacts-app:contact")
+    public void contactDialog(DialogBuilder dialog, DialogConfig cfg) {
 
         RegexpValidatorDefinition digitsOnly = new RegexpValidatorDefinition();
         digitsOnly.setPattern("[0-9]+");
@@ -239,7 +241,7 @@ public class ContactsModule implements ModuleLifecycle {
         EmailValidatorDefinition emailValidator = new EmailValidatorDefinition();
         emailValidator.setErrorMessage("validation.message.non.valid.email");
 
-        form.description("Define the contact information")
+        dialog.description("Define the contact information")
                 .tabs(
                         cfg.tab("Personal").label("Personal Tab")
                                 .fields(
@@ -269,8 +271,8 @@ public class ContactsModule implements ModuleLifecycle {
                                 )
                 )
                 .actions(
-                        cfg.action("commit").label("save changes").action(new SaveContactFormActionDefinition()),
-                        cfg.action("cancel").label("cancel").action(new CancelFormActionDefinition())
+                        cfg.action("commit").label("save changes").action(new SaveContactDialogActionDefinition()),
+                        cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
                 );
     }
 
