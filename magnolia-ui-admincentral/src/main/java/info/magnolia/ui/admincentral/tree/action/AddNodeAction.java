@@ -33,10 +33,8 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.cms.core.MetaData;
 import info.magnolia.cms.core.Path;
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.MetaDataUtil;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.framework.event.EventBus;
 
 import javax.inject.Named;
@@ -66,14 +64,6 @@ public class AddNodeAction extends RepositoryOperationAction<AddNodeActionDefini
         Node node = (Node) item;
         String name = Path.getUniqueLabel(item.getSession(), item.getPath(), "untitled");
         Node newNode = node.addNode(name, getDefinition().getNodeType());
-        postProcessNode(newNode);
-    }
-
-    protected void postProcessNode(Node newNode) {
-        MetaData metaData = MetaDataUtil.getMetaData(newNode);
-
-        metaData.setAuthorId(MgnlContext.getUser().getName());
-        metaData.setCreationDate();
-        metaData.setModificationDate();
+        NodeUtil.setCreation(newNode);
     }
 }
