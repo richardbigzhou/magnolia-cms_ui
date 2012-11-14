@@ -35,15 +35,15 @@ v2
 	overflow: hidden;
 }
 
-.clearfix:before, .clearfix:after { content: ""; display: table; }
-.clearfix:after { clear: both; }
-.clearfix { *zoom: 1; }
+.clearfix:after { content: ""; display: table; clear: both; }
+
 
 .thumbnail {
 	border: 1px solid #F0F0F0;
-	display: inline-block;
+	display:inline-block;
 	margin: 3px;
 	padding: 5px;
+	cursor:pointer;
 }
 
 .thumbnail-image{

@@ -31,59 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.layout;
+package info.magnolia.ui.vaadin.gwt.client.mgwt;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.resources.client.ClientBundle;
+import com.googlecode.mgwt.ui.client.theme.base.SliderCss;
 
 /**
- * Thumbnail widget.
- *
+ * Bundle to serve resources for mgwt slider widget.
  */
-public class VThumbnail extends Composite {
+public interface SliderClientBundle extends ClientBundle {
 
-    private final SimplePanel panel = new SimplePanel();
+    final static String publicPath = "info/magnolia/ui/vaadin/gwt/public/";
 
-    private final Image image = new Image(LazyThumbnailLayoutImageBundle.INSTANCE.getStubImage().getSafeUri());
+    @Source(publicPath + "mgwt/slider.css")
+    SliderCss css();
 
-    private VThumbnailData data;
-
-    private boolean isSelected = false;
-
-    public VThumbnail() {
-        super();
-        initWidget(panel);
-        addStyleName("thumbnail");
-        image.setStyleName("thumbnail-image");
-        panel.setWidget(image);
-    }
-
-    public String getId() {
-        return data.getId();
-    }
-
-    public void setData(VThumbnailData data) {
-        this.data = data;
-
-        if (data != null) {
-            String src = data.getSrc();
-            if (src != null) {
-                image.setUrl(data.getSrc());
-            }
-        }
-    }
-
-    public void setSelected(boolean isSelected) {
-        this.isSelected = isSelected;
-        if (isSelected) {
-            addStyleName("selected");
-        } else {
-            removeStyleName("selected");
-        }
-    }
-
-    public boolean isSelected() {
-        return isSelected;
-    }
 }
