@@ -108,7 +108,8 @@ public class RichTextFieldBuilder extends
                 if (eventName.equals("reqMagnoliaLink")) {
                     openLinkDialog();
                 } else if(eventName.equals("customStuffHappened")) {
-                    richtexteditor.firePluginEvent("serverSendToCustomPlugin", "hello client");
+                    openLinkDialog();
+                    //richtexteditor.firePluginEvent("serverSendToCustomPlugin", "${link:{uuid:{f312fc16-8f66-451c-bdf0-a72913b74c2d},repository:{website},handle:{/demo-project/about},nodeData:{},extension:{html}}}");
                 }
             }
         });
@@ -134,10 +135,19 @@ public class RichTextFieldBuilder extends
                                     .getJcrItem();
                             if (jcrItem.isNode()) {
                                 final Node selected = (Node) jcrItem;
-                                try {
+                                try {                                    
+
+                                    String jsonFormat = "${link:{uuid:{%s},repository:{%s},handle:{%s},nodeData:{},extension:{html}}}";
+                                                        
                                     richtexteditor.firePluginEvent(
-                                            "sendMagnoliaLink",
-                                            selected.getPath());
+                                            "serverSendToCustomPlugin",
+                                            String.format(
+                                                    jsonFormat, 
+                                                    selected.getIdentifier(), 
+                                                    selected.getSession().getWorkspace().getName(), 
+                                                    selected.getPath()
+                                                    )
+                                                    );
                                 } catch (RepositoryException e) {
                                     log.error(
                                             "Not able to access the configured property. Value will not be set.",

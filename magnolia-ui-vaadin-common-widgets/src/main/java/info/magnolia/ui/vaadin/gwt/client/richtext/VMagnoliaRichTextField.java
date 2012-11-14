@@ -139,7 +139,7 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
     }
     
     /**
-     * Load plugins from custom path
+     * Load plugins from custom path.
      */
     private void loadPlugins() {
         if(customPlugins != null) {
