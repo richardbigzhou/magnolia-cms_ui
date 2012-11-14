@@ -45,11 +45,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Resource;
+
 import javax.jcr.Node;
 import java.io.ByteArrayInputStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests.
@@ -96,20 +100,7 @@ public class DefaultImageProviderTest {
     @Test
     public void testGetThumbnailPath() throws Exception {
         // GIVEN
-        final PropertiesImportExport pie = new PropertiesImportExport();
-
-        final Node root = session.getRootNode();
-
-        final String content =
-                        "/myNode/originalImage.@type=mgnl:resource\n" +
-                        "/myNode/originalImage.fileName=MaxMustermann\n" +
-                        "/myNode/originalImage.extension=gif\n" +
-                        "/myNode/originalImage.jcr\\:data=binary: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\n" +
-                        "/myNode/originalImage.jcr\\:mimeType=image/gif\n" +
-                        "/myNode/originalImage.size=1234";
-
-        pie.createNodes(root, new ByteArrayInputStream(content.getBytes()));
-        final Node contactNode = root.getNode("myNode");
+        final Node contactNode = createMainImageNode("myNode", "originalImage");
         final String imageNodeUuid = contactNode.getNode("originalImage").getIdentifier();
 
         // WHEN
@@ -122,19 +113,7 @@ public class DefaultImageProviderTest {
     @Test
     public void testGetPortraitPathByUuid() throws Exception {
         // GIVEN
-        final PropertiesImportExport pie = new PropertiesImportExport();
-        final Node root = session.getRootNode();
-
-        final String content =
-                "/myNode/originalImage.@type=mgnl:resource\n" +
-                        "/myNode/originalImage.fileName=MaxMustermann\n" +
-                        "/myNode/originalImage.extension=gif\n" +
-                        "/myNode/originalImage.jcr\\:data=binary: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\n" +
-                        "/myNode/originalImage.jcr\\:mimeType=image/gif\n" +
-                        "/myNode/originalImage.size=1234";
-
-        pie.createNodes(root, new ByteArrayInputStream(content.getBytes()));
-        final Node contactNode = root.getNode("myNode");
+        final Node contactNode = createMainImageNode("myNode", "originalImage");
         final String imageNodeUuid = contactNode.getNode("originalImage").getIdentifier();
 
         // WHEN
@@ -147,18 +126,8 @@ public class DefaultImageProviderTest {
     @Test
     public void testGetThumbnailPathWithoutFileName() throws Exception {
         // GIVEN
-        final PropertiesImportExport pie = new PropertiesImportExport();
-        final Node root = session.getRootNode();
-
-        final String content =
-                        "/myNode/originalImage.@type=mgnl:resource\n" +
-                        "/myNode/originalImage.extension=gif\n" +
-                        "/myNode/originalImage.jcr\\:data=binary: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\n" +
-                        "/myNode/originalImage.jcr\\:mimeType=image/gif\n" +
-                        "/myNode/originalImage.size=1234";
-
-        pie.createNodes(root, new ByteArrayInputStream(content.getBytes()));
-        final Node contactNode = root.getNode("myNode");
+        final Node contactNode = createMainImageNode("myNode", "originalImage");
+        contactNode.getNode("originalImage").getProperty("fileName").remove();
         final String imageNodeUuid = contactNode.getNode("originalImage").getIdentifier();
 
         // WHEN
@@ -171,21 +140,8 @@ public class DefaultImageProviderTest {
     @Test
     public void testGetPortraitFromNonDefaultOriginalImageNodeName() throws Exception {
         // GIVEN
-        final PropertiesImportExport pie = new PropertiesImportExport();
-        final Node root = session.getRootNode();
-
-        final String content =
-                "/contact1/photo.@type=mgnl:resource\n" +
-                        "/contact1/photo.fileName=MaxMustermann\n" +
-                        "/contact1/photo.extension=gif\n" +
-                        "/contact1/photo.jcr\\:data=binary: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\n" +
-                        "/contact1/photo.jcr\\:mimeType=image/gif\n" +
-                        "/contact1/photo.size=1234";
-
-        pie.createNodes(root, new ByteArrayInputStream(content.getBytes()));
         imageProvider.setOriginalImageNodeName("photo");
-
-        final Node contactNode = root.getNode("contact1");
+        final Node contactNode = createMainImageNode("contact1", "photo");
         final String imageNodeUuid = contactNode.getNode("photo").getIdentifier();
 
         // WHEN
@@ -194,4 +150,83 @@ public class DefaultImageProviderTest {
         // THEN
         assertEquals("/foo/.imaging/portrait/test/"+ imageNodeUuid +"/MaxMustermann.png", result);
     }
+
+    @Test
+    public void testGetThumbnailResourceById() throws Exception {
+        // GIVEN
+        final Node contactNode = createMainImageNode("myNode", "originalImage");
+        final String imageNodeUuid = contactNode.getNode("originalImage").getIdentifier();
+
+        // WHEN
+        Resource resource = imageProvider.getThumbnailResourceById(workspaceName, contactNode.getIdentifier(),ImageProvider.PORTRAIT_GENERATOR);
+
+        // THEN
+        assertNotNull(resource);
+        assertEquals(true, resource instanceof ExternalResource);
+        assertEquals("/foo/.imaging/portrait/test/"+ imageNodeUuid +"/MaxMustermann.png", ((ExternalResource)resource).getURL());
+    }
+
+    @Test
+    public void testGetThumbnailResourceByIdForDocument() throws Exception {
+        // GIVEN
+        final Node contactNode = createMainImageNode("myNode", "originalImage");
+        contactNode.getNode("originalImage").getProperty("jcr:mimeType").setValue("application/x-excel");
+
+        // WHEN
+        Resource resource = imageProvider.getThumbnailResourceById(workspaceName, contactNode.getIdentifier(),ImageProvider.PORTRAIT_GENERATOR);
+
+        // THEN
+        assertNotNull(resource);
+        assertEquals(true, resource instanceof ExternalResource);
+        assertEquals("/foo/VAADIN/themes/admincentraltheme/img/icons/file-excel.svg", ((ExternalResource)resource).getURL());
+    }
+
+    @Test
+    public void testGetThumbnailResourceByPath() throws Exception {
+        // GIVEN
+        final Node contactNode = createMainImageNode("myNode", "originalImage");
+        final String imageNodeUuid = contactNode.getNode("originalImage").getIdentifier();
+
+        // WHEN
+        Resource resource = imageProvider.getThumbnailResourceByPath(workspaceName, contactNode.getPath(),ImageProvider.THUMBNAIL_GENERATOR);
+
+        // THEN
+        assertNotNull(resource);
+        assertEquals(true, resource instanceof ExternalResource);
+        assertEquals("/foo/.imaging/thumbnail/test/"+ imageNodeUuid +"/MaxMustermann.png", ((ExternalResource)resource).getURL());
+    }
+
+    @Test
+    public void testGetThumbnailResourceByPathForDocument() throws Exception {
+        // GIVEN
+        final Node contactNode = createMainImageNode("myNode", "originalImage");
+        contactNode.getNode("originalImage").getProperty("jcr:mimeType").setValue("application/msword");
+
+        // WHEN
+        Resource resource = imageProvider.getThumbnailResourceByPath(workspaceName, contactNode.getPath(),ImageProvider.THUMBNAIL_GENERATOR);
+
+        // THEN
+        assertNotNull(resource);
+        assertEquals(true, resource instanceof ExternalResource);
+        assertEquals("/foo/VAADIN/themes/admincentraltheme/img/icons/file-word.svg", ((ExternalResource)resource).getURL());
+    }
+
+
+    private Node createMainImageNode(String mainNodeName, String imageNodeName) throws Exception{
+        String rootPath ="/"+mainNodeName+"/"+imageNodeName;
+        final PropertiesImportExport pie = new PropertiesImportExport();
+
+        final Node root = session.getRootNode();
+
+        final String content = rootPath+".@type=mgnl:resource\n" +
+                               rootPath+".fileName=MaxMustermann\n" +
+                               rootPath+".extension=gif\n" +
+                               rootPath+".jcr\\:data=binary:R0lGODlhUABrAPcAAGYAAOi2lOi9ne2thO2le+Wdc+y3kvGWZe2zjOfDpu+fc+iuivCabOajfOjBouerhOfGqeeabfCWaOixjuange+idu+pf2wJB2gCAumhdH0fGHMSDuSgeYwzKOCzlnEPC7d0YNaliuWWbHYWEZ1IOeuviYQpIKRLN+ungMuVfapiUZI4KsaLc6VaSt6LYrdjSZVAM3kZE4svJNyOaN2vkp5RRJtMP9WFYNaKZYEjG6VTQWoFBOGlgnobFcdzUr1yWMd5W7dxXOG3m+mpf4ksIqxYQpxDMtipjtijhsCBarhgRZE7MNOfheSPZOGTa+W4moElHcOEbI45L8+bg5I1J96rjMV8Ybt9aMyOc7x3YG8NCsFxVLNdRK9oVcBpS9OCXYw2LeaRZbxlSbx7Zs53Vc6Qdb9sT9CCYNKZfJpFNqdfTpRCNtJ/W6xeScl4VqFINbJmUcdvUIcuJOCbdc1+XLl4ZMaIb7VsV8mTfMOHcKpRO5hGOaZeT+SwkLBqV4YvJ6pfTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAAIEALAAAAABQAGsAAAj/AAMIHEiw4EADBgQiXJhQIcOHECNKnDjRoMWDFDNq3MjRAAIEFwM0xPiQYMeTCz9q/MgSpMiRIU3CLIiSocqWLT3i3Nky5kWVAlkuDCBUJ8+jSJMijelSqdOnUJMOGPBx6oAJWLNq3ar16ISoSUtMZWm1rNmzVheoXbtgAtu3akvI1RqXKgK0ePPq3ZsWrt+/cPkKHiwYsOG/DwgrXlyW7YPHkCNLlsy4Ml8LmDNbUDu5s+fIAxLr1YzZKunTqE8TWM2awOfXkIcMaUCBwgMLU2XjHlC6NevMvoMLH+47cm3bxyk0WM68+fLWzxuwlk68uvXrBJLXpq3c+XPs4MML/69Avrz58sm9O19NXTxr8qvLE6gQX/788+cV6N/Pf7/6/9K1V0EGBGZA32oKxFdAASI4MQMOOMwwwxlbmHEGDiLoh19/HHbYH4DqEUhfgSRWwJ8INwDhhRJ6nEACCSecsEQPG3SQRhE+uODhjjzqB2IGBZAoZIELFlmAEze8sAIUG3ywAwBQRiklBhqcQEcEPfbHwJZcdslAASEaGSSQYhapH4M3iLHCBhhI6eabUMrggwhedqlfnXhuuRyYZZbJ45E+rPABnIS+KYMXTeSp6JYSeMlcn34q0GcEM7ygQZuFZhqlBkok2mWjdYJ6wAGNjjoqpKgqEMGqrEbgwgs5YP+qqaZUikGqBKbmquuupqJaZqvAiuBDB7LOSisRcUigLK68NturrwsCK60bK1xg7LUAfHCCC6TyyqyzB0AbrbSrMvAFCRtgey2VSigLLrjQktuqCyewqe61F1BBxrvwQrpqAfJGIIKl96r7wRvc8ssrqgGz+kW1BWN7gQz7Lmvxt80y3LAI9UasbgxcXOwuv+ICHOwPRFjrMb4d3HCrws+WPC4OEK+MrQZbjAxzuDIXGcEPGtis7ghc8KszqT0b+cIIQmOrrai7MourxUkXScKgTRt7gRFhcJkrA8uOavEBzXFQAAcNmA3pDTKonLWmW3fttbKMiqysc2gvx0Hee/f//UIMxb5NaL6ecgmq4SKDWPaeJLgteKE7EOHCol7SfZziec/QgeOPw4lBDmxQjqd2l6vHARCXdq7pCGYwcKfrotf2GOmkzwED56q/+UERru+Ip2eyR8ZDFFAEnrubW2f5+pawCX9HuscXegEMWCqvgOsPrAUbD3DgHn2UE2dovX6HCQ/CCMZ/D8AFKxTgW5aHOVaGDE+q7+YGRXBgHYdcGcZD4/ZzUwyA4B4FWCQrcHlAG7AWQCjFAAftwU4FAuCBkGxlAT+AXgMxYIIZKIcAEayOTwrSByBoMIAf0EEBHoOCB6AABat54XBGWBAWpC6AGICCFURTlhdOBYYhpCFB/5AAwABuQAcNmAoP0fIACrRGiATJwg3VlwMrVIYAAsiiFreoxYLQAAsqmGLujtiAv8hFL1xMIxcJUoUiHk8DP2gLYMRilRIswCpqzKMAntDFFpywcxjoABYCgJX4vWUAekykADzgx+hpoQZVGAhXssISuCgykW34o+CoFISZDAQBXfnIW7LoAAdckotSzN0OetACJDDEIh/BCk9MScpSnlIAKQBD+oSmAT8g4SUJGQpTWFLKBJTymMikZRo9oAKmPQ4DLQiBTxDikwRY85rJzGYy7UCsx2kgCTSEyEEEcs1ymvOY53TAE7rgzLfBAA1phOJLAmDOetoTmw5IwRIEp/8FEHhAkSNEyD0HWs8Q2EBwNmDCLbdoEQNcEwIEHWgIauC9ghGBBQFYKEMNYk0IQDSi9qSBGhjosUAm4Z8a1WMAPMrSjyagpSztaDmFAIIeCG0EVxBCNlPKRZj69KcxTYAAQBC0lXEQDwLQphZtudCOArWlL4WqUKNgApthAKceKKYxlbrQp3o0ogIoA7qEFkgQhCCr2kTmLb3qUnNCwAFTUIEJLrBLdV1gA1LQwRimIIStppWpeXSrT+spgCkEoQMbqN/bLvCBHoBBBSwIwRP+ytUsCvan1vRAClQgBQ1UNGsXGIEJYNCCIESBCWilrDLvGVMHHCEFILDBHzZAV/uyYeCuPTDBGkqbAhokNa1alCo2j8CC2MLAsw180203oIEO1AAEKTjrb4+pxXN6gAksqEMNOuDZzyYXfBqQQg26MIbe/ra6xhRCCPKggj1w17vfHdwIcgADFSQhBUeobgiKa4O5xhe0OVgCH1jg2xDowAT2+u/jLiAHswJOwdG7QAwgTOEKW/jCGM6whjfM4Q57+MMgDrGIR0ziEpv4xChOsYpXzOIWu/jFMI6xjGdMY6EFBAA7\n" +
+                               rootPath+".jcr\\:mimeType=image/gif\n" +
+                               rootPath+".size=1234";
+
+        pie.createNodes(root, new ByteArrayInputStream(content.getBytes()));
+        return root.getNode(mainNodeName);
+    }
+
 }
