@@ -54,13 +54,13 @@ import com.vaadin.data.Item;
  * @see FieldDefinition
  * @see FieldBuilder
  */
-public class DialogFieldFactory extends FactoryBase<FieldDefinition, FieldBuilder> implements Serializable {
+public class FieldFactory extends FactoryBase<FieldDefinition, FieldBuilder> implements Serializable {
     
     private ValidatorFieldFactory validatorFieldFactory;
     private I18nContentSupport i18nContentSupport;
 
     @Inject
-    public DialogFieldFactory(ComponentProvider componentProvider, DialogFieldRegistry dialogFieldRegistery, ValidatorFieldFactory validatorFieldFactory, I18nContentSupport i18nContentSupport) {
+    public FieldFactory(ComponentProvider componentProvider, DialogFieldRegistry dialogFieldRegistery, ValidatorFieldFactory validatorFieldFactory, I18nContentSupport i18nContentSupport) {
         super(componentProvider);
         this.validatorFieldFactory = validatorFieldFactory;
         this.i18nContentSupport = i18nContentSupport;

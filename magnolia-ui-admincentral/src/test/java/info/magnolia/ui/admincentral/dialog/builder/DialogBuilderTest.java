@@ -51,7 +51,7 @@ import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
+import info.magnolia.ui.admincentral.field.builder.FieldFactory;
 import info.magnolia.ui.admincentral.field.builder.TextFieldBuilder;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
@@ -136,15 +136,15 @@ public class DialogBuilderTest {
         tabDef.addField(fieldDef);
         dialogDef.addTab(tabDef);
 
-        final DialogFieldFactory dialogFieldFactory = mock(DialogFieldFactory.class);
+        final FieldFactory fieldFactory = mock(FieldFactory.class);
         TextFieldBuilder editField = new TextFieldBuilder(fieldTypeDef, item);
         DefaultI18nContentSupport i18nContentSupport = new DefaultI18nContentSupport();
         i18nContentSupport.setFallbackLocale(new Locale("en"));
         editField.setI18nContentSupport(i18nContentSupport);
-        when(dialogFieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
+        when(fieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
 
         // WHEN
-        final DialogView result = builder.buildFormDialog(dialogFieldFactory, dialogDef, item, dialog);
+        final DialogView result = builder.buildFormDialog(fieldFactory, dialogDef, item, dialog);
 
         // THEN
         assertEquals(result, dialog);

@@ -31,11 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.builder;
+package info.magnolia.ui.vaadin.form;
+
+import com.vaadin.ui.Field;
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.dialog.FormSection;
+
+import java.util.List;
 
 /**
- * Main test class for {@link DialogFieldFactory}
+ * FormView.
  */
-public class DialogFieldFactoryTest {
+public interface FormView extends View {
+
+    /**
+     * Action execution callback.
+     */
+    interface FormActionListener {
+
+        void onActionExecuted(final String actionName);
+    }
+
+    void setFormDescription(String description);
+
+    void setCaption(String caption);
+
+    void addFormSection(String tabName, FormSection inputFields);
+
+    void addField(Field field);
+
+    void showValidation(boolean isVisible);
+
+    void setShowAllEnabled(boolean enabled);
+
+    boolean isValid();
+
+    List<Field> getFields();
 
 }

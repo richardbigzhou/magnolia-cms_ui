@@ -37,7 +37,7 @@ import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.dialog.Dialog;
 import info.magnolia.ui.admincentral.dialog.DialogTab;
 import info.magnolia.ui.admincentral.field.FieldBuilder;
-import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
+import info.magnolia.ui.admincentral.field.builder.FieldFactory;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.tab.definition.TabDefinition;
@@ -57,7 +57,7 @@ public class DialogBuilder {
     /**
      * @return DialogView populated with values from DialogDefinition and Item.
      */
-    public DialogView buildFormDialog(DialogFieldFactory dialogFieldFactory, DialogDefinition dialogDefinition, Item item, FormDialogView view) {
+    public DialogView buildFormDialog(FieldFactory fieldFactory, DialogDefinition dialogDefinition, Item item, FormDialogView view) {
 
         final Dialog dialog = new Dialog(dialogDefinition);
         view.setItemDataSource(item);
@@ -80,7 +80,7 @@ public class DialogBuilder {
             final DialogTab tab = new DialogTab(tabDefinition);
             tab.setParent(dialog);
             for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
-                final FieldBuilder dialogField = dialogFieldFactory.create(fieldDefinition, item);
+                final FieldBuilder dialogField = fieldFactory.create(fieldDefinition, item);
                 if (dialogField != null) {
                     dialogField.setParent(tab);
                     final Field field = dialogField.getField();

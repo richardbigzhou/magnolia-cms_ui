@@ -45,11 +45,11 @@ import com.vaadin.ui.ClientWidget;
  *
  */
 @ClientWidget(VFormTab.class)
-public class MagnoliaDialogTab extends MagnoliaTab {
+public class MagnoliaFormTab extends MagnoliaTab {
 
     private final FormSection content;
 
-    public MagnoliaDialogTab(String caption, FormSection content) {
+    public MagnoliaFormTab(String caption, FormSection content) {
         super(caption, content);
         this.content = content;
         //DialogLayout needs this info to display it when show all tab is active

@@ -60,7 +60,7 @@ public class Dialog extends MagnoliaTabSheet implements MagnoliaDialogView, Serv
 
     private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");
 
-    private List<MagnoliaDialogTab> dialogTabs = new ArrayList<MagnoliaDialogTab>();
+    private List<MagnoliaFormTab> formTabs = new ArrayList<MagnoliaFormTab>();
 
     private List<Field> fields = new LinkedList<Field>();
 
@@ -105,8 +105,8 @@ public class Dialog extends MagnoliaTabSheet implements MagnoliaDialogView, Serv
         if (!(cc instanceof FormSection)) {
             throw new IllegalArgumentException();
         }
-        final MagnoliaDialogTab tab = new MagnoliaDialogTab(caption, (FormSection)cc);
-        dialogTabs.add(tab);
+        final MagnoliaFormTab tab = new MagnoliaFormTab(caption, (FormSection)cc);
+        formTabs.add(tab);
         tab.setSizeUndefined();
         tab.setClosable(false);
         doAddTab(tab);
@@ -154,7 +154,7 @@ public class Dialog extends MagnoliaTabSheet implements MagnoliaDialogView, Serv
 
     @Override
     public void showValidation(boolean isVisible) {
-        for (final MagnoliaDialogTab tab : dialogTabs) {
+        for (final MagnoliaFormTab tab : formTabs) {
             tab.setValidationVisible(isVisible);
         }
     }

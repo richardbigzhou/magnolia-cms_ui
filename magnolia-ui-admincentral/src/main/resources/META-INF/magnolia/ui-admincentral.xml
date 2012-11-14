@@ -239,8 +239,8 @@
       <implementation>info.magnolia.ui.admincentral.content.item.ItemViewImpl</implementation>
     </component>
 		<component>
-			<type>info.magnolia.ui.admincentral.field.builder.DialogFieldFactory</type>
-			<implementation>info.magnolia.ui.admincentral.field.builder.DialogFieldFactory</implementation>
+			<type>info.magnolia.ui.admincentral.field.builder.FieldFactory</type>
+			<implementation>info.magnolia.ui.admincentral.field.builder.FieldFactory</implementation>
 		</component>
 		<component>
 			<type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</type>
