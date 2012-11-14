@@ -33,8 +33,9 @@
  */
 package info.magnolia.ui.vaadin.actionbar;
 
-import com.vaadin.terminal.Resource;
 import info.magnolia.ui.framework.view.View;
+
+import com.vaadin.terminal.Resource;
 
 
 /**
@@ -56,7 +57,7 @@ public interface ActionbarView extends View {
 
     void addAction(String actionName, String label, String icon, String groupName, String sectionName);
 
-    void setPreview(String preview, String sectionName);
+    void setPreview(Resource previewResource, String sectionName);
 
     // ENABLE / DISABLE
     void enable(String actionName);
@@ -89,7 +90,7 @@ public interface ActionbarView extends View {
 
         /**
          * Event handler invoked on clicking an item in the action bar.
-         * 
+         *
          * @param actionToken the action token
          */
         void onActionbarItemClicked(String actionToken);

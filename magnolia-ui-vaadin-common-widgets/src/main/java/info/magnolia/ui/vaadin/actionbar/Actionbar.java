@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.vaadin.actionbar;
 
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Embedded;
-
 import info.magnolia.ui.vaadin.gwt.client.actionbar.VActionbar;
 import info.magnolia.ui.vaadin.integration.serializer.ResourceSerializer;
 
@@ -59,6 +56,7 @@ import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.VerticalLayout;
 
 
@@ -253,9 +251,8 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     }
 
     @Override
-    public void setPreview(String previewPath, String sectionName) {
-        Resource resource = new ExternalResource(previewPath, "image/png");
-        Embedded preview = new Embedded("" , resource);
+    public void setPreview(Resource previewResource, String sectionName) {
+        Embedded preview = new Embedded(null, previewResource);
         preview.setWidth("100%");
 
         ActionbarSection section = sections.get(sectionName);
