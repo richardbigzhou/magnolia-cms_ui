@@ -36,28 +36,29 @@ package info.magnolia.ui.admincentral.thumbnail.view;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailContainer.ThumbnailItem;
+import info.magnolia.ui.model.thumbnail.ImageProvider;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.AbstractInMemoryContainer;
-import com.vaadin.data.util.AbstractProperty;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Resource;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.AbstractInMemoryContainer;
+import com.vaadin.data.util.AbstractProperty;
+import com.vaadin.terminal.Resource;
 
 /**
  * Container that provides thumbnails lazily.
@@ -211,8 +212,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
 
         @Override
         public Resource getValue() {
-            final String path = workbenchDefinition.getImageProvider().getThumbnailPathByIdentifier(getWorkspaceName(), resourcePath);
-            return path == null ? null: new ExternalResource(path);
+            return workbenchDefinition.getImageProvider().getThumbnailResourceById(getWorkspaceName(), resourcePath, ImageProvider.THUMBNAIL_GENERATOR);
         }
 
         @Override

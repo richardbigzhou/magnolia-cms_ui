@@ -34,13 +34,19 @@
 package info.magnolia.ui.model.thumbnail;
 
 
+import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Resource;
 
 /**
  * Superclass for all thumbnail providers.
@@ -55,8 +61,7 @@ public class DefaultImageProvider implements ImageProvider {
 
     private String imageExtension = IMAGE_EXTENSION;
 
-    private final String PORTRAIT_GENERATOR = "portrait";
-    private final String THUMBNAIL_GENERATOR = "thumbnail";
+    private String publicIconPath = "/VAADIN/themes/admincentraltheme/img/icons/file";
 
 
     @Override
@@ -138,5 +143,96 @@ public class DefaultImageProvider implements ImageProvider {
     @Override
     public void setImageExtension(String imageExtension) {
         this.imageExtension = imageExtension;
+    }
+
+    @Override
+    public Resource getThumbnailResourceByPath(String workspace, String path, String generator) {
+        Resource resource = null;
+        Node node = SessionUtil.getNode(workspace, path);
+        if(node != null) {
+            resource = getThumbnailResource(node, workspace, generator);
+        }
+        return resource;
+    }
+
+    @Override
+    public Resource getThumbnailResourceById(String workspace, String identifier, String generator) {
+        Resource resource = null;
+        Node node = SessionUtil.getNodeByIdentifier(workspace, identifier);
+        if(node != null) {
+            resource = getThumbnailResource(node, workspace, generator);
+        }
+        return resource;
+    }
+
+
+    private Resource getThumbnailResource(Node node, String workspace, String generator) {
+        Resource resource = null;
+
+        try {
+            Node imageNode = node.getNode(originalImageNodeName);
+            String mimeType = imageNode.getProperty(FileProperties.PROPERTY_CONTENTTYPE).getString();
+            if(isImage(mimeType)){
+                String path = getGeneratorImagePath(workspace, node, generator);
+                if(StringUtils.isNotBlank(path)) {
+                    resource = new ExternalResource(path, "image/png");
+                }
+            }else {
+                resource = createDocumentResource(mimeType);
+            }
+        } catch (RepositoryException e) {
+            log.debug("Could not get name or identifier from imageNode: {}", e.getMessage());
+        }
+
+        return resource;
+    }
+
+    /**
+     * Create a Icon Resource.
+     */
+    private Resource createDocumentResource(String mimeType) {
+        String server = MgnlContext.getContextPath();
+        ExternalResource img = new ExternalResource(server + resolveIconClassName(mimeType) + ".svg", "image/png");
+        return img;
+    }
+
+    /**
+     * Simple MimeType to Icon Mapping.
+     */
+    private String resolveIconClassName(String mimeType) {
+        if (mimeType.contains("application/pdf")) {
+            return publicIconPath + "-pdf";
+        }
+        if (mimeType.matches("application.*(msword)")) {
+            return publicIconPath + "-word";
+        }
+        if (mimeType.matches("application.*(excel|xls)")) {
+            return publicIconPath + "-excel";
+        }
+        if (mimeType.matches("application.*(powerpoint)")) {
+            return publicIconPath + "-powerpoint";
+        }
+        if (mimeType.contains("text/")) {
+            return publicIconPath + "-text";
+        }
+        if (mimeType.contains("image/")) {
+            return publicIconPath + "-image";
+        }
+        if (mimeType.contains("video/")) {
+            return publicIconPath + "-video";
+        }
+        if (mimeType.contains("audio/")) {
+            return publicIconPath + "-audio";
+        }
+        if (mimeType.matches(".*(zip|compress)")) {
+            return publicIconPath + "-zip";
+        }
+
+        return publicIconPath +"-unknown";
+    }
+
+
+    private boolean isImage(String mimeType) {
+        return mimeType != null && mimeType.matches("image.*");
     }
 }
