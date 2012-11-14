@@ -41,7 +41,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
 import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogHeader;
-import info.magnolia.ui.vaadin.gwt.client.form.VFormHeader;
 
 import java.util.HashMap;
 import java.util.Map;

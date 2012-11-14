@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,53 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.builder;
+package info.magnolia.ui.model.form.builder;
 
-import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.form.builder.TabBuilder;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.form.action.ConfiguredFormActionDefinition;
+import info.magnolia.ui.model.form.action.FormActionDefinition;
 
 /**
- * Builder for building a dialog definition.
+ * FormActionBuilder.
  */
-public class DialogBuilder {
+public class FormActionBuilder {
+    private final ConfiguredFormActionDefinition definition = new ConfiguredFormActionDefinition();
 
-    private final ConfiguredDialogDefinition definition = new ConfiguredDialogDefinition();
-
-    public DialogBuilder(String id) {
-        definition.setId(id);
+    public FormActionBuilder(String name) {
+        this.definition.setName(name);
     }
 
-    public DialogBuilder label(String label) {
+    public FormActionBuilder label(String label) {
         definition.setLabel(label);
         return this;
     }
 
-    public DialogBuilder i18nBasename(String i18nBasename) {
-        definition.setI18nBasename(i18nBasename);
+    public FormActionBuilder action(ActionDefinition actionDefinition) {
+        definition.setActionDefinition(actionDefinition);
         return this;
     }
 
-    public DialogBuilder description(String description) {
-        definition.setDescription(description);
-        return this;
-    }
-
-    public DialogDefinition exec() {
-        return definition;
-    }
-
-    public DialogBuilder tabs(TabBuilder... builders) {
-        for (TabBuilder builder : builders) {
-            definition.addTab(builder.exec());
-        }
-        return this;
-    }
-
-    public DialogBuilder actions(DialogActionBuilder... builders) {
-        for (DialogActionBuilder builder : builders) {
-            definition.addAction(builder.exec());
-        }
-        return this;
+    public FormActionDefinition exec() {
+        return null;
     }
 }

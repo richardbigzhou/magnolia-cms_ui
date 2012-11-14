@@ -39,9 +39,6 @@ import info.magnolia.ui.model.form.definition.FormDefinition;
  * FormPresenterFactory.
  */
 public interface FormPresenterFactory {
-    FormPresenter createFormPresenterByName(String formName);
 
-    FormPresenter createDialogPresenterByDefinition(FormDefinition definition);
-
-    FormDefinition getFormDefinition(String formName) throws RuntimeException;
+    FormPresenter createFormPresenterByDefinition(FormDefinition formDefinition);
 }

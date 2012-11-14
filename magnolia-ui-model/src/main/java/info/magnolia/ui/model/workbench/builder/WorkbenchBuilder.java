@@ -35,6 +35,7 @@ package info.magnolia.ui.model.workbench.builder;
 
 import info.magnolia.ui.model.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.model.column.builder.ColumnBuilder;
+import info.magnolia.ui.model.form.builder.FormBuilder;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 
@@ -47,11 +48,6 @@ public class WorkbenchBuilder {
 
     public WorkbenchBuilder workspace(String workspace) {
         definition.setWorkspace(workspace);
-        return this;
-    }
-
-    public WorkbenchBuilder formName(String formName) {
-        definition.setFormName(formName);
         return this;
     }
 
@@ -78,6 +74,11 @@ public class WorkbenchBuilder {
 
     public WorkbenchBuilder actionbar(ActionbarBuilder builder) {
         this.definition.setActionbar(builder.exec());
+        return this;
+    }
+
+    public WorkbenchBuilder form(FormBuilder builder) {
+        this.definition.setFormDefinition(builder.exec());
         return this;
     }
 

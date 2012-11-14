@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.builder;
+package info.magnolia.ui.admincentral.form.action;
 
-import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.admincentral.form.FormPresenter;
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
 
 /**
- * Builder for building a tab definition.
+ * CancelFormAction.
  */
-public class TabBuilder {
+public class CancelFormAction extends ActionBase<CancelFormActionDefinition> {
+    private final FormPresenter presenter;
 
-    private final ConfiguredTabDefinition definition = new ConfiguredTabDefinition();
-
-    public TabBuilder(String name) {
-        definition.setName(name);
+    public CancelFormAction(CancelFormActionDefinition definition, FormPresenter presenter) {
+        super(definition);
+        this.presenter = presenter;
     }
 
-    public TabBuilder label(String label) {
-        definition.setLabel(label);
-        return this;
-    }
-
-    public TabBuilder i18nBasename(String i18nBasename) {
-        definition.setI18nBasename(i18nBasename);
-        return this;
-    }
-
-    public TabBuilder fields(AbstractFieldBuilder... builders) {
-        for (AbstractFieldBuilder builder : builders) {
-            definition.addField(builder.exec());
-        }
-        return this;
-    }
-
-    public ConfiguredTabDefinition exec() {
-        return definition;
+    @Override
+    public void execute() throws ActionExecutionException {
+        presenter.getCallback().onCancel();
     }
 }

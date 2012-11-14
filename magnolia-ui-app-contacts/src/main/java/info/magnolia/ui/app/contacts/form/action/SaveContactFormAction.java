@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.builder;
+package info.magnolia.ui.app.contacts.form.action;
 
-import info.magnolia.ui.model.form.builder.FieldsConfig;
-import info.magnolia.ui.model.form.builder.TabBuilder;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 
 /**
- * Config object creating builders for dialog related definitions.
+ * SaveContactFormAction.
  */
-public class DialogConfig {
-
-    public final FieldsConfig fields = new FieldsConfig();
-
-    public TabBuilder tab(String name) {
-        return new TabBuilder(name);
-    }
-
-    public DialogActionBuilder action(String name) {
-        return new DialogActionBuilder(name);
+public class SaveContactFormAction extends SaveDialogAction {
+    public SaveContactFormAction(SaveDialogActionDefinition definition, FormDialogPresenter presenter) {
+        super(definition, presenter);
     }
 }

@@ -50,6 +50,7 @@ import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
 import info.magnolia.ui.model.dialog.builder.Dialog;
 import info.magnolia.ui.model.dialog.builder.DialogBuilder;
 import info.magnolia.ui.model.dialog.builder.DialogConfig;
+import info.magnolia.ui.model.form.builder.FormConfig;
 import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.registry.AppDescriptorProvider;
@@ -173,7 +174,9 @@ public class CodeConfigurationUtils {
                         parameters[parameterIndex] = new WorkbenchConfig();
                     } else if (parameterType.equals(ActionbarConfig.class)) {
                         parameters[parameterIndex] = new ActionbarConfig();
-                    } else {
+                    } else if (parameterType.equals(FormConfig.class)) {
+                        parameters[parameterIndex] = new FormConfig();
+                    }else {
                         throw new RegistrationException("Unable to resolve parameter " + parameterIndex + " for method " + method);
                     }
                 }

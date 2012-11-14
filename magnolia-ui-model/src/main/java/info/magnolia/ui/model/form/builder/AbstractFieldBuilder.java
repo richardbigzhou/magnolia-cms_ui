@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.builder;
+package info.magnolia.ui.model.form.builder;
 
 import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;

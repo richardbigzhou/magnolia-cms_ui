@@ -83,7 +83,8 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
 
     public View start(String nodePath) {
         view.setListener(this);
-        final FormPresenter formPresenter = formPresenterFactory.createFormPresenterByName(workbenchDefinition.getFormName());
+        //final FormPresenter formPresenter = formPresenterFactory.createFormPresenterByName(workbenchDefinition.getFormName());
+        final FormPresenter formPresenter = formPresenterFactory.createFormPresenterByDefinition(workbenchDefinition.getFormDefinition());
 
         FormView formView = formPresenter.start(new JcrNodeAdapter(SessionUtil.getNode(workbenchDefinition.getWorkspace(), nodePath)), new FormPresenter.Callback() {
 

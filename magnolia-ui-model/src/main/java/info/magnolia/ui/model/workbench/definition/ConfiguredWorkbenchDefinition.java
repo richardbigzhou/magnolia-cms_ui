@@ -36,6 +36,7 @@ package info.magnolia.ui.model.workbench.definition;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
+import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
 
 import java.util.ArrayList;
@@ -54,8 +55,6 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private String defaultOrder;
 
-    private String formName;
-
     private ItemTypeDefinition mainItemType;
 
     private ItemTypeDefinition groupingItemType;
@@ -72,6 +71,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private boolean includeProperties = false;
 
+    private FormDefinition formDefinition;
+
     @Override
     public String getName() {
         return name;
@@ -79,15 +80,6 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public String getFormName() {
-        return formName;
-    }
-
-    public void setFormName(String formName) {
-        this.formName = formName;
     }
 
     @Override
@@ -175,11 +167,11 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         this.imageProvider = imageProvider;
     }
 
-
     @Override
     public boolean isDialogWorkbench() {
         return dialogWorkbench;
     }
+
 
     public void setDialogWorkbench(boolean dialogWorkbench) {
         this.dialogWorkbench = dialogWorkbench;
@@ -188,6 +180,15 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     @Override
     public String getDefaultOrder() {
         return defaultOrder;
+    }
+
+    public void setFormDefinition(FormDefinition formDefinition) {
+        this.formDefinition = formDefinition;
+    }
+
+    @Override
+    public FormDefinition getFormDefinition() {
+        return formDefinition;
     }
 
     public void setDefaultOrder(String defaultOrder) {

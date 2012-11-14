@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.builder;
+package info.magnolia.ui.model.form.builder;
 
-import info.magnolia.ui.model.form.builder.FieldsConfig;
-import info.magnolia.ui.model.form.builder.TabBuilder;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Config object creating builders for dialog related definitions.
+ * Annotation used on methods on a module class that provides a form definition.
  */
-public class DialogConfig {
+@Target(ElementType.METHOD)
+@Retention(RUNTIME)
+public @interface Form {
 
-    public final FieldsConfig fields = new FieldsConfig();
-
-    public TabBuilder tab(String name) {
-        return new TabBuilder(name);
-    }
-
-    public DialogActionBuilder action(String name) {
-        return new DialogActionBuilder(name);
-    }
+        String value();
 }

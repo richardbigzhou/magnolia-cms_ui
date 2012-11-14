@@ -34,17 +34,18 @@
 package info.magnolia.ui.vaadin.form;
 
 import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import info.magnolia.ui.vaadin.dialog.FormSection;
-import info.magnolia.ui.vaadin.form.FormView;
+import org.vaadin.rpc.ServerSideHandler;
 
 import java.util.List;
 
 /**
  * FormViewImpl.
  */
-public class FormViewImpl implements FormView {
+public class FormViewImpl extends AbstractComponent implements ServerSideHandler, FormView {
 
     private Item itemDatasource;
 
@@ -90,7 +91,7 @@ public class FormViewImpl implements FormView {
 
     @Override
     public Component asVaadinComponent() {
-        return null;
+        return this;
     }
 
     @Override
@@ -101,5 +102,15 @@ public class FormViewImpl implements FormView {
     @Override
     public Item getItemDataSource() {
         return itemDatasource;
+    }
+
+    @Override
+    public Object[] initRequestFromClient() {
+        return new Object[0];
+    }
+
+    @Override
+    public void callFromClient(String method, Object[] params) {
+
     }
 }

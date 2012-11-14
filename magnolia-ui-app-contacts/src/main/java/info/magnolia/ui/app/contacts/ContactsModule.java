@@ -43,11 +43,12 @@ import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
+import info.magnolia.ui.admincentral.form.action.CancelFormActionDefinition;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.contacts.action.AddFolderActionDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
-import info.magnolia.ui.app.contacts.dialog.action.SaveContactDialogActionDefinition;
+import info.magnolia.ui.app.contacts.form.action.SaveContactFormActionDefinition;
 import info.magnolia.ui.app.contacts.item.ContactsItemSubApp;
 import info.magnolia.ui.framework.app.builder.App;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
@@ -57,14 +58,14 @@ import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
 import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
 import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
 import info.magnolia.ui.model.dialog.builder.Dialog;
-import info.magnolia.ui.model.dialog.builder.DialogBuilder;
-import info.magnolia.ui.model.dialog.builder.DialogConfig;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.EmailValidatorDefinition;
 import info.magnolia.ui.model.field.validation.definition.RegexpValidatorDefinition;
+import info.magnolia.ui.model.form.builder.FormBuilder;
+import info.magnolia.ui.model.form.builder.FormConfig;
 import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.model.thumbnail.DefaultImageProvider;
 import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
@@ -86,7 +87,7 @@ public class ContactsModule implements ModuleLifecycle {
     }
 
     @App("contacts")
-    public void contactsApp(ContentAppBuilder app, WorkbenchConfig wbcfg, ActionbarConfig abcfg) {
+    public void contactsApp(ContentAppBuilder app, WorkbenchConfig wbcfg, ActionbarConfig abcfg, FormConfig formcfg) {
 
         DefaultImageProvider imageProvider = new DefaultImageProvider();
         imageProvider.setOriginalImageNodeName("photo");
@@ -105,6 +106,15 @@ public class ContactsModule implements ModuleLifecycle {
 
         EditDialogActionDefinition editFolderAction = new EditDialogActionDefinition();
         editFolderAction.setDialogName("ui-contacts-app:folder");
+
+        // form
+        RegexpValidatorDefinition digitsOnly = new RegexpValidatorDefinition();
+        digitsOnly.setPattern("[0-9]+");
+        digitsOnly.setErrorMessage("validation.message.only.digits");
+
+        EmailValidatorDefinition emailValidator = new EmailValidatorDefinition();
+        emailValidator.setErrorMessage("validation.message.non.valid.email");
+        // form end
 
         app.label("Contacts").icon("icon-people").appClass(ContactsApp.class)
                 .subApps(
@@ -143,10 +153,46 @@ public class ContactsModule implements ModuleLifecycle {
                                                                 )
                                                 )
                                         )
+
                                 ),
 
                         app.subApp("item").subAppClass(ContactsItemSubApp.class)
-                                .workbench(wbcfg.workbench().workspace("contacts").root("/").defaultOrder("jcrName").formName("ui-contacts-app:contact"))
+                                .workbench(wbcfg.workbench().workspace("contacts").root("/").defaultOrder("jcrName")
+                                        .form(formcfg.form().description("Define the contact information")
+                                                .tabs(
+                                                        formcfg.tab("Personal").label("Personal Tab")
+                                                                .fields(
+                                                                        formcfg.fields.textField("salutation").label("Salutation").description("Define Salutation"),
+                                                                        formcfg.fields.textField("firstName").label("First name").description("Please enter the contact first name. Field is mandatory").required(),
+                                                                        formcfg.fields.textField("lastName").label("Last name").description("Please enter the contact last name. Field is mandatory").required(),
+                                                                        formcfg.fields.fileUploadField("fileUpload").label("Image").preview().imageNodeName("photo"),
+                                                                        formcfg.fields.textField("photoCaption").label("Image caption").description("Please define an image caption"),
+                                                                        formcfg.fields.textField("photoAltText").label("Image alt text").description("Please define an image alt text")
+                                                                ),
+                                                        formcfg.tab("Company").label("Company Tab")
+                                                                .fields(
+                                                                        formcfg.fields.textField("organizationName").label("Organization name").description("Enter the organization name").required(),
+                                                                        formcfg.fields.textField("organizationUnitName").label("Organization unit name").description("Enter the organization unit name"),
+                                                                        formcfg.fields.textField("streetAddress").label("Street Address").description("Please enter the company street address").rows(2),
+                                                                        formcfg.fields.textField("zipCode").label("ZIP code").description("Please enter the zip code (only digits)").validator(digitsOnly),
+                                                                        formcfg.fields.textField("city").label("City").description("Please enter the company city  "),
+                                                                        formcfg.fields.textField("country").label("Country").description("Please enter the company country")
+                                                                ),
+                                                        formcfg.tab("Contacts").label("Contact Tab")
+                                                                .fields(
+                                                                        formcfg.fields.textField("officePhoneNr").label("Office phone").description("Please enter the office phone number"),
+                                                                        formcfg.fields.textField("officeFaxNr").label("Office Fax Nr.").description("Please enter the office fax number"),
+                                                                        formcfg.fields.textField("mobilePhoneNr").label("Mobile Phone").description("Please enter the mobile phone number"),
+                                                                        formcfg.fields.textField("email").label("E-Mail address").description("Please enter the email address").required().validator(emailValidator),
+                                                                        formcfg.fields.textField("website").label("Website").description("Please enter the Website")
+                                                                )
+                                                )
+                                                .actions(
+                                                        formcfg.action("commit").label("save changes").action(new SaveContactFormActionDefinition()),
+                                                        formcfg.action("cancel").label("cancel").action(new CancelFormActionDefinition())
+                                                )
+                                        )
+                                )
                 );
     }
 
@@ -183,8 +229,8 @@ public class ContactsModule implements ModuleLifecycle {
         return dialog;
     }
 
-    @Dialog("ui-contacts-app:contact")
-    public void contactDialog(DialogBuilder dialog, DialogConfig cfg) {
+
+    private void contactForm(FormBuilder form, FormConfig cfg) {
 
         RegexpValidatorDefinition digitsOnly = new RegexpValidatorDefinition();
         digitsOnly.setPattern("[0-9]+");
@@ -193,7 +239,7 @@ public class ContactsModule implements ModuleLifecycle {
         EmailValidatorDefinition emailValidator = new EmailValidatorDefinition();
         emailValidator.setErrorMessage("validation.message.non.valid.email");
 
-        dialog.description("Define the contact information")
+        form.description("Define the contact information")
                 .tabs(
                         cfg.tab("Personal").label("Personal Tab")
                                 .fields(
@@ -223,8 +269,8 @@ public class ContactsModule implements ModuleLifecycle {
                                 )
                 )
                 .actions(
-                        cfg.action("commit").label("save changes").action(new SaveContactDialogActionDefinition()),
-                        cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
+                        cfg.action("commit").label("save changes").action(new SaveContactFormActionDefinition()),
+                        cfg.action("cancel").label("cancel").action(new CancelFormActionDefinition())
                 );
     }
 

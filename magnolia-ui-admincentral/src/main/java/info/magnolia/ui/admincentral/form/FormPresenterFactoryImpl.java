@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.form;
 
-import com.vaadin.data.Item;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.field.builder.FieldFactory;
 import info.magnolia.ui.admincentral.form.action.FormActionFactory;
 import info.magnolia.ui.admincentral.form.builder.FormBuilder;
@@ -41,72 +41,35 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
 
-/**
- * FormPresenterImpl.
- */
-public class FormPresenterImpl implements FormPresenter {
+import javax.inject.Inject;
+import javax.inject.Named;
 
-    private final FormView view;
+/**
+ * FormPresenterFactoryImpl.
+ */
+public class FormPresenterFactoryImpl implements FormPresenterFactory {
+
+    private final ComponentProvider componentProvider;
     private final FormBuilder formBuilder;
     private final FieldFactory fieldFactory;
-    private final FormDefinition formDefinition;
     private final EventBus eventBus;
     private final FormActionFactory actionFactory;
-    private Item item;
-    private Callback callback;
 
-    public FormPresenterImpl(final FormView view, final FormBuilder formBuilder, final FieldFactory fieldFactory,
-                             final FormDefinition formDefinition, EventBus eventBus, final FormActionFactory actionFactory) {
-
-        this.view = view;
+    @Inject
+    public FormPresenterFactoryImpl(ComponentProvider componentProvider, FormBuilder formBuilder,
+                                    FieldFactory fieldFactory, @Named("admincentral") EventBus eventBus,
+                                    final FormActionFactory actionFactory) {
+        this.componentProvider = componentProvider;
         this.formBuilder = formBuilder;
         this.fieldFactory = fieldFactory;
-        this.formDefinition = formDefinition;
         this.eventBus = eventBus;
         this.actionFactory = actionFactory;
     }
 
     @Override
-    public Callback getCallback() {
-        return null;
+    public FormPresenter createFormPresenterByDefinition(FormDefinition definition) {
+        FormView view = componentProvider.getComponent(FormView.class);
+        return new FormPresenterImpl(view, formBuilder, fieldFactory, definition, eventBus, actionFactory);
     }
 
-    @Override
-    public EventBus getEventBus() {
-        return null;
-    }
-
-    @Override
-    public void addAction(String actionName, String actionLabel, FormView.FormActionListener callback) {
-
-    }
-
-    @Override
-    public void addActionCallback(String actionName, FormView.FormActionListener callback) {
-
-    }
-
-    @Override
-    public void showValidation(boolean isVisible) {
-
-    }
-
-    @Override
-    public FormView start(Item item, FormPresenter.Callback callback) {
-        this.item = item;
-        this.callback = callback;
-        formBuilder.buildForm(fieldFactory, formDefinition, item, view);
-        return view;
-    }
-
-
-    @Override
-    public Item getItemDataSource() {
-        return null;
-    }
-
-    @Override
-    public FormView getView() {
-        return null;
-    }
 }

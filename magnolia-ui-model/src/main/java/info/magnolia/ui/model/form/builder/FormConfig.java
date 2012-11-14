@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,43 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.builder;
-
-import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+package info.magnolia.ui.model.form.builder;
 
 /**
- * Builder for building an option for a select field.
+ * FormConfig.
  */
-public class OptionBuilder {
+public class FormConfig {
+    public final FieldsConfig fields = new FieldsConfig();
 
-    private final SelectFieldOptionDefinition definition = new SelectFieldOptionDefinition();
 
-    public OptionBuilder value(String value) {
-        definition.setValue(value);
-        return this;
+    public FormBuilder form() {
+        return new FormBuilder("form");
     }
 
-    public OptionBuilder selected(boolean selected) {
-        definition.setSelected(selected);
-        return this;
+    public TabBuilder tab(String name) {
+        return new TabBuilder(name);
     }
 
-    public OptionBuilder selected() {
-        definition.setSelected(true);
-        return this;
-    }
-
-    public OptionBuilder label(String label) {
-        definition.setLabel(label);
-        return this;
-    }
-
-    public OptionBuilder iconSrc(String iconSrc) {
-        definition.setIconSrc(iconSrc);
-        return this;
-    }
-
-    public SelectFieldOptionDefinition exec() {
-        return definition;
+    public FormActionBuilder action(String name) {
+        return new FormActionBuilder(name);
     }
 }

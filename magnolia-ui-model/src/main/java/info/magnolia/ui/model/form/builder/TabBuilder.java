@@ -31,53 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.builder;
+package info.magnolia.ui.model.form.builder;
 
-import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.form.builder.TabBuilder;
+import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
 
 /**
- * Builder for building a dialog definition.
+ * Builder for building a tab definition.
  */
-public class DialogBuilder {
+public class TabBuilder {
 
-    private final ConfiguredDialogDefinition definition = new ConfiguredDialogDefinition();
+    private final ConfiguredTabDefinition definition = new ConfiguredTabDefinition();
 
-    public DialogBuilder(String id) {
-        definition.setId(id);
+    public TabBuilder(String name) {
+        definition.setName(name);
     }
 
-    public DialogBuilder label(String label) {
+    public TabBuilder label(String label) {
         definition.setLabel(label);
         return this;
     }
 
-    public DialogBuilder i18nBasename(String i18nBasename) {
+    public TabBuilder i18nBasename(String i18nBasename) {
         definition.setI18nBasename(i18nBasename);
         return this;
     }
 
-    public DialogBuilder description(String description) {
-        definition.setDescription(description);
+    public TabBuilder fields(AbstractFieldBuilder... builders) {
+        for (AbstractFieldBuilder builder : builders) {
+            definition.addField(builder.exec());
+        }
         return this;
     }
 
-    public DialogDefinition exec() {
+    public ConfiguredTabDefinition exec() {
         return definition;
-    }
-
-    public DialogBuilder tabs(TabBuilder... builders) {
-        for (TabBuilder builder : builders) {
-            definition.addTab(builder.exec());
-        }
-        return this;
-    }
-
-    public DialogBuilder actions(DialogActionBuilder... builders) {
-        for (DialogActionBuilder builder : builders) {
-            definition.addAction(builder.exec());
-        }
-        return this;
     }
 }

@@ -40,7 +40,6 @@ import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.form.action.FormActionDefinition;
-import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.form.FormView;
 
 /**
@@ -52,11 +51,11 @@ public interface FormPresenter {
 
     EventBus getEventBus();
 
-    void addAction(String actionName, String actionLabel, DialogView.DialogActionListener callback);
-
-    void addActionCallback(String actionName, DialogView.DialogActionListener callback);
-
     FormView start(Item item, Callback callback);
+
+    void addAction(String actionName, String actionLabel, FormView.FormActionListener callback);
+
+    void addActionCallback(String actionName, FormView.FormActionListener callback);
 
     /**
      * Callback interface for FormView.Presenter.
@@ -89,7 +88,7 @@ public interface FormPresenter {
     public class FormPresenterUtil {
 
         public static void addActionFromDefinition(final FormPresenter presenter, final FormActionDefinition definition, final FormActionFactory factory) {
-            presenter.addAction(definition.getName(), definition.getLabel(), new DialogView.DialogActionListener() {
+            presenter.addAction(definition.getName(), definition.getLabel(), new FormView.FormActionListener() {
                 @Override
                 public void onActionExecuted(final String actionName) {
                     final ActionDefinition actionDefinition = definition.getActionDefinition();

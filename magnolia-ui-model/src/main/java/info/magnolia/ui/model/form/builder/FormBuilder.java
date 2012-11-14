@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.builder;
+package info.magnolia.ui.model.form.builder;
+
+import info.magnolia.ui.model.form.definition.ConfiguredFormDefinition;
+import info.magnolia.ui.model.form.definition.FormDefinition;
 
 /**
- * Config object creating builders for dialog fields.
+ * FormBuilder.
  */
-public class FieldsConfig {
+public class FormBuilder {
+    private final ConfiguredFormDefinition definition = new ConfiguredFormDefinition();
 
-    public TextFieldBuilder textField(String name) {
-        return new TextFieldBuilder(name);
+    public FormBuilder(String id) {
+        definition.setId(id);
     }
 
-    public SelectFieldBuilder selectField(String name) {
-        return new SelectFieldBuilder(name);
+    public FormBuilder label(String label) {
+        definition.setLabel(label);
+        return this;
     }
 
-    public FileUploadFieldBuilder fileUploadField(String name) {
-        return new FileUploadFieldBuilder(name);
+    public FormBuilder i18nBasename(String i18nBasename) {
+        definition.setI18nBasename(i18nBasename);
+        return this;
+    }
+
+    public FormBuilder description(String description) {
+        definition.setDescription(description);
+        return this;
+    }
+
+    public FormDefinition exec() {
+        return definition;
+    }
+
+    public FormBuilder tabs(TabBuilder... builders) {
+        for (TabBuilder builder : builders) {
+            definition.addTab(builder.exec());
+        }
+        return this;
+    }
+
+    public FormBuilder actions(FormActionBuilder... builders) {
+        for (FormActionBuilder builder : builders) {
+            definition.addAction(builder.exec());
+        }
+        return this;
     }
 }
