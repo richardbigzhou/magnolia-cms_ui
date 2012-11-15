@@ -285,7 +285,7 @@
               <sv:value>Template</sv:value>
             </sv:property>
             <sv:property sv:name="name" sv:type="String">
-              <sv:value>MetaData/mgnl:template</sv:value>
+              <sv:value>mgnl:template</sv:value>
             </sv:property>
             <sv:property sv:name="required" sv:type="String">
               <sv:value>true</sv:value>

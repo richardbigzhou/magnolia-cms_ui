@@ -238,7 +238,7 @@
         <sv:value>Template</sv:value>
       </sv:property>
       <sv:property sv:name="propertyName" sv:type="String">
-        <sv:value>MetaData/mgnl:template</sv:value>
+        <sv:value>mgnl:template</sv:value>
       </sv:property>
       <sv:property sv:name="sortable" sv:type="String">
         <sv:value>true</sv:value>
@@ -336,7 +336,7 @@
         <sv:value>Modification Date</sv:value>
       </sv:property>
       <sv:property sv:name="propertyName" sv:type="String">
-        <sv:value>MetaData/mgnl:lastmodified</sv:value>
+        <sv:value>jcr:lastModified</sv:value>
       </sv:property>
       <sv:property sv:name="sortable" sv:type="String">
         <sv:value>true</sv:value>
