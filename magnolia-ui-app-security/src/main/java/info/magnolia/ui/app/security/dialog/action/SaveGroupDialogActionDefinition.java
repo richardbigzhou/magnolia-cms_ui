@@ -31,13 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.view;
+package info.magnolia.ui.app.security.dialog.action;
 
-import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 
 /**
- * Users View definition for the Security App.
+ * Save group dialog action definition.
  */
-public interface UsersView extends WorkbenchSubAppView {
+public class SaveGroupDialogActionDefinition extends SaveDialogActionDefinition {
 
 }

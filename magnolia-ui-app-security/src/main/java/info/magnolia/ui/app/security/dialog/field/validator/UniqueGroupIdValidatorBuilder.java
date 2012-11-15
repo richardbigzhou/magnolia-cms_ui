@@ -31,13 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.view;
+package info.magnolia.ui.app.security.dialog.field.validator;
 
-import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
+import com.vaadin.data.Validator;
+
+import info.magnolia.ui.admincentral.field.validator.AbstractFieldValidatorBuilder;
 
 /**
- * Users View definition for the Security App.
+ * Unique Group ID validator builder.
  */
-public interface UsersView extends WorkbenchSubAppView {
+public class UniqueGroupIdValidatorBuilder extends AbstractFieldValidatorBuilder<UniqueGroupIdValidatorDefinition> {
+
+    public UniqueGroupIdValidatorBuilder(UniqueGroupIdValidatorDefinition definition) {
+        super(definition);
+    }
+
+    @Override
+    public Validator buildValidator() {
+        return new UniqueGroupIdValidator(getI18nErrorMessage());
+    }
 
 }

@@ -31,13 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.view;
+package info.magnolia.ui.app.security.dialog.field.validator;
 
-import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
+import info.magnolia.cms.security.Security;
+
+import com.vaadin.data.validator.AbstractStringValidator;
 
 /**
- * Users View definition for the Security App.
+ * Ensures uniqueness of the user name.
  */
-public interface UsersView extends WorkbenchSubAppView {
+public class UniqueUserIdValidator extends AbstractStringValidator {
+
+    public UniqueUserIdValidator(String errorMessage) {
+        super(errorMessage);
+    }
+
+    @Override
+    protected boolean isValidString(String value) {
+        if (Security.getUserManager().getUser(value) != null) {
+            // user with such name already exists
+            return false;
+        }
+        return true;
+    }
 
 }

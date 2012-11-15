@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.app.security.view;
 
-import info.magnolia.ui.admincentral.app.content.ContentAppView;
+import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 
 /**
  * Groups View definition for the Security App.
  */
-public interface GroupsView extends ContentAppView {
+public interface GroupsView extends WorkbenchSubAppView {
 
 }
