@@ -143,16 +143,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * @see #locationChanged(Location)
      * @see ActionbarPresenter
      */
-    protected void updateActionbar(final ActionbarPresenter actionbar) {
-
-        if (getWorkbench().getSelectedItemId() == null || "/".equals(getWorkbench().getSelectedItemId())) {
-            actionbar.disable("delete");
-            actionbar.disable("edit");
-        } else {
-            actionbar.enable("delete");
-            actionbar.enable("edit");
-        }
-    }
+    public abstract void updateActionbar(ActionbarPresenter actionbar);
 
     protected final ContentWorkbenchPresenter getWorkbench() {
         return workbench;
@@ -232,6 +223,5 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
             }
         });
     }
-
 
 }
