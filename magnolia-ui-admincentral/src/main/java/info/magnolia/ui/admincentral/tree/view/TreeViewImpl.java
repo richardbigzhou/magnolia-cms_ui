@@ -146,6 +146,7 @@ public class TreeViewImpl implements TreeView {
     @Override
     public void refresh() {
         container.refresh();
+        container.fireItemSetChange();
     }
 
     @Override
