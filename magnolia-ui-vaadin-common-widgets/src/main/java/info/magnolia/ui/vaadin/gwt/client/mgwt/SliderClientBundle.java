@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,19 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.upload;
+package info.magnolia.ui.vaadin.gwt.client.mgwt;
 
-import info.magnolia.ui.admincentral.file.FileItemWrapper;
-import info.magnolia.ui.framework.shell.Shell;
+import com.google.gwt.resources.client.ClientBundle;
+import com.googlecode.mgwt.ui.client.theme.base.SliderCss;
 
 /**
- * AssetUploadFieldImpl. 
- *
+ * Bundle to serve resources for mgwt slider widget.
  */
-public class AssetUploadFieldImpl extends UploadFileFieldImpl {
+public interface SliderClientBundle extends ClientBundle {
 
-    public AssetUploadFieldImpl(FileItemWrapper fileItem, Shell shell) {
-        super(fileItem, shell);
-    }
+    final static String publicPath = "info/magnolia/ui/vaadin/gwt/public/";
+
+    @Source(publicPath + "mgwt/slider.css")
+    SliderCss css();
 
 }
