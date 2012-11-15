@@ -143,12 +143,7 @@
           </execution>
         </executions>
       </plugin>
-    </plugins>
-  </build>
-
-  <profiles>
-    <profile>
-    <!--
+     <!--
       We currently need to maintain a patched version of Vaadin's VScrollTable.java due to some limitations regarding extensibility
       in the original class and which Vaadin cannot handle at the moment (TODO add Vaadin tickets raised by Magnolia about this, if any).
       Here what we do is
@@ -156,79 +151,141 @@
         2) apply our own patch (see src/main/patches/vscrolltable.txt) to the class's original sources.
         3) rename the original VScrollTable.java to VScrollTablePatched.java which our code will use instead of the original.
       -->
-      <id>patch-vaadin-vscrolltable</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>unpack-vaadin-scrolltable-src</id>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>com.vaadin</groupId>
-                      <artifactId>vaadin</artifactId>
-                      <version>${vaadinVersion}</version>
-                      <type>jar</type>
-                      <classifier>sources</classifier>
-                      <overWrite>true</overWrite>
-                      <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
-                    </artifactItem>
-                  </artifactItems>
-                  <includes>**\/*VScrollTable.java</includes>
-                </configuration>
-              </execution>
-            </executions>
-           </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-patch-plugin</artifactId>
-            <configuration>
-              <patches>
-                <patch>vscrolltable.txt</patch>
-              </patches>
-            </configuration>
-            <executions>
-              <execution>
-                <id>patch</id>
-                <goals>
-                  <goal>apply</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>groovy-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>process-sources</phase>
-                <goals>
-                  <goal>execute</goal>
-                </goals>
-                <!-- Rename patched VScrollTable.java -->
-                <configuration>
-                  <source>
-                    import java.io.File
-
-                    def path = "${project.build.sourceDirectory}/com/vaadin/terminal/gwt/client/ui/"
-                    def originalFile = new File(path + "VScrollTable.java")
-                    def renamedFile = new File(path + "VScrollTablePatched.java")
-                    println "Renaming ${originalFile.name} to ${renamedFile.name}..."
-                    originalFile.renameTo(renamedFile)
-                  </source>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-dependency-plugin</artifactId>
+      <executions>
+        <execution>
+          <id>unpack-vaadin-scrolltable-src</id>
+          <goals>
+            <goal>unpack</goal>
+          </goals>
+          <configuration>
+            <artifactItems>
+              <artifactItem>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin</artifactId>
+                <version>${vaadinVersion}</version>
+                <type>jar</type>
+                <classifier>sources</classifier>
+                <overWrite>true</overWrite>
+                <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
+              </artifactItem>
+            </artifactItems>
+            <includes>**\/*VScrollTable.java</includes>
+          </configuration>
+        </execution>
+      </executions>
+     </plugin>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-patch-plugin</artifactId>
+      <configuration>
+        <patches>
+          <patch>vscrolltable.txt</patch>
+        </patches>
+      <strip>4</strip>
+      </configuration>
+      <executions>
+        <execution>
+          <id>patch</id>
+          <goals>
+            <goal>apply</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+    <plugin>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>groovy-maven-plugin</artifactId>
+      <executions>
+        <execution>
+          <phase>process-sources</phase>
+          <goals>
+            <goal>execute</goal>
+          </goals>
+          <!-- Rename patched VScrollTable.java -->
+          <configuration>
+            <source>
+              import java.io.File
+   
+              def path = "${project.build.sourceDirectory}/com/vaadin/terminal/gwt/client/ui/"
+              def originalFile = new File(path + "VScrollTable.java")
+              def renamedFile = new File(path + "VScrollTablePatched.java")
+              println "Renaming ${originalFile.name} to ${renamedFile.name}..."
+              originalFile.renameTo(renamedFile)
+            </source>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+      </plugin>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+              <configuration>
+                  <excludes>**/*Patched.java</excludes>
+              </configuration>
+      </plugin>
+    </plugins>
+    
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <versionRange>[2.0,)</versionRange>
+                    <goals>
+                      <goal>unpack</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-patch-plugin</artifactId>
+                    <versionRange>[1.0,)</versionRange>
+                    <goals>
+                      <goal>apply</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>groovy-maven-plugin</artifactId>
+                    <versionRange>[1.0,)</versionRange>
+                    <goals>
+                      <goal>execute</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution> 
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
 </project>
