@@ -35,22 +35,114 @@
 (function() {
 	CKEDITOR.plugins.add('magnolialink', {
 		init: function(editor) {
-		    
-			editor.addCommand('magnolialink', {
-				exec: function(editor) {
-					editor.fire('reqMagnoliaLink');
-				}
-			});
-			
-			editor.on('sendMagnoliaLink', function(e) {
-			    editor.insertText(e.data);
-			});
-
 			editor.ui.addButton('InternalLink', {
 				label: 'Link to Magnolia page',
 				command: 'magnolialink',
 				icon: "mlink.png"
 			});
+			
+			editor.addMenuGroup('mlinkgroup');
+			
+			editor.addMenuItem('magnolialink', { 
+				label: 'Edit Magnolia Link',
+				command: 'magnolialink',
+				group: 'mlinkgroup',
+				icon: "mlink.png"
+			});
+			
+			//Request Pages app dialog
+			editor.addCommand('magnolialink', {
+				exec: function(editor) {
+	    	        var selectedElement = CKEDITOR.plugins.link.getSelectedLink(editor);
+		            if(isInternalLink(selectedElement)) {
+		            	var href = selectedElement.getAttribute('href');
+		            	var path = href.match(/handle\:\{([^\}]*)\}/);		            	
+		            	editor.fire('reqMagnoliaLink', path[1]);		            	
+		            } else {
+		            	editor.fire('reqMagnoliaLink');
+		            }
+				}
+			});
+			
+			//Respond from Pages app
+			editor.on('sendMagnoliaLink', function(e) {			    
+    	        var selectedElement = CKEDITOR.plugins.link.getSelectedLink(editor);
+    	        
+	            if(isLink(selectedElement)) {
+	            	selectedElement.setAttribute('href', e.data);
+	            } else {
+	            	var selectedText = editor.getSelection();
+	            	var elem = editor.document.createElement('a');
+				    elem.setAttribute('href', e.data);
+				    
+				    if(selectedText && selectedText.getSelectedText() != '') {
+				        elem.setHtml(selectedText.getSelectedText());
+				    } else {
+				    	var response = e.data.match(/handle\:\{([^\}]*)\}/);
+				        elem.setHtml(response[1]);
+				    }
+				    editor.insertElement(elem);
+	            }
+			});
+
+			//Double click
+			editor.on('doubleclick', function(ev) {				
+				var selected = CKEDITOR.plugins.link.getSelectedLink(editor);
+				if(isInternalLink(selected)) {
+					ev.data.dialog = null; //Eat the CK link dialog
+					editor.getCommand('magnolialink').exec(editor);
+				}
+			});
+			
+			//Selection change
+			editor.on( 'selectionChange', function( evt ) {
+				if ( editor.readOnly )
+					return;
+
+				var	element = evt.data.path.lastElement && evt.data.path.lastElement.getAscendant( 'a', true );				
+				var internalLinkState = CKEDITOR.TRISTATE_OFF;
+				var externalLinkState = CKEDITOR.TRISTATE_OFF;
+				
+				if(isLink(element) && !isInternalLink(element)) {
+					internalLinkState = CKEDITOR.TRISTATE_DISABLED;					
+				}
+				
+				if(isInternalLink(element)) {
+					externalLinkState = CKEDITOR.TRISTATE_DISABLED;
+				}
+				
+				editor.getCommand('magnolialink').setState(internalLinkState);
+				editor.getCommand('link').setState(externalLinkState);				
+			} );
+			
+			//Context menu
+			editor.contextMenu.addListener( function(element, selection) {		
+				if(!isInternalLink(element)) {
+					return null;
+				} 
+				
+				return {magnolialink: CKEDITOR.TRISTATE_OFF};
+			});
 		}
 	});
+	
+	function isInternalLink(element) {
+		if (isLink(element) && 
+				element.getAttribute('href').substring(0,1) == '$') {
+			return true;
+		}
+		
+		return false;
+	};
+	
+	function isLink(element) {
+		if(element &&
+				element.getName().toLowerCase() == 'a' &&
+				element.getAttribute('href') &&
+				element.getChildCount()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 })();

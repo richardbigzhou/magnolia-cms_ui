@@ -87,18 +87,17 @@ public class RichTextFieldBuilder extends
                 "Italic", "Underline", "SpecialChar" }));
         toolbars.add(new ToolbarGroup("paragraph", new String[] {
                 "NumberedList", "BulletedList" }));
-        toolbars.add(new ToolbarGroup("insert", new String[] { "Link",
-                "Unlink", "InternalLink" }));
+        toolbars.add(new ToolbarGroup("insert", new String[] { "Link", 
+                "InternalLink", "Unlink" }));
         toolbars.add(new ToolbarGroup("clipboard", new String[] { "Cut",
                 "Copy", "Paste", "PasteText", "PasteFromWord" }));
         toolbars.add(new ToolbarGroup("objects", new String[] { "Image",
                 "Table" }));
         toolbars.add(new ToolbarGroup("special",
-                new String[] { "Undo", "Redo", "CustomPlugin" }));
+                new String[] { "Undo", "Redo" }));
         config.addToolbarLine(toolbars);
-        config.addPlugin("customplugin", "/VAADIN/js/customplugin/");
+        //config.addPlugin("customplugin", "/VAADIN/js/customplugin/");
         config.addListenedEvent("reqMagnoliaLink");
-        config.addListenedEvent("customStuffHappened");
         
         richtexteditor = new MagnoliaRichTextField(config);
         richtexteditor.addListener(new MagnoliaRichTextField.PluginListener() {
@@ -107,9 +106,6 @@ public class RichTextFieldBuilder extends
             public void onPluginEvent(String eventName, String value) {
                 if (eventName.equals("reqMagnoliaLink")) {
                     openLinkDialog();
-                } else if(eventName.equals("customStuffHappened")) {
-                    openLinkDialog();
-                    //richtexteditor.firePluginEvent("serverSendToCustomPlugin", "${link:{uuid:{f312fc16-8f66-451c-bdf0-a72913b74c2d},repository:{website},handle:{/demo-project/about},nodeData:{},extension:{html}}}");
                 }
             }
         });
@@ -140,7 +136,7 @@ public class RichTextFieldBuilder extends
                                     String jsonFormat = "${link:{uuid:{%s},repository:{%s},handle:{%s},nodeData:{},extension:{html}}}";
                                                         
                                     richtexteditor.firePluginEvent(
-                                            "serverSendToCustomPlugin",
+                                            "sendMagnoliaLink",
                                             String.format(
                                                     jsonFormat, 
                                                     selected.getIdentifier(), 
