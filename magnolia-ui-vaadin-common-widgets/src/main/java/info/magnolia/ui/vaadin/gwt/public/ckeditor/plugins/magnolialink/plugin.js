@@ -50,9 +50,16 @@
 				icon: "mlink.png"
 			});
 			
+			/* Firefox will lose focus when popping up a dialog.
+			 * So a variable is needed to restore selection after
+			 * dialog has closed.
+			 */
+			var selectionRangeHack = null;
+			
 			//Request Pages app dialog
 			editor.addCommand('magnolialink', {
 				exec: function(editor) {
+					selectionRangeHack = editor.getSelection().getRanges(true);
 	    	        var selectedElement = CKEDITOR.plugins.link.getSelectedLink(editor);
 		            if(isInternalLink(selectedElement)) {
 		            	var href = selectedElement.getAttribute('href');
@@ -65,7 +72,9 @@
 			});
 			
 			//Respond from Pages app
-			editor.on('sendMagnoliaLink', function(e) {			    
+			editor.on('sendMagnoliaLink', function(e) {		
+		    	editor.getSelection().selectRanges(selectionRangeHack);
+		    	
     	        var selectedElement = CKEDITOR.plugins.link.getSelectedLink(editor);
     	        
 	            if(isLink(selectedElement)) {
@@ -81,6 +90,7 @@
 				    	var response = e.data.match(/handle\:\{([^\}]*)\}/);
 				        elem.setHtml(response[1]);
 				    }
+				    
 				    editor.insertElement(elem);
 	            }
 			});
@@ -98,8 +108,8 @@
 			editor.on( 'selectionChange', function( evt ) {
 				if ( editor.readOnly )
 					return;
-
-				var	element = evt.data.path.lastElement && evt.data.path.lastElement.getAscendant( 'a', true );				
+				
+				var	element = evt.data.path.lastElement && evt.data.path.lastElement.getAscendant( 'a', true );
 				var internalLinkState = CKEDITOR.TRISTATE_OFF;
 				var externalLinkState = CKEDITOR.TRISTATE_OFF;
 				
