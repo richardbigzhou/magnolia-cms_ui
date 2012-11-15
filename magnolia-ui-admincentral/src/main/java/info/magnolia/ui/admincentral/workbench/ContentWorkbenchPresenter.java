@@ -64,6 +64,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.terminal.Resource;
+
 
 /**
  * The workbench is a core component of AdminCentral. It represents the main hub through which users
@@ -102,10 +104,10 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     private final ActionbarPresenter actionbarPresenter;
 
     private final ImageProvider imageProvider;
-    
+
     @Inject
-    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus, 
-            final @Named("subapp") EventBus subAppEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, 
+    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus,
+            final @Named("subapp") EventBus subAppEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
             final ActionbarPresenter actionbarPresenter) {
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
@@ -233,8 +235,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         if (StringUtils.isBlank(path)) {
             actionbarPresenter.setPreview(null);
         } else {
-            String imagePath = imageProvider.getPortraitPath(workspace, path);
-            actionbarPresenter.setPreview(imagePath);
+            Resource previewResource = imageProvider.getThumbnailResourceByPath(workspace, path, ImageProvider.PORTRAIT_GENERATOR);
+            actionbarPresenter.setPreview(previewResource);
         }
     }
 
