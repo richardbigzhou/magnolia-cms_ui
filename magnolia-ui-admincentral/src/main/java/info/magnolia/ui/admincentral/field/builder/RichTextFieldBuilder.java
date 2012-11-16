@@ -105,7 +105,7 @@ public class RichTextFieldBuilder extends
             @Override
             public void onPluginEvent(String eventName, String value) {
                 if (eventName.equals("reqMagnoliaLink")) {
-                    openLinkDialog();
+                    openLinkDialog(value);
                 }
             }
         });
@@ -114,14 +114,14 @@ public class RichTextFieldBuilder extends
         return richtexteditor;
     }
 
-    private void openLinkDialog() {
+    private void openLinkDialog(String path) {
         // Get the property name to propagate.
         App targetApp = appController.startIfNotAlreadyRunning("pages",
                 new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages",
                         "", ""));
         if (targetApp != null && targetApp instanceof AbstractContentApp) {
             ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp)
-                    .openChooseDialog();
+                    .openChooseDialog(path);
             pickerPresenter.getView().setCaption("Select a page");
             pickerPresenter
                     .addValuePickListener(new ValueChosenListener<Item>() {
