@@ -73,22 +73,25 @@
 			
 			//Respond from Pages app
 			editor.on('sendMagnoliaLink', function(e) {		
-		    	editor.getSelection().selectRanges(selectionRangeHack);
-		    	
+		    	editor.getSelection().selectRanges(selectionRangeHack);		    	
     	        var selectedElement = CKEDITOR.plugins.link.getSelectedLink(editor);
+    	        var link = eval('('+e.data+')');
+    	        var href = '${link:{uuid:{'+link.identifier+
+    	        	'},repository:{'+link.repository+
+    	        	'},handle:{'+link.path+
+    	        	'},nodeData:{},extension:{html}}}';
     	        
 	            if(isLink(selectedElement)) {
-	            	selectedElement.setAttribute('href', e.data);
+	            	selectedElement.setAttribute('href', href);
 	            } else {
 	            	var selectedText = editor.getSelection();
 	            	var elem = editor.document.createElement('a');
-				    elem.setAttribute('href', e.data);
+				    elem.setAttribute('href', href);
 				    
 				    if(selectedText && selectedText.getSelectedText() != '') {
 				        elem.setHtml(selectedText.getSelectedText());
 				    } else {
-				    	var response = e.data.match(/handle\:\{([^\}]*)\}/);
-				        elem.setHtml(response[1]);
+				        elem.setHtml(link.caption);
 				    }
 				    
 				    editor.insertElement(elem);

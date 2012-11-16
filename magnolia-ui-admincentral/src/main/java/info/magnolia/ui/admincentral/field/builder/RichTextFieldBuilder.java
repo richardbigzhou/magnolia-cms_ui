@@ -55,6 +55,7 @@ import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig.ToolbarGroup;
 
+import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
@@ -132,18 +133,21 @@ public class RichTextFieldBuilder extends
                             if (jcrItem.isNode()) {
                                 final Node selected = (Node) jcrItem;
                                 try {                                    
-
-                                    String jsonFormat = "${link:{uuid:{%s},repository:{%s},handle:{%s},nodeData:{},extension:{html}}}";
-                                                        
+                                    Gson gson = new Gson();
+                                    MLink mlink = new MLink();
+                                    mlink.identifier = selected.getIdentifier();
+                                    mlink.repository = selected.getSession().getWorkspace().getName();
+                                    mlink.path = selected.getPath();
+                                    if(selected.hasProperty("title")) {
+                                        mlink.caption = selected.getProperty("title").getString();
+                                    } else {
+                                        mlink.caption = selected.getName();
+                                    }
+                                                                        
                                     richtexteditor.firePluginEvent(
                                             "sendMagnoliaLink",
-                                            String.format(
-                                                    jsonFormat, 
-                                                    selected.getIdentifier(), 
-                                                    selected.getSession().getWorkspace().getName(), 
-                                                    selected.getPath()
-                                                    )
-                                                    );
+                                            gson.toJson(mlink)
+                                    );
                                 } catch (RepositoryException e) {
                                     log.error(
                                             "Not able to access the configured property. Value will not be set.",
@@ -158,6 +162,17 @@ public class RichTextFieldBuilder extends
                         }
                     });
         }
+    }
+    
+    private static class MLink {
+        @SuppressWarnings("unused")
+        public String identifier;
+        @SuppressWarnings("unused")
+        public String repository;
+        @SuppressWarnings("unused")
+        public String path;
+        @SuppressWarnings("unused")
+        public String caption;
     }
 
     @Override
