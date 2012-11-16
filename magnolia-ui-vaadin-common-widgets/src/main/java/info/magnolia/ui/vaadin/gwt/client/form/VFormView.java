@@ -33,23 +33,27 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form;
 
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheetView;
-
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.ValidationChangedEvent;
 
 /**
  * VTabDialogView.
  */
-public interface VFormView extends VMagnoliaTabSheetView {
+public interface VFormView extends IsWidget, HasWidgets, ValidationChangedEvent.Handler {
+
+    void setContent(Widget contentWidget);
 
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
      */
-    public interface Presenter extends VMagnoliaTabSheetView.Presenter {
+    public interface Presenter {
 
         void fireAction(String action);
 
     }
+
 
     void setPresenter(Presenter presenter);
 
@@ -59,8 +63,9 @@ public interface VFormView extends VMagnoliaTabSheetView {
 
     void setDescription(String description);
 
-    void setCaption(String caption);
+    int getFormWidth();
 
-    void recalculateErrors();
+    int getFormHeight();
+
 
 }

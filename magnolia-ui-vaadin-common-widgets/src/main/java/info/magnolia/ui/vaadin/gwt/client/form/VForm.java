@@ -33,52 +33,52 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form;
 
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheet;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheetView;
-
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.terminal.gwt.client.ApplicationConnection;
+import com.vaadin.terminal.gwt.client.Container;
+import com.vaadin.terminal.gwt.client.Paintable;
+import com.vaadin.terminal.gwt.client.RenderSpace;
+import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.VConsole;
+import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
+
+import java.util.Set;
 
 /**
  * VTabDialog.
  */
-public class VForm extends VMagnoliaTabSheet implements VFormView.Presenter {
+public class VForm extends Composite implements Container, ClientSideHandler, VFormView.Presenter {
 
-    @Override
-    protected VFormView getView() {
-        return (VFormView)super.getView();
-    }
+    private final VFormView view = new VFormViewImpl();
 
-    @Override
-    protected ClientSideProxy createProxy() {
-        final ClientSideProxy proxy = super.createProxy();
+    private final ClientSideProxy proxy = new ClientSideProxy(this) {{
 
-        proxy.register("addAction", new Method() {
+
+        register("addAction", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
                 final String name = String.valueOf(params[0]);
                 final String label = String.valueOf(params[1]);
-                getView().addAction(name, label);
+                view.addAction(name, label);
             }
         });
 
-        proxy.register("setDescription", new Method() {
+        register("setDescription", new Method() {
             @Override
             public void invoke(String methodName, Object[] params) {
                 final String description = String.valueOf(params[0]);
-                getView().setDescription(description);
+                view.setDescription(description);
             }
         });
 
-        proxy.register("setCaption", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                final String caption = String.valueOf(params[0]);
-                getView().setCaption(caption);
-            }
-        });
+    }};
 
-        return proxy;
+    public VForm() {
+        initWidget(view.asWidget());
+        view.setPresenter(this);
     }
 
     @Override
@@ -87,16 +87,52 @@ public class VForm extends VMagnoliaTabSheet implements VFormView.Presenter {
     }
 
     @Override
-    protected VMagnoliaTabSheetView createView() {
-        return new VFormViewImpl(getEventBus(), this);
+    public void fireAction(String action) {
+        proxy.call("fireAction", action);
     }
 
     @Override
-    public void fireAction(String action) {
-        getProxy().call("fireAction", action);
+    public boolean initWidget(Object[] params) {
+        return false;
     }
 
-    public void updateErrorAmount() {
-        getView().recalculateErrors();
+    @Override
+    public void handleCallFromServer(String method, Object[] params) {
+        VConsole.error("Unknown call from server " + method);
+    }
+
+    @Override
+    public boolean hasChildComponent(Widget component) {
+        return view.hasChildComponent(component);
+    }
+
+    @Override
+    public void updateCaption(Paintable component, UIDL uidl) {
+    }
+
+    @Override
+    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
+    }
+
+    @Override
+    public boolean requestLayout(Set<Paintable> children) {
+        return false;
+    }
+
+    @Override
+    public RenderSpace getAllocatedSpace(Widget child) {
+       return new RenderSpace(view.getFormWidth(), view.getFormHeight());
+    }
+
+    @Override
+    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+        if (client.updateComponent(this, uidl, true)) {
+            return;
+        }
+        final Paintable contentPaintable = client.getPaintable(uidl.getChildUIDL(0));
+        final Widget contentWidget = (Widget)contentPaintable;
+        view.setContent(contentWidget);
+        contentPaintable.updateFromUIDL(uidl.getChildUIDL(0), client);
+        proxy.update(this, uidl, client);
     }
 }

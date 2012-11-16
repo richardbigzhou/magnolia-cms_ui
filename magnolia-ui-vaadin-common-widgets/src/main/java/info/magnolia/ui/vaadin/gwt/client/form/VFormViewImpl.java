@@ -33,30 +33,27 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.FormFieldWrapper;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTab;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabNavigator;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheetViewImpl;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.ScrollHandler;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.Util;
+import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.FormFieldWrapper;
+import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.ValidationChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTab;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheet;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * VTabDialogViewImpl.
@@ -79,11 +76,9 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
 
     private final Element footer = DOM.createDiv();
 
-    private final VMagnoliaTabSheetViewImpl impl;
+    private final VMagnoliaTabSheet tabSheet;
 
     private FormFieldWrapper lastShownProblematicField = null;
-
-    private EventBus eventBus;
 
     public boolean isAFieldFocussed; //Whether a field in the view has focus, required for iPad Keyboard closing.
 
@@ -95,7 +90,7 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
             final FormFieldWrapper field = Util.findWidget(target, FormFieldWrapper.class);
             if (field != null) {
                 lastShownProblematicField = null;
-                final List<FormFieldWrapper> fields = getActiveTab().getFields();
+                final List<FormFieldWrapper> fields = ((VFormTab)tabSheet.getActiveTab()).getFields();
                 int index = fields.indexOf(field);
                 if (index >= 0) {
                     if (field.hasError()) {
@@ -114,7 +109,7 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
         }
     };
 
-    private final VFormHeader dialogHeader = new VFormHeader(new VFormHeader.VFormHeaderCallback() {
+    private final VFormHeader formHeader = new VFormHeader(new VFormHeader.VFormHeaderCallback() {
 
         @Override
         public void onDescriptionVisibilityChanged(boolean isVisible) {
@@ -123,7 +118,7 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
 
         @Override
         public void jumpToNextError() {
-            VFormTab activeTab = getActiveTab();
+            VFormTab activeTab = (VFormTab)tabSheet.getActiveTab();
             final List<FormFieldWrapper> problematicFields = activeTab.getProblematicFields();
             if (lastShownProblematicField == null && !problematicFields.isEmpty()) {
                 final FormFieldWrapper field = problematicFields.get(0);
@@ -136,14 +131,15 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
                     lastShownProblematicField = nextField;
                     scrollTo(lastShownProblematicField);
                 } else {
-                    final List<VMagnoliaTab> tabs = getTabs();
+                    final List<VMagnoliaTab> tabs = tabSheet.getTabs();
                     int tabIndex = tabs.indexOf(activeTab);
                     for (int i = 0; i < tabs.size() - 1; ++i) {
                         final VFormTab nextTab = (VFormTab)tabs.get(++tabIndex % tabs.size());
                         if (nextTab.getProblematicFields().size() > 0) {
-                            eventBus.fireEvent(new ActiveTabChangedEvent(nextTab));
+                            tabSheet.getEventBus().fireEvent(new ActiveTabChangedEvent(nextTab));
                             lastShownProblematicField = null;
                             jumpToNextError();
+                            break;
                         }
                     }
                 }
@@ -153,23 +149,26 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
 
     private Presenter presenter;
 
-    public VFormViewImpl(EventBus eventBus, Presenter presenter) {
+    public VFormViewImpl() {
         super();
-        this.eventBus = eventBus;
-        this.presenter = presenter;
 
-        impl = new VMagnoliaTabSheetViewImpl(eventBus, presenter);
+        tabSheet = new VMagnoliaTabSheet();
 
         setStylePrimaryName(CLASSNAME);
         content.addClassName(CLASSNAME_CONTENT);
         footer.addClassName(CLASSNAME_FOOTER);
 
-        add(dialogHeader);
+        add(formHeader);
 
         getElement().appendChild(content);
         getElement().appendChild(footer);
 
-        add(impl, content);
+        add(tabSheet, content);
+
+    }
+
+    @Override
+    public void setContent(Widget contentWidget) {
 
     }
 
@@ -210,13 +209,8 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
     }
 
     @Override
-    public void setCaption(final String caption) {
-        dialogHeader.setDialogCaption(caption);
-    }
-
-    @Override
     public void setDescription(final String dialogDescription) {
-        dialogHeader.setDescription(dialogDescription);
+        formHeader.setDescription(dialogDescription);
     }
 
     void setDescriptionVisible(boolean isVisible) {
@@ -226,58 +220,44 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
     }
 
     @Override
-    public VMagnoliaTabNavigator getTabContainer() {
-        return impl.getTabContainer();
+    public int getFormWidth() {
+        return getOffsetWidth();
     }
 
     @Override
-    public VMagnoliaTab getTabById(String tabId) {
-        return impl.getTabById(tabId);
+    public int getFormHeight() {
+        return getOffsetHeight();
     }
 
     @Override
-    public List<VMagnoliaTab> getTabs() {
-        return impl.getTabs();
+    public void setHeight(String height) {
+        super.setHeight(height);
+        int heightPx = JQueryWrapper.parseInt(height);
+        tabSheet.setHeight((heightPx - formHeader.getOffsetHeight() - footer.getOffsetHeight()) + "px");
+    }
+
+    private void scrollTo(final FormFieldWrapper field) {
+        final int top = JQueryWrapper.select(field).position().top();
+        JQueryWrapper.select(tabSheet).children(".v-shell-tabsheet-scroller").animate(500, new AnimationSettings() {
+            {
+                setProperty("scrollTop", top - 30);
+                addCallback(new JQueryCallback() {
+                    @Override
+                    public void execute(JQueryWrapper query) {
+                        new Timer() {
+                            @Override
+                            public void run() {
+                                field.focusField();
+                            };
+                        }.schedule(500);
+                    }
+                });
+            }
+        });
     }
 
     @Override
-    public void setActiveTab(VMagnoliaTab tab) {
-        lastShownProblematicField = null;
-        impl.setActiveTab(tab);
-        content.removeClassName(CLASSNAME_CONTENT_SHOW_ALL);
-    }
-
-    @Override
-    public void removeTab(VMagnoliaTab tabToOrphan) {
-        impl.removeTab(tabToOrphan);
-    }
-
-    @Override
-    public void showAllTabContents(boolean visible) {
-        impl.showAllTabContents(visible);
-        content.addClassName(CLASSNAME_CONTENT_SHOW_ALL);
-    }
-
-    @Override
-    public HandlerRegistration addScrollHandler(ScrollHandler handler) {
-        return impl.addScrollHandler(handler);
-    }
-
-    @Override
-    public void updateTab(VMagnoliaTab tab) {
-        if (!(tab instanceof VFormTab)) {
-            throw new RuntimeException("Tab must be of VFormTab type. You have used: " + tab.getClass());
-        }
-        formTabs.add((VFormTab) tab);
-        impl.updateTab(tab);
-        final List<FormFieldWrapper> fields = ((VFormTab) tab).getFields();
-        for (final FormFieldWrapper field : fields) {
-            field.addFocusHandler(problematicFieldFocusHandler);
-        }
-    }
-
-    @Override
-    public void recalculateErrors() {
+    public void onValidationChanged(ValidationChangedEvent event) {
         int totalProblematicFields = 0;
         for (final VFormTab tab : formTabs) {
             totalProblematicFields += tab.getErrorAmount();
@@ -286,48 +266,6 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
                 field.addFocusHandler(problematicFieldFocusHandler);
             }
         }
-        dialogHeader.setErrorAmount(totalProblematicFields);
-    }
-
-    @Override
-    public void setHeight(String height) {
-        super.setHeight(height);
-        int heightPx = JQueryWrapper.parseInt(height);
-        impl.setHeight((heightPx - dialogHeader.getOffsetHeight() - footer.getOffsetHeight()) + "px");
-    }
-
-    @Override
-    public VFormTab getActiveTab() {
-        return (VFormTab) impl.getActiveTab();
-    }
-
-    private void scrollTo(final FormFieldWrapper field) {
-        final int top = JQueryWrapper.select(field).position().top();
-        JQueryWrapper.select(getScroller()).animate(500, new AnimationSettings() {
-            {
-                setProperty("scrollTop", top - 30);
-                addCallback(new JQueryCallback() {
-                    @Override
-                    public void execute(JQueryWrapper query) {
-                        field.focusField();
-                    }
-                });
-            }
-        });
-    }
-
-    @Override
-    public Widget getScroller() {
-        return impl.getScroller();
-    }
-
-    @Override
-    public void setShowActiveTabFullscreen(boolean isFullscreen) {
-        impl.setShowActiveTabFullscreen(isFullscreen);
-    }
-
-    @Override
-    public int getTabHeight(VMagnoliaTab tab) {
-        return impl.getTabHeight(tab);
+        formHeader.setErrorAmount(totalProblematicFields);
     }
 }

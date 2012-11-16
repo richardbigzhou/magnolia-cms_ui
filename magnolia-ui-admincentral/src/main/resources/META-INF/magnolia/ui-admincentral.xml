@@ -235,7 +235,7 @@
 		</component>
     <component>
       <type>info.magnolia.ui.vaadin.form.FormView</type>
-      <implementation>info.magnolia.ui.vaadin.form.FormViewImpl</implementation>
+      <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
 
 		<component>

@@ -82,6 +82,11 @@ public class AbstractContentSubAppTest {
         }
 
         @Override
+        public void updateActionbar(ActionbarPresenter actionbar) {
+
+        }
+
+        @Override
         public String getCaption() {
             return DUMMY_APPNAME;
         }

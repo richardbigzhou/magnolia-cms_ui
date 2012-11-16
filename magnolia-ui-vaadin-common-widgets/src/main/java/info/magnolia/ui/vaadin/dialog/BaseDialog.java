@@ -62,9 +62,9 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
 
     private final ListMultimap<String, DialogActionListener> actionCallbackMap = ArrayListMultimap.<String, DialogActionListener> create();
 
-    private Component content;
-
     private final Map<String, String> actionMap = new HashMap<String, String>();
+
+    private Component content;
 
     private boolean isAttached = false;
 
