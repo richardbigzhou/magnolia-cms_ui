@@ -39,6 +39,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import info.magnolia.cms.core.Path;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.tree.action.RepositoryOperationAction;
 import info.magnolia.ui.framework.event.EventBus;
@@ -65,7 +66,7 @@ public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDe
 
         String name = Path.getUniqueLabel(node.getSession(), node.getPath(), "untitled");
         Node newNode = node.addNode(name, "mgnl:folder");
-        NodeUtil.setCreation(newNode);
+        NodeTypes.CreatedMixin.setCreation(newNode);
     }
 
     private Node findAncestorOfType(Node node, String nodeType) throws RepositoryException {
