@@ -34,8 +34,8 @@
 package info.magnolia.ui.vaadin.integration.jcr.container;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.MgnlNodeTypeNames;
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -108,7 +108,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     private static final Long LONG_ZERO = Long.valueOf(0);
 
     /** Item type to use if no other is properly defined. **/
-    protected static final String DEFAULT_MAIN_ITEM_TYPE = MgnlNodeTypeNames.CONTENT;
+    protected static final String DEFAULT_MAIN_ITEM_TYPE = NodeTypes.Content.NAME;
 
     private static final String QUERY_LANGUAGE = Query.JCR_JQOM;
 
