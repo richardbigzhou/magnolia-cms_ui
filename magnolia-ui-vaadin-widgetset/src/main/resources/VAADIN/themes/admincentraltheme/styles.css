@@ -108,10 +108,18 @@ button.btn-dialog-selectCallBack {
 
 .v-checkbox > input[type="checkbox"]:checked + label,
 .gwt-CheckBox > input[type="checkbox"]:checked + label {
-	background: url('img/icon-checkbox_on.png') left center no-repeat;
+	background: url('img/icon-checkbox_on.svg') left center no-repeat;
+	background: url('img/icon-checkbox_on.png') left center no-repeat\9; /*For IE 8*/
+	background-size: 15px 15px;
+	-o-background-size: 15px 15px;
+    -webkit-background-size: 15px 15px;
 }
 
 .v-checkbox > input[type="checkbox"] + label,
 .gwt-CheckBox > input[type="checkbox"] + label {
-    background: url('img/icon-checkbox_off.png') left center no-repeat;
+    background: url('img/icon-checkbox_off.svg') left center no-repeat;
+    background: url('img/icon-checkbox_off.png') left center no-repeat\9; /*For IE 8*/
+    background-size: 15px 15px;
+    -o-background-size: 15px 15px;
+    -webkit-background-size: 15px 15px;
 }

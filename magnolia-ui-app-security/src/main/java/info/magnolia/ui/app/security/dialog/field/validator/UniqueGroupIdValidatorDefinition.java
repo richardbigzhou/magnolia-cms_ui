@@ -31,13 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.view;
+package info.magnolia.ui.app.security.dialog.field.validator;
 
-import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
+import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
 /**
- * Users View definition for the Security App.
+ * Defines a validator that checks for unique group name.
  */
-public interface UsersView extends WorkbenchSubAppView {
+public class UniqueGroupIdValidatorDefinition extends ConfiguredFieldValidatorDefinition {
 
 }

@@ -37,6 +37,7 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 
 import java.util.Collection;
 
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -46,12 +47,19 @@ import com.vaadin.data.Property;
 
 
 /**
- * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Property}.
+ * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a
+ * {@link javax.jcr.Property}.
  */
 
 public class JcrPropertyAdapter extends AbstractJcrAdapter {
-    //Init
+
+    static final String VALUE_COLUMN = "value";
+
+    static final String TYPE_COLUMN = "type";
+
+    // Init
     private static final Logger log = LoggerFactory.getLogger(JcrPropertyAdapter.class);
+
     private String jcrPropertyName;
 
     public JcrPropertyAdapter(javax.jcr.Property jcrProperty) {
@@ -62,10 +70,10 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
     /**
      * Set PropertyName.
      */
-    private void setPropertyName(javax.jcr.Property  jcrProperty) {
+    private void setPropertyName(javax.jcr.Property jcrProperty) {
         String propertyIdentifier = null;
         try {
-            propertyIdentifier =jcrProperty.getName();
+            propertyIdentifier = jcrProperty.getName();
         } catch (RepositoryException e) {
             log.error("Couldn't retrieve identifier of jcr property", e);
             propertyIdentifier = UN_IDENTIFIED;
@@ -85,12 +93,20 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
     public Property getItemProperty(Object id) {
         Object value = null;
         try {
-            value = getProperty().getString();
-        }catch (RepositoryException re) {
-            log.error("Could not get property for "+id,re);
+            if (JCR_NAME.equals(id)) {
+                value = getProperty().getName();
+            } else if (VALUE_COLUMN.equals(id)) {
+                value = getProperty().getString();
+            } else if (TYPE_COLUMN.equals(id)) {
+                value = PropertyType.nameFromValue(getProperty().getType());
+            } else {
+                value = null;
+            }
+        } catch (RepositoryException re) {
+            log.error("Could not get property for " + id, re);
             throw new RuntimeRepositoryException(re);
         }
-        return new DefaultProperty((String)id, value);
+        return new DefaultProperty((String) id, value);
     }
 
     @Override
@@ -101,9 +117,9 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
     @Override
     public boolean addItemProperty(Object id, Property property) {
         try {
-            getProperty().setValue((String)property.getValue());
-        }catch (RepositoryException re) {
-            log.error("Could not get property for "+id,re);
+            getProperty().setValue((String) property.getValue());
+        } catch (RepositoryException re) {
+            log.error("Could not get property for " + id, re);
             throw new RuntimeRepositoryException(re);
         }
         return true;
@@ -113,8 +129,8 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
     public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
         try {
             getProperty().remove();
-        }catch (RepositoryException re) {
-            log.error("Could not get property for "+id,re);
+        } catch (RepositoryException re) {
+            log.error("Could not get property for " + id, re);
             throw new RuntimeRepositoryException(re);
         }
         return true;

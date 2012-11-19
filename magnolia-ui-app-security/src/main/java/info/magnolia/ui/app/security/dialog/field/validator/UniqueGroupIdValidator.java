@@ -31,13 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.view;
+package info.magnolia.ui.app.security.dialog.field.validator;
 
-import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
+import java.util.Collection;
+
+import info.magnolia.cms.security.Group;
+import info.magnolia.cms.security.Security;
+
+import com.vaadin.data.validator.AbstractStringValidator;
 
 /**
- * Users View definition for the Security App.
+ * Validator to ensure that new group name is does not exist in the system yet.
  */
-public interface UsersView extends WorkbenchSubAppView {
+public class UniqueGroupIdValidator extends AbstractStringValidator {
+
+    public UniqueGroupIdValidator(String errorMessage) {
+        super(errorMessage);
+    }
+
+    @Override
+    protected boolean isValidString(String value) {
+        // get all existing groups
+        Collection<Group> groups = Security.getGroupManager().getAllGroups();
+        for (Group g : groups) {
+            // if there is any group with the same name, the value is invalid
+            if (g.getName().equals(value)) return false;
+        }
+        // no group with the same name found, value is valid
+        return true;
+    }
 
 }

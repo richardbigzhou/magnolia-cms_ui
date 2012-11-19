@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.view;
-
-import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
+package info.magnolia.ui.model.field.definition;
 
 /**
- * Users View definition for the Security App.
+ * Field definition for twin column select field.
  */
-public interface UsersView extends WorkbenchSubAppView {
+public class TwinColSelectFieldDefinition extends OptionGroupFieldDefinition {
+
+    private String leftColumnCaption = "From";
+    private String rightColumnCaption = "To";
+
+    public String getLeftColumnCaption() {
+        return leftColumnCaption;
+    }
+
+    public void setLeftColumnCaption(String leftColumnCaption) {
+        this.leftColumnCaption = leftColumnCaption;
+    }
+
+    public String getRightColumnCaption() {
+        return rightColumnCaption;
+    }
+
+    public void setRightColumnCaption(String rightColumnCaption) {
+        this.rightColumnCaption = rightColumnCaption;
+    }
+
 
 }

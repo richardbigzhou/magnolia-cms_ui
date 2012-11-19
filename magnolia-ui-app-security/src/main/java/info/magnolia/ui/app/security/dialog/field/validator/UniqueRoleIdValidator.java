@@ -31,13 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.view;
+package info.magnolia.ui.app.security.dialog.field.validator;
 
-import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
+import info.magnolia.cms.security.Security;
+import com.vaadin.data.validator.AbstractStringValidator;
 
 /**
- * Users View definition for the Security App.
+ * A validator to ensure uniqueness of role names.
  */
-public interface UsersView extends WorkbenchSubAppView {
+public class UniqueRoleIdValidator extends AbstractStringValidator {
+
+    public UniqueRoleIdValidator(String errorMessage) {
+        super(errorMessage);
+    }
+
+    @Override
+    protected boolean isValidString(String value) {
+        if (Security.getRoleManager().getRole(value) != null) {
+            // role with such name already exists
+            return false;
+        }
+        return true;
+    }
 
 }

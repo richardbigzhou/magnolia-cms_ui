@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.view;
+package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
+import info.magnolia.ui.model.field.definition.TwinColSelectFieldDefinition;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.TwinColSelect;
 
 /**
- * Users View definition for the Security App.
+ * Creates and initializes a select field based on a field definition.
  */
-public interface UsersView extends WorkbenchSubAppView {
+public class TwinColSelectFieldBuilder extends SelectFieldBuilder<TwinColSelectFieldDefinition> {
 
+    public TwinColSelectFieldBuilder(TwinColSelectFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
+    }
+
+    @Override
+    protected AbstractSelect buildField() {
+        super.buildField();
+        ((TwinColSelect)select).setRows(select.getContainerDataSource().size());
+        select.setMultiSelect(definition.isMultiselect());
+        ((TwinColSelect)select).setLeftColumnCaption(getMessage(definition.getLeftColumnCaption()));
+        ((TwinColSelect)select).setRightColumnCaption(getMessage(definition.getRightColumnCaption()));
+        return select;
+    }
+
+    @Override
+    protected AbstractSelect createSelectionField() {
+        return new TwinColSelect();
+    }
 }

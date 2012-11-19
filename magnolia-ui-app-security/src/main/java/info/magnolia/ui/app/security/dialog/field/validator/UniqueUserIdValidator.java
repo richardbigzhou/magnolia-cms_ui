@@ -31,19 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.upload;
+package info.magnolia.ui.app.security.dialog.field.validator;
 
-import info.magnolia.ui.admincentral.file.FileItemWrapper;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.cms.security.Security;
+
+import com.vaadin.data.validator.AbstractStringValidator;
 
 /**
- * AssetUploadFieldImpl. 
- *
+ * Ensures uniqueness of the user name.
  */
-public class AssetUploadFieldImpl extends UploadFileFieldImpl {
+public class UniqueUserIdValidator extends AbstractStringValidator {
 
-    public AssetUploadFieldImpl(FileItemWrapper fileItem, Shell shell) {
-        super(fileItem, shell);
+    public UniqueUserIdValidator(String errorMessage) {
+        super(errorMessage);
+    }
+
+    @Override
+    protected boolean isValidString(String value) {
+        if (Security.getUserManager().getUser(value) != null) {
+            // user with such name already exists
+            return false;
+        }
+        return true;
     }
 
 }

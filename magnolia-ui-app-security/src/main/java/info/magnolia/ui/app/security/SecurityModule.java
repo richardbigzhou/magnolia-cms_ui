@@ -47,16 +47,23 @@ import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.security.column.UserNameColumnDefinition;
 import info.magnolia.ui.app.security.column.UserNameColumnFormatter;
+import info.magnolia.ui.app.security.dialog.action.SaveGroupDialogActionDefinition;
+import info.magnolia.ui.app.security.dialog.action.SaveRoleDialogActionDefinition;
+import info.magnolia.ui.app.security.dialog.field.validator.UniqueGroupIdValidatorDefinition;
+import info.magnolia.ui.app.security.dialog.field.validator.UniqueRoleIdValidatorDefinition;
+import info.magnolia.ui.app.security.dialog.field.validator.UniqueUserIdValidatorDefinition;
 import info.magnolia.ui.framework.app.builder.App;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
 import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
 import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
 import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
+import info.magnolia.ui.model.dialog.builder.AbstractFieldBuilder;
 import info.magnolia.ui.model.dialog.builder.Dialog;
 import info.magnolia.ui.model.dialog.builder.DialogBuilder;
 import info.magnolia.ui.model.dialog.builder.DialogConfig;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
+import info.magnolia.ui.model.thumbnail.DefaultImageProvider;
 import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
 
 /**
@@ -87,25 +94,27 @@ public class SecurityModule implements ModuleLifecycle {
         // group
         CreateDialogActionDefinition addGroupAction = new CreateDialogActionDefinition();
         addGroupAction.setNodeType(MgnlNodeType.GROUP);
-        addGroupAction.setDialogName("ui-security-app:group");
+        addGroupAction.setDialogName("ui-security-app:groupAdd");
 
         EditDialogActionDefinition editGroupAction = new EditDialogActionDefinition();
-        editGroupAction.setDialogName("ui-security-app:group");
+        editGroupAction.setDialogName("ui-security-app:groupEdit");
 
         // role
         CreateDialogActionDefinition addRoleAction = new CreateDialogActionDefinition();
         addRoleAction.setNodeType(MgnlNodeType.ROLE);
-        addRoleAction.setDialogName("ui-security-app:role");
+        addRoleAction.setDialogName("ui-security-app:roleAdd");
 
         EditDialogActionDefinition editRoleAction = new EditDialogActionDefinition();
-        editRoleAction.setDialogName("ui-security-app:role");
+        editRoleAction.setDialogName("ui-security-app:roleEdit");
 
+        DefaultImageProvider imageProvider = new DefaultImageProvider();
+        imageProvider.setOriginalImageNodeName("photo");
 
-        app.label("security").icon("icon-security-app").appClass(SecurityApp.class).categoryName("MANAGE")
+        app.label("security").icon("icon-security-app").appClass(SecurityApp.class) // .categoryName("MANAGE")
             .subApps(
                     app.subApp("users").subAppClass(SecurityUsersSubApp.class)
                     .workbench(wbcfg.workbench().workspace("users").root("/").defaultOrder("jcrName")
-                            .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_CONTENT).icon("/.resources/icons/16/folders.gif"))
+                            .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))
                             .mainItemType(wbcfg.itemType(MgnlNodeType.USER).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                             .columns(
                                     wbcfg.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class),
@@ -126,9 +135,9 @@ public class SecurityModule implements ModuleLifecycle {
                                     )
                             )
                     ),
-                    app.subApp("groups").subAppClass(SecurityGroupsSubApp.class)
+                    app.subApp("groups").subAppClass(SecurityGroupsSubApp.class).defaultSubApp()
                     .workbench(wbcfg.workbench().workspace("usergroups").root("/").defaultOrder("jcrName")
-                            // .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_CONTENT).icon("/.resources/icons/16/folders.gif"))
+                            .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))
                             .mainItemType(wbcfg.itemType(MgnlNodeType.GROUP).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                             .columns(
                                     wbcfg.column(new PropertyColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName"),
@@ -149,10 +158,11 @@ public class SecurityModule implements ModuleLifecycle {
                                     )
                             )
                     ),
-                    app.subApp("roles").subAppClass(SecurityRolesSubApp.class).defaultSubApp()
+                    app.subApp("roles").subAppClass(SecurityRolesSubApp.class)
                     .workbench(wbcfg.workbench().workspace("userroles").root("/").defaultOrder("jcrName")
-                            // .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_CONTENT).icon("/.resources/icons/16/folders.gif"))
+                            .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))
                             .mainItemType(wbcfg.itemType(MgnlNodeType.ROLE).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
+                            .imageProvider(imageProvider)
                             .columns(
                                     wbcfg.column(new PropertyColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName"),
                                     wbcfg.column(new PropertyColumnDefinition()).name("title").label("Full Name").sortable(true).propertyName("title").width(180).displayInDialog(false),
@@ -177,56 +187,141 @@ public class SecurityModule implements ModuleLifecycle {
         ;
     }
 
+
+    @Dialog("ui-security-app:userAdd")
+    public void userAddDialog(DialogBuilder dialog, DialogConfig cfg) {
+        userDialog(dialog,cfg,false);
+    }
+
+    @Dialog("ui-security-app:userEdit")
+    public void userEditDialog(DialogBuilder dialog, DialogConfig cfg) {
+        userDialog(dialog,cfg,true);
+    }
+
     @Dialog("ui-security-app:user")
-    public void userDialog(DialogBuilder dialog, DialogConfig cfg) {
+    public void userDialog(DialogBuilder dialog, DialogConfig cfg, boolean editMode) {
+
+        UniqueUserIdValidatorDefinition uniqueUserid = new UniqueUserIdValidatorDefinition();
+        uniqueUserid.setErrorMessage("User name already exists.");
+
+        AbstractFieldBuilder username = cfg.fields.textField("jcrName")
+                                           .label("User name")
+                                           .description("Define Username")
+                                           .required(!editMode)
+                                           .readOnly(editMode);
+        if (!editMode) {
+            username.validator(uniqueUserid);
+        }
+
         dialog.description("Define the user information")
         .tabs(
                 cfg.tab("User").label("User Tab")
                         .fields(
-                                cfg.fields.textField("jcrName").label("User name").description("Define Username").required(),
-                                cfg.fields.textField("email").label("E-mail").description("Please enter user's e-mail address. Field is mandatory")
+                                username,
+                                cfg.fields.textField("title").label("Full name"),
+                                cfg.fields.textField("email").label("E-mail").description("Please enter user's e-mail address.")
                         )
         )
         .actions(
-                // do not allow to save the data yet
                 // cfg.action("commit").label("save changes").action(new SaveContactDialogActionDefinition()),
                 cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
         );
     }
 
-    @Dialog("ui-security-app:group")
-    public void groupDialog(DialogBuilder dialog, DialogConfig cfg) {
+    @Dialog("ui-security-app:groupAdd")
+    public void groupAddDialog(DialogBuilder dialog, DialogConfig cfg) {
+        groupDialog(dialog, cfg, false);
+    }
+
+    @Dialog("ui-security-app:groupEdit")
+    public void groupEditDialog(DialogBuilder dialog, DialogConfig cfg) {
+        groupDialog(dialog, cfg, true);
+    }
+
+    public void groupDialog(DialogBuilder dialog, DialogConfig cfg, boolean editMode) {
+
+        UniqueGroupIdValidatorDefinition uniqueGroupId = new UniqueGroupIdValidatorDefinition();
+        uniqueGroupId.setErrorMessage("Group name already exists.");
+
+        AbstractFieldBuilder groupName = cfg.fields.textField("jcrName")
+                                            .label("Group name")
+                                            .description("Define Groupname")
+                                            .required(!editMode)
+                                            .readOnly(editMode);
+        if (!editMode) {
+            groupName.validator(uniqueGroupId);
+        }
+
         dialog.description("Define the group information")
         .tabs(
-                cfg.tab("Group").label("Group Tab")
+                cfg.tab("Group").label("Group Info")
                         .fields(
-                                cfg.fields.textField("jcrName").label("Group name").description("Define Groupname").required(),
+                                groupName,
                                 cfg.fields.textField("title").label("Group Description").description("Description of the group")
+                                // add groups and roles selectors
+                        ),
+                cfg.tab("Membership").label("Membership")
+                        .fields(
+                                cfg.fields.textField("placeholder").label("Placeholder").description("Here will be multiselect with available groups").defaultValue("Multiselect with groups comes here").readOnly()
+                        ),
+                cfg.tab("Roles").label("Roles")
+                        .fields(
+                                cfg.fields.textField("placeholder2").label("Placeholder").description("Here will be multiselect with available roles").defaultValue("Multiselect with roles comes here").readOnly()
                         )
+
         )
         .actions(
                 // do not allow to save the data yet
-                // cfg.action("commit").label("save changes").action(new SaveContactDialogActionDefinition()),
+                cfg.action("commit").label("save changes").action(new SaveGroupDialogActionDefinition()),
                 cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
         );
     }
 
-    @Dialog("ui-security-app:role")
-    public void roleDialog(DialogBuilder dialog, DialogConfig cfg) {
+    @Dialog("ui-security-app:roleEdit")
+    public void roleEditDialog(DialogBuilder dialog, DialogConfig cfg) {
+        roleDialog(dialog,cfg,true);
+    }
+
+
+    @Dialog("ui-security-app:roleAdd")
+    public void roleAddDialog(DialogBuilder dialog, DialogConfig cfg) {
+        roleDialog(dialog,cfg,false);
+    }
+
+    public void roleDialog(DialogBuilder dialog, DialogConfig cfg, boolean editMode) {
+
+        UniqueRoleIdValidatorDefinition uniqueRoleId = new UniqueRoleIdValidatorDefinition();
+        uniqueRoleId.setErrorMessage("Role name already exists.");
+
+        AbstractFieldBuilder rolename = cfg.fields.textField("jcrName")
+                                           .label("Role name")
+                                           .description("Define unique role name")
+                                           .required(!editMode)
+                                           .readOnly(editMode);
+        if (!editMode) {
+            rolename.validator(uniqueRoleId);
+        }
+
         dialog.description("Define the role information")
         .tabs(
                 cfg.tab("Role").label("Role Tab")
                         .fields(
-                                cfg.fields.textField("jcrName").label("Role name").description("Define Rolename").required(),
-                                cfg.fields.textField("title").label("Role Description").description("Description of the role")
+                                rolename,
+                                cfg.fields.textField("title").label("Full name").description("Full name of the role"),
+                                cfg.fields.textField("description").label("Role Description").description("Description of the role")
+                        ),
+                        cfg.tab("ACLs").label("Access Control Lists")
+                        .fields(
+                                cfg.fields.textField("do-not-use").label("Placeholder, do not use").readOnly()
                         )
         )
         .actions(
                 // do not allow to save the data yet
-                // cfg.action("commit").label("save changes").action(new SaveContactDialogActionDefinition()),
+                cfg.action("commit").label("save changes").action(new SaveRoleDialogActionDefinition()),
                 cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
         );
     }
+
 
     @Override
     public void start(ModuleLifecycleContext moduleLifecycleContext) {

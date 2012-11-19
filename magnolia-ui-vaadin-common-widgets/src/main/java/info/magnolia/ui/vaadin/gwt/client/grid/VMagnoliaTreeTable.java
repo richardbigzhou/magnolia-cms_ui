@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.grid;
 
-import info.magnolia.ui.vaadin.gwt.client.grid.VMagnoliaTable.VScrollTableBody.VScrollTableRow;
+
 import info.magnolia.ui.vaadin.gwt.client.grid.VMagnoliaTreeTable.VTreeTableScrollBody.VTreeTableRow;
 
 import java.util.ArrayList;
@@ -63,6 +63,7 @@ import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.Util;
 import com.vaadin.terminal.gwt.client.ui.FocusableScrollPanel;
+import com.vaadin.terminal.gwt.client.ui.VScrollTablePatched.VScrollTableBody.VScrollTableRow;
 
 /**
  * VMagnoliaTreeTable.
@@ -212,7 +213,7 @@ public class VMagnoliaTreeTable extends VMagnoliaTable {
     /**
      * VTreeTableScrollBody.
      */
-    class VTreeTableScrollBody extends VMagnoliaTable.VScrollTableBody {
+    class VTreeTableScrollBody extends VMagnoliaTable.MagnoliaTableBody {
         private int identWidth = -1;
 
         VTreeTableScrollBody() {
@@ -232,7 +233,7 @@ public class VMagnoliaTreeTable extends VMagnoliaTable {
          * VTreeTableRow.
          */
         class VTreeTableRow extends
-                VMagnoliaTable.VScrollTableBody.VScrollTableRow {
+                VMagnoliaTable.MagnoliaTableBody.MagnoliaTableRow {
 
             private boolean isTreeCellAdded = false;
             private DivElement treeSpacer;
@@ -281,7 +282,7 @@ public class VMagnoliaTreeTable extends VMagnoliaTable {
                     treeSpacer = Document.get().createDivElement();
                     treeSpacer.getStyle().setDisplay(Display.INLINE_BLOCK);
                     treeSpacer.setClassName(classname);
-                    container.insertFirst(treeSpacer);
+                    container.insertAfter(treeSpacer, container.getFirstChild());
                     depth = rowUidl.hasAttribute("depth") ? rowUidl
                             .getIntAttribute("depth") : 0;
                     setIdent();
@@ -296,7 +297,7 @@ public class VMagnoliaTreeTable extends VMagnoliaTable {
                     return false;
                 }
                 return curColIndex == colIndexOfHierarchy
-                        + (showRowHeaders ? 2 : 1);
+                        + (showRowHeaders ? 1 : 0);
             }
 
             @Override
