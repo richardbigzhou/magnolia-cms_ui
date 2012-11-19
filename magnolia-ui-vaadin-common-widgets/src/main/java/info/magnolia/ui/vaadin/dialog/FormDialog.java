@@ -34,6 +34,8 @@
 package info.magnolia.ui.vaadin.dialog;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.vaadin.form.FormSection;
+import info.magnolia.ui.vaadin.form.MagnoliaFormTab;
 import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VFormDialog;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 

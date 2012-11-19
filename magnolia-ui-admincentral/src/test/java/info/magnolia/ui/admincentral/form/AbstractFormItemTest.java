@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.admincentral.form;
 
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
@@ -56,7 +56,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class AbstractDialogItemTest {
+public class AbstractFormItemTest {
 
     @Before
     public void setUp() {

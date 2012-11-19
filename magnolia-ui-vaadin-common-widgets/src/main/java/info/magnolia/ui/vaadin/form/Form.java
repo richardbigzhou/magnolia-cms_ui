@@ -44,8 +44,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Field;
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.vaadin.dialog.FormSection;
-import info.magnolia.ui.vaadin.dialog.MagnoliaFormTab;
 import info.magnolia.ui.vaadin.gwt.client.form.VForm;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 import org.vaadin.rpc.ServerSideHandler;

@@ -40,7 +40,7 @@ import info.magnolia.cms.i18n.Messages;
  * access to the {@link Messages} they use.
  *
  * @see Messages
- * @see info.magnolia.ui.admincentral.dialog.AbstractFormItem
+ * @see AbstractFormItem
  */
 public interface FormItem {
 

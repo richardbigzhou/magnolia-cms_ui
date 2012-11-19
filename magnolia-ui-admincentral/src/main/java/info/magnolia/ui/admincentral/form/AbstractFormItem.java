@@ -31,16 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import info.magnolia.ui.admincentral.form.FormItem;
-import org.apache.commons.lang.StringUtils;
+package info.magnolia.ui.admincentral.form;
 
 import info.magnolia.cms.i18n.Messages;
 import info.magnolia.cms.i18n.MessagesUtil;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract base class for dialog items, provides resolution of {@link Messages} in the hierarchical.

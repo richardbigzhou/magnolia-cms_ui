@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.form;
 
-import info.magnolia.ui.admincentral.dialog.AbstractFormItem;
 import info.magnolia.ui.model.form.definition.FormDefinition;
 
 /**

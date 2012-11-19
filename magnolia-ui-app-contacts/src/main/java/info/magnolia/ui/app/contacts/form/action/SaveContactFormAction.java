@@ -35,13 +35,12 @@ package info.magnolia.ui.app.contacts.form.action;
 
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.action.SaveFormAction;
-import info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition;
 
 /**
  * SaveContactFormAction.
  */
 public class SaveContactFormAction extends SaveFormAction {
-    public SaveContactFormAction(SaveFormActionDefinition definition, FormPresenter presenter) {
+    public SaveContactFormAction(SaveContactFormActionDefinition definition, FormPresenter presenter) {
         super(definition, presenter);
     }
 }

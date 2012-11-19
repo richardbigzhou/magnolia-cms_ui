@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.vaadin.form;
 
 import info.magnolia.ui.vaadin.gwt.client.form.VFormTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;

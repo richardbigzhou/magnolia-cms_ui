@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.ui.admincentral.dialog.AbstractFormItem;
+import info.magnolia.ui.admincentral.form.AbstractFormItem;
 import info.magnolia.ui.admincentral.field.FieldBuilder;
 import info.magnolia.ui.admincentral.field.validator.FieldValidatorBuilder;
 import info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory;

@@ -36,7 +36,6 @@ package info.magnolia.ui.vaadin.form;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.dialog.FormSection;
 
 import java.util.List;
 
