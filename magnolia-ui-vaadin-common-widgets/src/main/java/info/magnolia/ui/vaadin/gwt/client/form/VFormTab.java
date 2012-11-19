@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 
 /**
- * Dialog tab.
+ * VFormTab.
  */
 public class VFormTab extends VMagnoliaTab implements HasValidationChangeHanlders {
 

@@ -48,7 +48,7 @@ import org.vaadin.rpc.client.Method;
 import java.util.Set;
 
 /**
- * VTabDialog.
+ * VForm.
  */
 public class VForm extends Composite implements Container, ClientSideHandler, VFormView.Presenter {
 

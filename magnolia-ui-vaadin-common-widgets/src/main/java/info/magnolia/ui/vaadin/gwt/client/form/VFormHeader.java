@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * VTabbedDialogHeader.
+ * VFormHeader.
  */
 public class VFormHeader extends FlowPanel {
 

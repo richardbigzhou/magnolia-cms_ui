@@ -48,6 +48,7 @@ import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.ValidationChangedE
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.TabSetChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTab;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheet;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
@@ -56,7 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * VTabDialogViewImpl.
+ * VFormViewImpl.
  */
 public class VFormViewImpl extends FlowPanel implements VFormView {
 
@@ -72,11 +73,13 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
 
     private final List<VFormTab> formTabs = new ArrayList<VFormTab>();
 
-    private final Element content = DOM.createDiv();
+    private Widget content;
+
+    private final Element contentEl = DOM.createDiv();
 
     private final Element footer = DOM.createDiv();
 
-    private final VMagnoliaTabSheet tabSheet;
+    private VMagnoliaTabSheet tabSheet;
 
     private FormFieldWrapper lastShownProblematicField = null;
 
@@ -152,24 +155,57 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
     public VFormViewImpl() {
         super();
 
-        tabSheet = new VMagnoliaTabSheet();
 
         setStylePrimaryName(CLASSNAME);
-        content.addClassName(CLASSNAME_CONTENT);
         footer.addClassName(CLASSNAME_FOOTER);
 
         add(formHeader);
 
-        getElement().appendChild(content);
+        getElement().appendChild(contentEl);
         getElement().appendChild(footer);
 
-        add(tabSheet, content);
 
     }
 
     @Override
     public void setContent(Widget contentWidget) {
+        if (contentWidget instanceof VMagnoliaTabSheet) {
+            if (tabSheet != null) {
+                remove(tabSheet);
+            }
 
+            this.tabSheet = (VMagnoliaTabSheet)contentWidget;
+            tabSheet.addTabSetChangedHandlers(new TabSetChangedEvent.Handler() {
+                @Override
+                public void onTabSetChanged(TabSetChangedEvent event) {
+                    final List<VMagnoliaTab> tabs = event.getTabSheet().getTabs();
+                    formTabs.clear();
+                    for (final VMagnoliaTab tab : tabs) {
+                        if (tab instanceof VFormTab) {
+                            formTabs.add((VFormTab) tab);
+                            ((VFormTab)tab).addValidationChangeHandler(VFormViewImpl.this);
+                            final List<FormFieldWrapper> fields = ((VFormTab) tab).getFields();
+                            for (final FormFieldWrapper field : fields) {
+                                field.addFocusHandler(problematicFieldFocusHandler);
+                            }
+                        }
+                    }
+                }
+            });
+
+            tabSheet.addActiveTabChangedHandler(new ActiveTabChangedEvent.Handler() {
+                @Override
+                public void onActiveTabChanged(ActiveTabChangedEvent event) {
+                    lastShownProblematicField = null;
+                    if (!event.isShowingAllTabs()) {
+                        contentEl.removeClassName(CLASSNAME_CONTENT_SHOW_ALL);
+                    } else {
+                        contentEl.addClassName(CLASSNAME_CONTENT_SHOW_ALL);
+                    }
+                }
+            });
+            add(tabSheet, contentEl);
+        }
     }
 
     @Override

@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
 import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.ValidationChangedEvent;
 
 /**
- * VTabDialogView.
+ * VFormView.
  */
 public interface VFormView extends IsWidget, HasWidgets, ValidationChangedEvent.Handler {
 
