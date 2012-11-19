@@ -58,6 +58,6 @@ public class FormActionBuilder {
     }
 
     public FormActionDefinition exec() {
-        return null;
+        return definition;
     }
 }

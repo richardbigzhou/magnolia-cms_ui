@@ -39,3 +39,43 @@
     </sv:property>
   </sv:node>
 </sv:node>
+<sv:node sv:name="saveContactDialog" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<sv:property sv:name="jcr:primaryType" sv:type="Name">
+  <sv:value>mgnl:contentNode</sv:value>
+</sv:property>
+<sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+  <sv:value>mix:lockable</sv:value>
+</sv:property>
+<sv:property sv:name="jcr:uuid" sv:type="String">
+  <sv:value>2b9952be-55b5-43eb-80d7-b7468e4f5690</sv:value>
+</sv:property>
+<sv:property sv:name="definition" sv:type="String">
+  <sv:value>info.magnolia.ui.app.contacts.form.action.SaveContactFormActionDefinition</sv:value>
+</sv:property>
+<sv:property sv:name="implementation" sv:type="String">
+  <sv:value>info.magnolia.ui.app.contacts.form.action.SaveContactFormAction</sv:value>
+</sv:property>
+<sv:property sv:name="jcr:createdBy" sv:type="String">
+  <sv:value>admin</sv:value>
+</sv:property>
+<sv:node sv:name="MetaData">
+  <sv:property sv:name="jcr:primaryType" sv:type="Name">
+    <sv:value>mgnl:metaData</sv:value>
+  </sv:property>
+  <sv:property sv:name="jcr:createdBy" sv:type="String">
+    <sv:value>admin</sv:value>
+  </sv:property>
+  <sv:property sv:name="mgnl:activated" sv:type="Boolean">
+    <sv:value>false</sv:value>
+  </sv:property>
+  <sv:property sv:name="mgnl:authorid" sv:type="String">
+    <sv:value>superuser</sv:value>
+  </sv:property>
+  <sv:property sv:name="mgnl:creationdate" sv:type="Date">
+    <sv:value>2011-03-16T16:07:46.823+01:00</sv:value>
+  </sv:property>
+  <sv:property sv:name="mgnl:lastmodified" sv:type="Date">
+    <sv:value>2012-08-24T15:42:39.483+02:00</sv:value>
+  </sv:property>
+</sv:node>
+</sv:node>

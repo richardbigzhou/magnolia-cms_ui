@@ -171,6 +171,12 @@ public class Form extends AbstractComponent implements ServerSideHandler, FormVi
         }
     }
 
+    @Override
+    public void addAction(String actionName, String actionLabel, FormView.FormActionListener callback) {
+        addAction(actionName, actionLabel);
+        addActionCallback(actionName, callback);
+    }
+
     public void addAction(String actionName, String actionLabel) {
         actionMap.put(actionName, actionLabel);
         if (isAttached) {
@@ -178,6 +184,9 @@ public class Form extends AbstractComponent implements ServerSideHandler, FormVi
         }
     }
 
+    public void addActionCallback(String actionName, FormView.FormActionListener callback) {
+        actionCallbackMap.put(actionName, callback);
+    }
 
     @Override
     public void attach() {

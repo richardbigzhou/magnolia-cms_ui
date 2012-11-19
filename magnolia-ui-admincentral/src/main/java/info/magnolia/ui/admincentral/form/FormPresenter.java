@@ -55,8 +55,6 @@ public interface FormPresenter {
 
     void addAction(String actionName, String actionLabel, FormView.FormActionListener callback);
 
-    void addActionCallback(String actionName, FormView.FormActionListener callback);
-
     /**
      * Callback interface for FormView.Presenter.
      */

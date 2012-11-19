@@ -45,6 +45,8 @@ import java.util.List;
  */
 public interface FormView extends View, Item.Editor {
 
+    void addAction(String actionName, String actionLabel, FormActionListener callback);
+
     /**
      * Action execution callback.
      */

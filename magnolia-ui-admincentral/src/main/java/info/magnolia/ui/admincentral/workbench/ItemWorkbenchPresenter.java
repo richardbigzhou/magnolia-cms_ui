@@ -38,6 +38,7 @@ import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.item.ItemPresenter;
 import info.magnolia.ui.admincentral.content.item.ItemView;
+import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.FormPresenterFactory;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -59,7 +60,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
 
     private final SubAppContext subAppContext;
     private final ItemWorkbenchView view;
-    private final EventBus subAppEventBus;
+    private final EventBus eventBus;
     private final ItemPresenter itemPresenter;
     private WorkbenchActionFactory actionFactory;
     private final ActionbarPresenter actionbarPresenter;
@@ -68,11 +69,11 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
     private String nodePath;
 
     @Inject
-    public ItemWorkbenchPresenter(final SubAppContext subAppContext, final ItemWorkbenchView view, final @Named("subapp") EventBus subAppEventBus,
+    public ItemWorkbenchPresenter(final SubAppContext subAppContext, final ItemWorkbenchView view, final @Named("admincentral") EventBus eventBus,
                                   final ItemPresenter itemPresenter, final WorkbenchActionFactory actionFactory, final ActionbarPresenter actionbarPresenter, final FormPresenterFactory formPresenterFactory) {
         this.subAppContext = subAppContext;
         this.view = view;
-        this.subAppEventBus = subAppEventBus;
+        this.eventBus = eventBus;
         this.itemPresenter = itemPresenter;
         this.actionFactory = actionFactory;
         this.actionbarPresenter = actionbarPresenter;
@@ -86,7 +87,8 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
         //final FormPresenter formPresenter = formPresenterFactory.createFormPresenterByName(workbenchDefinition.getFormName());
         final FormPresenter formPresenter = formPresenterFactory.createFormPresenterByDefinition(workbenchDefinition.getFormDefinition());
 
-        FormView formView = formPresenter.start(new JcrNodeAdapter(SessionUtil.getNode(workbenchDefinition.getWorkspace(), nodePath)), new FormPresenter.Callback() {
+        final JcrNodeAdapter item = new JcrNodeAdapter(SessionUtil.getNode(workbenchDefinition.getWorkspace(), nodePath));
+        final FormView formView = formPresenter.start(item, new FormPresenter.Callback() {
 
             @Override
             public void onCancel() {
@@ -95,7 +97,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
 
             @Override
             public void onSuccess(String actionName) {
-
+                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
             }
         });
 
@@ -110,7 +112,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
 
     @Override
     public void onViewTypeChanged(final ItemView.ViewType viewType) {
-        //subAppEventBus.fireEvent(new ViewTypeChangedEvent(viewType));
+        //eventBus.fireEvent(new ViewTypeChangedEvent(viewType));
     }
 
     public void setNodePath(String nodePath) {

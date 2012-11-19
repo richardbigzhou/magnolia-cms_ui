@@ -33,15 +33,15 @@
  */
 package info.magnolia.ui.app.contacts.form.action;
 
-import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
-import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
-import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
+import info.magnolia.ui.admincentral.form.FormPresenter;
+import info.magnolia.ui.admincentral.form.action.SaveFormAction;
+import info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition;
 
 /**
  * SaveContactFormAction.
  */
-public class SaveContactFormAction extends SaveDialogAction {
-    public SaveContactFormAction(SaveDialogActionDefinition definition, FormDialogPresenter presenter) {
+public class SaveContactFormAction extends SaveFormAction {
+    public SaveContactFormAction(SaveFormActionDefinition definition, FormPresenter presenter) {
         super(definition, presenter);
     }
 }

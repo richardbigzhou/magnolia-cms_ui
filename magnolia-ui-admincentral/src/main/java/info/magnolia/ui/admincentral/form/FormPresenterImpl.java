@@ -38,6 +38,7 @@ import info.magnolia.ui.admincentral.field.builder.FieldFactory;
 import info.magnolia.ui.admincentral.form.action.FormActionFactory;
 import info.magnolia.ui.admincentral.form.builder.FormBuilder;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.model.form.action.FormActionDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
 
@@ -64,31 +65,34 @@ public class FormPresenterImpl implements FormPresenter {
         this.formDefinition = formDefinition;
         this.eventBus = eventBus;
         this.actionFactory = actionFactory;
+        initActions(formDefinition);
+    }
+
+    private void initActions(final FormDefinition formDefinition) {
+        for (final FormActionDefinition action : formDefinition.getActions()) {
+            FormPresenterUtil.addActionFromDefinition(this, action, actionFactory);
+        }
     }
 
     @Override
     public Callback getCallback() {
-        return null;
+        return callback;
     }
 
     @Override
     public EventBus getEventBus() {
-        return null;
+        return eventBus;
     }
 
     @Override
     public void addAction(String actionName, String actionLabel, FormView.FormActionListener callback) {
-
-    }
-
-    @Override
-    public void addActionCallback(String actionName, FormView.FormActionListener callback) {
+        view.addAction(actionName, actionLabel, callback);
 
     }
 
     @Override
     public void showValidation(boolean isVisible) {
-
+        view.showValidation(isVisible);
     }
 
     @Override
@@ -102,11 +106,11 @@ public class FormPresenterImpl implements FormPresenter {
 
     @Override
     public Item getItemDataSource() {
-        return null;
+        return item;
     }
 
     @Override
     public FormView getView() {
-        return null;
+        return view;
     }
 }
