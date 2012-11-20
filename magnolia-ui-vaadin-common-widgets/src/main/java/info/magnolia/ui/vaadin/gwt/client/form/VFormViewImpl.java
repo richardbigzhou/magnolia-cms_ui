@@ -43,8 +43,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.Util;
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.FormFieldWrapper;
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.ValidationChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
@@ -61,13 +59,13 @@ import java.util.List;
  */
 public class VFormViewImpl extends FlowPanel implements VFormView {
 
-    private static final String CLASSNAME = "dialog-panel";
+    private static final String CLASSNAME = "form-panel";
 
-    private static final String CLASSNAME_CONTENT = "dialog-content";
+    private static final String CLASSNAME_CONTENT = "form-content";
 
-    private static final String CLASSNAME_FOOTER = "dialog-footer";
+    private static final String CLASSNAME_FOOTER = "form-footer";
 
-    private static final String CLASSNAME_BUTTON = "btn-dialog";
+    private static final String CLASSNAME_BUTTON = "btn-form";
 
     private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
 
@@ -245,8 +243,8 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
     }
 
     @Override
-    public void setDescription(final String dialogDescription) {
-        formHeader.setDescription(dialogDescription);
+    public void setDescription(final String description) {
+        formHeader.setDescription(description);
     }
 
     void setDescriptionVisible(boolean isVisible) {

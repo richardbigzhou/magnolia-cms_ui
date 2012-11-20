@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
+package info.magnolia.ui.vaadin.gwt.client.form;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -48,6 +48,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.impl.FocusImpl;
+import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VInlineMessage;
 
 /**
  * Wrapper widget that provides help and error indication.
@@ -74,7 +75,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
 
     public FormFieldWrapper() {
         super();
-        addStyleName("v-dialog-field-section");
+        addStyleName("v-form-field-section");
         root = super.getElement();
         construct();
         setHelpEnabled(false);
@@ -103,9 +104,9 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
     }
 
     private void construct() {
-        label.addClassName("v-dialog-field-label");
-        fieldWrapper.addClassName("v-dialog-field-container");
-        helpButton.addStyleName("action-dialog-help");
+        label.addClassName("v-form-field-label");
+        fieldWrapper.addClassName("v-form-field-container");
+        helpButton.addStyleName("action-form-help");
         errorAction.addStyleName("action-validation");
 
         fieldWrapper.appendChild(label);
@@ -116,7 +117,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
 
     public void showError(final String errorDescription) {
         errorAction.setVisible(true);
-        fieldWrapper.addClassName("validation-hilight");
+        fieldWrapper.addClassName("validation-highlight");
         if (errorSection == null) {
             errorSection = VInlineMessage.createErrorMessage();
         }

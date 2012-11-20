@@ -31,8 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
+package info.magnolia.ui.vaadin.gwt.client.form;
 
+import info.magnolia.ui.vaadin.gwt.client.form.FormFieldWrapper;
 import info.magnolia.ui.vaadin.gwt.client.form.VFormTab;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
 
 /**
- * Layout for the {@link FormFieldWrapper} widgets.
+ * Layout for the {@link info.magnolia.ui.vaadin.gwt.client.form.FormFieldWrapper} widgets.
  */
 public class VFormSection extends FlowPanel implements Container {
 
@@ -167,7 +168,7 @@ public class VFormSection extends FlowPanel implements Container {
             return null;
         }
         if (!(super.getParent() instanceof VFormTab)) {
-            throw new RuntimeException("Parent of VDialogTabLayout must be of type VFormTab, you have used: " + super.getParent().getClass());
+            throw new RuntimeException("Parent of VFormSection must be of type VFormTab, you have used: " + super.getParent().getClass());
         }
         return (VFormTab)super.getParent();
     }
