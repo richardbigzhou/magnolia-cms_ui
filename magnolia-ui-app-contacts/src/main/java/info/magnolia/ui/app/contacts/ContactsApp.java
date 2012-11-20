@@ -51,4 +51,5 @@ public class ContactsApp extends AbstractContentApp {
     public ContactsApp(AppContext appContext, ChooseDialogFactory pickerDialogFactory) {
         super(appContext, pickerDialogFactory);
     }
+
 }

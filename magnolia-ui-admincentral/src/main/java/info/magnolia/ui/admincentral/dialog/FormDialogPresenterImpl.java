@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.dialog;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
-import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
+import info.magnolia.ui.admincentral.field.builder.FieldFactory;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
@@ -53,7 +53,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private final DialogBuilder dialogBuilder;
     
-    private final DialogFieldFactory dialogFieldFactory;
+    private final FieldFactory fieldFactory;
 
     private final DialogDefinition dialogDefinition;
 
@@ -67,12 +67,12 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private final  DialogActionFactory dialogActionFactory;
     
-    public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final DialogFieldFactory dialogFieldFactory, 
+    public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final FieldFactory fieldFactory,
             final DialogDefinition dialogDefinition, final Shell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
         super(view, eventBus);
         this.view = view;
         this.dialogBuilder = dialogBuilder;
-        this.dialogFieldFactory = dialogFieldFactory;
+        this.fieldFactory = fieldFactory;
         this.dialogDefinition = dialogDefinition;
         this.shell = (MagnoliaShell)shell;
         this.dialogActionFactory = actionFactory;
@@ -83,7 +83,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     public DialogView start(final Item item, Callback callback) {
         this.item = item;
         this.callback = callback;
-        dialogBuilder.buildFormDialog(dialogFieldFactory, dialogDefinition, item, view);
+        dialogBuilder.buildFormDialog(fieldFactory, dialogDefinition, item, view);
         shell.openDialog(this);
         return view;
     }

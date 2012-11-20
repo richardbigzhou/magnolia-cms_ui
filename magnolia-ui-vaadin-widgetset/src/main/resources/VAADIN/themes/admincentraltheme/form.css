@@ -1,0 +1,44 @@
+
+.form-header,.form-description,.form-error {
+    padding: 12px 16px 12px 24px;
+}
+
+.form-description,.form-content,.form-error {
+    border-top: 2px solid black;
+}
+
+.form-error {
+    background: none repeat scroll 0px 0px #9A3333;
+    color: white;
+}
+.form-header {
+    background-color: #666;
+    display: block;
+    height: 16px;
+    color: #AABF2F;
+}
+
+.form-header span {
+    font-family: DINWebPro;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 18px;
+}
+
+.form-description {
+    background: none repeat scroll 0px 0px #C1D8DF;
+}
+
+.form-description span {
+    margin-right: 35px;
+}
+
+button.btn-form-help {
+    background: url("img/icon-help.png") no-repeat scroll 1px 1px transparent;
+    border: none;
+    float: right;
+    height: 20px;
+    margin: 0;
+    padding: 0;
+    width: 20px;
+}

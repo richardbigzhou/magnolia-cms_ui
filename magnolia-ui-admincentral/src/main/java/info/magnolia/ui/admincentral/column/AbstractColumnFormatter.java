@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.column;
 
 import com.vaadin.ui.Table;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
+import info.magnolia.ui.model.column.definition.ColumnFormatter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.jcr.Item;
@@ -45,7 +46,7 @@ import javax.jcr.Item;
  *
  * @param <D> definition type
  */
-public abstract class AbstractColumnFormatter <D extends ColumnDefinition> implements ColumnFormatter{
+public abstract class AbstractColumnFormatter <D extends ColumnDefinition> implements ColumnFormatter {
 
     protected D definition;
 

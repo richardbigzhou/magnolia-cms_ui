@@ -95,7 +95,7 @@ public class AppDescriptorRegistryTest {
 
         // GIVEN
         String addId = "app1";
-        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(addId, "catApp1", true);
+        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(addId, true);
 
         appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
 
@@ -106,7 +106,6 @@ public class AppDescriptorRegistryTest {
         assertNotNull(descriptors);
         assertEquals(1, descriptors.size());
         assertEquals(addId, ((AppDescriptor) descriptors.toArray()[0]).getName());
-        assertEquals("catApp1", ((AppDescriptor) descriptors.toArray()[0]).getCategoryName());
     }
 
     @Test
@@ -114,7 +113,7 @@ public class AppDescriptorRegistryTest {
 
         // GIVEN
         String addId = "app1";
-        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(addId, "catApp1", true);
+        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(addId, true);
 
         appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
 
@@ -124,7 +123,6 @@ public class AppDescriptorRegistryTest {
         // THEN
         assertNotNull(appDescriptor);
         assertEquals(addId, appDescriptor.getName());
-        assertEquals("catApp1", appDescriptor.getCategoryName());
     }
 
     @Test(expected = RegistrationException.class)
@@ -132,7 +130,7 @@ public class AppDescriptorRegistryTest {
 
         // GIVEN
         String addId = "app1";
-        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(addId, "catApp1", true);
+        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(addId, true);
 
         appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
 
@@ -145,7 +143,7 @@ public class AppDescriptorRegistryTest {
 
         // GIVEN
         String addId = "app1";
-        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(addId, "catApp1", true);
+        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(addId, true);
 
         // WHEN
         Set<String> registeredNames = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
@@ -165,8 +163,8 @@ public class AppDescriptorRegistryTest {
         // GIVEN
         String appName1 = "app1";
         String appName2 = "app2";
-        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName1, "catApp1", true);
-        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName2, "catApp2", true);
+        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName1, true);
+        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName2, true);
 
         //Add app1
         Set<String> registeredNames = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
@@ -190,8 +188,8 @@ public class AppDescriptorRegistryTest {
         // GIVEN
         String appName1 = "app1";
         String appName2 = "app2";
-        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName1, "catApp1", true);
-        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName2, "catApp2", true);
+        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName1, true);
+        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName2, true);
 
         //Add app1
         Collection<String> registeredNames = Arrays.asList();
@@ -223,11 +221,11 @@ public class AppDescriptorRegistryTest {
 
         // GIVEN
         String appName = "app1";
-        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName, "catApp1", true);
+        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName, true);
         Set<String> registeredNames = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
 
         //Change content of AppDescriptor info
-        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName, "catApp2", true);
+        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName, false);
 
         eventHandler.clear();
 
@@ -248,9 +246,9 @@ public class AppDescriptorRegistryTest {
     public void testUnregisterAndRegisterInComplexCase() throws RepositoryException, Node2BeanException, RegistrationException {
 
         // GIVEN
-        AppDescriptorProvider appThatStays = createAppDescriptorProvider("appThatStays", "category", true);
-        AppDescriptorProvider appThatGoesAway = createAppDescriptorProvider("appThatGoesAway", "category", true);
-        AppDescriptorProvider appThatAppears = createAppDescriptorProvider("appThatAppears", "category", true);
+        AppDescriptorProvider appThatStays = createAppDescriptorProvider("appThatStays", true);
+        AppDescriptorProvider appThatGoesAway = createAppDescriptorProvider("appThatGoesAway", true);
+        AppDescriptorProvider appThatAppears = createAppDescriptorProvider("appThatAppears", true);
 
         Set<String> registeredNames = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appThatStays, appThatGoesAway));
 
@@ -282,7 +280,7 @@ public class AppDescriptorRegistryTest {
         // GIVEN
         String appName1 = "app1";
         String appName2 = "app2";
-        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName1, "catApp1", true);
+        AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName1, true);
 
         Set<String> registeredNames = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
         assertEquals(1, registeredNames.size());
@@ -290,8 +288,10 @@ public class AppDescriptorRegistryTest {
         eventHandler.clear();
 
         // WHEN
-        appDescriptorProvider1 = createAppDescriptorProvider(appName1, "catApp2", true);
-        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName2, "catApp2", true);
+        // first app gets reregistered du to change in in active state
+        appDescriptorProvider1 = createAppDescriptorProvider(appName1, false);
+        // second app gets registered
+        AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName2, true);
 
         Set<String> registeredNames2 = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1, appDescriptorProvider2));
 
@@ -308,7 +308,7 @@ public class AppDescriptorRegistryTest {
 
         // GIVEN
         String appName = "app1";
-        AppDescriptorProvider provider = createAppDescriptorProvider(appName, "catApp1", true);
+        AppDescriptorProvider provider = createAppDescriptorProvider(appName, true);
 
         assertFalse(appDescriptorRegistry.isAppDescriptorRegistered(appName));
 
@@ -324,7 +324,7 @@ public class AppDescriptorRegistryTest {
 
         // GIVEN
         String appName = "app1";
-        AppDescriptorProvider provider = createAppDescriptorProvider(appName, "catApp1", true);
+        AppDescriptorProvider provider = createAppDescriptorProvider(appName, true);
 
         assertFalse(appDescriptorRegistry.isAppDescriptorRegistered(appName));
 
@@ -339,10 +339,9 @@ public class AppDescriptorRegistryTest {
         assertFalse(appDescriptorRegistry.isAppDescriptorRegistered(appName));
     }
 
-    private AppDescriptorProvider createAppDescriptorProvider(String name, String categoryName, boolean enabled) throws RepositoryException, Node2BeanException {
+    private AppDescriptorProvider createAppDescriptorProvider(String name, boolean enabled) throws RepositoryException, Node2BeanException {
         MockNode node = new MockNode("name");
         node.setProperty("name", name);
-        node.setProperty("categoryName", categoryName);
         node.setProperty("enabled", enabled);
         return new ConfiguredAppDescriptorProvider(node);
     }

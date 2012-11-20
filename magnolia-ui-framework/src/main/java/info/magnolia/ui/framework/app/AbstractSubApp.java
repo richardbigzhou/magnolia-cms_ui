@@ -105,7 +105,7 @@ public abstract class AbstractSubApp implements SubApp {
 
     @Override
     public String getCaption() {
-        return getAppContext().getAppDescriptor().getLabel();
+        return subAppContext.getSubAppDescriptor().getLabel();
     }
 
     protected Location getCurrentLocation() {

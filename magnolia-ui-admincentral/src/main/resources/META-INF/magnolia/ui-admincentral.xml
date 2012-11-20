@@ -51,8 +51,8 @@
 			<implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
 		</type-mapping>
 		<type-mapping>
-			<type>info.magnolia.ui.admincentral.app.content.ContentAppDescriptor</type>
-			<implementation>info.magnolia.ui.admincentral.app.content.ConfiguredContentAppDescriptor</implementation>
+			<type>info.magnolia.ui.framework.app.AppDescriptor</type>
+			<implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
 		</type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.SubAppDescriptor</type>
@@ -205,6 +205,10 @@
 			<class>info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer</class>
 		</configurer>
 
+    <component>
+      <type>info.magnolia.ui.admincentral.form.FormPresenterFactory</type>
+      <implementation>info.magnolia.ui.admincentral.form.FormPresenterFactoryImpl</implementation>
+    </component>
 		<component>
 			<type>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory</type>
 			<implementation>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactoryImpl</implementation>
@@ -229,14 +233,22 @@
 			<type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
 			<implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
 		</component>
+    <component>
+      <type>info.magnolia.ui.vaadin.form.FormView</type>
+      <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
+    </component>
 
 		<component>
 			<type>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder</type>
 			<implementation>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderImpl</implementation>
 		</component>
+    <component>
+      <type>info.magnolia.ui.admincentral.content.item.ItemView</type>
+      <implementation>info.magnolia.ui.admincentral.content.item.ItemViewImpl</implementation>
+    </component>
 		<component>
-			<type>info.magnolia.ui.admincentral.field.builder.DialogFieldFactory</type>
-			<implementation>info.magnolia.ui.admincentral.field.builder.DialogFieldFactory</implementation>
+			<type>info.magnolia.ui.admincentral.field.builder.FieldFactory</type>
+			<implementation>info.magnolia.ui.admincentral.field.builder.FieldFactory</implementation>
 		</component>
 		<component>
 			<type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</type>
@@ -246,6 +258,10 @@
 			<type>info.magnolia.ui.admincentral.dialog.action.DialogActionFactory</type>
 			<implementation>info.magnolia.ui.admincentral.dialog.action.DialogActionFactoryImpl</implementation>
 		</component>
+    <component>
+      <type>info.magnolia.ui.admincentral.form.action.FormActionFactory</type>
+      <implementation>info.magnolia.ui.admincentral.form.action.FormActionFactoryImpl</implementation>
+    </component>
 		<component>
 			<type>info.magnolia.ui.model.workbench.action.WorkbenchActionFactory</type>
 			<implementation>info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl</implementation>

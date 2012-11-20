@@ -286,13 +286,18 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             private SubApp subApp;
             private Location location;
             private ComponentProvider subAppComponentProvider;
+
             private SubAppDescriptor subAppDescriptor;
+
             private AppContext appContext;
             private String tabId;
-
-
             private SubAppContextImpl(SubAppDescriptor subAppDescriptor) {
                 this.subAppDescriptor = subAppDescriptor;
+            }
+
+            @Override
+            public SubAppDescriptor getSubAppDescriptor() {
+                return subAppDescriptor;
             }
 
             @Override
@@ -370,7 +375,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             return appDescriptor;
         }
 
-        private SubAppDescriptor getDefaultSubAppDescriptor() {
+        @Override
+        public SubAppDescriptor getDefaultSubAppDescriptor() {
             Map<String, SubAppDescriptor> subAppDescriptors = getAppDescriptor().getSubApps();
 
             SubAppDescriptor defaultSubAppDescriptor = null;
@@ -426,8 +432,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
                 }
                 return;
             }
-
-            openSubApp(location);
 
             app.locationChanged(location);
         }

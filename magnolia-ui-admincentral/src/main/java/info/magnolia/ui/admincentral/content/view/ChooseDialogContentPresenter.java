@@ -54,7 +54,7 @@ public class ChooseDialogContentPresenter extends ContentPresenter {
 
     @Inject
     public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named("choosedialog") EventBus subAppEventBus, Shell shell) {
-        super(contentViewBuilder, context, subAppEventBus, shell);
+        super(context, contentViewBuilder, subAppEventBus, shell);
         workbenchDefinition = new Cloner().deepClone(workbenchDefinition);
         ((ConfiguredWorkbenchDefinition)workbenchDefinition).setDialogWorkbench(true);
     }

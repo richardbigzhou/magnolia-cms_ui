@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogTab;
+import info.magnolia.ui.vaadin.gwt.client.form.VFormTab;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,15 +56,15 @@ import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
 
 /**
- * Layout for the {@link DialogFieldWrapper} widgets.
+ * Layout for the {@link FormFieldWrapper} widgets.
  */
 public class VFormSection extends FlowPanel implements Container {
 
     private List<Widget> children = new LinkedList<Widget>();
 
-    private Map<Widget, DialogFieldWrapper> sections = new LinkedHashMap<Widget, DialogFieldWrapper>();
+    private Map<Widget, FormFieldWrapper> sections = new LinkedHashMap<Widget, FormFieldWrapper>();
 
-    private List<DialogFieldWrapper> problematicSections = new ArrayList<DialogFieldWrapper>();
+    private List<FormFieldWrapper> problematicSections = new ArrayList<FormFieldWrapper>();
 
     private Element fieldSet = DOM.createElement("fieldset");
 
@@ -102,7 +102,7 @@ public class VFormSection extends FlowPanel implements Container {
             final Paintable p = client.getPaintable(childUIdl.getChildUIDL(0));
             final Widget w = (Widget) p;
             if (!hasChildComponent(w)) {
-                DialogFieldWrapper fieldSection = new DialogFieldWrapper();
+                FormFieldWrapper fieldSection = new FormFieldWrapper();
                 sections.put(w, fieldSection);
                 children.add(w);
                 fieldSection.setField(w);
@@ -110,7 +110,7 @@ public class VFormSection extends FlowPanel implements Container {
             }
             if (childUIdl.hasAttribute("helpDescription")) {
                 String description = childUIdl.getStringAttribute("helpDescription");
-                DialogFieldWrapper fieldSection = sections.get(w);
+                FormFieldWrapper fieldSection = sections.get(w);
                 fieldSection.setHelpDescription(description);
             }
 
@@ -134,7 +134,7 @@ public class VFormSection extends FlowPanel implements Container {
 
     @Override
     public void updateCaption(Paintable component, UIDL uidl) {
-        DialogFieldWrapper fs = sections.get(component);
+        FormFieldWrapper fs = sections.get(component);
         if (fs != null) {
             boolean errorsOccured = uidl.hasAttribute("error");
             if (errorsOccured && isValidationVisible) {
@@ -161,20 +161,20 @@ public class VFormSection extends FlowPanel implements Container {
     }
 
     @Override
-    public VDialogTab getParent() {
+    public VFormTab getParent() {
         final Widget parent = super.getParent();
         if (parent == null) {
             return null;
         }
-        if (!(super.getParent() instanceof VDialogTab)) {
-            throw new RuntimeException("Parent of VDialogTabLayout must be of type VDialogTab, you have used: " + super.getParent().getClass());
+        if (!(super.getParent() instanceof VFormTab)) {
+            throw new RuntimeException("Parent of VDialogTabLayout must be of type VFormTab, you have used: " + super.getParent().getClass());
         }
-        return (VDialogTab)super.getParent();
+        return (VFormTab)super.getParent();
     }
 
     @Override
     public RenderSpace getAllocatedSpace(Widget child) {
-        final DialogFieldWrapper fs = sections.get(child);
+        final FormFieldWrapper fs = sections.get(child);
         if (fs != null) {
             return new RenderSpace(fs.getFieldAreaWidth(), fs.getFieldAreaHeight());
         }
@@ -182,7 +182,7 @@ public class VFormSection extends FlowPanel implements Container {
     }
 
     public void setDescriptionVisible(boolean isAccessible) {
-        for (final DialogFieldWrapper fs : sections.values()) {
+        for (final FormFieldWrapper fs : sections.values()) {
             fs.setHelpEnabled(isAccessible);
         }
     }
@@ -200,11 +200,11 @@ public class VFormSection extends FlowPanel implements Container {
         return problematicSections.size();
     }
 
-    public List<DialogFieldWrapper> getProblematicFields() {
+    public List<FormFieldWrapper> getProblematicFields() {
         return Collections.unmodifiableList(problematicSections);
     }
 
-    public List<DialogFieldWrapper> getFields() {
-        return new ArrayList<DialogFieldWrapper>(sections.values());
+    public List<FormFieldWrapper> getFields() {
+        return new ArrayList<FormFieldWrapper>(sections.values());
     }
 }

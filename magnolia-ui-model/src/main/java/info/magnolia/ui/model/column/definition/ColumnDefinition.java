@@ -58,7 +58,7 @@ public interface ColumnDefinition {
 
     boolean isSortable();
 
-    String getFormatterClass();
+    Class<? extends ColumnFormatter> getFormatterClass();
 
     Class<?> getType();
 

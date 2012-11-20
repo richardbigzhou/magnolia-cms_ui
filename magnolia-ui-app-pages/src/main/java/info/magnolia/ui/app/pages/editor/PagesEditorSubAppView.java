@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 
@@ -41,7 +41,7 @@ import info.magnolia.ui.vaadin.editor.PageEditorView;
 /**
  * PagesEditorSubAppView.
  */
-public interface PagesEditorSubAppView extends View {
+public interface PagesEditorSubAppView extends WorkbenchSubAppView {
 
     /**
      * Listener.

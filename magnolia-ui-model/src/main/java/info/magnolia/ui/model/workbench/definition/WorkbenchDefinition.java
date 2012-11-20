@@ -36,6 +36,7 @@ package info.magnolia.ui.model.workbench.definition;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
+import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
 
 import java.io.Serializable;
@@ -88,4 +89,6 @@ public interface WorkbenchDefinition extends Serializable {
      * @return the property (or comma separated list of properties) to be applied when no other order is requested.
      */
     String getDefaultOrder();
+
+    FormDefinition getFormDefinition();
 }

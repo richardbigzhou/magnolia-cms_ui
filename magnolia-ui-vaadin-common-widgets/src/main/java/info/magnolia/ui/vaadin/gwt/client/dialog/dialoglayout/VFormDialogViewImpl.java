@@ -33,26 +33,25 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogTab;
-import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogHeader.VDialogHeaderCallback;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.TabSetChangedEvent;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTab;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheet;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.TabSetChangedEvent.Handler;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.Util;
+import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogHeader;
+import info.magnolia.ui.vaadin.gwt.client.form.VFormTab;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.TabSetChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.TabSetChangedEvent.Handler;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTab;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheet;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@link VFormDialogViewImpl}. Implements {@link VFormDialogView}.
@@ -62,9 +61,9 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
     
     private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
 
-    private final List<VDialogTab> dialogTabs = new ArrayList<VDialogTab>();
+    private final List<VFormTab> formTabs = new ArrayList<VFormTab>();
 
-    private DialogFieldWrapper lastShownProblematicField = null;
+    private FormFieldWrapper lastShownProblematicField = null;
 
     private VMagnoliaTabSheet tabSheet = null;
     
@@ -73,12 +72,12 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
         @Override
         public void onFocus(FocusEvent event) {
             final Element target = event.getRelativeElement().cast();
-            final DialogFieldWrapper field = Util.findWidget(target, DialogFieldWrapper.class);
+            final FormFieldWrapper field = Util.findWidget(target, FormFieldWrapper.class);
             if (field != null) {
                 lastShownProblematicField = null;
                 final VMagnoliaTab activeTab =  tabSheet.getActiveTab();
-                if (activeTab instanceof VDialogTab) {
-                    List<DialogFieldWrapper> fields = ((VDialogTab)activeTab).getFields();
+                if (activeTab instanceof VFormTab) {
+                    List<FormFieldWrapper> fields = ((VFormTab)activeTab).getFields();
                     int index = fields.indexOf(field);
                     if (index >= 0) {
                         if (field.hasError()) {
@@ -106,13 +105,13 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
                 @Override
                 public void onTabSetChanged(TabSetChangedEvent event) {
                     final List<VMagnoliaTab> tabs = event.getTabSheet().getTabs();
-                    dialogTabs.clear();
+                    formTabs.clear();
                     for (final VMagnoliaTab tab : tabs) {
-                        if (tab instanceof VDialogTab) {
-                            dialogTabs.add((VDialogTab) tab);
-                            ((VDialogTab)tab).addValidationChangeHandler(VFormDialogViewImpl.this);
-                            final List<DialogFieldWrapper> fields = ((VDialogTab) tab).getFields();
-                            for (final DialogFieldWrapper field : fields) {
+                        if (tab instanceof VFormTab) {
+                            formTabs.add((VFormTab) tab);
+                            ((VFormTab)tab).addValidationChangeHandler(VFormDialogViewImpl.this);
+                            final List<FormFieldWrapper> fields = ((VFormTab) tab).getFields();
+                            for (final FormFieldWrapper field : fields) {
                                 field.addFocusHandler(problematicFieldFocusHandler);
                             }
                         }
@@ -138,10 +137,10 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
     @Override
     public void onValidationChanged(ValidationChangedEvent event) {
         int totalProblematicFields = 0;
-        for (final VDialogTab tab : dialogTabs) {
+        for (final VFormTab tab : formTabs) {
             totalProblematicFields += tab.getErrorAmount();
-            final VDialogTab dialogTab = (VDialogTab) tab;
-            for (final DialogFieldWrapper field : dialogTab.getFields()) {
+            final VFormTab formTab = (VFormTab) tab;
+            for (final FormFieldWrapper field : formTab.getFields()) {
                 field.addFocusHandler(problematicFieldFocusHandler);
             }
         }
@@ -149,13 +148,13 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
     }
     
     @Override
-    protected VDialogHeaderCallback createHeaderCallback() {
-        return new VDialogHeaderCallback() {
+    protected VDialogHeader.VDialogHeaderCallback createHeaderCallback() {
+        return new VDialogHeader.VDialogHeaderCallback() {
 
             @Override
             public void onDescriptionVisibilityChanged(boolean isVisible) {
-                if (dialogTabs != null) {
-                    for (final VDialogTab tab : dialogTabs) {
+                if (formTabs != null) {
+                    for (final VFormTab tab : formTabs) {
                         tab.setDescriptionVisible(isVisible);
                     }   
                 }
@@ -168,23 +167,23 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
 
             @Override
             public void jumpToNextError() {
-                VDialogTab activeTab = (VDialogTab)tabSheet.getActiveTab();
-                final List<DialogFieldWrapper> problematicFields = activeTab.getProblematicFields();
+                VFormTab activeTab = (VFormTab)tabSheet.getActiveTab();
+                final List<FormFieldWrapper> problematicFields = activeTab.getProblematicFields();
                 if (lastShownProblematicField == null && !problematicFields.isEmpty()) {
-                    final DialogFieldWrapper field = problematicFields.get(0);
+                    final FormFieldWrapper field = problematicFields.get(0);
                     scrollTo(field);
                     lastShownProblematicField = field;
                 } else {
                     int index = problematicFields.indexOf(lastShownProblematicField) + 1;
                     if (index <= problematicFields.size() - 1) {
-                        final DialogFieldWrapper nextField = problematicFields.get(index);
+                        final FormFieldWrapper nextField = problematicFields.get(index);
                         lastShownProblematicField = nextField;
                         scrollTo(lastShownProblematicField);
                     } else {
                         final List<VMagnoliaTab> tabs = tabSheet.getTabs();
                         int tabIndex = tabs.indexOf(activeTab);
                         for (int i = 0; i < tabs.size() - 1; ++i) {
-                            final VDialogTab nextTab = (VDialogTab)tabs.get(++tabIndex % tabs.size());
+                            final VFormTab nextTab = (VFormTab)tabs.get(++tabIndex % tabs.size());
                             if (nextTab.getProblematicFields().size() > 0) {
                                 tabSheet.getEventBus().fireEvent(new ActiveTabChangedEvent(nextTab));
                                 lastShownProblematicField = null;
@@ -198,7 +197,7 @@ public class VFormDialogViewImpl extends VBaseDialogViewImpl implements VFormDia
         };
     };
 
-    private void scrollTo(final DialogFieldWrapper field) {
+    private void scrollTo(final FormFieldWrapper field) {
         final int top = JQueryWrapper.select(field).position().top();
         JQueryWrapper.select(tabSheet).children(".v-shell-tabsheet-scroller").animate(500, new AnimationSettings() {
             {

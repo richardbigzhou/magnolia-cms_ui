@@ -44,8 +44,6 @@ public interface AppContext {
 
     /**
      *
-     * @param subAppId name of the sub app
-     * @param subAppClass
      * @param location
      */
     void openSubApp(Location location);
@@ -68,4 +66,5 @@ public interface AppContext {
 
     void setSubAppLocation(SubApp subApp, Location location);
 
+    SubAppDescriptor getDefaultSubAppDescriptor();
 }

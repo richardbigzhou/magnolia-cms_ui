@@ -41,7 +41,7 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
 import info.magnolia.ui.vaadin.dialog.FormDialog;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
-import info.magnolia.ui.vaadin.dialog.FormSection;
+import info.magnolia.ui.vaadin.form.FormSection;
 
 import java.util.List;
 

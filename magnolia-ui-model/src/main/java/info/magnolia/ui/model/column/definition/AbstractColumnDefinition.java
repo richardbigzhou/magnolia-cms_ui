@@ -50,7 +50,7 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     private boolean sortable = false;
 
-    private String formatterClass;
+    private Class<? extends ColumnFormatter> formatterClass;
 
     private String propertyName;
 
@@ -107,12 +107,12 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
     }
 
     @Override
-    public String getFormatterClass() {
+    public Class<? extends ColumnFormatter> getFormatterClass() {
         return this.formatterClass;
     }
 
-    public void setFormatterClass(String formatter) {
-        this.formatterClass = formatter;
+    public void setFormatterClass(Class<? extends ColumnFormatter> formatterClass) {
+        this.formatterClass = formatterClass;
     }
 
     /**

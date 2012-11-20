@@ -34,6 +34,8 @@
 package info.magnolia.ui.vaadin.dialog;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.vaadin.form.FormSection;
+import info.magnolia.ui.vaadin.form.MagnoliaFormTab;
 import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VFormDialog;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
@@ -59,9 +61,9 @@ public class FormDialog extends BaseDialog implements FormDialogView {
 
     private MagnoliaTabSheet tabSheet = new MagnoliaTabSheet() {
         @Override
-        public MagnoliaDialogTab addTab(final String caption, final ComponentContainer c) {
+        public MagnoliaFormTab addTab(final String caption, final ComponentContainer c) {
             if (c instanceof FormSection) {
-                final MagnoliaDialogTab tab = new MagnoliaDialogTab(caption, (FormSection)c);
+                final MagnoliaFormTab tab = new MagnoliaFormTab(caption, (FormSection)c);
                 tab.setSizeUndefined();
                 tab.setClosable(false);
                 doAddTab(tab);

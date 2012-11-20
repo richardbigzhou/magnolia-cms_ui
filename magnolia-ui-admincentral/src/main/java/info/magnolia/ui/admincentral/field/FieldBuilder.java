@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.field;
 import com.vaadin.ui.Field;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.ui.admincentral.dialog.DialogItem;
+import info.magnolia.ui.admincentral.form.FormItem;
 import info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 
@@ -44,7 +44,7 @@ import info.magnolia.ui.model.field.definition.FieldDefinition;
  * A dialog FieldBuilder is responsible for creating a Vaadin {@link Field} configured based on his
  * associated FieldDefinition.
  * <p>FieldBuilder and  {@link FieldDefinition} are linked together
- * using {@link info.magnolia.ui.admincentral.field.builder.DialogFieldFactory}.
+ * using {@link info.magnolia.ui.admincentral.field.builder.FieldFactory}.
  *<p>
  * Implementations of this interface will be instantiated with the
  * <ul>
@@ -54,9 +54,9 @@ import info.magnolia.ui.model.field.definition.FieldDefinition;
  * <strong>FieldBuilder are responsible to create/initialize Items that are by the Vaadin Field.</strong>
  *
  * @see FieldDefinition
- * @see info.magnolia.ui.admincentral.field.builder.DialogFieldFactory
+ * @see info.magnolia.ui.admincentral.field.builder.FieldFactory
  */
-public interface FieldBuilder extends DialogItem {
+public interface FieldBuilder extends FormItem {
 
     /**
      * Creates and initializes a Vaadin {@link Field} component.

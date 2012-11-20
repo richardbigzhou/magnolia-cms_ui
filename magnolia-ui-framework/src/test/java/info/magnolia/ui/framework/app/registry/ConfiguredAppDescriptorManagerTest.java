@@ -120,12 +120,10 @@ public class ConfiguredAppDescriptorManagerTest {
         AppDescriptor a = appRegistry.getAppDescriptor("appNameA");
         assertNotNull(a);
         assertEquals("appNameA", a.getName());
-        assertEquals("categoryA", a.getCategoryName());
 
         AppDescriptor b = appRegistry.getAppDescriptor("appNameB");
         assertNotNull(b);
         assertEquals("appNameB", b.getName());
-        assertEquals(ConfiguredAppDescriptorProvider.DEFAULT_CATEGORY_NAME, b.getCategoryName());
 
     }
 
@@ -163,7 +161,6 @@ public class ConfiguredAppDescriptorManagerTest {
         // THEN
         // app b has his property modified.
         AppDescriptor b = appRegistry.getAppDescriptor("appNameB");
-        assertEquals("categoryB", b.getCategoryName());
 
         // WHEN
         // Rename app b, chnge the app name.
@@ -184,7 +181,6 @@ public class ConfiguredAppDescriptorManagerTest {
         }
         b = appRegistry.getAppDescriptor("appNameB_B");
         assertNotNull(b);
-        assertEquals("categoryB", b.getCategoryName());
     }
 
 
