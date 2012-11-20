@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
@@ -48,7 +47,6 @@ import info.magnolia.ui.admincentral.event.ViewTypeChangedEvent;
 import info.magnolia.ui.admincentral.search.view.SearchView;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.thumbnail.ImageProvider;
@@ -75,7 +73,7 @@ import org.slf4j.LoggerFactory;
  * <li>a configurable action bar on the right hand side, showing the available operations for the
  * given workspace and the selected item.
  * </ul>
- *
+ * 
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
  * workspace to connect to, the columns/properties to display, the available actions and so on.
@@ -93,8 +91,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     private final EventBus subAppEventBus;
 
-    private final Shell shell;
-
     private final WorkbenchActionFactory actionFactory;
 
     private final ContentPresenter contentPresenter;
@@ -102,15 +98,14 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     private final ActionbarPresenter actionbarPresenter;
 
     private final ImageProvider imageProvider;
-    
+
     @Inject
-    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus, 
-            final @Named("subapp") EventBus subAppEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter, 
-            final ActionbarPresenter actionbarPresenter) {
+    public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus,
+        final @Named("subapp") EventBus subAppEventBus, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
+        final ActionbarPresenter actionbarPresenter) {
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
-        this.shell = shell;
         this.actionFactory = actionFactory;
         this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
@@ -177,10 +172,10 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     }
 
     /**
-     * @see ContentPresenter#getSelectedItemId()
+     * @see ContentPresenter#getSelectedItemPath()
      */
     public String getSelectedItemId() {
-        return contentPresenter.getSelectedItemId();
+        return contentPresenter.getSelectedItemPath();
     }
 
     public ContentWorkbenchView getView() {
@@ -196,13 +191,14 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
      */
     public void executeDefaultAction() {
         ActionDefinition defaultActionDef = actionbarPresenter.getDefaultActionDefinition();
-        try {
-            actionbarPresenter.createAndExecuteAction(defaultActionDef, workbenchDefinition.getWorkspace(), getSelectedItemId());
-        } catch (ActionExecutionException e) {
-            log.error("An error occurred while executing an action.", e);
+        if (defaultActionDef != null) {
+            try {
+                actionbarPresenter.createAndExecuteAction(defaultActionDef, workbenchDefinition.getWorkspace(), getSelectedItemId());
+            } catch (ActionExecutionException e) {
+                log.error("An error occurred while executing an action.", e);
+            }
         }
     }
-
 
     @Override
     public void onSearch(final String searchExpression) {
@@ -219,35 +215,41 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     }
 
     /**
-     * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected path, view type and optional query (in case of a search view).
+     * Synchronizes the underlying view to reflect the status extracted from the Location token,
+     * i.e. selected path, view type and optional query (in case of a search view).
      */
     public void resynch(final String path, final ViewType viewType, final String query) {
         boolean itemExists = itemExists(path);
-        if(!itemExists) {
-            log.warn("Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.", path, workbenchDefinition.getWorkspace());
+        if (!itemExists) {
+            log.warn(
+                "Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.",
+                path,
+                workbenchDefinition.getWorkspace());
         }
-        this.view.resynch(itemExists? path : "/", viewType, query);
+        this.view.resynch(itemExists ? path : "/", viewType, query);
     }
 
     private void refreshActionbarPreviewImage(final String path, final String workspace) {
-        if (StringUtils.isBlank(path)) {
-            actionbarPresenter.setPreview(null);
-        } else {
-            String imagePath = imageProvider.getPortraitPath(workspace, path);
-            actionbarPresenter.setPreview(imagePath);
+        if (imageProvider != null) {
+            if (StringUtils.isBlank(path)) {
+                actionbarPresenter.setPreview(null);
+            } else {
+                String imagePath = imageProvider.getPortraitPath(workspace, path);
+                actionbarPresenter.setPreview(imagePath);
+            }
         }
     }
 
     private void doSearch(SearchEvent event) {
-        if(view.getSelectedView().getViewType() != ViewType.SEARCH) {
+        if (view.getSelectedView().getViewType() != ViewType.SEARCH) {
             log.warn("Expected view type {} but is {} instead.", ViewType.SEARCH.name(), view.getSelectedView().getViewType().name());
             return;
         }
         final SearchView searchView = (SearchView) view.getSelectedView();
         final String searchExpression = event.getSearchExpression();
 
-        if(StringUtils.isBlank(searchExpression)) {
-            //clear last search results
+        if (StringUtils.isBlank(searchExpression)) {
+            // clear last search results
             searchView.clear();
         } else {
             searchView.search(searchExpression);
