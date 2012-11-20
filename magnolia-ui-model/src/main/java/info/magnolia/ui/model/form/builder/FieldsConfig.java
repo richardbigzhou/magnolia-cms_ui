@@ -49,4 +49,24 @@ public class FieldsConfig {
     public FileUploadFieldBuilder fileUploadField(String name) {
         return new FileUploadFieldBuilder(name);
     }
+
+    public CheckboxFieldBuilder checkboxField(String name) {
+        return new CheckboxFieldBuilder(name);
+    }
+
+    public OptionGroupFieldBuilder optionGroupField(String name) {
+        return new OptionGroupFieldBuilder(name);
+    }
+
+    public PasswordFieldBuilder passwordField(String name) {
+        return new PasswordFieldBuilder(name);
+    }
+
+    public StaticFieldBuilder staticField(String name) {
+        return new StaticFieldBuilder(name);
+    }
+
+    public TwinColSelectFieldBuilder twinColSelectField(String name) {
+        return new TwinColSelectFieldBuilder(name);
+    }
 }
