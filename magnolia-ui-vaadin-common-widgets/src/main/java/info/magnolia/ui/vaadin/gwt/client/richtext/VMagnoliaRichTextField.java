@@ -82,7 +82,7 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
         }
         
         //list of plugin events that server is interested of handling.
-        if(uidl.hasAttribute(VAR_EVENTNAMES)) {
+        if(uidl.hasAttribute(VAR_EVENTNAMES) && this.editor != null) {
             pluginEvents = Arrays.asList(
                     uidl.getStringArrayAttribute(VAR_EVENTNAMES)
                     );
@@ -93,7 +93,7 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
         }
 
         //Server wants to send an event to a plugin.
-        if(uidl.hasAttribute(VAR_FIRE_PLUGIN_EVENT)) {
+        if(uidl.hasAttribute(VAR_FIRE_PLUGIN_EVENT) && this.editor != null) {
             this.editor.fire(
                     uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT),
                     uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT_VALUE)
@@ -169,6 +169,10 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
             var editorInstanceId = e.editor.element.getId();
             if(listenerInstanceId == editorInstanceId) {
                 listener.@info.magnolia.ui.vaadin.gwt.client.richtext.VMagnoliaRichTextField::setEditor(Lcom/google/gwt/core/client/JavaScriptObject;)(e.editor);
+                
+                e.editor.on('destroy', function(e) {
+                    listener.@info.magnolia.ui.vaadin.gwt.client.richtext.VMagnoliaRichTextField::setEditor(Lcom/google/gwt/core/client/JavaScriptObject;)(null);
+                });
             }
         };
 
