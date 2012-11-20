@@ -72,15 +72,15 @@ public class ContentPresenter implements ContentView.Listener {
 
     protected WorkbenchDefinition workbenchDefinition;
 
-    private String selectedItemId;
-    
+    private String selectedItemPath;
+
     @Inject
     public ContentPresenter(final ContentViewBuilder contentViewBuilder, final AppContext context, @Named("subapp") final EventBus subAppEventBus, final Shell shell) {
         this.contentViewBuilder = contentViewBuilder;
         this.subAppEventBus = subAppEventBus;
         this.shell = shell;
-        
-        final ContentAppDescriptor appDescriptor = ((ContentAppDescriptor) context.getAppDescriptor()); 
+
+        final ContentAppDescriptor appDescriptor = ((ContentAppDescriptor) context.getAppDescriptor());
         this.workbenchDefinition = appDescriptor.getWorkbench();
         this.workspaceName = appDescriptor.getWorkbench().getWorkspace();
     }
@@ -110,40 +110,40 @@ public class ContentPresenter implements ContentView.Listener {
     public void onItemSelection(Item item) {
         if (item == null) {
             log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
-            selectedItemId = null;
+            selectedItemPath = null;
             subAppEventBus.fireEvent(new ItemSelectedEvent(workspaceName, null));
             return;
         }
         try {
-            selectedItemId = ((JcrItemAdapter) item).getItemId();
-            log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
-            subAppEventBus.fireEvent(new ItemSelectedEvent(workspaceName, (JcrItemAdapter)item));
+            selectedItemPath = ((JcrItemAdapter) item).getPath();
+            log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemPath);
+            subAppEventBus.fireEvent(new ItemSelectedEvent(workspaceName, (JcrItemAdapter) item));
         } catch (Exception e) {
             shell.showError("An error occurred while selecting a row in the data grid", e);
         }
     }
 
     /**
-     * @return the id of the Vaadin item currently selected in one the currently active
+     * @return the path of the vaadin item currently selected in the currently active
      * {@link ContentView}. It is equivalent to javax.jcr.Item#getPath().
-     * @see JcrItemAdapter#getItemId()
+     * @see JcrItemAdapter#getPath()
      */
-    public String getSelectedItemId() {
-        return selectedItemId;
+    public String getSelectedItemPath() {
+        return selectedItemPath;
     }
 
     @Override
     public void onDoubleClick(Item item) {
         if (item != null) {
             try {
-                selectedItemId = ((JcrItemAdapter) item).getItemId();
-                log.debug("com.vaadin.data.Item at {} was double clicked. Firing ItemDoubleClickedEvent...", selectedItemId);
-                subAppEventBus.fireEvent(new ItemDoubleClickedEvent(workspaceName, selectedItemId));
+                selectedItemPath = ((JcrItemAdapter) item).getPath();
+                log.debug("com.vaadin.data.Item at {} was double clicked. Firing ItemDoubleClickedEvent...", selectedItemPath);
+                subAppEventBus.fireEvent(new ItemDoubleClickedEvent(workspaceName, selectedItemPath));
             } catch (Exception e) {
                 shell.showError("An error occurred while double clicking on a row in the data grid", e);
             }
         } else {
-            log.warn("Got null com.vaadin.data.Item. No event will be fired.");   
+            log.warn("Got null com.vaadin.data.Item. No event will be fired.");
         }
     }
 }

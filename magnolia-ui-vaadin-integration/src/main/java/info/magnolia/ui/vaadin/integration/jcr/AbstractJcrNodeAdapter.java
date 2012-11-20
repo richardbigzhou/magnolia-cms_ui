@@ -65,13 +65,13 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
 
     private String primaryNodeTypeName;
 
-    private Map<String, Property> changedProperties = new HashMap<String, Property>();
+    private final Map<String, Property> changedProperties = new HashMap<String, Property>();
 
-    private Map<String, Property> removedProperties = new HashMap<String, Property>();
+    private final Map<String, Property> removedProperties = new HashMap<String, Property>();
 
-    private Map<String, JcrItemNodeAdapter> children = new HashMap<String, JcrItemNodeAdapter>();
+    private final Map<String, JcrItemNodeAdapter> children = new HashMap<String, JcrItemNodeAdapter>();
 
-    private Map<String, JcrItemNodeAdapter> removedChildren = new HashMap<String, JcrItemNodeAdapter>();
+    private final Map<String, JcrItemNodeAdapter> removedChildren = new HashMap<String, JcrItemNodeAdapter>();
 
     private JcrItemNodeAdapter parent;
 
@@ -89,8 +89,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         String primaryNodeTypeName = null;
         try {
             primaryNodeTypeName = jcrNode.getPrimaryNodeType().getName();
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             log.error("Couldn't retrieve identifier of jcr node", e);
             primaryNodeTypeName = UN_IDENTIFIED;
         }
@@ -145,8 +144,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
                 log.warn("Property " + id + " already exist.do nothing");
                 return false;
             }
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             log.error("", e);
             return false;
         }
@@ -172,8 +170,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
             else {
                 value = PropertyUtil.getPropertyValueObject(jcrNode, (String) id);
             }
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
         DefaultProperty property = new DefaultProperty((String) id, value);
@@ -200,8 +197,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
                 else {
                     addItemProperty(name, property);
                 }
-            }
-            catch (RepositoryException e) {
+            } catch (RepositoryException e) {
                 log.error("", e);
             }
         }
@@ -244,8 +240,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
                 }
             }
             return node;
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
     }
@@ -309,7 +304,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
             removedChildren.remove(child.getNodeName());
         }
         child.setParent(this);
-        if(children.containsKey(child.getNodeName())) {
+        if (children.containsKey(child.getNodeName())) {
             children.remove(child.getNodeName());
         }
         return children.put(child.getNodeName(), child);

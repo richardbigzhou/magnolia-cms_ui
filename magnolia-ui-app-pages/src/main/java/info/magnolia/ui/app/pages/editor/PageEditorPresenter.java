@@ -50,12 +50,12 @@ import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.model.tab.definition.TabDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.editor.PageEditor;
 import info.magnolia.ui.vaadin.editor.PageEditorParameters;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -187,7 +187,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
                 dialogPresenter.closeDialog();
             }
 

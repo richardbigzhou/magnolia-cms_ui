@@ -43,16 +43,17 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
 
+
 /**
  * Opens a dialog for editing a node.
- *
+ * 
  * @see EditDialogActionDefinition
  */
 public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
-    private FormDialogPresenterFactory dialogPresenterFactory;
-    
-    private Node nodeToEdit;
+    private final FormDialogPresenterFactory dialogPresenterFactory;
+
+    private final Node nodeToEdit;
 
     public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, FormDialogPresenterFactory dialogPresenterFactory) {
         super(definition);
@@ -69,7 +70,7 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
                 dialogPresenter.closeDialog();
             }
 

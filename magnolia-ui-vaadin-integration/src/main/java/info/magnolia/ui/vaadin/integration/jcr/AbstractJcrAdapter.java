@@ -43,7 +43,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-
 /**
  * Common base for {JcrItemAdapter} implementation.
  */
@@ -52,13 +51,17 @@ public abstract class AbstractJcrAdapter implements JcrItemAdapter {
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrAdapter.class);
 
     static final String UN_IDENTIFIED = "?";
-    //Common variable
-    private boolean isNode;
-    private  String jcrNodeIdentifier;
-    private  String jcrWorkspace;
-    private  String jcrPath;
 
-    public AbstractJcrAdapter (Item jcrItem) {
+    // Common variable
+    private boolean isNode;
+
+    private String jcrNodeIdentifier;
+
+    private String jcrWorkspace;
+
+    private String jcrPath;
+
+    public AbstractJcrAdapter(Item jcrItem) {
         setCommonAttributes(jcrItem);
     }
 
@@ -71,7 +74,7 @@ public abstract class AbstractJcrAdapter implements JcrItemAdapter {
         String path = null;
         try {
             isNode = jcrItem.isNode();
-            Node node = isNode ? ((Node)jcrItem) : jcrItem.getParent();
+            Node node = isNode ? ((Node) jcrItem) : jcrItem.getParent();
             nodeIdentifier = node.getIdentifier();
             workspace = node.getSession().getWorkspace().getName();
             path = jcrItem.getPath();
@@ -103,20 +106,27 @@ public abstract class AbstractJcrAdapter implements JcrItemAdapter {
     public javax.jcr.Item getJcrItem() {
         try {
             return MgnlContext.getJCRSession(jcrWorkspace).getItem(jcrPath);
-        } catch(RepositoryException re) {
+        } catch (RepositoryException re) {
             log.warn("Not able to retrieve the JcrItem ", re.getMessage());
             return null;
         }
     }
 
+    /**
+     * We no longer use the path as itemId because we may modify it as a regular property, when
+     * editing a node name for example. Using the object itself as id is also an advantage for
+     * keeping a reference to the adapter and process changes at a later point in time.
+     * 
+     * @return the vaadin itemId, which is the JcrItemAdapter itself.
+     */
     @Override
-    public void save() throws RepositoryException {
-        getJcrItem().getSession().save();
+    public Object getItemId() {
+        return getPath();
     }
 
     @Override
-    public String getItemId() {
-        return this.jcrPath;
+    public String getPath() {
+        return jcrPath;
     }
 
     protected void setPath(String path) {
