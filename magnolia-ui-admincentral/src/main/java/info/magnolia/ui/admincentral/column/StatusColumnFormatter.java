@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.cms.exchange.ActivationUtil;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
 
 import javax.inject.Inject;
@@ -75,15 +75,15 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
                 String color = "";
                 Integer status;
                 try {
-                    status = ActivationUtil.getActivationStatus(node);
+                    status = NodeTypes.ActivatableMixin.getActivationStatus(node);
                 } catch (RepositoryException e) {
-                    status = ActivationUtil.ACTIVATION_STATUS_NOT_ACTIVATED;
+                    status = NodeTypes.ActivatableMixin.ACTIVATION_STATUS_NOT_ACTIVATED;
                 }
                 switch (status) {
-                    case ActivationUtil.ACTIVATION_STATUS_MODIFIED:
+                    case NodeTypes.ActivatableMixin.ACTIVATION_STATUS_MODIFIED:
                         color = "color-yellow";
                         break;
-                    case ActivationUtil.ACTIVATION_STATUS_ACTIVATED:
+                    case NodeTypes.ActivatableMixin.ACTIVATION_STATUS_ACTIVATED:
                         color = "color-green";
                         break;
                     default:
