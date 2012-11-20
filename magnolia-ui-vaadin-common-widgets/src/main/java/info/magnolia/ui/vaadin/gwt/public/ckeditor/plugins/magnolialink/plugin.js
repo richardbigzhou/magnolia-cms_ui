@@ -68,13 +68,13 @@
 		            } else {
 		            	editor.fire('reqMagnoliaLink');
 		            }
-		            editor.setReadOnly();
+		            //editor.setReadOnly();
 				}
 			});
 			
 			//Respond from Pages app
 			editor.on('sendMagnoliaLink', function(e) {
-				editor.setReadOnly(false);
+				//editor.setReadOnly(false);
 		    	editor.getSelection().selectRanges(selectionRangeHack);		    	
     	        var selectedElement = CKEDITOR.plugins.link.getSelectedLink(editor);
     	        var link = eval('('+e.data+')');
@@ -101,7 +101,7 @@
 			});
 			
 			editor.on('cancelLink', function(e) {
-				editor.setReadOnly(false);
+				//editor.setReadOnly(false);
 			});
 
 			//Double click
