@@ -35,14 +35,15 @@ package info.magnolia.ui.admincentral.column;
 
 import info.magnolia.cms.i18n.Messages;
 import info.magnolia.cms.i18n.MessagesManager;
-import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
+import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.ui.model.column.definition.TemplateColumnDefinition;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -54,14 +55,17 @@ import com.vaadin.ui.Table;
  * Template Column formatter.
  * Get the i18n template name based on the metadata property.
  */
-public class TemplateColumnFormatter extends AbstractColumnFormatter<TemplateColumnDefinition>{
+public class TemplateColumnFormatter extends AbstractColumnFormatter<TemplateColumnDefinition> {
+
     private static final Logger log = LoggerFactory.getLogger(TemplateColumnFormatter.class);
 
     private TemplateDefinitionRegistry templateRegistry;
+    private TemplateDefinitionAssignment templateDefinitionAssignment;
 
-    public TemplateColumnFormatter(TemplateColumnDefinition definition, TemplateDefinitionRegistry templateRegistry) {
+    public TemplateColumnFormatter(TemplateColumnDefinition definition, TemplateDefinitionRegistry templateRegistry, TemplateDefinitionAssignment templateDefinitionAssignment) {
         super(definition);
         this.templateRegistry = templateRegistry;
+        this.templateDefinitionAssignment = templateDefinitionAssignment;
     }
 
     @Override
@@ -69,17 +73,23 @@ public class TemplateColumnFormatter extends AbstractColumnFormatter<TemplateCol
         final Item jcrItem = getJcrItem(source, itemId);
         if(jcrItem != null && jcrItem.isNode()) {
             Node node = (Node) jcrItem;
-            // Get template Name
-            String templateName = MetaDataUtil.getTemplate(node);
-            // Get template Definition
+            // Get template id
+            String templateId;
+            try {
+                templateId = templateDefinitionAssignment.getAssignedTemplate(node);
+            } catch (RepositoryException e) {
+                return "Unknown";
+            }
+            // Get template definition
             TemplateDefinition template = null;
             try {
-                template = templateRegistry.getTemplateDefinition(templateName);
+                template = templateRegistry.getTemplateDefinition(templateId);
             }
             catch (RegistrationException e) {
-                log.warn("Template with id {} doesn't exist.", templateName);
+                log.warn("Template with id {} doesn't exist.", templateId);
             }
-            return template != null ? getI18nTitle(template) : "Missing: " + StringUtils.defaultString(templateName);
+
+            return template != null ? getI18nTitle(template) : "Missing: " + StringUtils.defaultString(templateId);
         }
         return "";
     }
