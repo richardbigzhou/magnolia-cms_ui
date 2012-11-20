@@ -33,10 +33,11 @@
  */
 package info.magnolia.ui.admincentral.content.view;
 
-import com.vaadin.data.Item;
-
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
+
+import com.vaadin.data.Item;
+
 
 /**
  * UI component that displays content (from JCR).
@@ -58,7 +59,7 @@ public interface ContentView extends View {
         THUMBNAIL("thumbnail"),
         SEARCH("search");
 
-        private String text;
+        private final String text;
 
         ViewType(String text) {
             this.text = text;
@@ -89,11 +90,14 @@ public interface ContentView extends View {
 
     void setListener(Listener listener);
 
+    /**
+     * Selects the item with given path in the content view.
+     * 
+     * @param path relative to the tree root, must start with '/'
+     */
     void select(String path);
 
     void refresh();
-
-    void refreshItem(Item item);
 
     AbstractJcrContainer getContainer();
 

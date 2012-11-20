@@ -40,7 +40,6 @@ import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 
 import java.util.ArrayList;
@@ -51,7 +50,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
@@ -62,7 +60,7 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * Vaadin UI component that displays a list.
- *
+ * 
  */
 public class ListViewImpl implements ListView {
 
@@ -80,7 +78,8 @@ public class ListViewImpl implements ListView {
         table = new MagnoliaTable();
         table.setSizeFull();
 
-        // next two lines are required to make the browser (Table) react on selection change via mouse
+        // next two lines are required to make the browser (Table) react on selection change via
+        // mouse
         table.setImmediate(true);
         table.setNullSelectionAllowed(false);
         // table.setMultiSelectMode(MultiSelectMode.DEFAULT);
@@ -103,7 +102,7 @@ public class ListViewImpl implements ListView {
 
             @Override
             public void itemClick(ItemClickEvent event) {
-                if(event.isDoubleClick()) {
+                if (event.isDoubleClick()) {
                     presenterOnDoubleClick(String.valueOf(event.getItemId()));
                 }
             }
@@ -163,16 +162,6 @@ public class ListViewImpl implements ListView {
         }
     }
 
-    @Override
-    public void refreshItem(Item item) {
-        String itemId = ((JcrItemAdapter) item).getItemId();
-        if (container.containsId(itemId)) {
-            container.fireItemSetChange();
-        } else {
-            log.warn("No item found for id [{}]", itemId);
-        }
-    }
-
     private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
         final List<String> columnOrder = new ArrayList<String>();
         final Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
@@ -182,12 +171,13 @@ public class ListViewImpl implements ListView {
                 String columnName = column.getName();
                 final String columnProperty = (column.getPropertyName() != null) ? column.getPropertyName() : columnName;
 
-                //FIXME fgrilli workaround for conference
-                //when setting cols width in dialogs we are forced to use explicit px value instead of expand ratios, which for some reason don't work
-                if(workbenchDefinition.isDialogWorkbench()) {
+                // FIXME fgrilli workaround for conference
+                // when setting cols width in dialogs we are forced to use explicit px value instead
+                // of expand ratios, which for some reason don't work
+                if (workbenchDefinition.isDialogWorkbench()) {
                     table.setColumnWidth(columnProperty, 300);
                 } else {
-                    if(column.getWidth() > 0 ) {
+                    if (column.getWidth() > 0) {
                         table.setColumnWidth(columnProperty, column.getWidth());
                     } else {
                         table.setColumnExpandRatio(columnProperty, column.getExpandRatio());
@@ -195,13 +185,15 @@ public class ListViewImpl implements ListView {
                 }
                 table.setColumnHeader(columnProperty, column.getLabel());
                 container.addContainerProperty(columnProperty, column.getType(), "");
-                //Set Formatter
-                if(StringUtils.isNotBlank(column.getFormatterClass())) {
+                // Set Formatter
+                if (StringUtils.isNotBlank(column.getFormatterClass())) {
                     try {
-                        table.addGeneratedColumn(columnProperty, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
-                   } catch (ClassNotFoundException e) {
-                        log.error("Not able to create the Formatter",e);
-                   }
+                        table.addGeneratedColumn(
+                            columnProperty,
+                            (ColumnFormatter) componentProvider.newInstance(Class.forName(column.getFormatterClass()), column));
+                    } catch (ClassNotFoundException e) {
+                        log.error("Not able to create the Formatter", e);
+                    }
                 }
                 columnOrder.add(columnProperty);
             }
@@ -209,7 +201,7 @@ public class ListViewImpl implements ListView {
 
         table.setContainerDataSource(container);
 
-        //Set column order
+        // Set column order
         table.setVisibleColumns(columnOrder.toArray());
     }
 
