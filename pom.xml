@@ -123,11 +123,21 @@
 				<artifactId>ckeditor-wrapper-for-vaadin</artifactId>
 				<version>1.6.7</version>
 			</dependency>
+            <dependency>
+                <groupId>org.vaadin.addons</groupId>
+                <artifactId>imagefilter</artifactId>
+                <version>0.5.3</version>
+            </dependency>
 			<dependency>
 				<groupId>org.vaadin.addons</groupId>
 				<artifactId>super-dev-mode-for-vaadin-6</artifactId>
 				<version>0.9.0</version>
 			</dependency>
+            <dependency>
+                <groupId>com.jhlabs</groupId>
+                <artifactId>filters</artifactId>
+                <version>2.0.235</version>
+            </dependency>
 			<dependency>
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-user</artifactId>

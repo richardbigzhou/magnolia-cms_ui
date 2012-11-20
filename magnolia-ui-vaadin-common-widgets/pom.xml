@@ -85,6 +85,14 @@
         <groupId>org.vaadin.addons</groupId>
         <artifactId>ckeditor-wrapper-for-vaadin</artifactId>
     </dependency>
+    <dependency>
+        <groupId>org.vaadin.addons</groupId>
+        <artifactId>imagefilter</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.jhlabs</groupId>
+        <artifactId>filters</artifactId>
+      </dependency>
   </dependencies>
 
   <build>
