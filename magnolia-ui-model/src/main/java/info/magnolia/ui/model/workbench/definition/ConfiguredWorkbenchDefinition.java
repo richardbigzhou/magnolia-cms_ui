@@ -41,6 +41,7 @@ import info.magnolia.ui.model.thumbnail.ImageProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Default configured implementation for the WorkbenchDefinition.
  */
@@ -69,6 +70,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     private ImageProvider imageProvider;
 
     private boolean includeProperties = false;
+
+    private boolean editable;
 
     @Override
     public String getName() {
@@ -164,7 +167,6 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         this.imageProvider = imageProvider;
     }
 
-
     @Override
     public boolean isDialogWorkbench() {
         return dialogWorkbench;
@@ -182,4 +184,14 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     public void setDefaultOrder(String defaultOrder) {
         this.defaultOrder = defaultOrder;
     }
+
+    @Override
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
 }

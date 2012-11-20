@@ -41,6 +41,7 @@ import info.magnolia.ui.model.thumbnail.ImageProvider;
 import java.io.Serializable;
 import java.util.List;
 
+
 /**
  * Contains all elements which define a workbench configuration.
  */
@@ -79,13 +80,21 @@ public interface WorkbenchDefinition extends Serializable {
     ImageProvider getImageProvider();
 
     /**
-     * Define if this workbench is used for Dialog.
-     * This is set during the cloning of the workbench in ChooseDialogContentPresenter.
+     * Define if this workbench is used for Dialog. This is set during the cloning of the workbench
+     * in ChooseDialogContentPresenter.
      */
     boolean isDialogWorkbench();
 
     /**
-     * @return the property (or comma separated list of properties) to be applied when no other order is requested.
+     * @return the property (or comma separated list of properties) to be applied when no other
+     * order is requested.
      */
     String getDefaultOrder();
+
+    /**
+     * Checks if workbench can edit tree view inplace.
+     * 
+     * @return true, if workbench is editable
+     */
+    boolean isEditable();
 }
