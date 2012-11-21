@@ -69,6 +69,7 @@
   <nodeType name="mgnl:systemMessage" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
     <supertypes>
       <supertype>mgnl:content</supertype>
+      <supertype>mgnl:lastModified</supertype>
     </supertypes>
   </nodeType>
 </nodeTypes>
