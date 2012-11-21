@@ -97,7 +97,6 @@ public class RichTextFieldBuilder extends
         toolbars.add(new ToolbarGroup("special",
                 new String[] { "Undo", "Redo" }));
         config.addToolbarLine(toolbars);
-        config.addPlugin("customplugin", "/VAADIN/js/customplugin/");
         config.addListenedEvent("reqMagnoliaLink");
         
         richtexteditor = new MagnoliaRichTextField(config);

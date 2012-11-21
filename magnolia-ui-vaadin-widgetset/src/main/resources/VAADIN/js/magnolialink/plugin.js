@@ -38,7 +38,7 @@
 			editor.ui.addButton('InternalLink', {
 				label: 'Link to Magnolia page',
 				command: 'magnolialink',
-				icon: "mlink.png"
+				icon: "../../../themes/admincentraltheme/img/mlink.png"
 			});
 			
 			editor.addMenuGroup('mlinkgroup');
@@ -47,7 +47,7 @@
 				label: 'Edit Magnolia Link',
 				command: 'magnolialink',
 				group: 'mlinkgroup',
-				icon: "mlink.png"
+				icon: "../../../themes/admincentraltheme/img/mlink.png"
 			});
 			
 			/* Firefox will lose focus when popping up a dialog.

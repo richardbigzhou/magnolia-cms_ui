@@ -54,8 +54,8 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
     private Map<String, String> serverSidePlugins = new HashMap<String, String>();
 
     public MagnoliaRichTextFieldConfig() {
-        addToExtraPlugins("magnolialink");        
         addToRemovePlugins("elementspath");
+        addPlugin("magnolialink", "/VAADIN/js/magnolialink/");
     }
     
     /**
