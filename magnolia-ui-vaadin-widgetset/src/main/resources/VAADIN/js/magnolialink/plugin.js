@@ -33,6 +33,10 @@
  */
 
 (function() {
+    var EVENT_SEND_MAGNOLIA_LINK = "mgnlLinkSelected";
+    var EVENT_CANCEL_LINK = "mgnlLinkCancel";
+    var EVENT_GET_MAGNOLIA_LINK = "mgnlGetLink";
+    
 	CKEDITOR.plugins.add('magnolialink', {
 		init: function(editor) {
 			editor.ui.addButton('InternalLink', {
@@ -64,16 +68,16 @@
 		            if(isInternalLink(selectedElement)) {
 		            	var href = selectedElement.getAttribute('href');
 		            	var path = href.match(/handle\:\{([^\}]*)\}/);		            	
-		            	editor.fire('reqMagnoliaLink', path[1]);		            	
+		            	editor.fire(EVENT_GET_MAGNOLIA_LINK, path[1]);		            	
 		            } else {
-		            	editor.fire('reqMagnoliaLink');
+		            	editor.fire(EVENT_GET_MAGNOLIA_LINK);
 		            }
 		            //editor.setReadOnly();
 				}
 			});
 			
 			//Respond from Pages app
-			editor.on('sendMagnoliaLink', function(e) {
+			editor.on(EVENT_SEND_MAGNOLIA_LINK, function(e) {
 				//editor.setReadOnly(false);
 		    	editor.getSelection().selectRanges(selectionRangeHack);		    	
     	        var selectedElement = CKEDITOR.plugins.link.getSelectedLink(editor);
@@ -100,7 +104,10 @@
 	            }
 			});
 			
-			editor.on('cancelLink', function(e) {
+			editor.on(EVENT_CANCEL_LINK, function(e) {
+				if(e.data) {
+					alert(e.data);
+				}
 				//editor.setReadOnly(false);
 			});
 

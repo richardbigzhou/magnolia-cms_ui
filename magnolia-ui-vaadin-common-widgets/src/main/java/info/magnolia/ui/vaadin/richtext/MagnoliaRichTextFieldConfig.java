@@ -55,7 +55,6 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
 
     public MagnoliaRichTextFieldConfig() {
         addToRemovePlugins("elementspath");
-        addPlugin("magnolialink", "/VAADIN/js/magnolialink/");
     }
     
     /**
