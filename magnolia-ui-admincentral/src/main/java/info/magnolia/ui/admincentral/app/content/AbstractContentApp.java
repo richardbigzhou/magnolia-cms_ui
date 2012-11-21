@@ -64,7 +64,11 @@ public abstract class AbstractContentApp extends AbstractApp {
     }
 
     public ChooseDialogPresenter<Item> openChooseDialog() {
-        final WorkbenchChooseDialogPresenter picker = chooseDialogFactory.createWorkbenchChooseDialog();
+        return openChooseDialog(null);
+    }
+    
+    public ChooseDialogPresenter<Item> openChooseDialog(String defaultPath) {
+        final WorkbenchChooseDialogPresenter picker = chooseDialogFactory.createWorkbenchChooseDialog(defaultPath);
         ((MagnoliaShell)shell).openDialog(picker);
         return picker;
     }
