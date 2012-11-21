@@ -1,3 +1,10 @@
+
+/*
+* Tabsheet color
+*/
+.form-panel .v-shell-tabsheet {
+    background-color: #F2F2F2;
+}
 .v-form-layout {
     background-color: #F2F2F2;
     margin-top: 25px;
@@ -127,7 +134,7 @@ input[type="text"].v-form-field, .v-form-field.v-customcomponent input[type="tex
 .v-datefield input[type="text"], textarea.v-form-field {
     background: #FFF;
     border-radius: 0px;
-    border: 1px solid #999;
+    border: 1px solid #CCC;
     color: #000;
     display: inline-block;
     margin: 0px;

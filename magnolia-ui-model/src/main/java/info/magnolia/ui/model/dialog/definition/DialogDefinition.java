@@ -36,6 +36,7 @@ package info.magnolia.ui.model.dialog.definition;
 import java.util.List;
 
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
+import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.model.tab.definition.TabDefinition;
 
 /**
@@ -59,6 +60,8 @@ public interface DialogDefinition {
     String getDescription();
 
     List<TabDefinition> getTabs();
+
+    FormDefinition getFormDefinition();
 
     List<DialogActionDefinition> getActions();
 

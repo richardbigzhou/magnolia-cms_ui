@@ -48,7 +48,6 @@ import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.contacts.action.AddFolderActionDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
-import info.magnolia.ui.app.contacts.dialog.action.SaveContactDialogActionDefinition;
 import info.magnolia.ui.app.contacts.form.action.SaveContactFormActionDefinition;
 import info.magnolia.ui.app.contacts.item.ContactsItemSubApp;
 import info.magnolia.ui.framework.app.builder.App;
@@ -232,7 +231,7 @@ public class ContactsModule implements ModuleLifecycle {
     }
 
     @Dialog("ui-contacts-app:contact")
-    public void contactDialog(DialogBuilder dialog, DialogConfig cfg) {
+    public void contactDialog(DialogBuilder dialog, DialogConfig cfg, FormConfig formcfg) {
 
         RegexpValidatorDefinition digitsOnly = new RegexpValidatorDefinition();
         digitsOnly.setPattern("[0-9]+");
@@ -242,37 +241,39 @@ public class ContactsModule implements ModuleLifecycle {
         emailValidator.setErrorMessage("validation.message.non.valid.email");
 
         dialog.description("Define the contact information")
-                .tabs(
-                        cfg.tab("Personal").label("Personal Tab")
-                                .fields(
-                                        cfg.fields.textField("salutation").label("Salutation").description("Define Salutation"),
-                                        cfg.fields.textField("firstName").label("First name").description("Please enter the contact first name. Field is mandatory").required(),
-                                        cfg.fields.textField("lastName").label("Last name").description("Please enter the contact last name. Field is mandatory").required(),
-                                        cfg.fields.fileUploadField("fileUpload").label("Image").preview().imageNodeName("photo"),
-                                        cfg.fields.textField("photoCaption").label("Image caption").description("Please define an image caption"),
-                                        cfg.fields.textField("photoAltText").label("Image alt text").description("Please define an image alt text")
-                                ),
-                        cfg.tab("Company").label("Company Tab")
-                                .fields(
-                                        cfg.fields.textField("organizationName").label("Organization name").description("Enter the organization name").required(),
-                                        cfg.fields.textField("organizationUnitName").label("Organization unit name").description("Enter the organization unit name"),
-                                        cfg.fields.textField("streetAddress").label("Street Address").description("Please enter the company street address").rows(2),
-                                        cfg.fields.textField("zipCode").label("ZIP code").description("Please enter the zip code (only digits)").validator(digitsOnly),
-                                        cfg.fields.textField("city").label("City").description("Please enter the company city  "),
-                                        cfg.fields.textField("country").label("Country").description("Please enter the company country")
-                                ),
-                        cfg.tab("Contacts").label("Contact Tab")
-                                .fields(
-                                        cfg.fields.textField("officePhoneNr").label("Office phone").description("Please enter the office phone number"),
-                                        cfg.fields.textField("officeFaxNr").label("Office Fax Nr.").description("Please enter the office fax number"),
-                                        cfg.fields.textField("mobilePhoneNr").label("Mobile Phone").description("Please enter the mobile phone number"),
-                                        cfg.fields.textField("email").label("E-Mail address").description("Please enter the email address").required().validator(emailValidator),
-                                        cfg.fields.textField("website").label("Website").description("Please enter the Website")
-                                )
-                )
-                .actions(
-                        cfg.action("commit").label("save changes").action(new SaveContactDialogActionDefinition()),
-                        cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
+                .form(formcfg.form().description("Define the contact information")
+                        .tabs(
+                                formcfg.tab("Personal").label("Personal Tab")
+                                        .fields(
+                                                formcfg.fields.textField("salutation").label("Salutation").description("Define Salutation"),
+                                                formcfg.fields.textField("firstName").label("First name").description("Please enter the contact first name. Field is mandatory").required(),
+                                                formcfg.fields.textField("lastName").label("Last name").description("Please enter the contact last name. Field is mandatory").required(),
+                                                formcfg.fields.fileUploadField("fileUpload").label("Image").preview().imageNodeName("photo"),
+                                                formcfg.fields.textField("photoCaption").label("Image caption").description("Please define an image caption"),
+                                                formcfg.fields.textField("photoAltText").label("Image alt text").description("Please define an image alt text")
+                                        ),
+                                formcfg.tab("Company").label("Company Tab")
+                                        .fields(
+                                                formcfg.fields.textField("organizationName").label("Organization name").description("Enter the organization name").required(),
+                                                formcfg.fields.textField("organizationUnitName").label("Organization unit name").description("Enter the organization unit name"),
+                                                formcfg.fields.textField("streetAddress").label("Street Address").description("Please enter the company street address").rows(2),
+                                                formcfg.fields.textField("zipCode").label("ZIP code").description("Please enter the zip code (only digits)").validator(digitsOnly),
+                                                formcfg.fields.textField("city").label("City").description("Please enter the company city  "),
+                                                formcfg.fields.textField("country").label("Country").description("Please enter the company country")
+                                        ),
+                                formcfg.tab("Contacts").label("Contact Tab")
+                                        .fields(
+                                                formcfg.fields.textField("officePhoneNr").label("Office phone").description("Please enter the office phone number"),
+                                                formcfg.fields.textField("officeFaxNr").label("Office Fax Nr.").description("Please enter the office fax number"),
+                                                formcfg.fields.textField("mobilePhoneNr").label("Mobile Phone").description("Please enter the mobile phone number"),
+                                                formcfg.fields.textField("email").label("E-Mail address").description("Please enter the email address").required().validator(emailValidator),
+                                                formcfg.fields.textField("website").label("Website").description("Please enter the Website")
+                                        )
+                        )
+                        .actions(
+                                formcfg.action("commit").label("save changes").action(new SaveContactFormActionDefinition()),
+                                formcfg.action("cancel").label("cancel").action(new CancelFormActionDefinition())
+                        )
                 );
     }
 

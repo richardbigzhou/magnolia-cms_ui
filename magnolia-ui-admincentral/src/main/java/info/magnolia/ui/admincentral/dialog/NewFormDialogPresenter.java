@@ -31,44 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.builder;
+package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.admincentral.dialog.Dialog;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import com.vaadin.data.Item;
+import info.magnolia.ui.admincentral.form.FormPresenter;
+import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
-import org.apache.commons.lang.StringUtils;
 
 /**
- * Builder for Dialogs.
+ * NewFormDialogPresenter.
  */
-public class DialogBuilder {
-    /**
-     * @return DialogView populated with values from DialogDefinition and Item.
-     */
-    public NewFormDialogView buildFormDialog(DialogDefinition dialogDefinition, NewFormDialogView view) {
+public interface NewFormDialogPresenter extends DialogPresenter {
 
-        final Dialog dialog = new Dialog(dialogDefinition);
-        //view.setItemDataSource(item);
+    DialogView start(Item item, DialogPresenter.Callback callback);
 
-        final String description = dialogDefinition.getDescription();
-        final String label = dialogDefinition.getLabel();
-        final String basename = dialogDefinition.getI18nBasename();
+    @Override
+    NewFormDialogView getView();
 
-        if (StringUtils.isNotBlank(description)) {
-            String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
-            view.setDialogDescription(i18nDescription);
-        }
-        
-        if (StringUtils.isNotBlank(label)) {
-            String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
-            view.setCaption(i18nLabel);
-        }
-
-
-
-        //view.setShowAllEnabled(dialogDefinition.getTabs().size() > 1);
-        return view;
-    }
+    FormPresenter getForm();
 }
-

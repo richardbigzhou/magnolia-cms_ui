@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,8 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.builder;
+package info.magnolia.ui.admincentral.form.builder;
 
+import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
@@ -46,25 +47,32 @@ import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.vaadin.dialog.NewFormDialog;
-import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
+import info.magnolia.ui.admincentral.field.builder.FieldFactory;
+import info.magnolia.ui.admincentral.field.builder.TextFieldBuilder;
+import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.model.field.definition.TextFieldDefinition;
+import info.magnolia.ui.model.form.definition.ConfiguredFormDefinition;
+import info.magnolia.ui.model.form.definition.FormDefinition;
+import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.vaadin.form.Form;
+import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.jcr.Node;
 import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Main test for {@link DialogBuilder}.
+ * FormBuilderTest.
  */
-public class DialogBuilderTest {
-
+public class FormBuilderTest {
     private final String workspaceName = "workspace";
 
     private MockSession session;
@@ -94,15 +102,49 @@ public class DialogBuilderTest {
     @Test
     public void testBuildingWithoutTabsAndActions() {
         // GIVEN
-        final DialogBuilder builder = new DialogBuilder();
-        final DialogDefinition def = new ConfiguredDialogDefinition();
-        final NewFormDialogView dialog = new NewFormDialog();
+        final FormBuilder builder = new FormBuilder();
+        final FormDefinition def = new ConfiguredFormDefinition();
+        final FormView form = new Form();
 
         // WHEN
-        final NewFormDialogView result = builder.buildFormDialog(def, dialog);
+        final FormView result = builder.buildForm(null, def, null, form);
 
         // THEN
-        assertEquals(result, dialog);
+        assertEquals(result, form);
     }
 
+    @Test
+    public void testBuildingWithTabsAndActions() throws Exception {
+        // GIVEN
+        final String propertyName = "test";
+        final FormBuilder builder = new FormBuilder();
+        final ConfiguredFormDefinition formDef = new ConfiguredFormDefinition();
+        final TextFieldDefinition fieldTypeDef = new TextFieldDefinition();
+        fieldTypeDef.setName(propertyName);
+
+        final Node underlyingNode = session.getRootNode().addNode("underlying");
+        final String propertyValue = "value";
+        underlyingNode.setProperty(propertyName, propertyValue);
+        final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
+
+        final Form form = new Form();
+        final ConfiguredTabDefinition tabDef = new ConfiguredTabDefinition();
+        final ConfiguredFieldDefinition fieldDef = new ConfiguredFieldDefinition();
+        fieldDef.setName(propertyName);
+        tabDef.addField(fieldDef);
+        formDef.addTab(tabDef);
+
+        final FieldFactory fieldFactory = mock(FieldFactory.class);
+        TextFieldBuilder editField = new TextFieldBuilder(fieldTypeDef, item);
+        DefaultI18nContentSupport i18nContentSupport = new DefaultI18nContentSupport();
+        i18nContentSupport.setFallbackLocale(new Locale("en"));
+        editField.setI18nContentSupport(i18nContentSupport);
+        when(fieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
+
+        // WHEN
+        final FormView result = builder.buildForm(fieldFactory, formDef, item, form);
+
+        // THEN
+        assertEquals(result, form);
+    }
 }

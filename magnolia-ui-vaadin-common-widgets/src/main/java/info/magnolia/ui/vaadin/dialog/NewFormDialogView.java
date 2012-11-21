@@ -31,44 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.builder;
+package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.admincentral.dialog.Dialog;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
-import org.apache.commons.lang.StringUtils;
+import info.magnolia.ui.vaadin.form.FormView;
 
 /**
- * Builder for Dialogs.
+ * NewFormDialogView.
  */
-public class DialogBuilder {
-    /**
-     * @return DialogView populated with values from DialogDefinition and Item.
-     */
-    public NewFormDialogView buildFormDialog(DialogDefinition dialogDefinition, NewFormDialogView view) {
+public interface NewFormDialogView extends DialogView {
 
-        final Dialog dialog = new Dialog(dialogDefinition);
-        //view.setItemDataSource(item);
-
-        final String description = dialogDefinition.getDescription();
-        final String label = dialogDefinition.getLabel();
-        final String basename = dialogDefinition.getI18nBasename();
-
-        if (StringUtils.isNotBlank(description)) {
-            String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
-            view.setDialogDescription(i18nDescription);
-        }
-        
-        if (StringUtils.isNotBlank(label)) {
-            String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
-            view.setCaption(i18nLabel);
-        }
-
-
-
-        //view.setShowAllEnabled(dialogDefinition.getTabs().size() > 1);
-        return view;
-    }
+    void setFormView(FormView formView);
 }
-

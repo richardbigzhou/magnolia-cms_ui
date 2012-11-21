@@ -117,7 +117,10 @@ public class CodeConfigurationUtils {
                         parameters[parameterIndex] = dialogBuilder;
                     } else if (parameterType.equals(DialogConfig.class)) {
                         parameters[parameterIndex] = new DialogConfig();
-                    } else {
+                    }
+                    else if (parameterType.equals(FormConfig.class)) {
+                        parameters[parameterIndex] = new FormConfig();
+                    }else {
                         throw new RegistrationException("Unable to resolve parameter " + parameterIndex + " for method " + method);
                     }
                 }
