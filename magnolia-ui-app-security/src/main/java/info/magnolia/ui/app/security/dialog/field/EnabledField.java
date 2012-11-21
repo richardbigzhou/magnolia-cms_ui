@@ -31,41 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security;
+package info.magnolia.ui.app.security.dialog.field;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
-import info.magnolia.ui.app.security.view.GroupsView;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.admincentral.field.builder.AbstractFieldBuilder;
+import info.magnolia.ui.admincentral.field.builder.CheckBoxFieldBuilder;
+import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
 
 /**
- * Groups Sub App for the Security App.
+ * Field to handle chackbox bound to a String property.
  */
-public class SecurityGroupsSubApp extends AbstractContentSubApp {
-    private static final Logger log = LoggerFactory.getLogger(SecurityGroupsSubApp.class);
+public class EnabledField extends CheckBoxFieldBuilder {
 
-    @Inject
-    public SecurityGroupsSubApp(final SubAppContext subAppContext, GroupsView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
-        super(subAppContext, view, workbench, subAppEventBus);
+    public EnabledField(CheckboxFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
+        String selected = "true";
+        try {
+            selected = relatedFieldItem.getItemProperty("enabled").getValue().toString();
+        } catch (Exception ex) {
+            // log?
+        }
+        definition.setSelected(selected);
     }
 
-    @Override
-    public String getCaption() {
-        return "Groups";
-    }
-
-    @Override
-    public void updateActionbar(ActionbarPresenter actionbar) {
-        // TODO Auto-generated method stub
-
-    }
 
 }

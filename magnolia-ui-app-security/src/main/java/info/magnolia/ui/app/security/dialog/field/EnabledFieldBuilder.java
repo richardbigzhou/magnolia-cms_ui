@@ -31,41 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security;
+package info.magnolia.ui.app.security.dialog.field;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
-import info.magnolia.ui.app.security.view.GroupsView;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.model.form.builder.CheckboxFieldBuilder;
 
 /**
- * Groups Sub App for the Security App.
+ * TODO: describe this type
  */
-public class SecurityGroupsSubApp extends AbstractContentSubApp {
-    private static final Logger log = LoggerFactory.getLogger(SecurityGroupsSubApp.class);
+public class EnabledFieldBuilder extends CheckboxFieldBuilder {
 
-    @Inject
-    public SecurityGroupsSubApp(final SubAppContext subAppContext, GroupsView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
-        super(subAppContext, view, workbench, subAppEventBus);
+    private final EnabledFieldDefinition definition = new EnabledFieldDefinition();
+
+    public EnabledFieldBuilder(String name) {
+        super(name);
+        this.definition.setName(name);
     }
 
     @Override
-    public String getCaption() {
-        return "Groups";
-    }
-
-    @Override
-    public void updateActionbar(ActionbarPresenter actionbar) {
-        // TODO Auto-generated method stub
-
+    public EnabledFieldDefinition getDefinition() {
+        return this.definition;
     }
 
 }

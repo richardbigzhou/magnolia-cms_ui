@@ -54,13 +54,13 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 /**
- * Save group dialog action.
+ * Save user dialog action.
  */
-public class SaveGroupDialogAction extends SaveDialogAction {
+public class SaveUserDialogAction extends SaveDialogAction {
 
-    private static final Logger log = LoggerFactory.getLogger(SaveGroupDialogAction.class);
+    private static final Logger log = LoggerFactory.getLogger(SaveUserDialogAction.class);
 
-    public SaveGroupDialogAction(SaveGroupDialogActionDefinition definition, FormDialogPresenter presenter) {
+    public SaveUserDialogAction(SaveUserDialogActionDefinition definition, FormDialogPresenter presenter) {
         super(definition, presenter);
     }
 
@@ -73,6 +73,8 @@ public class SaveGroupDialogAction extends SaveDialogAction {
 
             try {
                 final Node node = itemChanged.getNode();
+                // PASSWORD ?
+
                 // the roles (that are assigned to this group) and groups (this group belongs to) handling has to be added here
                 // GROUPS
                 String _ids = itemChanged.getItemProperty("groups").getValue().toString();

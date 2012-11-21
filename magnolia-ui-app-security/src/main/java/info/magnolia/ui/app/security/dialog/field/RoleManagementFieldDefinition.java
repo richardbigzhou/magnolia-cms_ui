@@ -1,3 +1,8 @@
+package info.magnolia.ui.app.security.dialog.field;
+
+import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
+import info.magnolia.ui.model.field.definition.TwinColSelectFieldDefinition;
+
 /**
  * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
@@ -31,41 +36,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
-import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
-import info.magnolia.ui.app.security.view.GroupsView;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
 
 /**
- * Groups Sub App for the Security App.
+ * A definition for the Role Management field.
  */
-public class SecurityGroupsSubApp extends AbstractContentSubApp {
-    private static final Logger log = LoggerFactory.getLogger(SecurityGroupsSubApp.class);
-
-    @Inject
-    public SecurityGroupsSubApp(final SubAppContext subAppContext, GroupsView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
-        super(subAppContext, view, workbench, subAppEventBus);
-    }
-
-    @Override
-    public String getCaption() {
-        return "Groups";
-    }
-
-    @Override
-    public void updateActionbar(ActionbarPresenter actionbar) {
-        // TODO Auto-generated method stub
-
-    }
+public class RoleManagementFieldDefinition extends TwinColSelectFieldDefinition {
 
 }
