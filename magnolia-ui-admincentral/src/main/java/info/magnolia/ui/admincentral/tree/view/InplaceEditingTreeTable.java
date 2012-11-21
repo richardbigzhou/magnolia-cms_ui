@@ -38,6 +38,7 @@ import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -267,6 +268,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                                 try {
                                     System.out.println("Node detected!!");
                                     ((JcrItemNodeAdapter) item).getNode().getSession().save();
+                                    ((AbstractJcrContainer) getContainerDataSource()).fireItemSetChange();
                                 } catch (RepositoryException e) {
                                     // log.error(e);
                                 }
