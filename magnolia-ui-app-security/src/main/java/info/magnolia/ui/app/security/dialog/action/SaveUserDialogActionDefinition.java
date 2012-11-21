@@ -31,42 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.form.builder;
+package info.magnolia.ui.app.security.dialog.action;
+
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 
 /**
- * Config object creating builders for dialog fields.
+ * Save user dialog action definition.
  */
-public class FieldsConfig {
+public class SaveUserDialogActionDefinition extends SaveDialogActionDefinition {
 
-    public TextFieldBuilder textField(String name) {
-        return new TextFieldBuilder(name);
-    }
-
-    public SelectFieldBuilder selectField(String name) {
-        return new SelectFieldBuilder(name);
-    }
-
-    public FileUploadFieldBuilder fileUploadField(String name) {
-        return new FileUploadFieldBuilder(name);
-    }
-
-    public CheckboxFieldBuilder checkboxField(String name) {
-        return new CheckboxFieldBuilder(name);
-    }
-
-    public OptionGroupFieldBuilder optionGroupField(String name) {
-        return new OptionGroupFieldBuilder(name);
-    }
-
-    public PasswordFieldBuilder passwordField(String name) {
-        return new PasswordFieldBuilder(name);
-    }
-
-    public StaticFieldBuilder staticField(String name) {
-        return new StaticFieldBuilder(name);
-    }
-
-    public TwinColSelectFieldBuilder twinColSelectField(String name) {
-        return new TwinColSelectFieldBuilder(name);
-    }
 }

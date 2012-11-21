@@ -31,42 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.form.builder;
+package info.magnolia.ui.app.security.dialog.field;
+
+import info.magnolia.ui.model.form.builder.CheckboxFieldBuilder;
 
 /**
- * Config object creating builders for dialog fields.
+ * TODO: describe this type
  */
-public class FieldsConfig {
+public class EnabledFieldBuilder extends CheckboxFieldBuilder {
 
-    public TextFieldBuilder textField(String name) {
-        return new TextFieldBuilder(name);
+    private final EnabledFieldDefinition definition = new EnabledFieldDefinition();
+
+    public EnabledFieldBuilder(String name) {
+        super(name);
+        this.definition.setName(name);
     }
 
-    public SelectFieldBuilder selectField(String name) {
-        return new SelectFieldBuilder(name);
+    @Override
+    public EnabledFieldDefinition getDefinition() {
+        return this.definition;
     }
 
-    public FileUploadFieldBuilder fileUploadField(String name) {
-        return new FileUploadFieldBuilder(name);
-    }
-
-    public CheckboxFieldBuilder checkboxField(String name) {
-        return new CheckboxFieldBuilder(name);
-    }
-
-    public OptionGroupFieldBuilder optionGroupField(String name) {
-        return new OptionGroupFieldBuilder(name);
-    }
-
-    public PasswordFieldBuilder passwordField(String name) {
-        return new PasswordFieldBuilder(name);
-    }
-
-    public StaticFieldBuilder staticField(String name) {
-        return new StaticFieldBuilder(name);
-    }
-
-    public TwinColSelectFieldBuilder twinColSelectField(String name) {
-        return new TwinColSelectFieldBuilder(name);
-    }
 }
