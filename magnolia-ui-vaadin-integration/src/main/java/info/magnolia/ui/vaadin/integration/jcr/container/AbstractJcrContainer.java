@@ -33,10 +33,9 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr.container;
 
-import info.magnolia.cms.core.MetaData;
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -109,7 +108,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     private static final Long LONG_ZERO = Long.valueOf(0);
 
     /** Item type to use if no other is properly defined. **/
-    protected static final String DEFAULT_MAIN_ITEM_TYPE = MgnlNodeType.NT_CONTENT;
+    protected static final String DEFAULT_MAIN_ITEM_TYPE = NodeTypes.Content.NAME;
 
     private static final String QUERY_LANGUAGE = Query.JCR_JQOM;
 
@@ -123,18 +122,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String DESCENDING_KEYWORD = " desc";
 
-    protected static final String METADATA_SELECTOR_NAME = "metaData";
-
-    protected static final String JOIN_METADATA = " inner join [" + MgnlNodeType.NT_METADATA + "] as "+ METADATA_SELECTOR_NAME +" on ischildnode("+ METADATA_SELECTOR_NAME +"," + SELECTOR_NAME + ") ";
-
     /**
      * Caution: this property gets special treatment as we'll have to call a function to be able to order by it.
      */
     protected static final String NAME_PROPERTY = "jcrName";
 
     protected static final String JCR_NAME_FUNCTION = "name(" + SELECTOR_NAME + ")";
-
-    protected static final String METADATA_NODE_NAME = MetaData.DEFAULT_META_NODE + "/";
 
     public AbstractJcrContainer(WorkbenchDefinition workbenchDefinition) {
         this.workbenchDefinition = workbenchDefinition;
@@ -531,19 +524,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * @return whether the jcr query requires a join or not. A join is required as soon as there's one or more order by's
-     * for a property hosted on the MetaData node.
-     */
-    protected boolean queryRequiresJoin() {
-        for (OrderBy orderBy : sorters) {
-          if (orderBy.getProperty().startsWith(METADATA_NODE_NAME)) {
-              return true;
-          }
-        }
-        return false;
-    }
-
-    /**
      * @return a string representing a JCR statement to retrieve this container's items.
      * @see AbstractJcrContainer#getPage()
      */
@@ -559,9 +539,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                     sorters.add(new OrderBy(current, true));
                 }
             }
-            if (queryRequiresJoin()) {
-                stmt.append(JOIN_METADATA);
-            }
             stmt.append(ORDER_BY);
             String sortOrder;
             for (OrderBy orderBy : sorters) {
@@ -571,12 +548,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                     stmt.append(JCR_NAME_FUNCTION).append(sortOrder).append(", ");
                     continue;
                 }
-                if (propertyName.startsWith(METADATA_NODE_NAME)) {
-                    propertyName = propertyName.substring(METADATA_NODE_NAME.length());
-                    stmt.append(METADATA_SELECTOR_NAME);
-                } else {
-                    stmt.append(SELECTOR_NAME);
-                }
+                stmt.append(SELECTOR_NAME);
                 stmt.append(".[").append(propertyName).append("]").append(sortOrder).append(", ");
             }
             stmt.delete(stmt.lastIndexOf(","), stmt.length());
