@@ -42,6 +42,7 @@ import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
+import info.magnolia.ui.admincentral.dialog.NewFormDialogPresenter;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
@@ -71,7 +72,7 @@ public class FormsPresenter implements FormsView.Listener {
         try {
         String workspace = "website";
         String path = "/";
-        final FormDialogPresenter formPresenter = formFactory.createDialogPresenterByName("ui-showcase-app:showcasedialog");
+        final NewFormDialogPresenter formPresenter = formFactory.createDialogPresenterByName("ui-showcase-app:showcasedialog");
         Session session = MgnlContext.getJCRSession(workspace);
 
         Node parentNode = session.getNode(path);

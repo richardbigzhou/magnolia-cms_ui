@@ -97,8 +97,7 @@ public class AbstractItemSubApp extends AbstractSubApp {
     @Override
     public void locationChanged(Location location) {
         ItemLocation itemLocation = ItemLocation.wrap(location);
-        getView().setWorkbenchView(workbench.start(itemLocation.getNodePath()));
-
+        //getView().setWorkbenchView(workbench.start(itemLocation.getNodePath()));
         super.locationChanged(location);
     }
 

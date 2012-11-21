@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
 
+import info.magnolia.ui.vaadin.gwt.client.form.ValidationChangedEvent;
+
 /**
  * VFormDialogView.
  */

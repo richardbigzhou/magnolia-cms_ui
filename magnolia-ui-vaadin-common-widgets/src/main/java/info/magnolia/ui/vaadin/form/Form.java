@@ -108,8 +108,8 @@ public class Form extends AbstractComponent implements ServerSideHandler, FormVi
     public Form() {
         setImmediate(true);
         tabSheet.setParent(this);
-        //tabSheet.showAllTab(true, SHOW_ALL);
-        //tabSheet.setHeight("500px");
+        tabSheet.showAllTab(true, SHOW_ALL);
+        tabSheet.setHeight("500px");
     }
 
     @Override

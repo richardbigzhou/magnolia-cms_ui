@@ -31,26 +31,16 @@
  * intact.
  *
  */
+package info.magnolia.ui.vaadin.dialog;
 
-(function() {
-	CKEDITOR.plugins.add('magnolialink', {
-		init: function(editor) {
-		    
-			editor.addCommand('magnolialink', {
-				exec: function(editor) {
-					editor.fire('reqMagnoliaLink');
-				}
-			});
-			
-			editor.on('sendMagnoliaLink', function(e) {
-			    editor.insertText(e.data);
-			});
+import info.magnolia.ui.vaadin.form.FormView;
 
-			editor.ui.addButton('InternalLink', {
-				label: 'Link to Magnolia page',
-				command: 'magnolialink',
-				icon: "mlink.png"
-			});
-		}
-	});
-})();
+/**
+ * NewFormDialog.
+ */
+public class NewFormDialog extends BaseDialog implements NewFormDialogView {
+    @Override
+    public void setFormView(FormView formView) {
+        super.setContent(formView.asVaadinComponent());
+    }
+}

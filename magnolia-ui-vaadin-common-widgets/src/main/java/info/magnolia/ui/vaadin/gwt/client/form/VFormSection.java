@@ -31,18 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
-
-import info.magnolia.ui.vaadin.gwt.client.form.VFormTab;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+package info.magnolia.ui.vaadin.gwt.client.form;
 
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.user.client.DOM;
@@ -55,8 +44,17 @@ import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
- * Layout for the {@link FormFieldWrapper} widgets.
+ * Layout for the {@link info.magnolia.ui.vaadin.gwt.client.form.FormFieldWrapper} widgets.
  */
 public class VFormSection extends FlowPanel implements Container {
 
@@ -167,7 +165,7 @@ public class VFormSection extends FlowPanel implements Container {
             return null;
         }
         if (!(super.getParent() instanceof VFormTab)) {
-            throw new RuntimeException("Parent of VDialogTabLayout must be of type VFormTab, you have used: " + super.getParent().getClass());
+            throw new RuntimeException("Parent of VFormSection must be of type VFormTab, you have used: " + super.getParent().getClass());
         }
         return (VFormTab)super.getParent();
     }

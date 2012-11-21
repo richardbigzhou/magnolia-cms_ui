@@ -88,6 +88,13 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
                 listener.onValueChosen(currentValue);
             }
         });
+        
+        addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new DialogActionListener() {
+            @Override
+            public void onActionExecuted(final String actionName) {
+                listener.selectionCanceled();
+            }
+        });
     }
 
     @Override

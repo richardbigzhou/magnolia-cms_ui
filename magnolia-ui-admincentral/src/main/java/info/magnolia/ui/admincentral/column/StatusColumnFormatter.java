@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.cms.core.MetaData;
-import info.magnolia.jcr.util.MetaDataUtil;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
 
 import javax.inject.Inject;
@@ -65,7 +64,6 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
         final Item jcrItem = getJcrItem(source, itemId);
         if(jcrItem != null && jcrItem.isNode()) {
             Node node = (Node) jcrItem;
-            Integer status;
             Label activationStatus = null;
             Label permissionStatus = null;
             if (definition.isActivation()) {
@@ -75,12 +73,17 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
                 activationStatus.addStyleName("activation-status");
                 // Get Status
                 String color = "";
-                status = MetaDataUtil.getMetaData(node).getActivationStatus();
+                Integer status;
+                try {
+                    status = NodeTypes.ActivatableMixin.getActivationStatus(node);
+                } catch (RepositoryException e) {
+                    status = NodeTypes.ActivatableMixin.ACTIVATION_STATUS_NOT_ACTIVATED;
+                }
                 switch (status) {
-                    case MetaData.ACTIVATION_STATUS_MODIFIED:
+                    case NodeTypes.ActivatableMixin.ACTIVATION_STATUS_MODIFIED:
                         color = "color-yellow";
                         break;
-                    case MetaData.ACTIVATION_STATUS_ACTIVATED:
+                    case NodeTypes.ActivatableMixin.ACTIVATION_STATUS_ACTIVATED:
                         color = "color-green";
                         break;
                     default:

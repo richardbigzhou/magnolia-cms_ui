@@ -55,6 +55,7 @@ import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig.ToolbarGroup;
 
+import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
@@ -65,6 +66,24 @@ import com.vaadin.ui.Field;
 public class RichTextFieldBuilder extends
         AbstractFieldBuilder<RichTextFieldDefinition> {
 
+    /**
+     * Event is emit from server to client when link has been selected.
+     */
+    public static final String EVENT_SEND_MAGNOLIA_LINK = "mgnlLinkSelected";
+    
+    /**
+     * Event is emit from server to client when link dialog has been
+     * canceled or exception has occurred. In case of exception
+     * the event will carry error message.
+     */
+    public static final String EVENT_CANCEL_LINK = "mgnlLinkCancel";
+    
+    /**
+     * Event is emit from client to server when user requests a link dialog.
+     * Event carries optional link that should be treated as default link value.
+     */
+    public static final String EVENT_GET_MAGNOLIA_LINK = "mgnlGetLink";
+    
     private final AppController appController;
     private MagnoliaRichTextField richtexteditor;
     private static final Logger log = LoggerFactory
@@ -87,8 +106,8 @@ public class RichTextFieldBuilder extends
                 "Italic", "Underline", "SpecialChar" }));
         toolbars.add(new ToolbarGroup("paragraph", new String[] {
                 "NumberedList", "BulletedList" }));
-        toolbars.add(new ToolbarGroup("insert", new String[] { "Link",
-                "Unlink", "InternalLink" }));
+        toolbars.add(new ToolbarGroup("insert", new String[] { "Link", 
+                "InternalLink", "Unlink" }));
         toolbars.add(new ToolbarGroup("clipboard", new String[] { "Cut",
                 "Copy", "Paste", "PasteText", "PasteFromWord" }));
         toolbars.add(new ToolbarGroup("objects", new String[] { "Image",
@@ -96,57 +115,91 @@ public class RichTextFieldBuilder extends
         toolbars.add(new ToolbarGroup("special",
                 new String[] { "Undo", "Redo" }));
         config.addToolbarLine(toolbars);
-        config.addListenedEvent("reqMagnoliaLink");
-
+        config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
+        config.addPlugin("magnolialink", "/VAADIN/js/magnolialink/");
+        
         richtexteditor = new MagnoliaRichTextField(config);
         richtexteditor.addListener(new MagnoliaRichTextField.PluginListener() {
 
             @Override
             public void onPluginEvent(String eventName, String value) {
-                if (eventName.equals("reqMagnoliaLink")) {
-                    openLinkDialog();
+                if (eventName.equals(EVENT_GET_MAGNOLIA_LINK)) {
+                    openLinkDialog(value);
                 }
             }
         });
+        
 
         return richtexteditor;
     }
 
-    private void openLinkDialog() {
+    private void openLinkDialog(String path) {
         // Get the property name to propagate.
         App targetApp = appController.startIfNotAlreadyRunning("pages",
                 new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages",
                         "", ""));
         if (targetApp != null && targetApp instanceof AbstractContentApp) {
             ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp)
-                    .openChooseDialog();
+                    .openChooseDialog(path);
             pickerPresenter.getView().setCaption("Select a page");
             pickerPresenter
                     .addValuePickListener(new ValueChosenListener<Item>() {
                         @Override
                         public void onValueChosen(Item pickedValue) {
+                            if(!(pickedValue instanceof JcrItemAdapter)) {
+                                return;
+                            }
+                            
                             javax.jcr.Item jcrItem = ((JcrItemAdapter) pickedValue)
                                     .getJcrItem();
-                            if (jcrItem.isNode()) {
-                                final Node selected = (Node) jcrItem;
-                                try {
-                                    richtexteditor.firePluginEvent(
-                                            "sendMagnoliaLink",
-                                            selected.getPath());
-                                } catch (RepositoryException e) {
-                                    log.error(
-                                            "Not able to access the configured property. Value will not be set.",
-                                            e);
-                                }
+                            
+                            if(!jcrItem.isNode()) {
+                                return;
                             }
+
+                            final Node selected = (Node) jcrItem;
+                            try {                                    
+                                Gson gson = new Gson();
+                                MagnoliaLink mlink = new MagnoliaLink();
+                                mlink.identifier = selected.getIdentifier();
+                                mlink.repository = selected.getSession().getWorkspace().getName();
+                                mlink.path = selected.getPath();
+                                if(selected.hasProperty("title")) {
+                                    mlink.caption = selected.getProperty("title").getString();
+                                } else {
+                                    mlink.caption = selected.getName();
+                                }
+                                                                    
+                                richtexteditor.firePluginEvent(
+                                        EVENT_SEND_MAGNOLIA_LINK,
+                                        gson.toJson(mlink)
+                                );
+                            } catch (RepositoryException e) {
+                                String error = "Not able to access the configured property. Value will not be set.";
+                                log.error(error, e);
+                                
+                                richtexteditor.firePluginEvent(EVENT_CANCEL_LINK, error);
+                            }
+                            
                         }
 
                         @Override
                         public void selectionCanceled() {
-
+                            richtexteditor.firePluginEvent(EVENT_CANCEL_LINK);
                         }
                     });
         }
+    }
+    
+    private static class MagnoliaLink {
+        @SuppressWarnings("unused")
+        public String identifier;
+        @SuppressWarnings("unused")
+        public String repository;
+        @SuppressWarnings("unused")
+        public String path;
+        @SuppressWarnings("unused")
+        public String caption;
     }
 
     @Override

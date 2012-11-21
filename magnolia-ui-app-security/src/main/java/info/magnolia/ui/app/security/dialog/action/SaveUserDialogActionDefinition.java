@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
+package info.magnolia.ui.app.security.dialog.action;
 
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 
 /**
- * ValidationChangedEvent. Sent when the field validation happened.
- *
+ * Save user dialog action definition.
  */
-public class ValidationChangedEvent extends GwtEvent<ValidationChangedEvent.Handler> {
-    
-    
-    /**
-     * Handler.
-     */
-    public interface Handler extends EventHandler {
-        void onValidationChanged(ValidationChangedEvent event);
-    }
-    
-    /**
-     * {@link HasValidationChangeHanlders}.
-     */
-    public interface HasValidationChangeHanlders {
-        
-        HandlerRegistration addValidationChangeHandler(Handler handler);
-    }
-    
-    public static final Type<ValidationChangedEvent.Handler> TYPE = new Type<ValidationChangedEvent.Handler>();
-    
-    @Override
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(Handler handler) {
-        handler.onValidationChanged(this);
-    }
-    
+public class SaveUserDialogActionDefinition extends SaveDialogActionDefinition {
 
 }

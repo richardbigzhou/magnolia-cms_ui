@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.form;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VFormSection;
+import info.magnolia.ui.vaadin.gwt.client.form.VFormSection;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,7 +51,7 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 
 /**
- * Dialog layout server side implementation.
+ * Form layout server side implementation.
  */
 @ClientWidget(value = VFormSection.class, loadStyle = LoadStyle.EAGER)
 public class FormSection extends AbstractLayout {
@@ -63,7 +63,7 @@ public class FormSection extends AbstractLayout {
     private final Map<Component, String> helpDescriptions = new HashMap<Component, String>();
 
     public FormSection() {
-        addStyleName("v-dialog-layout");
+        addStyleName("v-form-layout");
     }
 
     @Override
@@ -74,7 +74,7 @@ public class FormSection extends AbstractLayout {
         while (it.hasNext()) {
             final Component c = it.next();
             target.startTag("component");
-            c.addStyleName("v-dialog-field");
+            c.addStyleName("v-form-field");
             c.setSizeUndefined();
             c.paint(target);
             if (helpDescriptions.containsKey(c)) {

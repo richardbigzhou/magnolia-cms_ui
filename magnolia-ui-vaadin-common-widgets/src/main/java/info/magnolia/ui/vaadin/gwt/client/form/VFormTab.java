@@ -33,11 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.FormFieldWrapper;
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VFormSection;
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.ValidationChangedEvent;
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.ValidationChangedEvent.Handler;
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.ValidationChangedEvent.HasValidationChangeHanlders;
+import info.magnolia.ui.vaadin.gwt.client.form.ValidationChangedEvent.Handler;
+import info.magnolia.ui.vaadin.gwt.client.form.ValidationChangedEvent.HasValidationChangeHanlders;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTab;
 
 import java.util.LinkedList;
@@ -57,7 +54,7 @@ public class VFormTab extends VMagnoliaTab implements HasValidationChangeHanlder
     @Override
     public void setWidget(Widget w) {
         if (!(w instanceof VFormSection)) {
-            throw new RuntimeException("Invalid type of tab content. Must be VDialogLayout. You have used: " + w.getClass());
+            throw new RuntimeException("Invalid type of tab content. Must be VFormSection. You have used: " + w.getClass());
         }
         content = (VFormSection) w;
         super.setWidget(w);

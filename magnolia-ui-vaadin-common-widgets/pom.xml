@@ -97,21 +97,15 @@
 
   <build>
     <plugins>
+      <!--
+      To get gwt debugger working in intellij you need to add a GWT Facet to this project.
+      Otherwise it won't recognize it as a GWT project.
+      Use the gwt-maven-plugin to tell the Facet which GWT SDK to use.
+       -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <version>${gwtVersion}</version>
-        <executions>
-          <execution>
-            <configuration>
-              <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-            </configuration>
-            <goals>
-              <goal>resources</goal>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

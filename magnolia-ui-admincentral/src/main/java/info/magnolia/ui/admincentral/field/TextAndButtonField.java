@@ -73,7 +73,7 @@ public class TextAndButtonField extends CustomField {
         textField.setImmediate(true);
         
         selectButton = new NativeButton();
-        selectButton.addStyleName("btn-dialog btn-dialog-select");
+        selectButton.addStyleName("btn-form btn-form-select");
 
         HorizontalLayout layout = new HorizontalLayout();
         layout.setWidth("100%");

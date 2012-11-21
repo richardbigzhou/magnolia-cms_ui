@@ -36,7 +36,6 @@ package info.magnolia.ui.vaadin.gwt.client.form;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.ValidationChangedEvent;
 
 /**
  * VFormView.
