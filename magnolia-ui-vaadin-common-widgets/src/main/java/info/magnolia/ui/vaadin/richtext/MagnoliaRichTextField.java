@@ -59,6 +59,7 @@ public class MagnoliaRichTextField extends CKEditorTextField {
     private String fireEvent = null;
     private String fireEventValue = null;
     private String[] customEvents = null;
+    private Map<String, String> serverPlugins = null;
     private List<PluginListener> listeners = new ArrayList<PluginListener>();
     private MagnoliaRichTextFieldConfig config = null;
 
@@ -73,6 +74,7 @@ public class MagnoliaRichTextField extends CKEditorTextField {
     public MagnoliaRichTextField(MagnoliaRichTextFieldConfig config) {
         super(config);
         this.config = config;
+        serverPlugins = config.getServerPlugins();
     }
 
     @Override
@@ -83,6 +85,7 @@ public class MagnoliaRichTextField extends CKEditorTextField {
             //Editor is ready
             if(variables.containsKey(VCKEditorTextField.VAR_VERSION)) {
                 customEvents = config.getListenedEvents();
+                
                 requestRepaint();
             }
             
@@ -126,6 +129,11 @@ public class MagnoliaRichTextField extends CKEditorTextField {
             customEvents = null;
         }
         
+        if(serverPlugins != null) {
+            target.addAttribute(VMagnoliaRichTextField.VAR_SERVERPLUGINS, serverPlugins);
+            serverPlugins = null;
+        }
+        
         //send event to plugin
         if(fireEvent != null && fireEventValue != null) {
             target.addAttribute(VMagnoliaRichTextField.VAR_FIRE_PLUGIN_EVENT, fireEvent);
@@ -141,5 +149,4 @@ public class MagnoliaRichTextField extends CKEditorTextField {
     public interface PluginListener {
         void onPluginEvent(String eventName, String value);
     }
-
 }

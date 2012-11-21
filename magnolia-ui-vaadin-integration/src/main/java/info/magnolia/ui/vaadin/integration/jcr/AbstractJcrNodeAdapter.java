@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import info.magnolia.cms.core.MetaData;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
@@ -45,7 +44,6 @@ import java.util.Map.Entry;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -234,7 +232,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
             if (entry.getValue().isReadOnly()) {
                 continue;
             }
-            // JCRNAME has change --> perform the renaming and continue
+            // JCRNAME has changed --> perform the renaming and continue
             if (entry.getKey().equals(JCR_NAME) && (entry.getValue() != null && !entry.getValue().toString().isEmpty())) {
                 node.getSession().move(
                     node.getPath(),
@@ -242,14 +240,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
                 setPath(node.getPath());
                 continue;
             }
-            // Check if the field is refereeing to MetaData Property
-            if (entry.getKey().startsWith(MetaData.DEFAULT_META_NODE)) {
-                PropertyUtil.setProperty(
-                    node.getNode(MetaData.DEFAULT_META_NODE),
-                    StringUtils.removeStart(entry.getKey(), MetaData.DEFAULT_META_NODE + "/"),
-                    entry.getValue().getValue());
-            }
-            else if (entry.getValue().getValue() != null) {
+            if (entry.getValue().getValue() != null) {
                 PropertyUtil.setProperty(node, entry.getKey(), entry.getValue().getValue());
             }
         }

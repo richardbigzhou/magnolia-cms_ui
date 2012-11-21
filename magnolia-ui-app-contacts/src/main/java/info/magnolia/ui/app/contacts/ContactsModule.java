@@ -98,7 +98,7 @@ public class ContactsModule implements ModuleLifecycle {
         workbench.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(ContactNameColumnFormatter.class);
         workbench.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false);
         workbench.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50);
-        workbench.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true);
+        workbench.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("mgnl:lastModified").displayInDialog(false).width(200).sortable(true);
 
         DefaultImageProvider imageProvider = new DefaultImageProvider();
         imageProvider.setOriginalImageNodeName("photo");

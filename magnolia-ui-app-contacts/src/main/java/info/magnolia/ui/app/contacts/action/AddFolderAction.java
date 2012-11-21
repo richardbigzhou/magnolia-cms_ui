@@ -38,10 +38,8 @@ import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import info.magnolia.cms.core.MetaData;
 import info.magnolia.cms.core.Path;
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.MetaDataUtil;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.tree.action.RepositoryOperationAction;
 import info.magnolia.ui.framework.event.EventBus;
@@ -68,15 +66,7 @@ public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDe
 
         String name = Path.getUniqueLabel(node.getSession(), node.getPath(), "untitled");
         Node newNode = node.addNode(name, "mgnl:folder");
-        postProcessNode(newNode);
-    }
-
-    protected void postProcessNode(Node newNode) {
-        MetaData metaData = MetaDataUtil.getMetaData(newNode);
-
-        metaData.setAuthorId(MgnlContext.getUser().getName());
-        metaData.setCreationDate();
-        metaData.setModificationDate();
+        NodeTypes.CreatedMixin.setCreation(newNode);
     }
 
     private Node findAncestorOfType(Node node, String nodeType) throws RepositoryException {
