@@ -379,9 +379,6 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>1b8f2631-ec52-4f11-b798-ed19a7b782b8</sv:value>
     </sv:property>
-    <sv:property sv:name="defaultAction" sv:type="String">
-      <sv:value>edit</sv:value>
-    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -768,7 +765,7 @@
                     <sv:value>a2749319-ffd0-400b-a66a-e4d96f97b100</sv:value>
                   </sv:property>
                   <sv:property sv:name="class" sv:type="String">
-                    <sv:value>info.magnolia.ui.app.pages.action.EditPageActionDefinition</sv:value>
+                    <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition</sv:value>
                   </sv:property>
                   <sv:property sv:name="jcr:createdBy" sv:type="String">
                     <sv:value>admin</sv:value>
