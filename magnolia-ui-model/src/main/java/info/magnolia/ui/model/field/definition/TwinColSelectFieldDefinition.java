@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,31 @@
  * intact.
  *
  */
+package info.magnolia.ui.model.field.definition;
 
-(function() {
-	CKEDITOR.plugins.add('magnolialink', {
-		init: function(editor) {
-		    
-			editor.addCommand('magnolialink', {
-				exec: function(editor) {
-					editor.fire('reqMagnoliaLink');
-				}
-			});
-			
-			editor.on('sendMagnoliaLink', function(e) {
-			    editor.insertText(e.data);
-			});
+/**
+ * Field definition for twin column select field.
+ */
+public class TwinColSelectFieldDefinition extends OptionGroupFieldDefinition {
 
-			editor.ui.addButton('InternalLink', {
-				label: 'Link to Magnolia page',
-				command: 'magnolialink',
-				icon: "mlink.png"
-			});
-		}
-	});
-})();
+    private String leftColumnCaption = "From";
+    private String rightColumnCaption = "To";
+
+    public String getLeftColumnCaption() {
+        return leftColumnCaption;
+    }
+
+    public void setLeftColumnCaption(String leftColumnCaption) {
+        this.leftColumnCaption = leftColumnCaption;
+    }
+
+    public String getRightColumnCaption() {
+        return rightColumnCaption;
+    }
+
+    public void setRightColumnCaption(String rightColumnCaption) {
+        this.rightColumnCaption = rightColumnCaption;
+    }
+
+
+}
