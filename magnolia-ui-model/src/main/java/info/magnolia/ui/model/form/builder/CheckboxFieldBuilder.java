@@ -35,7 +35,6 @@ package info.magnolia.ui.model.form.builder;
 
 import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
-import info.magnolia.ui.model.form.builder.AbstractFieldBuilder;
 
 /**
  * Builder for the Checkbox field.
