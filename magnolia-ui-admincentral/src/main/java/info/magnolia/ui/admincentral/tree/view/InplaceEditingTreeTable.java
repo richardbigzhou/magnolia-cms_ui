@@ -43,15 +43,19 @@ import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javax.jcr.RepositoryException;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
+import com.vaadin.event.Action;
+import com.vaadin.event.Action.Handler;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Component;
@@ -78,6 +82,10 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         setEditable(true);
         setTableFieldFactory(new InplaceEditingFieldFactory());
         addListener(asItemClickListener());
+
+        // does not work, either put in an ActionManager, either add action handler to first
+        // eligible ancestor
+        // addActionHandler(new TextFieldKeyboardHandler());
     }
 
     // @Override
@@ -306,143 +314,167 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
     // KEYBOARD SHORTCUTS
 
-    // /**
-    // * The Class InplaceEditingKeyboardHandler.
-    // */
-    // private class InplaceEditingKeyboardHandler implements Handler {
-    //
-    // Action enter = new ShortcutAction("Enter", ShortcutAction.KeyCode.ENTER, null);
-    //
-    // Action tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
-    //
-    // Action tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB, new
-    // int[]{ShortcutAction.ModifierKey.SHIFT});
-    //
-    // Action escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
-    //
-    // Action add = new ShortcutAction("Add item", ShortcutAction.KeyCode.N, new
-    // int[]{ShortcutAction.ModifierKey.META});
-    //
-    // Action delete = new ShortcutAction("Delete", ShortcutAction.KeyCode.DELETE, null);
-    //
-    // @Override
-    // public Action[] getActions(Object target, Object sender) {
-    // return new Action[]{enter, tabNext, tabPrev, escape, add, delete};
-    // }
-    //
-    // @Override
-    // @SuppressWarnings("unchecked")
-    // public void handleAction(Action action, Object sender, Object target) {
-    //
-    // if (target instanceof AbstractTextField) {
-    // if (action == enter) {
-    // System.out.println("TF:KEY:ENTER");
-    // save((AbstractField) target);
-    // setEditing(null, null);
-    // } else if (action == tabNext) {
-    // System.out.println("TF:KEY:TAB");
-    // save((AbstractField) target);
-    // TableCell nextCell = getNextEditableCandidate(editingItemId, editingPropertyId);
-    // setEditing(nextCell.getItemId(), nextCell.getPropertyId());
-    // } else if (action == tabPrev) {
-    // System.out.println("TF:KEY:SHIFT+TAB");
-    // save((AbstractField) target);
-    // TableCell previousCell = getPreviousEditableCandidate(editingItemId, editingPropertyId);
-    // setEditing(previousCell.getItemId(), previousCell.getPropertyId());
-    // } else if (action == escape) {
-    // System.out.println("TF:KEY:ESCAPE");
-    // ((AbstractField) target).discard();
-    // cancel();
-    // setEditing(null, null);
-    // }
-    //
-    // } else if (target == InplaceEditingTreeTable.this) {
-    // if (getValue() == null) {
-    // return;
-    // }
-    // Object selectedId = ((Set<Object>) getValue()).iterator().next();
-    //
-    // if (action == enter) {
-    // System.out.println("TT:KEY:ENTER");
-    // // edit selected row at first column
-    // Object propertyId = getVisibleColumns()[0];
-    // if (!editableColumns.contains(propertyId)) {
-    // propertyId = getNextEditableCandidate(selectedId, propertyId).getPropertyId();
-    // }
-    // setEditing(selectedId, propertyId);
-    // } else if (action == add) {
-    // System.out.println("TT:KEY:CMD+N");
-    // } else if (action == delete) {
-    // System.out.println("TT:KEY:DELETE");
-    // if (selectedId != null) {
-    // // Change selection
-    // Object newSelectedId = nextItemId(selectedId);
-    // if (newSelectedId == null) {
-    // newSelectedId = prevItemId(selectedId);
-    // }
-    // select(newSelectedId);
-    //
-    // // Remove the item from the container
-    // getContainerDataSource().removeItem(selectedId);
-    // }
-    // }
-    // }
-    // }
-    // }
-    //
-    // // NEXT/PREVIOUS EDITABLE PROPERTY CANDIDATES
-    //
-    // private TableCell getNextEditableCandidate(Object itemId, Object propertyId) {
-    //
-    // List<Object> visibleColumns = Arrays.asList(getVisibleColumns());
-    // Object newItemId = itemId;
-    // int newColumn = visibleColumns.indexOf(propertyId);
-    // do {
-    // if (newColumn == visibleColumns.size() - 1) {
-    // newItemId = nextItemId(newItemId);
-    // }
-    // newColumn = (newColumn + 1) % visibleColumns.size();
-    // } while (!editableColumns.contains(visibleColumns.get(newColumn)) && newItemId != null);
-    //
-    // return new TableCell(newItemId, visibleColumns.get(newColumn));
-    // }
-    //
-    // private TableCell getPreviousEditableCandidate(Object itemId, Object propertyId) {
-    //
-    // List<Object> visibleColumns = Arrays.asList(getVisibleColumns());
-    // Object newItemId = itemId;
-    // int newColumn = visibleColumns.indexOf(propertyId);
-    // do {
-    // if (newColumn == 0) {
-    // newItemId = prevItemId(newItemId);
-    // }
-    // newColumn = (newColumn + visibleColumns.size() - 1) % visibleColumns.size();
-    // } while (!editableColumns.contains(visibleColumns.get(newColumn)) && newItemId != null);
-    //
-    // return new TableCell(newItemId, visibleColumns.get(newColumn));
-    // }
-    //
-    // /**
-    // * The TableCell supporting class.
-    // */
-    // private class TableCell {
-    //
-    // private final Object itemId;
-    //
-    // private final Object propertyId;
-    //
-    // public TableCell(Object itemId, Object propertyId) {
-    // this.itemId = itemId;
-    // this.propertyId = propertyId;
-    // }
-    //
-    // public Object getItemId() {
-    // return itemId;
-    // }
-    //
-    // public Object getPropertyId() {
-    // return propertyId;
-    // }
-    // }
+    /**
+     * The Class TextFieldKeyboardHandler for keyboard shortcuts within the inplace editing field.
+     */
+    private class TextFieldKeyboardHandler implements Handler {
+
+        Action enter = new ShortcutAction("Enter", ShortcutAction.KeyCode.ENTER, null);
+
+        Action tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
+
+        Action tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB, new
+            int[]{ShortcutAction.ModifierKey.SHIFT});
+
+        Action escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
+
+        @Override
+        public Action[] getActions(Object target, Object sender) {
+            return new Action[]{enter, tabNext, tabPrev, escape};
+        }
+
+        @Override
+        public void handleAction(Action action, Object sender, Object target) {
+
+            if (target instanceof AbstractTextField) {
+                if (action == enter) {
+                    System.out.println("TF:KEY:ENTER");
+                    // save((AbstractField) target);
+                    // setEditing(null, null);
+                } else if (action == tabNext) {
+                    System.out.println("TF:KEY:TAB");
+                    // save((AbstractField) target);
+                    TableCell nextCell = getNextEditableCandidate(editingItemId, editingPropertyId);
+                    // setEditing(nextCell.getItemId(), nextCell.getPropertyId());
+                } else if (action == tabPrev) {
+                    System.out.println("TF:KEY:SHIFT+TAB");
+                    // save((AbstractField) target);
+                    TableCell previousCell = getPreviousEditableCandidate(editingItemId, editingPropertyId);
+                    // setEditing(previousCell.getItemId(), previousCell.getPropertyId());
+                } else if (action == escape) {
+                    System.out.println("TF:KEY:ESCAPE");
+                    // ((AbstractField) target).discard();
+                    // cancel();
+                    // setEditing(null, null);
+                }
+            }
+        }
+    }
+
+    /**
+     * The Class TableKeyboardHandler for keyboard shortcuts when table has the focus.
+     */
+    private class TableKeyboardHandler implements Handler {
+
+        Action enter = new ShortcutAction("Enter", ShortcutAction.KeyCode.ENTER, null);
+
+        Action add = new ShortcutAction("Add item", ShortcutAction.KeyCode.N, new int[]{ShortcutAction.ModifierKey.META});
+
+        Action delete = new ShortcutAction("Delete", ShortcutAction.KeyCode.DELETE, null);
+
+        @Override
+        public Action[] getActions(Object target, Object sender) {
+            return new Action[]{enter, add, delete};
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public void handleAction(Action action, Object sender, Object target) {
+
+            if (target == InplaceEditingTreeTable.this) {
+                if (getValue() == null) {
+                    return;
+                }
+                Object selectedId = ((Set<Object>) getValue()).iterator().next();
+
+                if (action == enter) {
+                    // Edit selected row at first column
+                    System.out.println("TT:KEY:ENTER");
+                    Object propertyId = getVisibleColumns()[0];
+                    if (!editableColumns.contains(propertyId)) {
+                        propertyId = getNextEditableCandidate(selectedId, propertyId).getPropertyId();
+                    }
+                    setEditing(selectedId, propertyId);
+
+                } else if (action == add) {
+                    // OS-specific shortcut, but might delegate to actionbar's
+                    // AddItemActionDefinition
+                    System.out.println("TT:KEY:CMD+N");
+
+                } else if (action == delete) {
+                    // should delegate to actionbar's DeleteItemActionDefinition, either with
+                    // confirm dialog or undoable action
+                    System.out.println("TT:KEY:DELETE");
+
+                    // if (selectedId != null) {
+                    // // Change selection
+                    // Object newSelectedId = nextItemId(selectedId);
+                    // if (newSelectedId == null) {
+                    // newSelectedId = prevItemId(selectedId);
+                    // }
+                    // select(newSelectedId);
+                    //
+                    // // Remove the item from the container
+                    // getContainerDataSource().removeItem(selectedId);
+                    // }
+                }
+            }
+        }
+    }
+
+    // NEXT/PREVIOUS EDITABLE PROPERTY CANDIDATES
+
+    private TableCell getNextEditableCandidate(Object itemId, Object propertyId) {
+
+        List<Object> visibleColumns = Arrays.asList(getVisibleColumns());
+        Object newItemId = itemId;
+        int newColumn = visibleColumns.indexOf(propertyId);
+        do {
+            if (newColumn == visibleColumns.size() - 1) {
+                newItemId = nextItemId(newItemId);
+            }
+            newColumn = (newColumn + 1) % visibleColumns.size();
+        } while (!editableColumns.contains(visibleColumns.get(newColumn)) && newItemId != null);
+
+        return new TableCell(newItemId, visibleColumns.get(newColumn));
+    }
+
+    private TableCell getPreviousEditableCandidate(Object itemId, Object propertyId) {
+
+        List<Object> visibleColumns = Arrays.asList(getVisibleColumns());
+        Object newItemId = itemId;
+        int newColumn = visibleColumns.indexOf(propertyId);
+        do {
+            if (newColumn == 0) {
+                newItemId = prevItemId(newItemId);
+            }
+            newColumn = (newColumn + visibleColumns.size() - 1) % visibleColumns.size();
+        } while (!editableColumns.contains(visibleColumns.get(newColumn)) && newItemId != null);
+
+        return new TableCell(newItemId, visibleColumns.get(newColumn));
+    }
+
+    /**
+     * The TableCell supporting class.
+     */
+    private class TableCell {
+
+        private final Object itemId;
+
+        private final Object propertyId;
+
+        public TableCell(Object itemId, Object propertyId) {
+            this.itemId = itemId;
+            this.propertyId = propertyId;
+        }
+
+        public Object getItemId() {
+            return itemId;
+        }
+
+        public Object getPropertyId() {
+            return propertyId;
+        }
+    }
 
 }

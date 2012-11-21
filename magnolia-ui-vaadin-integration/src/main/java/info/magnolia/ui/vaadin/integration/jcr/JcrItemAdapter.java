@@ -52,16 +52,15 @@ public interface JcrItemAdapter extends Item {
 
     String getNodeIdentifier();
 
-    /**
-     * This is the Identifier of the Item used as key in the JcrContainer.
-     */
-    Object getItemId();
+    String getWorkspace();
 
-    /**
-     * Equivalent to jcr.Item.getPath().
-     */
     String getPath();
 
     javax.jcr.Item getJcrItem();
+
+    /**
+     * This is the Identifier of the Item for use as key in the vaadin JcrContainer.
+     */
+    Object getItemId();
 
 }

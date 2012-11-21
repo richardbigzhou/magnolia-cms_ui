@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.PropertyUtil;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
@@ -42,17 +43,19 @@ import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+
 
 /**
  * Common base for {JcrItemAdapter} implementation.
  */
-public abstract class AbstractJcrAdapter implements JcrItemAdapter {
+public abstract class AbstractJcrAdapter implements Property.ValueChangeListener, JcrItemAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrAdapter.class);
 
     static final String UN_IDENTIFIED = "?";
 
-    // Common variable
     private boolean isNode;
 
     private String jcrNodeIdentifier;
@@ -99,8 +102,22 @@ public abstract class AbstractJcrAdapter implements JcrItemAdapter {
         return jcrNodeIdentifier;
     }
 
+    @Override
+    public String getWorkspace() {
+        return jcrWorkspace;
+    }
+
+    @Override
+    public String getPath() {
+        return jcrPath;
+    }
+
+    protected void setPath(String path) {
+        this.jcrPath = path;
+    }
+
     /**
-     * @return Related JCR Item, or null in case of {RepositoryException}.
+     * @return The represented JCR Item, or null in case of {RepositoryException}.
      */
     @Override
     public javax.jcr.Item getJcrItem() {
@@ -113,28 +130,38 @@ public abstract class AbstractJcrAdapter implements JcrItemAdapter {
     }
 
     /**
-     * We no longer use the path as itemId because we may modify it as a regular property, when
-     * editing a node name for example. Using the object itself as id is also an advantage for
-     * keeping a reference to the adapter and process changes at a later point in time.
+     * Path is used as itemId for the vaadin containers.
      * 
-     * @return the vaadin itemId, which is the JcrItemAdapter itself.
+     * @return the vaadin itemId.
      */
     @Override
     public Object getItemId() {
         return getPath();
     }
 
+    /**
+     * Listener to DefaultProperty value change event. Get this event when a property has changed,
+     * and propagate this Vaadin Property value change to the corresponding JCR property.
+     */
     @Override
-    public String getPath() {
-        return jcrPath;
-    }
-
-    protected void setPath(String path) {
-        this.jcrPath = path;
-    }
-
-    public String getWorkspace() {
-        return this.jcrWorkspace;
+    public void valueChange(ValueChangeEvent event) {
+        Property property = event.getProperty();
+        if (property instanceof DefaultProperty) {
+            String name = ((DefaultProperty) property).getPropertyName();
+            Object value = property.getValue();
+            // always the case, even from properties because parent node is then returned
+            Node node = (getJcrItem() instanceof Node) ? (Node) getJcrItem() : null;
+            try {
+                if (node != null && node.hasProperty(name)) {
+                    log.debug("Update existing property: {} with value: {}.", name, value);
+                    PropertyUtil.getProperty(node, name).setValue((String) value);
+                } else {
+                    addItemProperty(name, property);
+                }
+            } catch (RepositoryException e) {
+                log.error("", e);
+            }
+        }
     }
 
 }

@@ -106,7 +106,9 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
             log.error("Could not get property for " + id, re);
             throw new RuntimeRepositoryException(re);
         }
-        return new DefaultProperty((String) id, value);
+        DefaultProperty property = new DefaultProperty((String) id, value);
+        property.addListener(this);
+        return property;
     }
 
     @Override

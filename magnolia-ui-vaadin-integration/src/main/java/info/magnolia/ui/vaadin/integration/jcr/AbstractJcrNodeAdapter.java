@@ -58,7 +58,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * {@link javax.jcr.Node}. Implements {Property.ValueChangeListener} in order to inform/change JCR
  * property when a Vaadin property has changed. Access JCR repository for all read Jcr Property.
  */
-public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implements Property.ValueChangeListener, JcrItemNodeAdapter {
+public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implements JcrItemNodeAdapter {
 
     // Init
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrNodeAdapter.class);
@@ -177,30 +177,6 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         // add PropertyChange Listener
         property.addListener(this);
         return property;
-    }
-
-    /**
-     * Listener to DefaultProperty value change event. Get this event when a property has changed,
-     * and propagate this Vaadin Property value change to the corresponding JCR property.
-     */
-    @Override
-    public void valueChange(ValueChangeEvent event) {
-        Property property = event.getProperty();
-        if (property instanceof DefaultProperty) {
-            String name = ((DefaultProperty) property).getPropertyName();
-            Object value = property.getValue();
-            try {
-                if (getNodeFromRepository().hasProperty(name)) {
-                    log.debug("Update existing property: {} with value: {}.", name, value);
-                    PropertyUtil.getProperty(getNodeFromRepository(), name).setValue((String) value);
-                }
-                else {
-                    addItemProperty(name, property);
-                }
-            } catch (RepositoryException e) {
-                log.error("", e);
-            }
-        }
     }
 
     /**
