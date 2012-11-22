@@ -36,7 +36,7 @@ package info.magnolia.ui.model.workbench.definition;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.thumbnail.ImageProvider;
+import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 
 import java.io.Serializable;
 import java.util.List;
@@ -76,7 +76,7 @@ public interface WorkbenchDefinition extends Serializable {
 
     ComponentProviderConfiguration getComponents();
 
-    ImageProvider getImageProvider();
+    ImageProviderDefinition getImageProvider();
 
     /**
      * Define if this workbench is used for Dialog.

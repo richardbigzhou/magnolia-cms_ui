@@ -43,6 +43,7 @@ import info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
+import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.app.contacts.action.AddFolderActionDefinition;
 import info.magnolia.ui.app.contacts.cconf.CodeConfigurationUtils;
 import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarBuilder;
@@ -70,8 +71,8 @@ import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.EmailValidatorDefinition;
 import info.magnolia.ui.model.field.validation.definition.RegexpValidatorDefinition;
+import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
-import info.magnolia.ui.model.thumbnail.DefaultImageProvider;
 
 /**
  * Module class for the contacts module.
@@ -100,9 +101,11 @@ public class ContactsModule implements ModuleLifecycle {
         workbench.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50);
         workbench.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true);
 
-        DefaultImageProvider imageProvider = new DefaultImageProvider();
-        imageProvider.setOriginalImageNodeName("photo");
-        workbench.imageProvider(imageProvider);
+        // Configure ImageProvider
+        ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
+        cipd.setOriginalImageNodeName("photo");
+        cipd.setImageProviderClass(DefaultImageProvider.class);
+        workbench.imageProvider(cipd);
 
         ActionbarBuilder actionbar = workbench.actionbar().defaultAction("edit");
 

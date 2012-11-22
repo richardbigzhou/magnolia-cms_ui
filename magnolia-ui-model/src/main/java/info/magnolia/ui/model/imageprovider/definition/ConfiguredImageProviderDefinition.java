@@ -31,32 +31,62 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.field;
-
-import info.magnolia.ui.admincentral.field.ThumbnailField;
-import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
+package info.magnolia.ui.model.imageprovider.definition;
 
 /**
- * Specific Contact Thumbnail field that override the createFieldDetail(String nodePath)
- * of {@link ThumbnailField}.
+ * Superclass for all thumbnail providers.
  */
-public class ContactThumbnailField extends ThumbnailField{
+public class ConfiguredImageProviderDefinition implements ImageProviderDefinition {
 
-    public ContactThumbnailField(ImageProvider imageThumbnailProvider, String workspace) {
-        super(imageThumbnailProvider, workspace);
+
+    private String originalImageNodeName = ORIGINAL_IMAGE_NODE_NAME;
+
+    private String imagingServletPath = IMAGING_SERVLET_PATH;
+
+    private String imageExtension = IMAGE_EXTENSION;
+
+    private Class<? extends ImageProvider> imageProviderClass;
+
+    @Override
+    public String getOriginalImageNodeName() {
+        return originalImageNodeName;
+    }
+
+
+    public void setOriginalImageNodeName(String originalImageNodeName) {
+            this.originalImageNodeName = originalImageNodeName;
     }
 
     @Override
-    public String createFieldDetail(Node parentNode) throws RepositoryException {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<ul><li><span class=\"left\">Last name: </span><span class=\"center\">"+parentNode.getProperty("lastName").getString() +"</span></li>");
-        sb.append("<li><span class=\"left\">First name: </span><span class=\"center\">"+parentNode.getProperty("firstName").getString() +"</span></li>");
-        sb.append("<li><span class=\"left\">Organization: </span><span class=\"center\">"+parentNode.getProperty("organizationName").getString() +"</span></li>");
-        sb.append("<li><span class=\"left\">Email: </span><span class=\"center\">"+parentNode.getProperty("email").getString() +"</span></li></ul>");
-
-        return sb.toString();
+    public String getImagingServletPath() {
+        return imagingServletPath;
     }
+
+
+    public void setImagingServletPath(String imagingServletPath) {
+        this.imagingServletPath = imagingServletPath;
+    }
+
+    @Override
+    public String getImageExtension() {
+        return imageExtension;
+    }
+
+
+    public void setImageExtension(String imageExtension) {
+        this.imageExtension = imageExtension;
+    }
+
+    @Override
+    public Class<? extends ImageProvider> getImageProviderClass(){
+        return imageProviderClass;
+
+    }
+
+
+    public void setImageProviderClass(Class<? extends ImageProvider> imageProviderClass){
+        this.imageProviderClass = imageProviderClass;
+
+    }
+
 }

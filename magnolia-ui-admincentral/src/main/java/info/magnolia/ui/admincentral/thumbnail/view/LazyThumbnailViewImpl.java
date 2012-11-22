@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.thumbnail.view;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
@@ -69,8 +70,11 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private VerticalLayout margin = new VerticalLayout();
 
+    private ImageProvider imageProvider;
+
     public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailContainer container) {
         this.workbenchDefinition = definition;
+        this.imageProvider = container.getImageProvider();
         this.layout = new LazyThumbnailLayout();
         this.container = container;
         layout.setSizeFull();
@@ -109,7 +113,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public final void refresh() {
-        this.container = new ThumbnailContainer(workbenchDefinition);
+        this.container = new ThumbnailContainer(workbenchDefinition, imageProvider);
         container.setWorkspaceName(workbenchDefinition.getWorkspace());
         container.setThumbnailHeight(73);
         container.setThumbnailWidth(73);

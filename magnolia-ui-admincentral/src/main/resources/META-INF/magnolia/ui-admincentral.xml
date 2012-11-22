@@ -54,10 +54,10 @@
 			<type>info.magnolia.ui.admincentral.app.content.ContentAppDescriptor</type>
 			<implementation>info.magnolia.ui.admincentral.app.content.ConfiguredContentAppDescriptor</implementation>
 		</type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.framework.app.SubAppDescriptor</type>
-      <implementation>info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor</implementation>
-    </type-mapping>
+		<type-mapping>
+			<type>info.magnolia.ui.framework.app.SubAppDescriptor</type>
+			<implementation>info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor</implementation>
+		</type-mapping>
 		<type-mapping>
 			<type>info.magnolia.ui.model.workbench.definition.WorkbenchDefinition</type>
 			<implementation>info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
@@ -270,8 +270,8 @@
 		</component>
 
 		<component>
-			<type>info.magnolia.ui.model.thumbnail.ImageProvider</type>
-			<implementation>info.magnolia.ui.model.thumbnail.DefaultImageProvider</implementation>
+			<type>info.magnolia.ui.model.thumbnail.ImageProviderDefinition</type>
+			<implementation>info.magnolia.ui.model.thumbnail.ConfiguredImageProviderDefinition</implementation>
 		</component>
 
 

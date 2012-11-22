@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.layout;
+package info.magnolia.ui.model.imageprovider.definition;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import com.vaadin.terminal.Resource;
+
 
 /**
- * Client side DTO for the thumbnail.
- *
+ * Defines a provider for Thumbnail images.
  */
-public class VThumbnailData extends JavaScriptObject {
+public interface ImageProvider {
 
-    protected VThumbnailData() {
+    static final String PORTRAIT_GENERATOR = "portrait";
+    static final String THUMBNAIL_GENERATOR = "thumbnail";
 
-    }
+    String getPortraitPath(String workspace, String path);
 
-    public static final native VThumbnailData parse(String json) /*-{
-                                                                 return eval('(' + json + ')');
-                                                                 }-*/;
+    String getThumbnailPath(String workspace, String path);
 
-    public final native String getId() /*-{
-                                       return this.id;
-                                       }-*/;
+    String getPortraitPathByIdentifier(String workspace, String uuid);
 
-    public final native String getSrc() /*-{
-                                        return this.resource;
-                                        }-*/;
+    String getThumbnailPathByIdentifier(String workspace, String uuid);
+
+
+    /**
+     * Get a Preview Resource.
+     * This preview is an image or an icon representing the Document type.
+     */
+    Resource getThumbnailResourceByPath(String workspace, String path, String generator);
+
+    Resource getThumbnailResourceById(String workspace, String identifier, String generator);
+
 
 }

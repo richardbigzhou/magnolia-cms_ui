@@ -31,30 +31,57 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.layout;
+package info.magnolia.ui.vaadin.integration.terminal;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import java.io.Serializable;
+
+import com.vaadin.terminal.Resource;
 
 /**
- * Client side DTO for the thumbnail.
- *
+ * A Resource which represents a single icon which one can extract from
+ * the magnolia iconfont.
+ * Having a resource for the iconfont allows us to treat them interchangably with
+ * other resources, specifically images.
  */
-public class VThumbnailData extends JavaScriptObject {
+public class IconFontResource implements Resource, Serializable {
 
-    protected VThumbnailData() {
+    /**
+     * The name of the CSS class for the icon font character.
+     */
+    private String cssClassName = null;
 
+
+
+    /**
+     * Creates an IconFont resource.
+     *
+     * @param cssClassName
+     *            the ccs class name in the iconfont.
+     */
+    public IconFontResource(String cssClassName) {
+        if (cssClassName == null) {
+            throw new RuntimeException("cssClassName must be non-null");
+        }
+
+        this.cssClassName = cssClassName;
     }
 
-    public static final native VThumbnailData parse(String json) /*-{
-                                                                 return eval('(' + json + ')');
-                                                                 }-*/;
+    /**
+     * Gets the cssClassName of the icon in the iconFont.
+     *
+     * @return the cssClassName of the iconfont resource.
+     */
+    public String getCssClassName() {
+        return cssClassName;
+    }
 
-    public final native String getId() /*-{
-                                       return this.id;
-                                       }-*/;
-
-    public final native String getSrc() /*-{
-                                        return this.resource;
-                                        }-*/;
+    /* (non-Javadoc)
+     * @see com.vaadin.terminal.Resource#getMIMEType()
+     */
+    @Override
+    public String getMIMEType() {
+        // Does not have a MIMEType.
+        return null;
+    }
 
 }
