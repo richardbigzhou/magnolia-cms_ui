@@ -228,14 +228,14 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         @Override
         public Field createField(Container container, final Object itemId, final Object propertyId, Component uiContext) {
 
-            // add textfield only for selected row/column.
+            // add TextField only for selected row/column.
             if (editableColumns.contains(propertyId)
                 && itemId.equals(editingItemId)
                 && propertyId.equals(editingPropertyId)) {
 
                 Field field = super.createField(container, itemId, propertyId, uiContext);
 
-                // set textfield focus listeners
+                // set TextField Focus listeners
                 ((AbstractComponent) field).setImmediate(false);
                 if (field instanceof AbstractTextField) {
                     final AbstractTextField tf = (AbstractTextField) field;
@@ -362,17 +362,27 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
                 } else if (action == tabNext) {
                     System.out.println("TF:KEY:TAB");
-                    // save((AbstractField) target);
+                    // Saves first
+                    field.commit();
+                    fireItemEditedEvent(getItemFromField(field));
+
+                    // Should then update current editingItemId, and ask for next candidate
                     // TableCell nextCell = getNextEditableCandidate(editingItemId,
                     // editingPropertyId);
                     // setEditing(nextCell.getItemId(), nextCell.getPropertyId());
+                    setEditing(null, null);
 
                 } else if (action == tabPrev) {
                     System.out.println("TF:KEY:SHIFT+TAB");
-                    // save((AbstractField) target);
+                    // Saves first
+                    field.commit();
+                    fireItemEditedEvent(getItemFromField(field));
+
+                    // Should then update current editingItemId, and ask for previous candidate
                     // TableCell previousCell = getPreviousEditableCandidate(editingItemId,
                     // editingPropertyId);
                     // setEditing(previousCell.getItemId(), previousCell.getPropertyId());
+                    setEditing(null, null);
 
                 } else if (action == escape) {
                     System.out.println("TF:KEY:ESCAPE");
