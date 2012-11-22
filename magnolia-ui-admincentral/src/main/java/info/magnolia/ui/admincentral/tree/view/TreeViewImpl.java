@@ -37,7 +37,6 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.column.ColumnFormatter;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
-import info.magnolia.ui.admincentral.tree.view.InplaceEditingTreeTable.InPlaceSaveEvent;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
@@ -51,6 +50,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
@@ -71,7 +71,7 @@ import com.vaadin.ui.TreeTable;
  * Vaadin UI component that displays a tree.
  */
 @SuppressWarnings("serial")
-public class TreeViewImpl implements TreeView {
+public class TreeViewImpl implements TreeView, ItemEditedEvent.Handler {
 
     private static final Logger log = LoggerFactory.getLogger(TreeViewImpl.class);
 
@@ -168,37 +168,10 @@ public class TreeViewImpl implements TreeView {
 
     // CONFIGURE TREE TABLE
 
-    private TreeTable buildTreeTable(Container container, WorkbenchDefinition workbench, ComponentProvider componentProvider) {
+    private TreeTable buildTreeTable(final Container container, WorkbenchDefinition workbench, ComponentProvider componentProvider) {
 
-        TreeTable treeTable = null;
-        if(workbench.isEditable()) {
-            final InplaceEditingTreeTable inPlaceEditingTable = new InplaceEditingTreeTable();
-            inPlaceEditingTable.addListener(new InplaceEditingTreeTable.InPlaceSaveEvent.Handler() {
-                
-                @Override
-                public void onSave(InPlaceSaveEvent event) {
-                    Item item = event.getItemToSave();
-                    if (item instanceof JcrItemNodeAdapter) {
-                        // saving node
-                        try {
-                            ((JcrItemNodeAdapter) item).getNode().getSession().save();
-                            ((AbstractJcrContainer) inPlaceEditingTable.getContainerDataSource()).fireItemSetChange();
-                        } catch (RepositoryException e) {
-                            // log.error(e);
-                        }
+        TreeTable treeTable = (workbench.isEditable()) ? new InplaceEditingTreeTable() : new MagnoliaTreeTable();
 
-                    } else if (item instanceof AbstractJcrAdapter) {
-                        //TODO: Save property adapter
-                    }
-                }
-            });
-            
-            treeTable = inPlaceEditingTable;
-            
-        } else {
-            treeTable = new MagnoliaTreeTable();
-        }
- 
         // basic widget configuration
         treeTable.setNullSelectionAllowed(true);
         treeTable.setColumnCollapsingAllowed(false);
@@ -211,6 +184,9 @@ public class TreeViewImpl implements TreeView {
         buildColumns(treeTable, container, workbench.getColumns(), componentProvider);
 
         // listeners
+        if (workbench.isEditable()) {
+            ((InplaceEditingTreeTable) treeTable).addListener(this);
+        }
 
         return treeTable;
     }
@@ -264,6 +240,28 @@ public class TreeViewImpl implements TreeView {
         treeTable.setVisibleColumns(visibleColumns.toArray());
         if (treeTable instanceof InplaceEditingTreeTable) {
             ((InplaceEditingTreeTable) treeTable).setEditableColumns(editableColumns.toArray());
+        }
+    }
+
+    // SAVING ON INPLACE EDITING
+
+    @Override
+    public void onItemEdited(ItemEditedEvent event) {
+        Item item = event.getItem();
+
+        if (item instanceof JcrItemNodeAdapter) {
+            // Saving JCR Node, getting updated node first
+            Node node = ((JcrItemNodeAdapter) item).getNode();
+            try {
+                node.getSession().save();
+            } catch (RepositoryException e) {
+                log.error("Could not save changes to node.", e);
+            }
+            // Clear preOrder cache of itemIds in case node was renamed
+            container.fireItemSetChange();
+
+        } else if (item instanceof AbstractJcrAdapter) {
+            // TODO 20121122 mgeljic: Saving JCR Property
         }
     }
 

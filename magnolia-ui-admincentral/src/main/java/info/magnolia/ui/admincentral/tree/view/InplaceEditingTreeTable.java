@@ -33,18 +33,19 @@
  */
 package info.magnolia.ui.admincentral.tree.view;
 
-import info.magnolia.ui.framework.event.EventHandler;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.AbstractProperty;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.FieldEvents;
@@ -58,11 +59,12 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 
+
 /**
  * An inplace editing tree table, taking care of partial updates when editing one item.
  */
 @SuppressWarnings("serial")
-public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemClickEvent.ItemClickListener {
+public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemClickEvent.ItemClickListener, ItemEditedEvent.Notifier {
 
     private Object editingItemId;
 
@@ -71,65 +73,18 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
     private List<Object> editableColumns;
 
     private ColumnGenerator bypassedColumnGenerator;
-    
-    List<InPlaceSaveEvent.Handler> listeners;
+
+    private final List<ItemEditedEvent.Handler> listeners = new ArrayList<ItemEditedEvent.Handler>();;
 
     public InplaceEditingTreeTable() {
         super();
-        listeners = new ArrayList<InPlaceSaveEvent.Handler>();
         setEditable(true);
         setTableFieldFactory(new InplaceEditingFieldFactory());
         addListener(asItemClickListener());
-        
+
         // does not work, either put in an ActionManager, either add action handler to first
         // eligible ancestor
         getActionManager().addActionHandler(new TextFieldKeyboardHandler());
-    }
-    
-    
-    /**
-     * Event object to emit when in place editing is done.
-     */
-    public static class InPlaceSaveEvent implements info.magnolia.ui.framework.event.Event<InPlaceSaveEvent.Handler> {
-        
-        /**
-         * Event listener for save events.
-         */
-        public interface Handler extends EventHandler {
-            void onSave(InPlaceSaveEvent event);
-        }
-        
-        private final Item item;
-        public InPlaceSaveEvent(Item item) {
-
-            this.item = item;
-        }
-        
-        public Item getItemToSave() {
-            return item;
-        }
-
-        @Override
-        public void dispatch(Handler handler) {
-            handler.onSave(this);
-        }
-    }
-    
-    public void addListener(InPlaceSaveEvent.Handler listener) {
-        listeners.add(listener);
-    }
-    
-    public void removeListener(InPlaceSaveEvent.Handler listener) {
-        if(listeners.contains(listener)) {
-            listeners.remove(listener);
-        }
-    }
-
-    private void fireSaveEvent(Item item) {
-        InPlaceSaveEvent event = new InPlaceSaveEvent(item);
-        for(InPlaceSaveEvent.Handler listener: listeners) {
-            listener.onSave(event);
-        }
     }
 
     // @Override
@@ -266,7 +221,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
     // INPLACE EDITING FIELD FACTORY
 
     /**
-     * A factory for creating inplace editing fields.
+     * A factory for creating the inplace editing field in the right cell.
      */
     private class InplaceEditingFieldFactory extends DefaultFieldFactory {
 
@@ -280,7 +235,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
                 Field field = super.createField(container, itemId, propertyId, uiContext);
 
-                // set focus at end of textfield
+                // set textfield focus listeners
                 ((AbstractComponent) field).setImmediate(false);
                 if (field instanceof AbstractTextField) {
                     final AbstractTextField tf = (AbstractTextField) field;
@@ -288,18 +243,8 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
                         @Override
                         public void focus(FocusEvent event) {
-                            // set cursor at end of field
                             tf.setCursorPosition(tf.toString().length());
                             tf.commit();
-
-                            tf.addListener(new Property.ValueChangeListener() {
-
-                                @Override
-                                public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-                                    System.out.println("CHANGEY!!");
-                                }
-
-                            });
                         }
                     });
 
@@ -307,15 +252,8 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
                         @Override
                         public void blur(BlurEvent event) {
-                            System.out.println("BLUREY SAVEY!!");
                             tf.commit();
-                            // save item on blur (e.g. click elsewhere, window change)
-                            // TODO: put saving logic fucking OUT!
-
-                            DefaultProperty prop = (DefaultProperty) tf.getPropertyDataSource();
-                            Item item = (Item) prop.getListeners(Property.ValueChangeEvent.class).toArray()[0];
-
-                            fireSaveEvent(item);
+                            fireItemEditedEvent(getItemFromField(tf));
                             setEditing(null, null);
                         }
                     });
@@ -327,7 +265,55 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
             return null;
         }
     }
-    
+
+    // FIRING ITEM EDITED EVENTS
+
+    @Override
+    public void addListener(ItemEditedEvent.Handler listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(ItemEditedEvent.Handler listener) {
+        if (listeners.contains(listener)) {
+            listeners.remove(listener);
+        }
+    }
+
+    private void fireItemEditedEvent(Item item) {
+        if (item != null) {
+            ItemEditedEvent event = new ItemEditedEvent(item);
+            for (ItemEditedEvent.Handler listener : listeners) {
+                listener.onItemEdited(event);
+            }
+        }
+    }
+
+    /**
+     * Gets the item whose property is currently being edited in the given field. Since the
+     * {{Table}} doesn't keep references to its items, the only way to get it back is to ask the
+     * property datasource for its listeners and see if the Item is there.
+     * 
+     * @param source the vaadin {{Field}} where the editing occured
+     * @return the vaadin {{Item}} if it could be fetched, null otherwise.
+     */
+    private Item getItemFromField(Field source) {
+        if (source != null) {
+            Property property = source.getPropertyDataSource();
+            if (property != null && property instanceof AbstractProperty) {
+                Collection< ? > listeners = ((AbstractProperty) property).getListeners(Property.ValueChangeEvent.class);
+                Iterator< ? > iterator = listeners.iterator();
+                while (iterator.hasNext()) {
+                    Object listener = iterator.next();
+                    if (listener instanceof Item) {
+                        return (Item) listener;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     // DOUBLE CLICK
 
     @Override
@@ -352,8 +338,8 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
         Action tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
 
-        Action tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB, new
-            int[]{ShortcutAction.ModifierKey.SHIFT});
+        Action tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB,
+            new int[]{ShortcutAction.ModifierKey.SHIFT});
 
         Action escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
 
@@ -365,26 +351,33 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         @Override
         public void handleAction(Action action, Object sender, Object target) {
 
-            if (target instanceof AbstractTextField) {
+            if (target != InplaceEditingTreeTable.this && target instanceof Field) {
+                Field field = (Field) target;
+
                 if (action == enter) {
                     System.out.println("TF:KEY:ENTER");
-                    // save((AbstractField) target);
-                    // setEditing(null, null);
+                    field.commit();
+                    fireItemEditedEvent(getItemFromField(field));
+                    setEditing(null, null);
+
                 } else if (action == tabNext) {
                     System.out.println("TF:KEY:TAB");
                     // save((AbstractField) target);
-                    TableCell nextCell = getNextEditableCandidate(editingItemId, editingPropertyId);
+                    // TableCell nextCell = getNextEditableCandidate(editingItemId,
+                    // editingPropertyId);
                     // setEditing(nextCell.getItemId(), nextCell.getPropertyId());
+
                 } else if (action == tabPrev) {
                     System.out.println("TF:KEY:SHIFT+TAB");
                     // save((AbstractField) target);
-                    TableCell previousCell = getPreviousEditableCandidate(editingItemId, editingPropertyId);
+                    // TableCell previousCell = getPreviousEditableCandidate(editingItemId,
+                    // editingPropertyId);
                     // setEditing(previousCell.getItemId(), previousCell.getPropertyId());
+
                 } else if (action == escape) {
                     System.out.println("TF:KEY:ESCAPE");
-                    // ((AbstractField) target).discard();
-                    // cancel();
-                    // setEditing(null, null);
+                    field.discard();
+                    setEditing(null, null);
                 }
             }
         }
