@@ -61,13 +61,13 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private ThumbnailContainer container;
 
-    private WorkbenchDefinition workbenchDefinition;
+    private final WorkbenchDefinition workbenchDefinition;
 
     private Listener listener;
 
-    private LazyThumbnailLayout layout;
+    private final LazyThumbnailLayout layout;
 
-    private VerticalLayout margin = new VerticalLayout();
+    private final VerticalLayout margin = new VerticalLayout();
 
     public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailContainer container) {
         this.workbenchDefinition = definition;
@@ -130,6 +130,12 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     @Override
     public Component asVaadinComponent() {
         return margin;
+    }
+
+    private String prepareJcrSQL2Query(){
+        final String itemType = workbenchDefinition.getMainItemType().getItemType();
+        return "select * from [" + itemType + "] as t order by name(t)";
+
     }
 
     private JcrNodeAdapter getThumbnailNodeAdapterByIdentifier(final String thumbnailId) {
