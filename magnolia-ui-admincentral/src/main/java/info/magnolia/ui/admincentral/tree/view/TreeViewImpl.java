@@ -37,9 +37,12 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.column.ColumnFormatter;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
+import info.magnolia.ui.admincentral.tree.view.InplaceEditingTreeTable.InPlaceSaveEvent;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 
 import java.util.ArrayList;
@@ -48,11 +51,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Container;
+import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Component;
@@ -164,8 +170,35 @@ public class TreeViewImpl implements TreeView {
 
     private TreeTable buildTreeTable(Container container, WorkbenchDefinition workbench, ComponentProvider componentProvider) {
 
-        TreeTable treeTable = workbench.isEditable() ? new InplaceEditingTreeTable() : new MagnoliaTreeTable();
+        TreeTable treeTable = null;
+        if(workbench.isEditable()) {
+            final InplaceEditingTreeTable inPlaceEditingTable = new InplaceEditingTreeTable();
+            inPlaceEditingTable.addListener(new InplaceEditingTreeTable.InPlaceSaveEvent.Handler() {
+                
+                @Override
+                public void onSave(InPlaceSaveEvent event) {
+                    Item item = event.getItemToSave();
+                    if (item instanceof JcrItemNodeAdapter) {
+                        // saving node
+                        try {
+                            ((JcrItemNodeAdapter) item).getNode().getSession().save();
+                            ((AbstractJcrContainer) inPlaceEditingTable.getContainerDataSource()).fireItemSetChange();
+                        } catch (RepositoryException e) {
+                            // log.error(e);
+                        }
 
+                    } else if (item instanceof AbstractJcrAdapter) {
+                        //TODO: Save property adapter
+                    }
+                }
+            });
+            
+            treeTable = inPlaceEditingTable;
+            
+        } else {
+            treeTable = new MagnoliaTreeTable();
+        }
+ 
         // basic widget configuration
         treeTable.setNullSelectionAllowed(true);
         treeTable.setColumnCollapsingAllowed(false);

@@ -33,21 +33,17 @@
  */
 package info.magnolia.ui.admincentral.tree.view;
 
+import info.magnolia.ui.framework.event.EventHandler;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import javax.jcr.RepositoryException;
-
 import com.vaadin.data.Container;
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
@@ -62,7 +58,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 
-
 /**
  * An inplace editing tree table, taking care of partial updates when editing one item.
  */
@@ -76,16 +71,65 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
     private List<Object> editableColumns;
 
     private ColumnGenerator bypassedColumnGenerator;
+    
+    List<InPlaceSaveEvent.Handler> listeners;
 
     public InplaceEditingTreeTable() {
         super();
+        listeners = new ArrayList<InPlaceSaveEvent.Handler>();
         setEditable(true);
         setTableFieldFactory(new InplaceEditingFieldFactory());
         addListener(asItemClickListener());
-
+        
         // does not work, either put in an ActionManager, either add action handler to first
         // eligible ancestor
         getActionManager().addActionHandler(new TextFieldKeyboardHandler());
+    }
+    
+    
+    /**
+     * Event object to emit when in place editing is done.
+     */
+    public static class InPlaceSaveEvent implements info.magnolia.ui.framework.event.Event<InPlaceSaveEvent.Handler> {
+        
+        /**
+         * Event listener for save events.
+         */
+        public interface Handler extends EventHandler {
+            void onSave(InPlaceSaveEvent event);
+        }
+        
+        private final Item item;
+        public InPlaceSaveEvent(Item item) {
+
+            this.item = item;
+        }
+        
+        public Item getItemToSave() {
+            return item;
+        }
+
+        @Override
+        public void dispatch(Handler handler) {
+            handler.onSave(this);
+        }
+    }
+    
+    public void addListener(InPlaceSaveEvent.Handler listener) {
+        listeners.add(listener);
+    }
+    
+    public void removeListener(InPlaceSaveEvent.Handler listener) {
+        if(listeners.contains(listener)) {
+            listeners.remove(listener);
+        }
+    }
+
+    private void fireSaveEvent(Item item) {
+        InPlaceSaveEvent event = new InPlaceSaveEvent(item);
+        for(InPlaceSaveEvent.Handler listener: listeners) {
+            listener.onSave(event);
+        }
     }
 
     // @Override
@@ -269,24 +313,9 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                             // TODO: put saving logic fucking OUT!
 
                             DefaultProperty prop = (DefaultProperty) tf.getPropertyDataSource();
-                            JcrItemAdapter item = (JcrItemAdapter) prop.getListeners(Property.ValueChangeEvent.class).toArray()[0];
+                            Item item = (Item) prop.getListeners(Property.ValueChangeEvent.class).toArray()[0];
 
-                            if (item instanceof JcrItemNodeAdapter) {
-                                // saving node
-                                try {
-                                    System.out.println("Node detected!!");
-                                    ((JcrItemNodeAdapter) item).getNode().getSession().save();
-                                    ((AbstractJcrContainer) getContainerDataSource()).fireItemSetChange();
-                                } catch (RepositoryException e) {
-                                    // log.error(e);
-                                }
-
-                            } else if (item instanceof AbstractJcrAdapter) {
-                                System.out.println("Property detected!!");
-                                // saving property
-
-                            }
-
+                            fireSaveEvent(item);
                             setEditing(null, null);
                         }
                     });
@@ -298,7 +327,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
             return null;
         }
     }
-
+    
     // DOUBLE CLICK
 
     @Override
