@@ -85,7 +85,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
         // does not work, either put in an ActionManager, either add action handler to first
         // eligible ancestor
-        // addActionHandler(new TextFieldKeyboardHandler());
+        getActionManager().addActionHandler(new TextFieldKeyboardHandler());
     }
 
     // @Override
