@@ -57,26 +57,32 @@ import com.vaadin.ui.ClientWidget;
 @ClientWidget(VImageEditor.class)
 public class ImageEditor extends AbstractComponent implements ServerSideHandler {
 
+    private static final int DEFAULT_MIN_DIMENSION = 200;
+
+    private int minDimension = DEFAULT_MIN_DIMENSION;
+
+    private double lockedAspectRatio = -1;
+
+    private boolean isAttached = false;
+
+    private String link = null;
+    
     private final ServerSideProxy proxy = new ServerSideProxy(this) {
         {
             register("croppedAreaReady", new Method() {
 
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    final CropArea area = new CropArea(
-                            getInt(params[0]), 
-                            getInt(params[1]), 
-                            getInt(params[2]), 
-                            getInt(params[3]));
+                    final CropArea area = new CropArea(getInt(params[0]), getInt(params[1]), getInt(params[2]), getInt(params[3]));
                     for (final CropListener listener : listeners) {
                         listener.onCrop(area);
                     }
                 }
             });
         }
-        
+
         public int getInt(Object intObj) {
-            return (Integer)intObj;
+            return (Integer) intObj;
         }
     };
 
@@ -85,7 +91,7 @@ public class ImageEditor extends AbstractComponent implements ServerSideHandler 
     private final List<CropListener> listeners = new ArrayList<CropListener>();
 
     private boolean isCropping = false;
-    
+
     public ImageEditor() {
         setImmediate(true);
     }
@@ -96,26 +102,42 @@ public class ImageEditor extends AbstractComponent implements ServerSideHandler 
 
     public void setSource(Resource source) {
         this.source = source;
-        proxy.call("setSource", this.source);
+        callIfAttached("setSource", this.source);
     }
 
     public void setCropping(boolean isCropping) {
         this.isCropping = isCropping;
-        proxy.call("setCropping", isCropping);
+        callIfAttached("setCropping", isCropping);
     }
 
     public void fetchCropArea() {
-        proxy.call("fetchCropArea");
+        callIfAttached("fetchCropArea");
     }
 
     public void lockCropAspectRatio(double aspectRatio) {
-        proxy.call("lockAspectRatio", aspectRatio);
+        this.lockedAspectRatio = aspectRatio;
+        callIfAttached("lockAspectRatio", aspectRatio);
+    }
+
+    public void setMinDimension(int minDimension) {
+        this.minDimension = minDimension;
+        callIfAttached("setMinDimension", minDimension);
     }
 
     public boolean isCropping() {
         return isCropping;
     }
-    
+
+    public boolean isAspectRatioLocked() {
+        return this.lockedAspectRatio > 0;
+    }
+
+    private void callIfAttached(String methodName, Object... params) {
+        if (isAttached) {
+            proxy.call(methodName, params);
+        }
+    }
+
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
@@ -130,6 +152,16 @@ public class ImageEditor extends AbstractComponent implements ServerSideHandler 
 
     @Override
     public Object[] initRequestFromClient() {
+        if (link != null) {
+            proxy.call("setSource", link);    
+        } else {
+            proxy.call("setSource", this.source);   
+        }
+        proxy.call("setCropping", isCropping);
+        proxy.call("setMinDimension", minDimension);
+        if (isAspectRatioLocked()) {
+            proxy.call("lockAspectRatio", lockedAspectRatio);
+        }
         return new Object[] {};
     }
 
@@ -138,15 +170,27 @@ public class ImageEditor extends AbstractComponent implements ServerSideHandler 
         throw new RuntimeException("Unhandled call from client: " + method);
     }
 
+    @Override
+    public void attach() {
+        super.attach();
+        this.isAttached = true;
+    }
+
+    @Override
+    public void detach() {
+        super.detach();
+        this.isAttached = false;
+    }
+
     /**
-     * Listener for crop details delivered from client.
+     * CropListener. 
      */
     public interface CropListener {
         void onCrop(final CropArea area);
     }
 
     /**
-     * Crop area details.
+     * CropArea.
      */
     public static class CropArea implements Serializable {
         private final int top;
@@ -179,5 +223,15 @@ public class ImageEditor extends AbstractComponent implements ServerSideHandler 
         public int getHeight() {
             return height;
         }
+
+        @Override
+        public String toString() {
+            return "[" + "w:" + getWidth() + "h:" + getHeight() + "l:" + getLeft() + "t:" + getTop() + "]";
+        }
+    }
+
+    public void setSource(String createLink) {
+        this.link = createLink;
+        callIfAttached("setSource", createLink);
     }
 }

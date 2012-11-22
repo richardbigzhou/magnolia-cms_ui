@@ -59,15 +59,16 @@ import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditor;
 import info.magnolia.ui.vaadin.editor.PageEditorParameters;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -78,7 +79,7 @@ public class PagesEditorSubApp extends AbstractItemSubApp implements PagesEditor
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
     private final PagesEditorSubAppView view;
-
+    
     private final EventBus eventBus;
 
     private final PageEditorPresenter pageEditorPresenter;

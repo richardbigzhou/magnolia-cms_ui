@@ -37,8 +37,11 @@ import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
@@ -61,26 +64,37 @@ public class VImageEditor extends VerticalPanel implements Paintable, ClientSide
 
     private Image img;
 
+    private String src;
+    
     protected ApplicationConnection client;
 
     private final GWTCropper cropper = new GWTCropper();
 
+    private final double scaleRatio = 1d;
+    
     private final ClientSideProxy proxy = new ClientSideProxy(this) {
         {
             register("setSource", new Method() {
 
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    img = new Image(String.valueOf(params[0]));
+                    src = String.valueOf(params[0]);
+                    img = new Image(src);
                     img.addLoadHandler(new LoadHandler() {
                         @Override
                         public void onLoad(LoadEvent event) {
                             nativeImageWidth = img.getOffsetWidth();
                             nativeImageHeight = img.getOffsetHeight();
+                            
+                            System.out.println(img);
+                            System.out.println(getOffsetWidth());
+                            System.out.println(nativeImageWidth);
+                            System.out.println(nativeImageHeight);
+                            
                             aspectRatio = (double) nativeImageWidth / nativeImageHeight;
                             int w = Math.min(getOffsetWidth(), nativeImageWidth);
-                            img.setWidth(w / 2 + "px");
-                            img.setHeight(w / aspectRatio / 2 + "px");
+                            img.setWidth(w + "px");
+                            img.setHeight(w / aspectRatio + "px");
                         }
                     });
                     add(img);
@@ -97,11 +111,11 @@ public class VImageEditor extends VerticalPanel implements Paintable, ClientSide
             register("fetchCropArea", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    call("croppedAreaReady", 
-                            cropper.getSelectionXCoordinate(), 
-                            cropper.getSelectionYCoordinate(), 
-                            cropper.getSelectionWidth(),
-                            cropper.getSelectionHeight());
+                    int x = (int)(cropper.getSelectionXCoordinate() / scaleRatio);
+                    int y = (int)(cropper.getSelectionYCoordinate() / scaleRatio);
+                    int w = (int)(cropper.getSelectionWidth() / scaleRatio);
+                    int h = (int)(cropper.getSelectionHeight() / scaleRatio);
+                    call("croppedAreaReady", x, y, w, h);
                 }
             });
 
@@ -114,14 +128,28 @@ public class VImageEditor extends VerticalPanel implements Paintable, ClientSide
                     }
                 }
             });
+            
+            register("setMinDimension", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    int minDimension = (Integer)params[0];
+                }
+            });
         }
     };
 
     public VImageEditor() {
         setStyleName(CLASSNAME);
-        getElement().getStyle().setBackgroundColor("rgba(0,0,0, 0.5)");
+        getElement().getStyle().setBackgroundColor("rgba(51,51,51,1)");
         setHorizontalAlignment(ALIGN_CENTER);
         setVerticalAlignment(ALIGN_MIDDLE);
+        addDomHandler(new DoubleClickHandler() {
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                Window.alert("scaling");
+                setCropping(true);
+            }
+        }, DoubleClickEvent.getType());
     }
 
     @Override
@@ -145,11 +173,17 @@ public class VImageEditor extends VerticalPanel implements Paintable, ClientSide
             cropper.setHeight(img.getHeight() + "px");
         }
     }
+    
+    private void scale(double ratio) {
+        if (cropper.isAttached()) {
+            cropper.scale(ratio);
+        }
+    }
 
     private void setCropping(Boolean isCropping) {
         if (isCropping) {
             remove(img);
-            cropper.cropImage(img);
+            cropper.cropImage(img, src);
             add(cropper);
         } else {
             remove(cropper);

@@ -66,6 +66,18 @@
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarDefinition</type>
       <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition</implementation>
     </type-mapping>
+    
+    <type-mapping>
+      <type>info.magnolia.ui.model.form.definition.FormDefinition</type>
+      <implementation>info.magnolia.ui.model.form.definition.ConfiguredFormDefinition</implementation>
+    </type-mapping>
+    
+    <type-mapping>
+      <type>info.magnolia.ui.model.form.action.FormActionDefinition</type>
+      <implementation>info.magnolia.ui.model.form.action.ConfiguredFormActionDefinition</implementation>
+    </type-mapping>
+   
+    
     <type-mapping>
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition</type>
       <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition</implementation>
