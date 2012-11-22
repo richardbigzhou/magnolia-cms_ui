@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -56,12 +57,14 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * {@link javax.jcr.Node}. Implements {Property.ValueChangeListener} in order to inform/change JCR
  * property when a Vaadin property has changed. Access JCR repository for all read Jcr Property.
  */
+@SuppressWarnings("serial")
 public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implements JcrItemNodeAdapter {
 
-    // Init
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrNodeAdapter.class);
 
-    private String primaryNodeTypeName;
+    private String uuid;
+
+    private String primaryNodeType;
 
     private final Map<String, Property> changedProperties = new HashMap<String, Property>();
 
@@ -77,30 +80,41 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
 
     public AbstractJcrNodeAdapter(Node jcrNode) {
         super(jcrNode);
-        setPrimaryNodeTypeName(jcrNode);
     }
 
-    /**
-     * Set propertyNodeType.
-     */
-    private void setPrimaryNodeTypeName(Node jcrNode) {
-        String primaryNodeTypeName = null;
-        try {
-            primaryNodeTypeName = jcrNode.getPrimaryNodeType().getName();
-        } catch (RepositoryException e) {
-            log.error("Couldn't retrieve identifier of jcr node", e);
-            primaryNodeTypeName = UN_IDENTIFIED;
+    //
+
+    @Override
+    protected void setCommonAttributes(Item jcrItem) {
+        super.setCommonAttributes(jcrItem);
+        if (jcrItem instanceof Node) {
+
+            Node node = (Node) jcrItem;
+            try {
+                uuid = node.getIdentifier();
+                primaryNodeType = node.getPrimaryNodeType().getName();
+            } catch (RepositoryException e) {
+                log.error("Could not retrieve identifier or primaryNodeType name of JCR Node.", e);
+                uuid = UN_IDENTIFIED;
+                primaryNodeType = UN_IDENTIFIED;
+            }
+        } else {
+            log.error("Cannot initialize JcrNodeAdapter with a JCR Item that is not a Node.");
         }
-        this.primaryNodeTypeName = primaryNodeTypeName;
+    }
+
+    @Override
+    public String getNodeIdentifier() {
+        return uuid;
     }
 
     protected void setPrimaryNodeTypeName(String primaryNodeTypeName) {
-        this.primaryNodeTypeName = primaryNodeTypeName;
+        this.primaryNodeType = primaryNodeTypeName;
     }
 
     @Override
     public String getPrimaryNodeTypeName() {
-        return primaryNodeTypeName;
+        return primaryNodeType;
     }
 
     protected Map<String, Property> getChangedProperties() {

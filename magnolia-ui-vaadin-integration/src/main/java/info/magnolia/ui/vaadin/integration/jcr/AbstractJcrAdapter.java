@@ -50,6 +50,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 /**
  * Common base for {JcrItemAdapter} implementation.
  */
+@SuppressWarnings("serial")
 public abstract class AbstractJcrAdapter implements Property.ValueChangeListener, JcrItemAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrAdapter.class);
@@ -58,11 +59,9 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
 
     private boolean isNode;
 
-    private String jcrNodeIdentifier;
+    private String workspace;
 
-    private String jcrWorkspace;
-
-    private String jcrPath;
+    private String path;
 
     public AbstractJcrAdapter(Item jcrItem) {
         setCommonAttributes(jcrItem);
@@ -72,24 +71,15 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
      * Init common Item attributes.
      */
     protected void setCommonAttributes(Item jcrItem) {
-        String nodeIdentifier = null;
-        String workspace = null;
-        String path = null;
+        isNode = jcrItem.isNode();
         try {
-            isNode = jcrItem.isNode();
-            Node node = isNode ? ((Node) jcrItem) : jcrItem.getParent();
-            nodeIdentifier = node.getIdentifier();
-            workspace = node.getSession().getWorkspace().getName();
+            workspace = jcrItem.getSession().getWorkspace().getName();
             path = jcrItem.getPath();
         } catch (RepositoryException e) {
-            log.error("Couldn't retrieve identifier of jcr property", e);
+            log.error("Could not retrieve workspace or path of JCR Item.", e);
             path = UN_IDENTIFIED;
             workspace = UN_IDENTIFIED;
-            nodeIdentifier = UN_IDENTIFIED;
         }
-        this.jcrPath = path;
-        this.jcrNodeIdentifier = nodeIdentifier;
-        this.jcrWorkspace = workspace;
     }
 
     @Override
@@ -98,22 +88,17 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     }
 
     @Override
-    public String getNodeIdentifier() {
-        return jcrNodeIdentifier;
-    }
-
-    @Override
     public String getWorkspace() {
-        return jcrWorkspace;
+        return workspace;
     }
 
     @Override
     public String getPath() {
-        return jcrPath;
+        return path;
     }
 
     protected void setPath(String path) {
-        this.jcrPath = path;
+        this.path = path;
     }
 
     /**
@@ -122,21 +107,11 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     @Override
     public javax.jcr.Item getJcrItem() {
         try {
-            return MgnlContext.getJCRSession(jcrWorkspace).getItem(jcrPath);
+            return MgnlContext.getJCRSession(workspace).getItem(path);
         } catch (RepositoryException re) {
             log.warn("Not able to retrieve the JcrItem ", re.getMessage());
             return null;
         }
-    }
-
-    /**
-     * Path is used as itemId for the vaadin containers.
-     * 
-     * @return the vaadin itemId.
-     */
-    @Override
-    public Object getItemId() {
-        return getPath();
     }
 
     /**

@@ -51,6 +51,7 @@ import com.vaadin.data.Property;
  * {@link javax.jcr.Property}.
  */
 
+@SuppressWarnings("serial")
 public class JcrPropertyAdapter extends AbstractJcrAdapter {
 
     static final String VALUE_COLUMN = "value";
