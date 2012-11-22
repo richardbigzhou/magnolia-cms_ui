@@ -36,7 +36,6 @@ package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.jcr.util.MetaDataUtil;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Item;
@@ -135,8 +134,6 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter{
 
             node = parent.addNode(getNodeName(), getPrimaryNodeTypeName());
             log.debug("create a new node for parent "+parent.getPath()+" with nodeId "+getNodeName());
-            //Create MetaData
-            MetaDataUtil.getMetaData(node);
             //Update property
             updateProperty(node);
             //Update child nodes

@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.assertEquals;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -52,15 +53,14 @@ import com.vaadin.data.Property;
 
 public class AbstractJcrNodeAdapterTest {
 
-    private String worksapceName = "workspace";
+    private String workspaceName = "workspace";
     private MockSession session;
-
 
     @Before
     public void setUp() {
-        session = new MockSession(worksapceName);
+        session = new MockSession(workspaceName);
         MockContext ctx = new MockContext();
-        ctx.addSession(worksapceName, session);
+        ctx.addSession(workspaceName, session);
         MgnlContext.setInstance(ctx);
     }
 
@@ -68,7 +68,6 @@ public class AbstractJcrNodeAdapterTest {
     public void tearDown() {
         MgnlContext.setInstance(null);
     }
-
 
     @Test
     public void testGetItemProperty_ExistingProperty() throws Exception {
@@ -137,7 +136,6 @@ public class AbstractJcrNodeAdapterTest {
         assertEquals("newValue", jcrProperty.getString());
     }
 
-
     @Test
     public void testValueChangeEvent_PropertyDoNotExist() throws Exception {
         // GIVEN
@@ -154,7 +152,22 @@ public class AbstractJcrNodeAdapterTest {
         assertEquals("newValue", underlyingNode.getProperty(propertyName).getString());
     }
 
+    @Test
+    public void testUpdateProperty() throws Exception {
+        // GIVEN
+        final Node underlyingNode = session.getRootNode().addNode("underlying");
+        final String propertyName = "TEST";
+        final String propertyValue = "value";
+        final DummyJcrNodeAdapter item = new DummyJcrNodeAdapter(underlyingNode);
+        Property property = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, propertyValue);
+        item.getChangedProperties().put(propertyName, property);
 
+        // WHEN
+        item.updateProperty(underlyingNode);
+
+        // THEN
+        assertEquals(propertyValue, underlyingNode.getProperty(propertyName).getString());
+    }
 
     /**
      * Dummy implementation of the Abstract class.

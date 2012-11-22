@@ -39,5 +39,5 @@ package info.magnolia.ui.admincentral.dialog;
  */
 public interface ChooseDialogFactory {
 
-    public WorkbenchChooseDialogPresenter createWorkbenchChooseDialog();
+    public WorkbenchChooseDialogPresenter createWorkbenchChooseDialog(String defaultPath);
 }
