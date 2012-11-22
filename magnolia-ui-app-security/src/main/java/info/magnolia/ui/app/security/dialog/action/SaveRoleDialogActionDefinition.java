@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.app.security.dialog.action;
 
-import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
+import info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition;
 
 /**
  * Save role dialog action definition.
  */
-public class SaveRoleDialogActionDefinition extends SaveDialogActionDefinition {
+public class SaveRoleDialogActionDefinition extends SaveFormActionDefinition {
 
 }

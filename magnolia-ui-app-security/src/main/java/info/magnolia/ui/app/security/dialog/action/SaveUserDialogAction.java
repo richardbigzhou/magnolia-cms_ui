@@ -45,19 +45,19 @@ import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
-import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
+import info.magnolia.ui.admincentral.form.FormPresenter;
+import info.magnolia.ui.admincentral.form.action.SaveFormAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 /**
  * Save user dialog action.
  */
-public class SaveUserDialogAction extends SaveDialogAction {
+public class SaveUserDialogAction extends SaveFormAction {
 
     private static final Logger log = LoggerFactory.getLogger(SaveUserDialogAction.class);
 
-    public SaveUserDialogAction(SaveUserDialogActionDefinition definition, FormDialogPresenter presenter) {
+    public SaveUserDialogAction(SaveUserDialogActionDefinition definition, FormPresenter presenter) {
         super(definition, presenter);
     }
 

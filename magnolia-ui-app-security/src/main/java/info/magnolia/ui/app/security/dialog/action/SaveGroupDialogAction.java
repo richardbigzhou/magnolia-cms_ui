@@ -45,19 +45,19 @@ import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
-import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
+import info.magnolia.ui.admincentral.form.FormPresenter;
+import info.magnolia.ui.admincentral.form.action.SaveFormAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 /**
  * Save group dialog action.
  */
-public class SaveGroupDialogAction extends SaveDialogAction {
+public class SaveGroupDialogAction extends SaveFormAction {
 
     private static final Logger log = LoggerFactory.getLogger(SaveGroupDialogAction.class);
 
-    public SaveGroupDialogAction(SaveGroupDialogActionDefinition definition, FormDialogPresenter presenter) {
+    public SaveGroupDialogAction(SaveGroupDialogActionDefinition definition, FormPresenter presenter) {
         super(definition, presenter);
     }
 

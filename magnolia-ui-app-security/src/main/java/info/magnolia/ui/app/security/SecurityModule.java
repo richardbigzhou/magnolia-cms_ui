@@ -44,6 +44,7 @@ import info.magnolia.ui.admincentral.column.StatusColumnFormatter;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
+import info.magnolia.ui.admincentral.form.action.CancelFormActionDefinition;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.security.column.UserNameColumnDefinition;
 import info.magnolia.ui.app.security.column.UserNameColumnFormatter;
@@ -63,6 +64,7 @@ import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
 import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
 import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
 import info.magnolia.ui.model.form.builder.AbstractFieldBuilder;
+import info.magnolia.ui.model.form.builder.FormConfig;
 import info.magnolia.ui.model.dialog.builder.Dialog;
 import info.magnolia.ui.model.dialog.builder.DialogBuilder;
 import info.magnolia.ui.model.dialog.builder.DialogConfig;
@@ -195,17 +197,17 @@ public class SecurityModule implements ModuleLifecycle {
 
 
     @Dialog("ui-security-app:userAdd")
-    public void userAddDialog(DialogBuilder dialog, DialogConfig cfg) {
-        userDialog(dialog,cfg,false);
+    public void userAddDialog(DialogBuilder dialog, DialogConfig cfg, FormConfig formcfg) {
+        userDialog(dialog,cfg,formcfg,false);
     }
 
     @Dialog("ui-security-app:userEdit")
-    public void userEditDialog(DialogBuilder dialog, DialogConfig cfg) {
-        userDialog(dialog,cfg,true);
+    public void userEditDialog(DialogBuilder dialog, DialogConfig cfg, FormConfig formcfg) {
+        userDialog(dialog,cfg,formcfg,true);
     }
 
     @Dialog("ui-security-app:user")
-    public void userDialog(DialogBuilder dialog, DialogConfig cfg, boolean editMode) {
+    public void userDialog(DialogBuilder dialog, DialogConfig cfg, FormConfig formcfg, boolean editMode) {
 
         UniqueUserIdValidatorDefinition uniqueUserid = new UniqueUserIdValidatorDefinition();
         uniqueUserid.setErrorMessage("User name already exists.");
@@ -226,49 +228,52 @@ public class SecurityModule implements ModuleLifecycle {
         roles.label("Assigned roles");
 
         dialog.description("Define the user information")
-        .tabs(
-                cfg.tab("User").label("User Tab")
-                        .fields(
-                                username,
-                                cfg.fields.passwordField("password").label("Password").verification(),
+                .form(formcfg.form().description("Define the user information")
+                        .tabs(
+                                formcfg.tab("User").label("User Tab")
+                                        .fields(
+                                                username,
+                                                formcfg.fields.passwordField("password").label("Password").verification(),
 //                                cfg.fields.checkboxField("enabled").label("Enabled"),
-                                (new EnabledFieldBuilder("enabled")).label("Enabled"),
-                                cfg.fields.textField("title").label("Full name"),
-                                cfg.fields.textField("email").label("E-mail").description("Please enter user's e-mail address."),
-                                cfg.fields.selectField("language").label("Language").options(
-                                        (new OptionBuilder()).value("en").label("English").selected(),
-                                        (new OptionBuilder()).value("de").label("German"),
-                                        (new OptionBuilder()).value("cz").label("Czech"),
-                                        (new OptionBuilder()).value("fr").label("French")
-                                )
-                        ),
-                cfg.tab("Membership").label("Membership")
-                        .fields(
-                                groups
-                        ),
-                cfg.tab("Roles").label("Roles")
-                        .fields(
-                                roles
-                        )
+                                                (new EnabledFieldBuilder("enabled")).label("Enabled"),
+                                                formcfg.fields.textField("title").label("Full name"),
+                                                formcfg.fields.textField("email").label("E-mail").description("Please enter user's e-mail address."),
+                                                formcfg.fields.selectField("language").label("Language")
+                                                    .options(
+                                                        (new OptionBuilder()).value("en").label("English").selected(),
+                                                        (new OptionBuilder()).value("de").label("German"),
+                                                        (new OptionBuilder()).value("cz").label("Czech"),
+                                                        (new OptionBuilder()).value("fr").label("French")
+                                                    )
+                                               ),
+                                formcfg.tab("Membership").label("Membership")
+                                        .fields(
+                                                groups
+                                               ),
+                                formcfg.tab("Roles").label("Roles")
+                                        .fields(
+                                                roles
+                                               )
 
-        )
-        .actions(
-                cfg.action("commit").label("save changes").action(new SaveUserDialogActionDefinition()),
-                cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
-        );
+                             )
+                     .actions(
+                             formcfg.action("commit").label("save changes").action(new SaveUserDialogActionDefinition()),
+                             formcfg.action("cancel").label("cancel").action(new CancelFormActionDefinition())
+                             )
+                     );
     }
 
     @Dialog("ui-security-app:groupAdd")
-    public void groupAddDialog(DialogBuilder dialog, DialogConfig cfg) {
-        groupDialog(dialog, cfg, false);
+    public void groupAddDialog(DialogBuilder dialog, DialogConfig cfg, FormConfig formcfg) {
+        groupDialog(dialog, cfg, formcfg, false);
     }
 
     @Dialog("ui-security-app:groupEdit")
-    public void groupEditDialog(DialogBuilder dialog, DialogConfig cfg) {
-        groupDialog(dialog, cfg, true);
+    public void groupEditDialog(DialogBuilder dialog, DialogConfig cfg, FormConfig formcfg) {
+        groupDialog(dialog, cfg, formcfg, true);
     }
 
-    public void groupDialog(DialogBuilder dialog, DialogConfig cfg, boolean editMode) {
+    public void groupDialog(DialogBuilder dialog, DialogConfig cfg, FormConfig formcfg, boolean editMode) {
 
         UniqueGroupIdValidatorDefinition uniqueGroupId = new UniqueGroupIdValidatorDefinition();
         uniqueGroupId.setErrorMessage("Group name already exists.");
@@ -289,45 +294,44 @@ public class SecurityModule implements ModuleLifecycle {
         roles.label("Assigned roles");
 
         dialog.description("Define the group information")
-        .tabs(
-                cfg.tab("Group").label("Group Info")
-                        .fields(
-                                groupName,
-                                cfg.fields.textField("title").label("Full Name").description("Full name of the group"),
-                                cfg.fields.textField("description").label("Description").description("Detail description of the group")
-                                // add groups and roles selectors
-                        ),
-                cfg.tab("Membership").label("Membership")
-                        .fields(
-                                cfg.fields.staticField("placeholder").label("Group management"),
-                                groups
-                        ),
-                cfg.tab("Roles").label("Roles")
-                        .fields(
-                                cfg.fields.staticField("placeholder").label("A placeholder for roles management"),
-                                roles
-                        )
-
-        )
-        .actions(
-                // do not allow to save the data yet
-                cfg.action("commit").label("save changes").action(new SaveGroupDialogActionDefinition()),
-                cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
-        );
+                .form(formcfg.form().description("Define the group information")
+                        .tabs(
+                                formcfg.tab("Group").label("Group Info")
+                                    .fields(
+                                            groupName,
+                                            formcfg.fields.textField("title").label("Full Name").description("Full name of the group"),
+                                            formcfg.fields.textField("description").label("Description").description("Detail description of the group")
+                                           ),
+                                formcfg.tab("Membership").label("Membership")
+                                    .fields(
+                                            formcfg.fields.staticField("placeholder").label("Group management"),
+                                            groups
+                                           ),
+                                formcfg.tab("Roles").label("Roles")
+                                    .fields(
+                                            cfg.fields.staticField("placeholder").label("A placeholder for roles management"),
+                                            roles
+                                           )
+                             )
+                        .actions(
+                                 formcfg.action("commit").label("save changes").action(new SaveGroupDialogActionDefinition()),
+                                 formcfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
+                                )
+                     );
     }
 
     @Dialog("ui-security-app:roleEdit")
-    public void roleEditDialog(DialogBuilder dialog, DialogConfig cfg) {
-        roleDialog(dialog,cfg,true);
+    public void roleEditDialog(DialogBuilder dialog, DialogConfig cfg, FormConfig formcfg) {
+        roleDialog(dialog,cfg,formcfg,true);
     }
 
 
     @Dialog("ui-security-app:roleAdd")
-    public void roleAddDialog(DialogBuilder dialog, DialogConfig cfg) {
-        roleDialog(dialog,cfg,false);
+    public void roleAddDialog(DialogBuilder dialog, DialogConfig cfg, FormConfig formcfg) {
+        roleDialog(dialog,cfg,formcfg,false);
     }
 
-    public void roleDialog(DialogBuilder dialog, DialogConfig cfg, boolean editMode) {
+    public void roleDialog(DialogBuilder dialog, DialogConfig cfg, FormConfig formcfg, boolean editMode) {
 
         UniqueRoleIdValidatorDefinition uniqueRoleId = new UniqueRoleIdValidatorDefinition();
         uniqueRoleId.setErrorMessage("Role name already exists.");
@@ -342,23 +346,24 @@ public class SecurityModule implements ModuleLifecycle {
         }
 
         dialog.description("Define the role information")
-        .tabs(
-                cfg.tab("Role").label("Role Tab")
-                        .fields(
-                                rolename,
-                                cfg.fields.textField("title").label("Full name").description("Full name of the role"),
-                                cfg.fields.textField("description").label("Role Description").description("Description of the role")
-                        ),
-                        cfg.tab("ACLs").label("Access Control Lists")
-                        .fields(
-                                cfg.fields.textField("do-not-use").label("Placeholder, do not use").readOnly()
-                        )
-        )
-        .actions(
-                // do not allow to save the data yet
-                cfg.action("commit").label("save changes").action(new SaveRoleDialogActionDefinition()),
-                cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
-        );
+                .form(formcfg.form().description("Define the group information")
+                        .tabs(
+                              formcfg.tab("Role").label("Role Tab")
+                                  .fields(
+                                          rolename,
+                                          formcfg.fields.textField("title").label("Full name").description("Full name of the role"),
+                                          formcfg.fields.textField("description").label("Role Description").description("Description of the role")
+                                         ),
+                              formcfg.tab("ACLs").label("Access Control Lists")
+                                  .fields(
+                                          formcfg.fields.textField("do-not-use").label("Placeholder, do not use").readOnly()
+                                         )
+                             )
+                        .actions(
+                                 formcfg.action("commit").label("save changes").action(new SaveRoleDialogActionDefinition()),
+                                 formcfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
+                                )
+                     );
     }
 
 
