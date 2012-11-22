@@ -38,17 +38,22 @@ import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.item.ItemPresenter;
 import info.magnolia.ui.admincentral.content.item.ItemView;
+import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.FormPresenterFactory;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.form.FormView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -58,9 +63,12 @@ import javax.inject.Named;
  */
 public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
 
+    private static final Logger log = LoggerFactory.getLogger(ItemWorkbenchPresenter.class);
+
     private final SubAppContext subAppContext;
     private final ItemWorkbenchView view;
     private final EventBus eventBus;
+    private EventBus subAppEventBus;
     private final ItemPresenter itemPresenter;
     private WorkbenchActionFactory actionFactory;
     private final ActionbarPresenter actionbarPresenter;
@@ -69,11 +77,12 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
     private String nodePath;
 
     @Inject
-    public ItemWorkbenchPresenter(final SubAppContext subAppContext, final ItemWorkbenchView view, final @Named("admincentral") EventBus eventBus,
+    public ItemWorkbenchPresenter(final SubAppContext subAppContext, final ItemWorkbenchView view, final @Named("admincentral") EventBus eventBus, final @Named("subapp") EventBus subAppEventBus,
                                   final ItemPresenter itemPresenter, final WorkbenchActionFactory actionFactory, final ActionbarPresenter actionbarPresenter, final FormPresenterFactory formPresenterFactory) {
         this.subAppContext = subAppContext;
         this.view = view;
         this.eventBus = eventBus;
+        this.subAppEventBus = subAppEventBus;
         this.itemPresenter = itemPresenter;
         this.actionFactory = actionFactory;
         this.actionbarPresenter = actionbarPresenter;
@@ -86,7 +95,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
         view.setListener(this);
         //final FormPresenter formPresenter = formPresenterFactory.createFormPresenterByName(workbenchDefinition.getFormName());
         final FormPresenter formPresenter = formPresenterFactory.createFormPresenterByDefinition(workbenchDefinition.getFormDefinition());
-
+        this.nodePath = nodePath;
         final JcrNodeAdapter item = new JcrNodeAdapter(SessionUtil.getNode(workbenchDefinition.getWorkspace(), nodePath));
         final FormView formView = formPresenter.start(item, new FormPresenter.Callback() {
 
@@ -106,8 +115,23 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
         ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar(), actionFactory);
         view.setActionbarView(actionbar);
 
-        //bindHandlers();
+        bindHandlers();
         return view;
+    }
+
+    private void bindHandlers() {
+        subAppEventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarItemClickedEvent.Handler() {
+
+            @Override
+            public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
+                try {
+                    final ActionDefinition actionDefinition = event.getActionDefinition();
+                    actionbarPresenter.createAndExecuteAction(actionDefinition, workbenchDefinition.getWorkspace(), nodePath);
+                } catch (ActionExecutionException e) {
+                    log.error("An error occurred while executing an action.", e);
+                }
+            }
+        });
     }
 
     @Override
