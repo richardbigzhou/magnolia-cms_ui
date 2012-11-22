@@ -63,6 +63,15 @@ import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
  */
 public class GroupManagementField extends SelectFieldBuilder<GroupManagementFieldDefinition> {
 
+    public static class _Group {
+        public String name;
+        public String uuid;
+        public _Group(String name, String uuid) {
+            this.name = name;
+            this.uuid = uuid;
+        }
+    }
+
     private static final Logger log = LoggerFactory.getLogger(GroupManagementField.class);
 
     public GroupManagementField(GroupManagementFieldDefinition definition, Item relatedFieldItem) {
@@ -90,7 +99,7 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
     @Override
     public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition(){
         List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
-        Map<String,String> allGroups = getAllGroups(); // name,uuid
+        List<_Group> allGroups = getAllGroups(); // name,uuid
         List<String> assignedGroups = getAssignedGroups();
         String currentUUID = null;
         try {
@@ -98,15 +107,14 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
         } catch (RepositoryException e) {
             // nothing to do
         }
-        for (String name : allGroups.keySet()) {
-            String uuid = allGroups.get(name);
+        for (_Group group : allGroups) {
             SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
-            option.setValue(uuid);
-            option.setLabel(name);
-            if (assignedGroups.contains(uuid)) {
+            option.setValue(group.uuid);
+            option.setLabel(group.name);
+            if (assignedGroups.contains(group.uuid)) {
                 option.setSelected(true);
             }
-            if (!uuid.equals(currentUUID)) {
+            if (!group.uuid.equals(currentUUID)) {
                 // we don't want the group to be assigned to itself, do we?
                 options.add(option);
             }
@@ -114,15 +122,15 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
         return options;
     }
 
-    private Map<String,String> getAllGroups() {
-        Map<String,String> groups = new HashMap<String,String>();
+    private List<_Group> getAllGroups() {
+        List<_Group> groups = new ArrayList<_Group>();
         try {
-            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_GROUPS, "SELECT * FROM ["+MgnlNodeType.GROUP+"]");
+            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_GROUPS, "SELECT * FROM ["+MgnlNodeType.GROUP+"] ORDER BY name()");
             while (ni.hasNext()) {
                 Node n = ni.nextNode();
                 String name = n.getName();
                 String uuid = n.getIdentifier();
-                groups.put(name, uuid);
+                groups.add(new _Group(name, uuid));
             }
         } catch (Exception e) {
             log.error("Cannot read groups from the ["+RepositoryConstants.USER_GROUPS+"] workspace: "+e.getMessage());
