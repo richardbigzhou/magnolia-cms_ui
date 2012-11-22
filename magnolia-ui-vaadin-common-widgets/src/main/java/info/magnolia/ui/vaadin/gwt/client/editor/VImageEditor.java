@@ -41,7 +41,6 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
@@ -85,12 +84,6 @@ public class VImageEditor extends VerticalPanel implements Paintable, ClientSide
                         public void onLoad(LoadEvent event) {
                             nativeImageWidth = img.getOffsetWidth();
                             nativeImageHeight = img.getOffsetHeight();
-                            
-                            System.out.println(img);
-                            System.out.println(getOffsetWidth());
-                            System.out.println(nativeImageWidth);
-                            System.out.println(nativeImageHeight);
-                            
                             aspectRatio = (double) nativeImageWidth / nativeImageHeight;
                             int w = Math.min(getOffsetWidth(), nativeImageWidth);
                             img.setWidth(w + "px");
@@ -146,8 +139,8 @@ public class VImageEditor extends VerticalPanel implements Paintable, ClientSide
         addDomHandler(new DoubleClickHandler() {
             @Override
             public void onDoubleClick(DoubleClickEvent event) {
-                Window.alert("scaling");
-                setCropping(true);
+                //Window.alert("scaling");
+                //setCropping(true);
             }
         }, DoubleClickEvent.getType());
     }
