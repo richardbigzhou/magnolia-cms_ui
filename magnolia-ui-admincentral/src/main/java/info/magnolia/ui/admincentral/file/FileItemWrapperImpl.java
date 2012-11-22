@@ -87,11 +87,11 @@ public class FileItemWrapperImpl implements FileItemWrapper {
             Property data = jcrItem.getItemProperty(MgnlNodeType.JCR_DATA);
             if (data != null) {
                 binaryData = (byte[]) data.getValue();
-                fileSize = (Long) jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).getValue();
+                fileSize = Long.parseLong(jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).getValue().toString());
                 mimeType = (String) jcrItem.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue();
                 if (isImage()) {
-                    imageSize = new ImageSize((Long) jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue(), (Long) jcrItem
-                            .getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue());
+                    imageSize = new ImageSize(Long.parseLong( jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue().toString()), Long.parseLong(jcrItem
+                            .getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue().toString()));
                     width = imageSize.getWidth();
                     height = imageSize.getHeight();
                 }

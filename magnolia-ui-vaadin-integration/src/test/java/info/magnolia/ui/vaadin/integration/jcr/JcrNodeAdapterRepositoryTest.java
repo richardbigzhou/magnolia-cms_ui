@@ -40,7 +40,6 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 
 import javax.jcr.Node;
-import javax.jcr.PropertyType;
 import javax.jcr.Session;
 
 import org.apache.commons.io.IOUtils;
@@ -66,8 +65,6 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         String nodeProperties =
             "/parent.@type=mgnl:content\n" +
             "/parent.propertyString=hello\n" +
-            "/parent/MetaData.@type=mgnl:metadata\n" +
-            "/parent/MetaData.propertyString=chield1\n"+
             "/parent/child.@type=mgnl:content\n" +
             "/parent/child.propertyString=chield1\n";
 
@@ -104,7 +101,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetNode_NewName_NewMetaDataProperty() throws Exception {
+    public void testGetNode_NewProperty() throws Exception {
         // GIVEN
         String id = JcrNodeAdapter.JCR_NAME;
         String value = "newParent";
@@ -115,27 +112,14 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         assertEquals(nodeName, property.getValue().toString());
         //Change the property node name
         property.setValue(value);
-        // Get the template  as property
-        Property propertyTemplate = adapter.getItemProperty("MetaData/template");
-        //This is a new Property, Create it first & attach it to the adapter
-        assertEquals(true, propertyTemplate == null);
-        propertyTemplate = DefaultPropertyUtil.newDefaultProperty("MetaData/template", PropertyType.TYPENAME_STRING, "");
-        adapter.addItemProperty("MetaData/template", propertyTemplate);
-        assertEquals("", propertyTemplate.getValue().toString());
-        //Change the property node name
-        propertyTemplate.setValue("newTemplate");
 
         // WHEN
         Node res = adapter.getNode();
-        Node metaData = res.getNode("MetaData");
 
         // THEN
         // should have a new NodeName
         assertEquals(value, res.getName());
         assertEquals(true, res.hasProperty("propertyString"));
-        assertEquals("newTemplate", metaData.getProperty("template").getString());
         assertEquals(true, res.hasNode("child"));
     }
-
-
 }
