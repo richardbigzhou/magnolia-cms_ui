@@ -47,7 +47,9 @@ import javax.inject.Inject;
  */
 public class AbstractItemSubApp extends AbstractSubApp {
 
-    private ItemWorkbenchPresenter workbench;
+    private final ItemWorkbenchPresenter workbench;
+
+    private String caption;
 
     @Inject
     protected AbstractItemSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, ItemWorkbenchPresenter workbench) {
@@ -68,6 +70,7 @@ public class AbstractItemSubApp extends AbstractSubApp {
     public View start(final Location location) {
         ItemLocation l = ItemLocation.wrap(location);
         super.start(l);
+        this.caption = l.getNodePath();
         // set viewType (edit/view)
         getView().setWorkbenchView(workbench.start(l.getNodePath()));
         return getView();
@@ -103,5 +106,10 @@ public class AbstractItemSubApp extends AbstractSubApp {
 
     private boolean hasLocationChanged(ItemLocation location) {
         return getCurrentLocation().getViewType() != location.getViewType();
+    }
+
+    @Override
+    public String getCaption() {
+        return caption;
     }
 }

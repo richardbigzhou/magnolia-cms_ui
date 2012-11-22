@@ -87,6 +87,10 @@
       <implementation>info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition</implementation>
     </type-mapping>
     <type-mapping>
+      <type>info.magnolia.ui.model.form.definition.FormDefinition</type>
+      <implementation>info.magnolia.ui.model.form.definition.ConfiguredFormDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
       <type>info.magnolia.ui.model.field.definition.FieldDefinition</type>
       <implementation>info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition</implementation>
     </type-mapping>
