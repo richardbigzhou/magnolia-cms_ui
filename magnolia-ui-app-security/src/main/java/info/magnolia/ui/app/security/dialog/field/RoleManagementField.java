@@ -34,7 +34,6 @@
 package info.magnolia.ui.app.security.dialog.field;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,22 +44,14 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.query.InvalidQueryException;
-
-import org.apache.jackrabbit.commons.webdav.NodeTypeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TwinColSelect;
 
 import info.magnolia.cms.core.MgnlNodeType;
-import info.magnolia.cms.security.Group;
-import info.magnolia.cms.security.MgnlRole;
-import info.magnolia.cms.security.Role;
-import info.magnolia.cms.security.Security;
 import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;

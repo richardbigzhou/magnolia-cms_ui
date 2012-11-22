@@ -34,7 +34,6 @@
 package info.magnolia.ui.app.security.dialog.field;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,8 +53,6 @@ import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.OptionGroup;
 
 import info.magnolia.cms.core.MgnlNodeType;
-import info.magnolia.cms.security.Group;
-import info.magnolia.cms.security.Security;
 import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;

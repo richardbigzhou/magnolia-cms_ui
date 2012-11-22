@@ -1,8 +1,3 @@
-package info.magnolia.ui.app.security.dialog.field;
-
-import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
-import info.magnolia.ui.model.field.definition.TwinColSelectFieldDefinition;
-
 /**
  * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
@@ -36,6 +31,9 @@ import info.magnolia.ui.model.field.definition.TwinColSelectFieldDefinition;
  * intact.
  *
  */
+package info.magnolia.ui.app.security.dialog.field;
+
+import info.magnolia.ui.model.field.definition.TwinColSelectFieldDefinition;
 
 /**
  * A definition for the Role Management field.

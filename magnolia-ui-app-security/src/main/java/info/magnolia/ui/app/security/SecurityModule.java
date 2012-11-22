@@ -67,8 +67,6 @@ import info.magnolia.ui.model.dialog.builder.Dialog;
 import info.magnolia.ui.model.dialog.builder.DialogBuilder;
 import info.magnolia.ui.model.dialog.builder.DialogConfig;
 import info.magnolia.ui.model.form.builder.OptionBuilder;
-import info.magnolia.ui.model.form.builder.OptionGroupFieldBuilder;
-import info.magnolia.ui.model.form.builder.TwinColSelectFieldBuilder;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.model.thumbnail.DefaultImageProvider;
 import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;

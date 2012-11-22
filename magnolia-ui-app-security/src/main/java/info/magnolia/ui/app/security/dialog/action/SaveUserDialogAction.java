@@ -41,8 +41,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Property;
-
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.jcr.util.NodeUtil;
@@ -50,7 +48,6 @@ import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 /**

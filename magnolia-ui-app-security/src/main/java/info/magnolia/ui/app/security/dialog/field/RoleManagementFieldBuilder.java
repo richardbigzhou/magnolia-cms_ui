@@ -35,7 +35,6 @@ package info.magnolia.ui.app.security.dialog.field;
 
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 import info.magnolia.ui.model.form.builder.OptionBuilder;
-import info.magnolia.ui.model.form.builder.OptionGroupFieldBuilder;
 import info.magnolia.ui.model.form.builder.TwinColSelectFieldBuilder;
 
 /**

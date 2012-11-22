@@ -36,7 +36,7 @@ package info.magnolia.ui.app.security.dialog.field;
 import info.magnolia.ui.model.form.builder.CheckboxFieldBuilder;
 
 /**
- * TODO: describe this type
+ * Config-by-code builder for the Enabled field.
  */
 public class EnabledFieldBuilder extends CheckboxFieldBuilder {
 
