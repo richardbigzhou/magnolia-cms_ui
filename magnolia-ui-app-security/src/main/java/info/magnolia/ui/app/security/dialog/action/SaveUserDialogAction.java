@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.cms.security.SecurityUtil;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
@@ -70,9 +71,12 @@ public class SaveUserDialogAction extends SaveFormAction {
 
             try {
                 final Node node = itemChanged.getNode();
-                // PASSWORD ?
-
-                // the roles (that are assigned to this group) and groups (this group belongs to) handling has to be added here
+                // ENCRYPT PASSWORD
+                String password = itemChanged.getItemProperty("password").getValue().toString();
+                if (StringUtils.isNotBlank(password)) {
+                    String encryptedPassword = SecurityUtil.getBCrypt(password);
+                    PropertyUtil.setProperty(node, "password", encryptedPassword);
+                }
                 // GROUPS
                 String _ids = itemChanged.getItemProperty("groups").getValue().toString();
                 _ids = StringUtils.remove(_ids, '[');
