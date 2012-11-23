@@ -66,8 +66,13 @@
 					selectionRangeHack = editor.getSelection().getRanges(true);
 	    	        var selectedElement = CKEDITOR.plugins.link.getSelectedLink(editor);
 		            if(isInternalLink(selectedElement)) {
-		            	var href = selectedElement.getAttribute('href');
-		            	var path = href.match(/handle\:\{([^\}]*)\}/);		            	
+		            	var href = selectedElement.getAttribute('href');		            	
+		            	var path = href.match(/path\:\{([^\}]*)\}/);
+		            	
+		            	if(!path) {
+		            		path = href.match(/handle\:\{([^\}]*)\}/);
+		            	}
+		            	
 		            	editor.fire(EVENT_GET_MAGNOLIA_LINK, path[1]);		            	
 		            } else {
 		            	editor.fire(EVENT_GET_MAGNOLIA_LINK);
@@ -84,7 +89,7 @@
     	        var link = eval('('+e.data+')');
     	        var href = '${link:{uuid:{'+link.identifier+
     	        	'},repository:{'+link.repository+
-    	        	'},handle:{'+link.path+
+    	        	'},path:{'+link.path+
     	        	'},nodeData:{},extension:{html}}}';
     	        
 	            if(isLink(selectedElement)) {
