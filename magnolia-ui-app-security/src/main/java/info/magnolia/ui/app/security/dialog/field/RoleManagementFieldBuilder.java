@@ -57,6 +57,16 @@ public class RoleManagementFieldBuilder extends TwinColSelectFieldBuilder {
     // Overrides for methods in parent class changing return type to allow method chaining
 
     @Override
+    public RoleManagementFieldBuilder leftColumnCaption(String caption) {
+        return (RoleManagementFieldBuilder) super.leftColumnCaption(caption);
+    }
+
+    @Override
+    public RoleManagementFieldBuilder rightColumnCaption(String caption) {
+        return (RoleManagementFieldBuilder) super.rightColumnCaption(caption);
+    }
+
+    @Override
     public RoleManagementFieldBuilder multiselect() {
         return (RoleManagementFieldBuilder) super.multiselect(true);
     }

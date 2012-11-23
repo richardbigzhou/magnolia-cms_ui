@@ -34,10 +34,7 @@
 package info.magnolia.ui.app.security.dialog.field;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
@@ -50,13 +47,14 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.TwinColSelect;
 
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 /**
  * GUI builder for the Group Management field.
@@ -76,7 +74,7 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
 
     public GroupManagementField(GroupManagementFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
-        definition.setOptions(getSelectFieldOptionDefinition());
+        this.definition.setOptions(getSelectFieldOptionDefinition());
     }
 
 
@@ -85,12 +83,13 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
         super.buildField();
         select.setMultiSelect(true);
         select.setNullSelectionAllowed(true);
+        select.setImmediate(true);
         return select;
     }
 
     @Override
     protected AbstractSelect createSelectionField() {
-        return new OptionGroup();
+        return new TwinColSelect();
     }
 
     /**
@@ -164,6 +163,13 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
             log.debug("Cannot read assigned groups of the node ["+mainNode+"].", re);
         }
         return groups;
+    }
+
+    @Override
+    public com.vaadin.data.Property getOrCreateProperty() {
+        DefaultProperty prop = new DefaultProperty("groups", getAssignedGroups());
+        item.addItemProperty("groups", prop);
+        return prop;
     }
 
 }
