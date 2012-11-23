@@ -42,6 +42,7 @@ import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
+import info.magnolia.ui.vaadin.integration.terminal.IconFontResource;
 
 import org.junit.After;
 import org.junit.Before;
@@ -65,6 +66,8 @@ public class DefaultImageProviderTest {
     protected MockSession session;
     private DefaultImageProvider imageProvider;
 
+    private final String IMAGE_NODE_NAME = "originalImage";
+
     @Before
     public void setUp() throws Exception {
         Components.setComponentProvider(new MockComponentProvider());
@@ -76,7 +79,7 @@ public class DefaultImageProviderTest {
         MgnlContext.setInstance(webCtx);
 
         ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
-        cipd.setOriginalImageNodeName("photo");
+        cipd.setOriginalImageNodeName(IMAGE_NODE_NAME);
         imageProvider = new DefaultImageProvider(cipd);
     }
 
@@ -102,8 +105,8 @@ public class DefaultImageProviderTest {
     @Test
     public void testGetThumbnailPath() throws Exception {
         // GIVEN
-        final Node contactNode = createMainImageNode("myNode", "originalImage");
-        final String imageNodeUuid = contactNode.getNode("originalImage").getIdentifier();
+        final Node contactNode = createMainImageNode("myNode", IMAGE_NODE_NAME);
+        final String imageNodeUuid = contactNode.getNode(IMAGE_NODE_NAME).getIdentifier();
 
         // WHEN
         final String result = imageProvider.getThumbnailPath(workspaceName, contactNode.getPath());
@@ -115,8 +118,8 @@ public class DefaultImageProviderTest {
     @Test
     public void testGetPortraitPathByUuid() throws Exception {
         // GIVEN
-        final Node contactNode = createMainImageNode("myNode", "originalImage");
-        final String imageNodeUuid = contactNode.getNode("originalImage").getIdentifier();
+        final Node contactNode = createMainImageNode("myNode", IMAGE_NODE_NAME);
+        final String imageNodeUuid = contactNode.getNode(IMAGE_NODE_NAME).getIdentifier();
 
         // WHEN
         final String result = imageProvider.getPortraitPathByIdentifier(workspaceName, contactNode.getIdentifier());
@@ -128,9 +131,9 @@ public class DefaultImageProviderTest {
     @Test
     public void testGetThumbnailPathWithoutFileName() throws Exception {
         // GIVEN
-        final Node contactNode = createMainImageNode("myNode", "originalImage");
-        contactNode.getNode("originalImage").getProperty("fileName").remove();
-        final String imageNodeUuid = contactNode.getNode("originalImage").getIdentifier();
+        final Node contactNode = createMainImageNode("myNode", IMAGE_NODE_NAME);
+        contactNode.getNode(IMAGE_NODE_NAME).getProperty("fileName").remove();
+        final String imageNodeUuid = contactNode.getNode(IMAGE_NODE_NAME).getIdentifier();
 
         // WHEN
         final String result = imageProvider.getThumbnailPath(workspaceName, contactNode.getPath());
@@ -142,9 +145,8 @@ public class DefaultImageProviderTest {
     @Test
     public void testGetPortraitFromNonDefaultOriginalImageNodeName() throws Exception {
         // GIVEN
-        // imageProvider.setOriginalImageNodeName("photo");
-        final Node contactNode = createMainImageNode("contact1", "photo");
-        final String imageNodeUuid = contactNode.getNode("photo").getIdentifier();
+        final Node contactNode = createMainImageNode("contact1", IMAGE_NODE_NAME);
+        final String imageNodeUuid = contactNode.getNode(IMAGE_NODE_NAME).getIdentifier();
 
         // WHEN
         final String result = imageProvider.getPortraitPath(workspaceName, contactNode.getPath());
@@ -156,8 +158,8 @@ public class DefaultImageProviderTest {
     @Test
     public void testGetThumbnailResourceById() throws Exception {
         // GIVEN
-        final Node contactNode = createMainImageNode("myNode", "originalImage");
-        final String imageNodeUuid = contactNode.getNode("originalImage").getIdentifier();
+        final Node contactNode = createMainImageNode("myNode", IMAGE_NODE_NAME);
+        final String imageNodeUuid = contactNode.getNode(IMAGE_NODE_NAME).getIdentifier();
 
         // WHEN
         Resource resource = imageProvider.getThumbnailResourceById(workspaceName, contactNode.getIdentifier(), ImageProvider.PORTRAIT_GENERATOR);
@@ -171,23 +173,23 @@ public class DefaultImageProviderTest {
     @Test
     public void testGetThumbnailResourceByIdForDocument() throws Exception {
         // GIVEN
-        final Node contactNode = createMainImageNode("myNode", "originalImage");
-        contactNode.getNode("originalImage").getProperty("jcr:mimeType").setValue("application/x-excel");
+        final Node contactNode = createMainImageNode("myNode", IMAGE_NODE_NAME);
+        contactNode.getNode(IMAGE_NODE_NAME).getProperty("jcr:mimeType").setValue("application/x-excel");
 
         // WHEN
         Resource resource = imageProvider.getThumbnailResourceById(workspaceName, contactNode.getIdentifier(), ImageProvider.PORTRAIT_GENERATOR);
 
         // THEN
         assertNotNull(resource);
-        assertEquals(true, resource instanceof ExternalResource);
-        assertEquals("/foo/VAADIN/themes/admincentraltheme/img/icons/file-excel.svg", ((ExternalResource) resource).getURL());
+        assertEquals(true, resource instanceof IconFontResource);
+        assertEquals("file-excel", ((IconFontResource) resource).getCssClassName());
     }
 
     @Test
     public void testGetThumbnailResourceByPath() throws Exception {
         // GIVEN
-        final Node contactNode = createMainImageNode("myNode", "originalImage");
-        final String imageNodeUuid = contactNode.getNode("originalImage").getIdentifier();
+        final Node contactNode = createMainImageNode("myNode", IMAGE_NODE_NAME);
+        final String imageNodeUuid = contactNode.getNode(IMAGE_NODE_NAME).getIdentifier();
 
         // WHEN
         Resource resource = imageProvider.getThumbnailResourceByPath(workspaceName, contactNode.getPath(), ImageProvider.THUMBNAIL_GENERATOR);
@@ -201,16 +203,16 @@ public class DefaultImageProviderTest {
     @Test
     public void testGetThumbnailResourceByPathForDocument() throws Exception {
         // GIVEN
-        final Node contactNode = createMainImageNode("myNode", "originalImage");
-        contactNode.getNode("originalImage").getProperty("jcr:mimeType").setValue("application/msword");
+        final Node contactNode = createMainImageNode("myNode", IMAGE_NODE_NAME);
+        contactNode.getNode(IMAGE_NODE_NAME).getProperty("jcr:mimeType").setValue("application/msword");
 
         // WHEN
         Resource resource = imageProvider.getThumbnailResourceByPath(workspaceName, contactNode.getPath(), ImageProvider.THUMBNAIL_GENERATOR);
 
         // THEN
         assertNotNull(resource);
-        assertEquals(true, resource instanceof ExternalResource);
-        assertEquals("/foo/VAADIN/themes/admincentraltheme/img/icons/file-word.svg", ((ExternalResource) resource).getURL());
+        assertEquals(true, resource instanceof IconFontResource);
+        assertEquals("file-word", ((IconFontResource) resource).getCssClassName());
     }
 
     private Node createMainImageNode(String mainNodeName, String imageNodeName) throws Exception {
