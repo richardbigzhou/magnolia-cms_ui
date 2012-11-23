@@ -31,12 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.thumbnail;
-
+package info.magnolia.ui.admincentral.image;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
+import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.vaadin.integration.terminal.IconFontResource;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -53,16 +55,15 @@ import com.vaadin.terminal.Resource;
  */
 public class DefaultImageProvider implements ImageProvider {
 
+    private ImageProviderDefinition definition;
+
+    public DefaultImageProvider(ImageProviderDefinition definition) {
+        this.definition = definition;
+    }
+
     private static final Logger log = LoggerFactory.getLogger(DefaultImageProvider.class);
 
-    private String originalImageNodeName = ORIGINAL_IMAGE_NODE_NAME;
-
-    private String imagingServletPath = IMAGING_SERVLET_PATH;
-
-    private String imageExtension = IMAGE_EXTENSION;
-
-    private String publicIconPath = "/VAADIN/themes/admincentraltheme/img/icons/file";
-
+    private final String ICON_CLASS_DEFAULT = "file";
 
     @Override
     public String getPortraitPath(final String workspace, final String path) {
@@ -97,16 +98,16 @@ public class DefaultImageProvider implements ImageProvider {
 
         if (node != null) {
             try {
-                Node imageNode = node.getNode(originalImageNodeName);
+                Node imageNode = node.getNode(definition.getOriginalImageNodeName());
 
                 String imageName;
                 if (imageNode.hasProperty("fileName")) {
                     imageName = imageNode.getProperty("fileName").getString();
-                }
-                else {
+                } else {
                     imageName = node.getName();
                 }
-                imagePath = MgnlContext.getContextPath() + "/" + imagingServletPath + "/" + generator + "/" + workspace + "/" + imageNode.getIdentifier() + "/" + imageName + "." + imageExtension;
+                imagePath = MgnlContext.getContextPath() + "/" + definition.getImagingServletPath() + "/" + generator + "/" + workspace + "/"
+                        + imageNode.getIdentifier() + "/" + imageName + "." + definition.getImageExtension();
             } catch (RepositoryException e) {
                 log.warn("Could not get name or identifier from imageNode: {}", e.getMessage());
             }
@@ -116,40 +117,10 @@ public class DefaultImageProvider implements ImageProvider {
     }
 
     @Override
-    public String getOriginalImageNodeName() {
-        return originalImageNodeName;
-    }
-
-    @Override
-    public void setOriginalImageNodeName(String originalImageNodeName) {
-            this.originalImageNodeName = originalImageNodeName;
-    }
-
-    @Override
-    public String getImagingServletPath() {
-        return imagingServletPath;
-    }
-
-    @Override
-    public void setImagingServletPath(String imagingServletPath) {
-        this.imagingServletPath = imagingServletPath;
-    }
-
-    @Override
-    public String getImageExtension() {
-        return imageExtension;
-    }
-
-    @Override
-    public void setImageExtension(String imageExtension) {
-        this.imageExtension = imageExtension;
-    }
-
-    @Override
     public Resource getThumbnailResourceByPath(String workspace, String path, String generator) {
         Resource resource = null;
         Node node = SessionUtil.getNode(workspace, path);
-        if(node != null) {
+        if (node != null) {
             resource = getThumbnailResource(node, workspace, generator);
         }
         return resource;
@@ -159,26 +130,25 @@ public class DefaultImageProvider implements ImageProvider {
     public Resource getThumbnailResourceById(String workspace, String identifier, String generator) {
         Resource resource = null;
         Node node = SessionUtil.getNodeByIdentifier(workspace, identifier);
-        if(node != null) {
+        if (node != null) {
             resource = getThumbnailResource(node, workspace, generator);
         }
         return resource;
     }
 
-
     private Resource getThumbnailResource(Node node, String workspace, String generator) {
         Resource resource = null;
 
         try {
-            Node imageNode = node.getNode(originalImageNodeName);
+            Node imageNode = node.getNode(definition.getOriginalImageNodeName());
             String mimeType = imageNode.getProperty(FileProperties.PROPERTY_CONTENTTYPE).getString();
-            if(isImage(mimeType)){
+            if (isImage(mimeType)) {
                 String path = getGeneratorImagePath(workspace, node, generator);
-                if(StringUtils.isNotBlank(path)) {
+                if (StringUtils.isNotBlank(path)) {
                     resource = new ExternalResource(path, "image/png");
                 }
-            }else {
-                resource = createDocumentResource(mimeType);
+            } else {
+                resource = createIconFontResource(mimeType);
             }
         } catch (RepositoryException e) {
             log.debug("Could not get name or identifier from imageNode: {}", e.getMessage());
@@ -190,47 +160,45 @@ public class DefaultImageProvider implements ImageProvider {
     /**
      * Create a Icon Resource.
      */
-    private Resource createDocumentResource(String mimeType) {
-        String server = MgnlContext.getContextPath();
-        ExternalResource img = new ExternalResource(server + resolveIconClassName(mimeType) + ".svg", "image/png");
+    private IconFontResource createIconFontResource(String mimeType) {
+        IconFontResource img = new IconFontResource(resolveIconClassName(mimeType));
         return img;
     }
 
     /**
-     * Simple MimeType to Icon Mapping.
+     * Simple MimeType to Icon Class Mapping.
      */
     private String resolveIconClassName(String mimeType) {
         if (mimeType.contains("application/pdf")) {
-            return publicIconPath + "-pdf";
+            return "file-pdf";
         }
         if (mimeType.matches("application.*(msword)")) {
-            return publicIconPath + "-word";
+            return "file-word";
         }
         if (mimeType.matches("application.*(excel|xls)")) {
-            return publicIconPath + "-excel";
+            return "file-excel";
         }
         if (mimeType.matches("application.*(powerpoint)")) {
-            return publicIconPath + "-powerpoint";
+            return "file-powerpoint";
         }
         if (mimeType.contains("text/")) {
-            return publicIconPath + "-text";
+            return "file-text";
         }
         if (mimeType.contains("image/")) {
-            return publicIconPath + "-image";
+            return "file-image";
         }
         if (mimeType.contains("video/")) {
-            return publicIconPath + "-video";
+            return "file-video";
         }
         if (mimeType.contains("audio/")) {
-            return publicIconPath + "-audio";
+            return "file-audio";
         }
         if (mimeType.matches(".*(zip|compress)")) {
-            return publicIconPath + "-zip";
+            return "file";
         }
 
-        return publicIconPath +"-unknown";
+        return ICON_CLASS_DEFAULT;
     }
-
 
     private boolean isImage(String mimeType) {
         return mimeType != null && mimeType.matches("image.*");

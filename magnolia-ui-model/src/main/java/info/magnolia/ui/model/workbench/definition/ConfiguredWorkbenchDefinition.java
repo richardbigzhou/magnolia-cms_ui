@@ -36,7 +36,7 @@ package info.magnolia.ui.model.workbench.definition;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.thumbnail.ImageProvider;
+import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +66,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private boolean dialogWorkbench = false;
 
-    private ImageProvider imageProvider;
+    private ImageProviderDefinition imageProvider;
 
     private boolean includeProperties = false;
 
@@ -151,19 +151,18 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         return components;
     }
 
-    @Override
-    public ImageProvider getImageProvider() {
-        return imageProvider;
-    }
-
     public void setComponents(ComponentProviderConfiguration components) {
         this.components = components;
     }
 
-    public void setImageProvider(ImageProvider imageProvider) {
-        this.imageProvider = imageProvider;
+    @Override
+    public ImageProviderDefinition getImageProvider() {
+        return imageProvider;
     }
 
+    public void setImageProvider(ImageProviderDefinition imageProvider) {
+        this.imageProvider = imageProvider;
+    }
 
     @Override
     public boolean isDialogWorkbench() {
