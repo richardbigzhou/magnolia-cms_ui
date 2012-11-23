@@ -379,10 +379,9 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                     fireItemEditedEvent(getItemFromField(field));
 
                     // Should then update current editingItemId, and ask for next candidate
-                    // TableCell nextCell = getNextEditableCandidate(editingItemId,
-                    // editingPropertyId);
-                    // setEditing(nextCell.getItemId(), nextCell.getPropertyId());
-                    setEditing(null, null);
+                    TableCell nextCell = getNextEditableCandidate(editingItemId, editingPropertyId);
+                    setEditing(nextCell.getItemId(), nextCell.getPropertyId());
+                    //setEditing(null, null);
 
                 } else if (action == tabPrev) {
                     System.out.println("TF:KEY:SHIFT+TAB");
@@ -391,10 +390,9 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                     fireItemEditedEvent(getItemFromField(field));
 
                     // Should then update current editingItemId, and ask for previous candidate
-                    // TableCell previousCell = getPreviousEditableCandidate(editingItemId,
-                    // editingPropertyId);
-                    // setEditing(previousCell.getItemId(), previousCell.getPropertyId());
-                    setEditing(null, null);
+                    TableCell previousCell = getPreviousEditableCandidate(editingItemId, editingPropertyId);
+                    setEditing(previousCell.getItemId(), previousCell.getPropertyId());
+                    //setEditing(null, null);
 
                 } else if (action == escape) {
                     System.out.println("TF:KEY:ESCAPE");
@@ -415,28 +413,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                         propertyId = getNextEditableCandidate(selectedId, propertyId).getPropertyId();
                     }
                     setEditing(selectedId, propertyId);
-
-                } else if (action == add) {
-                    // OS-specific shortcut, but might delegate to actionbar's
-                    // AddItemActionDefinition
-                    System.out.println("TT:KEY:CMD+N");
-
-                } else if (action == delete) {
-                    // should delegate to actionbar's DeleteItemActionDefinition, either with
-                    // confirm dialog or undoable action
-                    System.out.println("TT:KEY:DELETE");
-
-                    // if (selectedId != null) {
-                    // // Change selection
-                    // Object newSelectedId = nextItemId(selectedId);
-                    // if (newSelectedId == null) {
-                    // newSelectedId = prevItemId(selectedId);
-                    // }
-                    // select(newSelectedId);
-                    //
-                    // // Remove the item from the container
-                    // getContainerDataSource().removeItem(selectedId);
-                    // }
                 }
             }
         }
