@@ -38,6 +38,7 @@ import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.admincentral.legacy.MarkNodeAsDeletedCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +51,26 @@ public class AdminCentralModuleVersionHandler extends DefaultModuleVersionHandle
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
         List<Task> list = new ArrayList<Task>();
+
         //TODO fgrilli this is a workaround as long as we have old adminInterface around. See MAGNOLIA-4659
-        list.add(new CheckAndModifyPropertyValueTask("", "", RepositoryConstants.CONFIG, "/modules/adminInterface/virtualURIMapping/default", "toURI", "redirect:/.magnolia/pages/adminCentral.html", "redirect:/.magnolia/admincentral"));
+        list.add(new CheckAndModifyPropertyValueTask(
+                "",
+                "",
+                RepositoryConstants.CONFIG,
+                "/modules/adminInterface/virtualURIMapping/default",
+                "toURI",
+                "redirect:/.magnolia/pages/adminCentral.html",
+                "redirect:/.magnolia/admincentral"));
+
+        list.add(new CheckAndModifyPropertyValueTask(
+                "",
+                "",
+                RepositoryConstants.CONFIG,
+                "/modules/adminInterface/commands/website/delete",
+                "class",
+                "info.magnolia.module.admininterface.commands.MarkNodeAsDeletedCommand",
+                MarkNodeAsDeletedCommand.class.getName()));
+
         return list;
     }
 }
