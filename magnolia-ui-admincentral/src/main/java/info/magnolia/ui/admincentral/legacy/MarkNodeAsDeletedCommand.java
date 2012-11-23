@@ -58,13 +58,13 @@ public class MarkNodeAsDeletedCommand extends BaseRepositoryCommand {
     public static final String DELETED_NODE_TEMPLATE = "adminInterface:mgnlDeleted";
 
     /**
-     * @deprecated since 5.0 - directly use {@link NodeTypes.DeletedMixin#DELETED_BY}
+     * @deprecated since 5.0 - directly use {@link NodeTypes.Deleted#DELETED_BY}
      */
-    public static final String DELETED_NODE_DELETED_BY = NodeTypes.DeletedMixin.DELETED_BY;
+    public static final String DELETED_NODE_DELETED_BY = NodeTypes.Deleted.DELETED_BY;
     /**
-     * @deprecated since 5.0 - directly use {@link NodeTypes.DeletedMixin#DELETED}
+     * @deprecated since 5.0 - directly use {@link NodeTypes.Deleted#DELETED}
      */
-    public static final String DELETED_NODE_DELETED_ON = NodeTypes.DeletedMixin.DELETED;
+    public static final String DELETED_NODE_DELETED_ON = NodeTypes.Deleted.DELETED;
 
     private static final String DELETED_NODE_PROP_NAME = "deleteNode";
 
@@ -112,7 +112,7 @@ public class MarkNodeAsDeletedCommand extends BaseRepositoryCommand {
         if (comment == null) {
             comment = MessagesManager.get("versions.comment.restore");
         }
-        NodeTypes.DeletedMixin.setDeletion(node.getJCRNode(), comment);
+        NodeTypes.Deleted.set(node.getJCRNode(), comment);
     }
 
     private void version(Content node, Context context) throws UnsupportedRepositoryOperationException, RepositoryException {
@@ -122,7 +122,7 @@ public class MarkNodeAsDeletedCommand extends BaseRepositoryCommand {
                 if (comment == null) {
                     comment = MessagesManager.get("versions.comment.deleted");
                 }
-                NodeTypes.VersionableMixin.setComment(node.getJCRNode(), comment);
+                NodeTypes.Versionable.set(node.getJCRNode(), comment);
                 node.save();
             }
             node.addVersion();
