@@ -41,26 +41,24 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Property;
-
 import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.cms.security.SecurityUtil;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
-import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
+import info.magnolia.ui.admincentral.form.FormPresenter;
+import info.magnolia.ui.admincentral.form.action.SaveFormAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 /**
  * Save user dialog action.
  */
-public class SaveUserDialogAction extends SaveDialogAction {
+public class SaveUserDialogAction extends SaveFormAction {
 
     private static final Logger log = LoggerFactory.getLogger(SaveUserDialogAction.class);
 
-    public SaveUserDialogAction(SaveUserDialogActionDefinition definition, FormDialogPresenter presenter) {
+    public SaveUserDialogAction(SaveUserDialogActionDefinition definition, FormPresenter presenter) {
         super(definition, presenter);
     }
 
@@ -73,9 +71,15 @@ public class SaveUserDialogAction extends SaveDialogAction {
 
             try {
                 final Node node = itemChanged.getNode();
-                // PASSWORD ?
-
-                // the roles (that are assigned to this group) and groups (this group belongs to) handling has to be added here
+                // ENCRYPT PASSWORD
+                String password = itemChanged.getItemProperty("password").getValue().toString();
+                if (StringUtils.isNotBlank(password)) {
+                    String encryptedPassword = SecurityUtil.getBCrypt(password);
+                    PropertyUtil.setProperty(node, "password", encryptedPassword);
+                }
+                // ENABLED
+                String _enabled = itemChanged.getItemProperty("enabled").getValue().toString();
+                PropertyUtil.setProperty(node, "enabled", _enabled);
                 // GROUPS
                 String _ids = itemChanged.getItemProperty("groups").getValue().toString();
                 _ids = StringUtils.remove(_ids, '[');

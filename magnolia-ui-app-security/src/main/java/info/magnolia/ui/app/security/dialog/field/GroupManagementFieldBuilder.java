@@ -35,12 +35,12 @@ package info.magnolia.ui.app.security.dialog.field;
 
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 import info.magnolia.ui.model.form.builder.OptionBuilder;
-import info.magnolia.ui.model.form.builder.OptionGroupFieldBuilder;
+import info.magnolia.ui.model.form.builder.TwinColSelectFieldBuilder;
 
 /**
  * Config-by-code builder for the Group Management field.
  */
-public class GroupManagementFieldBuilder extends OptionGroupFieldBuilder {
+public class GroupManagementFieldBuilder extends TwinColSelectFieldBuilder {
 
     private final GroupManagementFieldDefinition definition = new GroupManagementFieldDefinition();
 
@@ -55,6 +55,16 @@ public class GroupManagementFieldBuilder extends OptionGroupFieldBuilder {
     }
 
     // Overrides for methods in parent class changing return type to allow method chaining
+
+    @Override
+    public GroupManagementFieldBuilder leftColumnCaption(String caption) {
+        return (GroupManagementFieldBuilder) super.leftColumnCaption(caption);
+    }
+
+    @Override
+    public GroupManagementFieldBuilder rightColumnCaption(String caption) {
+        return (GroupManagementFieldBuilder) super.rightColumnCaption(caption);
+    }
 
     @Override
     public GroupManagementFieldBuilder multiselect() {

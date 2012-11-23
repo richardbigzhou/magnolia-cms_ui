@@ -36,7 +36,7 @@ package info.magnolia.ui.app.security.dialog.field;
 import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
 
 /**
- * TODO: describe this type
+ * A definition for the Enabled field.
  */
 public class EnabledFieldDefinition extends CheckboxFieldDefinition {
 

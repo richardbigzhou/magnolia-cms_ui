@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.app.security.dialog.action;
 
-import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
+import info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition;
 
 /**
  * Save group dialog action definition.
  */
-public class SaveGroupDialogActionDefinition extends SaveDialogActionDefinition {
+public class SaveGroupDialogActionDefinition extends SaveFormActionDefinition {
 
 }

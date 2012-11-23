@@ -35,7 +35,6 @@ package info.magnolia.ui.app.security.dialog.field;
 
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 import info.magnolia.ui.model.form.builder.OptionBuilder;
-import info.magnolia.ui.model.form.builder.OptionGroupFieldBuilder;
 import info.magnolia.ui.model.form.builder.TwinColSelectFieldBuilder;
 
 /**
@@ -56,6 +55,16 @@ public class RoleManagementFieldBuilder extends TwinColSelectFieldBuilder {
     }
 
     // Overrides for methods in parent class changing return type to allow method chaining
+
+    @Override
+    public RoleManagementFieldBuilder leftColumnCaption(String caption) {
+        return (RoleManagementFieldBuilder) super.leftColumnCaption(caption);
+    }
+
+    @Override
+    public RoleManagementFieldBuilder rightColumnCaption(String caption) {
+        return (RoleManagementFieldBuilder) super.rightColumnCaption(caption);
+    }
 
     @Override
     public RoleManagementFieldBuilder multiselect() {
