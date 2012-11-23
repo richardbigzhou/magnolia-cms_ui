@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
-import info.magnolia.ui.admincentral.dialog.NewFormDialogPresenter;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
@@ -63,7 +62,7 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
     @Override
     public void execute() throws ActionExecutionException {
-        final NewFormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByName(getDefinition().getDialogName());
+        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByName(getDefinition().getDialogName());
         final EventBus eventBus = dialogPresenter.getEventBus();
         final JcrNodeAdapter item = new JcrNodeAdapter(nodeToEdit);
         dialogPresenter.start(item, new FormDialogPresenter.Callback() {

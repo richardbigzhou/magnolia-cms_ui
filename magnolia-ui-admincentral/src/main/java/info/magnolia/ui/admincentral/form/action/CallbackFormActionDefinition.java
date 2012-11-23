@@ -31,22 +31,58 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.admincentral.form.action;
 
-import com.vaadin.data.Item;
-import info.magnolia.ui.admincentral.form.FormPresenter;
-import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * FormDialogPresenter.
+ * CallbackFormActionDefinition.
  */
-public interface FormDialogPresenter extends DialogPresenter {
+public class CallbackFormActionDefinition implements ActionDefinition {
+    private String name;
+    private String label;
+    private boolean callSuccess = true;
+    private String successActionName = "success";
 
-    DialogView start(Item item, DialogPresenter.Callback callback);
+    public String getName() {
+        return name;
+    }
 
-    @Override
-    NewFormDialogView getView();
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    FormPresenter getForm();
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+
+    public boolean isCallSuccess() {
+        return this.callSuccess;
+    }
+
+    /**
+     * @param callSuccess  true (default) call Callback.onSuccess(String action).
+     *          false call Callback.onCancel()
+     */
+    public void setCallSuccess(boolean callSuccess) {
+        this.callSuccess = callSuccess;
+    }
+
+
+    public String getSuccessActionName() {
+        return this.successActionName;
+    }
+
+    /**
+     * @param successActionName will be passed as parameter to Callback.onSuccess(String successActionName)
+     * in case of callSuccess = true.
+     */
+    public void setSuccessActionName(String successActionName) {
+        this.successActionName = successActionName;
+    }
 }

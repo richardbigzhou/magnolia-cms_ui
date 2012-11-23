@@ -31,22 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.admincentral.form.action;
 
-import com.vaadin.data.Item;
 import info.magnolia.ui.admincentral.form.FormPresenter;
-import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
 
 /**
- * FormDialogPresenter.
+ * CallbackFormAction.
  */
-public interface FormDialogPresenter extends DialogPresenter {
+public class CallbackFormAction  extends ActionBase<CallbackFormActionDefinition> {
 
-    DialogView start(Item item, DialogPresenter.Callback callback);
+    private FormPresenter presenter;
+
+    public CallbackFormAction(CallbackFormActionDefinition definition, FormPresenter presenter) {
+        super(definition);
+        this.presenter = presenter;
+    }
 
     @Override
-    NewFormDialogView getView();
-
-    FormPresenter getForm();
+    public void execute() throws ActionExecutionException {
+        if(getDefinition().isCallSuccess()) {
+            presenter.getCallback().onSuccess(getDefinition().getSuccessActionName());
+        } else {
+            presenter.getCallback().onCancel();
+        }
+    }
 }

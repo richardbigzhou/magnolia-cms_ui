@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.model.thumbnail;
 
-
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;
@@ -61,8 +60,18 @@ public class DefaultImageProvider implements ImageProvider {
 
     private String imageExtension = IMAGE_EXTENSION;
 
-    private String publicIconPath = "/VAADIN/themes/admincentraltheme/img/icons/file";
+    private final String PORTRAIT_GENERATOR = "portrait";
+    private final String THUMBNAIL_GENERATOR = "thumbnail";
+    private final String LARGE_GENERATOR = "large";
 
+    private final String publicIconPath = "/VAADIN/themes/admincentraltheme/img/icons/file";
+
+    @Override
+    public String getLargePath(final String workspace, final String path) {
+        Node node = SessionUtil.getNode(workspace, path);
+
+        return getGeneratorImagePath(workspace, node, LARGE_GENERATOR);
+    }
 
     @Override
     public String getPortraitPath(final String workspace, final String path) {
@@ -76,6 +85,13 @@ public class DefaultImageProvider implements ImageProvider {
         Node node = SessionUtil.getNode(workspace, path);
 
         return getGeneratorImagePath(workspace, node, THUMBNAIL_GENERATOR);
+    }
+
+    @Override
+    public String getLargePathByIdentifier(String workspace, String identifier) {
+        Node node = SessionUtil.getNodeByIdentifier(workspace, identifier);
+
+        return getGeneratorImagePath(workspace, node, LARGE_GENERATOR);
     }
 
     @Override
@@ -102,11 +118,11 @@ public class DefaultImageProvider implements ImageProvider {
                 String imageName;
                 if (imageNode.hasProperty("fileName")) {
                     imageName = imageNode.getProperty("fileName").getString();
-                }
-                else {
+                } else {
                     imageName = node.getName();
                 }
-                imagePath = MgnlContext.getContextPath() + "/" + imagingServletPath + "/" + generator + "/" + workspace + "/" + imageNode.getIdentifier() + "/" + imageName + "." + imageExtension;
+                imagePath = MgnlContext.getContextPath() + "/" + imagingServletPath + "/" + generator + "/" + workspace + "/"
+                        + imageNode.getIdentifier() + "/" + imageName + "." + imageExtension;
             } catch (RepositoryException e) {
                 log.warn("Could not get name or identifier from imageNode: {}", e.getMessage());
             }
@@ -122,7 +138,7 @@ public class DefaultImageProvider implements ImageProvider {
 
     @Override
     public void setOriginalImageNodeName(String originalImageNodeName) {
-            this.originalImageNodeName = originalImageNodeName;
+        this.originalImageNodeName = originalImageNodeName;
     }
 
     @Override
@@ -149,7 +165,7 @@ public class DefaultImageProvider implements ImageProvider {
     public Resource getThumbnailResourceByPath(String workspace, String path, String generator) {
         Resource resource = null;
         Node node = SessionUtil.getNode(workspace, path);
-        if(node != null) {
+        if (node != null) {
             resource = getThumbnailResource(node, workspace, generator);
         }
         return resource;
@@ -159,12 +175,11 @@ public class DefaultImageProvider implements ImageProvider {
     public Resource getThumbnailResourceById(String workspace, String identifier, String generator) {
         Resource resource = null;
         Node node = SessionUtil.getNodeByIdentifier(workspace, identifier);
-        if(node != null) {
+        if (node != null) {
             resource = getThumbnailResource(node, workspace, generator);
         }
         return resource;
     }
-
 
     private Resource getThumbnailResource(Node node, String workspace, String generator) {
         Resource resource = null;
@@ -172,12 +187,12 @@ public class DefaultImageProvider implements ImageProvider {
         try {
             Node imageNode = node.getNode(originalImageNodeName);
             String mimeType = imageNode.getProperty(FileProperties.PROPERTY_CONTENTTYPE).getString();
-            if(isImage(mimeType)){
+            if (isImage(mimeType)) {
                 String path = getGeneratorImagePath(workspace, node, generator);
-                if(StringUtils.isNotBlank(path)) {
+                if (StringUtils.isNotBlank(path)) {
                     resource = new ExternalResource(path, "image/png");
                 }
-            }else {
+            } else {
                 resource = createDocumentResource(mimeType);
             }
         } catch (RepositoryException e) {
@@ -228,9 +243,8 @@ public class DefaultImageProvider implements ImageProvider {
             return publicIconPath + "-zip";
         }
 
-        return publicIconPath +"-unknown";
+        return publicIconPath + "-unknown";
     }
-
 
     private boolean isImage(String mimeType) {
         return mimeType != null && mimeType.matches("image.*");

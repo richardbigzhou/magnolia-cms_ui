@@ -36,7 +36,6 @@ package info.magnolia.ui.app.pages.editor;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.app.content.AbstractItemSubApp;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
 import info.magnolia.ui.admincentral.content.item.ItemView;
@@ -46,20 +45,19 @@ import info.magnolia.ui.app.pages.action.AddComponentActionDefinition;
 import info.magnolia.ui.app.pages.action.EditElementActionDefinition;
 import info.magnolia.ui.app.pages.action.EditPageActionDefinition;
 import info.magnolia.ui.app.pages.action.PreviewPageActionDefinition;
-import info.magnolia.ui.app.pages.editor.location.PagesLocation;
+import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditor;
 import info.magnolia.ui.vaadin.editor.PageEditorParameters;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,12 +71,12 @@ import javax.jcr.Session;
 /**
  * PagesEditorSubApp.
  */
-public class PagesEditorSubApp extends AbstractItemSubApp implements PagesEditorSubAppView.Listener {
+public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubAppView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
     private final PagesEditorSubAppView view;
-
+    
     private final EventBus eventBus;
 
     private final PageEditorPresenter pageEditorPresenter;
@@ -90,11 +88,12 @@ public class PagesEditorSubApp extends AbstractItemSubApp implements PagesEditor
     private String caption;
 
     private final WorkbenchActionFactory actionFactory;
+    private WorkbenchDefinition workbenchDefinition;
 
     @Inject
     public PagesEditorSubApp(final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named("subapp") EventBus eventBus,
         final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
-        super(subAppContext, view, null);
+        super(subAppContext, view);
 
         this.view = view;
         this.view.setListener(this);
@@ -102,6 +101,7 @@ public class PagesEditorSubApp extends AbstractItemSubApp implements PagesEditor
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.actionFactory = actionFactory;
+        this.workbenchDefinition = ((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench();
 
         bindHandlers();
     }
@@ -116,7 +116,7 @@ public class PagesEditorSubApp extends AbstractItemSubApp implements PagesEditor
         ItemLocation itemLocation = ItemLocation.wrap(location);
         super.start(itemLocation);
 
-        ActionbarDefinition actionbarDefinition = ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getActionbar();
+        ActionbarDefinition actionbarDefinition = workbenchDefinition.getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
         view.setActionbarView(actionbar);
         view.setPageEditorView(pageEditorPresenter.start());
@@ -140,6 +140,15 @@ public class PagesEditorSubApp extends AbstractItemSubApp implements PagesEditor
     @Override
     public boolean supportsLocation(Location location) {
         return getCurrentLocation().getNodePath().equals(ItemLocation.wrap(location).getNodePath());
+    }
+
+    /**
+     * Wraps the current DefaultLocation in a ContentLocation. Providing getter and setters for used parameters.
+     * @return
+     */
+    @Override
+    public ItemLocation getCurrentLocation() {
+        return ItemLocation.wrap(super.getCurrentLocation());
     }
 
     @Override
@@ -170,7 +179,7 @@ public class PagesEditorSubApp extends AbstractItemSubApp implements PagesEditor
         ItemView.ViewType action = location.getViewType();
         String path = location.getNodePath();
 
-        this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, action.getText());
+        this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, ItemView.ViewType.VIEW.getText().equals(action.getText()));
         this.caption = getPageTitle(path);
     }
 
@@ -178,7 +187,7 @@ public class PagesEditorSubApp extends AbstractItemSubApp implements PagesEditor
         ItemView.ViewType action = location.getViewType();
         String path = location.getNodePath();
 
-        if (parameters != null && (parameters.getNodePath().equals(path) && parameters.getAction().equals(action.getText()))) {
+        if (parameters != null && (parameters.getNodePath().equals(path) && parameters.isPreview() == ItemView.ViewType.VIEW.getText().equals(action.getText()))) {
             return false;
         }
         return true;
@@ -187,7 +196,7 @@ public class PagesEditorSubApp extends AbstractItemSubApp implements PagesEditor
     private String getPageTitle(String path) {
         String caption = null;
         try {
-            Session session = MgnlContext.getJCRSession(((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace());
+            Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
             Node node = session.getNode(path);
             caption = node.getProperty("title").getString();
         } catch (RepositoryException e) {
@@ -294,16 +303,6 @@ public class PagesEditorSubApp extends AbstractItemSubApp implements PagesEditor
                 updateActions();
             }
         });
-    }
-
-
-    public static DefaultLocation createLocation(String editorPath, String previewToken) {
-        String token = editorPath ;
-        if (StringUtils.isNotEmpty(previewToken)) {
-            token += ":" + previewToken;
-        }
-
-        return new PagesLocation(token);
     }
 
 }

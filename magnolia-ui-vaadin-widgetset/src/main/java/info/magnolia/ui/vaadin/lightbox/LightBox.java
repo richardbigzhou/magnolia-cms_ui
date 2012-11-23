@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.vaadin.lightbox;
 
-import com.vaadin.data.Item;
-import info.magnolia.ui.admincentral.form.FormPresenter;
-import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
+import info.magnolia.ui.vaadin.gwt.client.lightbox.VLightBox;
+
+import com.vaadin.terminal.PaintException;
+import com.vaadin.terminal.PaintTarget;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.ClientWidget.LoadStyle;
+
 
 /**
- * NewFormDialogPresenter.
+ * Lightbox displays one or more assets in a simple popup.
  */
-public interface NewFormDialogPresenter extends DialogPresenter {
+@SuppressWarnings("serial")
+@ClientWidget(value = VLightBox.class, loadStyle = LoadStyle.EAGER)
+public class LightBox extends AbstractComponent {
 
-    DialogView start(Item item, DialogPresenter.Callback callback);
+    String imagePath = null;
+
+    public LightBox(String imageUrl) {
+
+    }
 
     @Override
-    NewFormDialogView getView();
+    public void paintContent(PaintTarget target) throws PaintException {
+        if (imagePath != null) {
+            target.addAttribute("imagePath", imagePath);
+        }
 
-    FormPresenter getForm();
+        super.paintContent(target);
+    }
+
+
+    public void setImage(String imagePath) {
+
+        this.imagePath = imagePath;
+        requestRepaint();
+    }
+
+
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.vaadin.gwt.client.lightbox;
 
-import com.vaadin.data.Item;
-import info.magnolia.ui.admincentral.form.FormPresenter;
-import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
+import com.vaadin.terminal.gwt.client.ApplicationConnection;
+import com.vaadin.terminal.gwt.client.Paintable;
+import com.vaadin.terminal.gwt.client.UIDL;
 
 /**
- * FormDialogPresenter.
+ * The VLight vaadin client-side proxy for the Icon component.
  */
-public interface FormDialogPresenter extends DialogPresenter {
+public class VLightBox extends GwtLightBox implements Paintable {
 
-    DialogView start(Item item, DialogPresenter.Callback callback);
+    private ApplicationConnection client;
+
+    private String paintableId;
+
+    public VLightBox() {
+
+    }
 
     @Override
-    NewFormDialogView getView();
+    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+        this.client = client;
+        this.paintableId = uidl.getId();
+        if (client.updateComponent(this, uidl, true)) {
+            return;
+        }
 
-    FormPresenter getForm();
+        updateLightBox(uidl);
+    }
+
+
+    protected void updateLightBox(UIDL uidl) {
+        if (uidl.hasAttribute("imagePath")) {
+            updateImageUrl(uidl.getStringAttribute("imagePath"));
+        }
+    }
+
 }

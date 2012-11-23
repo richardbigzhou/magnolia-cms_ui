@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
-
-import com.vaadin.data.Item;
-import info.magnolia.ui.admincentral.form.FormPresenter;
-import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
+package info.magnolia.ui.vaadin.gwt.client.editor;
 
 /**
- * FormDialogPresenter.
+ * Constants used in ImageEditor widget.
+ *
  */
-public interface FormDialogPresenter extends DialogPresenter {
+public interface Constants {
 
-    DialogView start(Item item, DialogPresenter.Callback callback);
+    byte DRAG_NONE = 0;
+    byte DRAG_BACKGROUND = 1;
+    byte DRAG_TOP_LEFT_CORNER = 2;
+    byte DRAG_TOP_RIGHT_CORNER = 3;
+    byte DRAG_BOTTOM_LEFT_CORNER = 4;
+    byte DRAG_BOTTOM_RIGHT_CORNER = 5;
 
-    @Override
-    NewFormDialogView getView();
-
-    FormPresenter getForm();
 }

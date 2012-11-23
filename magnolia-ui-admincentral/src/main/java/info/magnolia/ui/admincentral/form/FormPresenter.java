@@ -55,6 +55,8 @@ public interface FormPresenter {
 
     void addAction(String actionName, String actionLabel, FormView.FormActionListener callback);
 
+    boolean isValid();
+
     /**
      * Callback interface for FormView.Presenter.
      */

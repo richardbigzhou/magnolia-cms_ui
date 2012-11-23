@@ -47,9 +47,13 @@ public interface ImageProvider {
     static final String PORTRAIT_GENERATOR = "portrait";
     static final String THUMBNAIL_GENERATOR = "thumbnail";
 
+    String getLargePath(String workspace, String path);
+
     String getPortraitPath(String workspace, String path);
 
     String getThumbnailPath(String workspace, String path);
+
+    String getLargePathByIdentifier(String workspace, String uuid);
 
     String getPortraitPathByIdentifier(String workspace, String uuid);
 

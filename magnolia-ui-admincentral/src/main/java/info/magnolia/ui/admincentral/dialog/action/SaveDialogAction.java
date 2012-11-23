@@ -33,22 +33,20 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import com.vaadin.data.Item;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.Item;
 
 /**
  * Saves a dialog.
@@ -66,14 +64,14 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
     public SaveDialogAction(SaveDialogActionDefinition definition, FormDialogPresenter presenter) {
         super(definition);
         this.presenter = presenter;
-        this.item = presenter.getItemDataSource();
+        this.item = presenter.getForm().getItemDataSource();
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
-        presenter.showValidation(true);
-        if (presenter.getView().isValid()) {
+        presenter.getForm().showValidation(true);
+        if (presenter.getForm().isValid()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
                 final Node node = itemChanged.getNode();

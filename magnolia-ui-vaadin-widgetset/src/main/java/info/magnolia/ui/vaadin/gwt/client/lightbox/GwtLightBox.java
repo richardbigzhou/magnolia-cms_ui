@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.vaadin.gwt.client.lightbox;
 
-import com.vaadin.data.Item;
-import info.magnolia.ui.admincentral.form.FormPresenter;
-import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
+
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+
 
 /**
- * FormDialogPresenter.
+ * The GwtLightBox widget.
  */
-public interface FormDialogPresenter extends DialogPresenter {
+public class GwtLightBox extends Widget {
 
-    DialogView start(Item item, DialogPresenter.Callback callback);
+    private static final String CLASSNAME = "lightbox";
 
-    @Override
-    NewFormDialogView getView();
+    private static final int SIZE_DEFAULT = 24;
 
-    FormPresenter getForm();
+    private final Element root = DOM.createDiv();
+    private final Element image = DOM.createImg();
+
+    VerticalPanel panel = new VerticalPanel();
+
+    //private final  Image image = new Image();
+
+    public GwtLightBox() {
+        setElement(root);
+        setStylePrimaryName(CLASSNAME);
+
+        //root.appendChild(image);
+        //image.setAttribute("src", "");
+
+        //root.add(image);
+    }
+
+    public void updateImageUrl(String imageUrl){
+        image.setAttribute("src", imageUrl);
+    }
+
+    public void updateColor(String value) {
+        root.getStyle().setColor(value);
+    }
+
+
+
+
 }

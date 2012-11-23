@@ -48,6 +48,7 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
     public static final String TABS_NODE_NAME = "tabs";
     public static final String ACTIONS_NODE_NAME = "actions";
     public static final String EXTEND_PROPERTY_NAME = "extends";
+    public static final String FORM_NODE_NAME = "formDefinition";
 
     private String id;
 

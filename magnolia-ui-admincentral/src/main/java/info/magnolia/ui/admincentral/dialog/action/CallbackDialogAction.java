@@ -38,7 +38,7 @@ import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
 /**
- * Implements an action for Callback handling on dialog {@link info.magnolia.ui.vaadin.dialog.FormDialogPresenter.Presenter.Callback}.
+ * Implements an action for Callback handling on dialog {@link info.magnolia.ui.vaadin.form.NewFormDialogPresenter.Presenter.Callback}.
  * This Action can be configured to perform a cancel or a success Action.
  *
  * @see CallbackDialogActionDefinition

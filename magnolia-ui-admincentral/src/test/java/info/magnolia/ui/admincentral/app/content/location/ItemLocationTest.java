@@ -129,7 +129,7 @@ public class ItemLocationTest {
         ItemLocation itemLocation = new ItemLocation("someApp", "someContentApp", "/some/other/node/00:edit");
 
         // WHEN
-        itemLocation.updateAction(ItemView.ViewType.VIEW);
+        itemLocation.updateViewtype(ItemView.ViewType.VIEW);
 
         // TEST
         assertEquals(ItemView.ViewType.VIEW, itemLocation.getViewType());
@@ -153,7 +153,7 @@ public class ItemLocationTest {
         ItemLocation itemLocation = new ItemLocation("someApp", "someContentApp", "/some/other/node/00:view");
 
         // WHEN
-        itemLocation.updateAction(ItemView.ViewType.EDIT);
+        itemLocation.updateViewtype(ItemView.ViewType.EDIT);
 
         // TEST
         assertEquals("app:someApp:someContentApp;/some/other/node/00:edit", itemLocation.toString());
