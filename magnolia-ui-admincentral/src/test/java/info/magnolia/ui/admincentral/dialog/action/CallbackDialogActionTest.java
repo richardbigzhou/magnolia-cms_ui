@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import com.vaadin.data.Item;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
+import info.magnolia.ui.admincentral.form.FormItem;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -130,6 +131,11 @@ public class CallbackDialogActionTest {
 
         @Override
         public FormView start(Item item, Callback callback) {
+            return null;
+        }
+
+        @Override
+        public FormView start(Item item, FormItem parent) {
             return null;
         }
 

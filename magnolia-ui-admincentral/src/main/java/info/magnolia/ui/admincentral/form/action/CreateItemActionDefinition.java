@@ -31,40 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.builder;
+package info.magnolia.ui.admincentral.form.action;
 
-import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
-import org.apache.commons.lang.StringUtils;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * Builder for Dialogs.
+ * CreateItemActionDefinition.
  */
-public class DialogBuilder {
-    /**
-     * @return DialogView populated with values from DialogDefinition and Item.
-     */
-    public NewFormDialogView buildFormDialog(DialogDefinition dialogDefinition, NewFormDialogView view) {
+public class CreateItemActionDefinition implements ActionDefinition {
 
-        final String description = dialogDefinition.getDescription();
-        final String label = dialogDefinition.getLabel();
-        final String basename = dialogDefinition.getI18nBasename();
+    private String nodeType;
+    private String appId;
+    private String subAppId;
 
-        if (StringUtils.isNotBlank(description)) {
-            String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
-            view.setDialogDescription(i18nDescription);
-        }
-        
-        if (StringUtils.isNotBlank(label)) {
-            String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
-            view.setCaption(i18nLabel);
-        }
-
-
-
-        //view.setShowAllEnabled(dialogDefinition.getTabs().size() > 1);
-        return view;
+    public String getAppId() {
+        return appId;
     }
-}
 
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public String getSubAppId() {
+        return subAppId;
+    }
+
+    public void setSubAppId(String subAppId) {
+        this.subAppId = subAppId;
+    }
+
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
+}
