@@ -84,7 +84,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
         // does not work, either put in an ActionManager, either add action handler to first
         // eligible ancestor
-        getActionManager().addActionHandler(new TextFieldKeyboardHandler());
+        getActionManager().addActionHandler(new EditingKeyboardHandler());
     }
 
     // @Override
@@ -332,29 +332,41 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
     /**
      * The Class TextFieldKeyboardHandler for keyboard shortcuts within the inplace editing field.
      */
-    private class TextFieldKeyboardHandler implements Handler {
+    private class EditingKeyboardHandler implements Handler {
 
-        Action enter = new ShortcutAction("Enter", ShortcutAction.KeyCode.ENTER, null);
+        ShortcutAction enter = new ShortcutAction("Enter", ShortcutAction.KeyCode.ENTER, null);
 
-        Action tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
+        ShortcutAction tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
 
-        Action tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB,
+        ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB,
             new int[]{ShortcutAction.ModifierKey.SHIFT});
 
-        Action escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
+        ShortcutAction escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
+        
+        ShortcutAction add = new ShortcutAction("Add item", ShortcutAction.KeyCode.N, new int[]{ShortcutAction.ModifierKey.META});
+
+        ShortcutAction delete = new ShortcutAction("Delete", ShortcutAction.KeyCode.DELETE, null);
 
         @Override
         public Action[] getActions(Object target, Object sender) {
-            return new Action[]{enter, tabNext, tabPrev, escape};
+            return new Action[]{enter, tabNext, tabPrev, escape, add, delete};
         }
 
         @Override
         public void handleAction(Action action, Object sender, Object target) {
+            /* In case of enter the Action needs to be casted back to
+             * ShortcutAction because for some reason the object is not same
+             * as this.enter object. In that case keycode is used in comparison.
+             */
+            if(!(action instanceof ShortcutAction)) {
+                return;
+            }
+            ShortcutAction shortcut = (ShortcutAction)action;
 
             if (target != InplaceEditingTreeTable.this && target instanceof Field) {
                 Field field = (Field) target;
 
-                if (action == enter) {
+                if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
                     System.out.println("TF:KEY:ENTER");
                     field.commit();
                     fireItemEditedEvent(getItemFromField(field));
@@ -389,37 +401,13 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                     field.discard();
                     setEditing(null, null);
                 }
-            }
-        }
-    }
-
-    /**
-     * The Class TableKeyboardHandler for keyboard shortcuts when table has the focus.
-     */
-    private class TableKeyboardHandler implements Handler {
-
-        Action enter = new ShortcutAction("Enter", ShortcutAction.KeyCode.ENTER, null);
-
-        Action add = new ShortcutAction("Add item", ShortcutAction.KeyCode.N, new int[]{ShortcutAction.ModifierKey.META});
-
-        Action delete = new ShortcutAction("Delete", ShortcutAction.KeyCode.DELETE, null);
-
-        @Override
-        public Action[] getActions(Object target, Object sender) {
-            return new Action[]{enter, add, delete};
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public void handleAction(Action action, Object sender, Object target) {
-
-            if (target == InplaceEditingTreeTable.this) {
+            } else if (target == InplaceEditingTreeTable.this) {
                 if (getValue() == null) {
                     return;
                 }
                 Object selectedId = ((Set<Object>) getValue()).iterator().next();
 
-                if (action == enter) {
+                if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
                     // Edit selected row at first column
                     System.out.println("TT:KEY:ENTER");
                     Object propertyId = getVisibleColumns()[0];
