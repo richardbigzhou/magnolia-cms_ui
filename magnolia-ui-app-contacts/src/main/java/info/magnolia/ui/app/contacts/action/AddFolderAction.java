@@ -66,7 +66,7 @@ public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDe
 
         String name = Path.getUniqueLabel(node.getSession(), node.getPath(), "untitled");
         Node newNode = node.addNode(name, "mgnl:folder");
-        NodeTypes.CreatedMixin.setCreation(newNode);
+        NodeTypes.Created.set(newNode);
     }
 
     private Node findAncestorOfType(Node node, String nodeType) throws RepositoryException {
