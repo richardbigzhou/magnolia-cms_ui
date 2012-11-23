@@ -72,8 +72,6 @@
   <nodeType name="mgnl:contact" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
     <supertypes>
       <supertype>mgnl:content</supertype>
-      <supertype>mgnl:activatable</supertype>
-      <supertype>mgnl:versionable</supertype>
     </supertypes>
   </nodeType>
 </nodeTypes>
