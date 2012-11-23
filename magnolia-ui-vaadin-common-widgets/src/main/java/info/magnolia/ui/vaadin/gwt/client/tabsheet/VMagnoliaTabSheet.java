@@ -67,7 +67,6 @@ import com.vaadin.terminal.gwt.client.VConsole;
 /**
  * Client side implementation of the simple tab sheet.
  */
-@SuppressWarnings("serial")
 public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoliaTabSheetView.Presenter, 
     Container, ClientSideHandler, HasTabSetChangedHandlers, HasActiveTabChangeHandlers {
 

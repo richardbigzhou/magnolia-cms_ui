@@ -47,7 +47,6 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
  * notifications counters for instance. The client-side implementation is scalable and only relies
  * on browser support for rounded corners.
  */
-@SuppressWarnings("serial")
 @ClientWidget(value = VBadgeIcon.class, loadStyle = LoadStyle.EAGER)
 public class BadgeIcon extends AbstractComponent {
 

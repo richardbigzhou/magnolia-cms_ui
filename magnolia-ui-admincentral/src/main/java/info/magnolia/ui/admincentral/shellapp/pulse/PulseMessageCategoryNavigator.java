@@ -46,7 +46,6 @@ import com.vaadin.ui.themes.BaseTheme;
 /**
  * Message category navigation component in Pulse.
  */
-@SuppressWarnings("serial")
 public class PulseMessageCategoryNavigator extends CssLayout {
     
     private CheckBox groupByTypeCheckBox;

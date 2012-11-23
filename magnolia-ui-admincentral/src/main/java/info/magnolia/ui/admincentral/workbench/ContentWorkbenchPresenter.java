@@ -85,7 +85,6 @@ import com.vaadin.terminal.Resource;
  * one defines the JCR workspace to connect to, the columns/properties to
  * display, the available actions and so on.
  */
-@SuppressWarnings("serial")
 public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchPresenter.class);

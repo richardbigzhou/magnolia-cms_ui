@@ -55,7 +55,6 @@ import org.slf4j.LoggerFactory;
  * User interface component that extends TreeTable and uses a WorkbenchDefinition for layout and
  * invoking command callbacks.
  */
-@SuppressWarnings("serial")
 public class WorkbenchTreeTable extends MagnoliaTreeTable {
 
     private final Logger log = LoggerFactory.getLogger(getClass());

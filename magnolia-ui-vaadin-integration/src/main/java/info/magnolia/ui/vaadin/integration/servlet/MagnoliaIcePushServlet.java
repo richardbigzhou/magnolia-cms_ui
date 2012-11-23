@@ -49,7 +49,6 @@ import com.vaadin.terminal.gwt.server.ApplicationServlet;
 /**
  * Modified version of the {@link org.vaadin.artur.icepush.ICEPushServlet}.
  */
-@SuppressWarnings("serial")
 public class MagnoliaIcePushServlet extends ApplicationServlet {
 
     private MainServlet ICEPushServlet;

@@ -65,7 +65,6 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * The Actionbar widget, consisting of sections and groups of actions.
  */
-@SuppressWarnings("serial")
 @ClientWidget(value = VActionbar.class, loadStyle = LoadStyle.EAGER)
 public class Actionbar extends AbstractComponent implements ActionbarView, ServerSideHandler {
 

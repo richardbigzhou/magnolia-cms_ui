@@ -48,7 +48,6 @@ import com.vaadin.ui.ComponentContainer;
  * layout capabilities for server-side extending components, but has no client-side representation.
  * Instead, it delegates the vaadin paint mechanism straight to its composition root.
  */
-@SuppressWarnings("serial")
 public class CompositeComponent extends AbstractComponentContainer {
 
     protected final LightLayout root = new LightLayout();
