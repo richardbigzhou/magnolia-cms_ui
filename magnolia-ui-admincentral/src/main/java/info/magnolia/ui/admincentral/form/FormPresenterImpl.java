@@ -96,6 +96,11 @@ public class FormPresenterImpl implements FormPresenter {
     }
 
     @Override
+    public boolean isValid() {
+        return view.isValid();
+    }
+
+    @Override
     public FormView start(Item item, FormPresenter.Callback callback) {
         this.item = item;
         this.callback = callback;

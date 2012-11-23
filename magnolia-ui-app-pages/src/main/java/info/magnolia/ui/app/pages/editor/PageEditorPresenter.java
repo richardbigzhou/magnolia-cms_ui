@@ -42,7 +42,6 @@ import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
-import info.magnolia.ui.admincentral.dialog.NewFormDialogPresenter;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.app.pages.field.ComponentSelectorDefinition;
 import info.magnolia.ui.app.pages.field.TemplateSelectorField;
@@ -51,25 +50,23 @@ import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.model.tab.definition.TabDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.editor.PageEditor;
 import info.magnolia.ui.vaadin.editor.PageEditorParameters;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
-
-import java.util.LinkedList;
-import java.util.List;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -117,7 +114,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     @Override
     public void editComponent(String workspace, String path, String dialog) {
-        final NewFormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByName(dialog);
+        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByName(dialog);
 
         try {
             Session session = MgnlContext.getJCRSession(workspace);
@@ -135,7 +132,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     @Override
     public void newComponent(String workspace, String path, String availableComponents) {
         updateDialogDefinition(availableComponents);
-        final NewFormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByDefinition(dialogDefinition);
+        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByDefinition(dialogDefinition);
         try {
             Session session = MgnlContext.getJCRSession(workspace);
 
@@ -159,7 +156,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                     try {
                         TemplateDefinition templateDef = templateDefinitionRegistry.getTemplateDefinition(templateId);
                         String dialog = templateDef.getDialog();
-                        final NewFormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByName(dialog);
+                        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByName(dialog);
                         createDialogAction(item, dialogPresenter);
                     } catch (RegistrationException e) {
                         log.error("Exception caught: {}", e.getMessage(), e);
@@ -183,7 +180,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     /**
      * Create a Dialog and define the call back actions.
      */
-    private void createDialogAction(final JcrNodeAdapter item, final NewFormDialogPresenter dialogPresenter) {
+    private void createDialogAction(final JcrNodeAdapter item, final FormDialogPresenter dialogPresenter) {
         dialogPresenter.start(item, new FormDialogPresenter.Callback() {
 
             @Override

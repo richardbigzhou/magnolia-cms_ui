@@ -31,17 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.action;
+package info.magnolia.ui.admincentral.form.action;
 
 import com.vaadin.data.Item;
-import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
-import info.magnolia.ui.vaadin.dialog.FormDialogView;
-import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
 import info.magnolia.ui.vaadin.form.FormView;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,29 +44,28 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Main test class for {@link CallbackDialogAction} and
- * {@link CallbackDialogActionDefinition}.
+ * CallbackFormActionTest.
  */
+public class CallbackFormActionTest {
 
-public class CallbackDialogActionTest {
-    private CallbackDialogAction dialogAction;
-    private CallbackDialogActionDefinition dialogActionDefinition;
-    private FormDialogPresenterTest presenter;
+    private CallbackFormAction formAction;
+    private CallbackFormActionDefinition formActionDefinition;
+    private FormPresenterTest presenter;
 
     @Before
     public void setUp() {
-        this.dialogActionDefinition = new CallbackDialogActionDefinition();
-        this.presenter = new FormDialogPresenterTest();
+        this.formActionDefinition = new CallbackFormActionDefinition();
+        this.presenter = new FormPresenterTest();
     }
 
     @Test
     public void executeDefaultOnSuccessTest() throws ActionExecutionException {
         // GIVEN
         initDefinition("name", "label", null, null);
-        dialogAction = new CallbackDialogAction(dialogActionDefinition, presenter);
+        formAction = new CallbackFormAction(formActionDefinition, presenter);
 
         // WHEN
-        dialogAction.execute();
+        formAction.execute();
 
         // THEN
         assertEquals("onSuccess(success)", presenter.callbackActionCalled);
@@ -81,10 +75,10 @@ public class CallbackDialogActionTest {
     public void executeCustomOnSuccessTest() throws ActionExecutionException {
         // GIVEN
         initDefinition("name", "label", null, "reload");
-        dialogAction = new CallbackDialogAction(dialogActionDefinition, presenter);
+        formAction = new CallbackFormAction(formActionDefinition, presenter);
 
         // WHEN
-        dialogAction.execute();
+        formAction.execute();
 
         // THEN
         assertEquals("onSuccess(reload)", presenter.callbackActionCalled);
@@ -94,10 +88,10 @@ public class CallbackDialogActionTest {
     public void executeOnCancelTest() throws ActionExecutionException {
         // GIVEN
         initDefinition("name", "label", false, null);
-        dialogAction = new CallbackDialogAction(dialogActionDefinition, presenter);
+        formAction = new CallbackFormAction(formActionDefinition, presenter);
 
         // WHEN
-        dialogAction.execute();
+        formAction.execute();
 
         // THEN
         assertEquals("onCancel()", presenter.callbackActionCalled);
@@ -107,20 +101,40 @@ public class CallbackDialogActionTest {
      * Init the Definition.
      */
     private void initDefinition(String name, String label, Boolean callSuccess, String successActionName) {
-        this.dialogActionDefinition.setCallSuccess((callSuccess!=null)?callSuccess:true);
-        this.dialogActionDefinition.setLabel(label);
-        this.dialogActionDefinition.setName(name);
-        this.dialogActionDefinition.setSuccessActionName(successActionName!=null?successActionName:"success");
+        this.formActionDefinition.setCallSuccess((callSuccess!=null)?callSuccess:true);
+        this.formActionDefinition.setLabel(label);
+        this.formActionDefinition.setName(name);
+        this.formActionDefinition.setSuccessActionName(successActionName!=null?successActionName:"success");
     }
-
+    
     public static class FormPresenterTest implements FormPresenter {
+
         private Item item;
+
+        private String callbackActionCalled;
+
+        public String getCallbackActionCalled() {
+            return callbackActionCalled;
+        }
+
         public void setTestItem(Item item) {
             this.item = item;
         }
+
         @Override
-        public Callback getCallback() {
-            return null;
+        public FormPresenter.Callback getCallback() {
+            return new FormPresenter.Callback() {
+
+                @Override
+                public void onSuccess(String actionName) {
+                    callbackActionCalled = "onSuccess("+actionName+")";
+                }
+
+                @Override
+                public void onCancel() {
+                    callbackActionCalled = "onCancel()";
+                }
+            };
         }
 
         @Override
@@ -157,75 +171,5 @@ public class CallbackDialogActionTest {
         public FormView getView() {
             return null;
         }
-    }
-
-    public static class FormDialogPresenterTest implements FormDialogPresenter {
-
-        private String callbackActionCalled;
-
-        private FormPresenter form = new FormPresenterTest();
-
-        public String getCallbackActionCalled() {
-            return callbackActionCalled;
-        }
-
-
-        @Override
-        public Callback getCallback() {
-            return new Callback() {
-
-                @Override
-                public void onSuccess(String actionName) {
-                    callbackActionCalled = "onSuccess("+actionName+")";
-                }
-
-                @Override
-                public void onCancel() {
-                    callbackActionCalled = "onCancel()";
-                }
-            };
-        }
-
-        @Override
-        public NewFormDialogView getView() {
-            return null;
-        }
-
-        @Override
-        public FormPresenter getForm() {
-            return form;
-        }
-
-        @Override
-        public EventBus getEventBus() {
-            return null;
-        }
-
-        @Override
-        public FormDialogView start(Item item, Callback callback) {
-            return null;
-        }
-
-        @Override
-        public void closeDialog() {
-        }
-        
-
-        @Override
-        public void addDialogCloseHandler(DialogCloseEvent.Handler listener) {
-        }
-
-        @Override
-        public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void addActionCallback(String actionName, DialogActionListener callback) {
-            // TODO Auto-generated method stub
-            
-        }
-
     }
 }

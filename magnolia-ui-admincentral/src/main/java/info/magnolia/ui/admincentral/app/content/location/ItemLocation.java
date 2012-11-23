@@ -52,6 +52,14 @@ public class ItemLocation extends DefaultLocation {
         setViewType(extractViewType(parameter));
     }
 
+    public ItemLocation(String appId, String subAppId, ItemView.ViewType viewType, String nodePath) {
+        super(LOCATION_TYPE_APP, appId, subAppId);
+
+        setNodePath(nodePath);
+        setViewType(viewType);
+        updateParameter();
+    }
+
     public String getNodePath() {
         return nodePath;
     }
@@ -107,7 +115,7 @@ public class ItemLocation extends DefaultLocation {
         updateParameter();
     }
 
-    public void updateAction(ItemView.ViewType newViewType) {
+    public void updateViewtype(ItemView.ViewType newViewType) {
         setViewType(newViewType);
         updateParameter();
     }

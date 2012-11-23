@@ -43,13 +43,15 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.model.form.definition.ConfiguredFormDefinition;
+import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
 
 /**
  * Dialog Presenter and Listener implementation.
  */
-public class FormDialogPresenterImpl extends BaseDialogPresenter implements NewFormDialogPresenter {
+public class FormDialogPresenterImpl extends BaseDialogPresenter implements FormDialogPresenter {
 
     private final DialogBuilder dialogBuilder;
 
@@ -79,29 +81,58 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements NewF
     }
 
     @Override
-    public DialogView start(final Item item, Callback callback) {
+    public DialogView start(final Item item, final Callback callback) {
         this.callback = callback;
         dialogBuilder.buildFormDialog(dialogDefinition, view);
 
-        this.formPresenter = formPresenterFactory.createFormPresenterByDefinition(dialogDefinition.getFormDefinition());
+        FormDefinition formDefinition = (dialogDefinition.getFormDefinition() != null) ? dialogDefinition.getFormDefinition() : createFormDefintion(dialogDefinition);
+        this.formPresenter = formPresenterFactory.createFormPresenterByDefinition(formDefinition);
 
-        ((NewFormDialogView)view).setFormView(formPresenter.start(item, new FormPresenter.Callback() {
+        view.setFormView(formPresenter.start(item, new FormPresenter.Callback() {
 
             @Override
             public void onCancel() {
                  FormDialogPresenterImpl.this.closeDialog();
+                callback.onCancel();
             }
 
             @Override
             public void onSuccess(String actionName) {
                 //eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
                 FormDialogPresenterImpl.this.closeDialog();
+                callback.onSuccess(actionName);
             }
         }));
 
 
         shell.openDialog(this);
         return view;
+    }
+
+    /**
+     * Migrating dialogDefinition to FormDefinition on the fly. Hackalicious.
+     */
+    private FormDefinition createFormDefintion(DialogDefinition dialogDefinition) {
+        ConfiguredFormDefinition formDefinition = new ConfiguredFormDefinition();
+
+        formDefinition.setTabs(dialogDefinition.getTabs());
+
+/*        for (DialogActionDefinition dialogActionDefinition : dialogDefinition.getActions()) {
+            ConfiguredFormActionDefinition formAction = new ConfiguredFormActionDefinition();
+            formAction.setActionDefinition(dialogActionDefinition.getActionDefinition());
+            formAction.setI18nBasename(dialogActionDefinition.getI18nBasename());
+            formAction.setLabel(dialogActionDefinition.getLabel());
+            formAction.setName(dialogActionDefinition.getName());
+
+            formDefinition.addAction(formAction);
+        }*/
+
+        formDefinition.setI18nBasename(dialogDefinition.getI18nBasename());
+        formDefinition.setDescription(dialogDefinition.getDescription());
+        formDefinition.setLabel(dialogDefinition.getLabel());
+        formDefinition.setId(dialogDefinition.getId());
+
+        return formDefinition;
     }
 
     private void initActions(final DialogDefinition dialogDefinition) {
