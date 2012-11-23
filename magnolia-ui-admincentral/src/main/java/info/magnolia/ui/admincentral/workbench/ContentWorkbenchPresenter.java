@@ -121,8 +121,12 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.workbenchDefinition = ((ContentAppDescriptor) appContext.getAppDescriptor()).getWorkbench();
-        ImageProviderDefinition imageProvider = workbenchDefinition.getImageProvider();
-        this.imageProvider = componentProvider.newInstance(imageProvider.getImageProviderClass(), imageProvider);
+        ImageProviderDefinition imageProviderDefinition = workbenchDefinition.getImageProvider();
+        if (imageProviderDefinition == null) {
+            this.imageProvider = null;
+        } else {
+            this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
+        }
     }
 
     public ContentWorkbenchView start() {
@@ -243,8 +247,10 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         if (StringUtils.isBlank(path)) {
             actionbarPresenter.setPreview(null);
         } else {
-            Resource previewResource = imageProvider.getThumbnailResourceByPath(workspace, path, ImageProvider.PORTRAIT_GENERATOR);
-            actionbarPresenter.setPreview(previewResource);
+            if (imageProvider != null) {
+                Resource previewResource = imageProvider.getThumbnailResourceByPath(workspace, path, ImageProvider.PORTRAIT_GENERATOR);
+                actionbarPresenter.setPreview(previewResource);
+            }
         }
     }
 

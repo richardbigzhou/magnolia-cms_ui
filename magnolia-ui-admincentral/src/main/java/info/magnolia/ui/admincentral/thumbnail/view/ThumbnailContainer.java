@@ -215,13 +215,19 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
     public class ThumbnailContainerProperty extends AbstractProperty {
 
         private String resourcePath;
+        private final ImageProvider imageProvider;
 
         public ThumbnailContainerProperty(final String resourcePath, ImageProvider imageProvider) {
             this.resourcePath = resourcePath;
+            this.imageProvider = imageProvider;
         }
 
         @Override
         public Resource getValue() {
+            if (imageProvider == null){
+                return null;
+            }
+
             return imageProvider.getThumbnailResourceById(getWorkspaceName(), resourcePath, ImageProvider.THUMBNAIL_GENERATOR);
         }
 

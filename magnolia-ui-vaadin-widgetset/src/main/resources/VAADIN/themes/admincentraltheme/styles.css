@@ -1,40 +1,24 @@
 @import url(../chameleon/styles.css);
-
 @import url(splitfeed.css);
-
 @import url(dialog.css);
-
 @import url(actionbar.css);
-
 @import url(tabsheet.css);
-
 @import url(shellmessage.css);
-
 @import url(workbench.css);
-
 @import url(hybridselectiontreetable.css);
-
 @import url(app-preloader.css);
-
 @import url(applauncher.css);
-
 @import url(pulse.css);
-
 @import url(favorites.css);
-
 @import url(shell.css);
-
 @import url(fonts.css);
-
 @import url(uploadfield.css);
 
-body {
-	-webkit-user-select: none;
-	/* Disable content selection on mobile safari */
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-	/* Disable grey box when you click on something */
-	-webkit-touch-callout: none;
-	/* Remove Callout Context menu when tapping on something */
+
+body{
+    -webkit-user-select: none; /* Disable content selection on mobile safari */
+    -webkit-tap-highlight-color: rgba(0,0,0,0); /* Disable grey box when you click on something */
+    -webkit-touch-callout: none;/* Remove Callout Context menu when tapping on something */
 }
 
 /*
@@ -45,27 +29,25 @@ Was causing problems with actionbar tablet mode - touch events went right throug
 }
 v2
 */
+
 .v-csslayout-container {
 	overflow: hidden;
 }
 
-.clearfix:after {
-	content: "";
-	display: table;
-	clear: both;
-}
+.clearfix:after { content: ""; display: table; clear: both; }
+
 
 .thumbnail {
 	border: 1px solid #F0F0F0;
-	display: inline-block;
+	display:inline-block;
 	margin: 3px;
 	padding: 5px;
-	cursor: pointer;
-	overflow: hidden;
+	cursor:pointer;
+	overflow:hidden;
 }
 
-.thumbnail-image {
-	display: block;
+.thumbnail-image{
+	display:block;
 	margin: auto;
 }
 
@@ -73,28 +55,26 @@ v2
 	background-color: #AABF2F;
 }
 
-.thumbnail:HOVER {
+.thumbnail:hover {
 	border: 1px solid #AABF2F;
 }
 
 /* Contact info styles */
 .thumbnail-info ul {
-	list-style-type: none;
-	padding-left: 0;
-	width: 220px;
+    list-style-type: none;
+    padding-left: 0;
+    width: 220px;
+}
+.thumbnail-info ul > li {
+    margin-bottom:2px;
+    margin-right: 3px;
 }
 
-.thumbnail-info ul>li {
-	margin-bottom: 2px;
-	margin-right: 3px;
+.thumbnail-info ul > li span.left  {
+    font-weight:bold;
 }
-
-.thumbnail-info ul>li span.left {
-	font-weight: bold;
-}
-
-.thumbnail-info ul>li span.right {
-	float: right;
+.thumbnail-info ul > li span.right  {
+    float: right;
 }
 
 /*END OF APP LAUNCHER RELATED STYLES*/
@@ -102,44 +82,44 @@ v2
 /*AdminCentral module styles */
 button.btn-dialog-selectCallBack {
 	background: none repeat scroll 0px 0px #689600;
-	margin-left: 10px;
+	margin-left:10px;
 	float: right;
 }
 
 /* Checkbox styles */
-.v-checkbox,.gwt-CheckBox {
+.v-checkbox,
+.gwt-CheckBox {
 	cursor: pointer;
 }
 
-.v-checkbox>input[type="checkbox"],.gwt-CheckBox>input[type="checkbox"]
-	{
+.v-checkbox > input[type="checkbox"],
+.gwt-CheckBox > input[type="checkbox"] {
 	opacity: 0;
 	width: 10px;
 	height: 10px;
 }
 
-.v-checkbox>label,.gwt-CheckBox>label {
+.v-checkbox > label,
+.gwt-CheckBox > label {
 	position: relative;
 	left: -15px;
-	padding-left: 15px;
+    padding-left: 15px;
 }
 
-.v-checkbox>input[type="checkbox"]:checked+label,.gwt-CheckBox>input[type="checkbox"]:checked+label
-	{
+.v-checkbox > input[type="checkbox"]:checked + label,
+.gwt-CheckBox > input[type="checkbox"]:checked + label {
 	background: url('img/icon-checkbox_on.svg') left center no-repeat;
-	background: url('img/icon-checkbox_on.png') left center no-repeat\9;
-	/*For IE 8*/
+	background: url('img/icon-checkbox_on.png') left center no-repeat\9; /*For IE 8*/
 	background-size: 15px 15px;
 	-o-background-size: 15px 15px;
-	-webkit-background-size: 15px 15px;
+    -webkit-background-size: 15px 15px;
 }
 
-.v-checkbox>input[type="checkbox"]+label,.gwt-CheckBox>input[type="checkbox"]+label
-	{
-	background: url('img/icon-checkbox_off.svg') left center no-repeat;
-	background: url('img/icon-checkbox_off.png') left center no-repeat\9;
-	/*For IE 8*/
-	background-size: 15px 15px;
-	-o-background-size: 15px 15px;
-	-webkit-background-size: 15px 15px;
+.v-checkbox > input[type="checkbox"] + label,
+.gwt-CheckBox > input[type="checkbox"] + label {
+    background: url('img/icon-checkbox_off.svg') left center no-repeat;
+    background: url('img/icon-checkbox_off.png') left center no-repeat\9; /*For IE 8*/
+    background-size: 15px 15px;
+    -o-background-size: 15px 15px;
+    -webkit-background-size: 15px 15px;
 }

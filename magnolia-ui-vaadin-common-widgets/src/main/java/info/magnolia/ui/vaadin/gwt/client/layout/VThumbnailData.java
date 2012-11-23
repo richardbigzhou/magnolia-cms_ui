@@ -45,16 +45,19 @@ public class VThumbnailData extends JavaScriptObject {
 
     }
 
-    public static final native VThumbnailData parse(String json) /*-{
-                                                                 return eval('(' + json + ')');
-                                                                 }-*/;
+    public static final native VThumbnailData parse(String json)
+    /*-{
+        return eval('(' + json + ')');
+    }-*/;
 
-    public final native String getId() /*-{
-                                       return this.id;
-                                       }-*/;
+    public final native String getId()
+    /*-{
+        return this.id;
+    }-*/;
 
-    public final native String getSrc() /*-{
-                                        return this.resource;
-                                        }-*/;
+    public final native String getSrc()
+    /*-{
+      return this.resource;
+    }-*/;
 
 }
