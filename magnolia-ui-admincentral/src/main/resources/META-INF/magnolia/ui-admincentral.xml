@@ -232,19 +232,10 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.vaadin.dialog.MagnoliaDialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.Dialog</implementation>
-    </component>
-
-    <component>
       <type>info.magnolia.ui.vaadin.dialog.DialogView</type>
       <implementation>info.magnolia.ui.vaadin.dialog.BaseDialog</implementation>
     </component>
 
-		<component>
-			<type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
-			<implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
-		</component>
     <component>
       <type>info.magnolia.ui.vaadin.dialog.NewFormDialogView</type>
       <implementation>info.magnolia.ui.vaadin.dialog.NewFormDialog</implementation>
