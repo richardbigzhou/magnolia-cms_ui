@@ -50,7 +50,6 @@ import com.vaadin.terminal.gwt.client.UIDL;
  * Client side impl of AppLauncher.
  * 
  */
-@SuppressWarnings("serial")
 public class VAppLauncher extends Composite implements Paintable, ClientSideHandler, VAppLauncherView.Presenter {
 
     private ClientSideProxy proxy = new ClientSideProxy(this) {

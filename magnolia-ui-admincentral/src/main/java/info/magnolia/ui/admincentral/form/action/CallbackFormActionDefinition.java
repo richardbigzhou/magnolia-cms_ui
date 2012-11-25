@@ -31,29 +31,58 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.admincentral.form.action;
 
-import java.util.List;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
-import info.magnolia.ui.vaadin.form.FormSection;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * FormDialogView.
- *
+ * CallbackFormActionDefinition.
  */
-public interface FormDialogView extends DialogView, Item.Editor {
-    
-    void addDialogSection(String tabName, FormSection inputFields);
+public class CallbackFormActionDefinition implements ActionDefinition {
+    private String name;
+    private String label;
+    private boolean callSuccess = true;
+    private String successActionName = "success";
 
-    void addField(Field field);
+    public String getName() {
+        return name;
+    }
 
-    void showValidation(boolean isVisible);
-    
-    void setShowAllEnabled(boolean enabled);
-    
-    boolean isValid();
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    List<Field> getFields();
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+
+    public boolean isCallSuccess() {
+        return this.callSuccess;
+    }
+
+    /**
+     * @param callSuccess  true (default) call Callback.onSuccess(String action).
+     *          false call Callback.onCancel()
+     */
+    public void setCallSuccess(boolean callSuccess) {
+        this.callSuccess = callSuccess;
+    }
+
+
+    public String getSuccessActionName() {
+        return this.successActionName;
+    }
+
+    /**
+     * @param successActionName will be passed as parameter to Callback.onSuccess(String successActionName)
+     * in case of callSuccess = true.
+     */
+    public void setSuccessActionName(String successActionName) {
+        this.successActionName = successActionName;
+    }
 }

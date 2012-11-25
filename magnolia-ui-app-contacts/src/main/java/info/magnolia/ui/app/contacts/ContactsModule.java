@@ -40,14 +40,16 @@ import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
 import info.magnolia.ui.admincentral.column.StatusColumnFormatter;
 import info.magnolia.ui.admincentral.content.action.EditItemActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
-import info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.admincentral.form.action.CancelFormActionDefinition;
+import info.magnolia.ui.admincentral.form.action.CreateItemActionDefinition;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
+import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.app.contacts.action.AddFolderActionDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
+import info.magnolia.ui.app.contacts.dialog.action.SaveContactDialogActionDefinition;
 import info.magnolia.ui.app.contacts.form.action.SaveContactFormActionDefinition;
 import info.magnolia.ui.app.contacts.item.ContactsItemSubApp;
 import info.magnolia.ui.framework.app.builder.App;
@@ -67,8 +69,8 @@ import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.EmailValidatorDefinition;
 import info.magnolia.ui.model.field.validation.definition.RegexpValidatorDefinition;
 import info.magnolia.ui.model.form.builder.FormConfig;
+import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
-import info.magnolia.ui.model.thumbnail.DefaultImageProvider;
 import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
 
 import javax.inject.Inject;
@@ -90,12 +92,15 @@ public class ContactsModule implements ModuleLifecycle {
     @App("contacts")
     public void contactsApp(ContentAppBuilder app, WorkbenchConfig wbcfg, ActionbarConfig abcfg, FormConfig formcfg) {
 
-        DefaultImageProvider imageProvider = new DefaultImageProvider();
-        imageProvider.setOriginalImageNodeName("photo");
+        // Configure ImageProvider
+        ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
+        cipd.setOriginalImageNodeName("photo");
+        cipd.setImageProviderClass(DefaultImageProvider.class);
 
-        CreateDialogActionDefinition addContactAction = new CreateDialogActionDefinition();
+        CreateItemActionDefinition addContactAction = new CreateItemActionDefinition();
         addContactAction.setNodeType("mgnl:contact");
-        addContactAction.setDialogName("ui-contacts-app:contact");
+        addContactAction.setAppId("contacts");
+        addContactAction.setSubAppId("item");
 
         EditItemActionDefinition editContactAction = new EditItemActionDefinition();
         editContactAction.setAppId("contacts");
@@ -123,7 +128,7 @@ public class ContactsModule implements ModuleLifecycle {
                                 .workbench(wbcfg.workbench().workspace("contacts").root("/").defaultOrder("jcrName")
                                         .groupingItemType(wbcfg.itemType("mgnl:folder").icon("/.resources/icons/16/folders.gif"))
                                         .mainItemType(wbcfg.itemType("mgnl:contact").icon("/.resources/icons/16/pawn_glass_yellow.gif"))
-                                        .imageProvider(imageProvider)
+                                        .imageProvider(cipd)
                                         .columns(
                                                 wbcfg.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(ContactNameColumnFormatter.class),
                                                 wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),
@@ -240,8 +245,7 @@ public class ContactsModule implements ModuleLifecycle {
         EmailValidatorDefinition emailValidator = new EmailValidatorDefinition();
         emailValidator.setErrorMessage("validation.message.non.valid.email");
 
-        dialog.description("Define the contact information")
-                .form(formcfg.form().description("Define the contact information")
+        dialog.form(formcfg.form().description("Define the contact information")
                         .tabs(
                                 formcfg.tab("Personal").label("Personal Tab")
                                         .fields(
@@ -270,10 +274,11 @@ public class ContactsModule implements ModuleLifecycle {
                                                 formcfg.fields.textField("website").label("Website").description("Please enter the Website")
                                         )
                         )
-                        .actions(
-                                formcfg.action("commit").label("save changes").action(new SaveContactFormActionDefinition()),
-                                formcfg.action("cancel").label("cancel").action(new CancelFormActionDefinition())
-                        )
+
+                )
+                .actions(
+                        cfg.action("commit").label("save changes").action(new SaveContactDialogActionDefinition()),
+                        cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
                 );
     }
 

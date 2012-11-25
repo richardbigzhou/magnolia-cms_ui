@@ -108,7 +108,8 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
      * Check if this node can be handle as a ConfiguredDialogDefinition.
      */
     private boolean isDialog(Node dialogNode) throws RepositoryException {
-        return dialogNode.hasNode(ConfiguredDialogDefinition.TABS_NODE_NAME)
+        return dialogNode.hasNode(ConfiguredDialogDefinition.FORM_NODE_NAME)
+            || dialogNode.hasNode(ConfiguredDialogDefinition.TABS_NODE_NAME)
             || dialogNode.hasNode(ConfiguredDialogDefinition.ACTIONS_NODE_NAME)
             || dialogNode.hasProperty(ConfiguredDialogDefinition.EXTEND_PROPERTY_NAME);
     }

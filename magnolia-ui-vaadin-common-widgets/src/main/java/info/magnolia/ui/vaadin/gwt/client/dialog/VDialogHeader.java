@@ -35,15 +35,31 @@ package info.magnolia.ui.vaadin.gwt.client.dialog;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
-import info.magnolia.ui.vaadin.gwt.client.form.VFormHeader;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * VDialogHeader.
  */
-public class VDialogHeader extends VFormHeader {
+public class VDialogHeader extends FlowPanel {
 
+    private static final String CLASSNAME_HEADER = "form-header";
+    private static final String ClASSNAME_DESCRIPTION = "form-description";
+    private static final String CLASSNAME_HELPBUTTON = "btn-form-help";
     private static final String CLASSNAME_CLOSEBUTTON = "btn-dialog-close";
+
+    protected final VDialogHeaderCallback callback;
+
+    private FlowPanel descriptionPanel = new FlowPanel();
+
+    protected Element captionContainer = DOM.createDiv();
+
+    private Element caption = DOM.createSpan();
+
+    private boolean isDescriptionVisible = false;
 
     private final Button closeButton = new Button("", new ClickHandler() {
         @Override
@@ -53,24 +69,58 @@ public class VDialogHeader extends VFormHeader {
     });
 
 
-    public VDialogHeader(final VDialogHeaderCallback callback) {
-        super(callback);
-    }
+    private final Button helpButton = new Button("", new ClickHandler() {
+        @Override
+        public void onClick(ClickEvent event) {
+            isDescriptionVisible = !isDescriptionVisible;
+            descriptionPanel.setVisible(isDescriptionVisible);
+            callback.onDescriptionVisibilityChanged(isDescriptionVisible);
+        }
+    });
 
-    @Override
+
     public void construct() {
-        super.construct();
-//        closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
-//        closeButton.addStyleName("green");
-//        add(closeButton, captionContainer);
+        captionContainer.addClassName(CLASSNAME_HEADER);
 
+        closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
+        closeButton.addStyleName("green");
+        add(closeButton, captionContainer);
+
+        descriptionPanel.addStyleName(ClASSNAME_DESCRIPTION);
+        helpButton.setStyleName(CLASSNAME_HELPBUTTON);
+
+
+        getElement().appendChild(captionContainer);
+        captionContainer.appendChild(caption);
+
+        descriptionPanel.setVisible(false);
+        add(helpButton, captionContainer);
+        add(descriptionPanel);
     }
+
+
+    public VDialogHeader(final VDialogHeaderCallback callback) {
+        this.callback = callback;
+        callback.onDescriptionVisibilityChanged(false);
+        construct();
+    }
+
+    public void setDescription(String description) {
+        final Label content = new Label();
+        content.setText(description);
+        descriptionPanel.insert(content, 0);}
+
+    public void setDialogCaption(String caption) {
+        this.caption.setInnerText(caption);
+    }
+
 
     /**
      * Callback interface for the Dialog header.
      */
-    public interface VDialogHeaderCallback extends VFormHeaderCallback {
+    public interface VDialogHeaderCallback {
 
         void onCloseFired();
 
+        void onDescriptionVisibilityChanged(boolean isVisible);
     }}

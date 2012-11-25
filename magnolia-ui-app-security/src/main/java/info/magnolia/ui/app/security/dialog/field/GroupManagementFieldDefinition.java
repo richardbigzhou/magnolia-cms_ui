@@ -1,10 +1,3 @@
-package info.magnolia.ui.app.security.dialog.field;
-
-import java.util.List;
-
-import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
-import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
-
 /**
  * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
@@ -38,10 +31,13 @@ import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
  * intact.
  *
  */
+package info.magnolia.ui.app.security.dialog.field;
+
+import info.magnolia.ui.model.field.definition.TwinColSelectFieldDefinition;
 
 /**
  * A definition for the Group Management field.
  */
-public class GroupManagementFieldDefinition extends OptionGroupFieldDefinition {
+public class GroupManagementFieldDefinition extends TwinColSelectFieldDefinition {
 
 }

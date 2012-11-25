@@ -39,7 +39,6 @@ import javax.inject.Inject;
 /**
  * Implementation of MagnoliaShellView.
  */
-@SuppressWarnings("serial")
 public class MagnoliaShellViewImpl implements MagnoliaShellView {
 
     private Presenter presenter;

@@ -41,7 +41,6 @@ import com.vaadin.ui.Component;
  * The basic layout for content apps, consisting of two columns, one for the content view and one
  * for an action bar.
  */
-@SuppressWarnings("serial")
 public class ContentAppLayout extends CompositeComponent {
 
     private static final String CLASSNAME = "contentapplayout";

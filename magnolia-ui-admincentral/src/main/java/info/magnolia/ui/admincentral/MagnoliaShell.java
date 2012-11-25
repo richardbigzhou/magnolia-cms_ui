@@ -73,7 +73,6 @@ import org.vaadin.rpc.client.Method;
 /**
  * Admin shell.
  */
-@SuppressWarnings("serial")
 @Singleton
 public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEventHandler {
 

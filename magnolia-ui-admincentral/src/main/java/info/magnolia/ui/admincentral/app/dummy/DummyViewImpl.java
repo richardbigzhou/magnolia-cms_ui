@@ -46,7 +46,6 @@ import com.vaadin.ui.Label;
 /**
  * View implementation for a dummy app.
  */
-@SuppressWarnings("serial")
 public class DummyViewImpl implements DummyView {
 
     private final CssLayout layout = new CssLayout();

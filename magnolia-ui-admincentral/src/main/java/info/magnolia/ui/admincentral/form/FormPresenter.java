@@ -53,7 +53,11 @@ public interface FormPresenter {
 
     FormView start(Item item, Callback callback);
 
+    FormView start(Item item, FormItem parent);
+
     void addAction(String actionName, String actionLabel, FormView.FormActionListener callback);
+
+    boolean isValid();
 
     /**
      * Callback interface for FormView.Presenter.
@@ -63,20 +67,6 @@ public interface FormPresenter {
         void onCancel();
 
         void onSuccess(String actionName);
-
-        /**
-         * Dummy adapter class that allows to skip overriding e.g. onCancel method in actual
-         * implementors.
-         */
-        public static class Adapter implements Callback {
-
-            @Override
-            public void onSuccess(String actionName) {}
-
-            @Override
-            public void onCancel() {}
-
-        }
 
     }
 

@@ -80,7 +80,6 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
         setStylePrimaryName(CLASSNAME);
         contentEl.addClassName(CLASSNAME_CONTENT);
         footerEl.addClassName(CLASSNAME_FOOTER);
-        header.setErrorAmount(0);
     }
     
     @Override
@@ -133,11 +132,6 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
             @Override
             public void onCloseFired() {
                 presenter.closeDialog();
-            }
-            
-            @Override
-            public void jumpToNextError() {
-                
             }
         };
     }

@@ -33,27 +33,24 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import static org.junit.Assert.assertEquals;
+import com.vaadin.data.Item;
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionTest.DialogPresenterTest;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vaadin.data.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Main test class for {@link SaveDialogAction} and
@@ -62,7 +59,7 @@ import com.vaadin.data.Item;
 public class SaveDialogActionTest extends RepositoryTestCase{
     private SaveDialogAction dialogAction;
     private SaveDialogActionDefinition dialogActionDefinition;
-    private DialogPresenterTest presenter;
+    private CallbackDialogActionTest.FormDialogPresenterTest presenter;
     private Node node;
     private Item item;
     private MockSession session;
@@ -72,7 +69,7 @@ public class SaveDialogActionTest extends RepositoryTestCase{
     public void setUp() throws Exception {
         super.setUp();
         this.dialogActionDefinition = new SaveDialogActionDefinition();
-        this.presenter = new DialogPresenterTest();
+        this.presenter = new CallbackDialogActionTest.FormDialogPresenterTest();
         //Init Node
         session = new MockSession("config");
         MockContext ctx = new MockContext();
@@ -88,7 +85,7 @@ public class SaveDialogActionTest extends RepositoryTestCase{
         node = session.getRootNode().addNode("underlying");
         node.getSession().save();
         item = new JcrNodeAdapter(node);
-        this.presenter.setTestItem(item);
+        ((CallbackDialogActionTest.FormPresenterTest)this.presenter.getForm()).setTestItem(item);
         initDefinition("name", "label");
         dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
 
@@ -106,7 +103,7 @@ public class SaveDialogActionTest extends RepositoryTestCase{
         node.setProperty("property", "initial");
         item = new JcrNodeAdapter(node);
         item.getItemProperty("property").setValue("changed");
-        this.presenter.setTestItem(item);
+        ((CallbackDialogActionTest.FormPresenterTest)this.presenter.getForm()).setTestItem(item);
         initDefinition("name", "label");
         dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
 
@@ -126,7 +123,7 @@ public class SaveDialogActionTest extends RepositoryTestCase{
 
         item = new JcrNodeAdapter(node);
         item.addItemProperty("property",DefaultPropertyUtil.newDefaultProperty("property", null, "changed"));
-        this.presenter.setTestItem(item);
+        ((CallbackDialogActionTest.FormPresenterTest)this.presenter.getForm()).setTestItem(item);
         initDefinition("name", "label");
         dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
 
@@ -146,7 +143,7 @@ public class SaveDialogActionTest extends RepositoryTestCase{
         node.setProperty("property", "initial");
         item = new JcrNodeAdapter(node);
         item.removeItemProperty("property");
-        this.presenter.setTestItem(item);
+        ((CallbackDialogActionTest.FormPresenterTest)this.presenter.getForm()).setTestItem(item);
         initDefinition("name", "label");
         dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
         assertEquals(true, node.hasProperty("property"));

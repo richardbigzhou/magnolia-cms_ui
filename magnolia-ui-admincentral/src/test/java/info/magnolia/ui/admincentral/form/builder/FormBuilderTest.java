@@ -107,7 +107,7 @@ public class FormBuilderTest {
         final FormView form = new Form();
 
         // WHEN
-        final FormView result = builder.buildForm(null, def, null, form);
+        final FormView result = builder.buildForm(null, def, null, form, null);
 
         // THEN
         assertEquals(result, form);
@@ -142,7 +142,7 @@ public class FormBuilderTest {
         when(fieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
 
         // WHEN
-        final FormView result = builder.buildForm(fieldFactory, formDef, item, form);
+        final FormView result = builder.buildForm(fieldFactory, formDef, item, form, null);
 
         // THEN
         assertEquals(result, form);

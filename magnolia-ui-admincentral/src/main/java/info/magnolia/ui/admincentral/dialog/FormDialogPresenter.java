@@ -33,22 +33,20 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.dialog.FormDialogView;
-
 import com.vaadin.data.Item;
+import info.magnolia.ui.admincentral.form.FormPresenter;
+import info.magnolia.ui.vaadin.dialog.DialogView;
+import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
 
 /**
- * DialogView.Presenter.
+ * FormDialogPresenter.
  */
 public interface FormDialogPresenter extends DialogPresenter {
 
-    void showValidation(boolean isVisible);
+    DialogView start(Item item, DialogPresenter.Callback callback);
 
-    DialogView start(Item item, Callback callback);
-    
-    Item getItemDataSource();
-    
     @Override
-    FormDialogView getView();
+    NewFormDialogView getView();
+
+    FormPresenter getForm();
 }

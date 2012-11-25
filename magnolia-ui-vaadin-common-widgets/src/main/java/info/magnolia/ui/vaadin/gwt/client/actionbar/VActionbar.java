@@ -61,7 +61,6 @@ import com.vaadin.terminal.gwt.client.ui.Icon;
 /**
  * Vaadin implementation of Action bar client side (Presenter).
  */
-@SuppressWarnings("serial")
 public class VActionbar extends Composite implements Paintable, Container, ClientSideHandler, VActionbarView.Presenter {
 
     protected String paintableId;

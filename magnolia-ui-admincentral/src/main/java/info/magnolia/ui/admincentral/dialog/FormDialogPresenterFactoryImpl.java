@@ -81,7 +81,7 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
     }
 
     @Override
-    public FormDialogPresenterImpl createDialogPresenterByName(String dialogName) {
+    public FormDialogPresenter createDialogPresenterByName(String dialogName) {
         final DialogDefinition definition = getDialogDefinition(dialogName);
         return createDialogPresenterByDefinition(definition);
     }
@@ -102,7 +102,7 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
     }
 
     @Override
-    public FormDialogPresenterImpl createDialogPresenterByDefinition(DialogDefinition definition) {
+    public FormDialogPresenter createDialogPresenterByDefinition(DialogDefinition definition) {
         NewFormDialogView view = componentProvider.getComponent(NewFormDialogView.class);
         return new FormDialogPresenterImpl(view, dialogBuilder, formPresenterFactory, definition, shell, eventBus, actionFactory);
 

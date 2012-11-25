@@ -34,42 +34,40 @@
 package info.magnolia.ui.app.security.dialog.field;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.query.InvalidQueryException;
-
-import org.apache.jackrabbit.commons.webdav.NodeTypeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TwinColSelect;
 
 import info.magnolia.cms.core.MgnlNodeType;
-import info.magnolia.cms.security.Group;
-import info.magnolia.cms.security.MgnlRole;
-import info.magnolia.cms.security.Role;
-import info.magnolia.cms.security.Security;
 import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 /**
  * GUI builder for the Role Management field.
  */
 public class RoleManagementField extends SelectFieldBuilder<RoleManagementFieldDefinition> {
+
+    private static class _Role {
+        public String name;
+        public String uuid;
+        public _Role(String name, String uuid) {
+            this.name = name;
+            this.uuid = uuid;
+        }
+    }
 
     private static final Logger log = LoggerFactory.getLogger(RoleManagementField.class);
 
@@ -98,14 +96,13 @@ public class RoleManagementField extends SelectFieldBuilder<RoleManagementFieldD
     @Override
     public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition(){
         List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
-        Map<String,String> allRoles = getAllRoles();  // name,uuid
+        List<_Role> allRoles = getAllRoles();  // name,uuid
         List<String> assignedGroups = getAssignedRoles();
-        for (String name : allRoles.keySet()) {
-            String uuid = allRoles.get(name);
+        for (_Role role : allRoles) {
             SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
-            option.setValue(uuid);
-            option.setLabel(name);
-            if (assignedGroups.contains(uuid)) {
+            option.setValue(role.uuid);
+            option.setLabel(role.name);
+            if (assignedGroups.contains(role.uuid)) {
                 option.setSelected(true);
             }
             options.add(option);
@@ -113,15 +110,15 @@ public class RoleManagementField extends SelectFieldBuilder<RoleManagementFieldD
         return options;
     }
 
-    private Map<String,String> getAllRoles() {
-        Map<String,String> roles = new HashMap<String,String>();
+    private List<_Role> getAllRoles() {
+        List<_Role> roles = new ArrayList<_Role>();
         try {
-            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_ROLES, "SELECT * FROM ["+MgnlNodeType.ROLE+"]");
+            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_ROLES, "SELECT * FROM ["+MgnlNodeType.ROLE+"] ORDER BY name()");
             while (ni.hasNext()) {
                 Node n = ni.nextNode();
                 String name = n.getName();
                 String uuid = n.getIdentifier();
-                roles.put(name, uuid);
+                roles.add(new _Role(name,uuid));
             }
         } catch (Exception e) {
             log.error("Cannot read roles from the ["+RepositoryConstants.USER_ROLES+"] workspace: "+e.getMessage());
@@ -154,6 +151,13 @@ public class RoleManagementField extends SelectFieldBuilder<RoleManagementFieldD
             log.debug("Cannot read assigned roles of the node ["+mainNode+"].", re);
         }
         return roles;
+    }
+
+    @Override
+    public com.vaadin.data.Property getOrCreateProperty() {
+        DefaultProperty prop = new DefaultProperty("roles", getAssignedRoles());
+        item.addItemProperty("roles", prop);
+        return prop;
     }
 
 }

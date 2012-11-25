@@ -42,12 +42,12 @@ public class PageEditorParameters {
 
     private final String nodePath;
 
-    private final String action;
+    private final boolean preview;
 
-    public PageEditorParameters(String contextPath, String nodePath, String action) {
+    public PageEditorParameters(String contextPath, String nodePath, boolean preview) {
         this.contextPath = contextPath;
         this.nodePath = nodePath;
-        this.action = action;
+        this.preview = preview;
     }
 
     public String getContextPath() {
@@ -58,7 +58,7 @@ public class PageEditorParameters {
         return nodePath;
     }
 
-    public String getAction() {
-        return action;
+    public boolean isPreview() {
+        return preview;
     }
 }

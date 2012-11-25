@@ -66,18 +66,18 @@
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarDefinition</type>
       <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition</implementation>
     </type-mapping>
-
+    
     <type-mapping>
       <type>info.magnolia.ui.model.form.definition.FormDefinition</type>
       <implementation>info.magnolia.ui.model.form.definition.ConfiguredFormDefinition</implementation>
     </type-mapping>
-
+    
     <type-mapping>
       <type>info.magnolia.ui.model.form.action.FormActionDefinition</type>
       <implementation>info.magnolia.ui.model.form.action.ConfiguredFormActionDefinition</implementation>
     </type-mapping>
-
-
+   
+    
     <type-mapping>
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition</type>
       <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition</implementation>
@@ -218,8 +218,22 @@
     </configurer>
 
     <component>
+      <type>info.magnolia.ui.admincentral.form.FormPresenterFactory</type>
+      <implementation>info.magnolia.ui.admincentral.form.FormPresenterFactoryImpl</implementation>
+    </component>
+		<component>
+			<type>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory</type>
+			<implementation>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactoryImpl</implementation>
+		</component>
+
+    <component>
       <type>info.magnolia.ui.admincentral.dialog.ChooseDialogFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.ChooseDialogFactoryImpl</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.vaadin.dialog.DialogView</type>
+      <implementation>info.magnolia.ui.vaadin.dialog.BaseDialog</implementation>
     </component>
 
     <component>
@@ -240,29 +254,34 @@
       <type>info.magnolia.ui.admincentral.content.item.ItemView</type>
       <implementation>info.magnolia.ui.admincentral.content.item.ItemViewImpl</implementation>
     </component>
-
+		<component>
+			<type>info.magnolia.ui.admincentral.field.builder.FieldFactory</type>
+			<implementation>info.magnolia.ui.admincentral.field.builder.FieldFactory</implementation>
+		</component>
+		<component>
+			<type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</type>
+			<implementation>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</implementation>
+		</component>
+		<component>
+			<type>info.magnolia.ui.admincentral.dialog.action.DialogActionFactory</type>
+			<implementation>info.magnolia.ui.admincentral.dialog.action.DialogActionFactoryImpl</implementation>
+		</component>
     <component>
-      <type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</type>
-      <implementation>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</implementation>
+      <type>info.magnolia.ui.admincentral.form.action.FormActionFactory</type>
+      <implementation>info.magnolia.ui.admincentral.form.action.FormActionFactoryImpl</implementation>
     </component>
-
-    <component>
-      <type>info.magnolia.ui.admincentral.dialog.action.DialogActionFactory</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.action.DialogActionFactoryImpl</implementation>
-    </component>
-   
-    
-    
-    <component>
-      <type>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</implementation>
-    </component>
-    
-    
-    <component>
-      <type>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</implementation>
-    </component>
+		<component>
+			<type>info.magnolia.ui.model.workbench.action.WorkbenchActionFactory</type>
+			<implementation>info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl</implementation>
+		</component>
+		<component>
+			<type>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</type>
+			<implementation>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</implementation>
+		</component>
+		<component>
+			<type>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</type>
+			<implementation>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</implementation>
+		</component>
 
     <component>
       <type>info.magnolia.ui.admincentral.dialog.ChooseDialogView</type>
@@ -275,10 +294,9 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.model.thumbnail.ImageProvider</type>
-      <implementation>info.magnolia.ui.model.thumbnail.DefaultImageProvider</implementation>
+      <type>info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition</type>
+      <implementation>info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
     </component>
-
 
     <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
@@ -294,48 +312,6 @@
     <configurer>
       <class>info.magnolia.ui.framework.event.SubAppEventBusConfigurer</class>
     </configurer>
-
-    <component>
-      <type>info.magnolia.ui.admincentral.form.FormPresenterFactory</type>
-      <implementation>info.magnolia.ui.admincentral.form.FormPresenterFactoryImpl</implementation>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactoryImpl</implementation>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.vaadin.dialog.MagnoliaDialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.Dialog</implementation>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.vaadin.dialog.DialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.BaseDialog</implementation>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
-    </component>
-
-      <component>
-        <type>info.magnolia.ui.admincentral.field.builder.FieldFactory</type>
-        <implementation>info.magnolia.ui.admincentral.field.builder.FieldFactory</implementation>
-      </component>
-      
-          <component>
-      <type>info.magnolia.ui.admincentral.form.action.FormActionFactory</type>
-      <implementation>info.magnolia.ui.admincentral.form.action.FormActionFactoryImpl</implementation>
-    </component>
-    
-    <component>
-      <type>info.magnolia.ui.model.workbench.action.WorkbenchActionFactory</type>
-      <implementation>info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl</implementation>
-    </component>
-    
-    
   </components>
 
 

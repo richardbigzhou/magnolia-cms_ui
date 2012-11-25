@@ -44,7 +44,6 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
  * Dialogs viewport server side implementation.
  * 
  */
-@SuppressWarnings("serial")
 @ClientWidget(value = VDialogViewport.class, loadStyle = LoadStyle.EAGER)
 public class DialogViewport extends ShellViewport {
 

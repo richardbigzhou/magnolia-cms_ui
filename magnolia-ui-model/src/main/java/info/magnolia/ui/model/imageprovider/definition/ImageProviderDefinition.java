@@ -31,60 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.thumbnail;
-
-import com.vaadin.terminal.Resource;
-
+package info.magnolia.ui.model.imageprovider.definition;
 
 /**
  * Defines a provider for Thumbnail images.
  */
-public interface ImageProvider {
+public interface ImageProviderDefinition {
 
     static final String ORIGINAL_IMAGE_NODE_NAME = "originalImage";
     static final String IMAGING_SERVLET_PATH = ".imaging";
     static final String IMAGE_EXTENSION = "png";
-    static final String PORTRAIT_GENERATOR = "portrait";
-    static final String THUMBNAIL_GENERATOR = "thumbnail";
 
-    String getLargePath(String workspace, String path);
-
-    String getPortraitPath(String workspace, String path);
-
-    String getThumbnailPath(String workspace, String path);
-
-    String getLargePathByIdentifier(String workspace, String uuid);
-
-    String getPortraitPathByIdentifier(String workspace, String uuid);
-
-    String getThumbnailPathByIdentifier(String workspace, String uuid);
 
     /**
      * Defaults to {@value #ORIGINAL_IMAGE_NODE_NAME}.
      */
     String getOriginalImageNodeName();
 
-    void setOriginalImageNodeName(String originalImageNodeName);
-
     /**
      * Defaults to {@value #IMAGING_SERVLET_PATH}.
      */
     String getImagingServletPath();
-
-    void setImagingServletPath(String imagingServletPath);
 
     /**
      * Defaults to {@value #IMAGE_EXTENSION}.
      */
     String getImageExtension();
 
-    void setImageExtension(String imageExtension);
-
     /**
-     * Get a Preview Resource.
-     * This preview is an image or an icon representing the Document type.
+     *
      */
-    Resource getThumbnailResourceByPath(String workspace, String path, String generator);
+    Class<? extends ImageProvider> getImageProviderClass();
 
-    Resource getThumbnailResourceById(String workspace, String identifier, String generator);
 }

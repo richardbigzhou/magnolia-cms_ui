@@ -51,7 +51,6 @@ import com.vaadin.ui.ComponentContainer;
 /**
  * Default view implementation for Pulse.
  */
-@SuppressWarnings("serial")
 public class PulseViewImpl implements PulseView {
 
 

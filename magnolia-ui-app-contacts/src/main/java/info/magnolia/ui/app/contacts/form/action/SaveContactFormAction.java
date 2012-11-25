@@ -33,8 +33,15 @@
  */
 package info.magnolia.ui.app.contacts.form.action;
 
+import info.magnolia.jcr.util.MetaDataUtil;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.action.SaveFormAction;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * SaveContactFormAction.
@@ -42,5 +49,45 @@ import info.magnolia.ui.admincentral.form.action.SaveFormAction;
 public class SaveContactFormAction extends SaveFormAction {
     public SaveContactFormAction(SaveContactFormActionDefinition definition, FormPresenter presenter) {
         super(definition, presenter);
+    }
+
+    @Override
+    public void execute() throws ActionExecutionException {
+        // First Validate
+        getPresenter().showValidation(true);
+        if (getPresenter().isValid()) {
+            final JcrNodeAdapter itemChanged = (JcrNodeAdapter) getItem();
+
+            try {
+                final Node node = itemChanged.getNode();
+
+                // Can't use this anymore, breaks when renaming node, ContentChangedEvent is still using the old path
+                //generateUniqueNodeNameForContact(node);
+
+                MetaDataUtil.updateMetaData(node);
+                node.getSession().save();
+            } catch (final RepositoryException e) {
+                throw new ActionExecutionException(e);
+            }
+            getPresenter().getCallback().onSuccess(getDefinition().getName());
+
+        } else {
+            //validation errors are displayed in the UI.
+        }
+    }
+
+    private void generateUniqueNodeNameForContact(final Node node) throws RepositoryException {
+        String firstName = node.getProperty("firstName").getString();
+        String lastName =  node.getProperty("lastName").getString();
+        String newNodeName = (firstName.charAt(0) + lastName.replaceAll("\\s+", "")).toLowerCase();
+        String parentPath = node.getParent().getPath();
+        String newNodeAbsPath = NodeUtil.combinePathAndName(parentPath, newNodeName);
+        int i = 1;
+
+        while(node.getSession().itemExists(newNodeAbsPath)) {
+            newNodeAbsPath = NodeUtil.combinePathAndName(parentPath, newNodeName + i);
+            i++;
+        }
+        node.getSession().move(node.getPath(), newNodeAbsPath);
     }
 }

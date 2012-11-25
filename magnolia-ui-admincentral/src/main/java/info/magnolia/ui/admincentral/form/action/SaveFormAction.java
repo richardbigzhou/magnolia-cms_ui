@@ -69,7 +69,7 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
     public void execute() throws ActionExecutionException {
         // First Validate
         presenter.showValidation(true);
-        if (presenter.getView().isValid()) {
+        if (presenter.isValid()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
                 final Node node = itemChanged.getNode();

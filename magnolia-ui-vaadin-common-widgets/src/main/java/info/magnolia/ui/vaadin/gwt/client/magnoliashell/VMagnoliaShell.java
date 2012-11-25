@@ -73,7 +73,6 @@ import com.vaadin.terminal.gwt.client.VConsole;
 /**
  * Vaadin implementation of MagnoliaShell client side.
  */
-@SuppressWarnings("serial")
 public class VMagnoliaShell extends Composite implements HasWidgets, Container, ClientSideHandler, VMagnoliaShellView.Presenter {
 
     /**

@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.thumbnail.view;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailContainer.ThumbnailItem;
-import info.magnolia.ui.model.thumbnail.ImageProvider;
+import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 import java.util.ArrayList;
@@ -71,15 +71,18 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
 
     private WorkbenchDefinition workbenchDefinition;
 
+    private ImageProvider imageProvider;
+
     private String workspaceName = "";
 
     private int thumbnailWidth = 0;
 
     private int thumbnailHeight = 0;
 
-    public ThumbnailContainer(WorkbenchDefinition workbenchDefinition) {
+    public ThumbnailContainer(WorkbenchDefinition workbenchDefinition, ImageProvider imageProvider) {
         super();
         this.workbenchDefinition = workbenchDefinition;
+        this.imageProvider = imageProvider;
         getAllItemIds().addAll(getAllIdentifiers(workbenchDefinition.getWorkspace()));
     }
 
@@ -91,7 +94,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
     @Override
     public ThumbnailContainerProperty getContainerProperty(Object itemId, Object propertyId) {
         if (THUMBNAIL_PROPERTY_ID.equals(propertyId)) {
-            return new ThumbnailContainerProperty(String.valueOf(itemId));
+            return new ThumbnailContainerProperty(String.valueOf(itemId), imageProvider);
         }
         return null;
     }
@@ -104,14 +107,18 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
         return null;
     }
 
-    private String prepareJcrSQL2Query(){
+    private String prepareJcrSQL2Query() {
         final String itemType = workbenchDefinition.getMainItemType().getItemType();
         return "select * from [" + itemType + "] as t order by name(t)";
     }
 
     /**
-     * @return a List of JCR identifiers for all the nodes recursively found under <code>initialPath</code>. This method is called in {@link LazyThumbnailViewImpl#refresh()}.
-     * You can override it, if you need a different strategy than the default one to fetch the identifiers of the nodes for which thumbnails need to be displayed.
+     * @return a List of JCR identifiers for all the nodes recursively found
+     *         under <code>initialPath</code>. This method is called in
+     *         {@link LazyThumbnailViewImpl#refresh()}. You can override it, if
+     *         you need a different strategy than the default one to fetch the
+     *         identifiers of the nodes for which thumbnails need to be
+     *         displayed.
      * @see info.magnolia.ui.vaadin.layout.LazyThumbnailLayout#refresh()
      */
     protected List<String> getAllIdentifiers(final String workspaceName) {
@@ -127,7 +134,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
             QueryResult queryResult = q.execute();
             NodeIterator iter = queryResult.getNodes();
 
-            while(iter.hasNext()) {
+            while (iter.hasNext()) {
                 uuids.add(iter.nextNode().getIdentifier());
             }
 
@@ -138,7 +145,6 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
         }
         return uuids;
     }
-
 
     @Override
     public boolean addContainerProperty(Object propertyId, Class<?> type, Object defaultValue) {
@@ -175,6 +181,10 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
         return new ThumbnailItem(String.valueOf(itemId));
     }
 
+    public ImageProvider getImageProvider() {
+        return imageProvider;
+    }
+
     public void setThumbnailHeight(int thumbnailHeight) {
         this.thumbnailHeight = thumbnailHeight;
     }
@@ -205,14 +215,20 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
     public class ThumbnailContainerProperty extends AbstractProperty {
 
         private String resourcePath;
+        private final ImageProvider imageProvider;
 
-        public ThumbnailContainerProperty(final String resourcePath) {
+        public ThumbnailContainerProperty(final String resourcePath, ImageProvider imageProvider) {
             this.resourcePath = resourcePath;
+            this.imageProvider = imageProvider;
         }
 
         @Override
         public Resource getValue() {
-            return workbenchDefinition.getImageProvider().getThumbnailResourceById(getWorkspaceName(), resourcePath, ImageProvider.THUMBNAIL_GENERATOR);
+            if (imageProvider == null){
+                return null;
+            }
+
+            return imageProvider.getThumbnailResourceById(getWorkspaceName(), resourcePath, ImageProvider.THUMBNAIL_GENERATOR);
         }
 
         @Override
@@ -240,7 +256,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
         @Override
         public Property getItemProperty(Object id) {
             if (THUMBNAIL_PROPERTY_ID.equals(id)) {
-                return new ThumbnailContainerProperty(this.id);
+                return new ThumbnailContainerProperty(this.id, imageProvider);
             }
             return null;
         }

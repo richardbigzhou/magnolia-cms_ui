@@ -57,6 +57,12 @@ public class DefaultLocation implements Location {
         this.appId = appId;
     }
 
+    public DefaultLocation(String appType, String appId, String subAppId) {
+        this.appType = appType;
+        this.appId = appId;
+        this.subAppId = subAppId;
+    }
+
     public DefaultLocation(String appType, String appId, String subAppId, String parameter) {
         this.appType = appType;
         this.appId = appId;

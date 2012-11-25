@@ -40,9 +40,9 @@ import info.magnolia.ui.model.dialog.definition.DialogDefinition;
  */
 public interface FormDialogPresenterFactory {
 
-    FormDialogPresenterImpl createDialogPresenterByName(String dialogName);
+    FormDialogPresenter createDialogPresenterByName(String dialogName);
 
-    FormDialogPresenterImpl createDialogPresenterByDefinition(DialogDefinition definition);
+    FormDialogPresenter createDialogPresenterByDefinition(DialogDefinition definition);
 
     DialogDefinition getDialogDefinition(String dialogName) throws RuntimeException;
 }

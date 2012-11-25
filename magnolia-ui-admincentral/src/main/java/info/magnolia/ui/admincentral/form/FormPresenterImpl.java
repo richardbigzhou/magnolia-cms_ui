@@ -96,13 +96,35 @@ public class FormPresenterImpl implements FormPresenter {
     }
 
     @Override
+    public boolean isValid() {
+        return view.isValid();
+    }
+
+    /**
+     * Builds the form based on formDefinition. Registers a callback currently used by ItemSubApp.
+     * @param item
+     * @param callback
+     * @return
+     */
+    @Override
     public FormView start(Item item, FormPresenter.Callback callback) {
         this.item = item;
         this.callback = callback;
-        formBuilder.buildForm(fieldFactory, formDefinition, item, view);
+        formBuilder.buildForm(fieldFactory, formDefinition, item, view, null);
         return view;
     }
 
+    /**
+     * Builds the form based on formDefinition. Currently used by FormDialogs.
+     * @param item
+     * @return
+     */
+    @Override
+    public FormView start(Item item, FormItem parent) {
+        this.item = item;
+        formBuilder.buildForm(fieldFactory, formDefinition, item, view, parent);
+        return view;
+    }
 
     @Override
     public Item getItemDataSource() {

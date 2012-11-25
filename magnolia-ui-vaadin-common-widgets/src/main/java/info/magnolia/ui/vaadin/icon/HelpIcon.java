@@ -36,7 +36,6 @@ package info.magnolia.ui.vaadin.icon;
 /**
  * The HelpIcon.
  */
-@SuppressWarnings("serial")
 public class HelpIcon extends CompositeIcon {
 
     public HelpIcon() {
