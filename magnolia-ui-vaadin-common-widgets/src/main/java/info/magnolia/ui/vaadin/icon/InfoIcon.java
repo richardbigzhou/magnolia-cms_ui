@@ -36,7 +36,6 @@ package info.magnolia.ui.vaadin.icon;
 /**
  * The InfoIcon.
  */
-@SuppressWarnings("serial")
 public class InfoIcon extends CompositeIcon {
 
     public InfoIcon() {

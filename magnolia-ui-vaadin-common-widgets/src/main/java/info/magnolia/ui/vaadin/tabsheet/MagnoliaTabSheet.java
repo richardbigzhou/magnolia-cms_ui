@@ -58,7 +58,6 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Simple lightweight tabsheet component.
  */
-@SuppressWarnings("serial")
 @ClientWidget(value = VMagnoliaTabSheet.class, loadStyle = LoadStyle.EAGER)
 public class MagnoliaTabSheet extends AbstractComponentContainer implements ServerSideHandler {
 

@@ -45,6 +45,7 @@ import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.admincentral.form.action.CancelFormActionDefinition;
 import info.magnolia.ui.admincentral.form.action.CreateItemActionDefinition;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
+import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.app.contacts.action.AddFolderActionDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
@@ -68,8 +69,8 @@ import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.EmailValidatorDefinition;
 import info.magnolia.ui.model.field.validation.definition.RegexpValidatorDefinition;
 import info.magnolia.ui.model.form.builder.FormConfig;
+import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
-import info.magnolia.ui.model.thumbnail.DefaultImageProvider;
 import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
 
 import javax.inject.Inject;
@@ -91,8 +92,10 @@ public class ContactsModule implements ModuleLifecycle {
     @App("contacts")
     public void contactsApp(ContentAppBuilder app, WorkbenchConfig wbcfg, ActionbarConfig abcfg, FormConfig formcfg) {
 
-        DefaultImageProvider imageProvider = new DefaultImageProvider();
-        imageProvider.setOriginalImageNodeName("photo");
+        // Configure ImageProvider
+        ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
+        cipd.setOriginalImageNodeName("photo");
+        cipd.setImageProviderClass(DefaultImageProvider.class);
 
         CreateItemActionDefinition addContactAction = new CreateItemActionDefinition();
         addContactAction.setNodeType("mgnl:contact");
@@ -125,7 +128,7 @@ public class ContactsModule implements ModuleLifecycle {
                                 .workbench(wbcfg.workbench().workspace("contacts").root("/").defaultOrder("jcrName")
                                         .groupingItemType(wbcfg.itemType("mgnl:folder").icon("/.resources/icons/16/folders.gif"))
                                         .mainItemType(wbcfg.itemType("mgnl:contact").icon("/.resources/icons/16/pawn_glass_yellow.gif"))
-                                        .imageProvider(imageProvider)
+                                        .imageProvider(cipd)
                                         .columns(
                                                 wbcfg.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(ContactNameColumnFormatter.class),
                                                 wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),

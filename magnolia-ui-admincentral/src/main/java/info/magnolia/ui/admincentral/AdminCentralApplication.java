@@ -54,7 +54,6 @@ import com.vaadin.ui.Window;
 /**
  * The Application's "main" class.
  */
-@SuppressWarnings("serial")
 public class AdminCentralApplication extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(AdminCentralApplication.class);

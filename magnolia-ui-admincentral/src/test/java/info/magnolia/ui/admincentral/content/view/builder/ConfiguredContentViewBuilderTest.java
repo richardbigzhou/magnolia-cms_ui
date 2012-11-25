@@ -50,7 +50,7 @@ import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.column.definition.LabelColumnDefinition;
-import info.magnolia.ui.model.thumbnail.ImageProvider;
+import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry;
@@ -80,12 +80,12 @@ public class ConfiguredContentViewBuilderTest {
         final MockSession session = new MockSession(workspace);
         MockUtil.setSessionAndHierarchyManager(session);
         WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
-        when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition,Action>>());
+        when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(
+                new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>());
 
         componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl(null, workbenchActionRegistry));
-        final ImageProvider imageProvider = mock(ImageProvider.class);
-        componentProvider.setInstance(ImageProvider.class, imageProvider);
-
+        final ImageProviderDefinition imageProvider = mock(ImageProviderDefinition.class);
+        componentProvider.setInstance(ImageProviderDefinition.class, imageProvider);
 
         workbenchDef.setWorkspace(workspace);
         workbenchDef.setPath("/");

@@ -47,7 +47,6 @@ import com.vaadin.ui.Component;
  * Component container showing only the most recently added component and keeping previously shown components in a stack
  * for easy switching to the previously shown.
  */
-@SuppressWarnings("serial")
 public class DeckLayout extends AbstractComponentContainer {
 
     private LinkedList<Component> children = new LinkedList<Component>();
