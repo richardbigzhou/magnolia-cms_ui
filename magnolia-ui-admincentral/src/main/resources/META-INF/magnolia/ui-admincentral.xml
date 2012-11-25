@@ -240,15 +240,16 @@
       <type>info.magnolia.ui.vaadin.dialog.NewFormDialogView</type>
       <implementation>info.magnolia.ui.vaadin.dialog.NewFormDialog</implementation>
     </component>
+
     <component>
       <type>info.magnolia.ui.vaadin.form.FormView</type>
       <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
 
-		<component>
-			<type>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder</type>
-			<implementation>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderImpl</implementation>
-		</component>
+    <component>
+      <type>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder</type>
+      <implementation>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderImpl</implementation>
+    </component>
     <component>
       <type>info.magnolia.ui.admincentral.content.item.ItemView</type>
       <implementation>info.magnolia.ui.admincentral.content.item.ItemViewImpl</implementation>
@@ -293,9 +294,10 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition</type>
-      <implementation>info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
+      <type>iinfo.magnolia.ui.model.thumbnail.ImageProvider</type>
+      <implementation>info.magnolia.ui.model.thumbnail.DefaultImageProvider</implementation>
     </component>
+
 
     <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
