@@ -294,10 +294,9 @@
     </component>
 
     <component>
-      <type>iinfo.magnolia.ui.model.thumbnail.ImageProvider</type>
-      <implementation>info.magnolia.ui.model.thumbnail.DefaultImageProvider</implementation>
+      <type>info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition</type>
+      <implementation>info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
     </component>
-
 
     <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
