@@ -311,8 +311,12 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     }
 
     private String getPathInWorkspace(String pathInTree) {
+        //if path is absolute, just return it
+        if(pathInTree.startsWith("/")) {
+            return pathInTree;
+        }
         String base = getWorkbenchDefinition().getPath();
-        return "/".equals(base) || pathInTree.equals(base)? pathInTree : base + pathInTree;
+        return base + pathInTree;
     }
 
 }
