@@ -43,7 +43,7 @@ import info.magnolia.module.pageexport.renderer.registry.RendererRegistry;
 import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.thumbnail.DefaultImageProvider;
+import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +67,7 @@ public class CreatePageThumbnailAction extends ActionBase<CreatePageThumbnailAct
     private RendererRegistry registry;
     private Node nodeToExport;
 
-    private static final String IMAGE_NODE_NAME = DefaultImageProvider.ORIGINAL_IMAGE_NODE_NAME;
+    private static final String IMAGE_NODE_NAME = ImageProviderDefinition.ORIGINAL_IMAGE_NODE_NAME;
 
     public CreatePageThumbnailAction(CreatePageThumbnailActionDefinition definition, RendererRegistry registry, Node nodeToExport) {
         super(definition);

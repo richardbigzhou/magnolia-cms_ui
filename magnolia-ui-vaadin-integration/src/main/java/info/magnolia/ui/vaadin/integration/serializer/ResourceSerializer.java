@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.integration.serializer;
 
+import info.magnolia.ui.vaadin.integration.terminal.IconFontResource;
+
 import java.lang.reflect.Type;
 
 import org.apache.commons.lang.SerializationException;
@@ -48,7 +50,6 @@ import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.ThemeResource;
 
-
 /**
  * Gson custom serializer to serialize vaadin resources with appropriate uri.
  *
@@ -56,6 +57,9 @@ import com.vaadin.terminal.ThemeResource;
  */
 @SuppressWarnings("deprecation")
 public class ResourceSerializer implements JsonSerializer<Resource> {
+
+    public static final String RESOURCE_URI_SCHEME_ICONFONT = "iconfont://";
+    public static final String RESOURCE_URI_SCHEME_THEME = "theme://";
 
     @Override
     public JsonElement serialize(Resource src, Type typeOfSrc, JsonSerializationContext context) {
@@ -65,6 +69,10 @@ public class ResourceSerializer implements JsonSerializer<Resource> {
 
         if (src instanceof ExternalResource) {
             return new JsonPrimitive(((ExternalResource) src).getURL());
+
+        } else if (src instanceof IconFontResource) {
+            return new JsonPrimitive(RESOURCE_URI_SCHEME_ICONFONT + ((IconFontResource) src).getCssClassName());
+
         } else if (src instanceof ApplicationResource) {
             final ApplicationResource r = (ApplicationResource) src;
             final Application a = r.getApplication();
@@ -72,8 +80,9 @@ public class ResourceSerializer implements JsonSerializer<Resource> {
                 throw new SerializationException("Application not specified for resource " + src.getClass().getName());
             }
             return new JsonPrimitive(a.getRelativeLocation(r));
+
         } else if (src instanceof ThemeResource) {
-            return new JsonPrimitive("theme://" + ((ThemeResource) src).getResourceId());
+            return new JsonPrimitive(RESOURCE_URI_SCHEME_THEME + ((ThemeResource) src).getResourceId());
         }
 
         return new JsonPrimitive(src.toString());

@@ -37,24 +37,27 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Client side DTO for the thumbnail.
- * 
+ *
  */
 public class VThumbnailData extends JavaScriptObject {
 
     protected VThumbnailData() {
-        
+
     }
-    
-    public static final native VThumbnailData parse(String json) /*-{
+
+    public static final native VThumbnailData parse(String json)
+    /*-{
         return eval('(' + json + ')');
     }-*/;
 
-    public final native String getId() /*-{
+    public final native String getId()
+    /*-{
         return this.id;
     }-*/;
 
-    public final native String getSrc() /*-{
-        return this.resource;
+    public final native String getSrc()
+    /*-{
+      return this.resource;
     }-*/;
 
 }

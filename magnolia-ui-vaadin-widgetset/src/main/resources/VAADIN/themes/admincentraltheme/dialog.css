@@ -131,7 +131,8 @@ button.btn-dialog-help {
     background-color: #E6E6E6;
 }
 
-.dialog-panel .form-panel .v-shell-tabsheet {
+.dialog-panel .form-panel .v-shell-tabsheet,
+.dialog-panel .form-panel .v-shell-tabsheet .nav li.active {
     background-color: #E6E6E6;
 }
 

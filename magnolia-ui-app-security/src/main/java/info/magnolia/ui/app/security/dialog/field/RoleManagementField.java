@@ -53,6 +53,7 @@ import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 /**
  * GUI builder for the Role Management field.
@@ -150,6 +151,13 @@ public class RoleManagementField extends SelectFieldBuilder<RoleManagementFieldD
             log.debug("Cannot read assigned roles of the node ["+mainNode+"].", re);
         }
         return roles;
+    }
+
+    @Override
+    public com.vaadin.data.Property getOrCreateProperty() {
+        DefaultProperty prop = new DefaultProperty("roles", getAssignedRoles());
+        item.addItemProperty("roles", prop);
+        return prop;
     }
 
 }

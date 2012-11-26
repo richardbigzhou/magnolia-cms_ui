@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.form.action;
 
 import com.vaadin.data.Item;
+import info.magnolia.ui.admincentral.form.FormItem;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -144,6 +145,11 @@ public class CallbackFormActionTest {
 
         @Override
         public FormView start(Item item, Callback callback) {
+            return null;
+        }
+
+        @Override
+        public FormView start(Item item, FormItem parent) {
             return null;
         }
 

@@ -56,7 +56,6 @@ import com.vaadin.data.util.HierarchicalContainer;
 /**
  * Presenter of {@link PulseMessagesView}.
  */
-@SuppressWarnings("serial")
 public class PulseMessagesPresenter implements Serializable {
 
     public static final String GROUP_PLACEHOLDER_ITEMID = "##SUBSECTION##";

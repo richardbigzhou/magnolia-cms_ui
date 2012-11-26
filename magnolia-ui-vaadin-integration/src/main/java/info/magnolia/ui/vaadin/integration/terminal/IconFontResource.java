@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,55 +31,57 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.vaadin.integration.terminal;
 
-import info.magnolia.ui.framework.view.View;
-import java.util.List;
-import com.vaadin.data.Item;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Field;
+import java.io.Serializable;
+
+import com.vaadin.terminal.Resource;
 
 /**
- * DialogView definition.
- * Define also the Listener interface.
+ * A Resource which represents a single icon which one can extract from
+ * the magnolia iconfont.
+ * Having a resource for the iconfont allows us to treat them interchangably with
+ * other resources, specifically images.
  */
-public interface MagnoliaDialogView extends View {
+public class IconFontResource implements Resource, Serializable {
 
     /**
-     * Base interface for an MagnoliaDialogView listener.
+     * The name of the CSS class for the icon font character.
      */
-    interface Listener {
-        /**
-         * Execute a specific action {@link info.magnolia.ui.model.action.Action}.
-         */
-        void executeAction(String actionName);
+    private String cssClassName = null;
 
-        /**
-         * Close current Dialog.
-         */
-        void closeDialog();
+
+
+    /**
+     * Creates an IconFont resource.
+     *
+     * @param cssClassName
+     *            the ccs class name in the iconfont.
+     */
+    public IconFontResource(String cssClassName) {
+        if (cssClassName == null) {
+            throw new RuntimeException("cssClassName must be non-null");
+        }
+
+        this.cssClassName = cssClassName;
     }
 
+    /**
+     * Gets the cssClassName of the icon in the iconFont.
+     *
+     * @return the cssClassName of the iconfont resource.
+     */
+    public String getCssClassName() {
+        return cssClassName;
+    }
 
-    void setListener(Listener listener);
+    /* (non-Javadoc)
+     * @see com.vaadin.terminal.Resource#getMIMEType()
+     */
+    @Override
+    public String getMIMEType() {
+        // Does not have a MIMEType.
+        return null;
+    }
 
-    void setItemDataSource(Item item);
-
-    void addTab(ComponentContainer inputFields, String tabName);
-
-    void addAction(String actionName, String actionLabel);
-
-    void addField(Field field);
-
-    void setDescription(String description);
-
-    void showValidation(boolean isVisible);
-
-    boolean isValid();
-
-    List<Field> getFields();
-
-    void setShowAllEnabled(boolean showAll);
-
-    void setCaption(String caption);
 }

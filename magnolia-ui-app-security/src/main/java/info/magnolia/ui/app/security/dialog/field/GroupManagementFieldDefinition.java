@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
-import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
+import info.magnolia.ui.model.field.definition.TwinColSelectFieldDefinition;
 
 /**
  * A definition for the Group Management field.
  */
-public class GroupManagementFieldDefinition extends OptionGroupFieldDefinition {
+public class GroupManagementFieldDefinition extends TwinColSelectFieldDefinition {
 
 }

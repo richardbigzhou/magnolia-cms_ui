@@ -34,7 +34,9 @@
 package info.magnolia.ui.vaadin.actionbar;
 
 import info.magnolia.ui.vaadin.gwt.client.actionbar.VActionbar;
+import info.magnolia.ui.vaadin.icon.Icon;
 import info.magnolia.ui.vaadin.integration.serializer.ResourceSerializer;
+import info.magnolia.ui.vaadin.integration.terminal.IconFontResource;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -63,7 +65,6 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * The Actionbar widget, consisting of sections and groups of actions.
  */
-@SuppressWarnings("serial")
 @ClientWidget(value = VActionbar.class, loadStyle = LoadStyle.EAGER)
 public class Actionbar extends AbstractComponent implements ActionbarView, ServerSideHandler {
 
@@ -243,14 +244,22 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
 
     @Override
     public void setPreview(Resource previewResource, String sectionName) {
-        Embedded preview = new Embedded(null, previewResource);
-        preview.setWidth("100%");
 
         ActionbarSection section = sections.get(sectionName);
         if (section != null) {
             final VerticalLayout previewContainer = new VerticalLayout();
             previewContainer.setWidth("100%");
-            previewContainer.addComponent(preview);
+
+            if (previewResource instanceof IconFontResource){
+                String cssClassName = ((IconFontResource)previewResource).getCssClassName();
+                Icon previewIconFont = new Icon(cssClassName,100,"#000000");
+                previewContainer.addComponent(previewIconFont);
+            }else{
+                Embedded preview = new Embedded(null, previewResource);
+                preview.setWidth("100%");
+                previewContainer.addComponent(preview);
+            }
+
             previewContainer.setStyleName("v-actionbar-preview");
             section.setPreview(previewContainer);
             if (isAttached) {

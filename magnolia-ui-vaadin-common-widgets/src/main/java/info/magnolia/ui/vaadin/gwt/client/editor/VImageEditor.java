@@ -33,15 +33,15 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor;
 
+import org.vaadin.csstools.client.ComputedStyle;
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
@@ -53,23 +53,29 @@ import com.vaadin.terminal.gwt.client.VConsole;
  */
 public class VImageEditor extends VerticalPanel implements Paintable, ClientSideHandler {
 
-    public static final String CLASSNAME = "v-image-editor";
-
+public static final String CLASSNAME = "v-image-editor";
+    
+    private int margins = 0;
+    
     private int nativeImageWidth;
 
     private int nativeImageHeight;
 
-    private double aspectRatio = 0d;
-
-    private Image img;
-
-    private String src;
+    private int explicitWidth = 0;
     
-    protected ApplicationConnection client;
-
-    private final GWTCropper cropper = new GWTCropper();
+    private int explicitHeight = 0;
 
     private final double scaleRatio = 1d;
+    
+    private Image img = null;
+
+    private final GWTSelector selector = new GWTSelector();
+    
+    protected ApplicationConnection client;
+    
+    private final Label scaleLabel = new Label();
+    
+    private final Label infoLabel = new Label();
     
     private final ClientSideProxy proxy = new ClientSideProxy(this) {
         {
@@ -77,20 +83,21 @@ public class VImageEditor extends VerticalPanel implements Paintable, ClientSide
 
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    src = String.valueOf(params[0]);
-                    img = new Image(src);
+                    if (img != null) {
+                        System.out.println("Remving old img " + img);
+                        remove(img);
+                    }
+                    infoLabel.setText(String.valueOf(params[0]));
+                    img = new Image(String.valueOf(params[0]));
                     img.addLoadHandler(new LoadHandler() {
                         @Override
                         public void onLoad(LoadEvent event) {
                             nativeImageWidth = img.getOffsetWidth();
                             nativeImageHeight = img.getOffsetHeight();
-                            aspectRatio = (double) nativeImageWidth / nativeImageHeight;
-                            int w = Math.min(getOffsetWidth(), nativeImageWidth);
-                            img.setWidth(w + "px");
-                            img.setHeight(w / aspectRatio + "px");
+                            updateImage();
                         }
                     });
-                    add(img);
+                    insert(img, 1);
                 }
             });
 
@@ -101,13 +108,21 @@ public class VImageEditor extends VerticalPanel implements Paintable, ClientSide
                 }
             });
 
+            register("setMarginsPx", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    margins = (Integer)params[0];
+                    updateImage();
+                }
+            });
+            
             register("fetchCropArea", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    int x = (int)(cropper.getSelectionXCoordinate() / scaleRatio);
-                    int y = (int)(cropper.getSelectionYCoordinate() / scaleRatio);
-                    int w = (int)(cropper.getSelectionWidth() / scaleRatio);
-                    int h = (int)(cropper.getSelectionHeight() / scaleRatio);
+                    int x = (int)(selector.getSelectionXCoordinate() / scaleRatio);
+                    int y = (int)(selector.getSelectionYCoordinate() / scaleRatio);
+                    int w = (int)(selector.getSelectionWidth() / scaleRatio);
+                    int h = (int)(selector.getSelectionHeight() / scaleRatio);
                     call("croppedAreaReady", x, y, w, h);
                 }
             });
@@ -115,9 +130,9 @@ public class VImageEditor extends VerticalPanel implements Paintable, ClientSide
             register("lockAspectRatio", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    double aspectRatio = (Double) params[0];
-                    if (cropper != null) {
-                        cropper.setAspectRatio(aspectRatio);
+                    boolean isAspectRatioLocked = (Boolean) params[0];
+                    if (selector != null) {
+                        selector.setAspectRatio(isAspectRatioLocked ? img.getOffsetWidth() * 1d / img.getOffsetHeight() : -1);
                     }
                 }
             });
@@ -136,13 +151,12 @@ public class VImageEditor extends VerticalPanel implements Paintable, ClientSide
         getElement().getStyle().setBackgroundColor("rgba(51,51,51,1)");
         setHorizontalAlignment(ALIGN_CENTER);
         setVerticalAlignment(ALIGN_MIDDLE);
-        addDomHandler(new DoubleClickHandler() {
-            @Override
-            public void onDoubleClick(DoubleClickEvent event) {
-                //Window.alert("scaling");
-                //setCropping(true);
-            }
-        }, DoubleClickEvent.getType());
+        
+        scaleLabel.getElement().getStyle().setColor("#FFFFFF");
+        infoLabel.getElement().getStyle().setColor("#FFFFFF");
+        
+        add(infoLabel);
+        add(scaleLabel);
     }
 
     @Override
@@ -154,38 +168,57 @@ public class VImageEditor extends VerticalPanel implements Paintable, ClientSide
     @Override
     public void setWidth(String width) {
         super.setWidth(width);
-        if (cropper.isAttached()) {
-            cropper.setWidth(img.getWidth() + "px");
+        if (width != null && !width.isEmpty()) {
+            explicitWidth = ComputedStyle.parseInt(width);
+        }
+        if (selector.isAttached()) {
+            selector.setWidth(img.getWidth() + "px");
         }
     }
 
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
-        if (cropper.isAttached()) {
-            cropper.setHeight(img.getHeight() + "px");
+        if (height != null && !height.isEmpty()) {
+            explicitHeight = ComputedStyle.parseInt(height);
+        }
+        if (selector.isAttached()) {
+            selector.setHeight(img.getHeight() + "px");
         }
     }
     
-    private void scale(double ratio) {
-        if (cropper.isAttached()) {
-            cropper.scale(ratio);
+    public void scale(double ratio) {
+        if (selector.isAttached()) {
+            selector.scale(ratio);
         }
     }
 
     private void setCropping(Boolean isCropping) {
         if (isCropping) {
             remove(img);
-            cropper.cropImage(img, src);
-            add(cropper);
+            selector.cropImage(img);
+            insert(selector, 1);
         } else {
-            remove(cropper);
+            remove(selector);
             img.setStyleName("");
-            add(img);
+            insert(img, 1);
         }
 
     }
-
+    
+    private void updateImage() {
+        if (nativeImageHeight > 0) {
+            //double aspectRatio = (double) nativeImageWidth / nativeImageHeight;
+            int width = explicitWidth == 0 ? nativeImageWidth : explicitWidth - 2 * margins;
+            int height = explicitHeight == 0 ? nativeImageHeight : explicitHeight - 2 * margins;
+            
+            img.setWidth(width + "px");
+            img.setHeight(height + "px");   
+            
+            scaleLabel.setText("Showing " + (int)(width * 1d / nativeImageWidth * 100) + "% of original size");
+        }
+    }
+    
     @Override
     public boolean initWidget(Object[] params) {
         return false;

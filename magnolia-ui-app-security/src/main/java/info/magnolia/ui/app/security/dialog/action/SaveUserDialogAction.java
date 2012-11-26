@@ -77,6 +77,9 @@ public class SaveUserDialogAction extends SaveFormAction {
                     String encryptedPassword = SecurityUtil.getBCrypt(password);
                     PropertyUtil.setProperty(node, "password", encryptedPassword);
                 }
+                // ENABLED
+                String _enabled = itemChanged.getItemProperty("enabled").getValue().toString();
+                PropertyUtil.setProperty(node, "enabled", _enabled);
                 // GROUPS
                 String _ids = itemChanged.getItemProperty("groups").getValue().toString();
                 _ids = StringUtils.remove(_ids, '[');

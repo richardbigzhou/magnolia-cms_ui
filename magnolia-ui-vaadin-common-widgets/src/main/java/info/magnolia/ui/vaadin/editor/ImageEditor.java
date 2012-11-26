@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.editor;
 
-
 import info.magnolia.ui.vaadin.gwt.client.editor.VImageEditor;
 
 import java.io.Serializable;
@@ -61,12 +60,12 @@ public class ImageEditor extends AbstractComponent implements ServerSideHandler 
 
     private int minDimension = DEFAULT_MIN_DIMENSION;
 
-    private double lockedAspectRatio = -1;
+    private int marginsPx = 20;
+    
+    private boolean isCropAspectRatioLocked = false;
 
     private boolean isAttached = false;
 
-    private String link = null;
-    
     private final ServerSideProxy proxy = new ServerSideProxy(this) {
         {
             register("croppedAreaReady", new Method() {
@@ -96,32 +95,37 @@ public class ImageEditor extends AbstractComponent implements ServerSideHandler 
         setImmediate(true);
     }
 
-    void addCropListener(CropListener listener) {
+    public void addCropListener(CropListener listener) {
         listeners.add(listener);
     }
 
+    public void setMarginsPx(int marginsPx) {
+        this.marginsPx = marginsPx;
+        callOnceIfAttached("setMarginsPx", marginsPx);
+    }
+    
     public void setSource(Resource source) {
         this.source = source;
-        callIfAttached("setSource", this.source);
+        callOnceIfAttached("setSource", this.source);
     }
 
     public void setCropping(boolean isCropping) {
         this.isCropping = isCropping;
-        callIfAttached("setCropping", isCropping);
+        callOnceIfAttached("setCropping", isCropping);
     }
 
     public void fetchCropArea() {
-        callIfAttached("fetchCropArea");
+        callOnceIfAttached("fetchCropArea");
     }
 
-    public void lockCropAspectRatio(double aspectRatio) {
-        this.lockedAspectRatio = aspectRatio;
-        callIfAttached("lockAspectRatio", aspectRatio);
+    public void setCropAspectRatioLocked(boolean isLocked) {
+        this.isCropAspectRatioLocked = isLocked;
+        callOnceIfAttached("lockAspectRatio", isLocked);
     }
 
     public void setMinDimension(int minDimension) {
         this.minDimension = minDimension;
-        callIfAttached("setMinDimension", minDimension);
+        callOnceIfAttached("setMinDimension", minDimension);
     }
 
     public boolean isCropping() {
@@ -129,12 +133,12 @@ public class ImageEditor extends AbstractComponent implements ServerSideHandler 
     }
 
     public boolean isAspectRatioLocked() {
-        return this.lockedAspectRatio > 0;
+        return this.isCropAspectRatioLocked;
     }
 
-    private void callIfAttached(String methodName, Object... params) {
+    private void callOnceIfAttached(String methodName, Object... params) {
         if (isAttached) {
-            proxy.call(methodName, params);
+            proxy.callOnce(methodName, params);
         }
     }
 
@@ -152,15 +156,12 @@ public class ImageEditor extends AbstractComponent implements ServerSideHandler 
 
     @Override
     public Object[] initRequestFromClient() {
-        if (link != null) {
-            proxy.call("setSource", link);    
-        } else {
-            proxy.call("setSource", this.source);   
-        }
-        proxy.call("setCropping", isCropping);
-        proxy.call("setMinDimension", minDimension);
+        proxy.callOnce("setSource", this.source);
+        proxy.callOnce("setCropping", isCropping);
+        proxy.callOnce("setMinDimension", minDimension);
+        proxy.callOnce("setMarginsPx", marginsPx);
         if (isAspectRatioLocked()) {
-            proxy.call("lockAspectRatio", lockedAspectRatio);
+            proxy.callOnce("lockAspectRatio", isCropAspectRatioLocked);
         }
         return new Object[] {};
     }
@@ -183,7 +184,7 @@ public class ImageEditor extends AbstractComponent implements ServerSideHandler 
     }
 
     /**
-     * CropListener. 
+     * CropListener.
      */
     public interface CropListener {
         void onCrop(final CropArea area);
@@ -228,10 +229,5 @@ public class ImageEditor extends AbstractComponent implements ServerSideHandler 
         public String toString() {
             return "[" + "w:" + getWidth() + "h:" + getHeight() + "l:" + getLeft() + "t:" + getTop() + "]";
         }
-    }
-
-    public void setSource(String createLink) {
-        this.link = createLink;
-        callIfAttached("setSource", createLink);
     }
 }

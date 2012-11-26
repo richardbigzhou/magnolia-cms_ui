@@ -43,7 +43,6 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
 /**
  * Shell apps viewport.
  */
-@SuppressWarnings("serial")
 @ClientWidget(value = VShellAppsViewport.class, loadStyle = LoadStyle.EAGER)
 public class ShellAppsViewport extends ShellViewport {
 

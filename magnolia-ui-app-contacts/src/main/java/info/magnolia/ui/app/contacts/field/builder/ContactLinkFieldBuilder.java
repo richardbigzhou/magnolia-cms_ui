@@ -40,7 +40,7 @@ import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
 import info.magnolia.ui.app.contacts.field.ContactTextAndButtonField;
 import info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition;
 import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.model.thumbnail.ImageProvider;
+import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 
 import javax.inject.Inject;
 
