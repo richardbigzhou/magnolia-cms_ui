@@ -39,9 +39,6 @@ import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.item.ItemPresenter;
 import info.magnolia.ui.admincentral.content.item.ItemView;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
-import info.magnolia.ui.admincentral.event.ContentChangedEvent;
-import info.magnolia.ui.admincentral.form.FormPresenter;
-import info.magnolia.ui.admincentral.form.FormPresenterFactory;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.view.View;
@@ -50,7 +47,6 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.form.FormView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,52 +61,33 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ItemWorkbenchPresenter.class);
 
-    private final SubAppContext subAppContext;
     private final ItemWorkbenchView view;
-    private final EventBus eventBus;
     private EventBus subAppEventBus;
     private final ItemPresenter itemPresenter;
     private WorkbenchActionFactory actionFactory;
     private final ActionbarPresenter actionbarPresenter;
-    private FormPresenterFactory formPresenterFactory;
     private WorkbenchDefinition workbenchDefinition;
     private String nodePath;
 
     @Inject
-    public ItemWorkbenchPresenter(final SubAppContext subAppContext, final ItemWorkbenchView view, final @Named("admincentral") EventBus eventBus, final @Named("subapp") EventBus subAppEventBus,
-                                  final ItemPresenter itemPresenter, final WorkbenchActionFactory actionFactory, final ActionbarPresenter actionbarPresenter, final FormPresenterFactory formPresenterFactory) {
-        this.subAppContext = subAppContext;
+    public ItemWorkbenchPresenter(final SubAppContext subAppContext, final ItemWorkbenchView view, final @Named("subapp") EventBus subAppEventBus,
+                                  final ItemPresenter itemPresenter, final WorkbenchActionFactory actionFactory, final ActionbarPresenter actionbarPresenter) {
         this.view = view;
-        this.eventBus = eventBus;
         this.subAppEventBus = subAppEventBus;
         this.itemPresenter = itemPresenter;
         this.actionFactory = actionFactory;
         this.actionbarPresenter = actionbarPresenter;
-        this.formPresenterFactory = formPresenterFactory;
         this.workbenchDefinition = ((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench();
 
     }
 
-    public View start(String nodePath) {
+    public View start(String nodePath, ItemView.ViewType viewType) {
         view.setListener(this);
-        //final FormPresenter formPresenter = formPresenterFactory.createFormPresenterByName(workbenchDefinition.getFormName());
-        final FormPresenter formPresenter = formPresenterFactory.createFormPresenterByDefinition(workbenchDefinition.getFormDefinition());
         this.nodePath = nodePath;
         final JcrNodeAdapter item = new JcrNodeAdapter(SessionUtil.getNode(workbenchDefinition.getWorkspace(), nodePath));
-        final FormView formView = formPresenter.start(item, new FormPresenter.Callback() {
+        ItemView itemView = itemPresenter.start(workbenchDefinition.getFormDefinition(), item, viewType);
 
-            @Override
-            public void onCancel() {
-                // should switch to ViewType.VIEW
-            }
-
-            @Override
-            public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
-            }
-        });
-
-        view.setItemView(formView);
+        view.setItemView(itemView);
 
         ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar(), actionFactory);
         view.setActionbarView(actionbar);

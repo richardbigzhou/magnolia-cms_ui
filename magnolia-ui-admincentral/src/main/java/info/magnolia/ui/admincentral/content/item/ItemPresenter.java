@@ -33,48 +33,69 @@
  */
 package info.magnolia.ui.admincentral.content.item;
 
-import info.magnolia.ui.admincentral.workbench.ItemWorkbenchView;
+import info.magnolia.ui.admincentral.event.ContentChangedEvent;
+import info.magnolia.ui.admincentral.form.FormPresenter;
+import info.magnolia.ui.admincentral.form.FormPresenterFactory;
+import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.model.form.definition.FormDefinition;
+import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * ItemPresenter.
  */
 public class ItemPresenter {
 
+    private EventBus eventBus;
     private ItemView view;
+    private FormPresenterFactory formPresenterFactory;
+    private FormDefinition formDefinition;
+    private JcrNodeAdapter item;
+    private ItemView.ViewType viewType;
 
     @Inject
-    public ItemPresenter(ItemView view) {
+    public ItemPresenter(final @Named("admincentral") EventBus eventBus, ItemView view, FormPresenterFactory formPresenterFactory) {
+        this.eventBus = eventBus;
         this.view = view;
+        this.formPresenterFactory = formPresenterFactory;
     }
 
-    public ItemView start() {
+    public ItemView start(FormDefinition formDefinition, final JcrNodeAdapter item, ItemView.ViewType viewType) {
+        this.formDefinition = formDefinition;
+        this.item = item;
+        this.viewType = viewType;
+
+        setItemView(viewType);
         return view;
     }
 
-    public void initContentView(ItemWorkbenchView parentView) {
-        /*if (workbenchDefinition == null) {
-            throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
+    private void setItemView(ItemView.ViewType viewType) {
+        final FormPresenter formPresenter = formPresenterFactory.createFormPresenterByDefinition(formDefinition);
+
+        switch (viewType) {
+            case VIEW:
+            case EDIT:
+            default:
+                final FormView formView = formPresenter.start(item, new FormPresenter.Callback() {
+
+                    @Override
+                    public void onCancel() {
+                        setItemView(ItemView.ViewType.VIEW);
+                    }
+
+                    @Override
+                    public void onSuccess(String actionName) {
+                        eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+                        setItemView(ItemView.ViewType.VIEW);
+                    }
+                });
+                view.setItemView(formView.asVaadinComponent(), viewType);
+                break;
+
         }
-        log.debug("Initializing workbench {}...", workbenchDefinition.getName());
 
-        for (final ContentView.ViewType type : ContentView.ViewType.values()) {
-            final ContentView contentView = contentViewBuilder.build(workbenchDefinition, type);
-            contentView.setListener(this);
-            contentView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
-            parentView.addContentView(type, contentView);
-        }
-
-        if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
-            throw new IllegalStateException(workbenchDefinition.getName()
-                    + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
-        }
-        */
-
-        parentView.addItemView(ItemView.ViewType.VIEW, view);
-
-
-        parentView.setViewType(ItemView.ViewType.VIEW);
     }
 }

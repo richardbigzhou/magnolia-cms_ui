@@ -71,8 +71,7 @@ public class AbstractItemSubApp extends AbstractSubApp {
         ItemLocation l = ItemLocation.wrap(location);
         super.start(l);
         this.caption = l.getNodePath();
-        // set viewType (edit/view)
-        getView().setWorkbenchView(workbench.start(l.getNodePath()));
+        getView().setWorkbenchView(workbench.start(l.getNodePath(), l.getViewType()));
         return getView();
     }
 
