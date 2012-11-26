@@ -40,6 +40,7 @@ import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.admincentral.app.CodeConfigurationUtils;
 import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
+import info.magnolia.ui.admincentral.app.content.builder.ContentSubAppBuilder;
 import info.magnolia.ui.admincentral.column.StatusColumnFormatter;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition;
@@ -69,8 +70,9 @@ import info.magnolia.ui.model.dialog.builder.Dialog;
 import info.magnolia.ui.model.dialog.builder.DialogBuilder;
 import info.magnolia.ui.model.dialog.builder.DialogConfig;
 import info.magnolia.ui.model.form.builder.OptionBuilder;
+import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
-import info.magnolia.ui.model.thumbnail.DefaultImageProvider;
+import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
 
 /**
@@ -90,13 +92,6 @@ public class SecurityModule implements ModuleLifecycle {
     @App("security")
     public void securityApp(ContentAppBuilder app, WorkbenchConfig wbcfg, ActionbarConfig abcfg) {
 
-        // user
-        CreateDialogActionDefinition addUserAction = new CreateDialogActionDefinition();
-        addUserAction.setNodeType(MgnlNodeType.USER);
-        addUserAction.setDialogName("ui-security-app:userAdd");
-
-        EditDialogActionDefinition editUserAction = new EditDialogActionDefinition();
-        editUserAction.setDialogName("ui-security-app:userEdit");
 
         // group
         CreateDialogActionDefinition addGroupAction = new CreateDialogActionDefinition();
@@ -114,39 +109,43 @@ public class SecurityModule implements ModuleLifecycle {
         EditDialogActionDefinition editRoleAction = new EditDialogActionDefinition();
         editRoleAction.setDialogName("ui-security-app:roleEdit");
 
-        DefaultImageProvider imageProvider = new DefaultImageProvider();
-        imageProvider.setOriginalImageNodeName("photo");
+        // Configure ImageProvider
+        ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
+        cipd.setOriginalImageNodeName("photo");
+        cipd.setImageProviderClass(DefaultImageProvider.class);
 
         app.label("security").icon("icon-security-app").appClass(SecurityApp.class) // .categoryName("MANAGE")
             .subApps(
-                    app.subApp("users").subAppClass(SecurityUsersSubApp.class).defaultSubApp()
-                    .workbench(wbcfg.workbench().workspace("users").root("/").defaultOrder("jcrName")
-                            .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))
-                            .mainItemType(wbcfg.itemType(MgnlNodeType.USER).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
-                            .columns(
-                                    wbcfg.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class),
-                                    wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),
-                                    wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
-                                    wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true)
-                            )
-                            .actionbar(abcfg.actionbar().defaultAction("edit")
-                                    .sections(
-                                            abcfg.section("usersActions").label("Users")
-                                                    .groups(
-                                                            abcfg.group("addActions").items(
-                                                                    abcfg.item("addUser").label("New user").icon("icon-add-item").action(addUserAction)),
-                                                            abcfg.group("editActions").items(
-                                                                    abcfg.item("edit").label("Edit user").icon("icon-edit").action(editUserAction),
-                                                                    abcfg.item("delete").label("Delete user").icon("icon-delete").action(new DeleteItemActionDefinition()))
-                                            )
-                                    )
-                            )
-                    ),
+                    userSubApp(app, wbcfg, abcfg, "users", "/"),
+//                    app.subApp("users").subAppClass(SecurityUsersSubApp.class).defaultSubApp()
+//                    .workbench(wbcfg.workbench().workspace("users").root("/").defaultOrder("jcrName")
+//                            .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))
+//                            .mainItemType(wbcfg.itemType(MgnlNodeType.USER).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
+//                            .imageProvider(cipd)
+//                            .columns(
+//                                    wbcfg.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class),
+//                                    wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),
+//                                    wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
+//                                    wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true)
+//                            )
+//                            .actionbar(abcfg.actionbar().defaultAction("edit")
+//                                    .sections(
+//                                            abcfg.section("usersActions").label("Users")
+//                                                    .groups(
+//                                                            abcfg.group("addActions").items(
+//                                                                    abcfg.item("addUser").label("New user").icon("icon-add-item").action(addUserAction)),
+//                                                            abcfg.group("editActions").items(
+//                                                                    abcfg.item("edit").label("Edit user").icon("icon-edit").action(editUserAction),
+//                                                                    abcfg.item("delete").label("Delete user").icon("icon-delete").action(new DeleteItemActionDefinition()))
+//                                            )
+//                                    )
+//                            )
+//                    ),
                     app.subApp("groups").subAppClass(SecurityGroupsSubApp.class)
                     .workbench(wbcfg.workbench().workspace("usergroups").root("/").defaultOrder("jcrName")
                             .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))
                             .mainItemType(wbcfg.itemType(MgnlNodeType.GROUP).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
-                            .imageProvider(imageProvider)
+                            .imageProvider(cipd)
                             .columns(
                                     wbcfg.column(new PropertyColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName"),
                                     wbcfg.column(new PropertyColumnDefinition()).name("title").label("Full Name").sortable(true).propertyName("title").width(180).displayInDialog(false),
@@ -170,7 +169,7 @@ public class SecurityModule implements ModuleLifecycle {
                     .workbench(wbcfg.workbench().workspace("userroles").root("/").defaultOrder("jcrName")
                             .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))
                             .mainItemType(wbcfg.itemType(MgnlNodeType.ROLE).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
-                            .imageProvider(imageProvider)
+                            .imageProvider(cipd)
                             .columns(
                                     wbcfg.column(new PropertyColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName"),
                                     wbcfg.column(new PropertyColumnDefinition()).name("title").label("Full Name").sortable(true).propertyName("title").width(180).displayInDialog(false),
@@ -195,6 +194,45 @@ public class SecurityModule implements ModuleLifecycle {
         ;
     }
 
+    protected ContentSubAppBuilder userSubApp(ContentAppBuilder app, WorkbenchConfig wbcfg, ActionbarConfig abcfg, String name, String root) {
+        // user
+        CreateDialogActionDefinition addUserAction = new CreateDialogActionDefinition();
+        addUserAction.setNodeType(MgnlNodeType.USER);
+        addUserAction.setDialogName("ui-security-app:userAdd");
+
+        EditDialogActionDefinition editUserAction = new EditDialogActionDefinition();
+        editUserAction.setDialogName("ui-security-app:userEdit");
+
+        // Configure ImageProvider
+        ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
+        cipd.setOriginalImageNodeName("photo");
+        cipd.setImageProviderClass(DefaultImageProvider.class);
+
+        return app.subApp(name).subAppClass(SecurityUsersSubApp.class).defaultSubApp()
+                .workbench(wbcfg.workbench().workspace("users").root(root).defaultOrder("jcrName")
+                        .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))  // see MGNLPUR-77
+                        .mainItemType(wbcfg.itemType(MgnlNodeType.USER).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
+                        .imageProvider(cipd)
+                        .columns(
+                                wbcfg.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class),
+                                wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),
+                                wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
+                                wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true)
+                        )
+                        .actionbar(abcfg.actionbar().defaultAction("edit")
+                                .sections(
+                                        abcfg.section("usersActions").label("Users")
+                                                .groups(
+                                                        abcfg.group("addActions").items(
+                                                                abcfg.item("addUser").label("New user").icon("icon-add-item").action(addUserAction)),
+                                                        abcfg.group("editActions").items(
+                                                                abcfg.item("edit").label("Edit user").icon("icon-edit").action(editUserAction),
+                                                                abcfg.item("delete").label("Delete user").icon("icon-delete").action(new DeleteItemActionDefinition()))
+                                        )
+                                )
+                        )
+                );
+    }
 
     @Dialog("ui-security-app:userAdd")
     public void userAddDialog(DialogBuilder dialog, DialogConfig cfg, FormConfig formcfg) {

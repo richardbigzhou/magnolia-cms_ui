@@ -64,7 +64,9 @@ public class UserNameColumnFormatter extends AbstractColumnFormatter<UserNameCol
             Node node = (Node) jcrItem;
 
             try {
-                if (NodeUtil.isNodeType(node, MgnlNodeType.NT_CONTENT)) {
+                // both mgnl:folder and mgnl:content, as /admin and /system are folders, but /public is content
+                // reported as MGNLPUR-77
+                if (NodeUtil.isNodeType(node, MgnlNodeType.NT_FOLDER) || NodeUtil.isNodeType(node, MgnlNodeType.NT_CONTENT)) {
                     return node.getName();
                 }
             } catch (RepositoryException e) {
