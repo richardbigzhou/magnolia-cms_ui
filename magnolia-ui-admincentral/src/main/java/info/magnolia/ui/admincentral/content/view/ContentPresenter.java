@@ -40,6 +40,7 @@ import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -73,17 +74,28 @@ public class ContentPresenter implements ContentView.Listener {
     protected WorkbenchDefinition workbenchDefinition;
 
     private String selectedItemId;
-    
-    @Inject
+
     public ContentPresenter(final AppContext appContext, final ContentViewBuilder contentViewBuilder, @Named("subapp") final EventBus subAppEventBus, final Shell shell) {
         this.contentViewBuilder = contentViewBuilder;
         this.subAppEventBus = subAppEventBus;
         this.shell = shell;
-        
+
         final ContentSubAppDescriptor subAppDescriptor = (ContentSubAppDescriptor) appContext.getDefaultSubAppDescriptor();
         this.workbenchDefinition = subAppDescriptor.getWorkbench();
         this.workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
     }
+
+    @Inject
+    public ContentPresenter(final SubAppContext subAppContext, final ContentViewBuilder contentViewBuilder, @Named("subapp") final EventBus subAppEventBus, final Shell shell) {
+        this.contentViewBuilder = contentViewBuilder;
+        this.subAppEventBus = subAppEventBus;
+        this.shell = shell;
+
+        final ContentSubAppDescriptor subAppDescriptor = (ContentSubAppDescriptor)subAppContext.getSubAppDescriptor();
+        this.workbenchDefinition = subAppDescriptor.getWorkbench();
+        this.workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
+    }
+
 
     public void initContentView(ContentWorkbenchView parentView) {
         if (workbenchDefinition == null) {
