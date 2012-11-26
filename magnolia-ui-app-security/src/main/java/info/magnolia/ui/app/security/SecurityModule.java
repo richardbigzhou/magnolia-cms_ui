@@ -45,7 +45,6 @@ import info.magnolia.ui.admincentral.column.StatusColumnFormatter;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
-import info.magnolia.ui.admincentral.form.action.CancelFormActionDefinition;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.security.column.UserNameColumnDefinition;
 import info.magnolia.ui.app.security.column.UserNameColumnFormatter;
