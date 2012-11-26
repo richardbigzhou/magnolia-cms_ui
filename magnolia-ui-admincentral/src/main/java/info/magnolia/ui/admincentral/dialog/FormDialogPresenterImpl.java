@@ -43,8 +43,6 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.form.definition.ConfiguredFormDefinition;
-import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
 
@@ -83,48 +81,16 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     @Override
     public DialogView start(final Item item, final Callback callback) {
         this.callback = callback;
-
-        FormDefinition formDefinition = (dialogDefinition.getFormDefinition() != null) ? dialogDefinition.getFormDefinition() : createFormDefintion(dialogDefinition);
         dialogBuilder.buildFormDialog(dialogDefinition, view);
+        this.formPresenter = formPresenterFactory.createFormPresenterByDefinition(dialogDefinition.getFormDefinition());
 
-        this.formPresenter = formPresenterFactory.createFormPresenterByDefinition(formDefinition);
-
-        /**
-         * This is needed to acces properties from the parent. Currently only the i18basename.
-         *
-         */
+        // This is needed to acces properties from the parent. Currently only the i18basename.
         Dialog dialog = new Dialog(dialogDefinition);
         view.setFormView(formPresenter.start(item, dialog));
 
 
         shell.openDialog(this);
         return view;
-    }
-
-    /**
-     * Migrating dialogDefinition to FormDefinition on the fly. Hackalicious.
-     */
-    private FormDefinition createFormDefintion(DialogDefinition dialogDefinition) {
-        ConfiguredFormDefinition formDefinition = new ConfiguredFormDefinition();
-
-        formDefinition.setTabs(dialogDefinition.getTabs());
-
-/*        for (DialogActionDefinition dialogActionDefinition : dialogDefinition.getActions()) {
-            ConfiguredFormActionDefinition formAction = new ConfiguredFormActionDefinition();
-            formAction.setActionDefinition(dialogActionDefinition.getActionDefinition());
-            formAction.setI18nBasename(dialogActionDefinition.getI18nBasename());
-            formAction.setLabel(dialogActionDefinition.getLabel());
-            formAction.setName(dialogActionDefinition.getName());
-
-            formDefinition.addAction(formAction);
-        }*/
-
-        formDefinition.setI18nBasename(dialogDefinition.getI18nBasename());
-        formDefinition.setDescription(dialogDefinition.getDescription());
-        formDefinition.setLabel(dialogDefinition.getLabel());
-        formDefinition.setId(dialogDefinition.getId());
-
-        return formDefinition;
     }
 
     private void initActions(final DialogDefinition dialogDefinition) {
