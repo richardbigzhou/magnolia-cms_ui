@@ -33,11 +33,19 @@
  */
 package info.magnolia.ui.app.pages.thumbnail;
 
-import info.magnolia.ui.model.thumbnail.DefaultImageProvider;
+import info.magnolia.ui.admincentral.image.DefaultImageProvider;
+import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 
 /**
  * PagesImageProvider.
  */
 public class PagesImageProvider extends DefaultImageProvider {
+
+    /**
+     * @param definition
+     */
+    public PagesImageProvider(ImageProviderDefinition definition) {
+        super(definition);
+    }
 
 }

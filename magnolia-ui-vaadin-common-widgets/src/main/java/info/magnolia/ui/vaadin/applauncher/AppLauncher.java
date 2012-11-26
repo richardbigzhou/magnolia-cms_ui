@@ -55,7 +55,6 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
 /**
  * Server side of AppLauncher.
  */
-@SuppressWarnings("serial")
 @ClientWidget(value = VAppLauncher.class, loadStyle = LoadStyle.EAGER)
 public class AppLauncher extends AbstractComponent implements ServerSideHandler {
 

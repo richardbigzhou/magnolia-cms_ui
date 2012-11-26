@@ -64,6 +64,6 @@ public class AddNodeAction extends RepositoryOperationAction<AddNodeActionDefini
         Node node = (Node) item;
         String name = Path.getUniqueLabel(item.getSession(), item.getPath(), "untitled");
         Node newNode = node.addNode(name, getDefinition().getNodeType());
-        NodeTypes.CreatedMixin.setCreation(newNode);
+        NodeTypes.Created.set(newNode);
     }
 }

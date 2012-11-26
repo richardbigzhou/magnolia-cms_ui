@@ -43,7 +43,6 @@ import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
  * Base implementation for content app descriptor.
  * 
  */
-@SuppressWarnings("serial")
 public class ConfiguredContentAppDescriptor extends ConfiguredAppDescriptor implements ContentAppDescriptor {
 
     private WorkbenchDefinition workbench;

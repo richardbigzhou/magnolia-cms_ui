@@ -43,18 +43,19 @@ v2
 	margin: 3px;
 	padding: 5px;
 	cursor:pointer;
+	overflow:hidden;
 }
 
 .thumbnail-image{
 	display:block;
-	margin:auto;
+	margin: auto;
 }
 
 .thumbnail.selected {
 	background-color: #AABF2F;
 }
 
-.thumbnail:HOVER {
+.thumbnail:hover {
 	border: 1px solid #AABF2F;
 }
 

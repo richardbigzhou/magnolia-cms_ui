@@ -41,7 +41,6 @@ import info.magnolia.ui.framework.view.View;
 /**
  * View implementation for the Contacts app.
  */
-@SuppressWarnings("serial")
 public class ContactsViewImpl implements ContactsView {
 
     private View workbenchView;

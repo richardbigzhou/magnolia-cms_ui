@@ -46,7 +46,6 @@ import com.vaadin.ui.themes.BaseTheme;
 /**
  * Split panel that displays two column feed.
  */
-@SuppressWarnings("serial")
 public class SplitFeed extends HorizontalSplitPanel {
 
     private final FeedSection leftContainer = new FeedSection();
