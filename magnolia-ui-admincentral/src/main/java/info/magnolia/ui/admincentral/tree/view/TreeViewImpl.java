@@ -40,8 +40,8 @@ import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 
 import java.util.ArrayList;
@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
@@ -257,12 +258,22 @@ public class TreeViewImpl implements TreeView, ItemEditedEvent.Handler {
             } catch (RepositoryException e) {
                 log.error("Could not save changes to node.", e);
             }
-            // Clear preOrder cache of itemIds in case node was renamed
-            container.fireItemSetChange();
 
-        } else if (item instanceof AbstractJcrAdapter) {
-            // TODO 20121122 mgeljic: Saving JCR Property
+        } else if (item instanceof JcrPropertyAdapter) {
+            // Saving JCR Property, update it first
+            try {
+                // get parent first because once property is updated, it won't exist anymore.
+                Property property = ((JcrPropertyAdapter) item).getProperty();
+                Node parent = property.getParent();
+                ((JcrPropertyAdapter) item).updateProperties(property);
+                parent.getSession().save();
+            } catch (RepositoryException e) {
+                log.error("Could not save changes to node.", e);
+            }
         }
+
+        // Clear preOrder cache of itemIds in case node was renamed
+        container.fireItemSetChange();
     }
 
     // CONTENT VIEW IMPL

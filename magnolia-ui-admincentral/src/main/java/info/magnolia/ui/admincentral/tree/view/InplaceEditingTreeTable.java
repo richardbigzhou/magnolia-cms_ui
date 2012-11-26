@@ -81,27 +81,8 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         setEditable(true);
         setTableFieldFactory(new InplaceEditingFieldFactory());
         addListener(asItemClickListener());
-
-        // does not work, either put in an ActionManager, either add action handler to first
-        // eligible ancestor
         getActionManager().addActionHandler(new EditingKeyboardHandler());
     }
-
-    // @Override
-    // public void attach() {
-    // super.attach();
-    // Component parent = getParent();
-    //
-    // // get first ancestor that can register action handlers
-    // while (parent != null) {
-    // if (parent instanceof com.vaadin.event.Action.Container) {
-    // ((com.vaadin.event.Action.Container) parent).addActionHandler(new
-    // InplaceEditingKeyboardHandler());
-    // break;
-    // }
-    // parent = parent.getParent();
-    // }
-    // }
 
     // INPLACE EDITING ENTRY POINTS.
 
@@ -138,46 +119,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         refreshRowCache();
         requestRepaint();
     }
-
-    // /**
-    // * Saves the currently editing item.
-    // */
-    // private void save(AbstractField field) {
-    // System.out.println("SAVEY!");
-    // field.commit();
-    //
-    // // get jcr item in use, not a new one from container
-    // Collection< ? > listeners = ((AbstractProperty)
-    // field.getPropertyDataSource()).getListeners(ValueChangeEvent.class);
-    // for (Object listener : listeners) {
-    // if (listener instanceof JcrItemAdapter) {
-    // try {
-    // if (listener instanceof AbstractJcrNodeAdapter) {
-    // ((AbstractJcrNodeAdapter) listener).getNode().getSession().save();
-    // } else if (listener instanceof JcrPropertyAdapter) {
-    // ((JcrPropertyAdapter) listener).getJcrItem().getSession().save();
-    // }
-    // } catch (RepositoryException e) {
-    // }
-    // }
-    // }
-    //
-    // if (JcrItemAdapter.JCR_NAME.equals(editingPropertyId)) {
-    // ((HierarchicalJcrContainer) getContainerDataSource()).fireItemSetChange();
-    // }
-    //
-    // // request partial update
-    //
-    // // setEditing(null, null);
-    // }
-
-    // /**
-    // * Cancel changes on currently editing item.
-    // */
-    // private void cancel() {
-    // System.out.println("CANCELLEY!");
-    // setEditing(null, null);
-    // }
 
     // PARTIAL UPDATE ENABLEMENT
 
@@ -342,7 +283,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
             new int[]{ShortcutAction.ModifierKey.SHIFT});
 
         ShortcutAction escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
-        
+
         ShortcutAction add = new ShortcutAction("Add item", ShortcutAction.KeyCode.N, new int[]{ShortcutAction.ModifierKey.META});
 
         ShortcutAction delete = new ShortcutAction("Delete", ShortcutAction.KeyCode.DELETE, null);
@@ -358,10 +299,10 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
              * ShortcutAction because for some reason the object is not same
              * as this.enter object. In that case keycode is used in comparison.
              */
-            if(!(action instanceof ShortcutAction)) {
+            if (!(action instanceof ShortcutAction)) {
                 return;
             }
-            ShortcutAction shortcut = (ShortcutAction)action;
+            ShortcutAction shortcut = (ShortcutAction) action;
 
             if (target != InplaceEditingTreeTable.this && target instanceof Field) {
                 Field field = (Field) target;
