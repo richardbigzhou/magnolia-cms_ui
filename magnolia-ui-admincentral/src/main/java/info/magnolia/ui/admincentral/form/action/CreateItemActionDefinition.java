@@ -31,16 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
+package info.magnolia.ui.admincentral.form.action;
+
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * {@link VFormDialog}.
+ * CreateItemActionDefinition.
  */
-public class VFormDialog extends VBaseDialog {
-    
-    @Override
-    protected VBaseDialogView createView() {
-        return new VFormDialogViewImpl();
+public class CreateItemActionDefinition implements ActionDefinition {
+
+    private String nodeType;
+    private String appId;
+    private String subAppId;
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public String getSubAppId() {
+        return subAppId;
+    }
+
+    public void setSubAppId(String subAppId) {
+        this.subAppId = subAppId;
+    }
+
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
     }
 
 }

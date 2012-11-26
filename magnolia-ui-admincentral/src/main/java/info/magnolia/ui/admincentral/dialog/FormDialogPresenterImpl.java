@@ -83,26 +83,18 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     @Override
     public DialogView start(final Item item, final Callback callback) {
         this.callback = callback;
-        dialogBuilder.buildFormDialog(dialogDefinition, view);
 
         FormDefinition formDefinition = (dialogDefinition.getFormDefinition() != null) ? dialogDefinition.getFormDefinition() : createFormDefintion(dialogDefinition);
+        dialogBuilder.buildFormDialog(dialogDefinition, view);
+
         this.formPresenter = formPresenterFactory.createFormPresenterByDefinition(formDefinition);
 
-        view.setFormView(formPresenter.start(item, new FormPresenter.Callback() {
-
-            @Override
-            public void onCancel() {
-                 FormDialogPresenterImpl.this.closeDialog();
-                callback.onCancel();
-            }
-
-            @Override
-            public void onSuccess(String actionName) {
-                //eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
-                FormDialogPresenterImpl.this.closeDialog();
-                callback.onSuccess(actionName);
-            }
-        }));
+        /**
+         * This is needed to acces properties from the parent. Currently only the i18basename.
+         *
+         */
+        Dialog dialog = new Dialog(dialogDefinition);
+        view.setFormView(formPresenter.start(item, dialog));
 
 
         shell.openDialog(this);

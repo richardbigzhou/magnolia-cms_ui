@@ -61,7 +61,6 @@ import com.vaadin.ui.Table.GeneratedRow;
 /**
  * Implementation of {@link PulseMessagesView}.
  */
-@SuppressWarnings("serial")
 public class PulseMessagesViewImpl extends CustomComponent implements PulseMessagesView {
 
     private static final String[] headers = new String[]{

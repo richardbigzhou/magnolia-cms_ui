@@ -43,7 +43,6 @@ import com.vaadin.ui.ComponentContainer;
 /**
  * View used to give all apps a uniform look-and-feel.
  */
-@SuppressWarnings("serial")
 public class AppFrameView implements View {
 
     /**

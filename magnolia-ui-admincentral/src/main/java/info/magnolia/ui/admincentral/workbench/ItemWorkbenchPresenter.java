@@ -101,7 +101,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
 
             @Override
             public void onCancel() {
-
+                // should switch to ViewType.VIEW
             }
 
             @Override

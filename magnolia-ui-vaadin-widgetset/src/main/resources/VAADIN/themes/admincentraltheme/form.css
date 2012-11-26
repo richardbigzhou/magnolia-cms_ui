@@ -5,6 +5,11 @@
 .form-panel .v-shell-tabsheet {
     background-color: #F2F2F2;
 }
+
+.form-panel .v-shell-tabsheet .nav li.active {
+    background-color: #F2F2F2;
+}
+
 .v-form-layout {
     background-color: #F2F2F2;
     margin-top: 25px;
@@ -32,7 +37,7 @@
 }
 
 .form-header {
-    background-color: #666;
+    background-color: #E6E6E6;
     display: block;
     height: 16px;
     color: #AABF2F;

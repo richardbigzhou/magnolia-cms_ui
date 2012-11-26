@@ -59,7 +59,6 @@ import com.vaadin.ui.TextField;
 /**
  * View implementation for the Messages app.
  */
-@SuppressWarnings("serial")
 public class MessagesViewImpl implements MessagesView {
 
     private Listener listener;

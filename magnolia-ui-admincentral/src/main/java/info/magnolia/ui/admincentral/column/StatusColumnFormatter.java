@@ -75,15 +75,15 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
                 String color = "";
                 Integer status;
                 try {
-                    status = NodeTypes.ActivatableMixin.getActivationStatus(node);
+                    status = NodeTypes.Activatable.getActivationStatus(node);
                 } catch (RepositoryException e) {
-                    status = NodeTypes.ActivatableMixin.ACTIVATION_STATUS_NOT_ACTIVATED;
+                    status = NodeTypes.Activatable.ACTIVATION_STATUS_NOT_ACTIVATED;
                 }
                 switch (status) {
-                    case NodeTypes.ActivatableMixin.ACTIVATION_STATUS_MODIFIED:
+                    case NodeTypes.Activatable.ACTIVATION_STATUS_MODIFIED:
                         color = "color-yellow";
                         break;
-                    case NodeTypes.ActivatableMixin.ACTIVATION_STATUS_ACTIVATED:
+                    case NodeTypes.Activatable.ACTIVATION_STATUS_ACTIVATED:
                         color = "color-green";
                         break;
                     default:

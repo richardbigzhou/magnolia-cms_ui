@@ -36,7 +36,6 @@ package info.magnolia.ui.vaadin.icon;
 /**
  * The WarningIcon.
  */
-@SuppressWarnings("serial")
 public class WarningIcon extends CompositeIcon {
 
     public WarningIcon() {

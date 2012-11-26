@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.layout;
 
+import info.magnolia.ui.vaadin.gwt.client.icon.GwtIcon;
+import info.magnolia.ui.vaadin.integration.serializer.ResourceSerializer;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -45,8 +48,6 @@ public class VThumbnail extends Composite {
 
     private final SimplePanel panel = new SimplePanel();
 
-    private final Image image = new Image(LazyThumbnailLayoutImageBundle.INSTANCE.getStubImage().getSafeUri());
-
     private VThumbnailData data;
 
     private boolean isSelected = false;
@@ -55,8 +56,6 @@ public class VThumbnail extends Composite {
         super();
         initWidget(panel);
         addStyleName("thumbnail");
-        image.setStyleName("thumbnail-image");
-        panel.setWidget(image);
     }
 
     public String getId() {
@@ -69,7 +68,20 @@ public class VThumbnail extends Composite {
         if (data != null) {
             String src = data.getSrc();
             if (src != null) {
-                image.setUrl(data.getSrc());
+                if (src.startsWith(ResourceSerializer.RESOURCE_URI_SCHEME_ICONFONT)) {
+                    // iconFont
+                    GwtIcon fileIcon = new GwtIcon();
+                    String iconFontClass = data.getSrc().substring(ResourceSerializer.RESOURCE_URI_SCHEME_ICONFONT.length());
+                    fileIcon.updateIconName(iconFontClass);
+                    panel.setWidget(fileIcon);
+
+                } else {
+                    // image
+                    Image image = new Image(LazyThumbnailLayoutImageBundle.INSTANCE.getStubImage().getSafeUri());
+                    image.setUrl(data.getSrc());
+                    image.setStyleName("thumbnail-image");
+                    panel.setWidget(image);
+                }
             }
         }
     }

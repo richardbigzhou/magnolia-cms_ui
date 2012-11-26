@@ -48,7 +48,6 @@ import org.vaadin.rpc.client.Method;
 import com.google.gson.GsonBuilder;
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Ordered;
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.KeyMapper;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
@@ -72,7 +71,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
     private List<ThumbnailSelectionListener> selectionListeners = new ArrayList<LazyThumbnailLayout.ThumbnailSelectionListener>();
 
     private List<ThumbnailDblClickListener> dblClickListeners = new ArrayList<LazyThumbnailLayout.ThumbnailDblClickListener>();
-    
+
     private Ordered container;
 
     private Object lastQueried = null;
@@ -84,10 +83,11 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
             register("loadThumbnails", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    final GsonBuilder gson = new GsonBuilder().registerTypeAdapter(ExternalResource.class, new ResourceSerializer());
+                    final GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(Resource.class, new ResourceSerializer());
                     int amount = (Integer) params[0];
                     final List<Thumbnail> resources = fetchThumbnails(amount);
-                    proxy.call("addThumbnails", gson.create().toJson(resources));
+                    final String gson = gsonBuilder.create().toJson(resources);
+                    proxy.call("addThumbnails", gson);
                 }
             });
 
@@ -101,7 +101,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
                     }
                 }
             });
-            
+
             register("thumbnailDoubleClicked", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
@@ -112,7 +112,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
                     }
                 }
             });
-            
+
             register("clear", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
@@ -131,7 +131,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
             listener.onThumbnailDblClicked(String.valueOf(itemId));
         }
     }
-    
+
     private void select(Object itemId) {
         for (final ThumbnailSelectionListener listener : selectionListeners) {
             listener.onThumbnailSelected(String.valueOf(itemId));
@@ -219,7 +219,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
     public void addThumbnailSelectionListener(final ThumbnailSelectionListener listener) {
         this.selectionListeners.add(listener);
     }
-    
+
     public void addDoubleClickListener(final ThumbnailDblClickListener listener) {
         this.dblClickListeners.add(listener);
     }
@@ -253,7 +253,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
     public interface ThumbnailDblClickListener {
         void onThumbnailDblClicked(String thumbnailId);
     }
-    
+
     /**
      * Interface for the providers of the actual thumbnails.
      */

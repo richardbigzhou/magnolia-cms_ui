@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor;
 
+import org.vaadin.csstools.client.ComputedStyle;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Cursor;
@@ -56,7 +58,7 @@ import com.google.gwt.user.client.ui.Image;
 /**
  * Modified version of GWTCropper widget.
  */
-public class GWTCropper extends HTMLPanel implements MouseMoveHandler, MouseUpHandler, MouseOutHandler {
+public class GWTSelector extends HTMLPanel implements MouseMoveHandler, MouseUpHandler, MouseOutHandler {
 
     private final IBundleResources bundleResources = GWT.create(IBundleResources.class);
 
@@ -99,8 +101,8 @@ public class GWTCropper extends HTMLPanel implements MouseMoveHandler, MouseUpHa
     private Image selectionImage = null;
     
     /**
-     * ClientBundle for GWTCropper.
-     */
+     * IBundleResources.
+     */    
     public interface IBundleResources extends ClientBundle {
 
         /**
@@ -122,7 +124,7 @@ public class GWTCropper extends HTMLPanel implements MouseMoveHandler, MouseUpHa
         GWTCropperStyle css();
     }
 
-    public GWTCropper() {
+    public GWTSelector() {
         super("");
         this.container = new AbsolutePanel();
         bundleResources.css().ensureInjected();
@@ -131,13 +133,13 @@ public class GWTCropper extends HTMLPanel implements MouseMoveHandler, MouseUpHa
         addDomHandler(this, MouseOutEvent.getType());
     }
 
-    public GWTCropper(Image image, String src) {
+    public GWTSelector(Image image) {
         this();
-        cropImage(image, src);
+        cropImage(image);
     }
     
-    public void cropImage(Image image, String src) {
-        addCanvas(image, src);
+    public void cropImage(Image image) {
+        addCanvas(image);
     }
 
     public void setAspectRatio(double aspectRatio) {
@@ -172,16 +174,16 @@ public class GWTCropper extends HTMLPanel implements MouseMoveHandler, MouseUpHa
         return this.nOuterWidth;
     }
 
-    private void addCanvas(Image image, String src) {
+    private void addCanvas(Image image) {
         container.clear();
         this.cropImage = image;
         super.setStyleName(bundleResources.css().base());
         image.setStyleName(bundleResources.css().imageCanvas());
-        nOuterWidth = image.getWidth();
-        nOuterHeight = image.getHeight();
+        nOuterWidth = ComputedStyle.parseInt(image.getElement().getStyle().getWidth());
+        nOuterHeight = ComputedStyle.parseInt(image.getElement().getStyle().getHeight());
         container.setWidth(nOuterWidth + "px");
         container.setHeight(nOuterHeight + "px");
-        addSelection(src);
+        addSelection(image.getUrl());
         this.container.add(image, 0, 0);
         this.add(this.container);
     }

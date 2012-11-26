@@ -31,13 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
+package info.magnolia.ui.model.imageprovider.definition;
 
-import info.magnolia.ui.vaadin.gwt.client.form.ValidationChangedEvent;
+import com.vaadin.terminal.Resource;
+
 
 /**
- * VFormDialogView.
+ * Defines a provider for Thumbnail images.
  */
-public interface VFormDialogView extends VBaseDialogView, ValidationChangedEvent.Handler {
-    
+public interface ImageProvider {
+
+    static final String PORTRAIT_GENERATOR = "portrait";
+    static final String THUMBNAIL_GENERATOR = "thumbnail";
+
+    String getPortraitPath(String workspace, String path);
+
+    String getThumbnailPath(String workspace, String path);
+
+    String getPortraitPathByIdentifier(String workspace, String uuid);
+
+    String getThumbnailPathByIdentifier(String workspace, String uuid);
+
+
+    /**
+     * Get a Preview Resource.
+     * This preview is an image or an icon representing the Document type.
+     */
+    Resource getThumbnailResourceByPath(String workspace, String path, String generator);
+
+    Resource getThumbnailResourceById(String workspace, String identifier, String generator);
+
+
 }

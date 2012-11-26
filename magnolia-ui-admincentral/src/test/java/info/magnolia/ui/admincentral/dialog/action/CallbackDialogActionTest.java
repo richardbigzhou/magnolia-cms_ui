@@ -35,12 +35,12 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import com.vaadin.data.Item;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
+import info.magnolia.ui.admincentral.form.FormItem;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
-import info.magnolia.ui.vaadin.dialog.FormDialogView;
 import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
 import info.magnolia.ui.vaadin.form.FormView;
 import org.junit.Before;
@@ -134,6 +134,11 @@ public class CallbackDialogActionTest {
         }
 
         @Override
+        public FormView start(Item item, FormItem parent) {
+            return null;
+        }
+
+        @Override
         public void addAction(String actionName, String actionLabel, FormView.FormActionListener callback) {
 
         }
@@ -202,7 +207,7 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public FormDialogView start(Item item, Callback callback) {
+        public NewFormDialogView start(Item item, Callback callback) {
             return null;
         }
 

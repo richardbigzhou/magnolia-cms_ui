@@ -222,7 +222,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
     private Component createFilePreview() {
         Label preview = new Label();
         preview.addStyleName("image");
-        preview.addStyleName("icon-file");
+        preview.addStyleName("file-preview");
         preview.addStyleName(resolveIconClassName());
         return preview;
     }

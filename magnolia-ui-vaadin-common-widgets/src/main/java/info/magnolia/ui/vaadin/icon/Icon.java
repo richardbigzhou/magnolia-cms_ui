@@ -47,7 +47,6 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
  * implementation is based on the icon font technique, which means it only allows for monochromatic
  * icons. For multilayer icons, please head to the CompositeIcon.
  */
-@SuppressWarnings("serial")
 @ClientWidget(value = VIcon.class, loadStyle = LoadStyle.EAGER)
 public class Icon extends AbstractComponent {
 

@@ -40,6 +40,7 @@ import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.field.FieldBuilder;
 import info.magnolia.ui.admincentral.field.builder.FieldFactory;
 import info.magnolia.ui.admincentral.form.Form;
+import info.magnolia.ui.admincentral.form.FormItem;
 import info.magnolia.ui.admincentral.form.FormTab;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
@@ -52,8 +53,9 @@ import org.apache.commons.lang.StringUtils;
  */
 public class FormBuilder {
 
-    public FormView buildForm(FieldFactory fieldFactory, FormDefinition formDefinition, Item item, FormView view) {
+    public FormView buildForm(FieldFactory fieldFactory, FormDefinition formDefinition, Item item, FormView view, FormItem parent) {
         final Form form = new Form(formDefinition);
+        form.setParent(parent);
         view.setItemDataSource(item);
 
         final String description = formDefinition.getDescription();

@@ -49,7 +49,6 @@ import com.vaadin.ui.ComponentContainer;
 /**
  * A tab in the shell tabsheet.
  */
-@SuppressWarnings("serial")
 @ClientWidget(value=VMagnoliaTab.class, loadStyle = LoadStyle.EAGER)
 public class MagnoliaTab extends SimplePanel implements ServerSideHandler {
 
