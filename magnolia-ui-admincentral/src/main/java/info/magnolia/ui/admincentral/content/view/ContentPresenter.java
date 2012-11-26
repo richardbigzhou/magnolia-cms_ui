@@ -73,13 +73,13 @@ public class ContentPresenter implements ContentView.Listener {
     protected WorkbenchDefinition workbenchDefinition;
 
     private String selectedItemId;
-    
+
     @Inject
     public ContentPresenter(final AppContext appContext, final ContentViewBuilder contentViewBuilder, @Named("subapp") final EventBus subAppEventBus, final Shell shell) {
         this.contentViewBuilder = contentViewBuilder;
         this.subAppEventBus = subAppEventBus;
         this.shell = shell;
-        
+
         final ContentSubAppDescriptor subAppDescriptor = (ContentSubAppDescriptor) appContext.getDefaultSubAppDescriptor();
         this.workbenchDefinition = subAppDescriptor.getWorkbench();
         this.workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
@@ -94,7 +94,8 @@ public class ContentPresenter implements ContentView.Listener {
         for (final ViewType type : ViewType.values()) {
             final ContentView contentView = contentViewBuilder.build(workbenchDefinition, type);
             contentView.setListener(this);
-            contentView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
+//            contentView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
+            contentView.select("/");
             parentView.addContentView(type, contentView);
         }
 
