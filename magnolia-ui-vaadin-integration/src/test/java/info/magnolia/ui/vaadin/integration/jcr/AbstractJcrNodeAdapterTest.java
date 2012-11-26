@@ -34,6 +34,8 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -146,11 +148,14 @@ public class AbstractJcrNodeAdapterTest {
         DummyJcrNodeAdapter item = new DummyJcrNodeAdapter(underlyingNode);
 
         // WHEN
-        Property nodePorperty = item.getItemProperty(propertyName);
-        nodePorperty.setValue("newValue");
+        Property nodeProperty = item.getItemProperty(propertyName);
+        nodeProperty.setValue("newValue");
 
         // THEN
-        assertEquals("newValue", jcrProperty.getString());
+        assertFalse(item.getChangedProperties().isEmpty());
+        assertTrue(item.getChangedProperties().containsKey(propertyName));
+        assertEquals(nodeProperty, item.getChangedProperties().get(propertyName));
+        assertEquals("newValue", item.getChangedProperties().get(propertyName).getValue());
     }
 
     @Test
@@ -161,16 +166,19 @@ public class AbstractJcrNodeAdapterTest {
         DummyJcrNodeAdapter item = new DummyJcrNodeAdapter(underlyingNode);
 
         // WHEN
-        Property itemPorperty = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, propertyName);
-        item.addItemProperty(propertyName, itemPorperty);
-        itemPorperty.setValue("newValue");
+        Property itemProperty = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, propertyName);
+        item.addItemProperty(propertyName, itemProperty);
+        itemProperty.setValue("newValue");
 
         // THEN
-        assertEquals("newValue", underlyingNode.getProperty(propertyName).getString());
+        assertFalse(item.getChangedProperties().isEmpty());
+        assertTrue(item.getChangedProperties().containsKey(propertyName));
+        assertEquals(itemProperty, item.getChangedProperties().get(propertyName));
+        assertEquals("newValue", item.getChangedProperties().get(propertyName).getValue());
     }
 
     @Test
-    public void testUpdateProperty() throws Exception {
+    public void testUpdateProperties() throws Exception {
         // GIVEN
         final Node underlyingNode = session.getRootNode().addNode("underlying");
         final String propertyName = "TEST";
@@ -180,7 +188,7 @@ public class AbstractJcrNodeAdapterTest {
         item.getChangedProperties().put(propertyName, property);
 
         // WHEN
-        item.updateProperty(underlyingNode);
+        item.updateProperties(underlyingNode);
 
         // THEN
         assertEquals(propertyValue, underlyingNode.getProperty(propertyName).getString());

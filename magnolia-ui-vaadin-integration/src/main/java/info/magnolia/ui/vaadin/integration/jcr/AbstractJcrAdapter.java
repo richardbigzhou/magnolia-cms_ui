@@ -34,10 +34,12 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.PropertyUtil;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.jcr.Item;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -62,6 +64,10 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     private String workspace;
 
     private String path;
+
+    private final Map<String, Property> changedProperties = new HashMap<String, Property>();
+
+    private final Map<String, Property> removedProperties = new HashMap<String, Property>();
 
     public AbstractJcrAdapter(Item jcrItem) {
         setCommonAttributes(jcrItem);
@@ -114,6 +120,16 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
         }
     }
 
+    // ABSTRACT IMPLEMENTATION OF PROPERTY CHANGES
+
+    protected Map<String, Property> getChangedProperties() {
+        return changedProperties;
+    }
+
+    protected Map<String, Property> getRemovedProperties() {
+        return removedProperties;
+    }
+
     /**
      * Listener to DefaultProperty value change event. Get this event when a property has changed,
      * and propagate this Vaadin Property value change to the corresponding JCR property.
@@ -122,21 +138,29 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     public void valueChange(ValueChangeEvent event) {
         Property property = event.getProperty();
         if (property instanceof DefaultProperty) {
-            String name = ((DefaultProperty) property).getPropertyName();
-            Object value = property.getValue();
-            // always the case, even from properties because parent node is then returned
-            Node node = (getJcrItem() instanceof Node) ? (Node) getJcrItem() : null;
-            try {
-                if (node != null && node.hasProperty(name)) {
-                    log.debug("Update existing property: {} with value: {}.", name, value);
-                    PropertyUtil.getProperty(node, name).setValue((String) value);
-                } else {
-                    addItemProperty(name, property);
-                }
-            } catch (RepositoryException e) {
-                log.error("", e);
-            }
+            String propertyId = ((DefaultProperty) property).getPropertyName();
+            getChangedProperties().put(propertyId, property);
         }
     }
+
+    /**
+     * Updates and removes properties based on the {@link #changedProperties} and
+     * {@link #removedProperties} maps. Read-only properties will not be updated.
+     */
+    public void updateProperties(Item item) throws RepositoryException {
+        for (Entry<String, Property> entry : changedProperties.entrySet()) {
+            if (entry.getValue().isReadOnly()) {
+                continue;
+            }
+            updateProperty(item, entry.getKey(), entry.getValue());
+        }
+    }
+
+    /**
+     * Performs update of an Item based on given vaadin Property. Note that this should not persist
+     * changes into JCR. Implementation should simply make sure that updated propertyIds are mapped
+     * to the correct actions (jcrName property should be handled in a specific way).
+     */
+    abstract protected void updateProperty(Item item, String propertyId, Property property);
 
 }

@@ -191,6 +191,10 @@ public class AbstractJcrAdapterTest {
         public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
             return false;
         }
+
+        @Override
+        protected void updateProperty(Item item, String propertyId, com.vaadin.data.Property property) {
+        }
     }
 
 }

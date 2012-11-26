@@ -34,9 +34,11 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.PropertyUtil;
 
 import java.util.Collection;
 
+import javax.jcr.Item;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 
@@ -115,6 +117,36 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
     @Override
     public Collection< ? > getItemPropertyIds() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void updateProperty(Item item, String propertyId, Property property) {
+        if (!(item instanceof javax.jcr.Property)) {
+            return;
+        }
+        javax.jcr.Property jcrProperty = (javax.jcr.Property) item;
+
+        // if JCR name then move this Node
+        if (JCR_NAME.equals(propertyId)) {
+            String jcrName = (String) property.getValue();
+            if (jcrName != null && !jcrName.isEmpty()) {
+                try {
+                    PropertyUtil.renameProperty(jcrProperty, jcrName);
+                } catch (RepositoryException e) {
+                    log.error("Could not rename JCR Property.", e);
+                }
+            }
+        } else if (VALUE_COLUMN.equals(propertyId)) {
+            if (property.getValue() != null) {
+                try {
+                    jcrProperty.setValue((String) property.getValue());
+                } catch (RepositoryException e) {
+                    log.error("Could not set JCR Property", e);
+                }
+            }
+        } else if (TYPE_COLUMN.equals(propertyId)) {
+            // TODO 20121123 mgeljic
+        }
     }
 
     @Override
