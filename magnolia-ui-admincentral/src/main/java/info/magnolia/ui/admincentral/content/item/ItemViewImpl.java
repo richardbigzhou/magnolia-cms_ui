@@ -33,10 +33,8 @@
  */
 package info.magnolia.ui.admincentral.content.item;
 
-import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Label;
 
 /**
  * ItemViewImpl.
@@ -44,9 +42,21 @@ import com.vaadin.ui.Label;
 public class ItemViewImpl implements ItemView {
 
     private CssLayout root = new CssLayout();
+    private Component itemView;
+    private ViewType viewType;
 
     public ItemViewImpl() {
-        root.addComponent(new Label("test"));
+
+    }
+
+    @Override
+    public void setItemView(Component newView, ViewType viewType) {
+        if (itemView != null) {
+            root.removeComponent(itemView);
+        }
+        root.addComponent(newView);
+        this.itemView = newView;
+        this.viewType = viewType;
     }
 
     @Override
@@ -56,11 +66,6 @@ public class ItemViewImpl implements ItemView {
 
     @Override
     public void refresh() {
-
-    }
-
-    @Override
-    public void refreshItem(Item item) {
 
     }
 
