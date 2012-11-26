@@ -36,7 +36,7 @@ package info.magnolia.ui.app.security.column;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 
 /**
- * Definition of a column that displays name of the user.
+ * Definition of a column that displays name of the user. Used in the Users sub-app.
  */
 public class UserNameColumnDefinition extends AbstractColumnDefinition {
 

@@ -64,8 +64,7 @@ public class SecurityGroupsSubApp extends AbstractContentSubApp {
 
     @Override
     public void updateActionbar(ActionbarPresenter actionbar) {
-        // TODO Auto-generated method stub
-
+        // nothing to update yet
     }
 
 }
