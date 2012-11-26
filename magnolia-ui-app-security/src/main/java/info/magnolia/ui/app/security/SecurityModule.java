@@ -116,31 +116,8 @@ public class SecurityModule implements ModuleLifecycle {
 
         app.label("security").icon("icon-security-app").appClass(SecurityApp.class) // .categoryName("MANAGE")
             .subApps(
-                    userSubApp(app, wbcfg, abcfg, "users", "/"),
-//                    app.subApp("users").subAppClass(SecurityUsersSubApp.class).defaultSubApp()
-//                    .workbench(wbcfg.workbench().workspace("users").root("/").defaultOrder("jcrName")
-//                            .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))
-//                            .mainItemType(wbcfg.itemType(MgnlNodeType.USER).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
-//                            .imageProvider(cipd)
-//                            .columns(
-//                                    wbcfg.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class),
-//                                    wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),
-//                                    wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
-//                                    wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true)
-//                            )
-//                            .actionbar(abcfg.actionbar().defaultAction("edit")
-//                                    .sections(
-//                                            abcfg.section("usersActions").label("Users")
-//                                                    .groups(
-//                                                            abcfg.group("addActions").items(
-//                                                                    abcfg.item("addUser").label("New user").icon("icon-add-item").action(addUserAction)),
-//                                                            abcfg.group("editActions").items(
-//                                                                    abcfg.item("edit").label("Edit user").icon("icon-edit").action(editUserAction),
-//                                                                    abcfg.item("delete").label("Delete user").icon("icon-delete").action(new DeleteItemActionDefinition()))
-//                                            )
-//                                    )
-//                            )
-//                    ),
+                    userSubApp(app, wbcfg, abcfg, "users", "/admin").defaultSubApp(),
+                    userSubApp(app, wbcfg, abcfg, "system users", "/system"),
                     app.subApp("groups").subAppClass(SecurityGroupsSubApp.class)
                     .workbench(wbcfg.workbench().workspace("usergroups").root("/").defaultOrder("jcrName")
                             .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))
@@ -208,7 +185,7 @@ public class SecurityModule implements ModuleLifecycle {
         cipd.setOriginalImageNodeName("photo");
         cipd.setImageProviderClass(DefaultImageProvider.class);
 
-        return app.subApp(name).subAppClass(SecurityUsersSubApp.class).defaultSubApp()
+        return app.subApp(name).subAppClass(SecurityUsersSubApp.class)
                 .workbench(wbcfg.workbench().workspace("users").root(root).defaultOrder("jcrName")
                         .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))  // see MGNLPUR-77
                         .mainItemType(wbcfg.itemType(MgnlNodeType.USER).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
