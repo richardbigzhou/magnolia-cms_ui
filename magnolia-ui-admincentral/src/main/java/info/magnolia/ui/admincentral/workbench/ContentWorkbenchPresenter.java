@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
@@ -49,7 +50,8 @@ import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.thumbnail.ImageProvider;
+import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
+import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
@@ -64,23 +66,24 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.terminal.Resource;
 
-
 /**
- * The workbench is a core component of AdminCentral. It represents the main hub through which users
- * can interact with JCR data. It is compounded by three main sub-components:
+ * The workbench is a core component of AdminCentral. It represents the main hub
+ * through which users can interact with JCR data. It is compounded by three
+ * main sub-components:
  * <ul>
  * <li>a configurable data grid.
- * <li>a configurable function toolbar on top of the data grid, providing operations such as
- * switching from tree to list view or thumbnail view or performing searches on data.
- * <li>a configurable action bar on the right hand side, showing the available operations for the
- * given workspace and the selected item.
+ * <li>a configurable function toolbar on top of the data grid, providing
+ * operations such as switching from tree to list view or thumbnail view or
+ * performing searches on data.
+ * <li>a configurable action bar on the right hand side, showing the available
+ * operations for the given workspace and the selected item.
  * </ul>
  * 
  * <p>
- * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR
- * workspace to connect to, the columns/properties to display, the available actions and so on.
+ * Its main configuration point is the {@link WorkbenchDefinition} through which
+ * one defines the JCR workspace to connect to, the columns/properties to
+ * display, the available actions and so on.
  */
-@SuppressWarnings("serial")
 public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchPresenter.class);
@@ -104,7 +107,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     @Inject
     public ContentWorkbenchPresenter(final AppContext appContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus,
         final @Named("subapp") EventBus subAppEventBus, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
-        final ActionbarPresenter actionbarPresenter) {
+        final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
@@ -112,7 +115,12 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.workbenchDefinition = ((ContentAppDescriptor) appContext.getAppDescriptor()).getWorkbench();
-        this.imageProvider = workbenchDefinition.getImageProvider();
+        ImageProviderDefinition imageProviderDefinition = workbenchDefinition.getImageProvider();
+        if (imageProviderDefinition == null) {
+            this.imageProvider = null;
+        } else {
+            this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
+        }
     }
 
     public ContentWorkbenchView start() {
@@ -189,7 +197,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     }
 
     /**
-     * Executes the workbench's default action, as configured in the defaultAction property.
+     * Executes the workbench's default action, as configured in the
+     * defaultAction property.
      */
     public void executeDefaultAction() {
         ActionDefinition defaultActionDef = actionbarPresenter.getDefaultActionDefinition();
@@ -225,17 +234,16 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         if (!itemExists) {
             log.warn(
                 "Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.",
-                path,
-                workbenchDefinition.getWorkspace());
+                path, workbenchDefinition.getWorkspace());
         }
         this.view.resynch(itemExists ? path : "/", viewType, query);
     }
 
     private void refreshActionbarPreviewImage(final String path, final String workspace) {
-        if (imageProvider != null) {
-            if (StringUtils.isBlank(path)) {
-                actionbarPresenter.setPreview(null);
-            } else {
+        if (StringUtils.isBlank(path)) {
+            actionbarPresenter.setPreview(null);
+        } else {
+            if (imageProvider != null) {
                 Resource previewResource = imageProvider.getThumbnailResourceByPath(workspace, path, ImageProvider.PORTRAIT_GENERATOR);
                 actionbarPresenter.setPreview(previewResource);
             }

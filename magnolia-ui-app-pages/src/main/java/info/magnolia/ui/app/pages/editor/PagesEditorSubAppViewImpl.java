@@ -45,7 +45,6 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * PageEditorViewImpl.
  */
-@SuppressWarnings("serial")
 public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
 
     private final HorizontalLayout root = new HorizontalLayout();

@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.contacts.field;
 
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
-import info.magnolia.ui.model.thumbnail.ImageProvider;
+import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 
 import org.vaadin.addon.customfield.CustomField;
 

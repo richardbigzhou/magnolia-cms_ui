@@ -80,7 +80,7 @@ import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * Client side impl of lazy asset thumbnails layout.
- * 
+ *
  */
 public class VLazyThumbnailLayout extends Composite implements Paintable, ClientSideHandler {
 
@@ -289,6 +289,9 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         // Scale the thumbnail divs.
         thumbnailStyle.setProperty("width", width + "px");
         thumbnailStyle.setProperty("height", width + "px");
+        String fontSize = Integer.toString((int) (width * 0.75));
+        thumbnailStyle.setProperty("fontSize", fontSize + "px");
+
         // Scale the size of the image in the thumbnails.
         thumbnailImageStyle.setProperty("maxWidth", width + "px");
         thumbnailImageStyle.setProperty("maxHeight", width + "px");

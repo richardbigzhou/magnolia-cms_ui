@@ -51,7 +51,6 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
  * outline. It mostly serves as the base class for preset composite icons such as InfoIcon,
  * WarningIcon, etc.
  */
-@SuppressWarnings("serial")
 @ClientWidget(value = VCompositeIcon.class, loadStyle = LoadStyle.EAGER)
 public abstract class CompositeIcon extends AbstractComponent {
 

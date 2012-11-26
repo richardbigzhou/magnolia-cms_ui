@@ -36,7 +36,7 @@ package info.magnolia.ui.app.contacts.cconf.workbench;
 import info.magnolia.ui.app.contacts.cconf.actionbar.ActionbarBuilder;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
-import info.magnolia.ui.model.thumbnail.ImageProvider;
+import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 
@@ -106,7 +106,7 @@ public class WorkbenchBuilder {
         return this;
     }
 
-    public WorkbenchBuilder imageProvider(ImageProvider imageProvider) {
+    public WorkbenchBuilder imageProvider(ImageProviderDefinition imageProvider) {
         definition.setImageProvider(imageProvider);
         return this;
     }

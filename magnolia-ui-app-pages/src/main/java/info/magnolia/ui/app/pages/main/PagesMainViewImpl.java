@@ -42,7 +42,6 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * View implementation for the Pages main app.
  */
-@SuppressWarnings("serial")
 public class PagesMainViewImpl implements PagesMainView {
 
     private Listener listener;

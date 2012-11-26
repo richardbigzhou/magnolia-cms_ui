@@ -53,7 +53,6 @@ import com.vaadin.ui.Component;
  * </ul>
  *
  */
-@SuppressWarnings("serial")
 public class AppLauncherViewImpl  implements AppLauncherView {
 
 

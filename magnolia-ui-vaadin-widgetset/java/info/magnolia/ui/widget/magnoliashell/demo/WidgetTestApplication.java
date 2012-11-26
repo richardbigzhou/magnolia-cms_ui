@@ -40,7 +40,6 @@ import com.vaadin.ui.Window;
 /**
  * Test app for the shell development.
  */
-@SuppressWarnings("serial")
 public class WidgetTestApplication extends Application {
     
     private Window window;

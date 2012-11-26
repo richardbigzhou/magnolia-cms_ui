@@ -53,7 +53,6 @@ import com.vaadin.ui.Label;
 /**
  * Implementation of {@link PulseDashboardView}.
  */
-@SuppressWarnings("serial")
 public class PulseDashboardViewImpl extends CustomComponent implements PulseDashboardView {
 
     private final SplitFeed splitPanel = new SplitFeed();

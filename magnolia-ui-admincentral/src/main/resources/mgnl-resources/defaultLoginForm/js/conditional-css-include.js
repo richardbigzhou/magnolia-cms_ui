@@ -7,7 +7,7 @@ for(i=0; i < metas.length; i++) {
     }
 }
 if (navigator.userAgent.toLowerCase().indexOf('webkit')>-1 || navigator.appName == 'Microsoft Internet Explorer') {
-    document.write('<link rel="stylesheet" type="text/css" href="' + contextPath + '/.resources/loginForm5.0/css/fonts-heavy.css" />');
+    document.write('<link rel="stylesheet" type="text/css" href="' + contextPath + '/.resources/defaultLoginForm/css/fonts-heavy.css" />');
 }else{
-    document.write('<link rel="stylesheet" type="text/css" href="' + contextPath + '/.resources/loginForm5.0/css/fonts-default.css" />');
+    document.write('<link rel="stylesheet" type="text/css" href="' + contextPath + '/.resources/defaultLoginForm/css/fonts-default.css" />');
 }

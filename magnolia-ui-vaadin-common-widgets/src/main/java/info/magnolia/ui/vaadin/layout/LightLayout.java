@@ -52,7 +52,6 @@ import com.vaadin.ui.Layout;
  * FlowPanel (one single div, no vaadin margins).
  */
 @ClientWidget(VLightLayout.class)
-@SuppressWarnings("serial")
 public class LightLayout extends AbstractComponentContainer implements Layout {
 
     /**

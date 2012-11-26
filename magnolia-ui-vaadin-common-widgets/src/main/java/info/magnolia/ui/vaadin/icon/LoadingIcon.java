@@ -47,7 +47,6 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
  * scalable widget. The client-side implementation is based on the icon font technique and CSS3
  * animations.
  */
-@SuppressWarnings("serial")
 @ClientWidget(value = VLoadingIcon.class, loadStyle = LoadStyle.EAGER)
 public class LoadingIcon extends AbstractComponent {
 
