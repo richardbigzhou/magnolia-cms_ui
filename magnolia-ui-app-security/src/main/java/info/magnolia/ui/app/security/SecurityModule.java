@@ -116,8 +116,8 @@ public class SecurityModule implements ModuleLifecycle {
 
         app.label("security").icon("icon-security-app").appClass(SecurityApp.class) // .categoryName("MANAGE")
             .subApps(
-                    userSubApp(app, wbcfg, abcfg, "users", "/admin").defaultSubApp(),
-                    userSubApp(app, wbcfg, abcfg, "system users", "/system"),
+                    userSubApp(app, wbcfg, abcfg, "users", "/").defaultSubApp(),
+                    // userSubApp(app, wbcfg, abcfg, "system users", "/system"),
                     app.subApp("groups").subAppClass(SecurityGroupsSubApp.class)
                     .workbench(wbcfg.workbench().workspace("usergroups").root("/").defaultOrder("jcrName")
                             .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))
@@ -242,14 +242,12 @@ public class SecurityModule implements ModuleLifecycle {
         RoleManagementFieldBuilder roles = new RoleManagementFieldBuilder("roles");
         roles.label("Assigned roles");
 
-        dialog.description("Define the user information")
-                .form(formcfg.form().description("Define the user information")
+        dialog.form(formcfg.form().description("Define the user information")
                         .tabs(
-                                formcfg.tab("User").label("User Tab")
+                                formcfg.tab("User").label("User Info")
                                         .fields(
                                                 username,
                                                 formcfg.fields.passwordField("password").label("Password").verification(),
-//                                cfg.fields.checkboxField("enabled").label("Enabled"),
                                                 (new EnabledFieldBuilder("enabled")).label("Enabled"),
                                                 formcfg.fields.textField("title").label("Full name"),
                                                 formcfg.fields.textField("email").label("E-mail").description("Please enter user's e-mail address."),
@@ -271,11 +269,11 @@ public class SecurityModule implements ModuleLifecycle {
                                                )
 
                              )
+                     )
                      .actions(
-                             formcfg.action("commit").label("save changes").action(new SaveUserDialogActionDefinition()),
-                             formcfg.action("cancel").label("cancel").action(new CancelFormActionDefinition())
-                             )
-                     );
+                             cfg.action("commit").label("save changes").action(new SaveUserDialogActionDefinition()),
+                             cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
+                             );
     }
 
     @Dialog("ui-security-app:groupAdd")
@@ -328,11 +326,11 @@ public class SecurityModule implements ModuleLifecycle {
                                             roles
                                            )
                              )
+                        )
                         .actions(
-                                 formcfg.action("commit").label("save changes").action(new SaveGroupDialogActionDefinition()),
-                                 formcfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
-                                )
-                     );
+                                 cfg.action("commit").label("save changes").action(new SaveGroupDialogActionDefinition()),
+                                 cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
+                                );
     }
 
     @Dialog("ui-security-app:roleEdit")
@@ -363,7 +361,7 @@ public class SecurityModule implements ModuleLifecycle {
         dialog.description("Define the role information")
                 .form(formcfg.form().description("Define the group information")
                         .tabs(
-                              formcfg.tab("Role").label("Role Tab")
+                              formcfg.tab("Role").label("Role Info")
                                   .fields(
                                           rolename,
                                           formcfg.fields.textField("title").label("Full name").description("Full name of the role"),
@@ -374,11 +372,11 @@ public class SecurityModule implements ModuleLifecycle {
                                           formcfg.fields.textField("do-not-use").label("Placeholder, do not use").readOnly()
                                          )
                              )
+                        )
                         .actions(
-                                 formcfg.action("commit").label("save changes").action(new SaveRoleDialogActionDefinition()),
-                                 formcfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
-                                )
-                     );
+                                 cfg.action("commit").label("save changes").action(new SaveRoleDialogActionDefinition()),
+                                 cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
+                                );
     }
 
 
