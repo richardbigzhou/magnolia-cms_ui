@@ -18,10 +18,6 @@
   <components>
     <id>app-security-users</id> <!-- main subapp -->
     <component>
-      <type>info.magnolia.ui.app.security.SecurityUsersSubApp</type>
-      <implementation>info.magnolia.ui.app.security.SecurityUsersSubApp</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.app.security.view.UsersView</type>
       <implementation>info.magnolia.ui.app.security.view.UsersViewImpl</implementation>
     </component>
@@ -42,10 +38,6 @@
   <components>
     <id>app-security-groups</id>
     <component>
-      <type>info.magnolia.ui.app.security.SecurityGroupsSubApp</type>
-      <implementation>info.magnolia.ui.app.security.SecurityGroupsSubApp</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.app.security.view.GroupsView</type>
       <implementation>info.magnolia.ui.app.security.view.GroupsViewImpl</implementation>
     </component>
@@ -65,10 +57,6 @@
 
   <components>
     <id>app-security-roles</id>
-    <component>
-      <type>info.magnolia.ui.app.security.SecurityRolesSubApp</type>
-      <implementation>info.magnolia.ui.app.security.SecurityRolesSubApp</implementation>
-    </component>
     <component>
       <type>info.magnolia.ui.app.security.view.RolesView</type>
       <implementation>info.magnolia.ui.app.security.view.RolesViewImpl</implementation>
