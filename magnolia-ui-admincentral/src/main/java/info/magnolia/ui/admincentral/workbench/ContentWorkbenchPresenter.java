@@ -42,6 +42,7 @@ import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
+import info.magnolia.ui.admincentral.event.ItemEditedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.event.SearchEvent;
 import info.magnolia.ui.admincentral.event.ViewTypeChangedEvent;
@@ -55,15 +56,20 @@ import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.terminal.Resource;
 
 /**
@@ -179,6 +185,14 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
                 doSearch(event);
             }
         });
+        
+        subAppEventBus.addHandler(ItemEditedEvent.class, new ItemEditedEvent.Handler() {
+            
+            @Override
+            public void onItemEdited(ItemEditedEvent event) {
+                editItem(event);
+            }
+        });
     }
 
     /**
@@ -273,6 +287,32 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             log.warn("", e);
         }
         return false;
+    }
+    
+
+    private void editItem(ItemEditedEvent event) {
+        Item item = event.getItem();
+        if (item instanceof JcrItemNodeAdapter) {
+            // Saving JCR Node, getting updated node first
+            Node node = ((JcrItemNodeAdapter) item).getNode();
+            try {
+                node.getSession().save();
+            } catch (RepositoryException e) {
+                log.error("Could not save changes to node.", e);
+            }
+
+        } else if (item instanceof JcrPropertyAdapter) {
+            // Saving JCR Property, update it first
+            try {
+                // get parent first because once property is updated, it won't exist anymore.
+                Property property = ((JcrPropertyAdapter) item).getProperty();
+                Node parent = property.getParent();
+                ((JcrPropertyAdapter) item).updateProperties();
+                parent.getSession().save();
+            } catch (RepositoryException e) {
+                log.error("Could not save changes to node.", e);
+            }
+        }
     }
 
 }

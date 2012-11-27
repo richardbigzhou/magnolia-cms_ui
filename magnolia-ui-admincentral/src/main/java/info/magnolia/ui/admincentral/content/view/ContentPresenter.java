@@ -37,6 +37,7 @@ import info.magnolia.ui.admincentral.app.content.ContentAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
 import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
+import info.magnolia.ui.admincentral.event.ItemEditedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.framework.app.AppContext;
@@ -144,6 +145,20 @@ public class ContentPresenter implements ContentView.Listener {
             }
         } else {
             log.warn("Got null com.vaadin.data.Item. No event will be fired.");
+        }
+    }
+    
+    @Override
+    public void onItemEdited(Item item) {
+        try {
+            if(item != null) {
+                log.debug("com.vaadin.data.Item edited. Firing ItemEditedEvent...");
+                subAppEventBus.fireEvent(new ItemEditedEvent(item));
+            } else {
+                log.warn("Null item edited");
+            }
+        } catch(Exception e) {
+            shell.showError("An error occured while editing an item in data grid", e);
         }
     }
 }

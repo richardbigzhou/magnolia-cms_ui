@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.view;
+package info.magnolia.ui.admincentral.event;
 
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventHandler;
@@ -67,7 +67,7 @@ public class ItemEditedEvent implements Event<ItemEditedEvent.Handler> {
     private final Item item;
 
     /**
-     * Instantiates a new inplace edited event.
+     * Instantiates a new item edited event.
      * 
      * @param item the item that has been edited.
      */

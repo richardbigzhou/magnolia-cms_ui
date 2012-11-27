@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.tree.view;
 
+import info.magnolia.ui.admincentral.event.ItemEditedEvent;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
     private ColumnGenerator bypassedColumnGenerator;
 
-    private final List<ItemEditedEvent.Handler> listeners = new ArrayList<ItemEditedEvent.Handler>();;
+    private final List<ItemEditedEvent.Handler> listeners = new ArrayList<ItemEditedEvent.Handler>();
 
     public InplaceEditingTreeTable() {
         super();
@@ -308,13 +309,11 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                 Field field = (Field) target;
 
                 if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
-                    System.out.println("TF:KEY:ENTER");
                     field.commit();
                     fireItemEditedEvent(getItemFromField(field));
                     setEditing(null, null);
 
                 } else if (action == tabNext) {
-                    System.out.println("TF:KEY:TAB");
                     // Saves first
                     field.commit();
                     fireItemEditedEvent(getItemFromField(field));
@@ -325,7 +324,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                     //setEditing(null, null);
 
                 } else if (action == tabPrev) {
-                    System.out.println("TF:KEY:SHIFT+TAB");
                     // Saves first
                     field.commit();
                     fireItemEditedEvent(getItemFromField(field));
@@ -336,7 +334,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                     //setEditing(null, null);
 
                 } else if (action == escape) {
-                    System.out.println("TF:KEY:ESCAPE");
                     field.discard();
                     setEditing(null, null);
                 }
@@ -348,7 +345,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
                 if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
                     // Edit selected row at first column
-                    System.out.println("TT:KEY:ENTER");
                     Object propertyId = getVisibleColumns()[0];
                     if (!editableColumns.contains(propertyId)) {
                         propertyId = getNextEditableCandidate(selectedId, propertyId).getPropertyId();
