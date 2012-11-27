@@ -111,6 +111,8 @@ public interface ContentView extends View {
         void onItemSelection(Item item);
 
         void onDoubleClick(Item item);
+        
+        void onItemEdited(Item item);
 
     }
 }

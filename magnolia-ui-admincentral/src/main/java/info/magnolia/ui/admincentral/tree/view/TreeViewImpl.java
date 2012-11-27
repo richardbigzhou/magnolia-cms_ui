@@ -36,12 +36,11 @@ package info.magnolia.ui.admincentral.tree.view;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.column.ColumnFormatter;
 import info.magnolia.ui.admincentral.content.view.ContentView;
+import info.magnolia.ui.admincentral.event.ItemEditedEvent;
 import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 
 import java.util.ArrayList;
@@ -50,16 +49,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Container;
-import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Component;
@@ -72,7 +66,7 @@ import com.vaadin.ui.TreeTable;
  * Vaadin UI component that displays a tree.
  */
 @SuppressWarnings("serial")
-public class TreeViewImpl implements TreeView, ItemEditedEvent.Handler {
+public class TreeViewImpl implements TreeView {
 
     private static final Logger log = LoggerFactory.getLogger(TreeViewImpl.class);
 
@@ -164,7 +158,13 @@ public class TreeViewImpl implements TreeView, ItemEditedEvent.Handler {
 
         // listeners
         if (workbench.isEditable()) {
-            ((InplaceEditingTreeTable) treeTable).addListener(this);
+            ((InplaceEditingTreeTable) treeTable).addListener(new ItemEditedEvent.Handler() {
+                
+                @Override
+                public void onItemEdited(ItemEditedEvent event) {
+                    presenterEditItem(event);
+                }
+            });
         }
 
         return treeTable;
@@ -222,38 +222,6 @@ public class TreeViewImpl implements TreeView, ItemEditedEvent.Handler {
         }
     }
 
-    // SAVING ON INPLACE EDITING
-
-    @Override
-    public void onItemEdited(ItemEditedEvent event) {
-        Item item = event.getItem();
-
-        if (item instanceof JcrItemNodeAdapter) {
-            // Saving JCR Node, getting updated node first
-            Node node = ((JcrItemNodeAdapter) item).getNode();
-            try {
-                node.getSession().save();
-            } catch (RepositoryException e) {
-                log.error("Could not save changes to node.", e);
-            }
-
-        } else if (item instanceof JcrPropertyAdapter) {
-            // Saving JCR Property, update it first
-            try {
-                // get parent first because once property is updated, it won't exist anymore.
-                Property property = ((JcrPropertyAdapter) item).getProperty();
-                Node parent = property.getParent();
-                ((JcrPropertyAdapter) item).updateProperties();
-                parent.getSession().save();
-            } catch (RepositoryException e) {
-                log.error("Could not save changes to node.", e);
-            }
-        }
-
-        // Clear preOrder cache of itemIds in case node was renamed
-        container.fireItemSetChange();
-    }
-
     // CONTENT VIEW IMPL
 
     @Override
@@ -306,6 +274,15 @@ public class TreeViewImpl implements TreeView, ItemEditedEvent.Handler {
     @Override
     public Component asVaadinComponent() {
         return layout;
+    }
+
+    private void presenterEditItem(ItemEditedEvent event) {
+        if(listener != null) {
+            listener.onItemEdited(event.getItem());
+            
+            // Clear preOrder cache of itemIds in case node was renamed
+            TreeViewImpl.this.container.fireItemSetChange();
+        }
     }
 
 }
