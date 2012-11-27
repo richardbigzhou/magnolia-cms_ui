@@ -45,27 +45,27 @@ import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.admincentral.form.FormPresenter;
-import info.magnolia.ui.admincentral.form.action.SaveFormAction;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 /**
  * Save group dialog action.
  */
-public class SaveGroupDialogAction extends SaveFormAction {
+public class SaveGroupDialogAction extends SaveDialogAction {
 
     private static final Logger log = LoggerFactory.getLogger(SaveGroupDialogAction.class);
 
-    public SaveGroupDialogAction(SaveGroupDialogActionDefinition definition, FormPresenter presenter) {
+    public SaveGroupDialogAction(SaveGroupDialogActionDefinition definition, FormDialogPresenter presenter) {
         super(definition, presenter);
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
-        getPresenter().showValidation(true);
-        if (getPresenter().getView().isValid()) {
+        getPresenter().getForm().showValidation(true);
+        if (getPresenter().getForm().isValid()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) getItem();
 
             try {

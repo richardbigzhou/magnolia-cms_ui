@@ -37,25 +37,25 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import info.magnolia.jcr.util.MetaDataUtil;
-import info.magnolia.ui.admincentral.form.FormPresenter;
-import info.magnolia.ui.admincentral.form.action.SaveFormAction;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 /**
  * Save role dialog action.
  */
-public class SaveRoleDialogAction extends SaveFormAction {
+public class SaveRoleDialogAction extends SaveDialogAction {
 
-    public SaveRoleDialogAction(SaveRoleDialogActionDefinition definition, FormPresenter presenter) {
+    public SaveRoleDialogAction(SaveRoleDialogActionDefinition definition, FormDialogPresenter presenter) {
         super(definition, presenter);
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
-        getPresenter().showValidation(true);
-        if (getPresenter().getView().isValid()) {
+        getPresenter().getForm().showValidation(true);
+        if (getPresenter().getForm().isValid()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) getItem();
 
             try {
