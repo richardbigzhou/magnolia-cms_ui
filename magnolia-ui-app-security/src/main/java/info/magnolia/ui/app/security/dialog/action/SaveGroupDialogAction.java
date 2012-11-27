@@ -78,7 +78,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
                 String[] ids = StringUtils.split(identifiers, ',');
                 try {
                     node.getProperty("groups").remove();
-                } catch (Exception ex) {
+                } catch (RepositoryException ex) {
                     log.warn("Cannot remove [groups] property of the group ["+node.getName()+"]: "+ex.getMessage());
                 }
                 try {
@@ -98,9 +98,8 @@ public class SaveGroupDialogAction extends SaveDialogAction {
                         PropertyUtil.setProperty(grps, ""+i, id.trim());
                         i++;
                     }
-                } catch (Exception ex) {
-                    log.error("Error saving assigned groups of the ["+node.getName()+"] group: "+ex.getMessage());
-                    log.debug("Error saving assigned groups of the ["+node.getName()+"] group.",ex);
+                } catch (RepositoryException ex) {
+                    log.error("Error saving assigned groups of the ["+node.getName()+"] group.",ex);
                 }
                 // ROLES
                 identifiers = itemChanged.getItemProperty("roles").getValue().toString();
@@ -109,7 +108,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
                 ids = StringUtils.split(identifiers, ',');
                 try {
                     node.getProperty("roles").remove();
-                } catch (Exception ex) {
+                } catch (RepositoryException ex) {
                     log.warn("Cannot remove [roles] property of the group ["+node.getName()+"]: "+ex.getMessage());
                 }
                 try {
@@ -129,9 +128,8 @@ public class SaveGroupDialogAction extends SaveDialogAction {
                         PropertyUtil.setProperty(grps, ""+i, id.trim());
                         i++;
                     }
-                } catch (Exception ex) {
-                    log.error("Error saving assigned roles of the ["+node.getName()+"] group: "+ex.getMessage());
-                    log.debug("Error saving assigned roles of the ["+node.getName()+"] group.",ex);
+                } catch (RepositoryException ex) {
+                    log.error("Error saving assigned roles of the ["+node.getName()+"] group.",ex);
                 }
                 // THE REST
                 MetaDataUtil.updateMetaData(node);

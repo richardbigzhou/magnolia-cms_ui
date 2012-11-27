@@ -123,9 +123,8 @@ public class RoleManagementField extends SelectFieldBuilder<RoleManagementFieldD
                 String uuid = n.getIdentifier();
                 roles.add(new Role(name,uuid));
             }
-        } catch (Exception e) {
-            log.error("Cannot read roles from the ["+RepositoryConstants.USER_ROLES+"] workspace: "+e.getMessage());
-            log.debug("Cannot read roles from the ["+RepositoryConstants.USER_ROLES+"] workspace.", e);
+        } catch (RepositoryException e) {
+            log.error("Cannot read roles from the ["+RepositoryConstants.USER_ROLES+"] workspace.", e);
         }
         return roles;
     }
@@ -150,8 +149,7 @@ public class RoleManagementField extends SelectFieldBuilder<RoleManagementFieldD
             // subnode does not exist, so just return (an empty) list
             return roles;
         } catch (RepositoryException re) {
-            log.error("Cannot read assigned roles of the node ["+mainNode+"]: "+re.getMessage());
-            log.debug("Cannot read assigned roles of the node ["+mainNode+"].", re);
+            log.error("Cannot read assigned roles of the node ["+mainNode+"].", re);
         }
         return roles;
     }

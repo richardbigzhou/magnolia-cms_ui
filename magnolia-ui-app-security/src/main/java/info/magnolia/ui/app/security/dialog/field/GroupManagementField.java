@@ -134,9 +134,8 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
                 String uuid = n.getIdentifier();
                 groups.add(new Group(name, uuid));
             }
-        } catch (Exception e) {
-            log.error("Cannot read groups from the ["+RepositoryConstants.USER_GROUPS+"] workspace: "+e.getMessage());
-            log.debug("Cannot read groups from the ["+RepositoryConstants.USER_GROUPS+"] workspace.", e);
+        } catch (RepositoryException e) {
+            log.error("Cannot read groups from the ["+RepositoryConstants.USER_GROUPS+"] workspace.", e);
         }
         return groups;
     }
@@ -162,8 +161,7 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
             // subnode does not exist, so just return (an empty) list
             return groups;
         } catch (RepositoryException re) {
-            log.error("Cannot read assigned groups of the node ["+mainNode+"]: "+re.getMessage());
-            log.debug("Cannot read assigned groups of the node ["+mainNode+"].", re);
+            log.error("Cannot read assigned groups of the node ["+mainNode+"].", re);
         }
         return groups;
     }
