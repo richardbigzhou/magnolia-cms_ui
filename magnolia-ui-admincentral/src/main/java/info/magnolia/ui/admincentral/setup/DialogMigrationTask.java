@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.setup;
 
+import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.predicate.NodeTypePredicate;
@@ -288,7 +289,7 @@ public class DialogMigrationTask  extends AbstractTask {
         public boolean evaluateTyped(Node node) {
             try {
                 return !node.getName().startsWith(NodeTypes.JCR_PREFIX)
-                && !NodeUtil.isNodeType(node, NodeTypes.MGNL_PREFIX+"metaData") &&
+                && !NodeUtil.isNodeType(node, MgnlNodeType.NT_METADATA) &&
                 NodeUtil.isNodeType(node, NodeTypes.ContentNode.NAME);
             } catch (RepositoryException e) {
                 return false;
