@@ -506,10 +506,13 @@
                     <sv:value>2012-11-27T11:58:46.118+01:00</sv:value>
                   </sv:property>
                   <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-                    <sv:value>2012-11-27T11:59:34.431+01:00</sv:value>
+                    <sv:value>2012-11-27T14:03:53.582+01:00</sv:value>
                   </sv:property>
                   <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
                     <sv:value>superuser</sv:value>
+                  </sv:property>
+                  <sv:property sv:name="nodeType" sv:type="String">
+                    <sv:value>mgnl:content</sv:value>
                   </sv:property>
                 </sv:node>
               </sv:node>
