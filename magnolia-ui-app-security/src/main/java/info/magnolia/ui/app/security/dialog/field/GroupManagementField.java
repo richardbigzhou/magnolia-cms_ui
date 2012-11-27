@@ -49,8 +49,8 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.TwinColSelect;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.QueryUtil;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
@@ -127,7 +127,7 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
     private List<Group> getAllGroups() {
         List<Group> groups = new ArrayList<Group>();
         try {
-            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_GROUPS, "SELECT * FROM ["+MgnlNodeType.GROUP+"] ORDER BY name()");
+            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_GROUPS, "SELECT * FROM ["+NodeTypes.Group.NAME+"] ORDER BY name()");
             while (ni.hasNext()) {
                 Node n = ni.nextNode();
                 String name = n.getName();

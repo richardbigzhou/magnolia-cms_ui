@@ -41,8 +41,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.jcr.util.MetaDataUtil;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
@@ -83,7 +83,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
                 }
                 try {
                     // create "groups" subnode (or get it, if it already exists)
-                    Node grps = NodeUtil.createPath(node, "groups", MgnlNodeType.NT_CONTENTNODE);
+                    Node grps = NodeUtil.createPath(node, "groups", NodeTypes.ContentNode.NAME);
                     // sanity: remove all possible non-jcr properties
                     PropertyIterator pi = grps.getProperties();
                     while (pi.hasNext()) {
@@ -113,7 +113,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
                 }
                 try {
                     // create "groups" subnode (or get it, if it already exists)
-                    Node grps = NodeUtil.createPath(node, "roles", MgnlNodeType.NT_CONTENTNODE);
+                    Node grps = NodeUtil.createPath(node, "roles", NodeTypes.ContentNode.NAME);
                     // sanity: remove all possible non-jcr properties
                     PropertyIterator pi = grps.getProperties();
                     while (pi.hasNext()) {

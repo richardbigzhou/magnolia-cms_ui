@@ -48,8 +48,8 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.TwinColSelect;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.QueryUtil;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
@@ -116,7 +116,7 @@ public class RoleManagementField extends SelectFieldBuilder<RoleManagementFieldD
     private List<Role> getAllRoles() {
         List<Role> roles = new ArrayList<Role>();
         try {
-            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_ROLES, "SELECT * FROM ["+MgnlNodeType.ROLE+"] ORDER BY name()");
+            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_ROLES, "SELECT * FROM ["+NodeTypes.Role.NAME+"] ORDER BY name()");
             while (ni.hasNext()) {
                 Node n = ni.nextNode();
                 String name = n.getName();

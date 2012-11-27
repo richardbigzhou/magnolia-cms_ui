@@ -35,7 +35,6 @@ package info.magnolia.ui.app.security;
 
 import javax.inject.Inject;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
@@ -95,7 +94,7 @@ public class SecurityModule implements ModuleLifecycle {
 
         // group
         CreateDialogActionDefinition addGroupAction = new CreateDialogActionDefinition();
-        addGroupAction.setNodeType(MgnlNodeType.GROUP);
+        addGroupAction.setNodeType(NodeTypes.Group.NAME);
         addGroupAction.setDialogName("ui-security-app:groupAdd");
 
         EditDialogActionDefinition editGroupAction = new EditDialogActionDefinition();
@@ -103,7 +102,7 @@ public class SecurityModule implements ModuleLifecycle {
 
         // role
         CreateDialogActionDefinition addRoleAction = new CreateDialogActionDefinition();
-        addRoleAction.setNodeType(MgnlNodeType.ROLE);
+        addRoleAction.setNodeType(NodeTypes.Role.NAME);
         addRoleAction.setDialogName("ui-security-app:roleAdd");
 
         EditDialogActionDefinition editRoleAction = new EditDialogActionDefinition();
@@ -120,8 +119,8 @@ public class SecurityModule implements ModuleLifecycle {
                     // userSubApp(app, wbcfg, abcfg, "system users", "/system"),
                     app.subApp("groups").subAppClass(SecurityGroupsSubApp.class)
                     .workbench(wbcfg.workbench().workspace("usergroups").root("/").defaultOrder("jcrName")
-                            .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))
-                            .mainItemType(wbcfg.itemType(MgnlNodeType.GROUP).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
+                            .groupingItemType(wbcfg.itemType(NodeTypes.Folder.NAME).icon("/.resources/icons/16/folders.gif"))
+                            .mainItemType(wbcfg.itemType(NodeTypes.Group.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                             .imageProvider(cipd)
                             .columns(
                                     wbcfg.column(new PropertyColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName"),
@@ -144,8 +143,8 @@ public class SecurityModule implements ModuleLifecycle {
                     ),
                     app.subApp("roles").subAppClass(SecurityRolesSubApp.class)
                     .workbench(wbcfg.workbench().workspace("userroles").root("/").defaultOrder("jcrName")
-                            .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))
-                            .mainItemType(wbcfg.itemType(MgnlNodeType.ROLE).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
+                            .groupingItemType(wbcfg.itemType(NodeTypes.Folder.NAME).icon("/.resources/icons/16/folders.gif"))
+                            .mainItemType(wbcfg.itemType(NodeTypes.Role.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                             .imageProvider(cipd)
                             .columns(
                                     wbcfg.column(new PropertyColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName"),
@@ -174,7 +173,7 @@ public class SecurityModule implements ModuleLifecycle {
     protected ContentSubAppBuilder userSubApp(ContentAppBuilder app, WorkbenchConfig wbcfg, ActionbarConfig abcfg, String name, String root) {
         // user
         CreateDialogActionDefinition addUserAction = new CreateDialogActionDefinition();
-        addUserAction.setNodeType(MgnlNodeType.USER);
+        addUserAction.setNodeType(NodeTypes.User.NAME);
         addUserAction.setDialogName("ui-security-app:userAdd");
 
         EditDialogActionDefinition editUserAction = new EditDialogActionDefinition();
@@ -187,8 +186,8 @@ public class SecurityModule implements ModuleLifecycle {
 
         return app.subApp(name).subAppClass(SecurityUsersSubApp.class)
                 .workbench(wbcfg.workbench().workspace("users").root(root).defaultOrder("jcrName")
-                        .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))  // see MGNLPUR-77
-                        .mainItemType(wbcfg.itemType(MgnlNodeType.USER).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
+                        .groupingItemType(wbcfg.itemType(NodeTypes.Folder.NAME).icon("/.resources/icons/16/folders.gif"))  // see MGNLPUR-77
+                        .mainItemType(wbcfg.itemType(NodeTypes.User.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                         .imageProvider(cipd)
                         .columns(
                                 wbcfg.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class),
@@ -388,6 +387,7 @@ public class SecurityModule implements ModuleLifecycle {
 
     @Override
     public void stop(ModuleLifecycleContext moduleLifecycleContext) {
+        // nothing to do yet
     }
 
 }
