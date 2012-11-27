@@ -100,27 +100,6 @@ public class TreeViewImpl implements TreeView, ItemEditedEvent.Handler {
         layout = buildLayout();
         layout.addComponent(treeTable);
 
-        // if (workbenchDefinition.isEditable()) {
-        // tree.addListener(new ItemClickListener() {
-        //
-        // private Object previousSelection;
-        //
-        // @Override
-        // public void itemClick(ItemClickEvent event) {
-        // if (event.isDoubleClick()) {
-        // ((InplaceEditingTreeTable) tree).setEditing(event.getItemId(), event.getPropertyId());
-        // } else {
-        // // toggle will deselect
-        // if (previousSelection == event.getItemId()) {
-        // tree.setValue(null);
-        // }
-        // }
-        //
-        // previousSelection = event.getItemId();
-        // }
-        // });
-        // } else {
-
         treeTable.addListener(new ItemClickEvent.ItemClickListener() {
 
             private Object previousSelection;
@@ -140,7 +119,6 @@ public class TreeViewImpl implements TreeView, ItemEditedEvent.Handler {
                 previousSelection = currentSelection;
             }
         });
-        // }
 
         treeTable.addListener(new TreeTable.ValueChangeListener() {
 
@@ -265,7 +243,7 @@ public class TreeViewImpl implements TreeView, ItemEditedEvent.Handler {
                 // get parent first because once property is updated, it won't exist anymore.
                 Property property = ((JcrPropertyAdapter) item).getProperty();
                 Node parent = property.getParent();
-                ((JcrPropertyAdapter) item).updateProperties(property);
+                ((JcrPropertyAdapter) item).updateProperties();
                 parent.getSession().save();
             } catch (RepositoryException e) {
                 log.error("Could not save changes to node.", e);

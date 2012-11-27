@@ -41,6 +41,8 @@ import java.util.Collection;
 import javax.jcr.Item;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.ValueFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,6 +121,12 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * JcrPropertyAdapter custom logic to update one single vaadin property. If updated propertyId
+     * is {@link JcrItemAdapter.JCR_NAME}, then rename JCR Property. If propertyId is
+     * {@link JcrPropertyAdapter.VALUE_COLUMN}, set new property value. If propertyId is
+     * {@link JcrPropertyAdapter.TYPE_COLUMN}, set new property type. Otherwise, do nothing.
+     */
     @Override
     protected void updateProperty(Item item, String propertyId, Property property) {
         if (!(item instanceof javax.jcr.Property)) {
@@ -126,7 +134,7 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
         }
         javax.jcr.Property jcrProperty = (javax.jcr.Property) item;
 
-        // if JCR name then move this Node
+        // JCR_NAME name then move this Node
         if (JCR_NAME.equals(propertyId)) {
             String jcrName = (String) property.getValue();
             if (jcrName != null && !jcrName.isEmpty()) {
@@ -139,13 +147,39 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
         } else if (VALUE_COLUMN.equals(propertyId)) {
             if (property.getValue() != null) {
                 try {
-                    jcrProperty.setValue((String) property.getValue());
+                    String valueString = (String) property.getValue();
+                    int valueType = jcrProperty.getType();
+                    ValueFactory valueFactory = jcrProperty.getSession().getValueFactory();
+
+                    Value newValue = PropertyUtil.createValue(valueString, valueType, valueFactory);
+                    jcrProperty.setValue(newValue);
                 } catch (RepositoryException e) {
                     log.error("Could not set JCR Property", e);
                 }
             }
         } else if (TYPE_COLUMN.equals(propertyId)) {
-            // TODO 20121123 mgeljic
+            if (property.getValue() != null) {
+                // get new type from string
+                int newType;
+                try {
+                    newType = PropertyType.valueFromName(property.getValue().toString());
+                } catch (IllegalArgumentException e) {
+                    log.warn("Could not set new type for JCR Property, unknown type string.", e);
+                    return;
+                }
+
+                // set old value with new type
+                try {
+                    String valueString = jcrProperty.getValue().getString();
+                    ValueFactory valueFactory = jcrProperty.getSession().getValueFactory();
+
+                    Value newValue = PropertyUtil.createValue(valueString, newType, valueFactory);
+                    jcrProperty.setValue(newValue);
+                } catch (RepositoryException e) {
+                    log.error("Could not set new type for JCR Property.", e);
+                }
+
+            }
         }
     }
 

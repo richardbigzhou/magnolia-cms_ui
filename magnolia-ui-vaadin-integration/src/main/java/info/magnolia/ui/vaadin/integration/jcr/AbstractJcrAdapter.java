@@ -144,7 +144,16 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     }
 
     /**
-     * Updates and removes properties based on the {@link #changedProperties} and
+     * Updates and removes properties on the JCR Item represented by this adapter, based on the
+     * {@link #changedProperties} and {@link #removedProperties} maps. Read-only properties will not
+     * be updated.
+     */
+    public void updateProperties() throws RepositoryException {
+        updateProperties(getJcrItem());
+    }
+
+    /**
+     * Updates and removes properties on given item, based on the {@link #changedProperties} and
      * {@link #removedProperties} maps. Read-only properties will not be updated.
      */
     public void updateProperties(Item item) throws RepositoryException {
