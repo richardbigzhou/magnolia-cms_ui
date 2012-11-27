@@ -47,8 +47,8 @@ import javax.inject.Named;
 public class PageMainSubApp extends AbstractSubApp {
 
     @Inject
-    public PageMainSubApp(SubAppContext subAppContext, PageView dummyView, final @Named("subapp") EventBus subAppEventBus) {
-        super(subAppContext, dummyView);
+    public PageMainSubApp(SubAppContext subAppContext, PageView pageView, final @Named("subapp") EventBus subAppEventBus) {
+        super(subAppContext, pageView);
     }
 
 }
