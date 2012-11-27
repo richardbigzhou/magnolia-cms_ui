@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
-import info.magnolia.ui.app.security.view.RolesView;
+import info.magnolia.ui.app.security.view.BaseView;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 
@@ -53,7 +53,7 @@ public class SecurityRolesSubApp extends AbstractContentSubApp {
     private static final Logger log = LoggerFactory.getLogger(SecurityRolesSubApp.class);
 
     @Inject
-    public SecurityRolesSubApp(final SubAppContext subAppContext, RolesView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
+    public SecurityRolesSubApp(final SubAppContext subAppContext, BaseView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
         super(subAppContext, view, workbench, subAppEventBus);
     }
 

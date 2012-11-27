@@ -49,8 +49,8 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.TwinColSelect;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.QueryUtil;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
@@ -64,10 +64,10 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
     /**
      * Internal bean to represent basic group data.
      */
-    public static class _Group {
+    public static class Group {
         public String name;
         public String uuid;
-        public _Group(String name, String uuid) {
+        public Group(String name, String uuid) {
             this.name = name;
             this.uuid = uuid;
         }
@@ -101,7 +101,7 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
     @Override
     public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition(){
         List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
-        List<_Group> allGroups = getAllGroups(); // name,uuid
+        List<Group> allGroups = getAllGroups(); // name,uuid
         List<String> assignedGroups = getAssignedGroups();
         String currentUUID = null;
         try {
@@ -109,7 +109,7 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
         } catch (RepositoryException e) {
             // nothing to do
         }
-        for (_Group group : allGroups) {
+        for (Group group : allGroups) {
             SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
             option.setValue(group.uuid);
             option.setLabel(group.name);
@@ -124,19 +124,18 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
         return options;
     }
 
-    private List<_Group> getAllGroups() {
-        List<_Group> groups = new ArrayList<_Group>();
+    private List<Group> getAllGroups() {
+        List<Group> groups = new ArrayList<Group>();
         try {
-            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_GROUPS, "SELECT * FROM ["+MgnlNodeType.GROUP+"] ORDER BY name()");
+            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_GROUPS, "SELECT * FROM ["+NodeTypes.Group.NAME+"] ORDER BY name()");
             while (ni.hasNext()) {
                 Node n = ni.nextNode();
                 String name = n.getName();
                 String uuid = n.getIdentifier();
-                groups.add(new _Group(name, uuid));
+                groups.add(new Group(name, uuid));
             }
-        } catch (Exception e) {
-            log.error("Cannot read groups from the ["+RepositoryConstants.USER_GROUPS+"] workspace: "+e.getMessage());
-            log.debug("Cannot read groups from the ["+RepositoryConstants.USER_GROUPS+"] workspace.", e);
+        } catch (RepositoryException e) {
+            log.error("Cannot read groups from the ["+RepositoryConstants.USER_GROUPS+"] workspace.", e);
         }
         return groups;
     }
@@ -145,25 +144,23 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
         List<String> groups = new ArrayList<String>();
         Node mainNode = getRelatedNode(item);
         try {
-            Node groupsNode = mainNode.getNode("groups");
-            if (groupsNode == null) {
-                // shouldn't happen, just in case
-                return groups;
-            }
-            PropertyIterator pi = groupsNode.getProperties();
-            while (pi.hasNext()) {
-                Property p = pi.nextProperty();
-                if (!p.getName().startsWith("jcr:")) {
-                    // do not add system properties
-                    groups.add(p.getString());
+            if (mainNode.hasNode("groups")) {
+                Node groupsNode = mainNode.getNode("groups");
+                if (groupsNode == null) {
+                    // shouldn't happen, just in case
+                    return groups;
+                }
+                PropertyIterator pi = groupsNode.getProperties();
+                while (pi.hasNext()) {
+                    Property p = pi.nextProperty();
+                    if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
+                        // do not add system properties
+                        groups.add(p.getString());
+                    }
                 }
             }
-        } catch (PathNotFoundException pnfe) {
-            // subnode does not exist, so just return (an empty) list
-            return groups;
         } catch (RepositoryException re) {
-            log.error("Cannot read assigned groups of the node ["+mainNode+"]: "+re.getMessage());
-            log.debug("Cannot read assigned groups of the node ["+mainNode+"].", re);
+            log.error("Cannot read assigned groups of the node ["+mainNode+"].", re);
         }
         return groups;
     }

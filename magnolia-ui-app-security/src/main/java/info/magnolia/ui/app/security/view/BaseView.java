@@ -31,12 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security;
+package info.magnolia.ui.app.security.view;
 
-import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 
 /**
- * Version handler for the Security App module.
+ * Basic View definition for the Security App.
  */
-public class SecurityAppModuleVersionHandler extends DefaultModuleVersionHandler {
+public interface BaseView extends WorkbenchSubAppView {
+
 }

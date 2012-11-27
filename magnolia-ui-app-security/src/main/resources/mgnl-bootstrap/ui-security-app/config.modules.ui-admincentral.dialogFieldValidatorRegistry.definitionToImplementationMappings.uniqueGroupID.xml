@@ -13,7 +13,7 @@
     <sv:value>info.magnolia.ui.app.security.dialog.field.validator.UniqueGroupIdValidatorDefinition</sv:value>
   </sv:property>
   <sv:property sv:name="implementation" sv:type="String">
-    <sv:value>info.magnolia.ui.app.security.dialog.field.validator.UniqueGroupIdValidator</sv:value>
+    <sv:value>info.magnolia.ui.app.security.dialog.field.validator.UniqueGroupIdValidatorBuilder</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>

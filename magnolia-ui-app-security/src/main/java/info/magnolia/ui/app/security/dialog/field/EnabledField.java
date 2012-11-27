@@ -42,7 +42,7 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 /**
  * Enabled field GUI builder. Enabled field handles checkbox bound to a String property (while by default the checkbox
- * is bound to a boolean propety type).
+ * is bound to a boolean property type).
  */
 public class EnabledField extends CheckBoxFieldBuilder {
 
@@ -52,13 +52,12 @@ public class EnabledField extends CheckBoxFieldBuilder {
 
     @Override
     public com.vaadin.data.Property getOrCreateProperty() {
-        Property _old = item.getItemProperty("enabled");
+        Property old = item.getItemProperty("enabled");
         String stringValue = "true";
-        if (_old!=null) {
-            stringValue = _old.toString();
+        if (old!=null) {
+            stringValue = old.toString();
         }
-        Boolean _new = Boolean.parseBoolean(stringValue);
-        DefaultProperty prop = new DefaultProperty("enabled",_new);
+        DefaultProperty prop = new DefaultProperty("enabled",Boolean.parseBoolean(stringValue));
         item.removeItemProperty("enabled");
         item.addItemProperty("enabled", prop);
         return prop;

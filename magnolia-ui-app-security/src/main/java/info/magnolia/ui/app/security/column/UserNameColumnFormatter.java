@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Table;
 
-import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.column.AbstractColumnFormatter;
 
@@ -66,7 +66,7 @@ public class UserNameColumnFormatter extends AbstractColumnFormatter<UserNameCol
             try {
                 // both mgnl:folder and mgnl:content, as /admin and /system are folders, but /public is content
                 // reported as MGNLPUR-77
-                if (NodeUtil.isNodeType(node, MgnlNodeType.NT_FOLDER) || NodeUtil.isNodeType(node, MgnlNodeType.NT_CONTENT)) {
+                if (NodeUtil.isNodeType(node, NodeTypes.Folder.NAME) || NodeUtil.isNodeType(node, NodeTypes.Content.NAME)) {
                     return node.getName();
                 }
             } catch (RepositoryException e) {
@@ -74,7 +74,7 @@ public class UserNameColumnFormatter extends AbstractColumnFormatter<UserNameCol
             }
 
             try {
-                if (NodeUtil.isNodeType(node, MgnlNodeType.USER)) {
+                if (NodeUtil.isNodeType(node, NodeTypes.User.NAME)) {
                     return node.getName();
                 }
             } catch (RepositoryException e) {
