@@ -144,22 +144,21 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
         List<String> groups = new ArrayList<String>();
         Node mainNode = getRelatedNode(item);
         try {
-            Node groupsNode = mainNode.getNode("groups");
-            if (groupsNode == null) {
-                // shouldn't happen, just in case
-                return groups;
-            }
-            PropertyIterator pi = groupsNode.getProperties();
-            while (pi.hasNext()) {
-                Property p = pi.nextProperty();
-                if (!p.getName().startsWith("jcr:")) {
-                    // do not add system properties
-                    groups.add(p.getString());
+            if (mainNode.hasNode("groups")) {
+                Node groupsNode = mainNode.getNode("groups");
+                if (groupsNode == null) {
+                    // shouldn't happen, just in case
+                    return groups;
+                }
+                PropertyIterator pi = groupsNode.getProperties();
+                while (pi.hasNext()) {
+                    Property p = pi.nextProperty();
+                    if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
+                        // do not add system properties
+                        groups.add(p.getString());
+                    }
                 }
             }
-        } catch (PathNotFoundException pnfe) {
-            // subnode does not exist, so just return (an empty) list
-            return groups;
         } catch (RepositoryException re) {
             log.error("Cannot read assigned groups of the node ["+mainNode+"].", re);
         }

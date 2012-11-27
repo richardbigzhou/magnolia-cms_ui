@@ -133,21 +133,20 @@ public class RoleManagementField extends SelectFieldBuilder<RoleManagementFieldD
         List<String> roles = new ArrayList<String>();
         Node mainNode = getRelatedNode(item);
         try {
-            Node groupsNode = mainNode.getNode("roles");
-            if (groupsNode == null) {
-                // shouldn't happen, just in case
-                return roles;
-            }
-            PropertyIterator pi = groupsNode.getProperties();
-            while (pi.hasNext()) {
-                Property p = pi.nextProperty();
-                if (!p.getName().startsWith("jcr:")) {
-                    roles.add(p.getString());
+            if (mainNode.hasNode("roles")) {
+                Node groupsNode = mainNode.getNode("roles");
+                if (groupsNode == null) {
+                    // shouldn't happen, just in case
+                    return roles;
+                }
+                PropertyIterator pi = groupsNode.getProperties();
+                while (pi.hasNext()) {
+                    Property p = pi.nextProperty();
+                    if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
+                        roles.add(p.getString());
+                    }
                 }
             }
-        } catch (PathNotFoundException pnfe) {
-            // subnode does not exist, so just return (an empty) list
-            return roles;
         } catch (RepositoryException re) {
             log.error("Cannot read assigned roles of the node ["+mainNode+"].", re);
         }
