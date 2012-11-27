@@ -77,13 +77,16 @@
 		            } else {
 		            	editor.fire(EVENT_GET_MAGNOLIA_LINK);
 		            }
-		            //editor.setReadOnly();
+
+		            setReadOnly(editor, true);
+
 				}
 			});
 			
 			//Respond from Pages app
 			editor.on(EVENT_SEND_MAGNOLIA_LINK, function(e) {
-				//editor.setReadOnly(false);
+				setReadOnly(editor, false);
+				
 		    	editor.getSelection().selectRanges(selectionRangeHack);		    	
     	        var selectedElement = CKEDITOR.plugins.link.getSelectedLink(editor);
     	        var link = eval('('+e.data+')');
@@ -113,7 +116,7 @@
 				if(e.data) {
 					alert(e.data);
 				}
-				//editor.setReadOnly(false);
+				setReadOnly(editor, false);
 			});
 
 			//Double click
@@ -156,6 +159,14 @@
 			});
 		}
 	});
+	
+	function setReadOnly(editor, isReadOnly) {
+		if(isReadOnly) {
+			editor.element.setStyle('opacity', '0.2');
+		} else {
+			editor.element.removeStyle('opacity');
+		}
+	}
 	
 	function isInternalLink(element) {
 		if (isLink(element) && 

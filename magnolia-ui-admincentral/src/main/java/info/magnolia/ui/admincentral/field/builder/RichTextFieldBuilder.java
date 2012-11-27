@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,7 +123,13 @@ public class RichTextFieldBuilder extends
             @Override
             public void onPluginEvent(String eventName, String value) {
                 if (eventName.equals(EVENT_GET_MAGNOLIA_LINK)) {
-                    openLinkDialog(value);
+                    try {
+                        openLinkDialog(value);
+                    } catch (Exception e) {
+                        log.error("openLinkDialog failed", e);
+                        richtexteditor.firePluginEvent(EVENT_CANCEL_LINK, 
+                                "Could not open target App");
+                    }
                 }
             }
         });
@@ -149,16 +154,16 @@ public class RichTextFieldBuilder extends
                             if(!(pickedValue instanceof JcrItemAdapter)) {
                                 return;
                             }
-                            
-                            javax.jcr.Item jcrItem = ((JcrItemAdapter) pickedValue)
-                                    .getJcrItem();
-                            
-                            if(!jcrItem.isNode()) {
-                                return;
-                            }
-
-                            final Node selected = (Node) jcrItem;
                             try {                                    
+                            
+                                javax.jcr.Item jcrItem = ((JcrItemAdapter) pickedValue)
+                                        .getJcrItem();
+                                
+                                if(!jcrItem.isNode()) {
+                                    return;
+                                }
+    
+                                final Node selected = (Node) jcrItem;
                                 Gson gson = new Gson();
                                 MagnoliaLink mlink = new MagnoliaLink();
                                 mlink.identifier = selected.getIdentifier();
@@ -174,13 +179,12 @@ public class RichTextFieldBuilder extends
                                         EVENT_SEND_MAGNOLIA_LINK,
                                         gson.toJson(mlink)
                                 );
-                            } catch (RepositoryException e) {
-                                String error = "Not able to access the configured property. Value will not be set.";
+                            } catch (Exception e) {
+                                String error = "Not able to access the selected item. Value will not be set.";
                                 log.error(error, e);
                                 
                                 richtexteditor.firePluginEvent(EVENT_CANCEL_LINK, error);
-                            }
-                            
+                            }                            
                         }
 
                         @Override
