@@ -44,7 +44,12 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * SaveContactFormAction.
+ * Action for saving contacts.
+ * We currently can't rename the node on change.
+ * This must be properly solved by passing the node Identifier to {@link info.magnolia.ui.admincentral.event.ContentChangedEvent}.
+ *
+ * See MGNLUI-226.
+ * @see SaveContactFormActionDefinition
  */
 public class SaveContactFormAction extends SaveFormAction {
     public SaveContactFormAction(SaveContactFormActionDefinition definition, FormPresenter presenter) {
@@ -70,12 +75,11 @@ public class SaveContactFormAction extends SaveFormAction {
                 throw new ActionExecutionException(e);
             }
             getPresenter().getCallback().onSuccess(getDefinition().getName());
-
-        } else {
-            //validation errors are displayed in the UI.
         }
+
     }
 
+    // we have already utilities in core to generate unique names. Why not reuse them rather then inventing your own code?
     private void generateUniqueNodeNameForContact(final Node node) throws RepositoryException {
         String firstName = node.getProperty("firstName").getString();
         String lastName =  node.getProperty("lastName").getString();

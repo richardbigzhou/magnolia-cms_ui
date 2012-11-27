@@ -55,7 +55,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * ItemWorkbenchPresenter.
+ * Presenter for the workbench displayed in the {@link info.magnolia.ui.admincentral.app.content.AbstractItemSubApp}.
+ * Contains the {@link ActionbarPresenter} for handling action events and the {@link ItemPresenter} for displaying the actual item.
  */
 public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
 
@@ -116,7 +117,4 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
         //eventBus.fireEvent(new ViewTypeChangedEvent(viewType));
     }
 
-    public void setNodePath(String nodePath) {
-        this.nodePath = nodePath;
-    }
 }

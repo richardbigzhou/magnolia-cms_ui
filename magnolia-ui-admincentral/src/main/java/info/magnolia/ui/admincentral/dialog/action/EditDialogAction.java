@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
@@ -42,9 +44,14 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * Opens a dialog for editing a node.
+ * We need to manually take care of nodeName changes.
+ * This must be properly solved by passing the node Identifier to {@link ContentChangedEvent}.
+ *
+ * See MGNLUI-226.
  *
  * @see EditDialogActionDefinition
  */
@@ -64,12 +71,25 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
     public void execute() throws ActionExecutionException {
         final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByName(getDefinition().getDialogName());
         final EventBus eventBus = dialogPresenter.getEventBus();
+
+        String tempParentNodePath;
+        try {
+            tempParentNodePath = nodeToEdit.getParent().getPath();
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+
+        final String parentNodePath = tempParentNodePath;
+
         final JcrNodeAdapter item = new JcrNodeAdapter(nodeToEdit);
         dialogPresenter.start(item, new FormDialogPresenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+                final String newItemId = (String) item.getItemProperty(JcrNodeAdapter.JCR_NAME).getValue();
+
+                final String itemId = newItemId == null ? item.getItemId() : NodeUtil.combinePathAndName(parentNodePath, newItemId);
+                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), itemId));
                 dialogPresenter.closeDialog();
             }
 

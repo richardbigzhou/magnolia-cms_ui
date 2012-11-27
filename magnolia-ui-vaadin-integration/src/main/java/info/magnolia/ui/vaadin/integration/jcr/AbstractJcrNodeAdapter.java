@@ -249,7 +249,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
     }
 
     /**
-     * Update or remove property. Property wit flag saveInfo to false will not be updated. Property
+     * Update or remove property. Property with flag saveInfo to false will not be updated. Property
      * can refer to node property (like name, title) or node.MetaData property like
      * (MetaData/template). Also handle the specific case of node renaming. If property JCR_NAME is
      * present, Rename the node.

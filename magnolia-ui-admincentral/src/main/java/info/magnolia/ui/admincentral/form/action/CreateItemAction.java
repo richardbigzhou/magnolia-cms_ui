@@ -35,51 +35,48 @@ package info.magnolia.ui.admincentral.form.action;
 
 import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
 import info.magnolia.ui.admincentral.content.item.ItemView;
-import info.magnolia.ui.admincentral.form.FormPresenterFactory;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * CreateItemAction.
+ * Action for creating a new item.
+ * The {@link info.magnolia.ui.admincentral.app.content.AbstractItemSubApp} only gets a location containing nodePath and {@link ItemView.ViewType}.
+ * When creating a new node, we either create it here and pass the new path to the subapp or
+ * we pass all needed parameters to the location. This is less messy, but not optimal.. at all.
+ * See MGNLUI-222.
+ *
+ * @see CreateItemActionDefinition
+
  */
 public class CreateItemAction extends ActionBase<CreateItemActionDefinition> {
 
-    private static final Logger log = LoggerFactory.getLogger(CreateItemAction.class);
+    private static final String NEW_NODE_NAME = "untitled";
 
     private LocationController locationController;
     private final Node parent;
-    private final FormPresenterFactory formPresenterFactory;
 
-    public CreateItemAction(CreateItemActionDefinition definition, LocationController locationController,  Node parent, FormPresenterFactory formPresenterFactory) {
+    public CreateItemAction(CreateItemActionDefinition definition, LocationController locationController,  Node parent) {
         super(definition);
         this.locationController = locationController;
         this.parent = parent;
-        this.formPresenterFactory = formPresenterFactory;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
 
-        /**
-         * The ItemSubApp only gets a location containing nodePath and View Type.
-         * When creating a new node, we either create it here and pass the new path to the subapp or
-         * we pass all needed parameters to the location. This is less messy, but not optimal.. at all.
-         */
         try {
-            Node newNode = parent.addNode("untitled", getDefinition().getNodeType());
+            Node newNode = parent.addNode(NEW_NODE_NAME, getDefinition().getNodeType());
 
             newNode.getSession().save();
             ItemLocation location = new ItemLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), ItemView.ViewType.EDIT, newNode.getPath());
             locationController.goTo(location);
 
         } catch (RepositoryException e) {
-            log.error("Could not create child node on parent.", e);
+            throw new ActionExecutionException(e);
         }
     }
 }

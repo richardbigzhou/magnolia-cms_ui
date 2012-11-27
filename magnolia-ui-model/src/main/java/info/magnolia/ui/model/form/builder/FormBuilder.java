@@ -37,7 +37,8 @@ import info.magnolia.ui.model.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
 
 /**
- * FormBuilder.
+ * FormBuilder that builds form containing tabs and actions.
+ * Returns a {@link FormDefinition}.
  */
 public class FormBuilder {
     private final ConfiguredFormDefinition definition = new ConfiguredFormDefinition();

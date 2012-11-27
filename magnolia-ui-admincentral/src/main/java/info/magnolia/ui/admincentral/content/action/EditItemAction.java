@@ -43,7 +43,9 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * EditItemAction.
+ * Action for editing items in {@link info.magnolia.ui.admincentral.app.content.AbstractItemSubApp}.
+ *
+ * @see EditItemActionDefinition
  */
 public class EditItemAction extends ActionBase<EditItemActionDefinition> {
 

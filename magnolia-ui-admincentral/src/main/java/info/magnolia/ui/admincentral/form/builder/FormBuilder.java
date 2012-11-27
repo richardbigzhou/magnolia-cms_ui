@@ -49,10 +49,13 @@ import info.magnolia.ui.vaadin.form.FormView;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * FormBuilder.
+ * Builder for forms.
  */
 public class FormBuilder {
 
+    /**
+     * @return FormView populated with values from FormDefinition and Item.
+     */
     public FormView buildForm(FieldFactory fieldFactory, FormDefinition formDefinition, Item item, FormView view, FormItem parent) {
         final Form form = new Form(formDefinition);
         form.setParent(parent);

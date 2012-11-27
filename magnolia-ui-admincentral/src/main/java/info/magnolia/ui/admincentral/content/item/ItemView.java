@@ -38,6 +38,7 @@ import info.magnolia.ui.framework.view.View;
 
 /**
  * ItemView.
+ * @see ItemViewImpl
  */
 public interface ItemView extends View {
 

@@ -45,7 +45,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * ItemPresenter.
+ * Presenter for the item displayed in the {@link info.magnolia.ui.admincentral.workbench.ItemWorkbenchPresenter}.
+ * Takes care of building and switching between the right {@link ItemView.ViewType}.
  */
 public class ItemPresenter {
 
