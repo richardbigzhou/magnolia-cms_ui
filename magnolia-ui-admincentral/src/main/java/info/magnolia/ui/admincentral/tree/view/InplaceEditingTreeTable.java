@@ -62,7 +62,8 @@ import com.vaadin.ui.Field;
 
 
 /**
- * An inplace editing tree table, taking care of partial updates when editing one item.
+ * The Inplace-editing TreeTable, for editing item properties inplace, on double click or via
+ * keyboard shortcuts. Additionnally, editable columns are configurable
  */
 @SuppressWarnings("serial")
 public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemClickEvent.ItemClickListener, ItemEditedEvent.Notifier {
@@ -120,45 +121,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         refreshRowCache();
         requestRepaint();
     }
-
-    // PARTIAL UPDATE ENABLEMENT
-
-    // @Override
-    // protected int getFirstUpdatedItemIndex() {
-    // if (editingItemId != null) {
-    // return indexOfId(editingItemId);
-    // }
-    // return super.getFirstUpdatedItemIndex();
-    // }
-    //
-    // @Override
-    // protected int getUpdatedRowCount() {
-    // if (editingItemId != null) {
-    // return 1;
-    // }
-    // return super.getUpdatedRowCount();
-    // }
-
-    // @Override
-    // protected int getAddedRowCount() {
-    // if (editingItemId != null) {
-    // return 0;
-    // }
-    // return super.getAddedRowCount();
-    // }
-
-    // @Override
-    // protected boolean isPartialRowUpdate() {
-    // // provide same logic as treetable partial update on expand
-    // boolean containerSupportsPartialUpdates = (getContainerDataSource() instanceof
-    // ItemSetChangeNotifier);
-    // boolean treeTableHasPartialUpdate = super.isPartialRowUpdate();
-    // boolean editingHasPartialUpdate = editingItemId != null
-    // && containerSupportsPartialUpdates
-    // && !isRowCacheInvalidated();
-    // // mutually exclude behaviors - they should never occur simultaneously though.
-    // return treeTableHasPartialUpdate ^ editingHasPartialUpdate;
-    // }
 
     // INPLACE EDITING FIELD FACTORY
 
@@ -272,7 +234,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
     // KEYBOARD SHORTCUTS
 
     /**
-     * The Class TextFieldKeyboardHandler for keyboard shortcuts within the inplace editing field.
+     * The Class EditingKeyboardHandler for keyboard shortcuts with inplace editing.
      */
     private class EditingKeyboardHandler implements Handler {
 
@@ -285,13 +247,9 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
         ShortcutAction escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
 
-        ShortcutAction add = new ShortcutAction("Add item", ShortcutAction.KeyCode.N, new int[]{ShortcutAction.ModifierKey.META});
-
-        ShortcutAction delete = new ShortcutAction("Delete", ShortcutAction.KeyCode.DELETE, null);
-
         @Override
         public Action[] getActions(Object target, Object sender) {
-            return new Action[]{enter, tabNext, tabPrev, escape, add, delete};
+            return new Action[]{enter, tabNext, tabPrev, escape};
         }
 
         @Override
@@ -321,7 +279,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                     // Should then update current editingItemId, and ask for next candidate
                     TableCell nextCell = getNextEditableCandidate(editingItemId, editingPropertyId);
                     setEditing(nextCell.getItemId(), nextCell.getPropertyId());
-                    //setEditing(null, null);
 
                 } else if (action == tabPrev) {
                     // Saves first
@@ -331,7 +288,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                     // Should then update current editingItemId, and ask for previous candidate
                     TableCell previousCell = getPreviousEditableCandidate(editingItemId, editingPropertyId);
                     setEditing(previousCell.getItemId(), previousCell.getPropertyId());
-                    //setEditing(null, null);
 
                 } else if (action == escape) {
                     field.discard();
