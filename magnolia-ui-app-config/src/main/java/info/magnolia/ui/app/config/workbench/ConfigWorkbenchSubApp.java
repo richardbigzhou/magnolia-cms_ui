@@ -42,16 +42,11 @@ import info.magnolia.ui.framework.event.EventBus;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 /**
  * The Configuration Workbench SubApp.
  */
 public class ConfigWorkbenchSubApp extends AbstractContentSubApp {
-
-    private static final Logger log = LoggerFactory.getLogger(ConfigWorkbenchSubApp.class);
 
     @Inject
     public ConfigWorkbenchSubApp(final SubAppContext subAppContext, ConfigWorkbenchView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {

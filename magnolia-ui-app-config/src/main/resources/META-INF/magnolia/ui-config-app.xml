@@ -14,7 +14,7 @@
    </components>
 
   <components>
-    <id>app-configuration-workbench</id>
+    <id>app-configuration-main</id>
     <component>
       <type>info.magnolia.ui.app.config.workbench.ConfigWorkbenchSubApp</type>
       <implementation>info.magnolia.ui.app.config.workbench.ConfigWorkbenchSubApp</implementation>
@@ -50,7 +50,6 @@
       <workspaces>
         <workspace>config</workspace>
       </workspaces>
-<!--       <nodeTypeFile>/mgnl-nodetypes/magnolia-config-nodetype.xml</nodeTypeFile> -->
     </repository>
   </repositories>
 </module>

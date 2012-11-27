@@ -41,7 +41,6 @@ import com.vaadin.ui.Component;
 /**
  * View implementation for the Configuration Workbench SubApp.
  */
-@SuppressWarnings("serial")
 public class ConfigWorkbenchViewImpl implements ConfigWorkbenchView {
 
     private View workbenchView;

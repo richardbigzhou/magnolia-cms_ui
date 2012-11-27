@@ -95,8 +95,8 @@
 				<artifactId>css-tools</artifactId>
 				<version>0.3</version>
 			</dependency>
-			<!-- The autoreplace addon should be used only by instant-preview app, 
-				which is currently disabled. Should it be not re-enabled the dep can be removed. 
+			<!-- The autoreplace addon should be used only by instant-preview app,
+				which is currently disabled. Should it be not re-enabled the dep can be removed.
 				See SCRUM-1670 -->
 			<dependency>
 				<groupId>org.vaadin.addons</groupId>
@@ -247,6 +247,7 @@
 		<module>magnolia-ui-vaadin-widgetset</module>
 		<module>magnolia-ui-admincentral</module>
 		<module>magnolia-ui-app-sample</module>
+		<module>magnolia-ui-app-config</module>
 		<module>magnolia-ui-app-contacts</module>
 		<module>magnolia-ui-app-messages</module>
 		<module>magnolia-ui-app-pages</module>
