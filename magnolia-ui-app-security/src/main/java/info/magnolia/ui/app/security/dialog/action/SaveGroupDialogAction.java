@@ -100,6 +100,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
                     }
                 } catch (RepositoryException ex) {
                     log.error("Error saving assigned groups of the ["+node.getName()+"] group.",ex);
+                    throw new ActionExecutionException("Error saving assigned groups of the ["+node.getName()+"] group.",ex);
                 }
                 // ROLES
                 identifiers = itemChanged.getItemProperty("roles").getValue().toString();
@@ -130,6 +131,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
                     }
                 } catch (RepositoryException ex) {
                     log.error("Error saving assigned roles of the ["+node.getName()+"] group.",ex);
+                    throw new ActionExecutionException("Error saving assigned roles of the ["+node.getName()+"] group.",ex);
                 }
                 // THE REST
                 MetaDataUtil.updateMetaData(node);
