@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.app.config.workbench;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.framework.view.View;
+
+import com.vaadin.ui.Component;
 
 
 /**
- * Defines the {@link #nodeType} of the new node. Defaults to {@link NodeTypes.Content#NAME} if not set.
+ * View implementation for the Configuration Workbench SubApp.
  */
-public class AddNodeActionDefinition implements ActionDefinition {
+public class ConfigWorkbenchViewImpl implements ConfigWorkbenchView {
 
-    private String nodeType = NodeTypes.Content.NAME;
+    private View workbenchView;
 
-    public String getNodeType() {
-        return nodeType;
+    @Override
+    public Component asVaadinComponent() {
+        return workbenchView.asVaadinComponent();
     }
 
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
+    @Override
+    public void setWorkbenchView(View workbenchView) {
+        this.workbenchView = workbenchView;
     }
 }

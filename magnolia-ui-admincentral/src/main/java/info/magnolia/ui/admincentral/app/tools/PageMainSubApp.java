@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.event.EventBus;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 
 /**
- * Defines the {@link #nodeType} of the new node. Defaults to {@link NodeTypes.Content#NAME} if not set.
+ * Sub app for the main tab in a page app.
  */
-public class AddNodeActionDefinition implements ActionDefinition {
+public class PageMainSubApp extends AbstractSubApp {
 
-    private String nodeType = NodeTypes.Content.NAME;
-
-    public String getNodeType() {
-        return nodeType;
+    @Inject
+    public PageMainSubApp(SubAppContext subAppContext, PageView pageView, final @Named("subapp") EventBus subAppEventBus) {
+        super(subAppContext, pageView);
     }
 
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
-    }
 }

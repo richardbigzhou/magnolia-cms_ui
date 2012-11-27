@@ -39,7 +39,7 @@ import java.util.List;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
-import info.magnolia.module.delta.DeltaBuilder;
+import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.legacy.MarkNodeAsDeletedCommand;
@@ -49,20 +49,14 @@ import info.magnolia.ui.admincentral.legacy.MarkNodeAsDeletedCommand;
  */
 public class AdminCentralModuleVersionHandler extends DefaultModuleVersionHandler {
 
-    public AdminCentralModuleVersionHandler() {
-
-        register(DeltaBuilder.update("5.0", "")
-                .addTask(new CheckAndModifyPropertyValueTask(
-                        "Replace login security pattern",
-                        "Replaces old login security pattern '/.resources/loginForm' with the new one '/.resources/defaultLoginForm'.",
-                        RepositoryConstants.CONFIG,
-                        "/server/filters/uriSecurity/bypasses/login",
-                        "pattern",
-                        "/.resources/loginForm",
-                        "/.resources/defaultLoginForm"))
-                );
-    }
-
+    private CheckAndModifyPropertyValueTask replaceLoginUriPattern = new CheckAndModifyPropertyValueTask(
+            "",
+            "",
+            RepositoryConstants.CONFIG,
+            "/server/filters/uriSecurity/bypasses/login",
+            "pattern",
+            "/.resources/loginForm",
+            "/.resources/defaultLoginForm");
 
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
@@ -84,6 +78,10 @@ public class AdminCentralModuleVersionHandler extends DefaultModuleVersionHandle
                 RepositoryConstants.CONFIG,
                 "info.magnolia.module.admininterface.commands.MarkNodeAsDeletedCommand",
                 MarkNodeAsDeletedCommand.class.getName()));
+
+        list.add(new IsModuleInstalledOrRegistered("Replace login security pattern",
+                "Replaces old login security pattern '/.resources/loginForm' (if present) with the new one '/.resources/defaultLoginForm'.",
+                "adminInterface", replaceLoginUriPattern));
 
         return list;
     }

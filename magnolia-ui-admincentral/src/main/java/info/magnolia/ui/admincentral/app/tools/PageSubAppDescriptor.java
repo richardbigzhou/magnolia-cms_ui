@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.model.action.ActionDefinition;
-
+import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
 
 /**
- * Defines the {@link #nodeType} of the new node. Defaults to {@link NodeTypes.Content#NAME} if not set.
+ * Allows to specify the url to an html page to be embedded in an iframe. The iframe url is built like the following
+ * {@code <webapp-context-path>/.magnolia/pages/<page-name>.html }
+ *
  */
-public class AddNodeActionDefinition implements ActionDefinition {
+public class PageSubAppDescriptor extends ConfiguredSubAppDescriptor {
 
-    private String nodeType = NodeTypes.Content.NAME;
+    private String url;
 
-    public String getNodeType() {
-        return nodeType;
+    public String getUrl() {
+        return url;
     }
 
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.shell.Shell;
+
+import javax.inject.Inject;
+
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Embedded;
 
 
 /**
- * Defines the {@link #nodeType} of the new node. Defaults to {@link NodeTypes.Content#NAME} if not set.
+ * View implementation for a page app.
  */
-public class AddNodeActionDefinition implements ActionDefinition {
+public class PageViewImpl implements PageView {
 
-    private String nodeType = NodeTypes.Content.NAME;
+    private final CssLayout layout = new CssLayout();
 
-    public String getNodeType() {
-        return nodeType;
+    @Inject
+    public PageViewImpl(final Shell shell, final AppContext appContext) {
+
+        String sourceURL = ((PageSubAppDescriptor) appContext.getAppDescriptor().getSubApps().get("main")).getUrl();
+        Embedded page = new Embedded(null, new ExternalResource(MgnlContext.getContextPath() + "/.magnolia/pages/" + sourceURL));
+        page.setType(Embedded.TYPE_BROWSER);
+
+        layout.addComponent(page);
     }
 
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
+    @Override
+    public Component asVaadinComponent() {
+        return layout;
     }
+
 }

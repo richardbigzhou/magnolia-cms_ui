@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.app.config;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
+import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
+import info.magnolia.ui.framework.app.AppContext;
+
+import javax.inject.Inject;
 
 
 /**
- * Defines the {@link #nodeType} of the new node. Defaults to {@link NodeTypes.Content#NAME} if not set.
+ * The Contacts app, extending base content app.
+ *
  */
-public class AddNodeActionDefinition implements ActionDefinition {
+public class ConfigApp extends AbstractContentApp {
 
-    private String nodeType = NodeTypes.Content.NAME;
 
-    public String getNodeType() {
-        return nodeType;
-    }
-
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
+    @Inject
+    public ConfigApp(AppContext appContext, ChooseDialogFactory pickerDialogFactory) {
+        super(appContext, pickerDialogFactory);
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.app.config.workbench;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
+import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.event.EventBus;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 
 /**
- * Defines the {@link #nodeType} of the new node. Defaults to {@link NodeTypes.Content#NAME} if not set.
+ * The Configuration Workbench SubApp.
  */
-public class AddNodeActionDefinition implements ActionDefinition {
+public class ConfigWorkbenchSubApp extends AbstractContentSubApp {
 
-    private String nodeType = NodeTypes.Content.NAME;
-
-    public String getNodeType() {
-        return nodeType;
+    @Inject
+    public ConfigWorkbenchSubApp(final SubAppContext subAppContext, ConfigWorkbenchView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
+        super(subAppContext, view, workbench, subAppEventBus);
     }
 
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
+    @Override
+    public String getCaption() {
+        return "Configuration";
+    }
+
+    @Override
+    public void updateActionbar(final ActionbarPresenter actionbar) {
+        super.updateActionbar(actionbar);
     }
 }

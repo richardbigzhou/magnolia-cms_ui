@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.AppContext;
+
+import javax.inject.Inject;
 
 
 /**
- * Defines the {@link #nodeType} of the new node. Defaults to {@link NodeTypes.Content#NAME} if not set.
+ * A page app simply embeds an html page in an iframe.
  */
-public class AddNodeActionDefinition implements ActionDefinition {
+public class PageApp extends AbstractApp {
 
-    private String nodeType = NodeTypes.Content.NAME;
 
-    public String getNodeType() {
-        return nodeType;
+    @Inject
+    public PageApp(AppContext appContext) {
+        super(appContext);
     }
 
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
-    }
 }
