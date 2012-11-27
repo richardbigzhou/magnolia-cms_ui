@@ -88,9 +88,7 @@
           <sv:value>b371ed95-9cdc-42b7-8e61-2db08154ae17</sv:value>
         </sv:property>
         <sv:property sv:name="class" sv:type="String">
-          <sv:value>
-            info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition
-          </sv:value>
+          <sv:value>info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
@@ -102,7 +100,7 @@
           <sv:value>2012-06-18T13:19:19.449+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-          <sv:value>2012-08-30T09:01:57.629+02:00</sv:value>
+          <sv:value>2012-11-27T19:08:32.027+01:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
           <sv:value>superuser</sv:value>
@@ -148,9 +146,7 @@
           <sv:value>0a451be4-dc63-4d96-9238-35009a2cfd85</sv:value>
         </sv:property>
         <sv:property sv:name="class" sv:type="String">
-          <sv:value>
-            info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition
-          </sv:value>
+          <sv:value>info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
@@ -162,7 +158,7 @@
           <sv:value>2012-06-18T13:22:38.407+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-          <sv:value>2012-08-30T09:01:57.630+02:00</sv:value>
+          <sv:value>2012-11-27T19:08:51.870+01:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
           <sv:value>superuser</sv:value>
@@ -281,9 +277,7 @@
               <sv:value>b5ef8634-954b-4534-bd0a-360bc61a98c8</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>
-              info.magnolia.ui.model.field.definition.TextFieldDefinition
-            </sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Page Name. This name is also used as node name.</sv:value>
@@ -301,7 +295,7 @@
               <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2012-11-27T17:10:45.006+01:00</sv:value>
+              <sv:value>2012-11-27T19:09:16.773+01:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
@@ -324,9 +318,7 @@
               <sv:value>e1b4b343-96b6-4516-b557-8c3067d27a28</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>
-              info.magnolia.ui.model.field.definition.TextFieldDefinition
-            </sv:value>
+              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Page Title used as default header title.</sv:value>
@@ -344,7 +336,7 @@
               <sv:value>2012-06-11T13:55:35.862+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2012-11-27T17:10:45.006+01:00</sv:value>
+              <sv:value>2012-11-27T19:09:22.924+01:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>

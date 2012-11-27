@@ -60,6 +60,13 @@ public class ConfigWorkbenchSubApp extends AbstractContentSubApp {
 
     @Override
     public void updateActionbar(final ActionbarPresenter actionbar) {
-        super.updateActionbar(actionbar);
+
+        if (getWorkbench().getSelectedItemId() == null || "/".equals(getWorkbench().getSelectedItemId())) {
+            actionbar.disable("delete");
+            actionbar.disable("edit");
+        } else {
+            actionbar.enable("delete");
+            actionbar.enable("edit");
+        }
     }
 }
