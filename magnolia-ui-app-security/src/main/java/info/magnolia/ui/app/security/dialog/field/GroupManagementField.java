@@ -64,10 +64,10 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
     /**
      * Internal bean to represent basic group data.
      */
-    public static class _Group {
+    public static class Group {
         public String name;
         public String uuid;
-        public _Group(String name, String uuid) {
+        public Group(String name, String uuid) {
             this.name = name;
             this.uuid = uuid;
         }
@@ -101,7 +101,7 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
     @Override
     public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition(){
         List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
-        List<_Group> allGroups = getAllGroups(); // name,uuid
+        List<Group> allGroups = getAllGroups(); // name,uuid
         List<String> assignedGroups = getAssignedGroups();
         String currentUUID = null;
         try {
@@ -109,7 +109,7 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
         } catch (RepositoryException e) {
             // nothing to do
         }
-        for (_Group group : allGroups) {
+        for (Group group : allGroups) {
             SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
             option.setValue(group.uuid);
             option.setLabel(group.name);
@@ -124,15 +124,15 @@ public class GroupManagementField extends SelectFieldBuilder<GroupManagementFiel
         return options;
     }
 
-    private List<_Group> getAllGroups() {
-        List<_Group> groups = new ArrayList<_Group>();
+    private List<Group> getAllGroups() {
+        List<Group> groups = new ArrayList<Group>();
         try {
             NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_GROUPS, "SELECT * FROM ["+MgnlNodeType.GROUP+"] ORDER BY name()");
             while (ni.hasNext()) {
                 Node n = ni.nextNode();
                 String name = n.getName();
                 String uuid = n.getIdentifier();
-                groups.add(new _Group(name, uuid));
+                groups.add(new Group(name, uuid));
             }
         } catch (Exception e) {
             log.error("Cannot read groups from the ["+RepositoryConstants.USER_GROUPS+"] workspace: "+e.getMessage());

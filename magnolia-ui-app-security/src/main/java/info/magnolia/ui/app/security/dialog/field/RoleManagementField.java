@@ -63,10 +63,10 @@ public class RoleManagementField extends SelectFieldBuilder<RoleManagementFieldD
     /**
      * Internal bean to represent basic role data.
      */
-    private static class _Role {
+    private static class Role {
         public String name;
         public String uuid;
-        public _Role(String name, String uuid) {
+        public Role(String name, String uuid) {
             this.name = name;
             this.uuid = uuid;
         }
@@ -99,9 +99,9 @@ public class RoleManagementField extends SelectFieldBuilder<RoleManagementFieldD
     @Override
     public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition(){
         List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
-        List<_Role> allRoles = getAllRoles();  // name,uuid
+        List<Role> allRoles = getAllRoles();  // name,uuid
         List<String> assignedGroups = getAssignedRoles();
-        for (_Role role : allRoles) {
+        for (Role role : allRoles) {
             SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
             option.setValue(role.uuid);
             option.setLabel(role.name);
@@ -113,15 +113,15 @@ public class RoleManagementField extends SelectFieldBuilder<RoleManagementFieldD
         return options;
     }
 
-    private List<_Role> getAllRoles() {
-        List<_Role> roles = new ArrayList<_Role>();
+    private List<Role> getAllRoles() {
+        List<Role> roles = new ArrayList<Role>();
         try {
             NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_ROLES, "SELECT * FROM ["+MgnlNodeType.ROLE+"] ORDER BY name()");
             while (ni.hasNext()) {
                 Node n = ni.nextNode();
                 String name = n.getName();
                 String uuid = n.getIdentifier();
-                roles.add(new _Role(name,uuid));
+                roles.add(new Role(name,uuid));
             }
         } catch (Exception e) {
             log.error("Cannot read roles from the ["+RepositoryConstants.USER_ROLES+"] workspace: "+e.getMessage());
