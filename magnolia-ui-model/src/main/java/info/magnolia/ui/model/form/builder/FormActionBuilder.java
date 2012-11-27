@@ -38,7 +38,7 @@ import info.magnolia.ui.model.form.action.ConfiguredFormActionDefinition;
 import info.magnolia.ui.model.form.action.FormActionDefinition;
 
 /**
- * FormActionBuilder.
+ * FormActionBuilder that builds {@link FormActionDefinition}.
  */
 public class FormActionBuilder {
     private final ConfiguredFormActionDefinition definition = new ConfiguredFormActionDefinition();

@@ -36,7 +36,9 @@ package info.magnolia.ui.admincentral.form.action;
 import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * CreateItemActionDefinition.
+ * Action Definition for creating new items.
+ * Configuration of all needed parameters to create the correct nodeType and
+ * defining the correct app and subApp to handle the action
  */
 public class CreateItemActionDefinition implements ActionDefinition {
 
@@ -48,6 +50,9 @@ public class CreateItemActionDefinition implements ActionDefinition {
         return appId;
     }
 
+    /**
+     * @param appId associated with the action.
+     */
     public void setAppId(String appId) {
         this.appId = appId;
     }
@@ -56,6 +61,9 @@ public class CreateItemActionDefinition implements ActionDefinition {
         return subAppId;
     }
 
+    /**
+     * @param subAppId associated with the action.
+     */
     public void setSubAppId(String subAppId) {
         this.subAppId = subAppId;
     }
@@ -64,6 +72,9 @@ public class CreateItemActionDefinition implements ActionDefinition {
         return nodeType;
     }
 
+    /**
+     * @param nodeType specifies the new node nodeType.
+     */
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
     }

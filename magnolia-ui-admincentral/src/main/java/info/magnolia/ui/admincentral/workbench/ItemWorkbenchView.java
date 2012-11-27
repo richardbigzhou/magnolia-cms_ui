@@ -41,6 +41,7 @@ import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 /**
  * ItemWorkbenchView.
+ * @see ItemWorkbenchViewImpl
  */
 public interface ItemWorkbenchView  extends ComponentContainer, View {
 

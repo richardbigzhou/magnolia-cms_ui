@@ -42,10 +42,6 @@ import info.magnolia.ui.framework.message.Message;
  */
 public interface AppContext {
 
-    /**
-     *
-     * @param location
-     */
     void openSubApp(Location location);
 
     void enterFullScreenMode();

@@ -47,7 +47,7 @@ import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
 
 /**
- * Dialog Presenter and Listener implementation.
+ * Form Dialog Presenter and Listener implementation.
  */
 public class FormDialogPresenterImpl extends BaseDialogPresenter implements FormDialogPresenter {
 

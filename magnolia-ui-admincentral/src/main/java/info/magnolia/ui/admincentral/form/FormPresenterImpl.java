@@ -43,7 +43,7 @@ import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
 
 /**
- * FormPresenterImpl.
+ * Form Presenter. Builds the form using {@link FormBuilder}, maps actions and provides callback and validation calls to the view.
  */
 public class FormPresenterImpl implements FormPresenter {
 
@@ -101,10 +101,7 @@ public class FormPresenterImpl implements FormPresenter {
     }
 
     /**
-     * Builds the form based on formDefinition. Registers a callback currently used by ItemSubApp.
-     * @param item
-     * @param callback
-     * @return
+     * Builds the form based on formDefinition. Registers a callback currently used by {@link info.magnolia.ui.admincentral.content.item.ItemPresenter}.
      */
     @Override
     public FormView start(Item item, FormPresenter.Callback callback) {
@@ -115,9 +112,7 @@ public class FormPresenterImpl implements FormPresenter {
     }
 
     /**
-     * Builds the form based on formDefinition. Currently used by FormDialogs.
-     * @param item
-     * @return
+     * Builds the form based on formDefinition. Currently used by {@link info.magnolia.ui.admincentral.dialog.FormDialogPresenter}
      */
     @Override
     public FormView start(Item item, FormItem parent) {

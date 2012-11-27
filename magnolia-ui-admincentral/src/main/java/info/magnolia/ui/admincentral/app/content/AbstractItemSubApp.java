@@ -43,7 +43,20 @@ import info.magnolia.ui.framework.view.View;
 import javax.inject.Inject;
 
 /**
- * AbstractItemSubApp.
+ * Abstract class providing a sensible implementation for services shared by all item subApps.
+ * Implementers of this class represent a tab for viewing and editing items typically opened from an {@link AbstractContentSubApp}.
+ * Subclasses can augment the default behavior and perform additional tasks by overriding the following methods:
+ * <ul>
+ * <li>{@link #onSubAppStart()}
+ * <li>{@link #locationChanged(Location)}
+ * </ul>
+ *
+ * Currently lacking listeners for {@link info.magnolia.ui.admincentral.event.ContentChangedEvent}.
+ * Currently lacking handling of locationChanged. Related to MGNLUI-154
+ *
+ * @see ItemWorkbenchPresenter
+ * @see WorkbenchSubAppView
+ * @see ItemLocation
  */
 public class AbstractItemSubApp extends AbstractSubApp {
 
@@ -58,7 +71,7 @@ public class AbstractItemSubApp extends AbstractSubApp {
     }
 
     /**
-     * Performs some routine tasks needed by all content subapps before the view is displayed.
+     * Performs some routine tasks needed by all item subApps before the view is displayed.
      * The tasks are:
      * <ul>
      * <li>setting the current location
@@ -76,8 +89,7 @@ public class AbstractItemSubApp extends AbstractSubApp {
     }
 
     /**
-     * Wraps the current DefaultLocation in a ContentLocation. Providing getter and setters for used parameters.
-     * @return
+     * Wraps the current DefaultLocation in a ItemLocation. Providing getter and setters for used parameters.
      */
     @Override
     public ItemLocation getCurrentLocation() {

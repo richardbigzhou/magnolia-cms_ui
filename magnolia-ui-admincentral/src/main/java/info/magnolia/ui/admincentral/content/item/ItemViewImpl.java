@@ -37,7 +37,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 
 /**
- * ItemViewImpl.
+ * Implementation of {@link ItemView}. This is a wrapper for the Form respectively detailed view of Items.
+ * Currently lacking most functionality planned. See MGNLUI-154.
  */
 public class ItemViewImpl implements ItemView {
 

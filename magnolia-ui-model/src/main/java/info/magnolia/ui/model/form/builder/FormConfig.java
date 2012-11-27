@@ -34,7 +34,7 @@
 package info.magnolia.ui.model.form.builder;
 
 /**
- * FormConfig.
+ * Config object creating builders for form, tab and action.
  */
 public class FormConfig {
     public final FieldsConfig fields = new FieldsConfig();

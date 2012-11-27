@@ -36,7 +36,8 @@ package info.magnolia.ui.app.contacts.form.action;
 import info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition;
 
 /**
- * SaveContactFormActionDefinition.
+ * Action Definition for saving contacts in forms.
+ * Used as a Mapper for {@link SaveContactFormAction}.
  */
 public class SaveContactFormActionDefinition extends SaveFormActionDefinition {
 }
