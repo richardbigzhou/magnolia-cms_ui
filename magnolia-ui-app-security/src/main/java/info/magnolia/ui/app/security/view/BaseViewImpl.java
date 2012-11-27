@@ -38,9 +38,9 @@ import info.magnolia.ui.framework.view.View;
 import com.vaadin.ui.Component;
 
 /**
- * Roles view implementation for the Security App.
+ * Users view implementation for the Security App.
  */
-public class RolesViewImpl implements RolesView {
+public class BaseViewImpl implements BaseView {
 
     private View workbenchView;
 

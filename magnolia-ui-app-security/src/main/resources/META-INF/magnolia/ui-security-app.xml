@@ -17,8 +17,8 @@
   <components>
     <id>app-security-users</id> <!-- main subapp -->
     <component>
-      <type>info.magnolia.ui.app.security.view.UsersView</type>
-      <implementation>info.magnolia.ui.app.security.view.UsersViewImpl</implementation>
+      <type>info.magnolia.ui.app.security.view.BaseView</type>
+      <implementation>info.magnolia.ui.app.security.view.BaseViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
@@ -37,8 +37,8 @@
   <components>
     <id>app-security-groups</id>
     <component>
-      <type>info.magnolia.ui.app.security.view.GroupsView</type>
-      <implementation>info.magnolia.ui.app.security.view.GroupsViewImpl</implementation>
+      <type>info.magnolia.ui.app.security.view.BaseView</type>
+      <implementation>info.magnolia.ui.app.security.view.BaseViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
@@ -57,8 +57,8 @@
   <components>
     <id>app-security-roles</id>
     <component>
-      <type>info.magnolia.ui.app.security.view.RolesView</type>
-      <implementation>info.magnolia.ui.app.security.view.RolesViewImpl</implementation>
+      <type>info.magnolia.ui.app.security.view.BaseView</type>
+      <implementation>info.magnolia.ui.app.security.view.BaseViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
