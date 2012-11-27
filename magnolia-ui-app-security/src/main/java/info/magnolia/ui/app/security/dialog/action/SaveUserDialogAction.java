@@ -81,63 +81,15 @@ public class SaveUserDialogAction extends SaveDialogAction {
                 String enabled = itemChanged.getItemProperty("enabled").getValue().toString();
                 PropertyUtil.setProperty(node, "enabled", enabled);
                 // GROUPS
-                String identifiers = itemChanged.getItemProperty("groups").getValue().toString();
-                identifiers = StringUtils.remove(identifiers, '[');
-                identifiers = StringUtils.remove(identifiers, ']');
-                String[] ids = StringUtils.split(identifiers, ',');
                 try {
-                    node.getProperty("groups").remove();
-                } catch (RepositoryException ex) {
-                    log.warn("Cannot remove [groups] property of the user ["+node.getName()+"]: "+ex.getMessage());
-                }
-                try {
-                    // create "groups" subnode (or get it, if it already exists)
-                    Node grps = NodeUtil.createPath(node, "groups", NodeTypes.ContentNode.NAME);
-                    // sanity: remove all possible non-jcr properties
-                    PropertyIterator pi = grps.getProperties();
-                    while (pi.hasNext()) {
-                        javax.jcr.Property p = pi.nextProperty();
-                        if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
-                            p.remove();
-                        }
-                    }
-                    // add new groups
-                    int i = 0;
-                    for (String id : ids) {
-                        PropertyUtil.setProperty(grps, ""+i, id.trim());
-                        i++;
-                    }
+                    replacePropertyWithSubnode(node, "groups", itemPropertyToArray(itemChanged, "groups"));
                 } catch (RepositoryException ex) {
                     log.error("Error saving assigned groups of the ["+node.getName()+"] user.",ex);
                     throw new ActionExecutionException("Error saving assigned groups of the ["+node.getName()+"] user.",ex);
                 }
                 // ROLES
-                identifiers = itemChanged.getItemProperty("roles").getValue().toString();
-                identifiers = StringUtils.remove(identifiers, '[');
-                identifiers = StringUtils.remove(identifiers, ']');
-                ids = StringUtils.split(identifiers, ',');
                 try {
-                    node.getProperty("roles").remove();
-                } catch (RepositoryException ex) {
-                    log.warn("Cannot remove [roles] property of the user ["+node.getName()+"]: "+ex.getMessage());
-                }
-                try {
-                    // create "groups" subnode (or get it, if it already exists)
-                    Node grps = NodeUtil.createPath(node, "roles", NodeTypes.ContentNode.NAME);
-                    // sanity: remove all possible non-jcr properties
-                    PropertyIterator pi = grps.getProperties();
-                    while (pi.hasNext()) {
-                        javax.jcr.Property p = pi.nextProperty();
-                        if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
-                            p.remove();
-                        }
-                    }
-                    // add new groups
-                    int i = 0;
-                    for (String id : ids) {
-                        PropertyUtil.setProperty(grps, ""+i, id.trim());
-                        i++;
-                    }
+                    replacePropertyWithSubnode(node, "roles", itemPropertyToArray(itemChanged, "roles"));
                 } catch (RepositoryException ex) {
                     log.error("Error saving assigned roles of the ["+node.getName()+"] user.",ex);
                     throw new ActionExecutionException("Error saving assigned roles of the ["+node.getName()+"] user.",ex);
@@ -152,6 +104,37 @@ public class SaveUserDialogAction extends SaveDialogAction {
 
         } else {
             //validation errors are displayed in the UI.
+        }
+    }
+
+    private String[] itemPropertyToArray(JcrNodeAdapter item, String propertyName) {
+        String identifiers = item.getItemProperty(propertyName).getValue().toString();
+        identifiers = StringUtils.remove(identifiers, '[');
+        identifiers = StringUtils.remove(identifiers, ']');
+        return StringUtils.split(identifiers, ',');
+    }
+
+    private void replacePropertyWithSubnode(Node node, String name, String[] ids) throws RepositoryException {
+        try {
+            node.getProperty(name).remove();
+        } catch (RepositoryException ex) {
+            log.warn("Cannot remove ["+name+"] property of the user ["+node.getName()+"]: "+ex.getMessage());
+        }
+        // create subnode (or get it, if it already exists)
+        Node subnode = NodeUtil.createPath(node, name, NodeTypes.ContentNode.NAME);
+        // sanity: remove all possible non-jcr properties
+        PropertyIterator pi = subnode.getProperties();
+        while (pi.hasNext()) {
+            javax.jcr.Property p = pi.nextProperty();
+            if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
+                p.remove();
+            }
+        }
+        // add new groups
+        int i = 0;
+        for (String id : ids) {
+            PropertyUtil.setProperty(subnode, ""+i, id.trim());
+            i++;
         }
     }
 
