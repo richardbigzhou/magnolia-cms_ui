@@ -72,10 +72,10 @@ public class SaveGroupDialogAction extends SaveDialogAction {
                 final Node node = itemChanged.getNode();
                 // the roles (that are assigned to this group) and groups (this group belongs to) handling has to be added here
                 // GROUPS
-                String _ids = itemChanged.getItemProperty("groups").getValue().toString();
-                _ids = StringUtils.remove(_ids, '[');
-                _ids = StringUtils.remove(_ids, ']');
-                String[] ids = StringUtils.split(_ids, ',');
+                String identifiers = itemChanged.getItemProperty("groups").getValue().toString();
+                identifiers = StringUtils.remove(identifiers, '[');
+                identifiers = StringUtils.remove(identifiers, ']');
+                String[] ids = StringUtils.split(identifiers, ',');
                 try {
                     node.getProperty("groups").remove();
                 } catch (Exception ex) {
@@ -103,10 +103,10 @@ public class SaveGroupDialogAction extends SaveDialogAction {
                     log.debug("Error saving assigned groups of the ["+node.getName()+"] group.",ex);
                 }
                 // ROLES
-                _ids = itemChanged.getItemProperty("roles").getValue().toString();
-                _ids = StringUtils.remove(_ids, '[');
-                _ids = StringUtils.remove(_ids, ']');
-                ids = StringUtils.split(_ids, ',');
+                identifiers = itemChanged.getItemProperty("roles").getValue().toString();
+                identifiers = StringUtils.remove(identifiers, '[');
+                identifiers = StringUtils.remove(identifiers, ']');
+                ids = StringUtils.split(identifiers, ',');
                 try {
                     node.getProperty("roles").remove();
                 } catch (Exception ex) {

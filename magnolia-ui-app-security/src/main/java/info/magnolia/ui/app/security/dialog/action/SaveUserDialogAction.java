@@ -78,13 +78,13 @@ public class SaveUserDialogAction extends SaveDialogAction {
                     PropertyUtil.setProperty(node, "password", encryptedPassword);
                 }
                 // ENABLED
-                String _enabled = itemChanged.getItemProperty("enabled").getValue().toString();
-                PropertyUtil.setProperty(node, "enabled", _enabled);
+                String enabled = itemChanged.getItemProperty("enabled").getValue().toString();
+                PropertyUtil.setProperty(node, "enabled", enabled);
                 // GROUPS
-                String _ids = itemChanged.getItemProperty("groups").getValue().toString();
-                _ids = StringUtils.remove(_ids, '[');
-                _ids = StringUtils.remove(_ids, ']');
-                String[] ids = StringUtils.split(_ids, ',');
+                String identifiers = itemChanged.getItemProperty("groups").getValue().toString();
+                identifiers = StringUtils.remove(identifiers, '[');
+                identifiers = StringUtils.remove(identifiers, ']');
+                String[] ids = StringUtils.split(identifiers, ',');
                 try {
                     node.getProperty("groups").remove();
                 } catch (Exception ex) {
@@ -112,10 +112,10 @@ public class SaveUserDialogAction extends SaveDialogAction {
                     log.debug("Error saving assigned groups of the ["+node.getName()+"] group.",ex);
                 }
                 // ROLES
-                _ids = itemChanged.getItemProperty("roles").getValue().toString();
-                _ids = StringUtils.remove(_ids, '[');
-                _ids = StringUtils.remove(_ids, ']');
-                ids = StringUtils.split(_ids, ',');
+                identifiers = itemChanged.getItemProperty("roles").getValue().toString();
+                identifiers = StringUtils.remove(identifiers, '[');
+                identifiers = StringUtils.remove(identifiers, ']');
+                ids = StringUtils.split(identifiers, ',');
                 try {
                     node.getProperty("roles").remove();
                 } catch (Exception ex) {

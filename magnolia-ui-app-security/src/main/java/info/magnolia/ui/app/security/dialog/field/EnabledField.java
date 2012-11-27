@@ -52,13 +52,12 @@ public class EnabledField extends CheckBoxFieldBuilder {
 
     @Override
     public com.vaadin.data.Property getOrCreateProperty() {
-        Property _old = item.getItemProperty("enabled");
+        Property old = item.getItemProperty("enabled");
         String stringValue = "true";
-        if (_old!=null) {
-            stringValue = _old.toString();
+        if (old!=null) {
+            stringValue = old.toString();
         }
-        Boolean _new = Boolean.parseBoolean(stringValue);
-        DefaultProperty prop = new DefaultProperty("enabled",_new);
+        DefaultProperty prop = new DefaultProperty("enabled",Boolean.parseBoolean(stringValue));
         item.removeItemProperty("enabled");
         item.addItemProperty("enabled", prop);
         return prop;
