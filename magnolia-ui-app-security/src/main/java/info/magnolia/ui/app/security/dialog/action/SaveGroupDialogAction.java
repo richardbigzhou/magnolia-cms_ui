@@ -75,15 +75,15 @@ public class SaveGroupDialogAction extends SaveDialogAction {
                 try {
                     replacePropertyWithSubnode(node, "groups", itemPropertyToArray(itemChanged, "groups"));
                 } catch (RepositoryException ex) {
-                    log.error("Error saving assigned groups of the ["+node.getName()+"] group.",ex);
-                    throw new ActionExecutionException("Error saving assigned groups of the ["+node.getName()+"] group.",ex);
+                    log.error(ex.getMessage(),ex);
+                    throw new ActionExecutionException(ex.getMessage(),ex);
                 }
                 // ROLES
                 try {
                     replacePropertyWithSubnode(node, "roles", itemPropertyToArray(itemChanged, "roles"));
                 } catch (RepositoryException ex) {
-                    log.error("Error saving assigned roles of the ["+node.getName()+"] group.",ex);
-                    throw new ActionExecutionException("Error saving assigned roles of the ["+node.getName()+"] group.",ex);
+                    log.error(ex.getMessage(),ex);
+                    throw new ActionExecutionException(ex.getMessage(),ex);
                 }
                 // THE REST
                 NodeTypes.LastModified.update(node);
@@ -109,23 +109,28 @@ public class SaveGroupDialogAction extends SaveDialogAction {
         try {
             node.getProperty(name).remove();
         } catch (RepositoryException ex) {
-            log.warn("Cannot remove ["+name+"] property of the user ["+node.getName()+"]: "+ex.getMessage());
+            log.warn("Cannot remove ["+name+"] property of the group ["+node.getName()+"]: "+ex.getMessage());
         }
-        // create subnode (or get it, if it already exists)
-        Node subnode = NodeUtil.createPath(node, name, NodeTypes.ContentNode.NAME);
-        // sanity: remove all possible non-jcr properties
-        PropertyIterator pi = subnode.getProperties();
-        while (pi.hasNext()) {
-            javax.jcr.Property p = pi.nextProperty();
-            if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
-                p.remove();
+        try {
+            // create subnode (or get it, if it already exists)
+            Node subnode = NodeUtil.createPath(node, name, NodeTypes.ContentNode.NAME);
+            // sanity: remove all possible non-jcr properties
+            PropertyIterator pi = subnode.getProperties();
+            while (pi.hasNext()) {
+                javax.jcr.Property p = pi.nextProperty();
+                if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
+                    p.remove();
+                }
             }
-        }
-        // add new groups
-        int i = 0;
-        for (String id : ids) {
-            PropertyUtil.setProperty(subnode, ""+i, id.trim());
-            i++;
+            // add new groups
+            int i = 0;
+            for (String id : ids) {
+                PropertyUtil.setProperty(subnode, ""+i, id.trim());
+                i++;
+            }
+        } catch (RepositoryException ex) {
+            log.error("Error saving assigned "+name+" of the ["+node.getName()+"] group.",ex);
+            throw new RepositoryException("Error saving assigned "+name+" of the ["+node.getName()+"] group.",ex);
         }
     }
 
