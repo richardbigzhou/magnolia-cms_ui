@@ -51,7 +51,7 @@ public interface FileItemWrapper {
     /**
      * Update properties based on the informations contained in the receiver.
      */
-    public void updateProperties(FileProperiesAdapter receiver);
+    public void updateProperties(FilePropertiesAdapter receiver);
     /**
      * Clear all properties.
      */

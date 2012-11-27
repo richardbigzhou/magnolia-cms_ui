@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.file;
 /**
  * Adapter for various ways of updating the file properties. 
  */
-public interface FileProperiesAdapter {
+public interface FilePropertiesAdapter {
 
     byte[] getBinaryData();
     

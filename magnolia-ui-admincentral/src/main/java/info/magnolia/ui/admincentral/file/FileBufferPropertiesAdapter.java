@@ -36,10 +36,10 @@ package info.magnolia.ui.admincentral.file;
 import org.vaadin.easyuploads.FileBuffer;
 
 /**
- * Implements {@link FileProperiesAdapter} for {@link FileBuffer}.
+ * Implements {@link FilePropertiesAdapter} for {@link FileBuffer}.
  *
  */
-public class FileBufferPropertiesAdapter implements FileProperiesAdapter {
+public class FileBufferPropertiesAdapter implements FilePropertiesAdapter {
  
     private final FileBuffer buffer;
     

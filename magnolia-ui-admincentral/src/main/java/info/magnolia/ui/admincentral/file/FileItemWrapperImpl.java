@@ -148,7 +148,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      * Update properties.
      */
     @Override
-    public void updateProperties(FileProperiesAdapter receiver) {
+    public void updateProperties(FilePropertiesAdapter receiver) {
         binaryData = receiver.getBinaryData();
         fileName = receiver.getFileName();
         fileSize = receiver.getFileSize();
