@@ -88,7 +88,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
                     PropertyIterator pi = grps.getProperties();
                     while (pi.hasNext()) {
                         javax.jcr.Property p = pi.nextProperty();
-                        if (!p.getName().startsWith("jcr:")) {
+                        if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
                             p.remove();
                         }
                     }
@@ -118,7 +118,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
                     PropertyIterator pi = grps.getProperties();
                     while (pi.hasNext()) {
                         javax.jcr.Property p = pi.nextProperty();
-                        if (!p.getName().startsWith("jcr:")) {
+                        if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
                             p.remove();
                         }
                     }
