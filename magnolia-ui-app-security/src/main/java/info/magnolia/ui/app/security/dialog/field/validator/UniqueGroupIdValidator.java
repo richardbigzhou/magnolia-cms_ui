@@ -55,7 +55,9 @@ public class UniqueGroupIdValidator extends AbstractStringValidator {
         Collection<Group> groups = Security.getGroupManager().getAllGroups();
         for (Group g : groups) {
             // if there is any group with the same name, the value is invalid
-            if (g.getName().equals(value)) return false;
+            if (g.getName().equals(value)) {
+                return false;
+            }
         }
         // no group with the same name found, value is valid
         return true;
