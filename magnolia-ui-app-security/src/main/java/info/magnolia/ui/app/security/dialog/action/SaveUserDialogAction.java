@@ -95,7 +95,7 @@ public class SaveUserDialogAction extends SaveDialogAction {
                     throw new ActionExecutionException("Error saving assigned roles of the ["+node.getName()+"] user.",ex);
                 }
                 // THE REST
-                MetaDataUtil.updateMetaData(node);
+                NodeTypes.LastModified.update(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
