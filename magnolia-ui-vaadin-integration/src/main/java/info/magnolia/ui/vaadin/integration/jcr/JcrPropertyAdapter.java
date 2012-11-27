@@ -139,6 +139,11 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
             String jcrName = (String) property.getValue();
             if (jcrName != null && !jcrName.isEmpty()) {
                 try {
+                    // Never rename property to same name, otherwise PropertyUtil would delete it.
+                    boolean isNameUnchanged = (jcrName.equals(jcrProperty.getName()));
+                    if (isNameUnchanged) {
+                        return;
+                    }
                     PropertyUtil.renameProperty(jcrProperty, jcrName);
                 } catch (RepositoryException e) {
                     log.error("Could not rename JCR Property.", e);

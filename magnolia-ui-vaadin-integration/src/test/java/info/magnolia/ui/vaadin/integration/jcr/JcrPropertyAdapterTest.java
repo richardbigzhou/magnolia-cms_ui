@@ -144,6 +144,22 @@ public class JcrPropertyAdapterTest {
     }
 
     @Test
+    public void testUpdateProperty_JcrName_Same() throws Exception {
+        // GIVEN
+        Node node = session.getRootNode();
+        node.setProperty(propertyName, propertyValue);
+        JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
+        String newJcrName = propertyName;
+
+        // WHEN
+        adapter.getItemProperty(JcrItemAdapter.JCR_NAME).setValue(newJcrName);
+        adapter.updateProperties();
+
+        // THEN
+        assertTrue(node.hasProperty(propertyName));
+    }
+
+    @Test
     public void testUpdateProperty_Value() throws Exception {
         // GIVEN
         Node node = session.getRootNode();
