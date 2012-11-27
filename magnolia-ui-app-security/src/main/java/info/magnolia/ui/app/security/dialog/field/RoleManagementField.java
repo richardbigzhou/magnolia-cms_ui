@@ -60,6 +60,9 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
  */
 public class RoleManagementField extends SelectFieldBuilder<RoleManagementFieldDefinition> {
 
+    /**
+     * Internal bean to represent basic role data.
+     */
     private static class _Role {
         public String name;
         public String uuid;

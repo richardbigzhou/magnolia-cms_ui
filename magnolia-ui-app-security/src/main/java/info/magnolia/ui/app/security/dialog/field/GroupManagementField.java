@@ -61,6 +61,9 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
  */
 public class GroupManagementField extends SelectFieldBuilder<GroupManagementFieldDefinition> {
 
+    /**
+     * Internal bean to represent basic group data.
+     */
     public static class _Group {
         public String name;
         public String uuid;

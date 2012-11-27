@@ -41,7 +41,8 @@ import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 /**
- * Field to handle chackbox bound to a String property.
+ * Enabled field GUI builder. Enabled field handles checkbox bound to a String property (while by default the checkbox
+ * is bound to a boolean propety type).
  */
 public class EnabledField extends CheckBoxFieldBuilder {
 
