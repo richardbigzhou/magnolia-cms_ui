@@ -55,7 +55,6 @@ import com.vaadin.ui.themes.BaseTheme;
 /**
  * View implementation for the InstantPreview app.
  */
-@SuppressWarnings("serial")
 public class InstantPreviewViewImpl implements InstantPreviewView {
 
     private static final Logger log = LoggerFactory.getLogger(InstantPreviewViewImpl.class);

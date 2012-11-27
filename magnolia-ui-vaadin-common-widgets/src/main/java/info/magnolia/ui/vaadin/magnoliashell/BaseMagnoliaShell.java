@@ -74,7 +74,6 @@ import com.vaadin.ui.ComponentContainer;
 /**
  * Server side implementation of the MagnoliaShell container.
  */
-@SuppressWarnings("serial")
 @ClientWidget(value = VMagnoliaShell.class, loadStyle = LoadStyle.EAGER)
 public abstract class BaseMagnoliaShell extends AbstractComponent implements ComponentContainer, ServerSideHandler {
 

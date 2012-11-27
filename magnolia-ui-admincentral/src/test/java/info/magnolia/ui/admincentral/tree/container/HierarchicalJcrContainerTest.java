@@ -376,4 +376,21 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         // THEN
         assertEquals("", hierarchicalJcrContainer.getPathInTree(node1));
     }
+
+    @Test
+    public void testGetItemByPathWhenWorkbenchPathIsOtherThanRoot() throws RepositoryException {
+        // GIVEN
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, colName1, "name1");
+        node1.getSession().save();
+
+
+        // WHEN
+        workbenchDefinition.setPath("/node1");
+        Item res = hierarchicalJcrContainer.getItemByPath(node1.getPath());
+
+        // THEN
+        assertNotNull(res);
+        assertEquals("/node1", res.getPath());
+    }
+
 }

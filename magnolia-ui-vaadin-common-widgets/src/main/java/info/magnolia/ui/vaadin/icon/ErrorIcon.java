@@ -36,7 +36,6 @@ package info.magnolia.ui.vaadin.icon;
 /**
  * The ErrorIcon.
  */
-@SuppressWarnings("serial")
 public class ErrorIcon extends CompositeIcon {
 
     public ErrorIcon() {

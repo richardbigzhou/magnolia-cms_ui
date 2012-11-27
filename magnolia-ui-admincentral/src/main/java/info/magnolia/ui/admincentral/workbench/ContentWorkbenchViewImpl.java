@@ -65,7 +65,6 @@ import com.vaadin.ui.themes.BaseTheme;
 /**
  * Implementation of {@link ContentWorkbenchView}.
  */
-@SuppressWarnings("serial")
 public class ContentWorkbenchViewImpl extends CustomComponent implements ContentWorkbenchView {
 
     private final HorizontalLayout root = new HorizontalLayout();

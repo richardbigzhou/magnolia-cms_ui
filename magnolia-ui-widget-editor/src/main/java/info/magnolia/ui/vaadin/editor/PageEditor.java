@@ -52,7 +52,6 @@ import java.util.Map;
 /**
  * PageEditor widget server side implementation.
  */
-@SuppressWarnings("serial")
 @ClientWidget(value = VPageEditor.class, loadStyle = ClientWidget.LoadStyle.EAGER)
 public class PageEditor extends AbstractComponent implements PageEditorView, ServerSideHandler {
 

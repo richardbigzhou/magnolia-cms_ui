@@ -50,7 +50,6 @@ import com.vaadin.ui.VerticalLayout;
  *  put the selected value into the text input field.
  *  </ul>
  */
-@SuppressWarnings("serial")
 public class TextAndContentViewField extends CustomField {
 
     private ContentWorkbenchView contentView;

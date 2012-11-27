@@ -75,7 +75,6 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * </ul>
  *
  */
-@SuppressWarnings("serial")
 public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(JcrNodeAdapter.class);
