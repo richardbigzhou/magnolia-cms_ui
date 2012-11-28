@@ -65,7 +65,6 @@ import com.vaadin.ui.TreeTable;
 /**
  * Vaadin UI component that displays a tree.
  */
-@SuppressWarnings("serial")
 public class TreeViewImpl implements TreeView {
 
     private static final Logger log = LoggerFactory.getLogger(TreeViewImpl.class);
@@ -159,10 +158,10 @@ public class TreeViewImpl implements TreeView {
         // listeners
         if (workbench.isEditable()) {
             ((InplaceEditingTreeTable) treeTable).addListener(new ItemEditedEvent.Handler() {
-                
+
                 @Override
                 public void onItemEdited(ItemEditedEvent event) {
-                    presenterEditItem(event);
+                    presenterOnEditItem(event);
                 }
             });
         }
@@ -262,6 +261,15 @@ public class TreeViewImpl implements TreeView {
         }
     }
 
+    private void presenterOnEditItem(ItemEditedEvent event) {
+        if (listener != null) {
+            listener.onItemEdited(event.getItem());
+
+            // Clear preOrder cache of itemIds in case node was renamed
+            TreeViewImpl.this.container.fireItemSetChange();
+        }
+    }
+
     // VAADIN VIEW
 
     private Layout buildLayout() {
@@ -274,15 +282,6 @@ public class TreeViewImpl implements TreeView {
     @Override
     public Component asVaadinComponent() {
         return layout;
-    }
-
-    private void presenterEditItem(ItemEditedEvent event) {
-        if(listener != null) {
-            listener.onItemEdited(event.getItem());
-            
-            // Clear preOrder cache of itemIds in case node was renamed
-            TreeViewImpl.this.container.fireItemSetChange();
-        }
     }
 
 }

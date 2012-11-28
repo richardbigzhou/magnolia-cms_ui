@@ -62,10 +62,9 @@ import com.vaadin.ui.Field;
 
 
 /**
- * The Inplace-editing TreeTable, for editing item properties inplace, on double click or via
- * keyboard shortcuts. Additionnally, editable columns are configurable
+ * The Inplace-editing TreeTable, for editing item properties inplace, on double click or via keyboard shortcuts.
+ * Additionally, editable columns are configurable
  */
-@SuppressWarnings("serial")
 public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemClickEvent.ItemClickListener, ItemEditedEvent.Notifier {
 
     private Object editingItemId;
@@ -194,9 +193,9 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
     }
 
     /**
-     * Gets the item whose property is currently being edited in the given field. Since the
-     * {{Table}} doesn't keep references to its items, the only way to get it back is to ask the
-     * property datasource for its listeners and see if the Item is there.
+     * Gets the item whose property is currently being edited in the given field. Since the {{Table}} doesn't keep
+     * references to its items, the only way to get it back is to ask the property datasource for its listeners and see
+     * if the Item is there.
      * 
      * @param source the vaadin {{Field}} where the editing occured
      * @return the vaadin {{Item}} if it could be fetched, null otherwise.
@@ -238,14 +237,14 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
      */
     private class EditingKeyboardHandler implements Handler {
 
-        ShortcutAction enter = new ShortcutAction("Enter", ShortcutAction.KeyCode.ENTER, null);
+        private final ShortcutAction enter = new ShortcutAction("Enter", ShortcutAction.KeyCode.ENTER, null);
 
-        ShortcutAction tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
+        private final ShortcutAction tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
 
-        ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB,
+        private final ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB,
             new int[]{ShortcutAction.ModifierKey.SHIFT});
 
-        ShortcutAction escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
+        private final ShortcutAction escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
 
         @Override
         public Action[] getActions(Object target, Object sender) {
@@ -297,15 +296,20 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                 if (getValue() == null) {
                     return;
                 }
-                Object selectedId = ((Set<Object>) getValue()).iterator().next();
+
+                // get first selected itemId, handles multiple selection mode
+                Object firstSelectedId = getValue();
+                if (firstSelectedId instanceof Set) {
+                    firstSelectedId = ((Set< ? >) firstSelectedId).iterator().next();
+                }
 
                 if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
                     // Edit selected row at first column
                     Object propertyId = getVisibleColumns()[0];
                     if (!editableColumns.contains(propertyId)) {
-                        propertyId = getNextEditableCandidate(selectedId, propertyId).getPropertyId();
+                        propertyId = getNextEditableCandidate(firstSelectedId, propertyId).getPropertyId();
                     }
-                    setEditing(selectedId, propertyId);
+                    setEditing(firstSelectedId, propertyId);
                 }
             }
         }
