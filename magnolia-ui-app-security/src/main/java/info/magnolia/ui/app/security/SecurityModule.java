@@ -115,8 +115,8 @@ public class SecurityModule implements ModuleLifecycle {
 
         app.label("security").icon("icon-security-app").appClass(SecurityApp.class) // .categoryName("MANAGE")
             .subApps(
-                    userSubApp(app, wbcfg, abcfg, "users", "/").defaultSubApp(),
-                    // userSubApp(app, wbcfg, abcfg, "system users", "/system"),
+                    userSubApp(app, wbcfg, abcfg, "users", "/admin").defaultSubApp(),
+                    userSubApp(app, wbcfg, abcfg, "systemUsers", "/system"),
                     app.subApp("groups").subAppClass(SecurityGroupsSubApp.class)
                     .workbench(wbcfg.workbench().workspace("usergroups").root("/").defaultOrder("jcrName")
                             .groupingItemType(wbcfg.itemType(NodeTypes.Folder.NAME).icon("/.resources/icons/16/folders.gif"))
