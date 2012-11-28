@@ -41,8 +41,6 @@ import java.util.Map;
  */
 public interface AppDescriptor extends Serializable {
 
-    String getCategoryName();
-
     String getName();
 
     String getLabel();

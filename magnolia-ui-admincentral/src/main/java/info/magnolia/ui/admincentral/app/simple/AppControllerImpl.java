@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.app.simple;
 
 import com.google.common.collect.HashMultimap;
 import com.vaadin.ui.ComponentContainer;
+import info.magnolia.cms.beans.config.ConfigurationException;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -286,13 +287,18 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             private SubApp subApp;
             private Location location;
             private ComponentProvider subAppComponentProvider;
+
             private SubAppDescriptor subAppDescriptor;
+
             private AppContext appContext;
             private String tabId;
-
-
             private SubAppContextImpl(SubAppDescriptor subAppDescriptor) {
                 this.subAppDescriptor = subAppDescriptor;
+            }
+
+            @Override
+            public SubAppDescriptor getSubAppDescriptor() {
+                return subAppDescriptor;
             }
 
             @Override
@@ -370,7 +376,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             return appDescriptor;
         }
 
-        private SubAppDescriptor getDefaultSubAppDescriptor() {
+        @Override
+        public SubAppDescriptor getDefaultSubAppDescriptor() throws ConfigurationException {
             Map<String, SubAppDescriptor> subAppDescriptors = getAppDescriptor().getSubApps();
 
             SubAppDescriptor defaultSubAppDescriptor = null;
@@ -415,20 +422,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
          * Called when a location change occurs and the app is already running.
          */
         public void onLocationUpdate(Location location) {
-            DefaultLocation l = (DefaultLocation) location;
-            String subAppId = l.getSubAppId();
-
-            // The location targets the current display state, update the fragment only
-            if (subAppId.length() == 0) {
-                SubAppContext subAppContext = getActiveSubAppContext();
-                if (subAppContext != null) {
-                    shell.setFragment(subAppContext.getLocation().toString());
-                }
-                return;
-            }
-
-            openSubApp(location);
-
             app.locationChanged(location);
         }
 
@@ -591,8 +584,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         private SubAppContext getSupportingSubAppContext(Location location) {
             DefaultLocation l = (DefaultLocation) location;
+
+            // If the location has no subAppId defined, get default
+            String subAppId = (l.getSubAppId().isEmpty()) ? getDefaultSubAppDescriptor().getName() : l.getSubAppId();
+
             SubAppContext supportingContext = null;
-            Set<SubAppContext> subApps = subAppContexts.get(l.getSubAppId());
+            Set<SubAppContext> subApps = subAppContexts.get(subAppId);
             for (SubAppContext context : subApps) {
                 if (context.getSubApp().supportsLocation(l)) {
                     supportingContext = context;

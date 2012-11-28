@@ -80,14 +80,11 @@ public class ContentViewBuilderImpl implements ContentViewBuilder, Serializable 
                 return componentProvider.newInstance(SearchViewImpl.class, workbenchDefinition, searchContainer);
             case THUMBNAIL :
                 ImageProviderDefinition imageProviderDef = workbenchDefinition.getImageProvider();
-                ThumbnailContainer thumbnailContainer;
+                ImageProvider imageProvider = null;
                 if (imageProviderDef != null) {
-                    final ImageProvider imageProvider = componentProvider.newInstance(imageProviderDef.getImageProviderClass(),
-                        imageProviderDef);
-                    thumbnailContainer = new ThumbnailContainer(workbenchDefinition, imageProvider);
-                } else {
-                    thumbnailContainer = new ThumbnailContainer(workbenchDefinition, null);
+                    imageProvider = componentProvider.newInstance(imageProviderDef.getImageProviderClass(), imageProviderDef);
                 }
+                final ThumbnailContainer thumbnailContainer = new ThumbnailContainer(workbenchDefinition, imageProvider);
                 return componentProvider.newInstance(LazyThumbnailViewImpl.class, workbenchDefinition, thumbnailContainer);
             default :
                 throw new RuntimeException("The provided view type [" + type + "] is not valid.");

@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.ui.admincentral.dialog.AbstractDialogItem;
+import info.magnolia.ui.admincentral.form.AbstractFormItem;
 import info.magnolia.ui.admincentral.field.FieldBuilder;
 import info.magnolia.ui.admincentral.field.validator.FieldValidatorBuilder;
 import info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory;
@@ -63,7 +63,7 @@ import com.vaadin.ui.Field;
  *
  * @param <D> definition type
  */
-public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends AbstractDialogItem implements FieldBuilder {
+public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends AbstractFormItem implements FieldBuilder {
     private static final Logger log = LoggerFactory.getLogger(AbstractFieldBuilder.class);
     protected Item item;
     protected Field field;

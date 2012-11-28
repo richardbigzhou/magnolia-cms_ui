@@ -36,6 +36,7 @@ package info.magnolia.ui.model.workbench.definition;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
+import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 
 import java.util.ArrayList;
@@ -72,6 +73,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     private boolean includeProperties = false;
 
     private boolean editable;
+
+    private FormDefinition formDefinition;
 
     @Override
     public String getName() {
@@ -179,6 +182,15 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     @Override
     public String getDefaultOrder() {
         return defaultOrder;
+    }
+
+    public void setFormDefinition(FormDefinition formDefinition) {
+        this.formDefinition = formDefinition;
+    }
+
+    @Override
+    public FormDefinition getFormDefinition() {
+        return formDefinition;
     }
 
     public void setDefaultOrder(String defaultOrder) {

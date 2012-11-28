@@ -36,9 +36,8 @@ package info.magnolia.ui.app.pages.action;
 import com.google.inject.Inject;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.app.pages.PagesApp;
-import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
-import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
+import info.magnolia.ui.admincentral.content.item.ItemView;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -50,7 +49,7 @@ import javax.jcr.RepositoryException;
 
 
 /**
- *  Opens a preview of the selected page, either in full screen or non full screen, depending on the {@link PreviewPageActionDefinition#isFull()} return value.
+ *  Opens a preview of the selected page.
  */
 public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
@@ -81,11 +80,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
                 return;
             }
 
-            final String pageNodePath = nodeToPreview.getPath();
-
-
-
-            DefaultLocation location = PagesEditorSubApp.createLocation(pageNodePath, PagesApp.PREVIEW_TOKEN);
+            ItemLocation location = new ItemLocation("pages", "editor", ItemView.ViewType.VIEW, nodeToPreview.getPath());
 
             log.debug("token is {}", location.getParameter());
 

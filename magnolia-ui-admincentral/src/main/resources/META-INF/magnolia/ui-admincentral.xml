@@ -51,10 +51,6 @@
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.admincentral.app.content.ContentAppDescriptor</type>
-      <implementation>info.magnolia.ui.admincentral.app.content.ConfiguredContentAppDescriptor</implementation>
-    </type-mapping>
-    <type-mapping>
       <type>info.magnolia.ui.framework.app.SubAppDescriptor</type>
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor</implementation>
     </type-mapping>
@@ -70,6 +66,18 @@
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarDefinition</type>
       <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition</implementation>
     </type-mapping>
+
+    <type-mapping>
+      <type>info.magnolia.ui.model.form.definition.FormDefinition</type>
+      <implementation>info.magnolia.ui.model.form.definition.ConfiguredFormDefinition</implementation>
+    </type-mapping>
+
+    <type-mapping>
+      <type>info.magnolia.ui.model.form.action.FormActionDefinition</type>
+      <implementation>info.magnolia.ui.model.form.action.ConfiguredFormActionDefinition</implementation>
+    </type-mapping>
+
+
     <type-mapping>
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition</type>
       <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition</implementation>
@@ -89,6 +97,10 @@
     <type-mapping>
       <type>info.magnolia.ui.model.tab.definition.TabDefinition</type>
       <implementation>info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.model.form.definition.FormDefinition</type>
+      <implementation>info.magnolia.ui.model.form.definition.ConfiguredFormDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.field.definition.FieldDefinition</type>
@@ -206,6 +218,10 @@
     </configurer>
 
     <component>
+      <type>info.magnolia.ui.admincentral.form.FormPresenterFactory</type>
+      <implementation>info.magnolia.ui.admincentral.form.FormPresenterFactoryImpl</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactoryImpl</implementation>
     </component>
@@ -216,18 +232,18 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.vaadin.dialog.MagnoliaDialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.Dialog</implementation>
-    </component>
-
-    <component>
       <type>info.magnolia.ui.vaadin.dialog.DialogView</type>
       <implementation>info.magnolia.ui.vaadin.dialog.BaseDialog</implementation>
     </component>
 
     <component>
-      <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
+      <type>info.magnolia.ui.vaadin.dialog.NewFormDialogView</type>
+      <implementation>info.magnolia.ui.vaadin.dialog.NewFormDialog</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.vaadin.form.FormView</type>
+      <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
 
     <component>
@@ -235,8 +251,12 @@
       <implementation>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.field.builder.DialogFieldFactory</type>
-      <implementation>info.magnolia.ui.admincentral.field.builder.DialogFieldFactory</implementation>
+      <type>info.magnolia.ui.admincentral.content.item.ItemView</type>
+      <implementation>info.magnolia.ui.admincentral.content.item.ItemViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.field.builder.FieldFactory</type>
+      <implementation>info.magnolia.ui.admincentral.field.builder.FieldFactory</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</type>
@@ -245,6 +265,10 @@
     <component>
       <type>info.magnolia.ui.admincentral.dialog.action.DialogActionFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.action.DialogActionFactoryImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.form.action.FormActionFactory</type>
+      <implementation>info.magnolia.ui.admincentral.form.action.FormActionFactoryImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.model.workbench.action.WorkbenchActionFactory</type>

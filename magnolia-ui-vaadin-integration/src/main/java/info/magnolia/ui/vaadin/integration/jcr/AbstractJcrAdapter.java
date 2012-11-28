@@ -52,7 +52,6 @@ import com.vaadin.data.Property.ValueChangeEvent;
 /**
  * Common base for {JcrItemAdapter} implementation.
  */
-@SuppressWarnings("serial")
 public abstract class AbstractJcrAdapter implements Property.ValueChangeListener, JcrItemAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrAdapter.class);
@@ -131,8 +130,8 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     }
 
     /**
-     * Listener to DefaultProperty value change event. Get this event when a property has changed,
-     * and propagate this Vaadin Property value change to the corresponding JCR property.
+     * Listener to DefaultProperty value change event. Get this event when a property has changed, and propagate this
+     * Vaadin Property value change to the corresponding JCR property.
      */
     @Override
     public void valueChange(ValueChangeEvent event) {
@@ -145,8 +144,7 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
 
     /**
      * Updates and removes properties on the JCR Item represented by this adapter, based on the
-     * {@link #changedProperties} and {@link #removedProperties} maps. Read-only properties will not
-     * be updated.
+     * {@link #changedProperties} and {@link #removedProperties} maps. Read-only properties will not be updated.
      */
     public void updateProperties() throws RepositoryException {
         updateProperties(getJcrItem());
@@ -166,9 +164,9 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     }
 
     /**
-     * Performs update of an Item based on given vaadin Property. Note that this should not persist
-     * changes into JCR. Implementation should simply make sure that updated propertyIds are mapped
-     * to the correct actions (jcrName property should be handled in a specific way).
+     * Performs update of an Item based on given vaadin Property. Note that this should not persist changes into JCR.
+     * Implementation should simply make sure that updated propertyIds are mapped to the correct actions (jcrName
+     * property should be handled in a specific way).
      */
     abstract protected void updateProperty(Item item, String propertyId, Property property);
 

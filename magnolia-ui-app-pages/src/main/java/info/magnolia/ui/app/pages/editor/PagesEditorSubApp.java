@@ -36,28 +36,28 @@ package info.magnolia.ui.app.pages.editor;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
+import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
+import info.magnolia.ui.admincentral.content.item.ItemView;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
-import info.magnolia.ui.app.pages.PagesAppDescriptor;
 import info.magnolia.ui.app.pages.action.AddComponentActionDefinition;
 import info.magnolia.ui.app.pages.action.EditElementActionDefinition;
 import info.magnolia.ui.app.pages.action.EditPageActionDefinition;
 import info.magnolia.ui.app.pages.action.PreviewPageActionDefinition;
-import info.magnolia.ui.app.pages.editor.location.PagesLocation;
 import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditor;
 import info.magnolia.ui.vaadin.editor.PageEditorParameters;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +76,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
     private final PagesEditorSubAppView view;
-
+    
     private final EventBus eventBus;
 
     private final PageEditorPresenter pageEditorPresenter;
@@ -88,6 +88,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     private String caption;
 
     private final WorkbenchActionFactory actionFactory;
+    private WorkbenchDefinition workbenchDefinition;
 
     @Inject
     public PagesEditorSubApp(final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named("subapp") EventBus eventBus,
@@ -100,6 +101,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.actionFactory = actionFactory;
+        this.workbenchDefinition = ((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench();
 
         bindHandlers();
     }
@@ -111,15 +113,15 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
 
     @Override
     public View start(Location location) {
-        PagesLocation pagesLocation = PagesLocation.wrap(location);
-        super.start(pagesLocation);
+        ItemLocation itemLocation = ItemLocation.wrap(location);
+        super.start(itemLocation);
 
-        ActionbarDefinition actionbarDefinition = ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getEditor().getActionbar();
+        ActionbarDefinition actionbarDefinition = workbenchDefinition.getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionFactory);
         view.setActionbarView(actionbar);
         view.setPageEditorView(pageEditorPresenter.start());
 
-        goToLocation(pagesLocation);
+        goToLocation(itemLocation);
         updateActions();
         return view;
     }
@@ -137,47 +139,55 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
 
     @Override
     public boolean supportsLocation(Location location) {
-        return getCurrentLocation().getNodePath().equals(PagesLocation.wrap(location).getNodePath());
+        return getCurrentLocation().getNodePath().equals(ItemLocation.wrap(location).getNodePath());
     }
 
+    /**
+     * Wraps the current DefaultLocation in a ContentLocation. Providing getter and setters for used parameters.
+     * @return
+     */
     @Override
-    protected PagesLocation getCurrentLocation() {
-        return PagesLocation.wrap(currentLocation);
+    public ItemLocation getCurrentLocation() {
+        return ItemLocation.wrap(super.getCurrentLocation());
     }
 
     @Override
     public void locationChanged(Location location) {
-        PagesLocation pagesLocation = PagesLocation.wrap(location);
-        super.locationChanged(pagesLocation);
-        goToLocation(pagesLocation);
+        ItemLocation itemLocation = ItemLocation.wrap(location);
+        super.locationChanged(itemLocation);
+        goToLocation(itemLocation);
         updateActions();
     }
 
-    private void goToLocation(PagesLocation location) {
+    private void goToLocation(ItemLocation location) {
 
         if (isLocationChanged(location)) {
             setPageEditorParameters(location);
-            if (parameters.isPreview()) {
-                showPreview();
-            } else {
-                showEditor();
+            switch (location.getViewType()) {
+                case VIEW:
+                    showPreview();
+                    break;
+                case EDIT:
+                default:
+                    showEditor();
+                    break;
             }
         }
     }
 
-    private void setPageEditorParameters(PagesLocation location) {
-        boolean isPreview = location.getMode().equals("preview");
+    private void setPageEditorParameters(ItemLocation location) {
+        ItemView.ViewType action = location.getViewType();
         String path = location.getNodePath();
 
-        this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, isPreview);
+        this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, ItemView.ViewType.VIEW.getText().equals(action.getText()));
         this.caption = getPageTitle(path);
     }
 
-    private boolean isLocationChanged(PagesLocation location) {
-        boolean isPreview = location.getMode().equals("preview");
+    private boolean isLocationChanged(ItemLocation location) {
+        ItemView.ViewType action = location.getViewType();
         String path = location.getNodePath();
 
-        if (parameters != null && (parameters.getNodePath().equals(path) && parameters.isPreview() == isPreview)) {
+        if (parameters != null && (parameters.getNodePath().equals(path) && parameters.isPreview() == ItemView.ViewType.VIEW.getText().equals(action.getText()))) {
             return false;
         }
         return true;
@@ -186,7 +196,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     private String getPageTitle(String path) {
         String caption = null;
         try {
-            Session session = MgnlContext.getJCRSession(((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace());
+            Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
             Node node = session.getNode(path);
             caption = node.getProperty("title").getString();
         } catch (RepositoryException e) {
@@ -227,28 +237,28 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
                     ActionDefinition actionDefinition = event.getActionDefinition();
                     if (actionDefinition instanceof EditElementActionDefinition) {
                         pageEditorPresenter.editComponent(
-                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
+                                ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
                             pageEditorPresenter.getSelectedElement().getPath(),
                             pageEditorPresenter.getSelectedElement().getDialog());
                     } else if (actionDefinition instanceof AddComponentActionDefinition) {
                         // casting to AreaElement, because this action is only defined for areas
                         pageEditorPresenter.newComponent(
-                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
+                                ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
                             pageEditorPresenter.getSelectedElement().getPath(),
                             ((PageEditor.AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
                     } else if (actionDefinition instanceof DeleteItemActionDefinition) {
-                        pageEditorPresenter.deleteComponent(((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(), pageEditorPresenter
+                        pageEditorPresenter.deleteComponent(((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(), pageEditorPresenter
                             .getSelectedElement()
                             .getPath());
                     } else if (actionDefinition instanceof PreviewPageActionDefinition || actionDefinition instanceof EditPageActionDefinition) {
                         actionbarPresenter.createAndExecuteAction(
                             actionDefinition,
-                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
+                                ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
                             parameters.getNodePath());
                     } else {
                         actionbarPresenter.createAndExecuteAction(
                             actionDefinition,
-                                ((PagesAppDescriptor) getAppContext().getAppDescriptor()).getWorkbench().getWorkspace(),
+                                ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
                             pageEditorPresenter.getSelectedElement().getPath());
                     }
 
@@ -293,16 +303,6 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
                 updateActions();
             }
         });
-    }
-
-
-    public static DefaultLocation createLocation(String editorPath, String previewToken) {
-        String token = editorPath ;
-        if (StringUtils.isNotEmpty(previewToken)) {
-            token += ":" + previewToken;
-        }
-
-        return new PagesLocation(token);
     }
 
 }

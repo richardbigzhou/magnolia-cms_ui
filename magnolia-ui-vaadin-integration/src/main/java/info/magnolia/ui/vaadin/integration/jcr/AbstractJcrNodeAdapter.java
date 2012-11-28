@@ -57,7 +57,6 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * {@link javax.jcr.Node}. Implements {Property.ValueChangeListener} in order to inform/change JCR
  * property when a Vaadin property has changed. Access JCR repository for all read Jcr Property.
  */
-@SuppressWarnings("serial")
 public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implements JcrItemNodeAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrNodeAdapter.class);
@@ -245,8 +244,10 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
     }
 
     /**
-     * Updates one single property. Property refers to the vaadin property (like name, title). If
-     * property name is {@link JcrItemAdapter#JCR_NAME}, node is renamed.
+     * Update or remove property. Property with flag saveInfo to false will not be updated. Property
+     * can refer to node property (like name, title) or node.MetaData property like
+     * (MetaData/template). Also handle the specific case of node renaming. If property JCR_NAME is
+     * present, Rename the node.
      */
     @Override
     protected void updateProperty(Item item, String propertyId, Property property) {

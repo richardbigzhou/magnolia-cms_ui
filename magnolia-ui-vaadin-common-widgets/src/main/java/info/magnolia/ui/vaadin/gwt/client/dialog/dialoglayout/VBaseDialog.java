@@ -53,7 +53,7 @@ import com.vaadin.terminal.gwt.client.VConsole;
 /**
  * VBaseDialog.
  */
-public class VBaseDialog extends Composite implements VAbstractDialog, Container, ClientSideHandler, HasWidgets, VBaseDialogView.Presenter {
+public class VBaseDialog extends Composite implements Container, ClientSideHandler, HasWidgets, VBaseDialogView.Presenter {
 
     private final VBaseDialogView view = createView();
     
@@ -137,10 +137,10 @@ public class VBaseDialog extends Composite implements VAbstractDialog, Container
         super.setWidth(width);
         view.asWidget().setWidth(width);
     }
-    
+
     @Override
     public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
-        
+
     }
 
     @Override
@@ -193,12 +193,6 @@ public class VBaseDialog extends Composite implements VAbstractDialog, Container
     @Override
     public boolean remove(Widget w) {
         return view.remove(w);
-    }
-
-    @Override
-    public void updateErrorAmount() {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override

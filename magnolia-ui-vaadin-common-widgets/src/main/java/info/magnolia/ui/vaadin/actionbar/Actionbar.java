@@ -171,15 +171,6 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     @Override
     public void detach() {
         super.detach();
-        clear();
-    }
-
-    public void clear() {
-        isAttached = false;
-        for (final ActionbarSection section : sections.values()) {
-            section.getActions().clear();
-        }
-        sections.clear();
     }
 
     @Override

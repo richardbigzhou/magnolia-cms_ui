@@ -40,7 +40,7 @@ import javax.inject.Inject;
 
 
 /**
- * A page app.
+ * A page app simply embeds an html page in an iframe.
  */
 public class PageApp extends AbstractApp {
 

@@ -69,9 +69,9 @@ public class AppLayoutManagerImplTest {
     @Before
     public void setUp() throws Exception {
         //Init
-        appDescriptor1 = AppLauncherLayoutTest.createAppDescriptor("appDescriptor1", "appGroup1");
-        appDescriptor2 = AppLauncherLayoutTest.createAppDescriptor("appDescriptor2", "appGroup1");
-        appDescriptor3 = AppLauncherLayoutTest.createAppDescriptor("appDescriptor3", "appGroup2");
+        appDescriptor1 = AppLauncherLayoutTest.createAppDescriptor("appDescriptor1");
+        appDescriptor2 = AppLauncherLayoutTest.createAppDescriptor("appDescriptor2");
+        appDescriptor3 = AppLauncherLayoutTest.createAppDescriptor("appDescriptor3");
         appGroup1 = createAppGroup("appGroup1", "appDescriptor1", "appDescriptor2");
         appGroup2 = createAppGroup("appGroup2", "appDescriptor3");
 

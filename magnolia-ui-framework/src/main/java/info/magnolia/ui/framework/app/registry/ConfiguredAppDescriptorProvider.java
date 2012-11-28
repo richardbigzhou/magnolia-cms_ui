@@ -42,7 +42,6 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,9 +60,6 @@ public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider{
     public ConfiguredAppDescriptorProvider(Node configNode) throws Node2BeanException, RepositoryException {
         super();
         this.appDescriptor = (ConfiguredAppDescriptor) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, ConfiguredAppDescriptor.class);
-
-        // Minimal check
-        validate();
     }
 
     @Override
@@ -79,12 +75,6 @@ public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider{
     @Override
     public String toString() {
         return "ConfiguredAppDescriptorProvider [id=" + appDescriptor.getName() + ", appDescriptor=" + appDescriptor + "]";
-    }
-
-    public void validate() {
-        if (StringUtils.isEmpty(appDescriptor.getCategoryName())) {
-            appDescriptor.setCategoryName(DEFAULT_CATEGORY_NAME);
-        }
     }
 
     @Override
@@ -123,6 +113,6 @@ public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider{
      * needs a reload.
      */
     private String getAppDescriptorProviderUniqueIdentifier(AppDescriptor app) {
-        return app.getName()+app.getCategoryName() + app.isEnabled()+app.getIcon()+app.getAppClass();
+        return app.getName()+app.isEnabled()+app.getIcon()+app.getAppClass();
     }
 }

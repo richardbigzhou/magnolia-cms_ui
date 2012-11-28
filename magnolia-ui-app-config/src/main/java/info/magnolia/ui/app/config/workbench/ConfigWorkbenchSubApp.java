@@ -42,16 +42,11 @@ import info.magnolia.ui.framework.event.EventBus;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 /**
  * The Configuration Workbench SubApp.
  */
 public class ConfigWorkbenchSubApp extends AbstractContentSubApp {
-
-    private static final Logger log = LoggerFactory.getLogger(ConfigWorkbenchSubApp.class);
 
     @Inject
     public ConfigWorkbenchSubApp(final SubAppContext subAppContext, ConfigWorkbenchView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
@@ -65,6 +60,13 @@ public class ConfigWorkbenchSubApp extends AbstractContentSubApp {
 
     @Override
     public void updateActionbar(final ActionbarPresenter actionbar) {
-        super.updateActionbar(actionbar);
+
+        if (getWorkbench().getSelectedItemId() == null || "/".equals(getWorkbench().getSelectedItemId())) {
+            actionbar.disable("delete");
+            actionbar.disable("edit");
+        } else {
+            actionbar.enable("delete");
+            actionbar.enable("edit");
+        }
     }
 }

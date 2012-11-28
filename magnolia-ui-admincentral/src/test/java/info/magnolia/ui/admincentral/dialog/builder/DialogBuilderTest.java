@@ -33,11 +33,6 @@
  */
 package info.magnolia.ui.admincentral.dialog.builder;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
@@ -51,24 +46,19 @@ import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
-import info.magnolia.ui.admincentral.field.builder.TextFieldBuilder;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.model.field.definition.TextFieldDefinition;
-import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
-import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.dialog.FormDialog;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-
-import java.util.Locale;
-
-import javax.jcr.Node;
-
+import info.magnolia.ui.vaadin.dialog.NewFormDialog;
+import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Main test for {@link DialogBuilder}.
@@ -106,45 +96,10 @@ public class DialogBuilderTest {
         // GIVEN
         final DialogBuilder builder = new DialogBuilder();
         final DialogDefinition def = new ConfiguredDialogDefinition();
-        final FormDialog dialog = new FormDialog();
+        final NewFormDialogView dialog = new NewFormDialog();
 
         // WHEN
-        final DialogView result = builder.buildFormDialog(null, def, null, dialog);
-
-        // THEN
-        assertEquals(result, dialog);
-    }
-
-    @Test
-    public void testBuildingWithTabsAndActions() throws Exception {
-        // GIVEN
-        final String propertyName = "test";
-        final DialogBuilder builder = new DialogBuilder();
-        final ConfiguredDialogDefinition dialogDef = new ConfiguredDialogDefinition();
-        final TextFieldDefinition fieldTypeDef = new TextFieldDefinition();
-        fieldTypeDef.setName(propertyName);
-
-        final Node underlyingNode = session.getRootNode().addNode("underlying");
-        final String propertyValue = "value";
-        underlyingNode.setProperty(propertyName, propertyValue);
-        final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
-
-        final FormDialog dialog = new FormDialog();
-        final ConfiguredTabDefinition tabDef = new ConfiguredTabDefinition();
-        final ConfiguredFieldDefinition fieldDef = new ConfiguredFieldDefinition();
-        fieldDef.setName(propertyName);
-        tabDef.addField(fieldDef);
-        dialogDef.addTab(tabDef);
-
-        final DialogFieldFactory dialogFieldFactory = mock(DialogFieldFactory.class);
-        TextFieldBuilder editField = new TextFieldBuilder(fieldTypeDef, item);
-        DefaultI18nContentSupport i18nContentSupport = new DefaultI18nContentSupport();
-        i18nContentSupport.setFallbackLocale(new Locale("en"));
-        editField.setI18nContentSupport(i18nContentSupport);
-        when(dialogFieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
-
-        // WHEN
-        final DialogView result = builder.buildFormDialog(dialogFieldFactory, dialogDef, item, dialog);
+        final NewFormDialogView result = builder.buildFormDialog(def, dialog);
 
         // THEN
         assertEquals(result, dialog);

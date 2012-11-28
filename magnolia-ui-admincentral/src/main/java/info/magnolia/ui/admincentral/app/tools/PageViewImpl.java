@@ -48,7 +48,6 @@ import com.vaadin.ui.Embedded;
 /**
  * View implementation for a page app.
  */
-@SuppressWarnings("serial")
 public class PageViewImpl implements PageView {
 
     private final CssLayout layout = new CssLayout();
@@ -56,7 +55,7 @@ public class PageViewImpl implements PageView {
     @Inject
     public PageViewImpl(final Shell shell, final AppContext appContext) {
 
-        String sourceURL = ((PageSubAppDescriptor)appContext.getAppDescriptor().getSubApps().get("main")).getUrl();
+        String sourceURL = ((PageSubAppDescriptor) appContext.getAppDescriptor().getSubApps().get("main")).getUrl();
         Embedded page = new Embedded(null, new ExternalResource(MgnlContext.getContextPath() + "/.magnolia/pages/" + sourceURL));
         page.setType(Embedded.TYPE_BROWSER);
 

@@ -34,11 +34,11 @@
 package info.magnolia.ui.admincentral.tree.view;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.column.ColumnFormatter;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.event.ItemEditedEvent;
 import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
+import info.magnolia.ui.model.column.definition.ColumnFormatter;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
@@ -49,7 +49,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -199,14 +198,10 @@ public class TreeViewImpl implements TreeView {
             }
 
             // Generated columns
-            String formatterClass = column.getFormatterClass();
-            if (StringUtils.isNotBlank(formatterClass)) {
-                try {
-                    ColumnFormatter formatter = (ColumnFormatter) componentProvider.newInstance(Class.forName(formatterClass), column);
-                    treeTable.addGeneratedColumn(columnProperty, formatter);
-                } catch (ClassNotFoundException e) {
-                    log.error("Formatter class could not be found.", e);
-                }
+            Class< ? extends ColumnFormatter> formatterClass = column.getFormatterClass();
+            if (formatterClass != null) {
+                ColumnFormatter formatter = componentProvider.newInstance(formatterClass, column);
+                treeTable.addGeneratedColumn(columnProperty, formatter);
             }
 
             // Inplace editing

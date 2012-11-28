@@ -51,11 +51,9 @@ import com.vaadin.data.Property;
 
 
 /**
- * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a
- * {@link javax.jcr.Property}.
+ * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Property}.
  */
 
-@SuppressWarnings("serial")
 public class JcrPropertyAdapter extends AbstractJcrAdapter {
 
     static final String VALUE_COLUMN = "value";
@@ -122,8 +120,8 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
     }
 
     /**
-     * JcrPropertyAdapter custom logic to update one single vaadin property. If updated propertyId
-     * is {@link JcrItemAdapter.JCR_NAME}, then rename JCR Property. If propertyId is
+     * JcrPropertyAdapter custom logic to update one single vaadin property. If updated propertyId is
+     * {@link JcrItemAdapter.JCR_NAME}, then rename JCR Property. If propertyId is
      * {@link JcrPropertyAdapter.VALUE_COLUMN}, set new property value. If propertyId is
      * {@link JcrPropertyAdapter.TYPE_COLUMN}, set new property type. Otherwise, do nothing.
      */

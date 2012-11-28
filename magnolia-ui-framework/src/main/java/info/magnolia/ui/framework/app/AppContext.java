@@ -42,12 +42,6 @@ import info.magnolia.ui.framework.message.Message;
  */
 public interface AppContext {
 
-    /**
-     *
-     * @param subAppId name of the sub app
-     * @param subAppClass
-     * @param location
-     */
     void openSubApp(Location location);
 
     void enterFullScreenMode();
@@ -68,4 +62,5 @@ public interface AppContext {
 
     void setSubAppLocation(SubApp subApp, Location location);
 
+    SubAppDescriptor getDefaultSubAppDescriptor();
 }

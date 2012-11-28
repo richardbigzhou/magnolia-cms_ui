@@ -34,21 +34,9 @@
 package info.magnolia.ui.admincentral.dialog.builder;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.admincentral.dialog.Dialog;
-import info.magnolia.ui.admincentral.dialog.DialogTab;
-import info.magnolia.ui.admincentral.field.FieldBuilder;
-import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.model.tab.definition.TabDefinition;
-import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.dialog.FormDialogView;
-
+import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
 import org.apache.commons.lang.StringUtils;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.Field;
 
 /**
  * Builder for Dialogs.
@@ -57,10 +45,7 @@ public class DialogBuilder {
     /**
      * @return DialogView populated with values from DialogDefinition and Item.
      */
-    public DialogView buildFormDialog(DialogFieldFactory dialogFieldFactory, DialogDefinition dialogDefinition, Item item, FormDialogView view) {
-
-        final Dialog dialog = new Dialog(dialogDefinition);
-        view.setItemDataSource(item);
+    public NewFormDialogView buildFormDialog(DialogDefinition dialogDefinition, NewFormDialogView view) {
 
         final String description = dialogDefinition.getDescription();
         final String label = dialogDefinition.getLabel();
@@ -76,28 +61,9 @@ public class DialogBuilder {
             view.setCaption(i18nLabel);
         }
 
-        for (TabDefinition tabDefinition : dialogDefinition.getTabs()) {
-            final DialogTab tab = new DialogTab(tabDefinition);
-            tab.setParent(dialog);
-            for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
-                final FieldBuilder dialogField = dialogFieldFactory.create(fieldDefinition, item);
-                if (dialogField != null) {
-                    dialogField.setParent(tab);
-                    final Field field = dialogField.getField();
-                    if (field instanceof AbstractComponent) {
-                        ((AbstractComponent)field).setImmediate(true);
-                    }
-                    tab.addField(field);
-                    if(StringUtils.isNotBlank(fieldDefinition.getDescription())) {
-                        tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
-                    }
-                    view.addField(field);
-                } //This can happen in case of extends/override. FieldDefinition is ConfiguredFieldDefinition and of course no builder is linked to this.
-            }
-            view.addDialogSection(tab.getMessage(tabDefinition.getLabel()), tab.getContainer());
-        }
-        
-        view.setShowAllEnabled(dialogDefinition.getTabs().size() > 1);
+
+
+        //view.setShowAllEnabled(dialogDefinition.getTabs().size() > 1);
         return view;
     }
 }

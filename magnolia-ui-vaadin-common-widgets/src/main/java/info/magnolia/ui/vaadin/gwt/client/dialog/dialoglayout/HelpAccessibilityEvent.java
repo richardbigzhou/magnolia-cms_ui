@@ -36,7 +36,7 @@ package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
 import com.google.web.bindery.event.shared.Event;
 
 /**
- * Event that is fired by the VDialog in order to enable/disable help controls. 
+ * Event that is fired by the VForm in order to enable/disable help controls.
  */
 public class HelpAccessibilityEvent extends Event<HelpAccessibilityEvent.Handler>{
 

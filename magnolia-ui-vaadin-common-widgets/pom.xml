@@ -85,10 +85,28 @@
         <groupId>org.vaadin.addons</groupId>
         <artifactId>ckeditor-wrapper-for-vaadin</artifactId>
     </dependency>
+    <dependency>
+        <groupId>org.vaadin.addons</groupId>
+        <artifactId>imagefilter</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.jhlabs</groupId>
+        <artifactId>filters</artifactId>
+      </dependency>
   </dependencies>
 
   <build>
     <plugins>
+      <!--
+      To get gwt debugger working in intellij you need to add a GWT Facet to this project.
+      Otherwise it won't recognize it as a GWT project.
+      Use the gwt-maven-plugin to tell the Facet which GWT SDK to use.
+       -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>gwt-maven-plugin</artifactId>
+        <version>${gwtVersion}</version>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>

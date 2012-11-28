@@ -33,46 +33,45 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
+import com.vaadin.data.Item;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
-import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
+import info.magnolia.ui.admincentral.form.FormPresenter;
+import info.magnolia.ui.admincentral.form.FormPresenterFactory;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.dialog.FormDialogView;
-
-import com.vaadin.data.Item;
+import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
 
 /**
- * Dialog Presenter and Listener implementation.
+ * Form Dialog Presenter and Listener implementation.
  */
 public class FormDialogPresenterImpl extends BaseDialogPresenter implements FormDialogPresenter {
 
     private final DialogBuilder dialogBuilder;
-    
-    private final DialogFieldFactory dialogFieldFactory;
+
+    private FormPresenterFactory formPresenterFactory;
 
     private final DialogDefinition dialogDefinition;
 
     private final MagnoliaShell shell;
 
-    private final FormDialogView view;
-    
-    private Item item;
+    private final NewFormDialogView view;
 
     private Callback callback;
 
     private final  DialogActionFactory dialogActionFactory;
-    
-    public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final DialogFieldFactory dialogFieldFactory, 
-            final DialogDefinition dialogDefinition, final Shell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
+    private FormPresenter formPresenter;
+
+    public FormDialogPresenterImpl(final NewFormDialogView view, final DialogBuilder dialogBuilder, final FormPresenterFactory formPresenterFactory,
+                                   final DialogDefinition dialogDefinition, final Shell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
         super(view, eventBus);
         this.view = view;
         this.dialogBuilder = dialogBuilder;
-        this.dialogFieldFactory = dialogFieldFactory;
+        this.formPresenterFactory = formPresenterFactory;
         this.dialogDefinition = dialogDefinition;
         this.shell = (MagnoliaShell)shell;
         this.dialogActionFactory = actionFactory;
@@ -80,10 +79,16 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     }
 
     @Override
-    public DialogView start(final Item item, Callback callback) {
-        this.item = item;
+    public DialogView start(final Item item, final Callback callback) {
         this.callback = callback;
-        dialogBuilder.buildFormDialog(dialogFieldFactory, dialogDefinition, item, view);
+        dialogBuilder.buildFormDialog(dialogDefinition, view);
+        this.formPresenter = formPresenterFactory.createFormPresenterByDefinition(dialogDefinition.getFormDefinition());
+
+        // This is needed to acces properties from the parent. Currently only the i18basename.
+        Dialog dialog = new Dialog(dialogDefinition);
+        view.setFormView(formPresenter.start(item, dialog));
+
+
         shell.openDialog(this);
         return view;
     }
@@ -95,18 +100,13 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     }
 
     @Override
-    public void showValidation(boolean isVisible) {
-        view.showValidation(isVisible);
-    }
-
-    @Override
-    public FormDialogView getView() {
+    public NewFormDialogView getView() {
         return view;
     }
 
     @Override
-    public Item getItemDataSource() {
-        return item;
+    public FormPresenter getForm() {
+        return formPresenter;
     }
 
     @Override

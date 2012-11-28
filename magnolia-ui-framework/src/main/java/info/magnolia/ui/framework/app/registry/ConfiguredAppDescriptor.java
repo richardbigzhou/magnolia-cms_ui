@@ -52,8 +52,6 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
      */
     private String name;
 
-    private String categoryName;
-
     private String label;
 
     private boolean enabled = true;
@@ -120,15 +118,6 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
 
     public void addSubApp(SubAppDescriptor subApp) {
         subApps.put(subApp.getName(), subApp);
-    }
-
-    @Override
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
     }
 
     @Override

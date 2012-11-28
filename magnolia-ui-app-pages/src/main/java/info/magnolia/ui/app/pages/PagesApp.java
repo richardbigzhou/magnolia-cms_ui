@@ -35,7 +35,6 @@ package info.magnolia.ui.app.pages;
 
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
-import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.framework.app.AppContext;
 
 import javax.inject.Inject;
@@ -52,7 +51,7 @@ public class PagesApp extends AbstractContentApp {
     public static final String PREVIEW_TOKEN = "preview";
 
     @Inject
-    public PagesApp(AppContext appContext, FormDialogPresenterFactory dialogPresenterFactory, ChooseDialogFactory pickerDialogFactory) {
+    public PagesApp(AppContext appContext, ChooseDialogFactory pickerDialogFactory) {
         super(appContext, pickerDialogFactory);
     }
 

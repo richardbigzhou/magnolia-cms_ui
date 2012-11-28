@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.app.config.workbench;
 
-import info.magnolia.ui.admincentral.app.content.ContentAppView;
 
+import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 
 /**
  * View for the Configuration Workbench SubApp.
  */
-public interface ConfigWorkbenchView extends ContentAppView {
+public interface ConfigWorkbenchView extends WorkbenchSubAppView {
 
 }
