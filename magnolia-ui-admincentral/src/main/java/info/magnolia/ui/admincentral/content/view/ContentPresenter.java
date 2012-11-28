@@ -76,8 +76,7 @@ public class ContentPresenter implements ContentView.Listener {
 
     private String selectedItemPath;
 
-
-	public ContentPresenter(final AppContext appContext, final ContentViewBuilder contentViewBuilder, @Named("subapp") final EventBus subAppEventBus, final Shell shell) {
+    public ContentPresenter(final AppContext appContext, final ContentViewBuilder contentViewBuilder, @Named("subapp") final EventBus subAppEventBus, final Shell shell) {
         this.contentViewBuilder = contentViewBuilder;
         this.subAppEventBus = subAppEventBus;
         this.shell = shell;
@@ -93,11 +92,10 @@ public class ContentPresenter implements ContentView.Listener {
         this.subAppEventBus = subAppEventBus;
         this.shell = shell;
 
-        final ContentSubAppDescriptor subAppDescriptor = (ContentSubAppDescriptor)subAppContext.getSubAppDescriptor();
+        final ContentSubAppDescriptor subAppDescriptor = (ContentSubAppDescriptor) subAppContext.getSubAppDescriptor();
         this.workbenchDefinition = subAppDescriptor.getWorkbench();
         this.workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
     }
-
 
     public void initContentView(ContentWorkbenchView parentView) {
         if (workbenchDefinition == null) {
@@ -108,7 +106,7 @@ public class ContentPresenter implements ContentView.Listener {
         for (final ViewType type : ViewType.values()) {
             final ContentView contentView = contentViewBuilder.build(workbenchDefinition, type);
             contentView.setListener(this);
-//            contentView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
+            // contentView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
             contentView.select("/");
             parentView.addContentView(type, contentView);
         }
@@ -139,8 +137,8 @@ public class ContentPresenter implements ContentView.Listener {
     }
 
     /**
-     * @return the path of the vaadin item currently selected in the currently active
-     * {@link ContentView}. It is equivalent to javax.jcr.Item#getPath().
+     * @return the path of the vaadin item currently selected in the currently active {@link ContentView}. It is
+     * equivalent to javax.jcr.Item#getPath().
      * @see JcrItemAdapter#getPath()
      */
     public String getSelectedItemPath() {
@@ -161,17 +159,17 @@ public class ContentPresenter implements ContentView.Listener {
             log.warn("Got null com.vaadin.data.Item. No event will be fired.");
         }
     }
-    
+
     @Override
     public void onItemEdited(Item item) {
         try {
-            if(item != null) {
+            if (item != null) {
                 log.debug("com.vaadin.data.Item edited. Firing ItemEditedEvent...");
                 subAppEventBus.fireEvent(new ItemEditedEvent(item));
             } else {
                 log.warn("Null item edited");
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             shell.showError("An error occured while editing an item in data grid", e);
         }
     }
