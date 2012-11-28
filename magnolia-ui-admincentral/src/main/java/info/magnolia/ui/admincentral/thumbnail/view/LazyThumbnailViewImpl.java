@@ -49,9 +49,9 @@ import javax.jcr.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
+
 
 /**
  * LazyThumbnailViewImpl.
@@ -81,6 +81,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         layout.addStyleName("mgnl-workbench-thumbnail-view");
 
         layout.addThumbnailSelectionListener(new ThumbnailSelectionListener() {
+
             @Override
             public void onThumbnailSelected(final String thumbnailId) {
                 JcrNodeAdapter node = getThumbnailNodeAdapterByIdentifier(thumbnailId);
@@ -108,7 +109,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public void select(String path) {
-      //do something?
+        // do something?
     }
 
     @Override
@@ -119,11 +120,6 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         container.setThumbnailWidth(73);
         layout.setContainerDataSource(container);
         layout.setThumbnailSize(73, 73);
-    }
-
-    @Override
-    public void refreshItem(Item item) {
-        //do nothing
     }
 
     @Override

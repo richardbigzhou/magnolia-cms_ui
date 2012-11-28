@@ -33,40 +33,38 @@
  */
 package info.magnolia.ui.app.security.dialog.action;
 
-import javax.jcr.Node;
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
-
+import info.magnolia.cms.security.SecurityUtil;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import info.magnolia.cms.core.MgnlNodeType;
-import info.magnolia.cms.security.SecurityUtil;
-import info.magnolia.jcr.util.MetaDataUtil;
-import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.admincentral.form.FormPresenter;
-import info.magnolia.ui.admincentral.form.action.SaveFormAction;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import javax.jcr.Node;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
 
 /**
  * Save user dialog action.
  */
-public class SaveUserDialogAction extends SaveFormAction {
+public class SaveUserDialogAction extends SaveDialogAction {
 
     private static final Logger log = LoggerFactory.getLogger(SaveUserDialogAction.class);
 
-    public SaveUserDialogAction(SaveUserDialogActionDefinition definition, FormPresenter presenter) {
+    public SaveUserDialogAction(SaveUserDialogActionDefinition definition, FormDialogPresenter presenter) {
         super(definition, presenter);
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
-        getPresenter().showValidation(true);
-        if (getPresenter().getView().isValid()) {
+        getPresenter().getForm().showValidation(true);
+        if (getPresenter().getForm().isValid()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) getItem();
 
             try {
@@ -78,72 +76,24 @@ public class SaveUserDialogAction extends SaveFormAction {
                     PropertyUtil.setProperty(node, "password", encryptedPassword);
                 }
                 // ENABLED
-                String _enabled = itemChanged.getItemProperty("enabled").getValue().toString();
-                PropertyUtil.setProperty(node, "enabled", _enabled);
+                String enabled = itemChanged.getItemProperty("enabled").getValue().toString();
+                PropertyUtil.setProperty(node, "enabled", enabled);
                 // GROUPS
-                String _ids = itemChanged.getItemProperty("groups").getValue().toString();
-                _ids = StringUtils.remove(_ids, '[');
-                _ids = StringUtils.remove(_ids, ']');
-                String[] ids = StringUtils.split(_ids, ',');
                 try {
-                    node.getProperty("groups").remove();
-                } catch (Exception ex) {
-                    log.warn("Cannot remove [groups] property of the group ["+node.getName()+"]: "+ex.getMessage());
-                }
-                try {
-                    // create "groups" subnode (or get it, if it already exists)
-                    Node grps = NodeUtil.createPath(node, "groups", MgnlNodeType.NT_CONTENTNODE);
-                    // sanity: remove all possible non-jcr properties
-                    PropertyIterator pi = grps.getProperties();
-                    while (pi.hasNext()) {
-                        javax.jcr.Property p = pi.nextProperty();
-                        if (!p.getName().startsWith("jcr:")) {
-                            p.remove();
-                        }
-                    }
-                    // add new groups
-                    int i = 0;
-                    for (String id : ids) {
-                        PropertyUtil.setProperty(grps, ""+i, id.trim());
-                        i++;
-                    }
-                } catch (Exception ex) {
-                    log.error("Error saving assigned groups of the ["+node.getName()+"] group: "+ex.getMessage());
-                    log.debug("Error saving assigned groups of the ["+node.getName()+"] group.",ex);
+                    replacePropertyWithSubnode(node, "groups", itemPropertyToArray(itemChanged, "groups"));
+                } catch (RepositoryException ex) {
+                    log.error(ex.getMessage(),ex);
+                    throw new ActionExecutionException(ex.getMessage(),ex);
                 }
                 // ROLES
-                _ids = itemChanged.getItemProperty("roles").getValue().toString();
-                _ids = StringUtils.remove(_ids, '[');
-                _ids = StringUtils.remove(_ids, ']');
-                ids = StringUtils.split(_ids, ',');
                 try {
-                    node.getProperty("roles").remove();
-                } catch (Exception ex) {
-                    log.warn("Cannot remove [roles] property of the group ["+node.getName()+"]: "+ex.getMessage());
-                }
-                try {
-                    // create "groups" subnode (or get it, if it already exists)
-                    Node grps = NodeUtil.createPath(node, "roles", MgnlNodeType.NT_CONTENTNODE);
-                    // sanity: remove all possible non-jcr properties
-                    PropertyIterator pi = grps.getProperties();
-                    while (pi.hasNext()) {
-                        javax.jcr.Property p = pi.nextProperty();
-                        if (!p.getName().startsWith("jcr:")) {
-                            p.remove();
-                        }
-                    }
-                    // add new groups
-                    int i = 0;
-                    for (String id : ids) {
-                        PropertyUtil.setProperty(grps, ""+i, id.trim());
-                        i++;
-                    }
-                } catch (Exception ex) {
-                    log.error("Error saving assigned roles of the ["+node.getName()+"] group: "+ex.getMessage());
-                    log.debug("Error saving assigned roles of the ["+node.getName()+"] group.",ex);
+                    replacePropertyWithSubnode(node, "roles", itemPropertyToArray(itemChanged, "roles"));
+                } catch (RepositoryException ex) {
+                    log.error(ex.getMessage(),ex);
+                    throw new ActionExecutionException(ex.getMessage(),ex);
                 }
                 // THE REST
-                MetaDataUtil.updateMetaData(node);
+                NodeTypes.LastModified.update(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
@@ -152,6 +102,42 @@ public class SaveUserDialogAction extends SaveFormAction {
 
         } else {
             //validation errors are displayed in the UI.
+        }
+    }
+
+    private String[] itemPropertyToArray(JcrNodeAdapter item, String propertyName) {
+        String identifiers = item.getItemProperty(propertyName).getValue().toString();
+        identifiers = StringUtils.remove(identifiers, '[');
+        identifiers = StringUtils.remove(identifiers, ']');
+        return StringUtils.split(identifiers, ',');
+    }
+
+    private void replacePropertyWithSubnode(Node node, String name, String[] ids) throws RepositoryException {
+        try {
+            node.getProperty(name).remove();
+        } catch (RepositoryException ex) {
+            log.warn("Cannot remove ["+name+"] property of the user ["+node.getName()+"]: "+ex.getMessage());
+        }
+        try {
+            // create subnode (or get it, if it already exists)
+            Node subnode = NodeUtil.createPath(node, name, NodeTypes.ContentNode.NAME);
+            // sanity: remove all possible non-jcr properties
+            PropertyIterator pi = subnode.getProperties();
+            while (pi.hasNext()) {
+                javax.jcr.Property p = pi.nextProperty();
+                if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
+                    p.remove();
+                }
+            }
+            // add new groups
+            int i = 0;
+            for (String id : ids) {
+                PropertyUtil.setProperty(subnode, ""+i, id.trim());
+                i++;
+            }
+        } catch (RepositoryException ex) {
+            log.error("Error saving assigned "+name+" of the ["+node.getName()+"] user.",ex);
+            throw new RepositoryException("Error saving assigned "+name+" of the ["+node.getName()+"] user.",ex);
         }
     }
 

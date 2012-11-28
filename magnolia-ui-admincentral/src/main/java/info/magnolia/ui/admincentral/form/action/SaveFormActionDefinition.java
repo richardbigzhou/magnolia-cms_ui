@@ -36,7 +36,9 @@ package info.magnolia.ui.admincentral.form.action;
 import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * SaveFormActionDefinition.
+ * Generic Action Definition for saving items in form.
+ * Used as a mapper for {@link SaveFormAction}.
+ * see MGNLUI-229.
  */
 public class SaveFormActionDefinition implements ActionDefinition {
     private String label;

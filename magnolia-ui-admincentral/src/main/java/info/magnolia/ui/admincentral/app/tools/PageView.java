@@ -31,28 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.view;
+package info.magnolia.ui.admincentral.app.tools;
 
 import info.magnolia.ui.framework.view.View;
 
-import com.vaadin.ui.Component;
 
 /**
- * Groups View Implementation for the Security App.
- *
+ * Marker interface for the page App's view.
  */
-public class GroupsViewImpl implements GroupsView {
-
-    private View workbenchView;
-
-    @Override
-    public Component asVaadinComponent() {
-        return workbenchView.asVaadinComponent();
-    }
-
-    @Override
-    public void setWorkbenchView(View workbenchView) {
-        this.workbenchView = workbenchView;
-    }
+public interface PageView extends View {
 
 }

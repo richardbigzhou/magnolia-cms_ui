@@ -51,15 +51,15 @@ import org.junit.Test;
 
 public class AbstractJcrAdapterTest {
 
-    private String worksapceName = "workspace";
-    private MockSession session;
+    private final String workspaceName = "workspace";
 
+    private MockSession session;
 
     @Before
     public void setUp() {
-        session = new MockSession(worksapceName);
+        session = new MockSession(workspaceName);
         MockContext ctx = new MockContext();
-        ctx.addSession(worksapceName, session);
+        ctx.addSession(workspaceName, session);
         MgnlContext.setInstance(ctx);
     }
 
@@ -67,9 +67,6 @@ public class AbstractJcrAdapterTest {
     public void tearDown() {
         MgnlContext.setInstance(null);
     }
-
-
-
 
     @Test
     public void testSetCommonAttributes_Node() throws Exception {
@@ -82,12 +79,10 @@ public class AbstractJcrAdapterTest {
 
         // THEN
         assertEquals(true, adapter.isNode());
-        assertEquals(worksapceName, adapter.getWorkspace());
-        assertEquals(testNode.getIdentifier(), adapter.getNodeIdentifier());
-        assertEquals(testNode.getPath(), adapter.getItemId());
-        assertEquals(testNode.getPath(), ((Node)adapter.getJcrItem()).getPath());
+        assertEquals(workspaceName, adapter.getWorkspace());
+        assertEquals(testNode.getPath(), adapter.getPath());
+        assertEquals(testNode.getPath(), ((Node) adapter.getJcrItem()).getPath());
     }
-
 
     @Test
     public void testSetCommonAttributes_Property() throws Exception {
@@ -103,12 +98,11 @@ public class AbstractJcrAdapterTest {
 
         // THEN
         assertEquals(false, adapter.isNode());
-        assertEquals(worksapceName, adapter.getWorkspace());
-        assertEquals(testNode.getIdentifier(), adapter.getNodeIdentifier());
-        assertEquals(testNode.getPath()+"/propertyName", adapter.getItemId());
-        assertEquals(testNode.getPath()+"/propertyName", ((Property)adapter.getJcrItem()).getPath());
+        assertEquals(workspaceName, adapter.getWorkspace());
+        assertEquals(testProperty.getPath(), adapter.getPath());
+        assertEquals(testProperty.getPath(), adapter.getJcrItem().getPath());
+        assertEquals(testNode.getPath() + "/" + propertyName, adapter.getPath());
     }
-
 
     @Test
     public void testGetJcrItem_Node_Existing() throws Exception {
@@ -120,7 +114,7 @@ public class AbstractJcrAdapterTest {
         DummyJcrAdapter adapter = new DummyJcrAdapter(testNode);
 
         // THEN
-        assertEquals(true, adapter.getJcrItem() !=null);
+        assertEquals(true, adapter.getJcrItem() != null);
     }
 
     @Test
@@ -149,7 +143,7 @@ public class AbstractJcrAdapterTest {
         DummyJcrAdapter adapter = new DummyJcrAdapter(testProperty);
 
         // THEN
-        assertEquals(true, adapter.getJcrItem() !=null);
+        assertEquals(true, adapter.getJcrItem() != null);
     }
 
     @Test
@@ -169,29 +163,37 @@ public class AbstractJcrAdapterTest {
         assertEquals(true, adapter.getJcrItem() == null);
     }
 
-
     /**
      * Dummy implementation of the Abstract class.
      */
     public class DummyJcrAdapter extends AbstractJcrAdapter {
+
         public DummyJcrAdapter(Item jcrItem) {
             super(jcrItem);
         }
+
         @Override
         public com.vaadin.data.Property getItemProperty(Object id) {
             return null;
         }
+
         @Override
         public Collection< ? > getItemPropertyIds() {
             return null;
         }
+
         @Override
         public boolean addItemProperty(Object id, com.vaadin.data.Property property) throws UnsupportedOperationException {
             return false;
         }
+
         @Override
         public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
             return false;
+        }
+
+        @Override
+        protected void updateProperty(Item item, String propertyId, com.vaadin.data.Property property) {
         }
     }
 

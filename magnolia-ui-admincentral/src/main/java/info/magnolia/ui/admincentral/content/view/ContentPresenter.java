@@ -37,9 +37,11 @@ import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
 import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
+import info.magnolia.ui.admincentral.event.ItemEditedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -72,15 +74,25 @@ public class ContentPresenter implements ContentView.Listener {
 
     protected WorkbenchDefinition workbenchDefinition;
 
-    private String selectedItemId;
-    
-    @Inject
+    private String selectedItemPath;
+
     public ContentPresenter(final AppContext appContext, final ContentViewBuilder contentViewBuilder, @Named("subapp") final EventBus subAppEventBus, final Shell shell) {
         this.contentViewBuilder = contentViewBuilder;
         this.subAppEventBus = subAppEventBus;
         this.shell = shell;
-        
+
         final ContentSubAppDescriptor subAppDescriptor = (ContentSubAppDescriptor) appContext.getDefaultSubAppDescriptor();
+        this.workbenchDefinition = subAppDescriptor.getWorkbench();
+        this.workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
+    }
+
+    @Inject
+    public ContentPresenter(final SubAppContext subAppContext, final ContentViewBuilder contentViewBuilder, @Named("subapp") final EventBus subAppEventBus, final Shell shell) {
+        this.contentViewBuilder = contentViewBuilder;
+        this.subAppEventBus = subAppEventBus;
+        this.shell = shell;
+
+        final ContentSubAppDescriptor subAppDescriptor = (ContentSubAppDescriptor) subAppContext.getSubAppDescriptor();
         this.workbenchDefinition = subAppDescriptor.getWorkbench();
         this.workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
     }
@@ -94,7 +106,8 @@ public class ContentPresenter implements ContentView.Listener {
         for (final ViewType type : ViewType.values()) {
             final ContentView contentView = contentViewBuilder.build(workbenchDefinition, type);
             contentView.setListener(this);
-            contentView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
+            // contentView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
+            contentView.select("/");
             parentView.addContentView(type, contentView);
         }
 
@@ -110,40 +123,54 @@ public class ContentPresenter implements ContentView.Listener {
     public void onItemSelection(Item item) {
         if (item == null) {
             log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
-            selectedItemId = null;
+            selectedItemPath = null;
             subAppEventBus.fireEvent(new ItemSelectedEvent(workspaceName, null));
             return;
         }
         try {
-            selectedItemId = ((JcrItemAdapter) item).getItemId();
-            log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
-            subAppEventBus.fireEvent(new ItemSelectedEvent(workspaceName, (JcrItemAdapter)item));
+            selectedItemPath = ((JcrItemAdapter) item).getPath();
+            log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemPath);
+            subAppEventBus.fireEvent(new ItemSelectedEvent(workspaceName, (JcrItemAdapter) item));
         } catch (Exception e) {
             shell.showError("An error occurred while selecting a row in the data grid", e);
         }
     }
 
     /**
-     * @return the id of the Vaadin item currently selected in one the currently active
-     * {@link ContentView}. It is equivalent to javax.jcr.Item#getPath().
-     * @see JcrItemAdapter#getItemId()
+     * @return the path of the vaadin item currently selected in the currently active {@link ContentView}. It is
+     * equivalent to javax.jcr.Item#getPath().
+     * @see JcrItemAdapter#getPath()
      */
-    public String getSelectedItemId() {
-        return selectedItemId;
+    public String getSelectedItemPath() {
+        return selectedItemPath;
     }
 
     @Override
     public void onDoubleClick(Item item) {
         if (item != null) {
             try {
-                selectedItemId = ((JcrItemAdapter) item).getItemId();
-                log.debug("com.vaadin.data.Item at {} was double clicked. Firing ItemDoubleClickedEvent...", selectedItemId);
-                subAppEventBus.fireEvent(new ItemDoubleClickedEvent(workspaceName, selectedItemId));
+                selectedItemPath = ((JcrItemAdapter) item).getPath();
+                log.debug("com.vaadin.data.Item at {} was double clicked. Firing ItemDoubleClickedEvent...", selectedItemPath);
+                subAppEventBus.fireEvent(new ItemDoubleClickedEvent(workspaceName, selectedItemPath));
             } catch (Exception e) {
                 shell.showError("An error occurred while double clicking on a row in the data grid", e);
             }
         } else {
             log.warn("Got null com.vaadin.data.Item. No event will be fired.");
+        }
+    }
+
+    @Override
+    public void onItemEdited(Item item) {
+        try {
+            if (item != null) {
+                log.debug("com.vaadin.data.Item edited. Firing ItemEditedEvent...");
+                subAppEventBus.fireEvent(new ItemEditedEvent(item));
+            } else {
+                log.warn("Null item edited");
+            }
+        } catch (Exception e) {
+            shell.showError("An error occured while editing an item in data grid", e);
         }
     }
 }

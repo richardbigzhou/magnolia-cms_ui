@@ -31,27 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.view;
+package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.AppContext;
 
-import com.vaadin.ui.Component;
+import javax.inject.Inject;
+
 
 /**
- * Users view implementation for the Security App.
+ * A page app simply embeds an html page in an iframe.
  */
-public class UsersViewImpl implements UsersView {
+public class PageApp extends AbstractApp {
 
-    private View workbenchView;
 
-    @Override
-    public Component asVaadinComponent() {
-        return workbenchView.asVaadinComponent();
-    }
-
-    @Override
-    public void setWorkbenchView(View workbenchView) {
-        this.workbenchView = workbenchView;
+    @Inject
+    public PageApp(AppContext appContext) {
+        super(appContext);
     }
 
 }

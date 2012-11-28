@@ -37,6 +37,7 @@ import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 
 /**
  * ContactsItemView.
+ * see MGNLUI-230.
  */
 public interface ContactsItemView extends WorkbenchSubAppView {
 }

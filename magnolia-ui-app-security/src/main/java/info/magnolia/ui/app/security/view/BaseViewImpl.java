@@ -33,11 +33,25 @@
  */
 package info.magnolia.ui.app.security.view;
 
-import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
+import info.magnolia.ui.framework.view.View;
+
+import com.vaadin.ui.Component;
 
 /**
- * Groups View definition for the Security App.
+ * Users view implementation for the Security App.
  */
-public interface GroupsView extends WorkbenchSubAppView {
+public class BaseViewImpl implements BaseView {
+
+    private View workbenchView;
+
+    @Override
+    public Component asVaadinComponent() {
+        return workbenchView.asVaadinComponent();
+    }
+
+    @Override
+    public void setWorkbenchView(View workbenchView) {
+        this.workbenchView = workbenchView;
+    }
 
 }

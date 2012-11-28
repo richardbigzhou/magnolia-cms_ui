@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
-import info.magnolia.ui.app.security.view.GroupsView;
+import info.magnolia.ui.app.security.view.BaseView;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 
@@ -53,7 +53,7 @@ public class SecurityGroupsSubApp extends AbstractContentSubApp {
     private static final Logger log = LoggerFactory.getLogger(SecurityGroupsSubApp.class);
 
     @Inject
-    public SecurityGroupsSubApp(final SubAppContext subAppContext, GroupsView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
+    public SecurityGroupsSubApp(final SubAppContext subAppContext, BaseView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
         super(subAppContext, view, workbench, subAppEventBus);
     }
 
@@ -64,8 +64,7 @@ public class SecurityGroupsSubApp extends AbstractContentSubApp {
 
     @Override
     public void updateActionbar(ActionbarPresenter actionbar) {
-        // TODO Auto-generated method stub
-
+        // nothing to update yet
     }
 
 }

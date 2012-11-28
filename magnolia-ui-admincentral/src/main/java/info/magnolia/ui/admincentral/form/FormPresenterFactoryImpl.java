@@ -45,7 +45,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * FormPresenterFactoryImpl.
+ * Factory for {@link FormPresenter}.
  */
 public class FormPresenterFactoryImpl implements FormPresenterFactory {
 

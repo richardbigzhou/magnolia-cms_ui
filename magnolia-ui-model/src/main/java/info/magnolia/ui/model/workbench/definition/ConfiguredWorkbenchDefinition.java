@@ -42,6 +42,7 @@ import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Default configured implementation for the WorkbenchDefinition.
  */
@@ -70,6 +71,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     private ImageProviderDefinition imageProvider;
 
     private boolean includeProperties = false;
+
+    private boolean editable;
 
     private FormDefinition formDefinition;
 
@@ -193,4 +196,14 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     public void setDefaultOrder(String defaultOrder) {
         this.defaultOrder = defaultOrder;
     }
+
+    @Override
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
 }

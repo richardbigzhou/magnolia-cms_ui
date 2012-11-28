@@ -43,13 +43,13 @@ import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
+import info.magnolia.ui.admincentral.event.ItemEditedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.event.SearchEvent;
 import info.magnolia.ui.admincentral.event.ViewTypeChangedEvent;
 import info.magnolia.ui.admincentral.search.view.SearchView;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
@@ -57,15 +57,20 @@ import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.terminal.Resource;
 
 /**
@@ -80,7 +85,7 @@ import com.vaadin.terminal.Resource;
  * <li>a configurable action bar on the right hand side, showing the available
  * operations for the given workspace and the selected item.
  * </ul>
- *
+ * 
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which
  * one defines the JCR workspace to connect to, the columns/properties to
@@ -98,8 +103,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     private final EventBus subAppEventBus;
 
-    private final Shell shell;
-
     private final WorkbenchActionFactory actionFactory;
 
     private final ContentPresenter contentPresenter;
@@ -110,12 +113,11 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     @Inject
     public ContentWorkbenchPresenter(final SubAppContext subAppContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus,
-            final @Named("subapp") EventBus subAppEventBus, final Shell shell, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
+            final @Named("subapp") EventBus subAppEventBus, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
             final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
-        this.shell = shell;
         this.actionFactory = actionFactory;
         this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
@@ -183,13 +185,21 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
                 doSearch(event);
             }
         });
+        
+        subAppEventBus.addHandler(ItemEditedEvent.class, new ItemEditedEvent.Handler() {
+            
+            @Override
+            public void onItemEdited(ItemEditedEvent event) {
+                editItem(event);
+            }
+        });
     }
 
     /**
-     * @see ContentPresenter#getSelectedItemId()
+     * @see ContentPresenter#getSelectedItemPath()
      */
     public String getSelectedItemId() {
-        return contentPresenter.getSelectedItemId();
+        return contentPresenter.getSelectedItemPath();
     }
 
     public ContentWorkbenchView getView() {
@@ -206,10 +216,12 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
      */
     public void executeDefaultAction() {
         ActionDefinition defaultActionDef = actionbarPresenter.getDefaultActionDefinition();
-        try {
-            actionbarPresenter.createAndExecuteAction(defaultActionDef, workbenchDefinition.getWorkspace(), getSelectedItemId());
-        } catch (ActionExecutionException e) {
-            log.error("An error occurred while executing an action.", e);
+        if (defaultActionDef != null) {
+            try {
+                actionbarPresenter.createAndExecuteAction(defaultActionDef, workbenchDefinition.getWorkspace(), getSelectedItemId());
+            } catch (ActionExecutionException e) {
+                log.error("An error occurred while executing an action.", e);
+            }
         }
     }
 
@@ -228,15 +240,15 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     }
 
     /**
-     * Synchronizes the underlying view to reflect the status extracted from the
-     * Location token, i.e. selected path, view type and optional query (in case
-     * of a search view).
+     * Synchronizes the underlying view to reflect the status extracted from the Location token,
+     * i.e. selected path, view type and optional query (in case of a search view).
      */
     public void resynch(final String path, final ViewType viewType, final String query) {
         boolean itemExists = itemExists(path);
         if (!itemExists) {
-            log.warn("Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.", path,
-                    workbenchDefinition.getWorkspace());
+            log.warn(
+                "Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.",
+                path, workbenchDefinition.getWorkspace());
         }
         this.view.resynch(itemExists ? path : "/", viewType, query);
     }
@@ -275,6 +287,32 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             log.warn("", e);
         }
         return false;
+    }
+    
+
+    private void editItem(ItemEditedEvent event) {
+        Item item = event.getItem();
+        if (item instanceof JcrItemNodeAdapter) {
+            // Saving JCR Node, getting updated node first
+            Node node = ((JcrItemNodeAdapter) item).getNode();
+            try {
+                node.getSession().save();
+            } catch (RepositoryException e) {
+                log.error("Could not save changes to node.", e);
+            }
+
+        } else if (item instanceof JcrPropertyAdapter) {
+            // Saving JCR Property, update it first
+            try {
+                // get parent first because once property is updated, it won't exist anymore.
+                Property property = ((JcrPropertyAdapter) item).getProperty();
+                Node parent = property.getParent();
+                ((JcrPropertyAdapter) item).updateProperties();
+                parent.getSession().save();
+            } catch (RepositoryException e) {
+                log.error("Could not save changes to node.", e);
+            }
+        }
     }
 
 }

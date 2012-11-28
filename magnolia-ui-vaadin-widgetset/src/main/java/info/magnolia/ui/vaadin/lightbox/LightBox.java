@@ -45,7 +45,6 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
 /**
  * Lightbox displays one or more assets in a simple popup.
  */
-@SuppressWarnings("serial")
 @ClientWidget(value = VLightBox.class, loadStyle = LoadStyle.EAGER)
 public class LightBox extends AbstractComponent {
 
@@ -64,12 +63,10 @@ public class LightBox extends AbstractComponent {
         super.paintContent(target);
     }
 
-
     public void setImage(String imagePath) {
 
         this.imagePath = imagePath;
         requestRepaint();
     }
-
 
 }

@@ -218,6 +218,18 @@
     </configurer>
 
     <component>
+<<<<<<< HEAD
+=======
+      <type>info.magnolia.ui.admincentral.form.FormPresenterFactory</type>
+      <implementation>info.magnolia.ui.admincentral.form.FormPresenterFactoryImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactoryImpl</implementation>
+    </component>
+
+    <component>
+>>>>>>> ea2a07151167ce548c45a7b40fb2860210848e9e
       <type>info.magnolia.ui.admincentral.dialog.ChooseDialogFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.ChooseDialogFactoryImpl</implementation>
     </component>
@@ -241,7 +253,22 @@
       <type>info.magnolia.ui.admincentral.content.item.ItemView</type>
       <implementation>info.magnolia.ui.admincentral.content.item.ItemViewImpl</implementation>
     </component>
+<<<<<<< HEAD
     
+=======
+    <component>
+      <type>info.magnolia.ui.admincentral.field.builder.FieldFactory</type>
+      <implementation>info.magnolia.ui.admincentral.field.builder.FieldFactory</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</type>
+      <implementation>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.dialog.action.DialogActionFactory</type>
+      <implementation>info.magnolia.ui.admincentral.dialog.action.DialogActionFactoryImpl</implementation>
+    </component>
+>>>>>>> ea2a07151167ce548c45a7b40fb2860210848e9e
     <component>
       <type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</type>
       <implementation>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</implementation>
@@ -261,6 +288,21 @@
       <type>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</type>
       <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</implementation>
     </component>
+<<<<<<< HEAD
+=======
+    <component>
+      <type>info.magnolia.ui.model.workbench.action.WorkbenchActionFactory</type>
+      <implementation>info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</type>
+      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</implementation>
+    </component>
+>>>>>>> ea2a07151167ce548c45a7b40fb2860210848e9e
 
     <component>
       <type>info.magnolia.ui.admincentral.dialog.ChooseDialogView</type>
@@ -408,13 +450,6 @@
     </component>
   </components>
   <components>
-    <id>app-jcr-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
-  <components>
     <id>app-dependencies-main</id>
     <component>
       <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
@@ -424,43 +459,78 @@
   <components>
     <id>app-logging-main</id>
     <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-backup-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
+      <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
     </component>
   </components>
   <components>
     <id>app-mail-main</id>
     <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
+      <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
     </component>
   </components>
   <components>
     <id>app-cache-main</id>
     <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
+      <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
     </component>
   </components>
   <components>
     <id>app-server-main</id>
     <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
+      <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
     </component>
   </components>
   <components>
     <id>app-devtools-main</id>
     <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
+      <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
+    </component>
+  </components>
+  <components>
+    <id>app-groovy-main</id>
+    <component>
+      <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
+      <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
+    </component>
+  </components>
+  <components>
+    <id>app-import-main</id>
+    <component>
+      <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
+      <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
+    </component>
+  </components>
+  <components>
+    <id>app-export-main</id>
+    <component>
+      <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
+      <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
+    </component>
+  </components>
+  <components>
+    <id>app-activation-main</id>
+    <component>
+      <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
+      <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
+    </component>
+  </components>
+  <components>
+    <id>app-permissions-main</id>
+    <component>
+      <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
+      <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
+    </component>
+  </components>
+  <components>
+    <id>app-query-utils-main</id>
+    <component>
+      <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
+      <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
     </component>
   </components>
   <components>
@@ -575,4 +645,3 @@
     </repository>
   </repositories>
 </module>
-

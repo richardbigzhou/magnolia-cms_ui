@@ -36,8 +36,8 @@ package info.magnolia.ui.app.security.view;
 import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 
 /**
- * Users View definition for the Security App.
+ * Basic View definition for the Security App.
  */
-public interface UsersView extends WorkbenchSubAppView {
+public interface BaseView extends WorkbenchSubAppView {
 
 }

@@ -31,27 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.view;
+package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.shell.Shell;
 
+import javax.inject.Inject;
+
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Embedded;
+
 
 /**
- * Roles view implementation for the Security App.
+ * View implementation for a page app.
  */
-public class RolesViewImpl implements RolesView {
+public class PageViewImpl implements PageView {
 
-    private View workbenchView;
+    private final CssLayout layout = new CssLayout();
 
-    @Override
-    public Component asVaadinComponent() {
-        return workbenchView.asVaadinComponent();
+    @Inject
+    public PageViewImpl(final Shell shell, final AppContext appContext) {
+
+        String sourceURL = ((PageSubAppDescriptor) appContext.getAppDescriptor().getSubApps().get("main")).getUrl();
+        Embedded page = new Embedded(null, new ExternalResource(MgnlContext.getContextPath() + "/.magnolia/pages/" + sourceURL));
+        page.setType(Embedded.TYPE_BROWSER);
+
+        layout.addComponent(page);
     }
 
     @Override
-    public void setWorkbenchView(View workbenchView) {
-        this.workbenchView = workbenchView;
+    public Component asVaadinComponent() {
+        return layout;
     }
 
 }

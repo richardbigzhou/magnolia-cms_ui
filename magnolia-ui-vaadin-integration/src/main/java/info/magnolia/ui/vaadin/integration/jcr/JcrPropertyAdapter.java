@@ -34,11 +34,15 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.PropertyUtil;
 
 import java.util.Collection;
 
+import javax.jcr.Item;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.ValueFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +51,7 @@ import com.vaadin.data.Property;
 
 
 /**
- * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a
- * {@link javax.jcr.Property}.
+ * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Property}.
  */
 
 public class JcrPropertyAdapter extends AbstractJcrAdapter {
@@ -106,12 +109,81 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
             log.error("Could not get property for " + id, re);
             throw new RuntimeRepositoryException(re);
         }
-        return new DefaultProperty((String) id, value);
+        DefaultProperty property = new DefaultProperty((String) id, value);
+        property.addListener(this);
+        return property;
     }
 
     @Override
     public Collection< ? > getItemPropertyIds() {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * JcrPropertyAdapter custom logic to update one single vaadin property. If updated propertyId is
+     * {@link JcrItemAdapter.JCR_NAME}, then rename JCR Property. If propertyId is
+     * {@link JcrPropertyAdapter.VALUE_COLUMN}, set new property value. If propertyId is
+     * {@link JcrPropertyAdapter.TYPE_COLUMN}, set new property type. Otherwise, do nothing.
+     */
+    @Override
+    protected void updateProperty(Item item, String propertyId, Property property) {
+        if (!(item instanceof javax.jcr.Property)) {
+            return;
+        }
+        javax.jcr.Property jcrProperty = (javax.jcr.Property) item;
+
+        // JCR_NAME name then move this Node
+        if (JCR_NAME.equals(propertyId)) {
+            String jcrName = (String) property.getValue();
+            if (jcrName != null && !jcrName.isEmpty()) {
+                try {
+                    // Never rename property to same name, otherwise PropertyUtil would delete it.
+                    boolean isNameUnchanged = (jcrName.equals(jcrProperty.getName()));
+                    if (isNameUnchanged) {
+                        return;
+                    }
+                    PropertyUtil.renameProperty(jcrProperty, jcrName);
+                } catch (RepositoryException e) {
+                    log.error("Could not rename JCR Property.", e);
+                }
+            }
+        } else if (VALUE_COLUMN.equals(propertyId)) {
+            if (property.getValue() != null) {
+                try {
+                    String valueString = (String) property.getValue();
+                    int valueType = jcrProperty.getType();
+                    ValueFactory valueFactory = jcrProperty.getSession().getValueFactory();
+
+                    Value newValue = PropertyUtil.createValue(valueString, valueType, valueFactory);
+                    jcrProperty.setValue(newValue);
+                } catch (RepositoryException e) {
+                    log.error("Could not set JCR Property", e);
+                }
+            }
+        } else if (TYPE_COLUMN.equals(propertyId)) {
+            if (property.getValue() != null) {
+                // get new type from string
+                int newType;
+                try {
+                    newType = PropertyType.valueFromName(property.getValue().toString());
+                } catch (IllegalArgumentException e) {
+                    log.warn("Could not set new type for JCR Property, unknown type string.", e);
+                    return;
+                }
+
+                // set old value with new type
+                try {
+                    String valueString = jcrProperty.getValue().getString();
+                    ValueFactory valueFactory = jcrProperty.getSession().getValueFactory();
+
+                    Value newValue = PropertyUtil.createValue(valueString, newType, valueFactory);
+                    jcrProperty.setValue(newValue);
+                } catch (RepositoryException e) {
+                    log.error("Could not set new type for JCR Property.", e);
+                }
+
+            }
+        }
     }
 
     @Override

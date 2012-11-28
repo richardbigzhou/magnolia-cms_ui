@@ -38,6 +38,7 @@ import info.magnolia.ui.framework.view.View;
 
 /**
  * ContactsItemViewImpl.
+ * see MGNLUI-230.
  */
 public class ContactsItemViewImpl implements ContactsItemView {
 

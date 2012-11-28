@@ -5,7 +5,6 @@
   <displayName>UI Security App</displayName>
   <description>UI Security App</description>
   <class>info.magnolia.ui.app.security.SecurityModule</class>
-  <versionHandler>info.magnolia.ui.app.security.SecurityAppModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
     <!-- Used to create an App component provider for injection of AppContext for example -->
@@ -18,12 +17,8 @@
   <components>
     <id>app-security-users</id> <!-- main subapp -->
     <component>
-      <type>info.magnolia.ui.app.security.SecurityUsersSubApp</type>
-      <implementation>info.magnolia.ui.app.security.SecurityUsersSubApp</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.app.security.view.UsersView</type>
-      <implementation>info.magnolia.ui.app.security.view.UsersViewImpl</implementation>
+      <type>info.magnolia.ui.app.security.view.BaseView</type>
+      <implementation>info.magnolia.ui.app.security.view.BaseViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
@@ -42,12 +37,8 @@
   <components>
     <id>app-security-groups</id>
     <component>
-      <type>info.magnolia.ui.app.security.SecurityGroupsSubApp</type>
-      <implementation>info.magnolia.ui.app.security.SecurityGroupsSubApp</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.app.security.view.GroupsView</type>
-      <implementation>info.magnolia.ui.app.security.view.GroupsViewImpl</implementation>
+      <type>info.magnolia.ui.app.security.view.BaseView</type>
+      <implementation>info.magnolia.ui.app.security.view.BaseViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
@@ -66,12 +57,8 @@
   <components>
     <id>app-security-roles</id>
     <component>
-      <type>info.magnolia.ui.app.security.SecurityRolesSubApp</type>
-      <implementation>info.magnolia.ui.app.security.SecurityRolesSubApp</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.app.security.view.RolesView</type>
-      <implementation>info.magnolia.ui.app.security.view.RolesViewImpl</implementation>
+      <type>info.magnolia.ui.app.security.view.BaseView</type>
+      <implementation>info.magnolia.ui.app.security.view.BaseViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>

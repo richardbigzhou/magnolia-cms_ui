@@ -58,6 +58,8 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     private boolean searchable = true;
 
+    private boolean editable;
+
     @Override
     public String getPropertyName() {
         return propertyName;
@@ -75,9 +77,11 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
     public void setName(String name) {
         this.name = name;
     }
+
     /**
      * {@inheritDoc}
-     * <p>Default value is -1, meaning no explicit width assigned.
+     * <p>
+     * Default value is -1, meaning no explicit width assigned.
      */
     @Override
     public int getWidth() {
@@ -116,11 +120,12 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
     }
 
     /**
-     * The concrete type represented in this column, ie Long, Double, Date, etc. By default, it assumes a String (which should be a good match in most cases).
-     * Subclasses are responsible for returning the actual type.
+     * The concrete type represented in this column, ie Long, Double, Date, etc. By default, it
+     * assumes a String (which should be a good match in most cases). Subclasses are responsible for
+     * returning the actual type.
      */
     @Override
-    public Class<?> getType() {
+    public Class< ? > getType() {
         return String.class;
     }
 
@@ -135,6 +140,7 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
     public void setDisplayInDialog(boolean displayInDialog) {
         this.displayInDialog = displayInDialog;
     }
+
     /**
      * {@inheritDoc}
      * <p>
@@ -161,5 +167,14 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     public void setSearchable(boolean searchable) {
         this.searchable = searchable;
+    }
+
+    @Override
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 }

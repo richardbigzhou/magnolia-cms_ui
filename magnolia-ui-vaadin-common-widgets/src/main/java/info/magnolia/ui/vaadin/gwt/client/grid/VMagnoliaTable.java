@@ -52,38 +52,38 @@ import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.Util;
 import com.vaadin.terminal.gwt.client.ui.VScrollTablePatched;
 
+
 /**
- * Magnolia table extends VScrollTable in a way that
- * out-of-the-box version of it would not allow. Therefore
- * maven build will patch the VScrollTable to reveal
- * it's private members.
+ * Magnolia table extends VScrollTable in a way that out-of-the-box version of it would not allow.
+ * Therefore maven build will patch the VScrollTable to reveal it's private members.
  */
 public class VMagnoliaTable extends VScrollTablePatched {
+
     static int checkboxWidth = -1;
-    
+
     public VMagnoliaTable() {
         super();
     }
-    
+
     @Override
     protected TableHead createTableHead() {
         return new MagnoliaTableHead();
     }
-    
+
     @Override
     protected VScrollTableBody createScrollBody() {
         return new MagnoliaTableBody();
     }
-    
+
     @Override
     protected HeaderCell createHeaderCell(String colId, String headerText) {
         return new MagnoliaHeaderCell(colId, headerText);
     }
-    
+
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         super.updateFromUIDL(uidl, client);
-        
+
         if (BrowserInfo.get().isTouchDevice()) {
             addStyleName("mobile");
         }
@@ -93,34 +93,36 @@ public class VMagnoliaTable extends VScrollTablePatched {
     protected void setMultiSelectMode(int multiselectmode) {
         this.multiselectmode = multiselectmode;
     }
-    
+
     /**
      * Extend header cell to contain caption text.
      */
     public class MagnoliaHeaderCell extends HeaderCell {
+
         private Element caption = null;
-        
+
         public MagnoliaHeaderCell(String colId, String headerText) {
             super(colId, headerText);
             caption = DOM.createSpan();
             captionContainer.appendChild(caption);
             setText(headerText);
         }
-        
+
         @Override
         public void setText(String headerText) {
-            if(caption != null) {
+            if (caption != null) {
                 caption.setInnerHTML(headerText);
             }
         }
     }
-    
+
     /**
      * Extend TableHead to contain select all checkbox.
      */
     public class MagnoliaTableHead extends TableHead {
+
         private CheckBox selectAll = null;
-        
+
         public MagnoliaTableHead() {
             super();
             selectAll = new CheckBox();
@@ -128,46 +130,49 @@ public class VMagnoliaTable extends VScrollTablePatched {
             getChildren().add(selectAll);
             adopt(selectAll);
             selectAll.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
                 @Override
                 public void onValueChange(ValueChangeEvent<Boolean> event) {
                     client.updateVariable(paintableId, "selectAll", event.getValue(), true);
                 }
             });
-            selectAll.addStyleName("v-select-all"); 
+            selectAll.addStyleName("v-select-all");
         }
-        
+
         public CheckBox getSelectAllCB() {
             return selectAll;
         }
     }
-    
+
     /**
      * Extension of VScrollTableBody.
      */
     public class MagnoliaTableBody extends VScrollTableBody {
-        
+
         @Override
         protected VScrollTableRow createScrollTableRow(UIDL uidl, char[] aligns) {
             return new MagnoliaTableRow(uidl, aligns);
         }
-        
+
         @Override
         protected VScrollTableRow createScrollTableRow() {
             return new MagnoliaTableRow();
         }
-        
+
         @Override
         public int getColWidth(int columnIndex) {
             return super.getColWidth(columnIndex);
         }
-        
+
         /**
          * Extend VScrollTableRow to contain selection checkbox.
          */
         public class MagnoliaTableRow extends VScrollTableRow {
+
             private CheckBox selectionCheckBox;
+
             private boolean firstColumnInitialized;
-            
+
             public MagnoliaTableRow(UIDL uidl, char[] aligns) {
                 super(uidl, aligns);
             }
@@ -175,35 +180,46 @@ public class VMagnoliaTable extends VScrollTablePatched {
             public MagnoliaTableRow() {
                 super();
             }
-            
+
             /**
-             * Minor hack. Construction has to happen
-             * during base class construction and this
-             * method is called by the base class constructor.
+             * Minor hack. Construction has to happen during base class construction and this method
+             * is called by the base class constructor.
              */
             @Override
             protected void setElement(com.google.gwt.user.client.Element elem) {
                 super.setElement(elem);
                 privateConstruction();
             }
-            
+
             @Override
-            protected void initCellWithText(String text, char align,
-                    String style, boolean textIsHTML, boolean sorted,
-                    String description, final TableCellElement td) {
+            protected void initCellWithText(String text, char align, String style, boolean textIsHTML, boolean sorted, String description,
+                final TableCellElement td) {
                 super.initCellWithText(text, align, style, textIsHTML, sorted, description, td);
-                if(!firstColumnInitialized) {
+                insertSelectionCheckbox(td);
+            }
+
+            @Override
+            protected void initCellWithWidget(Widget w, char align, String style, boolean sorted, TableCellElement td) {
+                super.initCellWithWidget(w, align, style, sorted, td);
+                insertSelectionCheckbox(td);
+            }
+
+            /**
+             * Inserts the selection checkbox in first column.
+             */
+            private void insertSelectionCheckbox(final TableCellElement td) {
+                if (!firstColumnInitialized) {
                     com.google.gwt.dom.client.Element container = td.getFirstChildElement();
                     container.insertFirst(selectionCheckBox.getElement());
                     firstColumnInitialized = true;
                 }
             }
-                        
+
             private void privateConstruction() {
                 firstColumnInitialized = false;
                 selectionCheckBox = new CheckBox();
                 selectionCheckBox.setValue(isSelected(), false);
-                ValueChangeHandler<Boolean> selectionCheckBoxValueChangeHandler = new ValueChangeHandler<Boolean>() {
+                ValueChangeHandler<Boolean> selectionChangeHandler = new ValueChangeHandler<Boolean>() {
 
                     @Override
                     public void onValueChange(ValueChangeEvent<Boolean> event) {
@@ -222,49 +238,50 @@ public class VMagnoliaTable extends VScrollTablePatched {
                                 if (wasSelected) {
                                     removeRowFromUnsentSelectionRanges(row);
                                 }
-                                
+
                                 sendSelectedRows(true);
                             }
                         }
                     }
                 };
-                
-                selectionCheckBox.addValueChangeHandler(selectionCheckBoxValueChangeHandler);
+
+                selectionCheckBox.addValueChangeHandler(selectionChangeHandler);
                 selectionCheckBox.addStyleName("v-selection-cb");
                 getChildren().add(selectionCheckBox);
-                VMagnoliaTable.this.adopt(selectionCheckBox);               
-                                 
-                 final TouchDelegate delegate = new TouchDelegate(this);
-                 delegate.addTouchHandler(new MultiTapRecognizer(delegate, 1, 2));
-                 addHandler(new MultiTapHandler() {
-                     @Override
-                     public void onMultiTap(MultiTapEvent event) {
-                         if (BrowserInfo.get().isTouchDevice()) {
-                             final NativeEvent doubleClickEvent = 
-                                     Document.get().createDblClickEvent(
-                                             0, 
-                                             event.getTouchStarts().get(0).get(0).getPageX(), 
-                                             event.getTouchStarts().get(0).get(0).getPageY(), 
-                                             event.getTouchStarts().get(0).get(0).getPageX(), 
-                                             event.getTouchStarts().get(0).get(0).getPageY(), 
-                                             false, 
-                                             false, 
-                                             false, 
-                                             false);
-                             getElement().dispatchEvent(doubleClickEvent);
-                         }
-                     }
-                 }, MultiTapEvent.getType());                 
+                VMagnoliaTable.this.adopt(selectionCheckBox);
+
+                final TouchDelegate delegate = new TouchDelegate(this);
+                delegate.addTouchHandler(new MultiTapRecognizer(delegate, 1, 2));
+                addHandler(new MultiTapHandler() {
+
+                    @Override
+                    public void onMultiTap(MultiTapEvent event) {
+                        if (BrowserInfo.get().isTouchDevice()) {
+                            final NativeEvent doubleClickEvent =
+                                Document.get().createDblClickEvent(
+                                    0,
+                                    event.getTouchStarts().get(0).get(0).getPageX(),
+                                    event.getTouchStarts().get(0).get(0).getPageY(),
+                                    event.getTouchStarts().get(0).get(0).getPageX(),
+                                    event.getTouchStarts().get(0).get(0).getPageY(),
+                                    false,
+                                    false,
+                                    false,
+                                    false);
+                            getElement().dispatchEvent(doubleClickEvent);
+                        }
+                    }
+                }, MultiTapEvent.getType());
             }
-            
+
             @Override
             public void toggleSelection() {
                 super.toggleSelection();
-                
-                if(selectionCheckBox != null) {
+
+                if (selectionCheckBox != null) {
                     selectionCheckBox.setValue(isSelected(), false);
                 }
-                MagnoliaTableHead head = (MagnoliaTableHead)tHead;
+                MagnoliaTableHead head = (MagnoliaTableHead) tHead;
                 head.getSelectAllCB().setValue(selectedRowKeys.size() == scrollBody.renderedRows.size(), false);
             }
         }

@@ -35,30 +35,40 @@ package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.context.MgnlContext;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.jcr.Item;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 
 
 /**
  * Common base for {JcrItemAdapter} implementation.
  */
-public abstract class AbstractJcrAdapter implements JcrItemAdapter {
+public abstract class AbstractJcrAdapter implements Property.ValueChangeListener, JcrItemAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrAdapter.class);
 
     static final String UN_IDENTIFIED = "?";
-    //Common variable
-    private boolean isNode;
-    private  String jcrNodeIdentifier;
-    private  String jcrWorkspace;
-    private  String jcrPath;
 
-    public AbstractJcrAdapter (Item jcrItem) {
+    private boolean isNode;
+
+    private String workspace;
+
+    private String path;
+
+    private final Map<String, Property> changedProperties = new HashMap<String, Property>();
+
+    private final Map<String, Property> removedProperties = new HashMap<String, Property>();
+
+    public AbstractJcrAdapter(Item jcrItem) {
         setCommonAttributes(jcrItem);
     }
 
@@ -66,24 +76,15 @@ public abstract class AbstractJcrAdapter implements JcrItemAdapter {
      * Init common Item attributes.
      */
     protected void setCommonAttributes(Item jcrItem) {
-        String nodeIdentifier = null;
-        String workspace = null;
-        String path = null;
+        isNode = jcrItem.isNode();
         try {
-            isNode = jcrItem.isNode();
-            Node node = isNode ? ((Node)jcrItem) : jcrItem.getParent();
-            nodeIdentifier = node.getIdentifier();
-            workspace = node.getSession().getWorkspace().getName();
+            workspace = jcrItem.getSession().getWorkspace().getName();
             path = jcrItem.getPath();
         } catch (RepositoryException e) {
-            log.error("Couldn't retrieve identifier of jcr property", e);
+            log.error("Could not retrieve workspace or path of JCR Item.", e);
             path = UN_IDENTIFIED;
             workspace = UN_IDENTIFIED;
-            nodeIdentifier = UN_IDENTIFIED;
         }
-        this.jcrPath = path;
-        this.jcrNodeIdentifier = nodeIdentifier;
-        this.jcrWorkspace = workspace;
     }
 
     @Override
@@ -92,39 +93,81 @@ public abstract class AbstractJcrAdapter implements JcrItemAdapter {
     }
 
     @Override
-    public String getNodeIdentifier() {
-        return jcrNodeIdentifier;
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    @Override
+    public String getPath() {
+        return path;
+    }
+
+    protected void setPath(String path) {
+        this.path = path;
     }
 
     /**
-     * @return Related JCR Item, or null in case of {RepositoryException}.
+     * @return The represented JCR Item, or null in case of {RepositoryException}.
      */
     @Override
     public javax.jcr.Item getJcrItem() {
         try {
-            return MgnlContext.getJCRSession(jcrWorkspace).getItem(jcrPath);
-        } catch(RepositoryException re) {
+            return MgnlContext.getJCRSession(workspace).getItem(path);
+        } catch (RepositoryException re) {
             log.warn("Not able to retrieve the JcrItem ", re.getMessage());
             return null;
         }
     }
 
+    // ABSTRACT IMPLEMENTATION OF PROPERTY CHANGES
+
+    protected Map<String, Property> getChangedProperties() {
+        return changedProperties;
+    }
+
+    protected Map<String, Property> getRemovedProperties() {
+        return removedProperties;
+    }
+
+    /**
+     * Listener to DefaultProperty value change event. Get this event when a property has changed, and propagate this
+     * Vaadin Property value change to the corresponding JCR property.
+     */
     @Override
-    public void save() throws RepositoryException {
-        getJcrItem().getSession().save();
+    public void valueChange(ValueChangeEvent event) {
+        Property property = event.getProperty();
+        if (property instanceof DefaultProperty) {
+            String propertyId = ((DefaultProperty) property).getPropertyName();
+            getChangedProperties().put(propertyId, property);
+        }
     }
 
-    @Override
-    public String getItemId() {
-        return this.jcrPath;
+    /**
+     * Updates and removes properties on the JCR Item represented by this adapter, based on the
+     * {@link #changedProperties} and {@link #removedProperties} maps. Read-only properties will not be updated.
+     */
+    public void updateProperties() throws RepositoryException {
+        updateProperties(getJcrItem());
     }
 
-    protected void setPath(String path) {
-        this.jcrPath = path;
+    /**
+     * Updates and removes properties on given item, based on the {@link #changedProperties} and
+     * {@link #removedProperties} maps. Read-only properties will not be updated.
+     */
+    public void updateProperties(Item item) throws RepositoryException {
+        for (Entry<String, Property> entry : changedProperties.entrySet()) {
+            if (entry.getValue().isReadOnly()) {
+                continue;
+            }
+            updateProperty(item, entry.getKey(), entry.getValue());
+        }
     }
 
-    public String getWorkspace() {
-        return this.jcrWorkspace;
-    }
+    /**
+     * Performs update of an Item based on given vaadin Property. Note that this should not persist changes into JCR.
+     * Implementation should simply make sure that updated propertyIds are mapped to the correct actions (jcrName
+     * property should be handled in a specific way).
+     */
+    abstract protected void updateProperty(Item item, String propertyId, Property property);
 
 }

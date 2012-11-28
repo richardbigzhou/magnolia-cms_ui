@@ -35,16 +35,16 @@ package info.magnolia.ui.app.security;
 
 import javax.inject.Inject;
 
-import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.admincentral.app.CodeConfigurationUtils;
 import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
+import info.magnolia.ui.admincentral.app.content.builder.ContentSubAppBuilder;
 import info.magnolia.ui.admincentral.column.StatusColumnFormatter;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
-import info.magnolia.ui.admincentral.form.action.CancelFormActionDefinition;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.security.column.UserNameColumnDefinition;
 import info.magnolia.ui.app.security.column.UserNameColumnFormatter;
@@ -69,12 +69,13 @@ import info.magnolia.ui.model.dialog.builder.Dialog;
 import info.magnolia.ui.model.dialog.builder.DialogBuilder;
 import info.magnolia.ui.model.dialog.builder.DialogConfig;
 import info.magnolia.ui.model.form.builder.OptionBuilder;
+import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
-import info.magnolia.ui.model.thumbnail.DefaultImageProvider;
+import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
 
 /**
- * Module class for the Security App.
+ * Module class for the Security App. It creates the app and sub-apps, as well as the dialogs.
  */
 public class SecurityModule implements ModuleLifecycle {
 
@@ -90,17 +91,10 @@ public class SecurityModule implements ModuleLifecycle {
     @App("security")
     public void securityApp(ContentAppBuilder app, WorkbenchConfig wbcfg, ActionbarConfig abcfg) {
 
-        // user
-        CreateDialogActionDefinition addUserAction = new CreateDialogActionDefinition();
-        addUserAction.setNodeType(MgnlNodeType.USER);
-        addUserAction.setDialogName("ui-security-app:userAdd");
-
-        EditDialogActionDefinition editUserAction = new EditDialogActionDefinition();
-        editUserAction.setDialogName("ui-security-app:userEdit");
 
         // group
         CreateDialogActionDefinition addGroupAction = new CreateDialogActionDefinition();
-        addGroupAction.setNodeType(MgnlNodeType.GROUP);
+        addGroupAction.setNodeType(NodeTypes.Group.NAME);
         addGroupAction.setDialogName("ui-security-app:groupAdd");
 
         EditDialogActionDefinition editGroupAction = new EditDialogActionDefinition();
@@ -108,50 +102,31 @@ public class SecurityModule implements ModuleLifecycle {
 
         // role
         CreateDialogActionDefinition addRoleAction = new CreateDialogActionDefinition();
-        addRoleAction.setNodeType(MgnlNodeType.ROLE);
+        addRoleAction.setNodeType(NodeTypes.Role.NAME);
         addRoleAction.setDialogName("ui-security-app:roleAdd");
 
         EditDialogActionDefinition editRoleAction = new EditDialogActionDefinition();
         editRoleAction.setDialogName("ui-security-app:roleEdit");
 
-        DefaultImageProvider imageProvider = new DefaultImageProvider();
-        imageProvider.setOriginalImageNodeName("photo");
+        // Configure ImageProvider
+        ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
+        cipd.setOriginalImageNodeName("photo");
+        cipd.setImageProviderClass(DefaultImageProvider.class);
 
         app.label("security").icon("icon-security-app").appClass(SecurityApp.class) // .categoryName("MANAGE")
             .subApps(
-                    app.subApp("users").subAppClass(SecurityUsersSubApp.class).defaultSubApp()
-                    .workbench(wbcfg.workbench().workspace("users").root("/").defaultOrder("jcrName")
-                            .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))
-                            .mainItemType(wbcfg.itemType(MgnlNodeType.USER).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
-                            .columns(
-                                    wbcfg.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class),
-                                    wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),
-                                    wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
-                                    wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true)
-                            )
-                            .actionbar(abcfg.actionbar().defaultAction("edit")
-                                    .sections(
-                                            abcfg.section("usersActions").label("Users")
-                                                    .groups(
-                                                            abcfg.group("addActions").items(
-                                                                    abcfg.item("addUser").label("New user").icon("icon-add-item").action(addUserAction)),
-                                                            abcfg.group("editActions").items(
-                                                                    abcfg.item("edit").label("Edit user").icon("icon-edit").action(editUserAction),
-                                                                    abcfg.item("delete").label("Delete user").icon("icon-delete").action(new DeleteItemActionDefinition()))
-                                            )
-                                    )
-                            )
-                    ),
+                    userSubApp(app, wbcfg, abcfg, "users", "/").defaultSubApp(),
+                    // userSubApp(app, wbcfg, abcfg, "system users", "/system"),
                     app.subApp("groups").subAppClass(SecurityGroupsSubApp.class)
                     .workbench(wbcfg.workbench().workspace("usergroups").root("/").defaultOrder("jcrName")
-                            .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))
-                            .mainItemType(wbcfg.itemType(MgnlNodeType.GROUP).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
-                            .imageProvider(imageProvider)
+                            .groupingItemType(wbcfg.itemType(NodeTypes.Folder.NAME).icon("/.resources/icons/16/folders.gif"))
+                            .mainItemType(wbcfg.itemType(NodeTypes.Group.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
+                            .imageProvider(cipd)
                             .columns(
                                     wbcfg.column(new PropertyColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName"),
                                     wbcfg.column(new PropertyColumnDefinition()).name("title").label("Full Name").sortable(true).propertyName("title").width(180).displayInDialog(false),
                                     wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
-                                    wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true)
+                                    wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).width(200).sortable(true)
                             )
                             .actionbar(abcfg.actionbar().defaultAction("edit")
                                     .sections(
@@ -168,14 +143,14 @@ public class SecurityModule implements ModuleLifecycle {
                     ),
                     app.subApp("roles").subAppClass(SecurityRolesSubApp.class)
                     .workbench(wbcfg.workbench().workspace("userroles").root("/").defaultOrder("jcrName")
-                            .groupingItemType(wbcfg.itemType(MgnlNodeType.NT_FOLDER).icon("/.resources/icons/16/folders.gif"))
-                            .mainItemType(wbcfg.itemType(MgnlNodeType.ROLE).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
-                            .imageProvider(imageProvider)
+                            .groupingItemType(wbcfg.itemType(NodeTypes.Folder.NAME).icon("/.resources/icons/16/folders.gif"))
+                            .mainItemType(wbcfg.itemType(NodeTypes.Role.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
+                            .imageProvider(cipd)
                             .columns(
                                     wbcfg.column(new PropertyColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName"),
                                     wbcfg.column(new PropertyColumnDefinition()).name("title").label("Full Name").sortable(true).propertyName("title").width(180).displayInDialog(false),
                                     wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
-                                    wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true)
+                                    wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).width(200).sortable(true)
                             )
                             .actionbar(abcfg.actionbar().defaultAction("edit")
                                     .sections(
@@ -195,6 +170,45 @@ public class SecurityModule implements ModuleLifecycle {
         ;
     }
 
+    protected ContentSubAppBuilder userSubApp(ContentAppBuilder app, WorkbenchConfig wbcfg, ActionbarConfig abcfg, String name, String root) {
+        // user
+        CreateDialogActionDefinition addUserAction = new CreateDialogActionDefinition();
+        addUserAction.setNodeType(NodeTypes.User.NAME);
+        addUserAction.setDialogName("ui-security-app:userAdd");
+
+        EditDialogActionDefinition editUserAction = new EditDialogActionDefinition();
+        editUserAction.setDialogName("ui-security-app:userEdit");
+
+        // Configure ImageProvider
+        ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
+        cipd.setOriginalImageNodeName("photo");
+        cipd.setImageProviderClass(DefaultImageProvider.class);
+
+        return app.subApp(name).subAppClass(SecurityUsersSubApp.class)
+                .workbench(wbcfg.workbench().workspace("users").root(root).defaultOrder("jcrName")
+                        .groupingItemType(wbcfg.itemType(NodeTypes.Folder.NAME).icon("/.resources/icons/16/folders.gif"))  // see MGNLPUR-77
+                        .mainItemType(wbcfg.itemType(NodeTypes.User.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
+                        .imageProvider(cipd)
+                        .columns(
+                                wbcfg.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class),
+                                wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),
+                                wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
+                                wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).width(200).sortable(true)
+                        )
+                        .actionbar(abcfg.actionbar().defaultAction("edit")
+                                .sections(
+                                        abcfg.section("usersActions").label("Users")
+                                                .groups(
+                                                        abcfg.group("addActions").items(
+                                                                abcfg.item("addUser").label("New user").icon("icon-add-item").action(addUserAction)),
+                                                        abcfg.group("editActions").items(
+                                                                abcfg.item("edit").label("Edit user").icon("icon-edit").action(editUserAction),
+                                                                abcfg.item("delete").label("Delete user").icon("icon-delete").action(new DeleteItemActionDefinition()))
+                                        )
+                                )
+                        )
+                );
+    }
 
     @Dialog("ui-security-app:userAdd")
     public void userAddDialog(DialogBuilder dialog, DialogConfig cfg, FormConfig formcfg) {
@@ -227,14 +241,12 @@ public class SecurityModule implements ModuleLifecycle {
         RoleManagementFieldBuilder roles = new RoleManagementFieldBuilder("roles");
         roles.label("Assigned roles");
 
-        dialog.description("Define the user information")
-                .form(formcfg.form().description("Define the user information")
+        dialog.form(formcfg.form().description("Define the user information")
                         .tabs(
-                                formcfg.tab("User").label("User Tab")
+                                formcfg.tab("User").label("User Info")
                                         .fields(
                                                 username,
                                                 formcfg.fields.passwordField("password").label("Password").verification(),
-//                                cfg.fields.checkboxField("enabled").label("Enabled"),
                                                 (new EnabledFieldBuilder("enabled")).label("Enabled"),
                                                 formcfg.fields.textField("title").label("Full name"),
                                                 formcfg.fields.textField("email").label("E-mail").description("Please enter user's e-mail address."),
@@ -256,11 +268,11 @@ public class SecurityModule implements ModuleLifecycle {
                                                )
 
                              )
+                     )
                      .actions(
-                             formcfg.action("commit").label("save changes").action(new SaveUserDialogActionDefinition()),
-                             formcfg.action("cancel").label("cancel").action(new CancelFormActionDefinition())
-                             )
-                     );
+                             cfg.action("commit").label("save changes").action(new SaveUserDialogActionDefinition()),
+                             cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
+                             );
     }
 
     @Dialog("ui-security-app:groupAdd")
@@ -313,11 +325,11 @@ public class SecurityModule implements ModuleLifecycle {
                                             roles
                                            )
                              )
+                        )
                         .actions(
-                                 formcfg.action("commit").label("save changes").action(new SaveGroupDialogActionDefinition()),
-                                 formcfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
-                                )
-                     );
+                                 cfg.action("commit").label("save changes").action(new SaveGroupDialogActionDefinition()),
+                                 cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
+                                );
     }
 
     @Dialog("ui-security-app:roleEdit")
@@ -348,7 +360,7 @@ public class SecurityModule implements ModuleLifecycle {
         dialog.description("Define the role information")
                 .form(formcfg.form().description("Define the group information")
                         .tabs(
-                              formcfg.tab("Role").label("Role Tab")
+                              formcfg.tab("Role").label("Role Info")
                                   .fields(
                                           rolename,
                                           formcfg.fields.textField("title").label("Full name").description("Full name of the role"),
@@ -359,11 +371,11 @@ public class SecurityModule implements ModuleLifecycle {
                                           formcfg.fields.textField("do-not-use").label("Placeholder, do not use").readOnly()
                                          )
                              )
+                        )
                         .actions(
-                                 formcfg.action("commit").label("save changes").action(new SaveRoleDialogActionDefinition()),
-                                 formcfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
-                                )
-                     );
+                                 cfg.action("commit").label("save changes").action(new SaveRoleDialogActionDefinition()),
+                                 cfg.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
+                                );
     }
 
 
@@ -375,6 +387,7 @@ public class SecurityModule implements ModuleLifecycle {
 
     @Override
     public void stop(ModuleLifecycleContext moduleLifecycleContext) {
+        // nothing to do yet
     }
 
 }

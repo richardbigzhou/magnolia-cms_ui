@@ -47,7 +47,9 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * ItemWorkbenchViewImpl.
+ * Implementation of {@link ItemWorkbenchView}.
+ * Holds the {@link ActionbarView} and {@link ItemView}
+ * Currently lacking some functionality planned. See MGNLUI-154.
  */
 public class ItemWorkbenchViewImpl extends CustomComponent implements ItemWorkbenchView {
 

@@ -5,7 +5,7 @@
     <groupId>info.magnolia.ui</groupId>
     <artifactId>magnolia-ui-project</artifactId>
     <version>5.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <relativePath>..</relativePath>
   </parent>
   <artifactId>magnolia-ui-app-security</artifactId>
   <packaging>jar</packaging>
@@ -32,17 +32,17 @@
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
-      <version>5.0-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
         <groupId>info.magnolia.ui</groupId>
         <artifactId>magnolia-ui-framework</artifactId>
-        <version>5.0-SNAPSHOT</version>
+        <version>${project.version}</version>
     </dependency>
     <dependency>
         <groupId>info.magnolia.ui</groupId>
         <artifactId>magnolia-ui-model</artifactId>
-        <version>5.0-SNAPSHOT</version>
+        <version>${project.version}</version>
     </dependency>
   </dependencies>
 </project>

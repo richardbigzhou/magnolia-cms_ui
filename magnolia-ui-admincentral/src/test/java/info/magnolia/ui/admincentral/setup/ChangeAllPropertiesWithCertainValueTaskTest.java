@@ -77,4 +77,30 @@ public class ChangeAllPropertiesWithCertainValueTaskTest extends RepositoryTestC
         assertEquals("newValue", parent.getProperty("child/propertyWithOldValue").getString());
         assertEquals("otherValue", parent.getProperty("child/propertyWithOtherValue").getString());
     }
+
+    @Test
+    public void testWorksWithClassName() throws RepositoryException, TaskExecutionException {
+
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+
+        Node parent = session.getRootNode().addNode("parent");
+        parent.setProperty("propertyWithOldValue", "info.magnolia.package.Class");
+        parent.setProperty("propertyWithOtherValue", "otherValue");
+
+        Node child = parent.addNode("child");
+        child.setProperty("propertyWithOldValue", "info.magnolia.package.Class");
+        child.setProperty("propertyWithOtherValue", "otherValue");
+
+        session.save();
+
+        ChangeAllPropertiesWithCertainValueTask task = new ChangeAllPropertiesWithCertainValueTask("", "", RepositoryConstants.CONFIG, "info.magnolia.package.Class", "info.magnolia.package.NewClass");
+
+        task.execute(mock(InstallContextImpl.class));
+
+        assertEquals("info.magnolia.package.NewClass", parent.getProperty("propertyWithOldValue").getString());
+        assertEquals("otherValue", parent.getProperty("propertyWithOtherValue").getString());
+
+        assertEquals("info.magnolia.package.NewClass", parent.getProperty("child/propertyWithOldValue").getString());
+        assertEquals("otherValue", parent.getProperty("child/propertyWithOtherValue").getString());
+    }
 }

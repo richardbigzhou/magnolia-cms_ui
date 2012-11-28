@@ -33,13 +33,16 @@
  */
 package info.magnolia.ui.admincentral.content.item;
 
-import com.vaadin.data.Item;
+import com.vaadin.ui.Component;
 import info.magnolia.ui.framework.view.View;
 
 /**
  * ItemView.
+ * @see ItemViewImpl
  */
 public interface ItemView extends View {
+
+    void setItemView(Component formView, ViewType viewType);
 
     /**
      * Enumeration for the default view types.
@@ -87,8 +90,6 @@ public interface ItemView extends View {
 
     void refresh();
 
-    void refreshItem(Item item);
-
     ViewType getViewType();
 
     /**
@@ -96,9 +97,6 @@ public interface ItemView extends View {
      */
     public interface Listener {
 
-        void onItemSelection(Item item);
-
-        void onDoubleClick(Item item);
 
     }
 }

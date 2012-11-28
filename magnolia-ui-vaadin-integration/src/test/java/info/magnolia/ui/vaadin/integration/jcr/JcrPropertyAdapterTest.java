@@ -33,18 +33,24 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.test.mock.jcr.MockValue;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
+import javax.jcr.Value;
+import javax.jcr.ValueFactory;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.vaadin.data.Property;
 
@@ -58,7 +64,15 @@ public class JcrPropertyAdapterTest {
 
     private final String propertyName = "property";
 
+    private final String numericPropertyName = "numericProperty";
+
+    private final String booleanPropertyName = "booleanProperty";
+
     private final String propertyValue = "value";
+
+    private final int intValue = 42;
+
+    private final boolean booleanValue = true;
 
     private MockSession session;
 
@@ -68,6 +82,23 @@ public class JcrPropertyAdapterTest {
         MockContext ctx = new MockContext();
         ctx.addSession(workspaceName, session);
         MgnlContext.setInstance(ctx);
+
+        final ValueFactory valueFactory = mock(ValueFactory.class);
+        Answer<Value> valueFactoryAnswer = new Answer<Value>() {
+
+            @Override
+            public Value answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                return new MockValue(args[0]);
+            }
+        };
+        when(valueFactory.createValue(anyString())).thenAnswer(valueFactoryAnswer);
+        when(valueFactory.createValue(anyInt())).thenAnswer(valueFactoryAnswer);
+        when(valueFactory.createValue(anyDouble())).thenAnswer(valueFactoryAnswer);
+        when(valueFactory.createValue(anyBoolean())).thenAnswer(valueFactoryAnswer);
+        // add more parameter types here if necessary for tests
+
+        session.setValueFactory(valueFactory);
     }
 
     @After
@@ -93,6 +124,103 @@ public class JcrPropertyAdapterTest {
         assertEquals(propertyValue, valueProperty.getValue());
         assertEquals(PropertyType.nameFromValue(PropertyType.STRING), typeProperty.getValue());
         assertNotSame(nameProperty, adapter.getItemProperty(JcrItemAdapter.JCR_NAME));
+    }
+
+    @Test
+    public void testUpdateProperty_JcrName() throws Exception {
+        // GIVEN
+        Node node = session.getRootNode();
+        node.setProperty(propertyName, propertyValue);
+        JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
+        String newJcrName = "propertyRenamed";
+
+        // WHEN
+        adapter.getItemProperty(JcrItemAdapter.JCR_NAME).setValue(newJcrName);
+        adapter.updateProperties();
+
+        // THEN
+        assertFalse(node.hasProperty(propertyName));
+        assertTrue(node.hasProperty(newJcrName));
+    }
+
+    @Test
+    public void testUpdateProperty_JcrName_Same() throws Exception {
+        // GIVEN
+        Node node = session.getRootNode();
+        node.setProperty(propertyName, propertyValue);
+        JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
+        String newJcrName = propertyName;
+
+        // WHEN
+        adapter.getItemProperty(JcrItemAdapter.JCR_NAME).setValue(newJcrName);
+        adapter.updateProperties();
+
+        // THEN
+        assertTrue(node.hasProperty(propertyName));
+    }
+
+    @Test
+    public void testUpdateProperty_Value() throws Exception {
+        // GIVEN
+        Node node = session.getRootNode();
+        node.setProperty(propertyName, propertyValue);
+        JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
+        String newValue = "valueChanged";
+
+        // WHEN
+        adapter.getItemProperty(JcrPropertyAdapter.VALUE_COLUMN).setValue(newValue);
+        adapter.updateProperties();
+
+        // THEN
+        assertTrue(node.hasProperty(propertyName));
+        assertEquals(newValue, node.getProperty(propertyName).getString());
+    }
+
+    @Test
+    public void testUpdateProperty_Value_KeepsPropertyType() throws Exception {
+        // GIVEN
+        Node node = session.getRootNode();
+        node.setProperty(numericPropertyName, intValue);
+        node.setProperty(booleanPropertyName, booleanValue);
+        JcrPropertyAdapter numericAdapter = new JcrPropertyAdapter(node.getProperty(numericPropertyName));
+        JcrPropertyAdapter booleanAdapter = new JcrPropertyAdapter(node.getProperty(booleanPropertyName));
+        int numericType = numericAdapter.getProperty().getType();
+        int booleanType = booleanAdapter.getProperty().getType();
+        String newIntValue = "43";
+        String newBooleanValue = "false";
+
+        // WHEN
+        numericAdapter.getItemProperty(JcrPropertyAdapter.VALUE_COLUMN).setValue(newIntValue);
+        numericAdapter.updateProperties();
+
+        booleanAdapter.getItemProperty(JcrPropertyAdapter.VALUE_COLUMN).setValue(newBooleanValue);
+        booleanAdapter.updateProperties();
+
+        // THEN
+        assertTrue(node.hasProperty(numericPropertyName));
+        assertEquals(newIntValue, node.getProperty(numericPropertyName).getString());
+        assertEquals(numericType, node.getProperty(numericPropertyName).getType());
+
+        assertTrue(node.hasProperty(booleanPropertyName));
+        assertEquals(newBooleanValue, node.getProperty(booleanPropertyName).getString());
+        assertEquals(booleanType, node.getProperty(booleanPropertyName).getType());
+    }
+
+    @Test
+    public void testUpdateProperty_Type() throws Exception {
+        // GIVEN
+        Node node = session.getRootNode();
+        node.setProperty(propertyName, propertyValue);
+        JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
+        String newType = PropertyType.TYPENAME_DOUBLE;
+
+        // WHEN
+        adapter.getItemProperty(JcrPropertyAdapter.TYPE_COLUMN).setValue(newType);
+        adapter.updateProperties();
+
+        // THEN
+        assertTrue(node.hasProperty(propertyName));
+        assertEquals(PropertyType.valueFromName(newType), node.getProperty(propertyName).getType());
     }
 
 }

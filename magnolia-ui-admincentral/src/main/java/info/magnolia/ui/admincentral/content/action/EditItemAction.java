@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.content.action;
 
 import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
+import info.magnolia.ui.admincentral.content.item.ItemView;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -42,7 +43,9 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * EditItemAction.
+ * Action for editing items in {@link info.magnolia.ui.admincentral.app.content.AbstractItemSubApp}.
+ *
+ * @see EditItemActionDefinition
  */
 public class EditItemAction extends ActionBase<EditItemActionDefinition> {
 
@@ -60,7 +63,7 @@ public class EditItemAction extends ActionBase<EditItemActionDefinition> {
         try {
 
             final String path = nodeToEdit.getPath();
-            ItemLocation location = new ItemLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), path);
+            ItemLocation location = new ItemLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), ItemView.ViewType.EDIT, path);
             locationController.goTo(location);
 
         } catch (RepositoryException e) {

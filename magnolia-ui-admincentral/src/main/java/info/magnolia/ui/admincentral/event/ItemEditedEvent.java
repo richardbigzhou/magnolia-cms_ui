@@ -31,13 +31,56 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.view;
+package info.magnolia.ui.admincentral.event;
 
-import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
+
+import java.io.Serializable;
+
+import com.vaadin.data.Item;
+
 
 /**
- * Roles view for the Security App.
+ * Event fired when the inplace editing field value was edited.
  */
-public interface RolesView extends WorkbenchSubAppView {
+public class ItemEditedEvent implements Event<ItemEditedEvent.Handler> {
 
+    /**
+     * Event listener that should react to item edited events.
+     */
+    public interface Handler extends EventHandler {
+
+        void onItemEdited(ItemEditedEvent event);
+    }
+
+    /**
+     * Event notifier that should register item edited events.
+     */
+    public interface Notifier extends Serializable {
+
+        void addListener(ItemEditedEvent.Handler listener);
+
+        void removeListener(ItemEditedEvent.Handler listener);
+    }
+
+    private final Item item;
+
+    /**
+     * Instantiates a new item edited event.
+     * 
+     * @param item the item that has been edited.
+     */
+    public ItemEditedEvent(Item item) {
+        this.item = item;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onItemEdited(this);
+    }
 }
