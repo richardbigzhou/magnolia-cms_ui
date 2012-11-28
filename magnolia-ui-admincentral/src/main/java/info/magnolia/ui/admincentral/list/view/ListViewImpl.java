@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -187,7 +186,7 @@ public class ListViewImpl implements ListView {
                 container.addContainerProperty(columnProperty, column.getType(), "");
 
                 // Set Formatter
-                if (StringUtils.isNotBlank(column.getFormatterClass().toString())) {
+                if (column.getFormatterClass() != null) {
                     try {
                         table.addGeneratedColumn(
                             columnProperty,
