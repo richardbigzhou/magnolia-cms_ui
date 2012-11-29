@@ -45,6 +45,7 @@ import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,24 +78,20 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         super(jcrNode);
     }
 
-    //
 
     @Override
-    protected void setCommonAttributes(Item jcrItem) {
-        super.setCommonAttributes(jcrItem);
-        if (jcrItem instanceof Node) {
-
-            Node node = (Node) jcrItem;
-            try {
-                uuid = node.getIdentifier();
+    protected void initCommonAttributes(Item jcrItem) {
+        super.initCommonAttributes(jcrItem);
+        Node node = (Node) jcrItem;
+        try {
+            uuid = node.getIdentifier();
+            if(StringUtils.isBlank(primaryNodeType)) {
                 primaryNodeType = node.getPrimaryNodeType().getName();
-            } catch (RepositoryException e) {
-                log.error("Could not retrieve identifier or primaryNodeType name of JCR Node.", e);
-                uuid = UN_IDENTIFIED;
-                primaryNodeType = UN_IDENTIFIED;
             }
-        } else {
-            log.error("Cannot initialize JcrNodeAdapter with a JCR Item that is not a Node.");
+        } catch (RepositoryException e) {
+            log.error("Could not retrieve identifier or primaryNodeType name of JCR Node.", e);
+            uuid = UN_IDENTIFIED;
+            primaryNodeType = UN_IDENTIFIED;
         }
     }
 

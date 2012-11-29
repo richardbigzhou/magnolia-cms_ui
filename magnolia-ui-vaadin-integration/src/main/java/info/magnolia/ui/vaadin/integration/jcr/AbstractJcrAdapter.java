@@ -69,13 +69,13 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     private final Map<String, Property> removedProperties = new HashMap<String, Property>();
 
     public AbstractJcrAdapter(Item jcrItem) {
-        setCommonAttributes(jcrItem);
+        initCommonAttributes(jcrItem);
     }
 
     /**
      * Init common Item attributes.
      */
-    protected void setCommonAttributes(Item jcrItem) {
+    protected void initCommonAttributes(Item jcrItem) {
         isNode = jcrItem.isNode();
         try {
             workspace = jcrItem.getSession().getWorkspace().getName();
@@ -154,6 +154,7 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
      * Updates and removes properties on given item, based on the {@link #changedProperties} and
      * {@link #removedProperties} maps. Read-only properties will not be updated.
      */
+    @SuppressWarnings("unused")
     public void updateProperties(Item item) throws RepositoryException {
         for (Entry<String, Property> entry : changedProperties.entrySet()) {
             if (entry.getValue().isReadOnly()) {
