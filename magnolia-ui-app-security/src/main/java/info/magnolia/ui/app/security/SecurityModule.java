@@ -316,12 +316,10 @@ public class SecurityModule implements ModuleLifecycle {
                                            ),
                                 formcfg.tab("Groups").label("Groups")
                                     .fields(
-                                            formcfg.fields.staticField("placeholder").label("Group management"),
                                             groups
                                            ),
                                 formcfg.tab("Roles").label("Roles")
                                     .fields(
-                                            cfg.fields.staticField("placeholder").label("A placeholder for roles management"),
                                             roles
                                            )
                              )
