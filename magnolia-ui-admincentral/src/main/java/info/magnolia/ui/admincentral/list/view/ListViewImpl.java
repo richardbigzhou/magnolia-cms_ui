@@ -37,7 +37,6 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.column.definition.ColumnFormatter;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
@@ -187,20 +186,9 @@ public class ListViewImpl implements ListView {
 
                 // Set Formatter
                 if (column.getFormatterClass() != null) {
-                    try {
-                        table.addGeneratedColumn(
-                            columnProperty,
-                            (ColumnFormatter) componentProvider.newInstance(Class.forName(column.getFormatterClass().toString()), column));
-                    } catch (ClassNotFoundException e) {
-                        log.error("Not able to create the Formatter", e);
-                    }
-
-                    // Set Formatter
-                    if (column.getFormatterClass() != null) {
-                        table.addGeneratedColumn(columnProperty, componentProvider.newInstance(column.getFormatterClass(), column));
-                    }
-                    columnOrder.add(columnProperty);
+                    table.addGeneratedColumn(columnProperty, componentProvider.newInstance(column.getFormatterClass(), column));
                 }
+                columnOrder.add(columnProperty);
             }
 
             table.setContainerDataSource(container);
