@@ -133,7 +133,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                 wbcfg.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(ContactNameColumnFormatter.class),
                                                 wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),
                                                 wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
-                                                wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("MetaData/mgnl:lastmodified").displayInDialog(false).width(200).sortable(true)
+                                                wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("mgnl:lastModified").displayInDialog(false).width(200).sortable(true)
                                         )
                                         .actionbar(abcfg.actionbar().defaultAction("edit")
                                                 .sections(
