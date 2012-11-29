@@ -55,9 +55,12 @@ public class PageViewImpl implements PageView {
     @Inject
     public PageViewImpl(final Shell shell, final AppContext appContext) {
 
-        String sourceURL = ((PageSubAppDescriptor) appContext.getAppDescriptor().getSubApps().get("main")).getUrl();
-        Embedded page = new Embedded(null, new ExternalResource(MgnlContext.getContextPath() + "/.magnolia/pages/" + sourceURL));
+        layout.setSizeFull();
+
+        final String sourceURL = ((PageSubAppDescriptor) appContext.getAppDescriptor().getSubApps().get("main")).getUrl();
+        final Embedded page = new Embedded(null, new ExternalResource(MgnlContext.getContextPath() + "/.magnolia/pages/" + sourceURL));
         page.setType(Embedded.TYPE_BROWSER);
+        page.setSizeFull();
 
         layout.addComponent(page);
     }
