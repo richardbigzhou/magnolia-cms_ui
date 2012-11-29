@@ -33,9 +33,11 @@
  */
 package info.magnolia.ui.admincentral.tree.container;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
@@ -137,6 +139,9 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         // GIVEN
         Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
         node1.getSession().save();
+        
+        Node node2 = AbstractJcrContainerTest.createNode(node1, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
+        node2.getSession().save();
         String containerItemId = node1.getPath();
 
         // WHEN

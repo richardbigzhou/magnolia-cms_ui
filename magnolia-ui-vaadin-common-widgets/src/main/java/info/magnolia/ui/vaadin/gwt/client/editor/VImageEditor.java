@@ -40,6 +40,7 @@ import org.vaadin.rpc.client.Method;
 
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -47,6 +48,8 @@ import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.VConsole;
+
+
 
 /**
  * Client side implementtaion for ImageEditor widget.
@@ -65,7 +68,7 @@ public static final String CLASSNAME = "v-image-editor";
     
     private int explicitHeight = 0;
 
-    private final double scaleRatio = 1d;
+    private double scaleRatio = 1d;
     
     private Image img = null;
 
@@ -75,10 +78,30 @@ public static final String CLASSNAME = "v-image-editor";
     
     private final Label scaleLabel = new Label();
     
-    private final Label infoLabel = new Label();
+    private final Label fileNameLabel = new Label(); 
+    
+    private final Label sizeLabel = new Label();
+    
+    private final Label mimeLabel = new Label();
     
     private final ClientSideProxy proxy = new ClientSideProxy(this) {
         {
+            register("setFileName", new Method() {
+
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    fileNameLabel.setText(String.valueOf(params[0]));
+                }
+            });
+            
+            register("setMimeType", new Method() {
+
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    mimeLabel.setText(String.valueOf(params[0]));
+                }
+            });
+            
             register("setSource", new Method() {
 
                 @Override
@@ -87,13 +110,13 @@ public static final String CLASSNAME = "v-image-editor";
                         System.out.println("Remving old img " + img);
                         remove(img);
                     }
-                    infoLabel.setText(String.valueOf(params[0]));
                     img = new Image(String.valueOf(params[0]));
                     img.addLoadHandler(new LoadHandler() {
                         @Override
                         public void onLoad(LoadEvent event) {
                             nativeImageWidth = img.getOffsetWidth();
                             nativeImageHeight = img.getOffsetHeight();
+                            sizeLabel.setText(nativeImageWidth + " x " + nativeImageHeight);
                             updateImage();
                         }
                     });
@@ -153,9 +176,16 @@ public static final String CLASSNAME = "v-image-editor";
         setVerticalAlignment(ALIGN_MIDDLE);
         
         scaleLabel.getElement().getStyle().setColor("#FFFFFF");
-        infoLabel.getElement().getStyle().setColor("#FFFFFF");
+        fileNameLabel.getElement().getStyle().setColor("#FFFFFF");
         
-        add(infoLabel);
+        final HorizontalPanel details = new HorizontalPanel();
+        details.getElement().getStyle().setColor("#FFFFFF");
+        details.setWidth("360px");
+        
+        details.add(fileNameLabel);
+        details.add(sizeLabel);
+        details.add(mimeLabel);
+        add(details);
         add(scaleLabel);
     }
 
@@ -207,13 +237,16 @@ public static final String CLASSNAME = "v-image-editor";
     }
     
     private void updateImage() {
-        if (nativeImageHeight > 0) {
-            //double aspectRatio = (double) nativeImageWidth / nativeImageHeight;
+        if (nativeImageHeight > 0 && nativeImageWidth > 0) {
             int width = explicitWidth == 0 ? nativeImageWidth : explicitWidth - 2 * margins;
             int height = explicitHeight == 0 ? nativeImageHeight : explicitHeight - 2 * margins;
+
+            double heightRatio = height * 1d / nativeImageHeight;
+            double widthRatio = width * 1d / nativeImageWidth;
+            scaleRatio = Math.min(heightRatio, widthRatio);
             
-            img.setWidth(width + "px");
-            img.setHeight(height + "px");   
+            img.setWidth((int)(nativeImageWidth * scaleRatio) + "px");
+            img.setHeight((int)(nativeImageHeight * scaleRatio) + "px");   
             
             scaleLabel.setText("Showing " + (int)(width * 1d / nativeImageWidth * 100) + "% of original size");
         }

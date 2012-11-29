@@ -154,7 +154,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
                 @Override
                 public void onSuccess(String actionName) {
-                    String templateId = String.valueOf(item.getItemProperty("MetaData/mgnl:template").getValue());
+                    String templateId = String.valueOf(item.getItemProperty("mgnl:template").getValue());
                     try {
                         TemplateDefinition templateDef = templateDefinitionRegistry.getTemplateDefinition(templateId);
                         String dialog = templateDef.getDialog();
@@ -204,7 +204,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
         tabDefinition.setLabel("Components");
 
         ComponentSelectorDefinition selector = new ComponentSelectorDefinition();
-        selector.setName("MetaData/mgnl:template");
+        selector.setName("mgnl:template");
         selector.setLabel("Component");
         String[] tokens = availableComponents.split(",");
 

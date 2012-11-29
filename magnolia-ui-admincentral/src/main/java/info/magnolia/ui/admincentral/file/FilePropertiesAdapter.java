@@ -33,61 +33,16 @@
  */
 package info.magnolia.ui.admincentral.file;
 
-import info.magnolia.ui.admincentral.image.ImageSize;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
-
-import com.vaadin.Application;
-import com.vaadin.ui.Component;
-
 /**
- * Used by File fields to handle JcrItems of type mgnl:resource.
+ * Adapter for various ways of updating the file properties. 
  */
-public interface FileItemWrapper {
+public interface FilePropertiesAdapter {
 
-    /**
-     * Populate the jcrItem with the bean informations.
-     */
-    public void populateJcrItemProperty();
-    /**
-     * Update properties based on the informations contained in the receiver.
-     */
-    public void updateProperties(FilePropertiesAdapter receiver);
-    /**
-     * Clear all properties.
-     */
-    public void clearProperties();
-    /**
-     * Create a preview Component object.
-     */
-    public Component createPreview(Application application);
-    /**
-     * Return the related JcrItem.
-     */
-    public JcrItemNodeAdapter getJcrItem();
-
-    /**
-     * Remove link between item and parent.
-     * In this case the child File Item will not be persisted.
-     */
-    public void unLinkItemFromParent();
-
-    /**
-     * Return true if the binaryData is not empty.
-     * false otherwise.
-     */
-    public boolean isEmpty();
-
-    /**
-     * Define if the File is an Image.
-     */
-    public boolean isImage();
-
-    /**
-     * Get Image Size.
-     */
-    public ImageSize getImageSize();
-
-    public String getFileName();
-
-    public long getFileSize();
+    byte[] getBinaryData();
+    
+    long getFileSize();
+    
+    String getFileName();
+    
+    String getMimeType();
 }
