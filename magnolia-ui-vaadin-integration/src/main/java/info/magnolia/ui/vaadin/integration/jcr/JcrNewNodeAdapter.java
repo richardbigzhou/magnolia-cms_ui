@@ -141,7 +141,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
                 for (JcrItemNodeAdapter child : getChildren().values()) {
                     if (child instanceof JcrNewNodeAdapter) {
                         // Set parent node (parent could be newly created)
-                        ((AbstractJcrAdapter) child).setCommonAttributes(node);
+                        ((AbstractJcrAdapter) child).initCommonAttributes(node);
                     }
                     child.getNode();
                 }
