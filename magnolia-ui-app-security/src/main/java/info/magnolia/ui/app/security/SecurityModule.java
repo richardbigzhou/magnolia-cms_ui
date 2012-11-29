@@ -258,7 +258,7 @@ public class SecurityModule implements ModuleLifecycle {
                                                         (new OptionBuilder()).value("fr").label("French")
                                                     )
                                                ),
-                                formcfg.tab("Membership").label("Membership")
+                                formcfg.tab("Groups").label("Groups")
                                         .fields(
                                                 groups
                                                ),
@@ -314,7 +314,7 @@ public class SecurityModule implements ModuleLifecycle {
                                             formcfg.fields.textField("title").label("Full Name").description("Full name of the group"),
                                             formcfg.fields.textField("description").label("Description").description("Detail description of the group")
                                            ),
-                                formcfg.tab("Membership").label("Membership")
+                                formcfg.tab("Groups").label("Groups")
                                     .fields(
                                             formcfg.fields.staticField("placeholder").label("Group management"),
                                             groups
@@ -368,7 +368,7 @@ public class SecurityModule implements ModuleLifecycle {
                                          ),
                               formcfg.tab("ACLs").label("Access Control Lists")
                                   .fields(
-                                          formcfg.fields.textField("do-not-use").label("Placeholder, do not use").readOnly()
+                                          formcfg.fields.staticField("placeholder").label("Placeholder for ACL control")
                                          )
                              )
                         )
