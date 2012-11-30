@@ -132,11 +132,10 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
 
     /**
      * Get a property from the current Item.
-     * If the property already exist, return this property.
-     * If the property does not exist:
-     * Create a new property based on the defined Type, default value, and saveInfo.
+     * If the property already exists, return this property.
+     * <p>If the property does not exist, create a new property based on the defined type, default value, and saveInfo.
      */
-    public Property getOrCreateProperty() {
+    protected Property getOrCreateProperty() {
         String propertyName = getPropertyName();
         DefaultProperty property = (DefaultProperty) item.getItemProperty(propertyName);
         if (property == null) {

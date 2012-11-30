@@ -55,10 +55,10 @@ public class SecurityApp extends AbstractContentApp {
     @Override
     public void start(Location location) {
         super.start(location);
-        // getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "system users", "" ));
+        getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "systemUsers", "/system" ));
         getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "groups", "" ));
         getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "roles", "" ));
-        getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "users", "" ));
+        getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "users", "/admin" ));
     }
 
 }

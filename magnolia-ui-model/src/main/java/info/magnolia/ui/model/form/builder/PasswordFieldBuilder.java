@@ -62,6 +62,11 @@ public class PasswordFieldBuilder extends AbstractFieldBuilder {
         return this;
     }
 
+    public PasswordFieldBuilder encode(boolean encode) {
+        getDefinition().setEncode(encode);
+        return this;
+    }
+
     public PasswordFieldBuilder verificationMessage(String message) {
         getDefinition().setVerificationMessage(message);
         return this;

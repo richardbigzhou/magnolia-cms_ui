@@ -65,11 +65,13 @@ public class PasswordFields extends CustomField {
      *   - {@link Label} (verificationMessage).
      *   - {@link PasswordField}.
      */
-    public PasswordFields(boolean verification, String verificationMessage, String verificationErrorMessage) {
+    public PasswordFields(boolean verification, String verificationMessage, String verificationErrorMessage, boolean encode) {
         this.verification = verification;
         this.verificationErrorMessage = verificationErrorMessage;
         // Initialize encoder
-        this.translator = new Base64Translator();
+        if(encode) {
+            this.translator = new Base64Translator();
+        }
         // Init layout
         layout = new VerticalLayout();
         passwordField = new PasswordField();
@@ -134,8 +136,13 @@ public class PasswordFields extends CustomField {
 
     @Override
     public void setPropertyDataSource(Property newDataSource) {
-        translator.setPropertyDataSource(newDataSource);
-        passwordField.setPropertyDataSource(translator);
+        if(translator != null) {
+            translator.setPropertyDataSource(newDataSource);
+            passwordField.setPropertyDataSource(translator);
+        } else {
+            passwordField.setPropertyDataSource(newDataSource);
+        }
+
         if(this.verification) {
             verificationField.setValue(new String (passwordField.getPropertyDataSource().getValue().toString()));
         }
@@ -143,6 +150,12 @@ public class PasswordFields extends CustomField {
 
     @Override
     public Property getPropertyDataSource() {
-        return translator.getPropertyDataSource();
+        Property property = null;
+        if(translator != null) {
+            property = translator.getPropertyDataSource();
+        } else {
+            property = passwordField.getPropertyDataSource();
+        }
+        return property;
     }
 }
