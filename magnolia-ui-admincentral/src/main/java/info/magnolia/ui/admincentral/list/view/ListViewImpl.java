@@ -52,8 +52,8 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
 
 
 /**
@@ -68,7 +68,7 @@ public class ListViewImpl implements ListView {
 
     private final Table table;
 
-    private final VerticalLayout margin = new VerticalLayout();
+    private final CssLayout margin = new CssLayout();
 
     private final AbstractJcrContainer container;
 

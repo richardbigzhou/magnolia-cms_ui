@@ -4,8 +4,7 @@
 }
 
 .mgnl-content-view {background:#fff;}
-.mgnl-content-view .v-csslayout-margin,
-.mgnl-content-view .v-verticallayout-margin {padding:4px;}
+.mgnl-content-view .v-csslayout-margin {padding:4px;}
 
 .v-magnolia-table .v-table {
 	background-color:#ffffff;
