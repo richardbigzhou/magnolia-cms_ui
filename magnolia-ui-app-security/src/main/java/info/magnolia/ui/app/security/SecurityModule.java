@@ -246,7 +246,7 @@ public class SecurityModule implements ModuleLifecycle {
                                 formcfg.tab("User").label("User Info")
                                         .fields(
                                                 username,
-                                                formcfg.fields.passwordField("password").label("Password").verification(),
+                                                formcfg.fields.passwordField("password").label("Password").verification().encode(false),
                                                 (new EnabledFieldBuilder("enabled")).label("Enabled"),
                                                 formcfg.fields.textField("title").label("Full name"),
                                                 formcfg.fields.textField("email").label("E-mail").description("Please enter user's e-mail address."),
