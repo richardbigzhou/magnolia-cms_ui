@@ -22,16 +22,12 @@
       <implementation>info.magnolia.ui.app.contacts.ContactsMainSubApp</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.app.contacts.ContactsView</type>
-      <implementation>info.magnolia.ui.app.contacts.ContactsViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView</type>
+      <implementation>info.magnolia.ui.admincentral.app.content.WorkbenchSubAppViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.app.contacts.item.ContactsItemSubApp</type>
       <implementation>info.magnolia.ui.app.contacts.item.ContactsItemSubApp</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.app.contacts.item.ContactsItemView</type>
-      <implementation>info.magnolia.ui.app.contacts.item.ContactsItemViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
@@ -66,8 +62,8 @@
       <implementation>info.magnolia.ui.app.contacts.item.ContactsItemSubApp</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.app.contacts.item.ContactsItemView</type>
-      <implementation>info.magnolia.ui.app.contacts.item.ContactsItemViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView</type>
+      <implementation>info.magnolia.ui.admincentral.app.content.WorkbenchSubAppViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.workbench.ItemWorkbenchView</type>
