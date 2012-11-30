@@ -46,13 +46,16 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang.time.FastDateFormat;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.Container.ItemSetChangeEvent;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
@@ -64,7 +67,7 @@ import com.vaadin.ui.Table.GeneratedRow;
 public class PulseMessagesViewImpl extends CustomComponent implements PulseMessagesView {
 
     private static final String[] headers = new String[]{
-        "New", "Type", "Message Text", "Sender", "Date", "Quick Do"
+        "New", "Type", "Message text", "Sender", "Date", "Quick action"
     };
 
     private final TreeTable messageTable = new MagnoliaTreeTable();
@@ -78,6 +81,8 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     private final FastDateFormat dateFormatter = FastDateFormat.getInstance();
 
     private boolean grouping = false;
+    
+    private Label emptyPlaceHolder = new Label("No messages to display.");
 
     @Inject
     public PulseMessagesViewImpl(final PulseMessagesPresenter presenter) {
@@ -98,6 +103,9 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             }
         });
         constructTable();
+        emptyPlaceHolder.addStyleName("emptyplaceholder");
+        root.addComponent(emptyPlaceHolder);
+        setComponentVisibility(messageTable.getContainerDataSource());
     }
 
     private void constructTable() {
@@ -135,6 +143,29 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
                 presenter.onMessageClicked((String) itemId);
             }
         });
+        
+        messageTable.addListener(new Container.ItemSetChangeListener() {
+            
+            @Override
+            public void containerItemSetChange(ItemSetChangeEvent event) {
+                setComponentVisibility(event.getContainer());
+            }
+        });
+    }
+    
+    private void setComponentVisibility(Container container) {
+        boolean isEmptyList = container.getItemIds().size() == 0;
+        if(isEmptyList) {
+            root.setExpandRatio(emptyPlaceHolder, 1f);
+            //Use expand ratio to hide message table.
+            //setVisible() would cause rendering issues.
+            root.setExpandRatio(messageTable, 0f);
+        } else {
+            root.setExpandRatio(emptyPlaceHolder, 0f);
+            root.setExpandRatio(messageTable, 1f);
+        }
+        
+        emptyPlaceHolder.setVisible(isEmptyList);
     }
 
     private ValueChangeListener groupingListener = new ValueChangeListener() {

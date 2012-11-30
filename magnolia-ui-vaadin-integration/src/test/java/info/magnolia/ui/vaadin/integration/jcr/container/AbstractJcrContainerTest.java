@@ -70,7 +70,6 @@ import org.junit.Test;
 
 import com.vaadin.data.Property;
 
-
 /**
  * Tests for AbstractJcrContainer.
  */
@@ -85,6 +84,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     private final String colName1 = "name";
 
     private final String colName2 = "shortname";
+
+    private final String TEST_PATH = "/test";
 
     private Session session;
 
@@ -105,7 +106,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
         WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
         when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(
-            new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>());
+                new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>());
 
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);
@@ -310,7 +311,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
         String containerItemId1 = node1.getPath();
-        boolean[] ascending = {true};
+        boolean[] ascending = { true };
         // WHEN
         jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
 
@@ -325,7 +326,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
         String containerItemId2 = node2.getPath();
-        boolean[] ascending = {false};
+        boolean[] ascending = { false };
 
         // WHEN
         jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
@@ -351,7 +352,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         assertEquals(4, jcrContainer.getCurrentOffset());
 
         // WHEN
-        jcrContainer.sort(Arrays.asList("name").toArray(), new boolean[]{true});
+        jcrContainer.sort(Arrays.asList("name").toArray(), new boolean[] { true });
 
         // THEN
         assertEquals(0, jcrContainer.getCurrentOffset());
@@ -399,6 +400,20 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
+    public void testConstructJCRQueryWithoutSortWithPathClause() {
+        // GIVEN
+        workbenchDefinition.setPath(TEST_PATH);
+
+        // WHEN
+        final String result = jcrContainer.constructJCRQuery(false);
+
+        // THEN
+        String expectedResult = String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME);
+        expectedResult += String.format(AbstractJcrContainer.SELECT_TEMPLATE_PATH_CLAUSE, TEST_PATH);
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
     public void testConstructJCRQueryWithDefaultSort() {
         // GIVEN
 
@@ -406,49 +421,47 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME)
-            + AbstractJcrContainer.ORDER_BY
-            + AbstractJcrContainer.SELECTOR_NAME
-            + ".["
-            + colName2
-            + "]"
-            + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME) + AbstractJcrContainer.ORDER_BY
+                + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
     }
 
     @Test
     public void testConstructJCRQuerySortBySortableColumn() {
         // GIVEN
-        jcrContainer.sort(new String[]{"jcrName"}, new boolean[]{true});
+        jcrContainer.sort(new String[] { "jcrName" }, new boolean[] { true });
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME)
-            + AbstractJcrContainer.ORDER_BY
-            + AbstractJcrContainer.SELECTOR_NAME
-            + ".["
-            + colName2
-            + "]"
-            + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME) + AbstractJcrContainer.ORDER_BY
+                + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
     }
 
     @Test
     public void testConstructJCRQuerySortByNonSortableColumn() {
         // GIVEN
-        jcrContainer.sort(new String[]{colName2}, new boolean[]{true});
+        jcrContainer.sort(new String[] { colName2 }, new boolean[] { true });
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME)
-            + AbstractJcrContainer.ORDER_BY
-            + AbstractJcrContainer.SELECTOR_NAME
-            + ".["
-            + colName2
-            + "]"
-            + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME) + AbstractJcrContainer.ORDER_BY
+                + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+    }
+
+    @Test
+    public void testGetMainItemTypeWhenNotDefinedProperly() {
+        // GIVEN
+        ConfiguredItemTypeDefinition defWithoutItemType = new ConfiguredItemTypeDefinition();
+        workbenchDefinition.setMainItemType(defWithoutItemType);
+
+        // WHEN
+        final String result = jcrContainer.getMainItemTypeAsString();
+
+        // THEN
+        assertEquals(AbstractJcrContainer.DEFAULT_MAIN_ITEM_TYPE, result);
     }
 
     @Test
@@ -467,27 +480,65 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetMainItemTypeWhenNotDefinedProperly() {
+    public void getWorkspacePathQueryClause_WithPath() {
         // GIVEN
-        ConfiguredItemTypeDefinition defWithoutItemType = new ConfiguredItemTypeDefinition();
-        workbenchDefinition.setMainItemType(defWithoutItemType);
+        workbenchDefinition.setPath(TEST_PATH);
 
         // WHEN
-        final String result = jcrContainer.getMainItemTypeAsString();
+        final String result = jcrContainer.getWorkspacePathQueryClause();
 
         // THEN
-        assertEquals(AbstractJcrContainer.DEFAULT_MAIN_ITEM_TYPE, result);
+        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE_PATH_CLAUSE, TEST_PATH), result);
+    }
+
+    @Test
+    public void getWorkspacePathQueryClause_WithRoot() {
+        // GIVEN
+        final String testPath = "/";
+        workbenchDefinition.setPath(testPath);
+
+        // WHEN
+        final String result = jcrContainer.getWorkspacePathQueryClause();
+
+        // THEN
+        assertEquals("", result);
+    }
+
+    @Test
+    public void getWorkspacePathQueryClause_WithNull() {
+        // GIVEN
+        workbenchDefinition.setPath(null);
+
+        // WHEN
+        final String result = jcrContainer.getWorkspacePathQueryClause();
+
+        // THEN
+        assertEquals("", result);
+    }
+
+    @Test
+    public void getWorkspacePathQueryClause_WithEmptyString() {
+        // GIVEN
+        final String testPath = "";
+        workbenchDefinition.setPath(testPath);
+
+        // WHEN
+        final String result = jcrContainer.getWorkspacePathQueryClause();
+
+        // THEN
+        assertEquals("", result);
     }
 
     /**
      * Define the sorting criteria.
      */
     private void setSorter(String sortingPorperty, boolean ascending) {
-        boolean[] ascendingOrder = {ascending};
+        boolean[] ascendingOrder = { ascending };
         jcrContainer.sort(Arrays.asList(sortingPorperty).toArray(), ascendingOrder);
     }
 
-    public static Node createNode(Node rootNode, String nodename, String nodeType, String nodePropertyName, String nodePropertyValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public static Node createNode(Node rootNode, String nodename, String nodeType, String nodePropertyName, String nodePropertyValue)
+            throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         Node node = rootNode.addNode(nodename, nodeType);
         node.setProperty(nodePropertyName, nodePropertyValue);
         return node;
@@ -495,7 +546,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
     /**
      * Dummy Implementation of the {AbstractJcrContainer}.
-     * 
+     *
      */
     public class JcrContainerTestImpl extends AbstractJcrContainer {
 

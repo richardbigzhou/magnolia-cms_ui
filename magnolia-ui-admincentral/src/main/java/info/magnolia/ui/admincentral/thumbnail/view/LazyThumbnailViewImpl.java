@@ -50,7 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.CssLayout;
 
 
 /**
@@ -68,9 +68,9 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private final LazyThumbnailLayout layout;
 
-    private final VerticalLayout margin = new VerticalLayout();
+    private final CssLayout margin = new CssLayout();
 
-    private ImageProvider imageProvider;
+    private final ImageProvider imageProvider;
 
     public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailContainer container) {
         this.workbenchDefinition = definition;
@@ -132,7 +132,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         return margin;
     }
 
-    private String prepareJcrSQL2Query(){
+    private String prepareJcrSQL2Query() {
         final String itemType = workbenchDefinition.getMainItemType().getItemType();
         return "select * from [" + itemType + "] as t order by name(t)";
 

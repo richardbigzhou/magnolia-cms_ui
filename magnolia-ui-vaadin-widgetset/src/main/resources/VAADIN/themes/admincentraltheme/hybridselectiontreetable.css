@@ -4,7 +4,7 @@
 }
 
 .mgnl-content-view {background:#fff;}
-.mgnl-content-view .v-csslayout-margin {padding:8px 12px;}
+.mgnl-content-view .v-csslayout-margin {padding:4px;}
 
 .v-magnolia-table .v-table {
 	background-color:#ffffff;
@@ -45,8 +45,12 @@
 	font-size:12px;
 	font-weight:bold;
 	font-family:Verdana,Arial,Geneva,Helvetica,sans-serif;
-	padding:10px 5px;
+	padding:15px 5px 4px;
 	margin:0;
+}
+
+.v-table-header-cell-asc .v-table-sort-indicator, .v-table-header-cell-desc .v-table-sort-indicator {
+    margin-top:16px;
 }
 
 .v-magnolia-table .square {
@@ -77,10 +81,9 @@
 
 .v-magnolia-table .v-select-all {
 	position:absolute;
-	top:0;
+	top:18px;
 	left:6px;
 	z-index:1000;
-	margin: 10px 0px 0px 2px;
 }
 
 .v-magnolia-table tr.v-selected .v-table-cell-content {
@@ -95,16 +98,15 @@
 .v-table-focus .v-table-cell-wrapper {margin:0;}
 .v-table-focus .v-table-cell-content {border-top:none;}
 
-/*.v-magnolia-table .v-treetable-treespacer {
-    margin-left: 20px;
-}*/
-
 .v-magnolia-table .v-selection-cb {
-	width:15px;
-	height:15px;
-	line-height:18px;
-	vertical-align:top;
-	margin:0 4px;
+    display:inline-block;
+    width:11px;
+    height:11px;
+    margin:0 20px 0 1px;
+    padding:0;
+    overflow: hidden;
+    vertical-align: baseline;
+	background-color:#fff;
 }
 
 .v-magnolia-table.mobile .v-table-row, .v-magnolia-table.mobile .v-table-row-odd {

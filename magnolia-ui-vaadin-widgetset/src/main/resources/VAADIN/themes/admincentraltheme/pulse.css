@@ -157,3 +157,9 @@
 	display: inline-block;
 	margin-left: 50px;
 }
+
+.v-pulse .emptyplaceholder {
+	color: #666;
+	font-weight: bold;
+	text-align: center;
+}
