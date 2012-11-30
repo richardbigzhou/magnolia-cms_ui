@@ -138,6 +138,24 @@ public class PasswordFieldBuilderTest extends AbstractBuilderTest<PasswordFieldD
         assertEquals("awdYxe?m,483*", new String(Base64.decodeBase64(res.getProperty(propertyName).getString())));
     }
 
+    @Test
+    public void doNotEncodeTest() throws RepositoryException {
+        // GIVEN
+        definition.setVerification(false);
+        definition.setEncode(false);
+        passwordFieldBuilder = new PasswordFieldBuilder(definition, baseItem);
+        passwordFieldBuilder.setI18nContentSupport(i18nContentSupport);
+        Field field = passwordFieldBuilder.getField();
+        field.setValue("awdYxe?m,483*");
+        field.validate();
+
+        // WHEN
+        Node res = ((JcrNodeAdapter)baseItem).getNode();
+
+        // THEN
+        assertEquals("awdYxe?m,483*", (res.getProperty(propertyName).getString()));
+    }
+
     @Override
     protected void createConfiguredFieldDefinition() {
         PasswordFieldDefinition fieldDefinition = new PasswordFieldDefinition();

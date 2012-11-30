@@ -115,8 +115,8 @@ public class SecurityModule implements ModuleLifecycle {
 
         app.label("security").icon("icon-security-app").appClass(SecurityApp.class) // .categoryName("MANAGE")
             .subApps(
-                    userSubApp(app, wbcfg, abcfg, "users", "/").defaultSubApp(),
-                    // userSubApp(app, wbcfg, abcfg, "system users", "/system"),
+                    userSubApp(app, wbcfg, abcfg, "users", "/admin").defaultSubApp(),
+                    userSubApp(app, wbcfg, abcfg, "systemUsers", "/system"),
                     app.subApp("groups").subAppClass(SecurityGroupsSubApp.class)
                     .workbench(wbcfg.workbench().workspace("usergroups").root("/").defaultOrder("jcrName")
                             .groupingItemType(wbcfg.itemType(NodeTypes.Folder.NAME).icon("/.resources/icons/16/folders.gif"))
@@ -190,10 +190,11 @@ public class SecurityModule implements ModuleLifecycle {
                         .mainItemType(wbcfg.itemType(NodeTypes.User.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                         .imageProvider(cipd)
                         .columns(
-                                wbcfg.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class),
-                                wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),
-                                wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
-                                wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).width(200).sortable(true)
+                                wbcfg.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).width(200).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class),
+                                wbcfg.column(new PropertyColumnDefinition()).name("title").label("Full name").sortable(true).expandRatio(2.0f),
+                                wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(350).displayInDialog(false),
+                                wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(60),
+                                wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).width(250).sortable(true)
                         )
                         .actionbar(abcfg.actionbar().defaultAction("edit")
                                 .sections(
@@ -246,7 +247,7 @@ public class SecurityModule implements ModuleLifecycle {
                                 formcfg.tab("User").label("User Info")
                                         .fields(
                                                 username,
-                                                formcfg.fields.passwordField("password").label("Password").verification(),
+                                                formcfg.fields.passwordField("pswd").label("Password").verification().encode(false), //we handle encoding in the save action
                                                 (new EnabledFieldBuilder("enabled")).label("Enabled"),
                                                 formcfg.fields.textField("title").label("Full name"),
                                                 formcfg.fields.textField("email").label("E-mail").description("Please enter user's e-mail address."),
@@ -258,7 +259,7 @@ public class SecurityModule implements ModuleLifecycle {
                                                         (new OptionBuilder()).value("fr").label("French")
                                                     )
                                                ),
-                                formcfg.tab("Membership").label("Membership")
+                                formcfg.tab("Groups").label("Groups")
                                         .fields(
                                                 groups
                                                ),
@@ -314,14 +315,12 @@ public class SecurityModule implements ModuleLifecycle {
                                             formcfg.fields.textField("title").label("Full Name").description("Full name of the group"),
                                             formcfg.fields.textField("description").label("Description").description("Detail description of the group")
                                            ),
-                                formcfg.tab("Membership").label("Membership")
+                                formcfg.tab("Groups").label("Groups")
                                     .fields(
-                                            formcfg.fields.staticField("placeholder").label("Group management"),
                                             groups
                                            ),
                                 formcfg.tab("Roles").label("Roles")
                                     .fields(
-                                            cfg.fields.staticField("placeholder").label("A placeholder for roles management"),
                                             roles
                                            )
                              )
@@ -368,7 +367,7 @@ public class SecurityModule implements ModuleLifecycle {
                                          ),
                               formcfg.tab("ACLs").label("Access Control Lists")
                                   .fields(
-                                          formcfg.fields.textField("do-not-use").label("Placeholder, do not use").readOnly()
+                                          formcfg.fields.staticField("placeholder").label("Placeholder for ACL control")
                                          )
                              )
                         )
