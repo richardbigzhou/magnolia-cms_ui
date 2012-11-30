@@ -37,8 +37,6 @@ import info.magnolia.ui.admincentral.field.PasswordFields;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.PasswordFieldDefinition;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 
@@ -54,8 +52,8 @@ public class PasswordFieldBuilder extends AbstractFieldBuilder<PasswordFieldDefi
 
     @Override
     protected Field buildField() {
-        String verificationErrorMessage = StringUtils.EMPTY;
-        String verificationMessage = StringUtils.EMPTY;
+        String verificationErrorMessage = "";
+        String verificationMessage = "";
         if(definition.isVerification()) {
             verificationErrorMessage = getMessage(definition.getVerificationErrorMessage());
             verificationMessage = getMessage(definition.getVerificationMessage());

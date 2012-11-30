@@ -190,10 +190,11 @@ public class SecurityModule implements ModuleLifecycle {
                         .mainItemType(wbcfg.itemType(NodeTypes.User.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                         .imageProvider(cipd)
                         .columns(
-                                wbcfg.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class),
-                                wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),
-                                wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
-                                wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).width(200).sortable(true)
+                                wbcfg.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).width(200).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class),
+                                wbcfg.column(new PropertyColumnDefinition()).name("title").label("Full name").sortable(true).expandRatio(2.0f),
+                                wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(350).displayInDialog(false),
+                                wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(60),
+                                wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).width(250).sortable(true)
                         )
                         .actionbar(abcfg.actionbar().defaultAction("edit")
                                 .sections(
@@ -246,7 +247,7 @@ public class SecurityModule implements ModuleLifecycle {
                                 formcfg.tab("User").label("User Info")
                                         .fields(
                                                 username,
-                                                formcfg.fields.passwordField("password").label("Password").verification().encode(false),
+                                                formcfg.fields.passwordField("pswd").label("Password").verification().encode(false), //we handle encoding in the save action
                                                 (new EnabledFieldBuilder("enabled")).label("Enabled"),
                                                 formcfg.fields.textField("title").label("Full name"),
                                                 formcfg.fields.textField("email").label("E-mail").description("Please enter user's e-mail address."),
