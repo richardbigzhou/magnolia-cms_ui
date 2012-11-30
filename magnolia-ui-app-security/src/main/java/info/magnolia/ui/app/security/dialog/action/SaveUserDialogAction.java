@@ -91,13 +91,7 @@ public class SaveUserDialogAction extends SaveDialogAction {
 
             if(userNode.isNew()) {
                 log.debug("User is new, setting his/her password...");
-                if (StringUtils.isNotBlank(clearPassword)) {
-                    PropertyUtil.setProperty(userNode, MgnlUserManager.PROPERTY_PASSWORD, encodedPassword);
-
-                } else {
-                    //should not happen as validation has already run and should check for this occurrence too
-                    throw new ActionExecutionException("Password cannot be blank");
-                }
+                PropertyUtil.setProperty(userNode, MgnlUserManager.PROPERTY_PASSWORD, encodedPassword);
             } else {
                 final User user = Security.getUserManager().getUser(userName);
                 final String existingEncodedPassword = user.getPassword();
@@ -172,7 +166,10 @@ public class SaveUserDialogAction extends SaveDialogAction {
         }
     }
 
-    private String encodePassword(final String clearPassword) {
+    private String encodePassword(final String clearPassword) throws ActionExecutionException {
+        if (StringUtils.isBlank(clearPassword)) {
+            throw new ActionExecutionException("Password cannot be blank");
+        }
         return new String(Base64.encodeBase64(clearPassword.getBytes()));
     }
 
