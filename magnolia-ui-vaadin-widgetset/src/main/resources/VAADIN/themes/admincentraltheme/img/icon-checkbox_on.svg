@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 15.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.2" baseProfile="tiny" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-	 x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" xml:space="preserve">
-<rect x="0" fill="none" width="100" height="100"/>
-<path fill="#1A171B" d="M13.889,13.889v72.223h72.222V13.889H13.889z M80.555,80.556H48.071l30.703-51.719l-9.555-5.672
-	L43.629,66.271L31.108,50.663l-8.667,6.953l18.405,22.939H19.444V19.444h61.111V80.556z"/>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15">
+<path fill="#999" d="M2,2v11h11V2H2z M12,12H7.21l4.61-7.76l-1.43-0.85L6.54,9.94L4.67,7.6l-1.3,1.04l2.76,3.44H2.92V3h9V12z"/>
 </svg>
