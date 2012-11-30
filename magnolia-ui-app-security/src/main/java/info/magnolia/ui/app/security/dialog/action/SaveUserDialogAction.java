@@ -86,8 +86,9 @@ public class SaveUserDialogAction extends SaveDialogAction {
             final String userName = userNode.getName();
             log.debug("User name is [{}]", userName);
 
-            final String clearPassword = userItem.getItemProperty(MgnlUserManager.PROPERTY_PASSWORD).getValue().toString();
-            final String encodedPassword = encodePassword(clearPassword);
+            //on user creation or when a user changes it this will be in clear, on all other cases this will be encoded
+            final String passwordFromForm = userItem.getItemProperty(MgnlUserManager.PROPERTY_PASSWORD).getValue().toString();
+            final String encodedPassword = encodePassword(passwordFromForm);
 
             if(userNode.isNew()) {
                 log.debug("User is new, setting his/her password...");
@@ -97,7 +98,8 @@ public class SaveUserDialogAction extends SaveDialogAction {
                 final String existingEncodedPassword = user.getPassword();
                 //if user exists compare the existing password with the one coming from the form
                 //if they're not equal change password
-                if(!existingEncodedPassword.equals(encodedPassword)) {
+                boolean passwordChanged = !existingEncodedPassword.equals(passwordFromForm);
+                if(passwordChanged) {
                     log.debug("Updating password for existing user [{}]", userName);
                     PropertyUtil.setProperty(userNode, MgnlUserManager.PROPERTY_PASSWORD, encodedPassword);
                 }
