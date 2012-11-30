@@ -297,13 +297,12 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                     return;
                 }
 
-                // get first selected itemId, handles multiple selection mode
-                Object firstSelectedId = getValue();
-                if (firstSelectedId instanceof Set) {
-                    firstSelectedId = ((Set< ? >) firstSelectedId).iterator().next();
-                }
-
                 if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
+                    // get first selected itemId, handles multiple selection mode
+                    Object firstSelectedId = getValue();
+                    if (firstSelectedId instanceof Set && ((Set< ? >) firstSelectedId).size() > 0) {
+                        firstSelectedId = ((Set< ? >) firstSelectedId).iterator().next();
+                    }
                     // Edit selected row at first column
                     Object propertyId = getVisibleColumns()[0];
                     if (!editableColumns.contains(propertyId)) {
