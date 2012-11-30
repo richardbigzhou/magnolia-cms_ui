@@ -115,6 +115,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String SELECT_TEMPLATE = "select * from [%s] as " + SELECTOR_NAME;
 
+    protected static final String SELECT_TEMPLATE_PATH_CLAUSE = " WHERE ISDESCENDANTNODE('[%s]')";
+
     protected static final String ORDER_BY = " order by ";
 
     protected static final String ASCENDING_KEYWORD = " asc";
@@ -527,8 +529,10 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * @see AbstractJcrContainer#getPage()
      */
     protected String constructJCRQuery(final boolean considerSorting) {
-        final String select = String.format(SELECT_TEMPLATE, getMainItemTypeAsString());
+        String select = String.format(SELECT_TEMPLATE, getMainItemTypeAsString());
         final StringBuilder stmt = new StringBuilder(select);
+        stmt.append(getWorkspacePathQueryClause());
+
         if (considerSorting) {
             if (sorters.isEmpty()) {
                 // no sorters set - use defaultOrder (always ascending)
@@ -566,6 +570,23 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             log.warn("WorkbenchDefinition {} does not properly define a MainItemType - hence we'll use the default value '{}'.", workbenchDefinition.getName(), DEFAULT_MAIN_ITEM_TYPE);
         }
         return mainItemType;
+    }
+
+    /**
+     * @return the JCR query clause to select only nodes with the path configured in the workspace as String
+     * - in case it's not configured return a blank string so that all nodes are considered.
+     */
+    protected String getWorkspacePathQueryClause(){
+        String workspacePathQueryClause;
+        if (workbenchDefinition.getPath() != null
+                && StringUtils.isNotBlank(workbenchDefinition.getPath())
+                && !"/".equals(workbenchDefinition.getPath() )) {
+            workspacePathQueryClause =  String.format(SELECT_TEMPLATE_PATH_CLAUSE, workbenchDefinition.getPath());
+        }else{
+            // By default, search the root and therefore need no query clause.
+            workspacePathQueryClause = "";
+        }
+        return workspacePathQueryClause;
     }
 
     /**
