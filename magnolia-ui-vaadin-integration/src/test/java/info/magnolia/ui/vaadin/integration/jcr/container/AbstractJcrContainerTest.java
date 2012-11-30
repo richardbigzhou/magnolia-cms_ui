@@ -86,8 +86,6 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
     private final String colName2 = "shortname";
 
-    private final String TEST_PATH = "/test";
-
     private Session session;
 
     private Node rootNode;
@@ -401,19 +399,6 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testConstructJCRQueryWithoutSortWithPathClause() {
-        // WHEN
-        workbenchDefinition.setPath(TEST_PATH);
-        final String result = jcrContainer.constructJCRQuery(false);
-
-        // THEN
-        String expectedResult = String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME);
-        expectedResult += String.format(AbstractJcrContainer.SELECT_TEMPLATE_PATH_CLAUSE, TEST_PATH);
-        assertEquals(expectedResult, result);
-    }
-
-
-    @Test
     public void testConstructJCRQueryWithDefaultSort() {
         // GIVEN
 
@@ -466,21 +451,6 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
             + AbstractJcrContainer.ASCENDING_KEYWORD, result);
     }
 
-
-
-    @Test
-    public void testGetMainItemTypeWhenNotDefinedProperly() {
-        // GIVEN
-        ConfiguredItemTypeDefinition defWithoutItemType = new ConfiguredItemTypeDefinition();
-        workbenchDefinition.setMainItemType(defWithoutItemType);
-
-        // WHEN
-        final String result = jcrContainer.getMainItemTypeAsString();
-
-        // THEN
-        assertEquals(AbstractJcrContainer.DEFAULT_MAIN_ITEM_TYPE, result);
-    }
-
     @Test
     public void testGetMainItemType() {
         // GIVEN
@@ -497,59 +467,17 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void getWorkspacePathQueryClause_WithPath() {
+    public void testGetMainItemTypeWhenNotDefinedProperly() {
         // GIVEN
-        workbenchDefinition.setPath(TEST_PATH);
+        ConfiguredItemTypeDefinition defWithoutItemType = new ConfiguredItemTypeDefinition();
+        workbenchDefinition.setMainItemType(defWithoutItemType);
 
         // WHEN
-        final String result = jcrContainer.getWorkspacePathQueryClause();
+        final String result = jcrContainer.getMainItemTypeAsString();
 
         // THEN
-        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE_PATH_CLAUSE,TEST_PATH), result);
+        assertEquals(AbstractJcrContainer.DEFAULT_MAIN_ITEM_TYPE, result);
     }
-
-    @Test
-    public void getWorkspacePathQueryClause_WithRoot() {
-        // GIVEN
-        final String testPath = "/";
-        workbenchDefinition.setPath(testPath);
-
-        // WHEN
-        final String result = jcrContainer.getWorkspacePathQueryClause();
-
-        // THEN
-        assertEquals("", result);
-    }
-
-    @Test
-    public void getWorkspacePathQueryClause_WithNull() {
-        // GIVEN
-        workbenchDefinition.setPath(null);
-
-        // WHEN
-        final String result = jcrContainer.getWorkspacePathQueryClause();
-
-        // THEN
-        assertEquals("", result);
-    }
-
-    @Test
-    public void getWorkspacePathQueryClause_WithEmptyString() {
-        // GIVEN
-        final String testPath = "";
-        workbenchDefinition.setPath(testPath);
-
-        // WHEN
-        final String result = jcrContainer.getWorkspacePathQueryClause();
-
-        // THEN
-        assertEquals("", result);
-    }
-
-
-
-
-
 
     /**
      * Define the sorting criteria.
@@ -567,7 +495,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
     /**
      * Dummy Implementation of the {AbstractJcrContainer}.
-     *
+     * 
      */
     public class JcrContainerTestImpl extends AbstractJcrContainer {
 
