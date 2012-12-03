@@ -106,11 +106,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     private ViewPort viewPort;
 
-    private final Map<String, AppContextImpl> runningApps = new HashMap<String, AppContextImpl>();
+    private final Map<String, AppContext> runningApps = new HashMap<String, AppContext>();
 
-    private final LinkedList<AppContextImpl> appHistory = new LinkedList<AppContextImpl>();
+    private final LinkedList<AppContext> appHistory = new LinkedList<AppContext>();
 
-    private AppContextImpl currentApp;
+    private AppContext currentApp;
 
     @Inject
     public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController, MessagesManager messagesManager, Shell shell, @Named("admincentral") EventBus admincentralEventBus) {
@@ -133,10 +133,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Override
     public App startIfNotAlreadyRunningThenFocus(String name, Location location) {
-        AppContextImpl appContext = doStartIfNotAlreadyRunning(name, location);
+        AppContext appContext = doStartIfNotAlreadyRunning(name, location);
         if (appContext != null) {
             doFocus(appContext);
-            return appContext.app;
+            return appContext.getApp();
         } else {
            return null;
         }
@@ -144,12 +144,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Override
     public App startIfNotAlreadyRunning(String name, Location location) {
-        return doStartIfNotAlreadyRunning(name, location).app;
+        return doStartIfNotAlreadyRunning(name, location).getApp();
     }
 
     @Override
     public void stopApp(String name) {
-        AppContextImpl appContext = runningApps.get(name);
+        AppContext appContext = runningApps.get(name);
         if (appContext != null) {
             doStop(appContext);
         }
@@ -157,7 +157,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Override
     public void stopCurrentApp() {
-        final AppContextImpl appContext = appHistory.peekFirst();
+        final AppContext appContext = appHistory.peekFirst();
         if (appContext != null) {
             stopApp(appContext.getName());
         }
@@ -175,12 +175,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Override
     public Location getCurrentLocation(String name) {
-        AppContextImpl appContext = runningApps.get(name);
+        AppContext appContext = runningApps.get(name);
         return appContext == null ? null : appContext.getCurrentLocation();
     }
 
-    private AppContextImpl doStartIfNotAlreadyRunning(String name, Location location) {
-        AppContextImpl appContext = runningApps.get(name);
+    private AppContext doStartIfNotAlreadyRunning(String name, Location location) {
+        AppContext appContext = runningApps.get(name);
         if (appContext == null) {
 
             AppDescriptor descriptor = getAppDescriptor(name);
@@ -202,13 +202,13 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         return appContext;
     }
 
-    private void doFocus(AppContextImpl appContext) {
+    private void doFocus(AppContext appContext) {
         locationController.goTo(appContext.getCurrentLocation());
         appHistory.addFirst(appContext);
         sendEvent(AppLifecycleEventType.FOCUSED, appContext.getAppDescriptor());
     }
 
-    private void doStop(AppContextImpl appContext) {
+    private void doStop(AppContext appContext) {
         appContext.stop();
         while (appHistory.remove(appContext))
             ;
@@ -241,7 +241,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             currentApp.exitFullScreenMode();
         }
 
-        AppContextImpl nextAppContext = runningApps.get(nextApp.getName());
+        AppContext nextAppContext = runningApps.get(nextApp.getName());
 
         if (nextAppContext != null) {
             nextAppContext.onLocationUpdate(newLocation);
@@ -367,6 +367,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         @Override
+        public App getApp() {
+            return app;
+        }
+
+        @Override
         public String getName() {
             return appDescriptor.getName();
         }
@@ -396,6 +401,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
 
+        @Override
         public View getView() {
             return appFrameView;
         }
@@ -404,6 +410,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
          * Called when the app is launched from the app launcher OR a location change event triggers
          * it to start.
          */
+        @Override
         public void start(Location location) {
 
             this.appComponentProvider = createAppComponentProvider(appDescriptor.getName(), this);
@@ -421,6 +428,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         /**
          * Called when a location change occurs and the app is already running.
          */
+        @Override
         public void onLocationUpdate(Location location) {
             app.locationChanged(location);
         }
@@ -442,14 +450,17 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             onActiveTabSet(this.appFrameView.getActiveTabId());
         }
 
+        @Override
         public String mayStop() {
             return null;
         }
 
+        @Override
         public void stop() {
             app.stop();
         }
 
+        @Override
         public Location getCurrentLocation() {
             SubAppContext subAppContext = getActiveSubAppContext();
             if (subAppContext != null) {
