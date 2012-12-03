@@ -127,6 +127,7 @@ public class VAppTile extends Widget {
         touchDelegate.addTouchStartHandler(new TouchStartHandler() {
             @Override
             public void onTouchStart(TouchStartEvent event) {
+                getElement().removeClassName("hover");
                 setColorsClick();
             }
         });
@@ -145,7 +146,6 @@ public class VAppTile extends Widget {
         this.isActive = isActive;
         updateColors();
     }
-
 
     /****** COLORING. *********/
 
