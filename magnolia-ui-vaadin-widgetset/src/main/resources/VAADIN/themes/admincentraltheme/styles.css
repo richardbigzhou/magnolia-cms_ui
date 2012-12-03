@@ -140,11 +140,11 @@ button.btn-dialog-selectCallBack {
 }
 
 .v-select-twincol-options {
-     width: 240px ! important;
+     width: 230px ! important;
 }
 
 .v-select-twincol-selections {
-     width: 240px ! important;
+     width: 230px ! important;
 }
 
 .v-select-twincol-buttons .v-button {
@@ -168,7 +168,7 @@ button.btn-dialog-selectCallBack {
 /*a bit hackish -  right caption is positioned absolutely whereas left caption is floating left */
 .v-select-twincol-caption-right {
     color: #666;
-    left: 460px;
+    left: 450px;
     position: absolute;
 }
 
