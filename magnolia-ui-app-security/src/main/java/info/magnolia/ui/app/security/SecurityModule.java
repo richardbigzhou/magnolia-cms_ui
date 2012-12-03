@@ -113,7 +113,7 @@ public class SecurityModule implements ModuleLifecycle {
         cipd.setOriginalImageNodeName("photo");
         cipd.setImageProviderClass(DefaultImageProvider.class);
 
-        app.label("security").icon("icon-security-app").appClass(SecurityApp.class) // .categoryName("MANAGE")
+        app.label("Security").icon("icon-security-app").appClass(SecurityApp.class) // .categoryName("MANAGE")
             .subApps(
                     userSubApp(app, wbcfg, abcfg, "users", "/admin").defaultSubApp(),
                     userSubApp(app, wbcfg, abcfg, "systemUsers", "/system"),
