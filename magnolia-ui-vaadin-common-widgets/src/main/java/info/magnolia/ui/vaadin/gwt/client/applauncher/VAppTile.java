@@ -48,8 +48,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
-import com.googlecode.mgwt.dom.client.event.touch.TouchMoveEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchMoveHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
@@ -101,100 +101,100 @@ public class VAppTile extends Widget {
     }
 
     private void bindHandlers() {
+        /**
+         * Note that we have to add a explict hover class and not use the :hover
+         * pseudo-selector. This is because we need an active state for when in
+         * click that overrules the hover colors, And we cannot use an :active
+         * pseudoselector either because the colors are assigned by code, not
+         * stylesheet. But FYI, hover states are not useful for touch devices,
+         * just for desktop now.
+         */
         addDomHandler(new MouseOverHandler() {
             @Override
             public void onMouseOver(MouseOverEvent event) {
-
                 getElement().addClassName("hover");
             }
         }, MouseOverEvent.getType());
 
         addDomHandler(new MouseOutHandler() {
-
             @Override
             public void onMouseOut(MouseOutEvent event) {
-
                 getElement().removeClassName("hover");
                 updateColors();
             }
         }, MouseOutEvent.getType());
 
-
-        /*
-        Currently no ability to cancel because we are using touchstart.
-        touchDelegate.addTouchCancelHandler(new TouchCancelHandler() {
-
+        touchDelegate.addTouchStartHandler(new TouchStartHandler() {
             @Override
-
-            public void onTouchCanceled(TouchCancelEvent event) {
-                updateColors();
-            }
-        });
-        */
-
-        touchDelegate.addTouchEndHandler(new TouchEndHandler() {
-            @Override
-            public void onTouchEnd(TouchEndEvent event) {
-
+            public void onTouchStart(TouchStartEvent event) {
                 getElement().removeClassName("hover");
-                setColorsForClientGroup(false);
-
-                eventBus.fireEvent(new AppActivationEvent(appTileData.getName()));
+                setColorsClick();
             }
         });
-
 
         touchDelegate.addTouchEndHandler(new TouchEndHandler() {
             @Override
             public void onTouchEnd(TouchEndEvent event) {
-                if (!isActive()) {
-                    setActive(true);
-                }
-                updateColors();
-            }
-        });
-
-        touchDelegate.addTouchMoveHandler(new TouchMoveHandler() {
-            @Override
-            public void onTouchMove(TouchMoveEvent event) {
-                //VConsole.log("TOUCH MOVE");
+                getElement().removeClassName("hover");
+                setActiveState(true);
+                eventBus.fireEvent(new AppActivationEvent(appTileData.getName()));
             }
         });
     }
 
-
-    public void setActive(boolean isActive) {
+    public void setActiveState(boolean isActive) {
         this.isActive = isActive;
         updateColors();
     }
 
-    public void updateColors(){
+    /****** COLORING. *********/
+
+    public void updateColors() {
         if (isActive()) {
-            setColorsForClientGroup(true);
+            setColorsOn();
         } else {
             setColorsOff();
         }
     }
 
-    private void setColorsOff(){
+    /**
+     * Set the tile colors for the Off state, not active, not clicked.
+     */
+    private void setColorsOff() {
         final Style style = getElement().getStyle();
         style.setProperty("backgroundColor", "");
         style.setProperty("color", "");
     }
 
-    private void setColorsForClientGroup(boolean isActive){
-        final Style style = getElement().getStyle();
-        boolean setColorWhiteAndBackgroundFromParent = getParent().isClientGroup();
-        if (!isActive) {
-            setColorWhiteAndBackgroundFromParent = !setColorWhiteAndBackgroundFromParent;
-        }
+    /**
+     * Set the tile colors for the click state, whether active or not.
+     */
+    private void setColorsClick() {
+        boolean isTileWhite = !getParent().isClientGroup();
+        setColors(isTileWhite);
+    }
 
-        if (setColorWhiteAndBackgroundFromParent){
-            style.setBackgroundColor(getParent().getColor());
-            style.setColor("white");
-        } else {
+    /**
+     * Set the tile colors for the state: active, but not in a click or touch.
+     */
+    private void setColorsOn() {
+        boolean isTileWhite = getParent().isClientGroup();
+        setColors(isTileWhite);
+    }
+
+    /**
+     * Set colors with the group coloring.
+     *
+     * @param isActive
+     */
+    private void setColors(boolean isTileWhite) {
+        final Style style = getElement().getStyle();
+        if (isTileWhite) {
             style.setColor(getParent().getColor());
             style.setBackgroundColor("white");
+        } else {
+            style.setBackgroundColor(getParent().getColor());
+            style.setColor("white");
         }
     }
 

@@ -46,7 +46,7 @@ public interface JcrItemAdapter extends Item {
      * name. If not found, the default name (that is the relative path) of the underlying transient
      * node is used (which is likely to be something like <code>untitled</code>).
      */
-    static final String JCR_NAME = "jcrName";
+    public static final String JCR_NAME = "jcrName";
 
     boolean isNode();
 

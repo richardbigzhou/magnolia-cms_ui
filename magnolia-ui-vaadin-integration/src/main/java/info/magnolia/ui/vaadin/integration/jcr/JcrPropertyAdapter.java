@@ -53,12 +53,11 @@ import com.vaadin.data.Property;
 /**
  * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Property}.
  */
-
 public class JcrPropertyAdapter extends AbstractJcrAdapter {
 
-    static final String VALUE_COLUMN = "value";
+    public static final String VALUE_COLUMN = "value";
 
-    static final String TYPE_COLUMN = "type";
+    public static final String TYPE_COLUMN = "type";
 
     // Init
     private static final Logger log = LoggerFactory.getLogger(JcrPropertyAdapter.class);
@@ -121,9 +120,9 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
 
     /**
      * JcrPropertyAdapter custom logic to update one single vaadin property. If updated propertyId is
-     * {@link JcrItemAdapter.JCR_NAME}, then rename JCR Property. If propertyId is
-     * {@link JcrPropertyAdapter.VALUE_COLUMN}, set new property value. If propertyId is
-     * {@link JcrPropertyAdapter.TYPE_COLUMN}, set new property type. Otherwise, do nothing.
+     * {@link info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter#JCR_NAME}, then rename JCR Property. If propertyId is
+     * {@link #VALUE_COLUMN}, set new property value. If propertyId is
+     * {@link #TYPE_COLUMN}, set new property type. Otherwise, do nothing.
      */
     @Override
     protected void updateProperty(Item item, String propertyId, Property property) {
