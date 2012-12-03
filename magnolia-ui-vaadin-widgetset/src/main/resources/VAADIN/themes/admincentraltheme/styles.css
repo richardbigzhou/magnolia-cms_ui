@@ -126,3 +126,52 @@ button.btn-dialog-selectCallBack {
 	background-image:url('img/icon-checkbox_on.png');
 	background-image:none, url('img/icon-checkbox_on.svg');
 }
+
+/*TwinCol styles*/
+
+.v-select-twincol {
+     width: 510px ! important;
+}
+
+.v-select-twincol-buttons {
+     margin-left:3px;
+     margin-right:3px;
+     width: 60px !important;
+}
+
+.v-select-twincol-options {
+     width: 240px ! important;
+}
+
+.v-select-twincol-selections {
+     width: 240px ! important;
+}
+
+.v-select-twincol-buttons .v-button {
+     background: none repeat scroll 0px 0px #666666 ! important;
+     border-radius: 0px 0px 0px 0px ! important;
+     border: medium none;
+     color: #FFFFFF;
+     cursor: pointer;
+     font-family: DINWebPro;
+     font-size: 12px;
+     font-weight: bold;
+     height: 25px;
+     width: 55px;
+     margin-bottom: 3px;
+     text-shadow: none;
+}
+
+.v-select-twincol-buttons .v-button-wrap {
+  background: none !important;
+}
+/*a bit hackish -  right caption is positioned absolutely whereas left caption is floating left */
+.v-select-twincol-caption-right {
+    color: #666;
+    left: 460px;
+    position: absolute;
+}
+
+.v-select-twincol-caption-left {
+    color: #666;
+}

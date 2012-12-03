@@ -39,7 +39,7 @@ import com.vaadin.ui.TwinColSelect;
 import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
+import info.magnolia.ui.admincentral.field.builder.TwinColSelectFieldBuilder;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import org.slf4j.Logger;
@@ -56,7 +56,7 @@ import java.util.List;
 /**
  * GUI builder for the Group Management field.
  */
-public class GroupManagementField extends SelectFieldBuilder<GroupManagementFieldDefinition> {
+public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagementFieldDefinition> {
 
     /**
      * Internal bean to represent basic group data.

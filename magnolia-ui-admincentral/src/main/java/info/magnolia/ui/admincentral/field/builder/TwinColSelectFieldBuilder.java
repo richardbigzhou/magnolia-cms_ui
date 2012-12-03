@@ -41,8 +41,9 @@ import com.vaadin.ui.TwinColSelect;
 
 /**
  * Creates and initializes a select field based on a field definition.
+ * @param <T>
  */
-public class TwinColSelectFieldBuilder extends SelectFieldBuilder<TwinColSelectFieldDefinition> {
+public class TwinColSelectFieldBuilder<T extends TwinColSelectFieldDefinition> extends SelectFieldBuilder<TwinColSelectFieldDefinition> {
 
     public TwinColSelectFieldBuilder(TwinColSelectFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
