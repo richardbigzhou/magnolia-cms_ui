@@ -1,14 +1,3 @@
-
-/********** LESS CSS Variables **********/
-
-@color-dark-green: #689600;
-
-@color-help-background: #c1d8df;
-
-@color-error: #9a3333;
-
-@color-warning: #ffbf28;
-
 /********** MAGNOLIA MODIFICATIONS to HTML5Boilerplate RESET **********/
 ul, ol { padding: 0px; }
 
@@ -55,27 +44,6 @@ a, a:focus {
 ::-moz-selection { background: #93BAC6; color: #fff; text-shadow: none; }
 ::selection { background: #93BAC6; color: #fff; text-shadow: none; }
 
-/*
-temporary commented out as otherwise input fields don't work at least on desktops
-* {
-    -moz-user-select: -moz-none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-
-
-    -ms-user-select: none;
-    user-select: none;
-}
-input, select, textarea{
-    -moz-user-select: normal;
-    -khtml-user-select: normal;
-    -webkit-user-select: normal;
-
-    -ms-user-select: normal;
-    user-select: normal;
-}
-*/
-
 .tagline {
     font-family: DINWebPro;
     text-transform:capitalize;
@@ -89,7 +57,7 @@ body{
   height:100%;
   font-family:Verdana, Helvetica, Arial, sans-serif;
   font-size:14px;
-  background-color:#77a52e;
+  background-color:#f60;
   background: linear-gradient(top, #77a52e 0%, #a8be2e 100%);
   background: -moz-linear-gradient(top, #77a52e 0%, #a8be2e 100%);
   background: -webkit-linear-gradient(top, #77a52e 0%, #a8be2e 100%);
@@ -114,7 +82,7 @@ body{
 }
 
 .mgnl-form {
-  background-color: #6b9c00;
+  background-color: #689600;
   font-family: DINWebPro;
   height: 154px;
   padding-bottom: 12px;

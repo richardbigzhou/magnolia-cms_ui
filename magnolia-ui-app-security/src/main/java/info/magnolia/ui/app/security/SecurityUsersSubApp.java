@@ -33,18 +33,18 @@
  */
 package info.magnolia.ui.app.security;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.app.security.view.BaseView;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Users Sub App (the main one) for the Security App.
@@ -55,11 +55,14 @@ public class SecurityUsersSubApp extends AbstractContentSubApp {
 
     private String caption = "Users";
 
+    private boolean isSystemUserSubApp = false;
+
     @Inject
     public SecurityUsersSubApp(final SubAppContext subAppContext, BaseView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
         super(subAppContext, view, workbench, subAppEventBus);
         if ("systemUsers".equals(subAppContext.getSubAppDescriptor().getName())) {
             setCaption("System Users");
+            isSystemUserSubApp = true;
         }
     }
 
@@ -74,8 +77,18 @@ public class SecurityUsersSubApp extends AbstractContentSubApp {
 
     @Override
     public void updateActionbar(ActionbarPresenter actionbar) {
-        // nothing to update yet
+        String selectedItemId = getWorkbench().getSelectedItemId();
+        //TODO fgrilli this is workaround due to MGNLUI-313
+        if(selectedItemId == null || "/".equals(selectedItemId)) {
+            selectedItemId = isSystemUserSubApp ? "/system" : "/admin";
+        }
+        // users can be created only under /admin or /system paths in users workspace
+        if ("/admin".equals(selectedItemId) || "/system".equals(selectedItemId)) {
+            actionbar.enableGroup("addActions");
+            actionbar.disableGroup("editActions");
+        } else {
+            actionbar.enableGroup("editActions");
+            actionbar.disableGroup("addActions");
+        }
     }
-
-
 }
