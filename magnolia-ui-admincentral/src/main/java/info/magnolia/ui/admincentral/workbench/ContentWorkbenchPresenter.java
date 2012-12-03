@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-
 import info.magnolia.context.MgnlContext;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
@@ -73,23 +72,21 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.terminal.Resource;
 
+
 /**
- * The workbench is a core component of AdminCentral. It represents the main hub
- * through which users can interact with JCR data. It is compounded by three
- * main sub-components:
+ * The workbench is a core component of AdminCentral. It represents the main hub through which users can interact with
+ * JCR data. It is compounded by three main sub-components:
  * <ul>
  * <li>a configurable data grid.
- * <li>a configurable function toolbar on top of the data grid, providing
- * operations such as switching from tree to list view or thumbnail view or
- * performing searches on data.
- * <li>a configurable action bar on the right hand side, showing the available
- * operations for the given workspace and the selected item.
+ * <li>a configurable function toolbar on top of the data grid, providing operations such as switching from tree to list
+ * view or thumbnail view or performing searches on data.
+ * <li>a configurable action bar on the right hand side, showing the available operations for the given workspace and
+ * the selected item.
  * </ul>
  * 
  * <p>
- * Its main configuration point is the {@link WorkbenchDefinition} through which
- * one defines the JCR workspace to connect to, the columns/properties to
- * display, the available actions and so on.
+ * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR workspace to
+ * connect to, the columns/properties to display, the available actions and so on.
  */
 public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener {
 
@@ -113,8 +110,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     @Inject
     public ContentWorkbenchPresenter(final SubAppContext subAppContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus,
-            final @Named("subapp") EventBus subAppEventBus, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
-            final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
+        final @Named("subapp") EventBus subAppEventBus, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
+        final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
@@ -127,7 +124,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             this.imageProvider = null;
         } else {
             this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
-        }    }
+        }
+    }
 
     public ContentWorkbenchView start() {
         view.setListener(this);
@@ -185,9 +183,9 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
                 doSearch(event);
             }
         });
-        
+
         subAppEventBus.addHandler(ItemEditedEvent.class, new ItemEditedEvent.Handler() {
-            
+
             @Override
             public void onItemEdited(ItemEditedEvent event) {
                 editItem(event);
@@ -211,8 +209,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     }
 
     /**
-     * Executes the workbench's default action, as configured in the
-     * defaultAction property.
+     * Executes the workbench's default action, as configured in the defaultAction property.
      */
     public void executeDefaultAction() {
         ActionDefinition defaultActionDef = actionbarPresenter.getDefaultActionDefinition();
@@ -240,8 +237,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     }
 
     /**
-     * Synchronizes the underlying view to reflect the status extracted from the Location token,
-     * i.e. selected path, view type and optional query (in case of a search view).
+     * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected path,
+     * view type and optional query (in case of a search view).
      */
     public void resynch(final String path, final ViewType viewType, final String query) {
         boolean itemExists = itemExists(path);
@@ -273,7 +270,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         final String searchExpression = event.getSearchExpression();
 
         if (StringUtils.isBlank(searchExpression)) {
-            // clear last search results
+            view.resynch(null, view.getSelectedView().getViewType(), searchExpression);
             searchView.clear();
         } else {
             searchView.search(searchExpression);
@@ -288,7 +285,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         }
         return false;
     }
-    
 
     private void editItem(ItemEditedEvent event) {
         Item item = event.getItem();

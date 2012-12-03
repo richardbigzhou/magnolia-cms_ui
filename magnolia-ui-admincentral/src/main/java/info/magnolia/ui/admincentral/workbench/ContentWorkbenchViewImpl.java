@@ -87,8 +87,10 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     private ViewType currentViewType = ViewType.TREE;
 
-    private ContentWorkbenchView.Listener contentWorkbenchViewListener;
+    /** for going back from search view if search expression is empty. */
+    private ViewType previousViewType = currentViewType;
 
+    private ContentWorkbenchView.Listener contentWorkbenchViewListener;
 
     public ContentWorkbenchViewImpl() {
         super();
@@ -142,6 +144,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
             @Override
             public void blur(BlurEvent event) {
+                contentWorkbenchViewListener.onSearch(searchbox.getValue().toString());
                 searchbox.setInputPrompt(inputPrompt);
             }
         });
@@ -150,7 +153,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
             @Override
             public void focus(FocusEvent event) {
-                if(currentViewType != ViewType.SEARCH) {
+                if (currentViewType != ViewType.SEARCH) {
                     setViewType(ViewType.SEARCH);
                 }
             }
@@ -197,6 +200,10 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     @Override
     public void setViewType(final ViewType type) {
+
+        if (type.equals(ViewType.SEARCH) && currentViewType != ViewType.SEARCH) {
+            previousViewType = currentViewType;
+        }
 
         contentViewContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
         final Component c = contentViews.get(type).asVaadinComponent();
@@ -284,13 +291,17 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     @Override
     public void resynch(final String path, final ViewType viewType, final String query) {
-          selectPath(path);
-          setViewType(viewType);
-          if(StringUtils.isNotBlank(query) && viewType == ViewType.SEARCH) {
-              searchbox.setValue(query);
-              searchbox.focus();
-              contentWorkbenchViewListener.onSearch(query);
-          }
+        selectPath(path);
+        if (StringUtils.isBlank(query)) {
+            setViewType(previousViewType);
+        } else {
+            setViewType(viewType);
+            if (viewType == ViewType.SEARCH) {
+                searchbox.setValue(query);
+                searchbox.focus();
+                contentWorkbenchViewListener.onSearch(query);
+            }
+        }
     }
 
 }

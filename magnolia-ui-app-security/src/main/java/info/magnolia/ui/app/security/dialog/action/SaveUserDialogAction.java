@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.app.security.dialog.action;
 
-import info.magnolia.cms.security.SecurityUtil;
+import info.magnolia.cms.security.MgnlUserManager;
+import info.magnolia.cms.security.Security;
+import info.magnolia.cms.security.User;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
@@ -41,13 +43,16 @@ import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import info.magnolia.cms.security.SecurityConstants;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Save user dialog action.
@@ -65,43 +70,65 @@ public class SaveUserDialogAction extends SaveDialogAction {
         // First Validate
         getPresenter().getForm().showValidation(true);
         if (getPresenter().getForm().isValid()) {
-            final JcrNodeAdapter itemChanged = (JcrNodeAdapter) getItem();
 
-            try {
-                final Node node = itemChanged.getNode();
-                // ENCRYPT PASSWORD
-                String password = itemChanged.getItemProperty("password").getValue().toString();
-                if (StringUtils.isNotBlank(password)) {
-                    String encryptedPassword = SecurityUtil.getBCrypt(password);
-                    PropertyUtil.setProperty(node, "password", encryptedPassword);
-                }
-                // ENABLED
-                String enabled = itemChanged.getItemProperty("enabled").getValue().toString();
-                PropertyUtil.setProperty(node, "enabled", enabled);
-                // GROUPS
-                try {
-                    replacePropertyWithSubnode(node, "groups", itemPropertyToArray(itemChanged, "groups"));
-                } catch (RepositoryException ex) {
-                    log.error(ex.getMessage(),ex);
-                    throw new ActionExecutionException(ex.getMessage(),ex);
-                }
-                // ROLES
-                try {
-                    replacePropertyWithSubnode(node, "roles", itemPropertyToArray(itemChanged, "roles"));
-                } catch (RepositoryException ex) {
-                    log.error(ex.getMessage(),ex);
-                    throw new ActionExecutionException(ex.getMessage(),ex);
-                }
-                // THE REST
-                NodeTypes.LastModified.update(node);
-                node.getSession().save();
-            } catch (final RepositoryException e) {
-                throw new ActionExecutionException(e);
-            }
+            final JcrNodeAdapter item = (JcrNodeAdapter) getItem();
+            createOrUpdateUser(item);
             getPresenter().getCallback().onSuccess(getDefinition().getName());
 
         } else {
             //validation errors are displayed in the UI.
+        }
+    }
+
+    private void createOrUpdateUser(final JcrNodeAdapter userItem) throws ActionExecutionException {
+        try {
+            final Node userNode = userItem.getNode();
+            final String userName = userNode.getName();
+            log.debug("User name is [{}]", userName);
+
+            //on user creation or when a user changes it this will be in clear, on all other cases this will be encoded
+            final String passwordFromForm = userItem.getItemProperty(MgnlUserManager.PROPERTY_PASSWORD).getValue().toString();
+            final String encodedPassword = encodePassword(passwordFromForm);
+
+            if(userNode.isNew()) {
+                log.debug("User is new, setting his/her password...");
+                PropertyUtil.setProperty(userNode, MgnlUserManager.PROPERTY_PASSWORD, encodedPassword);
+            } else {
+                final User user = Security.getUserManager().getUser(userName);
+                final String existingEncodedPassword = user.getPassword();
+                //if user exists compare the existing password with the one coming from the form
+                //if they're not equal change password
+                boolean passwordChanged = !existingEncodedPassword.equals(passwordFromForm);
+                if(passwordChanged) {
+                    log.debug("Updating password for existing user [{}]", userName);
+                    PropertyUtil.setProperty(userNode, MgnlUserManager.PROPERTY_PASSWORD, encodedPassword);
+                }
+            }
+
+            final String enabled = userItem.getItemProperty(MgnlUserManager.PROPERTY_ENABLED).getValue().toString();
+            log.debug("Is user enabled? {}", enabled);
+            PropertyUtil.setProperty(userNode, MgnlUserManager.PROPERTY_ENABLED, Boolean.parseBoolean(enabled));
+
+            final String email = userItem.getItemProperty(MgnlUserManager.PROPERTY_EMAIL).getValue().toString();
+            log.debug("Setting user email as [{}]", email);
+            PropertyUtil.setProperty(userNode, MgnlUserManager.PROPERTY_EMAIL, email);
+
+            final String fullName = userItem.getItemProperty(MgnlUserManager.PROPERTY_TITLE).getValue().toString();
+            log.debug("Setting user title as [{}]", fullName);
+            PropertyUtil.setProperty(userNode, MgnlUserManager.PROPERTY_TITLE, fullName);
+
+            final String[] groups = itemPropertyToArray(userItem, SecurityConstants.NODE_GROUPS);
+            log.debug("Assigning user the following groups [{}]", groups);
+            replacePropertyWithSubnode(userNode, SecurityConstants.NODE_GROUPS, groups);
+
+            final String[] roles = itemPropertyToArray(userItem, SecurityConstants.NODE_ROLES);
+            log.debug("Assigning user the following roles [{}]", roles);
+            replacePropertyWithSubnode(userNode, SecurityConstants.NODE_ROLES, roles);
+
+            NodeTypes.LastModified.update(userNode);
+            userNode.getSession().save();
+        } catch (final RepositoryException e) {
+            throw new ActionExecutionException(e);
         }
     }
 
@@ -139,6 +166,13 @@ public class SaveUserDialogAction extends SaveDialogAction {
             log.error("Error saving assigned "+name+" of the ["+node.getName()+"] user.",ex);
             throw new RepositoryException("Error saving assigned "+name+" of the ["+node.getName()+"] user.",ex);
         }
+    }
+
+    private String encodePassword(final String clearPassword) throws ActionExecutionException {
+        if (StringUtils.isBlank(clearPassword)) {
+            throw new ActionExecutionException("Password cannot be blank");
+        }
+        return new String(Base64.encodeBase64(clearPassword.getBytes()));
     }
 
 }
