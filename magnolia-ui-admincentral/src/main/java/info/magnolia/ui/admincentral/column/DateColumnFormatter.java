@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.builder;
+package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.model.field.definition.TwinColSelectFieldDefinition;
+import java.util.Date;
+import java.util.Locale;
+
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
+import javax.inject.Inject;
+import org.apache.commons.lang.time.FastDateFormat;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.TwinColSelect;
+import com.vaadin.data.Property;
+import com.vaadin.ui.Table;
 
 /**
- * Creates and initializes a select field based on a field definition.
- * @param <T>
+ * Date Column formatter. Formats dates to a compact format.
  */
-public class TwinColSelectFieldBuilder<T extends TwinColSelectFieldDefinition> extends SelectFieldBuilder<TwinColSelectFieldDefinition> {
+public class DateColumnFormatter extends AbstractColumnFormatter<MetaDataColumnDefinition> {
 
-    public TwinColSelectFieldBuilder(TwinColSelectFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+    private final FastDateFormat dateFormatter;
+
+    @Inject
+    public DateColumnFormatter(MetaDataColumnDefinition definition) {
+        super(definition);
+
+        final Locale locale = MgnlContext.getLocale();
+        dateFormatter = FastDateFormat.getDateTimeInstance(FastDateFormat.MEDIUM, FastDateFormat.SHORT, locale);
     }
 
     @Override
-    protected AbstractSelect buildField() {
-        super.buildField();
-        ((TwinColSelect)select).setRows(select.getContainerDataSource().size());
-        select.setMultiSelect(definition.isMultiselect());
-        ((TwinColSelect)select).setLeftColumnCaption(getMessage(definition.getLeftColumnCaption()));
-        ((TwinColSelect)select).setRightColumnCaption(getMessage(definition.getRightColumnCaption()));
-        return select;
-    }
-
-    @Override
-    protected AbstractSelect createSelectionField() {
-        return new TwinColSelect();
+    public Object generateCell(Table source, Object itemId, Object columnId) {
+        Item item = source.getItem(itemId);
+        Property prop = item.getItemProperty(columnId);
+        // Need to check prop.getValue() before prop.getType() to avoid
+        // nullpointerexception if value is null.
+        if (prop != null && prop.getValue() != null && prop.getType().equals(Date.class)) {
+            return dateFormatter.format(prop.getValue());
+        }
+        return null;
     }
 }

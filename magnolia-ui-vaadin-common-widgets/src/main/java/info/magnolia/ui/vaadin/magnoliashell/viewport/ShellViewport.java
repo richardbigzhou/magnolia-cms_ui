@@ -39,14 +39,16 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VShellViewport;
 import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.DeckLayout;
 
+import java.util.Iterator;
+
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 
 
 /**
- * The server side implementation of the shell viewport. MagnoliaShell is capable of holding of such
- * for the shell apps, one - for the regular apps.
+ * The server side implementation of the shell viewport. MagnoliaShell is capable of holding of such for the shell apps,
+ * one - for the regular apps.
  */
 @ClientWidget(value = VShellViewport.class, loadStyle = LoadStyle.EAGER)
 public class ShellViewport extends DeckLayout implements ViewPort {
@@ -79,6 +81,23 @@ public class ShellViewport extends DeckLayout implements ViewPort {
             final Component c = this.view.asVaadinComponent();
             display(c);
             parentShell.setActiveViewport(this);
+        }
+    }
+
+    /**
+     * Viewports need to set visible state on the server first, for being able to resync to client on browser refresh.
+     */
+    @Override
+    public void display(Component content) {
+        super.display(content);
+        Iterator<Component> iterator = getComponentIterator();
+        while (iterator.hasNext()) {
+            Component childComponent = iterator.next();
+            if (childComponent == content) {
+                childComponent.setVisible(true);
+            } else {
+                childComponent.setVisible(false);
+            }
         }
     }
 }

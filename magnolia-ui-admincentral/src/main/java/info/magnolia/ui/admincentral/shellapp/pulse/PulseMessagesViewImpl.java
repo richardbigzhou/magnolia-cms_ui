@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
+import info.magnolia.ui.admincentral.column.DateColumnFormatter;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.CategoryChangedEvent;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 
-import java.util.Date;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -66,9 +67,7 @@ import com.vaadin.ui.Table.GeneratedRow;
  */
 public class PulseMessagesViewImpl extends CustomComponent implements PulseMessagesView {
 
-    private static final String[] headers = new String[]{
-        "New", "Type", "Message text", "Sender", "Date", "Quick action"
-    };
+    private static final String[] headers = new String[] { "New", "Type", "Message text", "Sender", "Date", "Quick action" };
 
     private final TreeTable messageTable = new MagnoliaTreeTable();
 
@@ -81,7 +80,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     private final FastDateFormat dateFormatter = FastDateFormat.getInstance();
 
     private boolean grouping = false;
-    
+
     private Label emptyPlaceHolder = new Label("No messages to display.");
 
     @Inject
@@ -112,19 +111,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         root.addComponent(messageTable);
         root.setExpandRatio(messageTable, 1f);
         messageTable.setSizeFull();
-        messageTable.addGeneratedColumn("date", new Table.ColumnGenerator() {
-
-            @Override
-            public Object generateCell(Table source, Object itemId, Object columnId) {
-                Property prop = source.getItem(itemId).getItemProperty(columnId);
-                if (prop.getType().equals(Date.class) && prop.getValue() != null) {
-                    return dateFormatter.format(prop.getValue());
-                }
-                return null;
-            }
-
-        });
-
+        messageTable.addGeneratedColumn("date", new DateColumnFormatter(null));
         messageTable.setRowGenerator(groupingRowGenerator);
         messageTable.setCellStyleGenerator(cellStyleGenerator);
         navigator.addGroupingListener(groupingListener);
@@ -143,30 +130,126 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
                 presenter.onMessageClicked((String) itemId);
             }
         });
-        
+
+        messageTable.addListener(selectionListener);
         messageTable.addListener(new Container.ItemSetChangeListener() {
-            
+
             @Override
             public void containerItemSetChange(ItemSetChangeEvent event) {
                 setComponentVisibility(event.getContainer());
             }
         });
     }
-    
+
     private void setComponentVisibility(Container container) {
         boolean isEmptyList = container.getItemIds().size() == 0;
-        if(isEmptyList) {
+        if (isEmptyList) {
             root.setExpandRatio(emptyPlaceHolder, 1f);
-            //Use expand ratio to hide message table.
-            //setVisible() would cause rendering issues.
+            // Use expand ratio to hide message table.
+            // setVisible() would cause rendering issues.
             root.setExpandRatio(messageTable, 0f);
         } else {
             root.setExpandRatio(emptyPlaceHolder, 0f);
             root.setExpandRatio(messageTable, 1f);
         }
-        
+
         emptyPlaceHolder.setVisible(isEmptyList);
     }
+
+    private Property.ValueChangeListener selectionListener = new Property.ValueChangeListener() {
+
+        private Set<Object> prevSelected = new HashSet<Object>();
+
+        @Override
+        public void valueChange(ValueChangeEvent event) {
+            /*
+             * selecting/unselecting cause valueChange events and it is not
+             * preferred that an event handler generates more events.
+             */
+            messageTable.removeListener(this);
+
+            @SuppressWarnings("unchecked")
+            Set<Object> currSelected = new HashSet<Object>((Set<Object>) event.getProperty().getValue());
+            Set<Object> added = new HashSet<Object>(currSelected);
+            Set<Object> removed = new HashSet<Object>(prevSelected);
+
+            added.removeAll(prevSelected);
+            removed.removeAll(currSelected);
+            // now know what has been added or removed
+
+            prevSelected = currSelected;
+
+            /*
+             * if group line was added/removed then select/unselect all it's
+             * children
+             */
+            selectChildren(added, true);
+            selectChildren(removed, false);
+
+            // Item deselection will always deselect group
+            for (Object child : removed) {
+                Object parent = presenter.getParent(child);
+                if (parent != null) {
+                    messageTable.unselect(parent);
+                    prevSelected.remove(parent);
+                }
+            }
+
+            /*
+             * Selecting item must check that all siblings are also selected
+             */
+            for (Object child : added) {
+                Object parent = presenter.getParent(child);
+                if (isAllChildrenSelected(parent)) {
+                    messageTable.select(parent);
+                    prevSelected.add(parent);
+                } else {
+                    messageTable.unselect(parent);
+                    prevSelected.remove(parent);
+                }
+            }
+
+            messageTable.addListener(this);
+        }
+
+        private boolean isAllChildrenSelected(Object parent) {
+            if (parent == null) {
+                return false;
+            }
+
+            Collection<?> siblings = presenter.getGroup(parent);
+            boolean allSelected = true;
+
+            if (siblings != null) {
+                for (Object sibling : siblings) {
+                    if (!messageTable.isSelected(sibling)) {
+                        allSelected = false;
+                    }
+                }
+            } else {
+                return false;
+            }
+
+            return allSelected;
+        }
+
+        private void selectChildren(Set<Object> parents, boolean check) {
+            for (Object parent : parents) {
+                Collection<?> group = presenter.getGroup(parent);
+                if (group != null) {
+                    for (Object child : group) {
+                        if (check) {
+                            messageTable.select(child);
+                            prevSelected.add(child);
+                        } else {
+                            messageTable.unselect(child);
+                            prevSelected.remove(child);
+                        }
+                    }
+                }
+            }
+        }
+    };
 
     private ValueChangeListener groupingListener = new ValueChangeListener() {
 
@@ -176,8 +259,8 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             presenter.setGrouping(checked);
             grouping = checked;
 
-            if(checked) {
-                for(Object itemId: messageTable.getItemIds()) {
+            if (checked) {
+                for (Object itemId : messageTable.getItemIds()) {
                     messageTable.setCollapsed(itemId, false);
                 }
             }
@@ -189,17 +272,15 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         @Override
         public String getStyle(Object itemId, Object propertyId) {
 
-            if( grouping &&
-                    propertyId != null &&
-                    propertyId.equals(PulseMessagesPresenter.GROUP_COLUMN)) {
+            if (grouping && propertyId != null && propertyId.equals(PulseMessagesPresenter.GROUP_COLUMN)) {
                 return "v-cell-invisible";
             }
             return "";
         }
     };
 
-
-    /* Row generator draws grouping headers if such are present in container
+    /*
+     * Row generator draws grouping headers if such are present in container
      */
     private Table.RowGenerator groupingRowGenerator = new Table.RowGenerator() {
 
@@ -207,12 +288,11 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         public GeneratedRow generateRow(Table table, Object itemId) {
 
             /*
-             * When sorting by type special items are inserted into
-             * Container to acts as a placeholder for grouping
-             * sub section. This row generator must render those
-             * special items.
+             * When sorting by type special items are inserted into Container to
+             * acts as a placeholder for grouping sub section. This row
+             * generator must render those special items.
              */
-            if(itemId.toString().startsWith(PulseMessagesPresenter.GROUP_PLACEHOLDER_ITEMID)) {
+            if (itemId.toString().startsWith(PulseMessagesPresenter.GROUP_PLACEHOLDER_ITEMID)) {
                 Item item = table.getItem(itemId);
                 Property property = item.getItemProperty(PulseMessagesPresenter.GROUP_COLUMN);
 
@@ -236,9 +316,11 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             final Set<Object> values = new HashSet<Object>();
             String messageId = params.get(0);
             values.add(messageId);
-            // This is a multi-select table, calling select would just add this message to the
+            // This is a multi-select table, calling select would just add this
+            // message to the
             // current
-            // set of selected rows so setting the value explicitly this way makes only this one
+            // set of selected rows so setting the value explicitly this way
+            // makes only this one
             // selected.
             messageTable.setValue(values);
         }

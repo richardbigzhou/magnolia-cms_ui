@@ -15,7 +15,7 @@
     margin-top: 25px;
 }
 
-.v-form-field-section, .v-form-field-label,
+.v-form-field-section, .v-form-field-label, select,
 .v-form-field, .validation-message-inline span, .help-message-inline span,
 .form-description {
     font-family: Verdana, Helvetica, sans-serif !important;
