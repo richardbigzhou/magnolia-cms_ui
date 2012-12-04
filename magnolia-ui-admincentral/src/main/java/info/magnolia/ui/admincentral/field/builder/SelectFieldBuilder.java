@@ -67,7 +67,7 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
     private String initialSelecteKey;
     private String optionValueName;
     private String optionLabelName;
-    private String optionIconeName = SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME;
+    private String optionIconName = SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME;
     private boolean hasOptionIcon = false;
 
     protected AbstractSelect select;
@@ -79,8 +79,8 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
     @Override
     protected AbstractSelect buildField() {
         // Get name of the Label and Value property.
-        optionValueName = definition.getValueNodeData();
-        optionLabelName = definition.getLabelNodeData();
+        optionValueName = definition.getValueProperty();
+        optionLabelName = definition.getLabelProperty();
 
         select = createSelectionField();
         select.setContainerDataSource(buildOptions());
@@ -120,14 +120,14 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
             optionContainer.addContainerProperty(optionValueName, String.class, null);
             optionContainer.addContainerProperty(optionLabelName, String.class, null);
             if(hasOptionIcon) {
-                optionContainer.addContainerProperty(optionIconeName, Resource.class, null);
+                optionContainer.addContainerProperty(optionIconName, Resource.class, null);
             }
             for(SelectFieldOptionDefinition option : options) {
                 Item item = optionContainer.addItem(option.getValue());
                 item.getItemProperty(optionValueName).setValue(option.getValue());
                 item.getItemProperty(optionLabelName).setValue(option.getLabel());
                 if(StringUtils.isNotBlank(option.getIconSrc())) {
-                    item.getItemProperty(optionIconeName).setValue(getIconResource(option));
+                    item.getItemProperty(optionIconName).setValue(getIconResource(option));
                 }
             }
         }
