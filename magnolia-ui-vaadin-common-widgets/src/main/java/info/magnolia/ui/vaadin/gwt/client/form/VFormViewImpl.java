@@ -33,16 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form;
 
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.terminal.gwt.client.Util;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
@@ -54,14 +44,23 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.terminal.gwt.client.Util;
+
 /**
  * VFormViewImpl.
  */
 public class VFormViewImpl extends FlowPanel implements VFormView {
 
     private static final String CLASSNAME = "form-panel";
-
-    private static final String CLASSNAME_CONTENT = "form-content";
 
     private static final String CLASSNAME_FOOTER = "form-footer";
 
@@ -70,8 +69,6 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
     private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
 
     private final List<VFormTab> formTabs = new ArrayList<VFormTab>();
-
-    private Widget content;
 
     private final Element contentEl = DOM.createDiv();
 
@@ -83,7 +80,7 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
 
     public boolean isAFieldFocussed; //Whether a field in the view has focus, required for iPad Keyboard closing.
 
-    private FocusHandler problematicFieldFocusHandler = new FocusHandler() {
+    private final FocusHandler problematicFieldFocusHandler = new FocusHandler() {
         @Override
         public void onFocus(FocusEvent event) {
             isAFieldFocussed = true;
@@ -216,14 +213,8 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
     }
 
     @Override
-    public boolean hasChildComponent(final Widget component) {
-        boolean isChild = false;
-        for (final Widget widget : getChildren()) {
-            if (component == widget) {
-                isChild = true;
-            }
-        }
-        return isChild;
+    public VMagnoliaTabSheet getContent() {
+        return tabSheet;
     }
 
     @Override
@@ -295,7 +286,7 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
         int totalProblematicFields = 0;
         for (final VFormTab tab : formTabs) {
             totalProblematicFields += tab.getErrorAmount();
-            final VFormTab formTab = (VFormTab) tab;
+            final VFormTab formTab = tab;
             for (final FormFieldWrapper field : formTab.getFields()) {
                 field.addFocusHandler(problematicFieldFocusHandler);
             }

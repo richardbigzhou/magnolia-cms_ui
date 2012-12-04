@@ -33,12 +33,16 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
+import com.vaadin.ui.ClientWidget;
+
 import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VFormDialog;
 
 /**
  * NewFormDialog.
  */
-public class NewFormDialog extends BaseDialog implements NewFormDialogView {
+@ClientWidget(VFormDialog.class)
+public class FormDialog extends BaseDialog implements FormDialogView {
     @Override
     public void setFormView(FormView formView) {
         super.setContent(formView.asVaadinComponent());

@@ -81,6 +81,10 @@ public class VForm extends Composite implements Container, ClientSideHandler, VF
         view.setPresenter(this);
     }
 
+    public VFormView getView() {
+        return view;
+    }
+    
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
@@ -103,7 +107,7 @@ public class VForm extends Composite implements Container, ClientSideHandler, VF
 
     @Override
     public boolean hasChildComponent(Widget component) {
-        return view.hasChildComponent(component);
+        return component == view.getContent();
     }
 
     @Override

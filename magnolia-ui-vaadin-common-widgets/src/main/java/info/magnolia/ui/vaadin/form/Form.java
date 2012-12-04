@@ -68,7 +68,7 @@ public class Form extends AbstractComponent implements ServerSideHandler, FormVi
         @Override
         public MagnoliaFormTab addTab(final String caption, final ComponentContainer c) {
             if (c instanceof FormSection) {
-                final MagnoliaFormTab tab = new MagnoliaFormTab(caption, (FormSection)c);
+                final MagnoliaFormTab tab = new MagnoliaFormTab(caption, (FormSection) c);
                 tab.setSizeUndefined();
                 tab.setClosable(false);
                 doAddTab(tab);
@@ -78,17 +78,19 @@ public class Form extends AbstractComponent implements ServerSideHandler, FormVi
         }
     };
 
-    private String description;
-
     private boolean isAttached;
+    
+    private String description;
 
     private Item itemDatasource;
 
     private final List<Field> fields = new LinkedList<Field>();
 
-    private final ListMultimap<String, FormView.FormActionListener> actionCallbackMap = ArrayListMultimap.<String, FormView.FormActionListener> create();
+    private final ListMultimap<String, FormView.FormActionListener> actionCallbackMap = 
+            ArrayListMultimap.<String, FormView.FormActionListener> create();
 
     private final Map<String, String> actionMap = new HashMap<String, String>();
+
     private final ServerSideProxy proxy = new ServerSideProxy(this) {
         {
             register("fireAction", new Method() {
@@ -143,7 +145,8 @@ public class Form extends AbstractComponent implements ServerSideHandler, FormVi
         for (Field field : getFields()) {
             res &= field.isValid();
         }
-        return res;    }
+        return res;
+    }
 
     @Override
     public void showValidation(boolean isVisible) {
@@ -151,7 +154,7 @@ public class Form extends AbstractComponent implements ServerSideHandler, FormVi
         while (it.hasNext()) {
             final Component c = it.next();
             if (c instanceof FormSection) {
-                ((FormSection)c).setValidationVisible(isVisible);
+                ((FormSection) c).setValidationVisible(isVisible);
             }
         }
     }

@@ -38,7 +38,7 @@ import info.magnolia.ui.vaadin.form.FormView;
 /**
  * NewFormDialogView.
  */
-public interface NewFormDialogView extends DialogView {
+public interface FormDialogView extends DialogView {
 
     void setFormView(FormView formView);
 }

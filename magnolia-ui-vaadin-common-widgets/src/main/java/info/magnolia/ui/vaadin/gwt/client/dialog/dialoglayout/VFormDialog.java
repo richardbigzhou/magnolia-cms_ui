@@ -31,41 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.form;
-
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheet;
-
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
 
 /**
- * VFormView.
+ * Client side implementation of the dialog that delegates most of the logic/UI to the embedded form. 
  */
-public interface VFormView extends IsWidget, HasWidgets, ValidationChangedEvent.Handler {
+public class VFormDialog extends VBaseDialog {
 
-    void setContent(Widget contentWidget);
-
-    /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
-     */
-    public interface Presenter {
-
-        void fireAction(String action);
-
+    @Override
+    protected VBaseDialogView createView() {
+        return new VFormDialogViewImpl();
     }
-
-    VMagnoliaTabSheet getContent();
-    
-    void setPresenter(Presenter presenter);
-
-    void addAction(String label, String action);
-
-    void setDescription(String description);
-
-    int getFormWidth();
-
-    int getFormHeight();
-
-
 }

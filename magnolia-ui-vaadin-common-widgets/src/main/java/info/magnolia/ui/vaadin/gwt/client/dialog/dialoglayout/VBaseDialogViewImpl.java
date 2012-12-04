@@ -62,7 +62,7 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
     
     private Widget content;
     
-    private final VDialogHeader header = new VDialogHeader(createHeaderCallback());
+    private final VDialogHeader header = createHeader();
     
     private final Element contentEl = DOM.createDiv();
     
@@ -82,6 +82,10 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
         footerEl.addClassName(CLASSNAME_FOOTER);
     }
     
+    protected VDialogHeader createHeader() {
+        return new VDialogHeader(createHeaderCallback());
+    }
+
     @Override
     public void addAction(final String name, String label) {
         final Button control =  actionMap.get(name);
