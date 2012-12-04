@@ -55,7 +55,7 @@ public class ItemWorkbenchViewImpl extends CustomComponent implements ItemWorkbe
 
     private final HorizontalLayout root = new HorizontalLayout();
     private final CssLayout itemViewContainer = new CssLayout();
-    private Map<ContentView.ViewType, ContentView> contentViews = new EnumMap<ContentView.ViewType, ContentView>(ContentView.ViewType.class);
+    private final Map<ContentView.ViewType, ContentView> contentViews = new EnumMap<ContentView.ViewType, ContentView>(ContentView.ViewType.class);
 
     private ActionbarView actionbar;
 
@@ -71,6 +71,8 @@ public class ItemWorkbenchViewImpl extends CustomComponent implements ItemWorkbe
 
         root.setSizeFull();
         root.setStyleName("workbench");
+        
+        itemViewContainer.setSizeFull();
         root.addComponent(itemViewContainer);
         root.setExpandRatio(itemViewContainer, 1);
         root.setSpacing(true);
@@ -114,6 +116,7 @@ public class ItemWorkbenchViewImpl extends CustomComponent implements ItemWorkbe
     @Override
     public void setItemView(final View itemView) {
         itemView.asVaadinComponent().setWidth(Sizeable.SIZE_UNDEFINED, 0);
+        itemView.asVaadinComponent().setHeight("100%");
         itemViewContainer.addComponent(itemView.asVaadinComponent());
     }
 

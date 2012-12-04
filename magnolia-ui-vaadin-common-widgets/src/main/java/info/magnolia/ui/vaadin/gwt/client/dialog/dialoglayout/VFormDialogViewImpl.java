@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class VFormDialogViewImpl extends SimplePanel implements VBaseDialogView {
 
-    private VFormView formView;
+    private VForm form;
     
     private Presenter presenter;
     
@@ -59,12 +59,12 @@ public class VFormDialogViewImpl extends SimplePanel implements VBaseDialogView 
 
     @Override
     public void addAction(String name, String label) {
-        formView.addAction(name, label);
+        form.getView().addAction(name, label);
     }
 
     @Override
     public void setDescription(String description) {
-        formView.setDescription(description);
+        form.getView().setDescription(description);
     }
 
     @Override
@@ -73,22 +73,27 @@ public class VFormDialogViewImpl extends SimplePanel implements VBaseDialogView 
 
     @Override
     public int getContentWidth() {
-        return formView.getFormWidth();
+        return form.getView().getFormWidth();
     }
 
     @Override
     public int getContentHeight() {
-        return formView.getFormHeight();
+        return form.getView().getFormHeight();
     }
 
     @Override
     public void setContent(Widget contentWidget) {
         if (contentWidget instanceof VForm) {
-            this.formView = ((VForm)contentWidget).getView();
-            this.formView.setPresenter(new VFormView.Presenter() {
+            this.form = ((VForm)contentWidget);
+            this.form.getView().setPresenter(new VFormView.Presenter() {
                 @Override
                 public void fireAction(String action) {
                     presenter.fireAction(action);
+                }
+                
+                @Override
+                public void runLayout() {
+                    
                 }
             });
             setWidget(contentWidget);
@@ -103,11 +108,16 @@ public class VFormDialogViewImpl extends SimplePanel implements VBaseDialogView 
     @Override
     public void setPresenter(final Presenter presenter) {
         this.presenter = presenter;
-        if (formView != null) {
-            formView.setPresenter(new VFormView.Presenter() {
+        if (form != null) {
+            form.getView().setPresenter(new VFormView.Presenter() {
                 @Override
                 public void fireAction(String action) {
                     presenter.fireAction(action);
+                }
+                
+                @Override
+                public void runLayout() {
+                    form.runLayout();
                 }
             });            
         }

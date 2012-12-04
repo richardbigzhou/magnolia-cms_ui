@@ -74,16 +74,13 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
 
     private final Element footer = DOM.createDiv();
 
-    private VMagnoliaTabSheet tabSheet;
-
     private FormFieldWrapper lastShownProblematicField = null;
-
-    public boolean isAFieldFocussed; //Whether a field in the view has focus, required for iPad Keyboard closing.
+    
+    private VMagnoliaTabSheet tabSheet;
 
     private final FocusHandler problematicFieldFocusHandler = new FocusHandler() {
         @Override
         public void onFocus(FocusEvent event) {
-            isAFieldFocussed = true;
             final Element target = event.getRelativeElement().cast();
             final FormFieldWrapper field = Util.findWidget(target, FormFieldWrapper.class);
             if (field != null) {
@@ -112,6 +109,9 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
         @Override
         public void onDescriptionVisibilityChanged(boolean isVisible) {
             setDescriptionVisible(isVisible);
+            if (presenter != null) {
+                presenter.runLayout();   
+            }
         }
 
         @Override
@@ -149,17 +149,11 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
 
     public VFormViewImpl() {
         super();
-
-
         setStylePrimaryName(CLASSNAME);
         footer.addClassName(CLASSNAME_FOOTER);
-
         add(formHeader);
-
         getElement().appendChild(contentEl);
         getElement().appendChild(footer);
-
-
     }
 
     @Override
@@ -251,14 +245,22 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
 
     @Override
     public int getFormHeight() {
-        return getOffsetHeight();
+        if (getParent() != null) {
+            int baseHeight = getParent().getOffsetHeight();
+            int headerHeight = formHeader.getOffsetHeight();
+            int footerHeight = footer.getOffsetHeight();
+            return baseHeight - headerHeight - footerHeight;
+        }
+        return 0;
     }
 
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
-        int heightPx = JQueryWrapper.parseInt(height);
-        tabSheet.setHeight((heightPx - formHeader.getOffsetHeight() - footer.getOffsetHeight()) + "px");
+        if (tabSheet != null) {
+            int heightPx = JQueryWrapper.parseInt(height);
+            tabSheet.setHeight((heightPx - formHeader.getOffsetHeight() - footer.getOffsetHeight()) + "px");            
+        }
     }
 
     private void scrollTo(final FormFieldWrapper field) {
@@ -292,5 +294,10 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
             }
         }
         formHeader.setErrorAmount(totalProblematicFields);
+    }
+
+    @Override
+    public void setCaption(String caption) {
+        formHeader.setFormCaption(caption);
     }
 }

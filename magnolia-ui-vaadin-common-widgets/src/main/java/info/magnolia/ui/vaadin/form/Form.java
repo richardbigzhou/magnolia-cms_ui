@@ -108,12 +108,18 @@ public class Form extends AbstractComponent implements ServerSideHandler, FormVi
     };
 
     public Form() {
+        setStyleName("v-magnolia-form");
         setImmediate(true);
         tabSheet.setParent(this);
         tabSheet.showAllTab(true, SHOW_ALL);
-        tabSheet.setHeight("500px");
+        tabSheet.setHeight("100%");
     }
 
+    @Override
+    public void setCaption(String caption) {
+        tabSheet.setCaption(caption);
+    }
+    
     @Override
     public void setItemDataSource(Item newDataSource) {
         itemDatasource = newDataSource;
