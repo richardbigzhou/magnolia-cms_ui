@@ -60,7 +60,6 @@ import info.magnolia.ui.framework.view.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -85,6 +84,7 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     private MessagesManager messagesManager;
     private final AppDescriptor appDescriptor;
 
+    private SubAppContext currentSubAppContext;
     private App app;
 
     private AppFrameView appFrameView;
@@ -206,19 +206,27 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     }
 
     @Override
+    public Location getDefaultLocation() {
+        SubAppDescriptor subAppDescriptor= getDefaultSubAppDescriptor();
+        if (subAppDescriptor != null) {
+            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), subAppDescriptor.getName(), "");
+        }
+        else return null;
+    }
+
+    @Override
     public void openSubApp(Location location) {
         // If the location targets an existing sub app then activate it and update its location
         // launch running subapp
         SubAppContext subAppContext = getSupportingSubAppContext(location);
         if (subAppContext != null) {
-            // check if location actually changed
-            //if (!subAppContext.getLocation().equals(location)) {
             subAppContext.setLocation(location);
             subAppContext.getSubApp().locationChanged(location);
-            //}
+
             if (subAppContext.getTabId() != appFrameView.getActiveTab().getTabId()) {
                 appFrameView.setActiveTabId(subAppContext.getTabId());
             }
+            currentSubAppContext = subAppContext;
         }
         else {
             // else start new subApp
@@ -226,8 +234,9 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
 
             subAppContext = startSubApp(location);
             subAppContexts.put(subAppContext.getSubAppId(), subAppContext);
-
+            currentSubAppContext = subAppContext;
         }
+
 
     }
 
@@ -404,5 +413,9 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
         return builder.build();
     }
 
+    @Override
+    public SubAppContext getCurrentSubAppContext() {
+        return currentSubAppContext;
+    }
 }
 

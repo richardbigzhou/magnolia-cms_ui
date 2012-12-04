@@ -78,4 +78,8 @@ public interface AppContext {
     Location getCurrentLocation();
 
     View getView();
+
+    SubAppContext getCurrentSubAppContext();
+
+    Location getDefaultLocation();
 }

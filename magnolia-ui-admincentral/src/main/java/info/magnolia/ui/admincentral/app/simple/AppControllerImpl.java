@@ -115,7 +115,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Override
     public App startIfNotAlreadyRunningThenFocus(String name, Location location) {
-        AppContext appContext = doStartIfNotAlreadyRunning(name, location);
+        AppContext appContext = getAppContext(name);
+        appContext = doStartIfNotAlreadyRunning(appContext, location);
         if (appContext != null) {
             doFocus(appContext);
             return appContext.getApp();
@@ -126,7 +127,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Override
     public App startIfNotAlreadyRunning(String name, Location location) {
-        return doStartIfNotAlreadyRunning(name, location).getApp();
+        AppContext appContext = getAppContext(name);
+
+        return doStartIfNotAlreadyRunning(appContext, location).getApp();
     }
 
     @Override
@@ -166,27 +169,18 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         return currentApp;
     }
 
-    private AppContext doStartIfNotAlreadyRunning(String name, Location location) {
-        AppContext appContext = runningApps.get(name);
-        if (appContext == null) {
+    private AppContext doStartIfNotAlreadyRunning(AppContext appContext, Location location) {
 
-            AppDescriptor descriptor = getAppDescriptor(name);
-            if (descriptor == null) {
-                return null;
-            }
-
-            appContext = new AppContextImpl(moduleRegistry, componentProvider, this, locationController, shell, messagesManager, descriptor);
-
-            if (location == null) {
-                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, name, "", "");
-            }
-
-
-            appContext.start(location);
-
-            runningApps.put(name, appContext);
-            sendEvent(AppLifecycleEventType.STARTED, descriptor);
+        if (isAppStarted(appContext.getName())) {
+            appContext.onLocationUpdate(location);
+            return appContext;
         }
+
+        appContext.start(location);
+
+        runningApps.put(appContext.getName(), appContext);
+        sendEvent(AppLifecycleEventType.STARTED, appContext.getAppDescriptor());
+
         return appContext;
     }
 
@@ -229,13 +223,17 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             currentApp.exitFullScreenMode();
         }
 
-        AppContext nextAppContext = runningApps.get(nextApp.getName());
+        AppContext nextAppContext = getAppContext(nextApp.getName());
 
-        if (nextAppContext != null) {
-            nextAppContext.onLocationUpdate(newLocation);
-        } else {
-            nextAppContext = doStartIfNotAlreadyRunning(nextApp.getName(), newLocation);
+        // update location
+        Location updateLocation = updateLocation(nextAppContext, newLocation);
+        if (!updateLocation.equals(newLocation)) {
+            locationController.goTo(updateLocation);
+            return;
         }
+
+        nextAppContext = doStartIfNotAlreadyRunning(nextAppContext, newLocation);
+
 
         if (currentApp != nextAppContext) {
             appHistory.addFirst(nextAppContext);
@@ -243,6 +241,45 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         viewPort.setView(nextAppContext.getView());
         currentApp = nextAppContext;
+        // focus on locationChanged?
+        //focusCurrentApp();
+    }
+
+    private Location updateLocation(AppContext appContext, Location location) {
+
+        if (location instanceof DefaultLocation) {
+            DefaultLocation l = (DefaultLocation) location;
+            String appId = l.getAppId();
+            String subAppId = l.getSubAppId();
+
+            if (subAppId == null || subAppId.isEmpty()) {
+
+                if (isAppStarted(appId)) {
+                    AppContext runningAppContext = runningApps.get(appId);
+                    return runningAppContext.getCurrentLocation();
+                }
+                else {
+                    return appContext.getDefaultLocation();
+                }
+            }
+
+        }
+        return location;
+    }
+
+    private AppContext getAppContext(String appId) {
+        if (isAppStarted(appId)) {
+            return runningApps.get(appId);
+        }
+        else {
+            AppDescriptor descriptor = getAppDescriptor(appId);
+            if (descriptor == null) {
+                return null;
+            }
+
+            return new AppContextImpl(moduleRegistry, componentProvider, this, locationController, shell, messagesManager, descriptor);
+
+        }
     }
 
     @Override
