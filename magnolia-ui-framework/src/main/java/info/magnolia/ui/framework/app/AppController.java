@@ -56,4 +56,6 @@ public interface AppController {
     void focusCurrentApp();
 
     Location getCurrentLocation(String name);
+
+    AppContext getCurrentApp();
 }
