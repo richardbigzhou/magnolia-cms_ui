@@ -157,7 +157,6 @@ textarea.v-form-field {
     width: 140px;
     margin-right: 12px;
     color: #666;
-    white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     vertical-align: middle; /*needed by FF*/

@@ -146,13 +146,13 @@
             <sv:value>2010-09-08T11:41:04.409+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-            <sv:value>2012-11-30T11:18:06.925+01:00</sv:value>
+            <sv:value>2012-12-04T15:32:03.057+01:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
             <sv:value>superuser</sv:value>
           </sv:property>
           <sv:property sv:name="path" sv:type="String">
-            <sv:value>/server</sv:value>
+            <sv:value>/</sv:value>
           </sv:property>
           <sv:property sv:name="workspace" sv:type="String">
             <sv:value>config</sv:value>
