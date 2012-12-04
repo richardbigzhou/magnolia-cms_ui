@@ -65,7 +65,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * AppContextimpl.
+ * Implementation of {@link AppContext}.
  */
 public class AppContextImpl implements AppContext, AppFrameView.Listener {
 
@@ -413,9 +413,5 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
         return builder.build();
     }
 
-    @Override
-    public SubAppContext getCurrentSubAppContext() {
-        return currentSubAppContext;
-    }
 }
 

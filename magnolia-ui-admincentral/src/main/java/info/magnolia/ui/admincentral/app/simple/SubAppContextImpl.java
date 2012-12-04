@@ -41,7 +41,7 @@ import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.location.Location;
 
 /**
- * SubAppContextImpl.
+ * Implementation of {@link SubAppContext}.
  */
 public class SubAppContextImpl implements SubAppContext {
 

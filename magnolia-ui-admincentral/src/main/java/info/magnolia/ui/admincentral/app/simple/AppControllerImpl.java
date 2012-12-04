@@ -63,7 +63,19 @@ import java.util.Map;
 
 
 /**
- * App controller that manages the lifecycle of running apps and raises callbacks to the app.
+ * Implementation of the {@link AppController}.
+ *
+ * The App controller that manages the lifecycle of running apps and raises callbacks to the app.
+ * It provides methods to start, stop and focus already running {@link App}s.
+ * Registers handlers to the following location change events triggered by the {@link LocationController}:
+ * <ul>
+ *     <li>{@link LocationChangedEvent}</li>
+ *     <li>{@link LocationChangeRequestedEvent}</li>
+ * </ul>
+ *
+ * @see LocationController
+ * @see AppContext
+ * @see App
  */
 @Singleton
 public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
@@ -113,9 +125,15 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         this.viewPort = viewPort;
     }
 
+    /**
+     * This method can be called to launch an {@link App} and then delegate it to the {@link LocationController}.
+     * It should have the same effect as calling the {@link LocationController} directly.
+     * @param appId of the {@link App} to start.
+     * @param location holds information about the subApp to use and the parameters.
+     */
     @Override
-    public App startIfNotAlreadyRunningThenFocus(String name, Location location) {
-        AppContext appContext = getAppContext(name);
+    public App startIfNotAlreadyRunningThenFocus(String appId, Location location) {
+        AppContext appContext = getAppContext(appId);
         appContext = doStartIfNotAlreadyRunning(appContext, location);
         if (appContext != null) {
             doFocus(appContext);
@@ -125,16 +143,24 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
     }
 
+    /**
+     * This method is called to launch an app independent from the {@link LocationController}.
+     * It will not open in the {@link ViewPort}.
+     * This is e.g. used to pass the {@link App} into a dialog and obtain app-specific information from outside the app.
+     *
+     * @param appId of the {@link App} to start.
+     * @param location holds information about the subApp to use and the parameters.
+     */
     @Override
-    public App startIfNotAlreadyRunning(String name, Location location) {
-        AppContext appContext = getAppContext(name);
+    public App startIfNotAlreadyRunning(String appId, Location location) {
+        AppContext appContext = getAppContext(appId);
 
         return doStartIfNotAlreadyRunning(appContext, location).getApp();
     }
 
     @Override
-    public void stopApp(String name) {
-        AppContext appContext = runningApps.get(name);
+    public void stopApp(String appId) {
+        AppContext appContext = runningApps.get(appId);
         if (appContext != null) {
             doStop(appContext);
         }
@@ -149,9 +175,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     @Override
-    public boolean isAppStarted(String name) {
-        return runningApps.containsKey(name);
+    public boolean isAppStarted(String appId) {
+        return runningApps.containsKey(appId);
     }
+
 
     @Override
     public void focusCurrentApp(){
@@ -159,8 +186,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     @Override
-    public Location getCurrentLocation(String name) {
-        AppContext appContext = runningApps.get(name);
+    public Location getCurrentLocation(String appId) {
+        AppContext appContext = runningApps.get(appId);
         return appContext == null ? null : appContext.getCurrentLocation();
     }
 
@@ -169,6 +196,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         return currentApp;
     }
 
+    /**
+     * Delegates the starting of an {@link App} to the {@link AppContext}.
+     * In case the app is already started, it will update its location.
+     */
     private AppContext doStartIfNotAlreadyRunning(AppContext appContext, Location location) {
 
         if (isAppStarted(appContext.getName())) {
@@ -184,6 +215,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         return appContext;
     }
 
+    /**
+     * Focuses an already running {@link App} by passing it to the {@link LocationController}.
+     */
     private void doFocus(AppContext appContext) {
         locationController.goTo(appContext.getCurrentLocation());
         appHistory.addFirst(appContext);
@@ -210,6 +244,17 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         eventBus.fireEvent(new AppLifecycleEvent(appDescriptor, appEventType));
     }
 
+    /**
+     * Takes care of {@link LocationChangedEvent}s by:
+     * <ul>
+     *     <li>Obtaining the {@link AppDescriptor} associated with the {@link Location}.</li>
+     *     <li>Creating a new {@link AppContext} if not running, otherwise obtain it from the running apps.</li>
+     *     <li>Updating the {@Link Location} and redirecting in case of missing subAppId.</li>
+     *     <li>Starting the App.</li>
+     *     <li>Adding the {@link AppContext} to the appHistory.</li>
+     *     <li>Setting the viewPort and updating the current running app.</li>
+     * </ul>
+     */
     @Override
     public void onLocationChanged(LocationChangedEvent event) {
         Location newLocation = event.getNewLocation();
@@ -245,6 +290,13 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         //focusCurrentApp();
     }
 
+    /**
+     * Updates the {@link Location} in case of missing subAppId:
+     * <ul>
+     *     <li>If the app is running, it will fetch the current Location associated with the App.</li>
+     *     <li>Will fetch the configured default subAppId otherwise.</li>
+     * </ul>
+     */
     private Location updateLocation(AppContext appContext, Location location) {
 
         if (location instanceof DefaultLocation) {
