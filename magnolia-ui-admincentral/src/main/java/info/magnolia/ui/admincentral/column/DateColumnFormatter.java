@@ -46,8 +46,7 @@ import com.vaadin.data.Property;
 import com.vaadin.ui.Table;
 
 /**
- * Status Column formatter. Used to create activation and permission Icons based
- * on the related Item. Use the Definition to configure Icon's to be displayed.
+ * Date Column formatter. Formats dates to a compact format.
  */
 public class DateColumnFormatter extends AbstractColumnFormatter<MetaDataColumnDefinition> {
 
