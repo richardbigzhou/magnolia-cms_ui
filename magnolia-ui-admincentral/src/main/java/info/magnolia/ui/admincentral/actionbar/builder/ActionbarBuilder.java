@@ -79,6 +79,8 @@ public class ActionbarBuilder {
                             continue;
                         }
 
+                        actionNames.add(item.getName());
+
                         Resource icon = null;
                         if (StringUtils.isNotBlank(item.getIcon())) {
                             if (item.getIcon().startsWith("icon-")) {
@@ -93,7 +95,6 @@ public class ActionbarBuilder {
                             }
                         }
                         actionbar.addAction(item.getName(), item.getLabel(), icon, group.getName(), section.getName());
-                        actionNames.add(item.getName());
                     }
                 }
             }
