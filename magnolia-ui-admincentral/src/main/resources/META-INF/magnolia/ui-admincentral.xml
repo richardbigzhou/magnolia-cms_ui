@@ -323,84 +323,7 @@
   </components>
 
 
-  <!-- Declaring dummy view for all fake apps -->
-  <components>
-    <id>app-documents-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-forums-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-company-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-category-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-rss-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-templating-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-security-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-configuration-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-translations-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-content-types-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-dependencies-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
+  <!-- Legacy Tools Apps -->
   <components>
     <id>app-logging-main</id>
     <component>
@@ -478,34 +401,7 @@
       <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
     </component>
   </components>
-  <components>
-    <id>app-packager-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-client-app-a-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-client-app-b-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
-  <components>
-    <id>app-client-app-c-main</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-  </components>
+
 
   <dependencies>
     <dependency>
