@@ -237,10 +237,14 @@ public class SecurityModule implements ModuleLifecycle {
         }
 
         GroupManagementFieldBuilder groups = new GroupManagementFieldBuilder("groups");
-        groups.label("Assigned groups");
+        groups.label("");
+        groups.leftColumnCaption("Available groups");
+        groups.rightColumnCaption("Assigned groups");
 
         RoleManagementFieldBuilder roles = new RoleManagementFieldBuilder("roles");
-        roles.label("Assigned roles");
+        roles.label("");
+        roles.leftColumnCaption("Available roles");
+        roles.rightColumnCaption("Assigned roles");
 
         dialog.form(formcfg.form().description("Define the user information")
                         .tabs(
