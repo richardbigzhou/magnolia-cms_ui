@@ -37,6 +37,7 @@ import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigato
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -143,7 +144,8 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
                 presenter.onMessageClicked((String) itemId);
             }
         });
-        
+
+        messageTable.addListener(selectionListener);
         messageTable.addListener(new Container.ItemSetChangeListener() {
             
             @Override
@@ -167,6 +169,100 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         
         emptyPlaceHolder.setVisible(isEmptyList);
     }
+    
+    private Property.ValueChangeListener selectionListener = new Property.ValueChangeListener() {
+        
+        private Set<Object> prevSelected = new HashSet<Object>();
+        
+        @Override
+        public void valueChange(ValueChangeEvent event) {
+            /* selecting/unselecting cause valueChange events
+             * and it is not preferred that an event handler
+             * generates more events.
+             */
+            messageTable.removeListener(this);
+
+            @SuppressWarnings("unchecked")
+            Set<Object> currSelected = new HashSet<Object>((Set<Object>)event.getProperty().getValue());
+            Set<Object> added = new HashSet<Object>(currSelected);
+            Set<Object> removed = new HashSet<Object>(prevSelected);
+            
+            added.removeAll(prevSelected);
+            removed.removeAll(currSelected);
+            //now know what has been added or removed
+
+            prevSelected = currSelected;            
+            
+            /* if group line was added/removed
+             * then select/unselect all it's children
+             */
+            selectChildren(added, true);           
+            selectChildren(removed, false);
+            
+            //Item deselection will always deselect group
+            for(Object child: removed) {
+                Object parent = presenter.getParent(child);
+                if(parent != null) {
+                    messageTable.unselect(parent);
+                    prevSelected.remove(parent);
+                }
+            }
+            
+            /* Selecting item must check that
+             * all siblings are also selected
+             */
+            for(Object child: added) {
+                Object parent = presenter.getParent(child);
+                if(isAllChildrenSelected(parent)) {
+                    messageTable.select(parent);
+                    prevSelected.add(parent);
+                } else {
+                    messageTable.unselect(parent);
+                    prevSelected.remove(parent);
+                }
+            }
+            
+            messageTable.addListener(this);
+        }
+        
+        private boolean isAllChildrenSelected(Object parent) {
+            if(parent == null) {
+                return false;
+            }
+            
+            Collection<?> siblings = presenter.getGroup(parent);
+            boolean allSelected = true;
+            
+            if(siblings != null) {
+                for(Object sibling: siblings) {
+                    if(!messageTable.isSelected(sibling)) {
+                        allSelected = false;
+                    }
+                }  
+            } else {
+                return false;
+            }
+            
+            return allSelected;
+        }
+        
+        private void selectChildren(Set<Object> parents, boolean check) {
+            for(Object parent: parents) {
+                Collection<?> group = presenter.getGroup(parent);
+                if(group != null) {
+                    for(Object child: group) {
+                        if(check) {
+                            messageTable.select(child);
+                            prevSelected.add(child);
+                        } else {
+                            messageTable.unselect(child);
+                            prevSelected.remove(child);
+                        }
+                    }
+                }
+            }
+        }
+    };
 
     private ValueChangeListener groupingListener = new ValueChangeListener() {
 
