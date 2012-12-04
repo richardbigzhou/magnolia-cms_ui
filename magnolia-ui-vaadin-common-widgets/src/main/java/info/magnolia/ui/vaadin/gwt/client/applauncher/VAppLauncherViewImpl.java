@@ -44,10 +44,9 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
-
 /**
  * Implementation of AppLauncher view.
- * 
+ *
  */
 public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView, AppActivationEvent.Handler {
 
@@ -109,7 +108,7 @@ public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView,
         for (Entry<String, VAppTileGroup> entry : groups.entrySet()) {
             if (entry.getValue().hasApp(appName)) {
                 final VAppTile tile = entry.getValue().getAppTile(appName);
-                tile.setActive(isActive);
+                tile.setActiveState(isActive);
             }
         }
     }
