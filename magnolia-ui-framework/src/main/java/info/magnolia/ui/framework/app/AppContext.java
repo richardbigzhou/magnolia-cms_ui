@@ -35,6 +35,7 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.view.View;
 
 
 /**
@@ -60,7 +61,23 @@ public interface AppContext {
 
     String getName();
 
+    App getApp();
+
     void setSubAppLocation(SubApp subApp, Location location);
 
     SubAppDescriptor getDefaultSubAppDescriptor();
+
+    void start(Location location);
+
+    void stop();
+
+    String mayStop();
+
+    void onLocationUpdate(Location newLocation);
+
+    Location getCurrentLocation();
+
+    View getView();
+
+    Location getDefaultLocation();
 }

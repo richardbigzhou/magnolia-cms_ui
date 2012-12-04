@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.app.content;
 import info.magnolia.ui.framework.view.View;
 
 /**
- * View for Workbench subApps. Used for ContentSubApps and ItemSubapps.
+ * Interface for {@link WorkbenchSubAppViewImpl}.
  */
 public interface WorkbenchSubAppView extends View {
 

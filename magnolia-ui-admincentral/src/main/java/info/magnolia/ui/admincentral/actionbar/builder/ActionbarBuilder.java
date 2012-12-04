@@ -74,10 +74,12 @@ public class ActionbarBuilder {
 
                     for (ActionbarItemDefinition item : group.getItems()) {
                         if (actionNames.contains(item.getName())) {
-                            log.warn("ViewType was not added: an action with name '" + item.getName()
+                            log.warn("Action was not added: an action with name '" + item.getName()
                                 + "' already exists in section '" + section.getName() + "'.");
                             continue;
                         }
+
+                        actionNames.add(item.getName());
 
                         Resource icon = null;
                         if (StringUtils.isNotBlank(item.getIcon())) {
