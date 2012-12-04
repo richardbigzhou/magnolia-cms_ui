@@ -74,7 +74,7 @@ public class ActionbarBuilder {
 
                     for (ActionbarItemDefinition item : group.getItems()) {
                         if (actionNames.contains(item.getName())) {
-                            log.warn("ViewType was not added: an action with name '" + item.getName()
+                            log.warn("Action was not added: an action with name '" + item.getName()
                                 + "' already exists in section '" + section.getName() + "'.");
                             continue;
                         }
@@ -93,6 +93,7 @@ public class ActionbarBuilder {
                             }
                         }
                         actionbar.addAction(item.getName(), item.getLabel(), icon, group.getName(), section.getName());
+                        actionNames.add(item.getName());
                     }
                 }
             }
