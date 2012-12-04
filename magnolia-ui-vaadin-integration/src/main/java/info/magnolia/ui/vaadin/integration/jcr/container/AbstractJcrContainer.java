@@ -116,7 +116,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String SELECT_TEMPLATE = "select * from [%s] as " + SELECTOR_NAME;
 
-    protected static final String SELECT_TEMPLATE_PATH_CLAUSE = " WHERE ISDESCENDANTNODE('%s')";
+    protected static final String WHERE_TEMPLATE_FOR_PATH = " ISDESCENDANTNODE('%s')";
 
     protected static final String ORDER_BY = " order by ";
 
@@ -456,7 +456,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * Determines a new offset for updating the row cache. The offset is calculated from the given index, and will be
      * fixed to match the start of a page, based on the value of pageLength.
-     * 
+     *
      * @param index Index of the item that was requested, but not found in cache
      */
     private void updateOffsetAndCache(int index) {
@@ -508,7 +508,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * Updates this container by storing the items found in the query result passed as argument.
-     * 
+     *
      * @see #getPage()
      */
     protected void updateItems(final QueryResult queryResult) throws RepositoryException {
@@ -533,6 +533,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     protected String constructJCRQuery(final boolean considerSorting) {
         final String select = String.format(SELECT_TEMPLATE, getMainItemTypeAsString());
         final StringBuilder stmt = new StringBuilder(select);
+        // Return results only within the node configured in workbench/path
         stmt.append(getWorkspacePathQueryClause());
 
         if (considerSorting) {
@@ -579,15 +580,31 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * @return the JCR query clause to select only nodes with the path configured in the workspace as String - in case
      * it's not configured return a blank string so that all nodes are considered.
      */
-    protected String getWorkspacePathQueryClause() {
-        String workspacePathQueryClause;
-        if (StringUtils.isNotBlank(workbenchDefinition.getPath()) && !"/".equals(workbenchDefinition.getPath())) {
-            workspacePathQueryClause = String.format(SELECT_TEMPLATE_PATH_CLAUSE, workbenchDefinition.getPath());
+    protected String getQueryWhereClause() {
+        String whereClause;
+        String clauseWorkspacePath = getQueryWhereClause_WorkspacePath();
+        if (!"".equals(clauseWorkspacePath)) {
+            whereClause = " where " + clauseWorkspacePath;
         } else {
             // By default, search the root and therefore need no query clause.
-            workspacePathQueryClause = "";
+            whereClause = "";
         }
-        return workspacePathQueryClause;
+        log.debug("JCR query WHERE clause is {}", whereClause);
+        return whereClause;
+    }
+
+    /**
+     * @return
+     */
+    protected String getQueryWhereClause_WorkspacePath() {
+        String whereClauseWorkspacePath;
+        if (StringUtils.isNotBlank(workbenchDefinition.getPath()) && !"/".equals(workbenchDefinition.getPath())) {
+            whereClauseWorkspacePath = String.format(WHERE_TEMPLATE_FOR_PATH, workbenchDefinition.getPath());
+        } else {
+            // By default, search the root and therefore do not need no query clause.
+            whereClauseWorkspacePath = "";
+        }
+        return whereClauseWorkspacePath;
     }
 
     /**

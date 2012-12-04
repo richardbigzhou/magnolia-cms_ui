@@ -47,7 +47,8 @@ public class SearchJcrContainer extends FlatJcrContainer{
 
     private static final Logger log = LoggerFactory.getLogger(SearchJcrContainer.class);
 
-    protected static final String QUERY_STRING = SELECT_TEMPLATE + " where contains(" + SELECTOR_NAME + ".*, '%s')";
+    //protected static final String QUERY_STRING = SELECT_TEMPLATE + " where contains(" + SELECTOR_NAME + ".*, '%s')";
+    protected static final String WHERE_TEMPLATE_FOR_SEARCH =  " contains(" + SELECTOR_NAME + ".*, '%s')";
 
     private String fullTextExpression;
 
@@ -55,6 +56,7 @@ public class SearchJcrContainer extends FlatJcrContainer{
         super(workbenchDefinition);
     }
 
+    /*
     @Override
     protected String constructJCRQuery(final boolean considerSorting) {
         if(StringUtils.isBlank(getFullTextExpression())) {
@@ -63,7 +65,45 @@ public class SearchJcrContainer extends FlatJcrContainer{
 
         //See http://wiki.apache.org/jackrabbit/EncodingAndEscaping
         final String escapedFullTextExpression = getFullTextExpression().replaceAll("'", "''").trim();
-        final String stmt = String.format(QUERY_STRING, getMainItemTypeAsString(), escapedFullTextExpression);
+        String stmt = String.format(QUERY_STRING, getMainItemTypeAsString(), escapedFullTextExpression);
+        log.debug("JCR query statement is {}", stmt);
+        return stmt;
+    }*/
+
+    @Override
+    protected String getQueryWhereClause() {
+        String whereClause;
+
+        String clauseWorkspacePath = getQueryWhereClause_WorkspacePath();
+        String clauseSearch = getQueryWhereClause_Search();
+
+        if ("".equals(clauseWorkspacePath) && "".equals(clauseSearch)) {
+            // By default, search the root and therefore need no query clause.
+            whereClause = "";
+        } else {
+            whereClause = " where (";
+
+            if (!"".equals(clauseWorkspacePath)) {
+                whereClause += clauseWorkspacePath;
+            }
+            if (!"".equals(clauseSearch)) {
+                whereClause += clauseSearch;
+            }
+
+            whereClause += ")";
+        }
+        log.debug("JCR query WHERE clause is {}", whereClause);
+        return whereClause;
+    }
+
+    protected String getQueryWhereClause_Search(){
+        if(StringUtils.isBlank(getFullTextExpression())) {
+            return "";
+        }
+
+        //See http://wiki.apache.org/jackrabbit/EncodingAndEscaping
+        final String escapedFullTextExpression = getFullTextExpression().replaceAll("'", "''").trim();
+        String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, getMainItemTypeAsString(), escapedFullTextExpression);
         log.debug("JCR query statement is {}", stmt);
         return stmt;
     }
