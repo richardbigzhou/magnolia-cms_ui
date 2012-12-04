@@ -214,52 +214,20 @@
     </configurer>
 
     <component>
-      <type>info.magnolia.ui.admincentral.form.FormPresenterFactory</type>
-      <implementation>info.magnolia.ui.admincentral.form.FormPresenterFactoryImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactoryImpl</implementation>
+      <type>info.magnolia.ui.admincentral.dialog.action.DialogActionFactory</type>
+      <implementation>info.magnolia.ui.admincentral.dialog.action.DialogActionFactoryImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.dialog.ChooseDialogFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.ChooseDialogFactoryImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.vaadin.dialog.DialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.BaseDialog</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.vaadin.dialog.NewFormDialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.NewFormDialog</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.vaadin.form.FormView</type>
-      <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder</type>
       <implementation>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.field.builder.FieldFactory</type>
-      <implementation>info.magnolia.ui.admincentral.field.builder.FieldFactory</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</type>
       <implementation>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.dialog.action.DialogActionFactory</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.action.DialogActionFactoryImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.form.action.FormActionFactory</type>
-      <implementation>info.magnolia.ui.admincentral.form.action.FormActionFactoryImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.model.workbench.action.WorkbenchActionFactory</type>
-      <implementation>info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</type>
@@ -284,18 +252,6 @@
     <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
       <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
-    </component>
-
-    <!-- Declaring dummy view for all fake apps -->
-    <component>
-      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
-      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
-    </component>
-
-    <!-- Declaring page view for all apps embedding old adminCentral views in iFrame-->
-    <component>
-      <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
-      <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
     </component>
   </components>
 
@@ -333,6 +289,7 @@
       <implementation>info.magnolia.ui.admincentral.content.item.ItemViewImpl</implementation>
     </component>
 
+
     <!-- Moved into subApp due to use of subApps EventBus  -->
     <component>
       <type>info.magnolia.ui.admincentral.form.FormPresenterFactory</type>
@@ -341,10 +298,6 @@
     <component>
       <type>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactoryImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.vaadin.dialog.DialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.BaseDialog</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.field.builder.FieldFactory</type>
@@ -361,6 +314,30 @@
     <component>
       <type>info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition</type>
       <implementation>info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.vaadin.dialog.DialogView</type>
+      <implementation>info.magnolia.ui.vaadin.dialog.BaseDialog</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.vaadin.dialog.NewFormDialogView</type>
+      <implementation>info.magnolia.ui.vaadin.dialog.NewFormDialog</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.vaadin.form.FormView</type>
+      <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
+    </component>
+
+    <!-- Declaring dummy view for all fake apps -->
+    <component>
+      <type>info.magnolia.ui.admincentral.app.dummy.DummyView</type>
+      <implementation>info.magnolia.ui.admincentral.app.dummy.DummyViewImpl</implementation>
+    </component>
+
+    <!-- Declaring page view for all apps embedding old adminCentral views in iFrame-->
+    <component>
+      <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
+      <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
     </component>
   </components>
 
