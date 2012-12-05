@@ -569,22 +569,6 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         assertTrue(result.contains(expected));
     }
 
-    @Test
-    public void testConstructJCRQueryReturnCustomSelectStatement() {
-        // GIVEN
-        final String jcrQuery = jcrContainer.constructJCRQuery(false);
-        //default mainItemType used by constructJCRQuery() is mgnl:content
-        String expected = String.format(AbstractJcrContainer.SELECT_TEMPLATE, "mgnl:content");
-        assertTrue(jcrQuery.contains(expected));
-
-        // WHEN
-        expected = jcrContainer.getSelectStatement("foo:type");
-        final String result = jcrContainer.constructJCRQuery(false);
-
-        // THEN
-        assertTrue(result.contains(expected));
-    }
-
     /**
      * Define the sorting criteria.
      */
