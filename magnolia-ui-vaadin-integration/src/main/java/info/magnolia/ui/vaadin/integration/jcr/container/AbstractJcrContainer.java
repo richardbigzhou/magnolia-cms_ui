@@ -529,14 +529,16 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * @return a string representing a JCR statement to retrieve this container's items.
      * It creates a JCR query in the form {@code select * from [mainItemType] as selector [WHERE] [ORDER BY]"}.<p>
      * Subclasses can customize the optional <code>WHERE</code> clause by overriding {@link #getQueryWhereClause()}.<p>
+     * The main item type (as configured in the {@link WorkbenchDefinition}) in the <code>SELECT</code> statement can be changed to something different by calling  {@link #getSelectStatement(String)}
      * @param the optional <code>ORDER BY</code> is added if this parameter is <code>true</code>. Sorting options can be configured in the {@link WorkbenchDefinition}.
+     * @see AbstractJcrContainer#getSelectStatement(String)
      * @see AbstractJcrContainer#getQueryWhereClause()
      * @see AbstractJcrContainer#getQueryWhereClauseWorkspacePath()
      * @see AbstractJcrContainer#getPage()
      * @see OrderBy
      */
-    protected String constructJCRQuery(final boolean considerSorting) {
-        final String select = String.format(SELECT_TEMPLATE, getMainItemTypeAsString());
+    protected final String constructJCRQuery(final boolean considerSorting) {
+        final String select = getSelectStatement(getMainItemTypeAsString());
         final StringBuilder stmt = new StringBuilder(select);
         // Return results only within the node configured in workbench/path
         stmt.append(getQueryWhereClause());
@@ -609,6 +611,13 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         }
         log.debug("Workspace path where-clause is {}", whereClauseWorkspacePath);
         return whereClauseWorkspacePath;
+    }
+
+    /**
+     * @return a <code>SELECT</code> statement with the item type passed as parameter, i.e. {@code select * from [my:fancytype]}. Used internally by {@link #constructJCRQuery(boolean)}.
+     */
+    protected String getSelectStatement(String itemType) {
+        return String.format(SELECT_TEMPLATE, itemType);
     }
 
     /**
