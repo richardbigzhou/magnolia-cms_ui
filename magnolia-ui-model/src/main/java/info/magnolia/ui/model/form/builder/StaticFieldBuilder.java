@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.model.form.builder;
 
+import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
 import info.magnolia.ui.model.field.definition.StaticFieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
@@ -129,4 +130,9 @@ public class StaticFieldBuilder extends AbstractFieldBuilder {
         return (StaticFieldBuilder) super.validator(validatorDefinition);
     }
 
+    @Override
+    public StaticFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
+        getDefinition().addValidator(validatorBuilder.exec());
+        return this;
+    }
 }

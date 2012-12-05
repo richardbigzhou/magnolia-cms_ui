@@ -31,31 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.dialog.field;
+package info.magnolia.ui.model.field.builder;
 
-import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
-import info.magnolia.ui.model.form.builder.CheckboxFieldBuilder;
+import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.model.field.validation.definition.EmailValidatorDefinition;
+import info.magnolia.ui.model.field.validation.definition.RegexpValidatorDefinition;
 
 /**
- * Config-by-code builder for the Enabled field.
+ * Config object creating builders for validator definitions.
  */
-public class EnabledFieldBuilder extends CheckboxFieldBuilder {
+public class ValidatorConfig {
 
-    private final EnabledFieldDefinition definition = new EnabledFieldDefinition();
+    private static final String DIGITS_ONLY_PATTERN = "[0-9]+";
 
-    public EnabledFieldBuilder(String name) {
-        super(name);
-        this.definition.setName(name);
+    public GenericValidatorBuilder digitsOnly() {
+        RegexpValidatorDefinition definition = new RegexpValidatorDefinition();
+        definition.setPattern(DIGITS_ONLY_PATTERN);
+        return new GenericValidatorBuilder(definition);
     }
 
-    @Override
-    public EnabledFieldDefinition getDefinition() {
-        return this.definition;
+    public GenericValidatorBuilder email() {
+        EmailValidatorDefinition definition = new EmailValidatorDefinition();
+        return new GenericValidatorBuilder(definition);
     }
 
-    @Override
-    public EnabledFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
-        getDefinition().addValidator(validatorBuilder.exec());
-        return this;
+    public GenericValidatorBuilder regexp(String pattern) {
+        RegexpValidatorDefinition definition = new RegexpValidatorDefinition();
+        definition.setPattern(pattern);
+        return new GenericValidatorBuilder(definition);
+    }
+
+    public GenericValidatorBuilder custom(ConfiguredFieldValidatorDefinition definition) {
+        return new GenericValidatorBuilder(definition);
     }
 }

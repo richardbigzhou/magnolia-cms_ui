@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.model.form.builder;
 
+import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
 import info.magnolia.ui.model.field.definition.PasswordFieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
@@ -149,4 +150,9 @@ public class PasswordFieldBuilder extends AbstractFieldBuilder {
         return (PasswordFieldBuilder) super.validator(validatorDefinition);
     }
 
+    @Override
+    public PasswordFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
+        getDefinition().addValidator(validatorBuilder.exec());
+        return this;
+    }
 }

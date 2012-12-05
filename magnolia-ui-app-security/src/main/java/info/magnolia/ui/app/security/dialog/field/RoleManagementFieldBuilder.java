@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
+import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 import info.magnolia.ui.model.form.builder.OptionBuilder;
 import info.magnolia.ui.model.form.builder.TwinColSelectFieldBuilder;
@@ -176,4 +177,9 @@ public class RoleManagementFieldBuilder extends TwinColSelectFieldBuilder {
         return (RoleManagementFieldBuilder) super.validator(validatorDefinition);
     }
 
+    @Override
+    public RoleManagementFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
+        getDefinition().addValidator(validatorBuilder.exec());
+        return this;
+    }
 }

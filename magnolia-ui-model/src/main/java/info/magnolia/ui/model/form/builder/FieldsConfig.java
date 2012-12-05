@@ -33,32 +33,34 @@
  */
 package info.magnolia.ui.model.form.builder;
 
+import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
+
 /**
  * Config object creating builders for dialog fields.
  */
 public class FieldsConfig {
 
-    public TextFieldBuilder textField(String name) {
+    public TextFieldBuilder text(String name) {
         return new TextFieldBuilder(name);
     }
 
-    public SelectFieldBuilder selectField(String name) {
+    public SelectFieldBuilder select(String name) {
         return new SelectFieldBuilder(name);
     }
 
-    public FileUploadFieldBuilder fileUploadField(String name) {
+    public FileUploadFieldBuilder fileUpload(String name) {
         return new FileUploadFieldBuilder(name);
     }
 
-    public CheckboxFieldBuilder checkboxField(String name) {
+    public CheckboxFieldBuilder checkbox(String name) {
         return new CheckboxFieldBuilder(name);
     }
 
-    public OptionGroupFieldBuilder optionGroupField(String name) {
+    public OptionGroupFieldBuilder optionGroup(String name) {
         return new OptionGroupFieldBuilder(name);
     }
 
-    public PasswordFieldBuilder passwordField(String name) {
+    public PasswordFieldBuilder password(String name) {
         return new PasswordFieldBuilder(name);
     }
 
@@ -66,7 +68,11 @@ public class FieldsConfig {
         return new StaticFieldBuilder(name);
     }
 
-    public TwinColSelectFieldBuilder twinColSelectField(String name) {
+    public TwinColSelectFieldBuilder twinColSelect(String name) {
         return new TwinColSelectFieldBuilder(name);
+    }
+
+    public <T extends ConfiguredFieldDefinition> GenericFieldBuilder<T> custom(T definition) {
+        return new GenericFieldBuilder<T>(definition);
     }
 }
