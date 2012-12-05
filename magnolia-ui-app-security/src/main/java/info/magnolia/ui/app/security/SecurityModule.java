@@ -120,7 +120,7 @@ public class SecurityModule implements ModuleLifecycle {
                             .imageProvider(cipd)
                             .columns(
                                     cfg.columns.property("jcrName", "Group name").sortable(true).expandRatio(2),
-                                    cfg.columns.property("title", "Description").sortable(true).displayInDialog(false).expandRatio(2),
+                                    cfg.columns.property("title", "Full group name").sortable(true).displayInDialog(false).expandRatio(2),
                                     cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
                                     cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
                             )
@@ -144,7 +144,7 @@ public class SecurityModule implements ModuleLifecycle {
                             .imageProvider(cipd)
                             .columns(
                                     cfg.columns.property("jcrName", "Role name").sortable(true).expandRatio(2),
-                                    cfg.columns.property("title", "Description").sortable(true).displayInDialog(false).expandRatio(2),
+                                    cfg.columns.property("title", "Full role name").sortable(true).displayInDialog(false).expandRatio(2),
                                     cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
                                     cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
                             )
@@ -187,7 +187,7 @@ public class SecurityModule implements ModuleLifecycle {
                         .imageProvider(cipd)
                         .columns(
                                 cfg.columns.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class).expandRatio(2),
-                                cfg.columns.property("title", "Title").sortable(true).expandRatio(2),
+                                cfg.columns.property("title", "Full name").sortable(true).expandRatio(2),
                                 cfg.columns.property("email", "Email").sortable(true).sortable(true).displayInDialog(false).expandRatio(1),
                                 cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
                                 cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
