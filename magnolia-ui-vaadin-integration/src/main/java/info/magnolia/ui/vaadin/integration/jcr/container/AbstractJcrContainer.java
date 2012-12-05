@@ -534,7 +534,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         final String select = String.format(SELECT_TEMPLATE, getMainItemTypeAsString());
         final StringBuilder stmt = new StringBuilder(select);
         // Return results only within the node configured in workbench/path
-        stmt.append(getWorkspacePathQueryClause());
+        stmt.append(getQueryWhereClause());
 
         if (considerSorting) {
             if (sorters.isEmpty()) {
@@ -581,13 +581,10 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * it's not configured return a blank string so that all nodes are considered.
      */
     protected String getQueryWhereClause() {
-        String whereClause;
+        String whereClause = "";
         String clauseWorkspacePath = getQueryWhereClause_WorkspacePath();
         if (!"".equals(clauseWorkspacePath)) {
             whereClause = " where " + clauseWorkspacePath;
-        } else {
-            // By default, search the root and therefore need no query clause.
-            whereClause = "";
         }
         log.debug("JCR query WHERE clause is {}", whereClause);
         return whereClause;
@@ -597,13 +594,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * @return
      */
     protected String getQueryWhereClause_WorkspacePath() {
-        String whereClauseWorkspacePath;
+        // By default, search the root and therefore do not need a query clause.
+        String whereClauseWorkspacePath = "";
         if (StringUtils.isNotBlank(workbenchDefinition.getPath()) && !"/".equals(workbenchDefinition.getPath())) {
             whereClauseWorkspacePath = String.format(WHERE_TEMPLATE_FOR_PATH, workbenchDefinition.getPath());
-        } else {
-            // By default, search the root and therefore do not need no query clause.
-            whereClauseWorkspacePath = "";
         }
+        log.debug("Workspace path where-clause is {}", whereClauseWorkspacePath);
         return whereClauseWorkspacePath;
     }
 

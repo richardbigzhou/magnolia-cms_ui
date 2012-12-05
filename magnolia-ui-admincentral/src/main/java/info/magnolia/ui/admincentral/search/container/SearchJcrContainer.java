@@ -56,42 +56,24 @@ public class SearchJcrContainer extends FlatJcrContainer{
         super(workbenchDefinition);
     }
 
-    /*
-    @Override
-    protected String constructJCRQuery(final boolean considerSorting) {
-        if(StringUtils.isBlank(getFullTextExpression())) {
-            return null;
-        }
-
-        //See http://wiki.apache.org/jackrabbit/EncodingAndEscaping
-        final String escapedFullTextExpression = getFullTextExpression().replaceAll("'", "''").trim();
-        String stmt = String.format(QUERY_STRING, getMainItemTypeAsString(), escapedFullTextExpression);
-        log.debug("JCR query statement is {}", stmt);
-        return stmt;
-    }*/
-
     @Override
     protected String getQueryWhereClause() {
-        String whereClause;
-
+        String whereClause = "";
         String clauseWorkspacePath = getQueryWhereClause_WorkspacePath();
         String clauseSearch = getQueryWhereClause_Search();
 
-        if ("".equals(clauseWorkspacePath) && "".equals(clauseSearch)) {
-            // By default, search the root and therefore need no query clause.
-            whereClause = "";
-        } else {
-            whereClause = " where (";
-
-            if (!"".equals(clauseWorkspacePath)) {
-                whereClause += clauseWorkspacePath;
+        whereClause = clauseSearch;
+        if (!"".equals(clauseWorkspacePath)){
+            if (!"".equals(whereClause)){
+                whereClause += " and";
             }
-            if (!"".equals(clauseSearch)) {
-                whereClause += clauseSearch;
-            }
-
-            whereClause += ")";
+            whereClause += clauseWorkspacePath;
         }
+
+        if (!"".equals(whereClause)){
+            whereClause = " where (" + whereClause + ")";
+        }
+
         log.debug("JCR query WHERE clause is {}", whereClause);
         return whereClause;
     }
@@ -100,11 +82,10 @@ public class SearchJcrContainer extends FlatJcrContainer{
         if(StringUtils.isBlank(getFullTextExpression())) {
             return "";
         }
-
         //See http://wiki.apache.org/jackrabbit/EncodingAndEscaping
         final String escapedFullTextExpression = getFullTextExpression().replaceAll("'", "''").trim();
-        String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, getMainItemTypeAsString(), escapedFullTextExpression);
-        log.debug("JCR query statement is {}", stmt);
+        String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, escapedFullTextExpression);
+        log.debug("Search where-clause is {}", stmt);
         return stmt;
     }
 
