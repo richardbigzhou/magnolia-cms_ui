@@ -55,9 +55,9 @@ import com.vaadin.data.Property;
  */
 public class JcrPropertyAdapter extends AbstractJcrAdapter {
 
-    public static final String VALUE_COLUMN = "value";
+    public static final String VALUE_PROPERTY = "value";
 
-    public static final String TYPE_COLUMN = "type";
+    public static final String TYPE_PROPERTY = "type";
 
     // Init
     private static final Logger log = LoggerFactory.getLogger(JcrPropertyAdapter.class);
@@ -78,7 +78,7 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
             propertyIdentifier = jcrProperty.getName();
         } catch (RepositoryException e) {
             log.error("Couldn't retrieve identifier of jcr property", e);
-            propertyIdentifier = UN_IDENTIFIED;
+            propertyIdentifier = UNIDENTIFIED;
         }
         this.jcrPropertyName = propertyIdentifier;
     }
@@ -97,9 +97,9 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
         try {
             if (JCR_NAME.equals(id)) {
                 value = getProperty().getName();
-            } else if (VALUE_COLUMN.equals(id)) {
+            } else if (VALUE_PROPERTY.equals(id)) {
                 value = getProperty().getString();
-            } else if (TYPE_COLUMN.equals(id)) {
+            } else if (TYPE_PROPERTY.equals(id)) {
                 value = PropertyType.nameFromValue(getProperty().getType());
             } else {
                 value = null;
@@ -120,9 +120,9 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
 
     /**
      * JcrPropertyAdapter custom logic to update one single vaadin property. If updated propertyId is
-     * {@link info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter#JCR_NAME}, then rename JCR Property. If propertyId is
-     * {@link #VALUE_COLUMN}, set new property value. If propertyId is
-     * {@link #TYPE_COLUMN}, set new property type. Otherwise, do nothing.
+     * {@link info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter#JCR_NAME}, then rename JCR Property. If propertyId
+     * is {@link #VALUE_PROPERTY}, set new property value. If propertyId is {@link #TYPE_PROPERTY}, set new property
+     * type. Otherwise, do nothing.
      */
     @Override
     protected void updateProperty(Item item, String propertyId, Property property) {
@@ -146,7 +146,7 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
                     log.error("Could not rename JCR Property.", e);
                 }
             }
-        } else if (VALUE_COLUMN.equals(propertyId)) {
+        } else if (VALUE_PROPERTY.equals(propertyId)) {
             if (property.getValue() != null) {
                 try {
                     String valueString = (String) property.getValue();
@@ -159,7 +159,7 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
                     log.error("Could not set JCR Property", e);
                 }
             }
-        } else if (TYPE_COLUMN.equals(propertyId)) {
+        } else if (TYPE_PROPERTY.equals(propertyId)) {
             if (property.getValue() != null) {
                 // get new type from string
                 int newType;
@@ -190,7 +190,6 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
         try {
             getProperty().setValue((String) property.getValue());
         } catch (RepositoryException re) {
-            log.error("Could not get property for " + id, re);
             throw new RuntimeRepositoryException(re);
         }
         return true;
@@ -201,7 +200,6 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
         try {
             getProperty().remove();
         } catch (RepositoryException re) {
-            log.error("Could not get property for " + id, re);
             throw new RuntimeRepositoryException(re);
         }
         return true;
