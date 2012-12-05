@@ -126,7 +126,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         //THEN
-        assertEquals(" where ( localname() = 'foo' or contains(t.*, 'foo'))", stmt);
+        assertEquals(" where ( (localname() = 'foo' or contains(t.*, 'foo')))", stmt);
     }
 
     @Test
@@ -138,7 +138,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         //THEN
-        assertEquals(" where ( localname() = 'foo OR ''baz bar''' or contains(t.*, 'foo OR ''baz bar'''))", stmt);
+        assertEquals(" where ( (localname() = 'foo OR ''baz bar''' or contains(t.*, 'foo OR ''baz bar''')))", stmt);
     }
 
 }
