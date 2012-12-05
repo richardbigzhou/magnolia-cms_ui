@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.search.container;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import info.magnolia.context.MgnlContext;
