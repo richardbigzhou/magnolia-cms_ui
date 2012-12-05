@@ -50,6 +50,7 @@ import org.vaadin.rpc.client.Method;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.terminal.Resource;
@@ -253,7 +254,13 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
                 Icon previewIconFont = new Icon(cssClassName, 100, "#000000");
                 previewContainer.addComponent(previewIconFont);
             } else {
-                Embedded preview = new Embedded(null, previewResource);
+
+                // Add a cache buster to the preview image to ensure that it is
+                // updated to the new image after any edits.
+                String resourcePath = ((ExternalResource) previewResource).getURL();
+                ExternalResource cacheBustedPreviewResource = new ExternalResource(resourcePath + "?cb=" + System.currentTimeMillis());
+
+                Embedded preview = new Embedded(null, cacheBustedPreviewResource);
                 preview.setWidth("100%");
                 previewContainer.addComponent(preview);
             }
