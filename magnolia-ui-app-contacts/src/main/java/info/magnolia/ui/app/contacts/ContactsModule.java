@@ -169,7 +169,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                 .tabs(
                                                         formcfg.tab("Personal").label("Personal Tab")
                                                                 .fields(
-                                                                        formcfg.fields.textField("salutation").label("Salutation").description("Define Salutation"),
+                                                                        formcfg.fields.textField("salutation").label("Salutation").description("Define salutation"),
                                                                         formcfg.fields.textField("firstName").label("First name").description("Please enter the contact first name. Field is mandatory").required(),
                                                                         formcfg.fields.textField("lastName").label("Last name").description("Please enter the contact last name. Field is mandatory").required(),
                                                                         formcfg.fields.fileUploadField("fileUpload").label("Image").preview().imageNodeName("photo"),
@@ -180,7 +180,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                                 .fields(
                                                                         formcfg.fields.textField("organizationName").label("Organization name").description("Enter the organization name").required(),
                                                                         formcfg.fields.textField("organizationUnitName").label("Organization unit name").description("Enter the organization unit name"),
-                                                                        formcfg.fields.textField("streetAddress").label("Street Address").description("Please enter the company street address").rows(2),
+                                                                        formcfg.fields.textField("streetAddress").label("Street address").description("Please enter the company street address").rows(2),
                                                                         formcfg.fields.textField("zipCode").label("ZIP code").description("Please enter the zip code (only digits)").validator(digitsOnly),
                                                                         formcfg.fields.textField("city").label("City").description("Please enter the company city  "),
                                                                         formcfg.fields.textField("country").label("Country").description("Please enter the company country")
@@ -188,8 +188,8 @@ public class ContactsModule implements ModuleLifecycle {
                                                         formcfg.tab("Contacts").label("Contact Tab")
                                                                 .fields(
                                                                         formcfg.fields.textField("officePhoneNr").label("Office phone").description("Please enter the office phone number"),
-                                                                        formcfg.fields.textField("officeFaxNr").label("Office Fax Nr.").description("Please enter the office fax number"),
-                                                                        formcfg.fields.textField("mobilePhoneNr").label("Mobile Phone").description("Please enter the mobile phone number"),
+                                                                        formcfg.fields.textField("officeFaxNr").label("Office fax nr.").description("Please enter the office fax number"),
+                                                                        formcfg.fields.textField("mobilePhoneNr").label("Mobile phone").description("Please enter the mobile phone number"),
                                                                         formcfg.fields.textField("email").label("E-Mail address").description("Please enter the email address").required().validator(emailValidator),
                                                                         formcfg.fields.textField("website").label("Website").description("Please enter the Website")
                                                                 )
@@ -250,7 +250,7 @@ public class ContactsModule implements ModuleLifecycle {
                         .tabs(
                                 formcfg.tab("Personal").label("Personal Tab")
                                         .fields(
-                                                formcfg.fields.textField("salutation").label("Salutation").description("Define Salutation"),
+                                                formcfg.fields.textField("salutation").label("Salutation").description("Define salutation"),
                                                 formcfg.fields.textField("firstName").label("First name").description("Please enter the contact first name. Field is mandatory").required(),
                                                 formcfg.fields.textField("lastName").label("Last name").description("Please enter the contact last name. Field is mandatory").required(),
                                                 formcfg.fields.fileUploadField("fileUpload").label("Image").preview().imageNodeName("photo"),
@@ -261,7 +261,7 @@ public class ContactsModule implements ModuleLifecycle {
                                         .fields(
                                                 formcfg.fields.textField("organizationName").label("Organization name").description("Enter the organization name").required(),
                                                 formcfg.fields.textField("organizationUnitName").label("Organization unit name").description("Enter the organization unit name"),
-                                                formcfg.fields.textField("streetAddress").label("Street Address").description("Please enter the company street address").rows(2),
+                                                formcfg.fields.textField("streetAddress").label("Street address").description("Please enter the company street address").rows(2),
                                                 formcfg.fields.textField("zipCode").label("ZIP code").description("Please enter the zip code (only digits)").validator(digitsOnly),
                                                 formcfg.fields.textField("city").label("City").description("Please enter the company city  "),
                                                 formcfg.fields.textField("country").label("Country").description("Please enter the company country")
@@ -269,8 +269,8 @@ public class ContactsModule implements ModuleLifecycle {
                                 formcfg.tab("Contacts").label("Contact Tab")
                                         .fields(
                                                 formcfg.fields.textField("officePhoneNr").label("Office phone").description("Please enter the office phone number"),
-                                                formcfg.fields.textField("officeFaxNr").label("Office Fax Nr.").description("Please enter the office fax number"),
-                                                formcfg.fields.textField("mobilePhoneNr").label("Mobile Phone").description("Please enter the mobile phone number"),
+                                                formcfg.fields.textField("officeFaxNr").label("Office fax nr.").description("Please enter the office fax number"),
+                                                formcfg.fields.textField("mobilePhoneNr").label("Mobile phone").description("Please enter the mobile phone number"),
                                                 formcfg.fields.textField("email").label("E-Mail address").description("Please enter the email address").required().validator(emailValidator),
                                                 formcfg.fields.textField("website").label("Website").description("Please enter the Website")
                                         )
