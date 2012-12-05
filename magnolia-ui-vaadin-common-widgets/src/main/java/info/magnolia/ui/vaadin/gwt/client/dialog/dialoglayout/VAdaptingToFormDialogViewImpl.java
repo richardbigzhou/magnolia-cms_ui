@@ -42,13 +42,13 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Implements {@link VBaseDialogView} by delegating to embedded form.
  */
-public class VFormDialogViewImpl extends SimplePanel implements VBaseDialogView {
+public class VAdaptingToFormDialogViewImpl extends SimplePanel implements VBaseDialogView {
 
     private VForm form;
     
     private Presenter presenter;
     
-    public VFormDialogViewImpl() {
+    public VAdaptingToFormDialogViewImpl() {
         setStyleName("dialog-panel");
     }
     
@@ -69,6 +69,7 @@ public class VFormDialogViewImpl extends SimplePanel implements VBaseDialogView 
 
     @Override
     public void setCaption(String caption) {
+        form.getView().setCaption(caption);
     }
 
     @Override

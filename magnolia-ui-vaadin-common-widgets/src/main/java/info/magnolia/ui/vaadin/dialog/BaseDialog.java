@@ -106,6 +106,7 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
             }
             this.content = actualContent;
             actualContent.setParent(this);
+            actualContent.setCaption(getCaption());
         }
     }
 
@@ -165,6 +166,7 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
 
     @Override
     public void setCaption(String caption) {
+        super.setCaption(caption);
         content.setCaption(caption);
     }
 

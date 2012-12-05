@@ -257,8 +257,8 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
-        if (tabSheet != null) {
-            int heightPx = JQueryWrapper.parseInt(height);
+        Integer heightPx = JQueryWrapper.parseInt(height); 
+        if (tabSheet != null && heightPx != null) {
             tabSheet.setHeight((heightPx - formHeader.getOffsetHeight() - footer.getOffsetHeight()) + "px");            
         }
     }

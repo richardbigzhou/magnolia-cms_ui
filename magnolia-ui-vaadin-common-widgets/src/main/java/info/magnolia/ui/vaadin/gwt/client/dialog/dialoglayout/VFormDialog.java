@@ -40,6 +40,6 @@ public class VFormDialog extends VBaseDialog {
 
     @Override
     protected VBaseDialogView createView() {
-        return new VFormDialogViewImpl();
+        return new VAdaptingToFormDialogViewImpl();
     }
 }
