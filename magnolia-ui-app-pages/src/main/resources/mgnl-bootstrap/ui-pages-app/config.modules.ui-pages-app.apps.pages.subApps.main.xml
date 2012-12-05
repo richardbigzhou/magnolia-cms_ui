@@ -138,7 +138,7 @@
           <sv:value>info.magnolia.ui.model.column.definition.PropertyColumnDefinition</sv:value>
         </sv:property>
         <sv:property sv:name="expandRatio" sv:type="Double">
-          <sv:value>2.0</sv:value>
+          <sv:value>2</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
@@ -178,8 +178,8 @@
         <sv:property sv:name="class" sv:type="String">
           <sv:value>info.magnolia.ui.model.column.definition.PropertyColumnDefinition</sv:value>
         </sv:property>
-        <sv:property sv:name="expandRatio" sv:type="Long">
-          <sv:value>1</sv:value>
+        <sv:property sv:name="expandRatio" sv:type="Double">
+          <sv:value>2</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
@@ -223,7 +223,7 @@
           <sv:value>false</sv:value>
         </sv:property>
         <sv:property sv:name="expandRatio" sv:type="Double">
-          <sv:value>1.0</sv:value>
+          <sv:value>1</sv:value>
         </sv:property>
         <sv:property sv:name="formatterClass" sv:type="String">
           <sv:value>info.magnolia.ui.admincentral.column.TemplateColumnFormatter</sv:value>
@@ -291,7 +291,7 @@
           <sv:value>superuser</sv:value>
         </sv:property>
         <sv:property sv:name="width" sv:type="Long">
-          <sv:value>60</sv:value>
+          <sv:value>46</sv:value>
         </sv:property>
       </sv:node>
       <sv:node sv:name="moddate">
@@ -317,7 +317,7 @@
           <sv:value>admin</sv:value>
         </sv:property>
         <sv:property sv:name="label" sv:type="String">
-          <sv:value>Modification Date</sv:value>
+          <sv:value>Modification date</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
           <sv:value>false</sv:value>
@@ -338,7 +338,7 @@
           <sv:value>true</sv:value>
         </sv:property>
         <sv:property sv:name="width" sv:type="Long">
-          <sv:value>250</sv:value>
+          <sv:value>160</sv:value>
         </sv:property>
       </sv:node>
     </sv:node>
