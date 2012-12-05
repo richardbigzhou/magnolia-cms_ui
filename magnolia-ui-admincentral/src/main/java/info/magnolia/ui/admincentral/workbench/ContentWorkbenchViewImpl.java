@@ -201,7 +201,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     @Override
     public void setViewType(final ViewType type) {
 
-        if (type.equals(ViewType.SEARCH) && currentViewType != ViewType.SEARCH) {
+        if (type != ViewType.SEARCH) {
             previousViewType = currentViewType;
         }
 
@@ -291,17 +291,17 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     @Override
     public void resynch(final String path, final ViewType viewType, final String query) {
-        selectPath(path);
-        if (StringUtils.isBlank(query)) {
-            setViewType(previousViewType);
-        } else {
-            setViewType(viewType);
-            if (viewType == ViewType.SEARCH) {
+        if (viewType == ViewType.SEARCH) {
+            if (StringUtils.isBlank(query)) {
+                setViewType(previousViewType);
+            } else {
                 searchbox.setValue(query);
                 searchbox.focus();
                 contentWorkbenchViewListener.onSearch(query);
             }
         }
+        setViewType(viewType);
+        selectPath(path);
     }
 
 }
