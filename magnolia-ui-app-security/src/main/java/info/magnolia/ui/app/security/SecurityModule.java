@@ -229,12 +229,12 @@ public class SecurityModule implements ModuleLifecycle {
         }
 
         GroupManagementFieldBuilder groups = new GroupManagementFieldBuilder("groups");
-        groups.label("Assign groups");
+        groups.label("Assign user to groups");
         groups.leftColumnCaption("Other available groups");
-        groups.rightColumnCaption("Assigned groups");
+        groups.rightColumnCaption("User is member of");
 
         RoleManagementFieldBuilder roles = new RoleManagementFieldBuilder("roles");
-        roles.label("Assign roles");
+        roles.label("Grant additional roles to user");
         roles.leftColumnCaption("Other available roles");
         roles.rightColumnCaption("Granted roles");
 
@@ -293,12 +293,12 @@ public class SecurityModule implements ModuleLifecycle {
         }
 
         GroupManagementFieldBuilder groups = new GroupManagementFieldBuilder("groups");
-        groups.label("Assign user to groups");
+        groups.label("Assign groups");
         groups.leftColumnCaption("Other available groups");
-        groups.rightColumnCaption("User is member of");
+        groups.rightColumnCaption("Assigned group");
 
         RoleManagementFieldBuilder roles = new RoleManagementFieldBuilder("roles");
-        roles.label("Grant additional roles to user");
+        roles.label("Grant additional roles");
         roles.leftColumnCaption("Other available roles");
         roles.rightColumnCaption("Granted roles");
 
