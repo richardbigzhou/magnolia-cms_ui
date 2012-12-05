@@ -39,7 +39,8 @@ import info.magnolia.ui.vaadin.dialog.FormDialogView;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Builder for Dialogs.
+ * Builder for Dialogs that have a {@link FormDialogView} as a content. Receives the definition parameters for 
+ * the dialog surrounding (like i18n base and caption/description) and the {@link FormDialogView}.
  */
 public class DialogBuilder {
     /**
@@ -61,9 +62,6 @@ public class DialogBuilder {
             view.setCaption(i18nLabel);
         }
 
-
-
-        //view.setShowAllEnabled(dialogDefinition.getTabs().size() > 1);
         return view;
     }
 }

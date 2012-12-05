@@ -37,8 +37,14 @@
 }
 
 .v-magnolia-table .v-table-resizer {
-	visibility: hidden;
+    width:1px;
+    height:20px;
+    margin-top:13px;
+    padding-left:0;
+    border-right:1px dotted #ccc;
+    background:none;
 }
+.v-magnolia-table .v-table-header td:last-child .v-table-resizer {visibility:hidden;}
 
 .v-magnolia-table .v-table-caption-container {
 	color:#333333;
@@ -151,4 +157,11 @@
 .v-magnolia-table.mobile .v-treetable-treespacer {
 	font-size: 30px;
 	padding-right: 10px;
+}
+
+.v-table-icon-element {
+    margin-left: 2px;
+    margin-right: 7px;
+    font-size: 16px;
+    vertical-align: middle;
 }
