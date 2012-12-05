@@ -64,7 +64,17 @@ public class SecurityGroupsSubApp extends AbstractContentSubApp {
 
     @Override
     public void updateActionbar(ActionbarPresenter actionbar) {
-        // nothing to update yet
+        String selectedItemId = getWorkbench().getSelectedItemId();
+        if(selectedItemId == null) {
+            selectedItemId = "/";
+        }
+        if ("/".equals(selectedItemId)) {
+            actionbar.enableGroup("addActions");
+            actionbar.disableGroup("editActions");
+        } else {
+            actionbar.enableGroup("editActions");
+            actionbar.disableGroup("addActions");
+        }
     }
 
 }
