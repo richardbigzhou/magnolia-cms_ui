@@ -31,31 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.dialog.field;
+package info.magnolia.ui.model.field.builder;
 
-import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
-import info.magnolia.ui.model.form.builder.CheckboxFieldBuilder;
+import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+
+import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.model.field.validation.definition.EmailValidatorDefinition;
+import info.magnolia.ui.model.field.validation.definition.RegexpValidatorDefinition;
 
 /**
- * Config-by-code builder for the Enabled field.
+ * Tests for {@link ValidatorConfig}.
  */
-public class EnabledFieldBuilder extends CheckboxFieldBuilder {
+public class ValidatorConfigTest {
 
-    private final EnabledFieldDefinition definition = new EnabledFieldDefinition();
+    private ValidatorConfig validators = new ValidatorConfig();
 
-    public EnabledFieldBuilder(String name) {
-        super(name);
-        this.definition.setName(name);
+    @Test
+    public void testDigitsOnly() {
+
+        GenericValidatorBuilder builder = validators.digitsOnly();
+        RegexpValidatorDefinition definition = (RegexpValidatorDefinition) builder.exec();
+
+        assertTrue(definition.getPattern().equals("[0-9]+"));
     }
 
-    @Override
-    public EnabledFieldDefinition getDefinition() {
-        return this.definition;
+    @Test
+    public void testRegexp() {
+
+        GenericValidatorBuilder builder = validators.regexp("test-pattern");
+        RegexpValidatorDefinition definition = (RegexpValidatorDefinition) builder.exec();
+
+        assertTrue(definition.getPattern().equals("test-pattern"));
     }
 
-    @Override
-    public EnabledFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
-        getDefinition().addValidator(validatorBuilder.exec());
-        return this;
+    @Test
+    public void testEmail() {
+
+        GenericValidatorBuilder builder = validators.email();
+        ConfiguredFieldValidatorDefinition definition = builder.exec();
+
+        assertTrue(definition instanceof EmailValidatorDefinition);
     }
 }

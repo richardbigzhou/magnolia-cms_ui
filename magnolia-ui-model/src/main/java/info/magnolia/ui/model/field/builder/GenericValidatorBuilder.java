@@ -31,31 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.dialog.field;
+package info.magnolia.ui.model.field.builder;
 
-import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
-import info.magnolia.ui.model.form.builder.CheckboxFieldBuilder;
+import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
 /**
- * Config-by-code builder for the Enabled field.
+ * Builder for creating a validator using only the standard properties.
+ *
+ * @see ValidatorConfig#custom(info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition)
  */
-public class EnabledFieldBuilder extends CheckboxFieldBuilder {
+public class GenericValidatorBuilder {
 
-    private final EnabledFieldDefinition definition = new EnabledFieldDefinition();
+    private ConfiguredFieldValidatorDefinition definition;
 
-    public EnabledFieldBuilder(String name) {
-        super(name);
-        this.definition.setName(name);
+    public GenericValidatorBuilder(ConfiguredFieldValidatorDefinition definition) {
+        this.definition = definition;
     }
 
-    @Override
-    public EnabledFieldDefinition getDefinition() {
-        return this.definition;
-    }
-
-    @Override
-    public EnabledFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
-        getDefinition().addValidator(validatorBuilder.exec());
+    public GenericValidatorBuilder errorMessage(String errorMessage) {
+        definition.setErrorMessage(errorMessage);
         return this;
+    }
+
+    public GenericValidatorBuilder i18nBasename(String i18nBasename) {
+        definition.setI18nBasename(i18nBasename);
+        return this;
+    }
+
+    public ConfiguredFieldValidatorDefinition exec() {
+        return definition;
     }
 }

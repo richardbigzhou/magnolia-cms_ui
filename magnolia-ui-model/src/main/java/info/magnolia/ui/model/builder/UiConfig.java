@@ -31,31 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.dialog.field;
+package info.magnolia.ui.model.builder;
 
-import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
-import info.magnolia.ui.model.form.builder.CheckboxFieldBuilder;
+import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
+import info.magnolia.ui.model.column.builder.ColumnConfig;
+import info.magnolia.ui.model.dialog.builder.DialogConfig;
+import info.magnolia.ui.model.field.builder.ValidatorConfig;
+import info.magnolia.ui.model.form.builder.FieldsConfig;
+import info.magnolia.ui.model.form.builder.FormConfig;
+import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
 
 /**
- * Config-by-code builder for the Enabled field.
+ * Main config object for creating UI definitions.
  */
-public class EnabledFieldBuilder extends CheckboxFieldBuilder {
+public class UiConfig {
 
-    private final EnabledFieldDefinition definition = new EnabledFieldDefinition();
-
-    public EnabledFieldBuilder(String name) {
-        super(name);
-        this.definition.setName(name);
-    }
-
-    @Override
-    public EnabledFieldDefinition getDefinition() {
-        return this.definition;
-    }
-
-    @Override
-    public EnabledFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
-        getDefinition().addValidator(validatorBuilder.exec());
-        return this;
-    }
+    public final WorkbenchConfig workbenches = new WorkbenchConfig();
+    public final ActionbarConfig actionbars = new ActionbarConfig();
+    public final FormConfig forms = new FormConfig();
+    public final DialogConfig dialogs = new DialogConfig();
+    public final FieldsConfig fields = new FieldsConfig();
+    public final ColumnConfig columns = new ColumnConfig();
+    public final ValidatorConfig validators = new ValidatorConfig();
 }

@@ -178,3 +178,7 @@ button.btn-dialog-selectCallBack {
     color: #666;
     width: 200px !important;
 }
+
+input.v-textfield-readonly, textarea.v-textarea-readonly {
+    background-color: #e6e6e6 !important;
+}

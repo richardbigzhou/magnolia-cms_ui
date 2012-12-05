@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.model.form.builder;
 
+import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
 import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
@@ -134,4 +135,9 @@ public class CheckboxFieldBuilder extends AbstractFieldBuilder {
         return (CheckboxFieldBuilder) super.validator(validatorDefinition);
     }
 
+    @Override
+    public CheckboxFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
+        getDefinition().addValidator(validatorBuilder.exec());
+        return this;
+    }
 }

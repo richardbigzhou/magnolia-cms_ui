@@ -531,14 +531,14 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * Subclasses can customize the optional <code>WHERE</code> clause by overriding {@link #getQueryWhereClause()}.<p>
      * The main item type (as configured in the {@link WorkbenchDefinition}) in the <code>SELECT</code> statement can be changed to something different by calling  {@link #getSelectStatement(String)}
      * @param the optional <code>ORDER BY</code> is added if this parameter is <code>true</code>. Sorting options can be configured in the {@link WorkbenchDefinition}.
-     * @see AbstractJcrContainer#getSelectStatement(String)
+     * @see AbstractJcrContainer#getQuerySelectStatement()
      * @see AbstractJcrContainer#getQueryWhereClause()
      * @see AbstractJcrContainer#getQueryWhereClauseWorkspacePath()
      * @see AbstractJcrContainer#getPage()
      * @see OrderBy
      */
     protected final String constructJCRQuery(final boolean considerSorting) {
-        final String select = getSelectStatement(getMainItemTypeAsString());
+        final String select = getQuerySelectStatement();
         final StringBuilder stmt = new StringBuilder(select);
         // Return results only within the node configured in workbench/path
         stmt.append(getQueryWhereClause());
@@ -614,10 +614,10 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * @return a <code>SELECT</code> statement with the item type passed as parameter, i.e. {@code select * from [my:fancytype]}. Used internally by {@link #constructJCRQuery(boolean)}.
+     * @return a <code>SELECT</code> statement with the main item type as configured in the {@link WorkbenchDefinition}. Can be customized by subclasses to utilize other item types, i.e. {@code select * from [my:fancytype]}. Used internally by {@link #constructJCRQuery(boolean)}.
      */
-    protected String getSelectStatement(String itemType) {
-        return String.format(SELECT_TEMPLATE, itemType);
+    protected String getQuerySelectStatement() {
+        return String.format(SELECT_TEMPLATE, getMainItemTypeAsString());
     }
 
     /**

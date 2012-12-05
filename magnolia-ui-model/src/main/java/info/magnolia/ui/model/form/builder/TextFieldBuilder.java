@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.model.form.builder;
 
+import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
 import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
@@ -132,5 +133,11 @@ public class TextFieldBuilder extends AbstractFieldBuilder {
     @Override
     public TextFieldBuilder validator(ConfiguredFieldValidatorDefinition validatorDefinition) {
         return (TextFieldBuilder) super.validator(validatorDefinition);
+    }
+
+    @Override
+    public TextFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
+        getDefinition().addValidator(validatorBuilder.exec());
+        return this;
     }
 }

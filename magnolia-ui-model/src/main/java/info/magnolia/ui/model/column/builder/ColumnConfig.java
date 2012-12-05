@@ -31,31 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.dialog.field;
+package info.magnolia.ui.model.column.builder;
 
-import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
-import info.magnolia.ui.model.form.builder.CheckboxFieldBuilder;
+import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
+import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
 
 /**
- * Config-by-code builder for the Enabled field.
+ * Config object creating builders for column definitions.
  */
-public class EnabledFieldBuilder extends CheckboxFieldBuilder {
+public class ColumnConfig {
 
-    private final EnabledFieldDefinition definition = new EnabledFieldDefinition();
-
-    public EnabledFieldBuilder(String name) {
-        super(name);
-        this.definition.setName(name);
+    public <T extends AbstractColumnDefinition> ColumnBuilder<T> column(T definition) {
+        return new ColumnBuilder<T>(definition);
     }
 
-    @Override
-    public EnabledFieldDefinition getDefinition() {
-        return this.definition;
-    }
-
-    @Override
-    public EnabledFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
-        getDefinition().addValidator(validatorBuilder.exec());
-        return this;
+    public ColumnBuilder property(String propertyName, String label) {
+        ColumnBuilder<PropertyColumnDefinition> columnBuilder = new ColumnBuilder<PropertyColumnDefinition>(new PropertyColumnDefinition());
+        return columnBuilder.name(propertyName).label(label).propertyName(propertyName);
     }
 }
