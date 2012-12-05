@@ -480,7 +480,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void getQueryWhereClauseWorkspacePathWithPath() {
+    public void testGetQueryWhereClauseWorkspacePathWithPath() {
         // GIVEN
         workbenchDefinition.setPath(TEST_PATH);
 
@@ -492,7 +492,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void getQueryWhereClauseWorkspacePathWithRoot() {
+    public void testGetQueryWhereClauseWorkspacePathWithRoot() {
         // GIVEN
         final String testPath = "/";
         workbenchDefinition.setPath(testPath);
@@ -505,7 +505,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void getQueryWhereClauseWorkspacePathWithNull() {
+    public void testGetQueryWhereClauseWorkspacePathWithNull() {
         // GIVEN
         workbenchDefinition.setPath(null);
 
@@ -517,7 +517,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void getQueryWhereClauseWorkspacePathWithEmptyString() {
+    public void testGetQueryWhereClauseWorkspacePathWithEmptyString() {
         // GIVEN
         final String testPath = "";
         workbenchDefinition.setPath(testPath);
@@ -527,6 +527,33 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertEquals("", result);
+    }
+
+    @Test
+    public void testGetQueryWhereClausePrependWhereKeywordWhenWorkspacePathIsNotRoot() {
+        // GIVEN
+        workbenchDefinition.setPath(TEST_PATH);
+        final String whereClauseWorkspacePath = jcrContainer.getQueryWhereClauseWorkspacePath();
+
+        // WHEN
+        final String result = jcrContainer.getQueryWhereClause();
+
+        // THEN
+        assertEquals(" where " + whereClauseWorkspacePath, result);
+    }
+
+    @Test
+    public void testGetQueryWhereClauseDoesNotPrependWhereKeywordWhenWorkspacePathIsRoot() {
+        // GIVEN
+        final String testPath = "/";
+        workbenchDefinition.setPath(testPath);
+        final String whereClauseWorkspacePath = jcrContainer.getQueryWhereClauseWorkspacePath();
+
+        // WHEN
+        final String result = jcrContainer.getQueryWhereClause();
+
+        // THEN
+        assertEquals(whereClauseWorkspacePath, result);
     }
 
     /**
