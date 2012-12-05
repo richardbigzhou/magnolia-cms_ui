@@ -91,7 +91,7 @@ public class FormBuilder {
                         tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
                     }
                     view.addField(field);
-                } //This can happen in case of extends/override. FieldDefinition is ConfiguredFieldDefinition and of course no builder is linked to this.
+                }
             }
             view.addFormSection(tab.getMessage(tabDefinition.getLabel()), tab.getContainer());
         }

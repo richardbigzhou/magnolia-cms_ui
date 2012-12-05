@@ -101,18 +101,18 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
 
     private final List<VThumbnail> thumbnailStubs = new ArrayList<VThumbnail>();
 
-    private ScrollPanel scroller = new ScrollPanel();
-    private FlowPanel basePanel = new FlowPanel();
+    private final ScrollPanel scroller = new ScrollPanel();
+    private final FlowPanel basePanel = new FlowPanel();
 
-    private SliderClientBundle thumbnailBundle = GWT.create(SliderClientBundle.class);
-    private MSlider thumbnailSizeSlider = new MSlider(thumbnailBundle.css());
+    private final SliderClientBundle thumbnailBundle = GWT.create(SliderClientBundle.class);
+    private final MSlider thumbnailSizeSlider = new MSlider(thumbnailBundle.css());
 
-    private CSSRule thumbnailImageStyle = CSSRule.create(".thumbnail-image");
-    private CSSRule thumbnailStyle = CSSRule.create(".thumbnail");
+    private final CSSRule thumbnailImageStyle = CSSRule.create(".thumbnail-image");
+    private final CSSRule thumbnailStyle = CSSRule.create(".thumbnail");
 
-    private FlowPanel imageContainer = new FlowPanel();
+    private final FlowPanel imageContainer = new FlowPanel();
 
-    private ClientSideProxy proxy = new ClientSideProxy(this) {
+    private final ClientSideProxy proxy = new ClientSideProxy(this) {
         {
             register("addThumbnails", new Method() {
                 @Override
@@ -299,7 +299,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         createStubsAndQueryThumbnails();
     }
 
-    private Timer queryTimer = new Timer() {
+    private final Timer queryTimer = new Timer() {
         @Override
         public void run() {
             doQueryThumbnails(thumbnailStubs.size());
@@ -318,10 +318,15 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
     private void setThumbnailAmount(int thumbnailAmount) {
         this.thumbnailAmount = thumbnailAmount;
         int width = getOffsetWidth();
-        int thumbnailsInRow = (int) (width / (thumbnailWidth + getHorizontalMargin()) * 1d);
-        int rows = (int) (thumbnailAmount / thumbnailsInRow * 1d) * (thumbnailHeight + getVerticalMargin());
-        imageContainer.getElement().getStyle().setHeight(rows, Unit.PX);
-        createStubsAndQueryThumbnails();
+        int totalThumbnailWidth = (thumbnailWidth + getHorizontalMargin());
+        if (totalThumbnailWidth != 0) {
+            int thumbnailsInRow = (int) (width /  totalThumbnailWidth * 1d);
+            if (thumbnailsInRow != 0) {
+                int rows = (int) (thumbnailAmount / thumbnailsInRow * 1d) * (thumbnailHeight + getVerticalMargin());
+                imageContainer.getElement().getStyle().setHeight(rows, Unit.PX);
+                createStubsAndQueryThumbnails();   
+            }            
+        }
     }
 
     private void doQueryThumbnails(int amount) {

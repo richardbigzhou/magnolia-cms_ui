@@ -40,7 +40,7 @@ import info.magnolia.ui.framework.view.View;
 import java.util.List;
 
 /**
- * FormView.
+ * Interface for {@link Form}.
  */
 public interface FormView extends View, Item.Editor {
 

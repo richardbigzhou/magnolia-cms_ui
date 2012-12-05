@@ -120,9 +120,9 @@ public class SecurityModule implements ModuleLifecycle {
                             .imageProvider(cipd)
                             .columns(
                                     cfg.columns.property("jcrName", "Name").sortable(true),
-                                    cfg.columns.property("title", "Full name").sortable(true).width(180).displayInDialog(false),
-                                    cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
-                                    cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. date").propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(200).sortable(true)
+                                    cfg.columns.property("title", "Description").sortable(true).displayInDialog(false).expandRatio(2).expandRatio(2),
+                                    cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
+                                    cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
                             )
                             .actionbar(cfg.actionbars.actionbar().defaultAction("edit")
                                     .sections(
@@ -143,10 +143,10 @@ public class SecurityModule implements ModuleLifecycle {
                             .mainItemType(cfg.workbenches.itemType(NodeTypes.Role.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                             .imageProvider(cipd)
                             .columns(
-                                    cfg.columns.property("jcrName", "Name").sortable(true),
-                                    cfg.columns.property("title", "Full name").sortable(true).width(180).displayInDialog(false),
-                                    cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
-                                    cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. date").propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(200).sortable(true)
+                                    cfg.columns.property("jcrName", "Role name").sortable(true).expandRatio(2),
+                                    cfg.columns.property("title", "Description").sortable(true).displayInDialog(false).expandRatio(2),
+                                    cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
+                                    cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
                             )
                             .actionbar(cfg.actionbars.actionbar().defaultAction("edit")
                                     .sections(
@@ -186,11 +186,11 @@ public class SecurityModule implements ModuleLifecycle {
                         .mainItemType(cfg.workbenches.itemType(NodeTypes.User.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                         .imageProvider(cipd)
                         .columns(
-                                cfg.columns.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).width(200).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class),
-                                cfg.columns.property("title", "Full name").sortable(true).expandRatio(2.0f),
-                                cfg.columns.property("email", "Email").sortable(true).width(350).displayInDialog(false),
-                                cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(60),
-                                cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. date").propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(250).sortable(true)
+                                cfg.columns.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class).expandRatio(2),
+                                cfg.columns.property("title", "Title").sortable(true).expandRatio(2),
+                                cfg.columns.property("email", "Email").sortable(true).sortable(true).displayInDialog(false).expandRatio(1),
+                                cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
+                                cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
                         )
                         .actionbar(cfg.actionbars.actionbar().defaultAction("edit")
                                 .sections(

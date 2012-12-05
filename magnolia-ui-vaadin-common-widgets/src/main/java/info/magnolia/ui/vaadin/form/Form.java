@@ -57,7 +57,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Form.
+ * {@link Form}. The server side implementation of the form view.
+ * Displays the form inside a {@link MagnoliaTabSheet}.
  */
 @ClientWidget(value = VForm.class, loadStyle = ClientWidget.LoadStyle.EAGER)
 public class Form extends AbstractComponent implements ServerSideHandler, FormView {

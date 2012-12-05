@@ -44,8 +44,11 @@ import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -61,6 +64,8 @@ import com.vaadin.data.Item;
  * Presenter for ContentView.
  */
 public class ContentPresenter implements ContentView.Listener {
+
+    private static final String ICON_PROPERTY = "icon-node-data";
 
     private static final Logger log = LoggerFactory.getLogger(ContentPresenter.class);
 
@@ -172,5 +177,27 @@ public class ContentPresenter implements ContentView.Listener {
         } catch (Exception e) {
             shell.showError("An error occured while editing an item in data grid", e);
         }
+    }
+
+    @Override
+    public String getItemIcon(Item item) {       
+        if(item instanceof JcrPropertyAdapter && workbenchDefinition.includeProperties()) {
+            return ICON_PROPERTY;
+        }
+        
+        if(item instanceof JcrNodeAdapter) {
+            JcrNodeAdapter node = (JcrNodeAdapter)item;
+            String typeName = node.getPrimaryNodeTypeName();
+            ItemTypeDefinition groupingType = workbenchDefinition.getGroupingItemType();
+            ItemTypeDefinition mainType = workbenchDefinition.getMainItemType();
+            
+            if(groupingType != null && groupingType.getItemType().equals(typeName)) {
+                return groupingType.getIcon();
+            } else if(mainType != null && mainType.getItemType().equals(typeName)) {
+                return mainType.getIcon();
+            }
+        }
+        
+        return null;
     }
 }

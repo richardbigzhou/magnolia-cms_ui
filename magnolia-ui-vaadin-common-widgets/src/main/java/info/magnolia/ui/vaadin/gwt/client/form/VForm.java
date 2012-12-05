@@ -33,6 +33,12 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form;
 
+import java.util.Set;
+
+import org.vaadin.rpc.client.ClientSideHandler;
+import org.vaadin.rpc.client.ClientSideProxy;
+import org.vaadin.rpc.client.Method;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
@@ -41,14 +47,10 @@ import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.VConsole;
-import org.vaadin.rpc.client.ClientSideHandler;
-import org.vaadin.rpc.client.ClientSideProxy;
-import org.vaadin.rpc.client.Method;
-
-import java.util.Set;
 
 /**
- * VForm.
+ * Client-side implementation of the {@link info.magnolia.ui.vaadin.form.Form}.
+ * Takes care of all communication to the server and delegates to {@link VFormView}.
  */
 public class VForm extends Composite implements Container, ClientSideHandler, VFormView.Presenter {
 

@@ -56,7 +56,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.Util;
 
 /**
- * VFormViewImpl.
+ * Actual client side implementation of the form view.
+ * Provides the methods for the client side presenter {@link VForm}.
  */
 public class VFormViewImpl extends FlowPanel implements VFormView {
 

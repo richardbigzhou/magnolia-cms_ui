@@ -43,7 +43,11 @@ import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
 
 /**
- * Form Presenter. Builds the form using {@link FormBuilder}, maps actions and provides callback and validation calls to the view.
+ * Implementation of {@link FormPresenter}.
+ * Delegates building of {@link FormView}s to the {@link FormBuilder}.
+ * Maps the {@link Item} to the form and registers callback function created by the caller.
+ * Binds the actions defined in  {@link FormActionDefinition} to the form.
+ * Provides methods for checking and displaying the validation of forms.
  */
 public class FormPresenterImpl implements FormPresenter {
 
