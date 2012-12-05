@@ -305,7 +305,7 @@ public class SecurityModule implements ModuleLifecycle {
                                 cfg.forms.tab("Group").label("Group info")
                                         .fields(
                                                 groupName,
-                                                cfg.fields.text("title").label("Full Name").description("Full name of the group"),
+                                                cfg.fields.text("title").label("Full name").description("Full name of the group"),
                                                 cfg.fields.text("description").label("Description").description("Detail description of the group")
                                         ),
                                 cfg.forms.tab("Groups").label("Groups")
