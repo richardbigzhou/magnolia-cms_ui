@@ -31,27 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.item;
+package info.magnolia.ui.vaadin.dialog;
 
-import com.vaadin.ui.Component;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.form.FormView;
 
 /**
- * ContactsItemViewImpl.
- * see MGNLUI-230.
+ * NewFormDialogView.
  */
-public class ContactsItemViewImpl implements ContactsItemView {
+public interface FormDialogView extends DialogView {
 
-
-    private View workbenchView;
-
-    @Override
-    public Component asVaadinComponent() {
-        return workbenchView.asVaadinComponent();
-    }
-
-    @Override
-    public void setWorkbenchView(View workbenchView) {
-        this.workbenchView = workbenchView;
-    }
+    void setFormView(FormView formView);
 }

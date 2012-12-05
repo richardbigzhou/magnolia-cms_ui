@@ -61,8 +61,6 @@ public class ItemPresenter {
 
     private JcrNodeAdapter item;
 
-    private ItemView.ViewType viewType;
-
     @Inject
     public ItemPresenter(final @Named("admincentral") EventBus eventBus, ItemView view, FormPresenterFactory formPresenterFactory) {
         this.eventBus = eventBus;
@@ -73,7 +71,6 @@ public class ItemPresenter {
     public ItemView start(FormDefinition formDefinition, final JcrNodeAdapter item, ItemView.ViewType viewType) {
         this.formDefinition = formDefinition;
         this.item = item;
-        this.viewType = viewType;
 
         setItemView(viewType);
         return view;

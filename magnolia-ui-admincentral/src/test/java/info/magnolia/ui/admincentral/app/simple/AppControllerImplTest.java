@@ -68,6 +68,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -328,6 +329,51 @@ public class AppControllerImplTest {
         locationController.goTo(location);
         //THEN
         assertEquals(true, appController.isAppStarted(appName_1 + "_name"));
+
+    }
+
+    @Test
+    public void testOpenTwoSubApps() {
+
+        // GIVEN
+        Location location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName_1 + "_name", subAppName_1 + "_name");
+        locationController.goTo(location);
+
+        // WHEN
+        Location location2 = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName_1 + "_name", subAppName_2 + "_name");
+        locationController.goTo(location2);
+
+        //THEN
+        assertEquals(true, appController.isAppStarted(appName_1 + "_name"));
+        assertNotSame(location, appController.getCurrentApp().getCurrentLocation());
+        assertEquals(location2, appController.getCurrentApp().getCurrentLocation());
+
+    }
+
+    @Test
+    public void testOpenTwoAppsWithSubApps() {
+
+        // GIVEN
+        Location location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName_1 + "_name", subAppName_1 + "_name");
+        locationController.goTo(location);
+
+        Location location2 = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName_1 + "_name", subAppName_2 + "_name");
+        locationController.goTo(location2);
+
+        Location location3 = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName_1 + "_name", subAppName_2 + "_name");
+        locationController.goTo(location3);
+
+        // WHEN
+        // switch to current location of first app
+        Location location4 =  new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appName_1 + "_name", "");
+        locationController.goTo(location4);
+
+        //THEN
+        assertEquals(true, appController.isAppStarted(appName_1 + "_name"));
+        assertNotSame(location, appController.getCurrentApp().getCurrentLocation());
+        assertNotSame(location3, appController.getCurrentApp().getCurrentLocation());
+        assertNotSame(location4, appController.getCurrentApp().getCurrentLocation());
+        assertEquals(location2, appController.getCurrentApp().getCurrentLocation());
 
     }
 

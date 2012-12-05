@@ -100,7 +100,7 @@ public class VFormHeader extends FlowPanel {
         add(errorPanel);
     }
     
-    public void setDialogCaption(final String caption) {
+    public void setFormCaption(final String caption) {
         this.caption.setInnerText(caption);
     }
     

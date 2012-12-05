@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form;
 
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheet;
+
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -50,21 +52,23 @@ public interface VFormView extends IsWidget, HasWidgets, ValidationChangedEvent.
     public interface Presenter {
 
         void fireAction(String action);
+        
+        void runLayout();
 
     }
 
-
+    VMagnoliaTabSheet getContent();
+    
     void setPresenter(Presenter presenter);
-
-    boolean hasChildComponent(Widget component);
 
     void addAction(String label, String action);
 
     void setDescription(String description);
 
+    void setCaption(final String caption);
+    
     int getFormWidth();
 
     int getFormHeight();
-
 
 }

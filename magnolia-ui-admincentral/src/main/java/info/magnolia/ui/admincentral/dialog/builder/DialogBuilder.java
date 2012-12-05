@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.dialog.builder;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
+import info.magnolia.ui.vaadin.dialog.FormDialogView;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -45,7 +45,7 @@ public class DialogBuilder {
     /**
      * @return DialogView populated with values from DialogDefinition and Item.
      */
-    public NewFormDialogView buildFormDialog(DialogDefinition dialogDefinition, NewFormDialogView view) {
+    public FormDialogView buildFormDialog(DialogDefinition dialogDefinition, FormDialogView view) {
 
         final String description = dialogDefinition.getDescription();
         final String label = dialogDefinition.getLabel();

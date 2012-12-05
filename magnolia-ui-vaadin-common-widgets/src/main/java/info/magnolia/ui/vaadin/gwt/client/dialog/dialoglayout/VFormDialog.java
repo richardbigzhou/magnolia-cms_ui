@@ -31,16 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
-
-import info.magnolia.ui.vaadin.form.FormView;
+package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
 
 /**
- * NewFormDialog.
+ * Client side implementation of the dialog that delegates most of the logic/UI to the embedded form. 
  */
-public class NewFormDialog extends BaseDialog implements NewFormDialogView {
+public class VFormDialog extends VBaseDialog {
+
     @Override
-    public void setFormView(FormView formView) {
-        super.setContent(formView.asVaadinComponent());
+    protected VBaseDialogView createView() {
+        return new VAdaptingToFormDialogViewImpl();
     }
 }

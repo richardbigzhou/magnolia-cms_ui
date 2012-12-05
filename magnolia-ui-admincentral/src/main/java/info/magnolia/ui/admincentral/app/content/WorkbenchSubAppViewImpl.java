@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.item;
+package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
+import com.vaadin.ui.Component;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * ContactsItemView.
- * see MGNLUI-230.
+ * View for Workbench subApps. Used for implementers of {@link AbstractContentSubApp} and {@link AbstractItemSubApp}.
  */
-public interface ContactsItemView extends WorkbenchSubAppView {
+public class WorkbenchSubAppViewImpl implements WorkbenchSubAppView {
+
+    private View workbenchView;
+
+    @Override
+    public void setWorkbenchView(View workbenchView) {
+        this.workbenchView = workbenchView;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return workbenchView.asVaadinComponent();
+    }
 }

@@ -41,7 +41,7 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
-import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
+import info.magnolia.ui.vaadin.dialog.FormDialogView;
 import info.magnolia.ui.vaadin.form.FormView;
 import org.junit.Before;
 import org.junit.Test;
@@ -192,7 +192,7 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public NewFormDialogView getView() {
+        public FormDialogView getView() {
             return null;
         }
 
@@ -207,7 +207,7 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public NewFormDialogView start(Item item, Callback callback) {
+        public FormDialogView start(Item item, Callback callback) {
             return null;
         }
 
