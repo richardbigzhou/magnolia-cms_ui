@@ -118,7 +118,6 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                 if (targetApp != null) {
                     if (targetApp instanceof AbstractContentApp) {
                         final ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp).openChooseDialog();
-                        //pickerPresenter.getView().setCaption("Select a contact");
                         pickerPresenter.addValuePickListener(new ValueChosenListener<Item>() {
                             @Override
                             public void onValueChosen(final Item pickedValue) {
@@ -149,9 +148,5 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                 }
             }
         };
-    }
-
-    private String getCustomPropertyName() {
-        return StringUtils.isEmpty(definition.getPropertyName()) ? PATH_PROPERTY_NAME : definition.getPropertyName();
     }
 }

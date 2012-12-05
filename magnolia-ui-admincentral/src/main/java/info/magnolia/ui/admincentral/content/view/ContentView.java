@@ -113,6 +113,8 @@ public interface ContentView extends View {
         void onDoubleClick(Item item);
         
         void onItemEdited(Item item);
+        
+        String getItemIcon(Item item);
 
     }
 }
