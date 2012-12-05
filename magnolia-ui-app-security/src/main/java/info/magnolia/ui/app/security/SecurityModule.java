@@ -162,8 +162,7 @@ public class SecurityModule implements ModuleLifecycle {
                             )
                     )
 
-            )
-        ;
+            );
     }
 
     protected ContentSubAppBuilder userSubApp(ContentAppBuilder app, UiConfig cfg, String name, String root) {
