@@ -171,8 +171,10 @@ button.btn-dialog-selectCallBack {
     color: #666;
     left: 450px;
     position: absolute;
+    width: 200px !important;
 }
 
 .v-select-twincol-caption-left {
     color: #666;
+    width: 200px !important;
 }

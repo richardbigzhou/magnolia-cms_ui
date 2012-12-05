@@ -160,17 +160,11 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
     @Override
     public void locationChanged(final Location location) {
         super.locationChanged(location);
-        ContentLocation contentLocation = ContentLocation.wrap(location);
-        String selectedItemPath = contentLocation.getNodePath();
-        if (selectedItemPath != null) {
-            getWorkbench().selectPath(selectedItemPath);
-        }
-        updateActionbar(getWorkbench().getActionbarPresenter());
+        restoreWorkbench(getCurrentLocation());
     }
 
     /**
-     * Wraps the current DefaultLocation in a ContentLocation. Providing getter and setters for used parameters.
-     * @return
+     * Wraps the current DefaultLocation in a {@link ContentLocation}. Providing getter and setters for used parameters.
      */
     @Override
     public ContentLocation getCurrentLocation() {

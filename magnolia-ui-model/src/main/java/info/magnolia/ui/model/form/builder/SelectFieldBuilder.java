@@ -70,12 +70,12 @@ public class SelectFieldBuilder extends AbstractFieldBuilder {
     }
 
     public SelectFieldBuilder valueNodeData(String valueNodeData) {
-        getDefinition().setValueNodeData(valueNodeData);
+        getDefinition().setValueProperty(valueNodeData);
         return this;
     }
 
     public SelectFieldBuilder labelNodeData(String labelNodeData) {
-        getDefinition().setLabelNodeData(labelNodeData);
+        getDefinition().setLabelProperty(labelNodeData);
         return this;
     }
 

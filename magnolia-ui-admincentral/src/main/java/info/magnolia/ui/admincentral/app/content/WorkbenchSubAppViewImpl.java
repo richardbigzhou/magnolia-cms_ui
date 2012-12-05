@@ -31,41 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.lightbox;
+package info.magnolia.ui.admincentral.app.content;
 
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.ui.Component;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * The VLight vaadin client-side proxy for the Icon component.
+ * View for Workbench subApps. Used for implementers of {@link AbstractContentSubApp} and {@link AbstractItemSubApp}.
  */
-public class VLightBox extends GwtLightBox implements Paintable {
+public class WorkbenchSubAppViewImpl implements WorkbenchSubAppView {
 
-    private ApplicationConnection client;
+    private View workbenchView;
 
-    private String paintableId;
-
-    public VLightBox() {
-
+    @Override
+    public void setWorkbenchView(View workbenchView) {
+        this.workbenchView = workbenchView;
     }
 
     @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        this.client = client;
-        this.paintableId = uidl.getId();
-        if (client.updateComponent(this, uidl, true)) {
-            return;
-        }
-
-        updateLightBox(uidl);
+    public Component asVaadinComponent() {
+        return workbenchView.asVaadinComponent();
     }
-
-
-    protected void updateLightBox(UIDL uidl) {
-        if (uidl.hasAttribute("imagePath")) {
-            updateImageUrl(uidl.getStringAttribute("imagePath"));
-        }
-    }
-
 }
