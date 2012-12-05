@@ -39,7 +39,8 @@ import info.magnolia.ui.vaadin.form.FormView;
 import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VFormDialog;
 
 /**
- * NewFormDialog.
+ * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that 
+ * adapts to the content ({@link FormView}) and delegates the view logic to it.
  */
 @ClientWidget(VFormDialog.class)
 public class FormDialog extends BaseDialog implements FormDialogView {

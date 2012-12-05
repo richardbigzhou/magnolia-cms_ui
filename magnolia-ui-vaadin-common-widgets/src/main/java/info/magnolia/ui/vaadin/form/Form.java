@@ -57,7 +57,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Form.
+ * {@link Form} is similar to dialogs but purposed and adapted to be used in inline form (e.g. in sub-app tabs),
+ * whereas Dialogs are used as pop-ups.
  */
 @ClientWidget(value = VForm.class, loadStyle = ClientWidget.LoadStyle.EAGER)
 public class Form extends AbstractComponent implements ServerSideHandler, FormView {
