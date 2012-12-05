@@ -35,19 +35,30 @@ package info.magnolia.ui.admincentral.dialog.builder;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Builder for Dialogs that have a {@link FormDialogView} as a content. Receives the definition parameters for 
- * the dialog surrounding (like i18n base and caption/description) and the {@link FormDialogView}.
+ * Builder for {@link DialogView} and {@link FormDialogView}.
+ * Receives the definition parameters for the dialog surrounding (like i18n base and caption/description).
+ *
+ * @see info.magnolia.ui.admincentral.dialog.FormDialogPresenter
+ *
  */
 public class DialogBuilder {
+
     /**
-     * @return DialogView populated with values from DialogDefinition and Item.
+     * Builds a {@link DialogView} that has a {@link FormDialogView} as content.
      */
     public FormDialogView buildFormDialog(DialogDefinition dialogDefinition, FormDialogView view) {
+        return (FormDialogView) buildDialog(dialogDefinition, view);
+    }
 
+    /**
+     * Builds a {@link DialogView} populated with values from DialogDefinition.
+     */
+    public DialogView buildDialog(DialogDefinition dialogDefinition, DialogView view) {
         final String description = dialogDefinition.getDescription();
         final String label = dialogDefinition.getLabel();
         final String basename = dialogDefinition.getI18nBasename();
@@ -56,7 +67,7 @@ public class DialogBuilder {
             String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
             view.setDialogDescription(i18nDescription);
         }
-        
+
         if (StringUtils.isNotBlank(label)) {
             String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
             view.setCaption(i18nLabel);

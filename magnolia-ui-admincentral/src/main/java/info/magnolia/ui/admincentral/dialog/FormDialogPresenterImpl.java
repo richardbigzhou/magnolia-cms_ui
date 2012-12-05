@@ -47,7 +47,8 @@ import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
 
 /**
- * Form Dialog Presenter and Listener implementation.
+ * Presenter for forms opened inside dialogs.
+ * Combines functionality of {@link DialogPresenter} and {@link FormPresenter}.
  */
 public class FormDialogPresenterImpl extends BaseDialogPresenter implements FormDialogPresenter {
 
@@ -78,6 +79,16 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         initActions(dialogDefinition);
     }
 
+    /**
+     * Returns a {@link DialogView} containing {@link info.magnolia.ui.vaadin.form.FormView} as content.
+     * <ul>
+     *  <li>Delegates the building of the {@link FormPresenter} to the {@link FormPresenterFactory}.</li>
+     *  <li>Delegates the building of the {@link FormDialogPresenter} to the {@link FormDialogPresenterFactory}.</li>
+     *  <li>Sets the created {@link info.magnolia.ui.vaadin.form.FormView} as content of the created {@link DialogView}.</li>
+     * </ul>
+     * @param item passed on to{@link FormDialogPresenter}
+     * @param callback registers callback functions created by caller
+     */
     @Override
     public DialogView start(final Item item, final Callback callback) {
         this.callback = callback;

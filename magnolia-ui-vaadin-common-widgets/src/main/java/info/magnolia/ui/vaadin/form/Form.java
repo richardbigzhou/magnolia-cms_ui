@@ -57,8 +57,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * {@link Form} is similar to dialogs but purposed and adapted to be used in inline form (e.g. in sub-app tabs),
- * whereas Dialogs are used as pop-ups.
+ * {@link Form}. The server side implementation of the form view.
+ * Displays the form inside a {@link MagnoliaTabSheet}.
  */
 @ClientWidget(value = VForm.class, loadStyle = ClientWidget.LoadStyle.EAGER)
 public class Form extends AbstractComponent implements ServerSideHandler, FormView {

@@ -93,30 +93,4 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
     protected Item getItem() {
         return item;
     }
-
-    private void traceNodeProperties(Node nodeOp) throws RepositoryException {
-        // debug by logging properties.
-        PropertyIterator propIter;
-        propIter = nodeOp.getProperties();
-        log.info("TRACE NODE PROPS:");
-        while (propIter.hasNext()) {
-            Property prop = propIter.nextProperty();
-            log.info(prop.toString() + " " + upToNCharacters(prop.getString(), 30));
-        }
-    }
-
-    private void traceNodeChildren(Node nodeOp) throws RepositoryException {
-        // debug by logging properties.
-        NodeIterator nodeIter;
-        nodeIter = nodeOp.getNodes();
-        log.info("TRACE NODE CHILDREN:");
-        while (nodeIter.hasNext()) {
-            Node n = nodeIter.nextNode();
-            log.info(n.toString());
-        }
-    }
-
-    private String upToNCharacters(String s, int n) {
-        return s.substring(0, Math.min(s.length(), n));
-    }
 }

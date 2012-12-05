@@ -36,7 +36,7 @@ package info.magnolia.ui.vaadin.dialog;
 import info.magnolia.ui.vaadin.form.FormView;
 
 /**
- * NewFormDialogView.
+ * Interface of {@link FormDialog}.
  */
 public interface FormDialogView extends DialogView {
 
