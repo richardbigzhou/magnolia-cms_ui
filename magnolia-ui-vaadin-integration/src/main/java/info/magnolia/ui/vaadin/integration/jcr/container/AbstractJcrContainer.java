@@ -535,7 +535,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * @see AbstractJcrContainer#getPage()
      * @see OrderBy
      */
-    protected final String constructJCRQuery(final boolean considerSorting) {
+    protected String constructJCRQuery(final boolean considerSorting) {
         final String select = String.format(SELECT_TEMPLATE, getMainItemTypeAsString());
         final StringBuilder stmt = new StringBuilder(select);
         // Return results only within the node configured in workbench/path
