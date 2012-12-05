@@ -33,21 +33,16 @@
  */
 package info.magnolia.ui.admincentral.form.action;
 
+import com.vaadin.data.Item;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * Action for saving Items in Forms.
