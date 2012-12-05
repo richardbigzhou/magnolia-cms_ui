@@ -49,6 +49,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
@@ -106,6 +107,14 @@ public class ListViewImpl implements ListView {
                 if (event.isDoubleClick()) {
                     presenterOnDoubleClick(String.valueOf(event.getItemId()));
                 }
+            }
+        });
+        
+        table.setCellStyleGenerator(new Table.CellStyleGenerator() {
+            
+            @Override
+            public String getStyle(Object itemId, Object propertyId) {
+                return presenterGetIcon(itemId, propertyId);
             }
         });
 
@@ -207,5 +216,14 @@ public class ListViewImpl implements ListView {
     @Override
     public ViewType getViewType() {
         return ViewType.LIST;
+    }
+
+    private String presenterGetIcon(Object itemId, Object propertyId) {
+        Container container = table.getContainerDataSource();
+        if(listener != null && propertyId == null) {
+            return listener.getItemIcon(container.getItem(itemId));                    
+        }
+        
+        return null;
     }
 }
