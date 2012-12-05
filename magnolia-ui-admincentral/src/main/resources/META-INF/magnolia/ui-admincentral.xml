@@ -214,9 +214,20 @@
     </configurer>
 
     <component>
+      <type>info.magnolia.ui.admincentral.dialog.ChooseDialogFactory</type>
+      <implementation>info.magnolia.ui.admincentral.dialog.ChooseDialogFactoryImpl</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
+      <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
+    </component>
+
+    <component>
       <type>info.magnolia.ui.admincentral.dialog.action.DialogActionFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.action.DialogActionFactoryImpl</implementation>
     </component>
+        
     <component>
       <type>info.magnolia.ui.admincentral.dialog.ChooseDialogFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.ChooseDialogFactoryImpl</implementation>
@@ -320,8 +331,8 @@
       <implementation>info.magnolia.ui.vaadin.dialog.BaseDialog</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.vaadin.dialog.NewFormDialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.NewFormDialog</implementation>
+      <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
+      <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.vaadin.form.FormView</type>

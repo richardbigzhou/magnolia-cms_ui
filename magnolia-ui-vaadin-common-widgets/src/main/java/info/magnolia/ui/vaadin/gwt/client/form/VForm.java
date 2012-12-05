@@ -54,6 +54,8 @@ public class VForm extends Composite implements Container, ClientSideHandler, VF
 
     private final VFormView view = new VFormViewImpl();
 
+    private ApplicationConnection client;
+    
     private final ClientSideProxy proxy = new ClientSideProxy(this) {{
 
 
@@ -81,9 +83,16 @@ public class VForm extends Composite implements Container, ClientSideHandler, VF
         view.setPresenter(this);
     }
 
+    public VFormView getView() {
+        return view;
+    }
+    
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
+        if (view != null) {
+            view.asWidget().setHeight(height);
+        }
     }
 
     @Override
@@ -103,11 +112,14 @@ public class VForm extends Composite implements Container, ClientSideHandler, VF
 
     @Override
     public boolean hasChildComponent(Widget component) {
-        return view.hasChildComponent(component);
+        return component == view.getContent();
     }
 
     @Override
     public void updateCaption(Paintable component, UIDL uidl) {
+        if (uidl.hasAttribute("caption")) {
+            view.setCaption(uidl.getStringAttribute("caption"));
+        }
     }
 
     @Override
@@ -116,6 +128,7 @@ public class VForm extends Composite implements Container, ClientSideHandler, VF
 
     @Override
     public boolean requestLayout(Set<Paintable> children) {
+        client.runDescendentsLayout(view);
         return false;
     }
 
@@ -129,10 +142,20 @@ public class VForm extends Composite implements Container, ClientSideHandler, VF
         if (client.updateComponent(this, uidl, true)) {
             return;
         }
+        this.client = client;
         final Paintable contentPaintable = client.getPaintable(uidl.getChildUIDL(0));
         final Widget contentWidget = (Widget)contentPaintable;
         view.setContent(contentWidget);
         contentPaintable.updateFromUIDL(uidl.getChildUIDL(0), client);
         proxy.update(this, uidl, client);
+    }
+
+    @Override
+    public void runLayout() {
+        client.runDescendentsLayout(view);
+    }
+    
+    public ApplicationConnection getClient() {
+        return client;
     }
 }
