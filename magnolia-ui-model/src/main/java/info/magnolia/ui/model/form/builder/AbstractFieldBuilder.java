@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.model.form.builder;
 
+import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
 import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
@@ -111,6 +112,11 @@ public abstract class AbstractFieldBuilder {
 
     public AbstractFieldBuilder validator(ConfiguredFieldValidatorDefinition validatorDefinition) {
         getDefinition().addValidator(validatorDefinition);
+        return this;
+    }
+
+    public AbstractFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
+        getDefinition().addValidator(validatorBuilder.exec());
         return this;
     }
 

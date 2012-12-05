@@ -47,6 +47,7 @@ import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
 import info.magnolia.ui.framework.app.builder.App;
 import info.magnolia.ui.framework.app.builder.AppBuilder;
 import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
+import info.magnolia.ui.model.builder.UiConfig;
 import info.magnolia.ui.model.dialog.builder.Dialog;
 import info.magnolia.ui.model.dialog.builder.DialogBuilder;
 import info.magnolia.ui.model.dialog.builder.DialogConfig;
@@ -115,12 +116,13 @@ public class CodeConfigurationUtils {
 
                     if (parameterType.equals(DialogBuilder.class)) {
                         parameters[parameterIndex] = dialogBuilder;
+                    } else if (parameterType.equals(UiConfig.class)) {
+                        parameters[parameterIndex] = new UiConfig();
                     } else if (parameterType.equals(DialogConfig.class)) {
                         parameters[parameterIndex] = new DialogConfig();
-                    }
-                    else if (parameterType.equals(FormConfig.class)) {
+                    } else if (parameterType.equals(FormConfig.class)) {
                         parameters[parameterIndex] = new FormConfig();
-                    }else {
+                    } else {
                         throw new RegistrationException("Unable to resolve parameter " + parameterIndex + " for method " + method);
                     }
                 }
@@ -171,6 +173,8 @@ public class CodeConfigurationUtils {
                         parameters[parameterIndex] = contentAppBuilder = new ContentAppBuilder(name);
                     } else if (parameterType.equals(AppBuilder.class)) {
                         parameters[parameterIndex] = appBuilder = new AppBuilder(name);
+                    } else if (parameterType.equals(UiConfig.class)) {
+                        parameters[parameterIndex] = new UiConfig();
                     } else if (parameterType.equals(DialogConfig.class)) {
                         parameters[parameterIndex] = new DialogConfig();
                     } else if (parameterType.equals(WorkbenchConfig.class)) {
