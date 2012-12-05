@@ -119,8 +119,8 @@ public class SecurityModule implements ModuleLifecycle {
                             .mainItemType(cfg.workbenches.itemType(NodeTypes.Group.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                             .imageProvider(cipd)
                             .columns(
-                                    cfg.columns.property("jcrName", "Name").sortable(true),
-                                    cfg.columns.property("title", "Description").sortable(true).displayInDialog(false).expandRatio(2).expandRatio(2),
+                                    cfg.columns.property("jcrName", "Group name").sortable(true).expandRatio(2),
+                                    cfg.columns.property("title", "Description").sortable(true).displayInDialog(false).expandRatio(2),
                                     cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
                                     cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
                             )
