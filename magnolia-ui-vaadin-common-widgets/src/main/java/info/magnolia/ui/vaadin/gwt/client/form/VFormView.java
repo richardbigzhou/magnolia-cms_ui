@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * VFormView.
+ * Interface of {@link VFormViewImpl}.
  */
 public interface VFormView extends IsWidget, HasWidgets, ValidationChangedEvent.Handler {
 

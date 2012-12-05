@@ -49,7 +49,8 @@ import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
- * Client-side implementation of the Form. Renders the contents in a tab sheet.
+ * Client-side implementation of the {@link info.magnolia.ui.vaadin.form.Form}.
+ * Takes care of all communication to the server and delegates to {@link VFormView}.
  */
 public class VForm extends Composite implements Container, ClientSideHandler, VFormView.Presenter {
 
