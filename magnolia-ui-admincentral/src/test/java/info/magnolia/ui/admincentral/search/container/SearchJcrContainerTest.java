@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.search.container;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import info.magnolia.context.MgnlContext;
@@ -95,51 +94,51 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testJCRQueryReturnsNullWhenFullTextExpressionIsBlank() throws Exception {
+    public void testGetQueryWhereClauseReturnsEmptyStringWhenFullTextExpressionIsBlank() throws Exception {
         //GIVEN
         jcrContainer.setFullTextExpression("");
 
         //WHEN
-        String stmt = jcrContainer.constructJCRQuery(true);
+        String stmt = jcrContainer.getQueryWhereClause();
 
         //THEN
-        assertNull(stmt);
+        assertEquals("", stmt);
     }
 
     @Test
-    public void testJCRQueryReturnsNullWhenFullTextExpressionIsNull() throws Exception {
+    public void testGetQueryWhereClauseReturnsEmptyStringWhenFullTextExpressionIsNull() throws Exception {
         //GIVEN
         jcrContainer.setFullTextExpression(null);
 
         //WHEN
-        String stmt = jcrContainer.constructJCRQuery(true);
+        String stmt = jcrContainer.getQueryWhereClause();
 
         //THEN
-        assertNull(stmt);
+        assertEquals("", stmt);
     }
 
     @Test
-    public void testJCRQueryReturnsFullTextSearchExpression() throws Exception {
+    public void testGetQueryWhereClauseReturnsFullTextSearchExpressionORedWithLocalname() throws Exception {
         //GIVEN
         jcrContainer.setFullTextExpression("foo");
 
         //WHEN
-        String stmt = jcrContainer.constructJCRQuery(true);
+        String stmt = jcrContainer.getQueryWhereClause();
 
         //THEN
-        assertEquals("select * from [mgnl:content] as t where contains(t.*, 'foo')", stmt);
+        assertEquals(" where ( localname() = 'foo' or contains(t.*, 'foo'))", stmt);
     }
 
     @Test
-    public void testJCRQueryEscapesQuotesInFullTextSearchExpression() throws Exception {
+    public void testGetQueryWhereClauseEscapesQuotesInFullTextSearchExpression() throws Exception {
         //GIVEN
         jcrContainer.setFullTextExpression("foo OR 'baz bar'   ");
 
         //WHEN
-        String stmt = jcrContainer.constructJCRQuery(true);
+        String stmt = jcrContainer.getQueryWhereClause();
 
         //THEN
-        assertEquals("select * from [mgnl:content] as t where contains(t.*, 'foo OR ''baz bar''')", stmt);
+        assertEquals(" where ( localname() = 'foo OR ''baz bar''' or contains(t.*, 'foo OR ''baz bar'''))", stmt);
     }
 
 }
