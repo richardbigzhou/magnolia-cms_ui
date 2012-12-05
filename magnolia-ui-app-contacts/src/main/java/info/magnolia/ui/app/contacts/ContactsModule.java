@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.contacts;
 
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.admincentral.app.CodeConfigurationUtils;
@@ -131,10 +132,10 @@ public class ContactsModule implements ModuleLifecycle {
                                         .mainItemType(wbcfg.itemType("mgnl:contact").icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                                         .imageProvider(cipd)
                                         .columns(
-                                                wbcfg.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(ContactNameColumnFormatter.class),
-                                                wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(180).displayInDialog(false),
-                                                wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
-                                                wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName("mgnl:lastModified").displayInDialog(false).formatterClass(DateColumnFormatter.class).width(200).sortable(true)
+                                                wbcfg.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(ContactNameColumnFormatter.class).expandRatio(2),
+                                                wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).displayInDialog(false).expandRatio(1),
+                                                wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
+                                                wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
                                         )
                                         .actionbar(abcfg.actionbar().defaultAction("edit")
                                                 .sections(

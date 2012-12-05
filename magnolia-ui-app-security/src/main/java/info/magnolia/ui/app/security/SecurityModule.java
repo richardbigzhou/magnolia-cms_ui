@@ -124,10 +124,10 @@ public class SecurityModule implements ModuleLifecycle {
                             .mainItemType(wbcfg.itemType(NodeTypes.Group.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                             .imageProvider(cipd)
                             .columns(
-                                    wbcfg.column(new PropertyColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName"),
-                                    wbcfg.column(new PropertyColumnDefinition()).name("title").label("Full Name").sortable(true).propertyName("title").width(180).displayInDialog(false),
-                                    wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
-                                    wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(200).sortable(true)
+                                    wbcfg.column(new PropertyColumnDefinition()).name("name").label("Group name").sortable(true).propertyName("jcrName").expandRatio(2),
+                                    wbcfg.column(new PropertyColumnDefinition()).name("title").label("Description").sortable(true).propertyName("title").displayInDialog(false).expandRatio(2),
+                                    wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
+                                    wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
                             )
                             .actionbar(abcfg.actionbar().defaultAction("edit")
                                     .sections(
@@ -148,10 +148,10 @@ public class SecurityModule implements ModuleLifecycle {
                             .mainItemType(wbcfg.itemType(NodeTypes.Role.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                             .imageProvider(cipd)
                             .columns(
-                                    wbcfg.column(new PropertyColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName"),
-                                    wbcfg.column(new PropertyColumnDefinition()).name("title").label("Full Name").sortable(true).propertyName("title").width(180).displayInDialog(false),
-                                    wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(50),
-                                    wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(200).sortable(true)
+                                    wbcfg.column(new PropertyColumnDefinition()).name("name").label("Role name").sortable(true).propertyName("jcrName").expandRatio(2),
+                                    wbcfg.column(new PropertyColumnDefinition()).name("title").label("Description").sortable(true).propertyName("title").displayInDialog(false).expandRatio(2),
+                                    wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
+                                    wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
                             )
                             .actionbar(abcfg.actionbar().defaultAction("edit")
                                     .sections(
@@ -191,11 +191,11 @@ public class SecurityModule implements ModuleLifecycle {
                         .mainItemType(wbcfg.itemType(NodeTypes.User.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
                         .imageProvider(cipd)
                         .columns(
-                                wbcfg.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).width(200).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class),
-                                wbcfg.column(new PropertyColumnDefinition()).name("title").label("Full name").sortable(true).expandRatio(2.0f),
-                                wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).width(350).displayInDialog(false),
-                                wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(60),
-                                wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Mod. Date").propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(250).sortable(true)
+                                wbcfg.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class).expandRatio(2),
+                                wbcfg.column(new PropertyColumnDefinition()).name("title").label("Title").sortable(true).expandRatio(2),
+                                wbcfg.column(new PropertyColumnDefinition()).name("email").label("Email").sortable(true).displayInDialog(false).expandRatio(1),
+                                wbcfg.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
+                                wbcfg.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
                         )
                         .actionbar(abcfg.actionbar().defaultAction("edit")
                                 .sections(
