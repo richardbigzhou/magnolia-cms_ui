@@ -302,8 +302,7 @@ public class SecurityModule implements ModuleLifecycle {
         roles.leftColumnCaption("Other available roles");
         roles.rightColumnCaption("Granted roles");
 
-        dialog.description("Define the group information")
-                .form(cfg.forms.form().description("Define the group information")
+        dialog.form(cfg.forms.form().description("Define the group information")
                         .tabs(
                                 cfg.forms.tab("Group").label("Group info")
                                         .fields(
@@ -349,8 +348,7 @@ public class SecurityModule implements ModuleLifecycle {
             roleName.validator(cfg.validators.custom(new UniqueRoleIdValidatorDefinition()).errorMessage("Role name already exists."));
         }
 
-        dialog.description("Define the role information")
-                .form(cfg.forms.form().description("Define the group information")
+        dialog.form(cfg.forms.form().description("Define the role information")
                         .tabs(
                                 cfg.forms.tab("Role").label("Role info")
                                         .fields(
