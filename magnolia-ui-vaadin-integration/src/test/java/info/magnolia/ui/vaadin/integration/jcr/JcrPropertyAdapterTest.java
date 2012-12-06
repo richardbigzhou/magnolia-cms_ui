@@ -116,8 +116,8 @@ public class JcrPropertyAdapterTest {
 
         // WHEN
         Property nameProperty = adapter.getItemProperty(JcrItemAdapter.JCR_NAME);
-        Property valueProperty = adapter.getItemProperty(JcrPropertyAdapter.VALUE_COLUMN);
-        Property typeProperty = adapter.getItemProperty(JcrPropertyAdapter.TYPE_COLUMN);
+        Property valueProperty = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
+        Property typeProperty = adapter.getItemProperty(JcrPropertyAdapter.TYPE_PROPERTY);
 
         // THEN
         assertEquals(propertyName, nameProperty.getValue());
@@ -168,7 +168,7 @@ public class JcrPropertyAdapterTest {
         String newValue = "valueChanged";
 
         // WHEN
-        adapter.getItemProperty(JcrPropertyAdapter.VALUE_COLUMN).setValue(newValue);
+        adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY).setValue(newValue);
         adapter.updateProperties();
 
         // THEN
@@ -190,10 +190,10 @@ public class JcrPropertyAdapterTest {
         String newBooleanValue = "false";
 
         // WHEN
-        numericAdapter.getItemProperty(JcrPropertyAdapter.VALUE_COLUMN).setValue(newIntValue);
+        numericAdapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY).setValue(newIntValue);
         numericAdapter.updateProperties();
 
-        booleanAdapter.getItemProperty(JcrPropertyAdapter.VALUE_COLUMN).setValue(newBooleanValue);
+        booleanAdapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY).setValue(newBooleanValue);
         booleanAdapter.updateProperties();
 
         // THEN
@@ -215,7 +215,7 @@ public class JcrPropertyAdapterTest {
         String newType = PropertyType.TYPENAME_DOUBLE;
 
         // WHEN
-        adapter.getItemProperty(JcrPropertyAdapter.TYPE_COLUMN).setValue(newType);
+        adapter.getItemProperty(JcrPropertyAdapter.TYPE_PROPERTY).setValue(newType);
         adapter.updateProperties();
 
         // THEN

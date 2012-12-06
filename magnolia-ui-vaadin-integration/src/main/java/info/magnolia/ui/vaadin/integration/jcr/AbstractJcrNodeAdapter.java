@@ -62,7 +62,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrNodeAdapter.class);
 
-    private String uuid;
+    private String nodeIdentifier;
 
     private String primaryNodeType;
 
@@ -78,26 +78,25 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         super(jcrNode);
     }
 
-
     @Override
     protected void initCommonAttributes(Item jcrItem) {
         super.initCommonAttributes(jcrItem);
         Node node = (Node) jcrItem;
         try {
-            uuid = node.getIdentifier();
+            nodeIdentifier = node.getIdentifier();
             if(StringUtils.isBlank(primaryNodeType)) {
                 primaryNodeType = node.getPrimaryNodeType().getName();
             }
         } catch (RepositoryException e) {
             log.error("Could not retrieve identifier or primaryNodeType name of JCR Node.", e);
-            uuid = UN_IDENTIFIED;
-            primaryNodeType = UN_IDENTIFIED;
+            nodeIdentifier = UNIDENTIFIED;
+            primaryNodeType = UNIDENTIFIED;
         }
     }
 
     @Override
     public String getNodeIdentifier() {
-        return uuid;
+        return nodeIdentifier;
     }
 
     protected void setPrimaryNodeTypeName(String primaryNodeTypeName) {

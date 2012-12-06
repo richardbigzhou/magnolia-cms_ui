@@ -105,10 +105,8 @@ button.btn-dialog-selectCallBack {
 .v-checkbox > label,
 .gwt-CheckBox > label {
     display:inline-block;
-    padding-left: 15px;
+    padding-left:21px;
     min-width:15px;
-    height:15px;
-    margin:-2px 0 0 -2px;
 }
 
 .v-checkbox > input[type="checkbox"] + label,
