@@ -63,11 +63,11 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
     private static final Logger log = LoggerFactory.getLogger(ItemWorkbenchPresenter.class);
 
     private final ItemWorkbenchView view;
-    private EventBus subAppEventBus;
+    private final EventBus subAppEventBus;
     private final ItemPresenter itemPresenter;
-    private WorkbenchActionFactory actionFactory;
+    private final WorkbenchActionFactory actionFactory;
     private final ActionbarPresenter actionbarPresenter;
-    private WorkbenchDefinition workbenchDefinition;
+    private final WorkbenchDefinition workbenchDefinition;
     private String nodePath;
 
     @Inject
@@ -112,6 +112,14 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
         });
     }
 
+    public String getNodePath() {
+        return nodePath;
+    }
+    
+    public ActionbarPresenter getActionbarPresenter() {
+        return actionbarPresenter;
+    }
+    
     @Override
     public void onViewTypeChanged(final ItemView.ViewType viewType) {
         //eventBus.fireEvent(new ViewTypeChangedEvent(viewType));
