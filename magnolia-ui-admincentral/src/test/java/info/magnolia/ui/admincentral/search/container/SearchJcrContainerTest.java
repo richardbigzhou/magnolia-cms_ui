@@ -51,6 +51,7 @@ import java.util.ArrayList;
 
 import javax.jcr.Session;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,19 +62,20 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     private String colName1 = "name";
     private String colName2 = "shortname";
     private Session session;
+    private ConfiguredWorkbenchDefinition configuredWorkbench;
 
     @Override
     @Before
     public void setUp() throws Exception{
         super.setUp();
         //Init
-        ConfiguredWorkbenchDefinition configuredWorkbench = new ConfiguredWorkbenchDefinition();
+        configuredWorkbench = new ConfiguredWorkbenchDefinition();
         configuredWorkbench.setWorkspace(workspace);
         configuredWorkbench.setPath("/");
         //Init workBench
         WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
         when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition,Action>>());
-         WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl(null, workbenchActionRegistry);
+        WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl(null, workbenchActionRegistry);
         //Init col
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);
@@ -91,6 +93,13 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
 
         //Init session
         session = MgnlContext.getJCRSession(workspace);
+    }
+
+    @Override
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
+        configuredWorkbench.setPath("/");
     }
 
     @Test
@@ -139,6 +148,19 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
 
         //THEN
         assertEquals(" where ( (localname() = 'foo OR ''baz bar''' or contains(t.*, 'foo OR ''baz bar''')))", stmt);
+    }
+
+    @Test
+    public void testGetQueryWhereClauseWhenWorkspacePathIsNotRoot() throws Exception {
+        //GIVEN
+        jcrContainer.setFullTextExpression("foo");
+        configuredWorkbench.setPath("/qux");
+
+        //WHEN
+        String stmt = jcrContainer.getQueryWhereClause();
+
+        //THEN
+        assertEquals(" where ( ISDESCENDANTNODE('/qux') and  (localname() = 'foo' or contains(t.*, 'foo')))", stmt);
     }
 
 }
