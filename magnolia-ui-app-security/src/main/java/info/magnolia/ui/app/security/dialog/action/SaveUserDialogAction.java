@@ -33,7 +33,12 @@
  */
 package info.magnolia.ui.app.security.dialog.action;
 
-import info.magnolia.cms.security.MgnlUserManager;
+import static info.magnolia.cms.security.MgnlUserManager.PROPERTY_EMAIL;
+import static info.magnolia.cms.security.MgnlUserManager.PROPERTY_ENABLED;
+import static info.magnolia.cms.security.MgnlUserManager.PROPERTY_PASSWORD;
+import static info.magnolia.cms.security.MgnlUserManager.PROPERTY_TITLE;
+import static info.magnolia.cms.security.SecurityConstants.NODE_GROUPS;
+import static info.magnolia.cms.security.SecurityConstants.NODE_ROLES;
 import info.magnolia.cms.security.Security;
 import info.magnolia.cms.security.User;
 import info.magnolia.jcr.util.NodeTypes;
@@ -43,7 +48,6 @@ import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.cms.security.SecurityConstants;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
@@ -83,16 +87,21 @@ public class SaveUserDialogAction extends SaveDialogAction {
     private void createOrUpdateUser(final JcrNodeAdapter userItem) throws ActionExecutionException {
         try {
             final Node userNode = userItem.getNode();
+
+            if("/".equals(userNode.getPath())) {
+                throw new ActionExecutionException("Users cannot be created directly under root");
+            }
+
             final String userName = userNode.getName();
             log.debug("User name is [{}]", userName);
 
             //on user creation or when a user changes it this will be in clear, on all other cases this will be encoded
-            final String passwordFromForm = userItem.getItemProperty(MgnlUserManager.PROPERTY_PASSWORD).getValue().toString();
+            final String passwordFromForm = userItem.getItemProperty(PROPERTY_PASSWORD).getValue().toString();
             final String encodedPassword = encodePassword(passwordFromForm);
 
             if(userNode.isNew()) {
                 log.debug("User is new, setting his/her password...");
-                PropertyUtil.setProperty(userNode, MgnlUserManager.PROPERTY_PASSWORD, encodedPassword);
+                PropertyUtil.setProperty(userNode, PROPERTY_PASSWORD, encodedPassword);
             } else {
                 final User user = Security.getUserManager().getUser(userName);
                 final String existingEncodedPassword = user.getPassword();
@@ -101,29 +110,29 @@ public class SaveUserDialogAction extends SaveDialogAction {
                 boolean passwordChanged = !existingEncodedPassword.equals(passwordFromForm);
                 if(passwordChanged) {
                     log.debug("Updating password for existing user [{}]", userName);
-                    PropertyUtil.setProperty(userNode, MgnlUserManager.PROPERTY_PASSWORD, encodedPassword);
+                    PropertyUtil.setProperty(userNode, PROPERTY_PASSWORD, encodedPassword);
                 }
             }
 
-            final String enabled = userItem.getItemProperty(MgnlUserManager.PROPERTY_ENABLED).getValue().toString();
+            final String enabled = userItem.getItemProperty(PROPERTY_ENABLED).getValue().toString();
             log.debug("Is user enabled? {}", enabled);
-            PropertyUtil.setProperty(userNode, MgnlUserManager.PROPERTY_ENABLED, Boolean.parseBoolean(enabled));
+            PropertyUtil.setProperty(userNode, PROPERTY_ENABLED, Boolean.parseBoolean(enabled));
 
-            final String email = userItem.getItemProperty(MgnlUserManager.PROPERTY_EMAIL).getValue().toString();
+            final String email = userItem.getItemProperty(PROPERTY_EMAIL).getValue().toString();
             log.debug("Setting user email as [{}]", email);
-            PropertyUtil.setProperty(userNode, MgnlUserManager.PROPERTY_EMAIL, email);
+            PropertyUtil.setProperty(userNode, PROPERTY_EMAIL, email);
 
-            final String fullName = userItem.getItemProperty(MgnlUserManager.PROPERTY_TITLE).getValue().toString();
+            final String fullName = userItem.getItemProperty(PROPERTY_TITLE).getValue().toString();
             log.debug("Setting user title as [{}]", fullName);
-            PropertyUtil.setProperty(userNode, MgnlUserManager.PROPERTY_TITLE, fullName);
+            PropertyUtil.setProperty(userNode, PROPERTY_TITLE, fullName);
 
-            final String[] groups = itemPropertyToArray(userItem, SecurityConstants.NODE_GROUPS);
+            final String[] groups = itemPropertyToArray(userItem, NODE_GROUPS);
             log.debug("Assigning user the following groups [{}]", groups);
-            replacePropertyWithSubnode(userNode, SecurityConstants.NODE_GROUPS, groups);
+            replacePropertyWithSubnode(userNode, NODE_GROUPS, groups);
 
-            final String[] roles = itemPropertyToArray(userItem, SecurityConstants.NODE_ROLES);
+            final String[] roles = itemPropertyToArray(userItem, NODE_ROLES);
             log.debug("Assigning user the following roles [{}]", roles);
-            replacePropertyWithSubnode(userNode, SecurityConstants.NODE_ROLES, roles);
+            replacePropertyWithSubnode(userNode, NODE_ROLES, roles);
 
             NodeTypes.LastModified.update(userNode);
             userNode.getSession().save();

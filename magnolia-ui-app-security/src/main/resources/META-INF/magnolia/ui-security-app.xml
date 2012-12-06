@@ -17,80 +17,33 @@
   <components>
     <id>app-security-users</id> <!-- main subapp -->
     <component>
-      <type>info.magnolia.ui.app.security.view.BaseView</type>
-      <implementation>info.magnolia.ui.app.security.view.BaseViewImpl</implementation>
+      <type>info.magnolia.ui.app.security.SecurityUsersSubApp</type>
+      <implementation>info.magnolia.ui.app.security.SecurityUsersSubApp</implementation>
     </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.content.view.ContentPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.content.view.ContentPresenter</implementation>
-    </component>
+
   </components>
 
   <components>
     <id>app-security-systemUsers</id>
     <component>
-      <type>info.magnolia.ui.app.security.view.BaseView</type>
-      <implementation>info.magnolia.ui.app.security.view.BaseViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.content.view.ContentPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.content.view.ContentPresenter</implementation>
+      <type>info.magnolia.ui.app.security.SecurityUsersSubApp</type>
+      <implementation>info.magnolia.ui.app.security.SecurityUsersSubApp</implementation>
     </component>
   </components>
 
   <components>
     <id>app-security-groups</id>
     <component>
-      <type>info.magnolia.ui.app.security.view.BaseView</type>
-      <implementation>info.magnolia.ui.app.security.view.BaseViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.content.view.ContentPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.content.view.ContentPresenter</implementation>
+      <type>info.magnolia.ui.app.security.SecurityGroupsSubApp</type>
+      <implementation>info.magnolia.ui.app.security.SecurityGroupsSubApp</implementation>
     </component>
   </components>
 
   <components>
     <id>app-security-roles</id>
     <component>
-      <type>info.magnolia.ui.app.security.view.BaseView</type>
-      <implementation>info.magnolia.ui.app.security.view.BaseViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.content.view.ContentPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.content.view.ContentPresenter</implementation>
+      <type>info.magnolia.ui.app.security.SecurityRolesSubApp</type>
+      <implementation>info.magnolia.ui.app.security.SecurityRolesSubApp</implementation>
     </component>
   </components>
 
