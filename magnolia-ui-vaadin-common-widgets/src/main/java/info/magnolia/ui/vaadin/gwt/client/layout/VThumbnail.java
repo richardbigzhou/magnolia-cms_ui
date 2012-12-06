@@ -78,7 +78,9 @@ public class VThumbnail extends Composite {
                 } else {
                     // image
                     Image image = new Image(LazyThumbnailLayoutImageBundle.INSTANCE.getStubImage().getSafeUri());
-                    image.setUrl(data.getSrc());
+                    // Add cachebuster so that browser definitely displays updated thumbnails after edits.
+                    String cacheBuster = "?cb=" + System.currentTimeMillis();
+                    image.setUrl(data.getSrc() + cacheBuster);
                     image.setStyleName("thumbnail-image");
                     panel.setWidget(image);
                 }
