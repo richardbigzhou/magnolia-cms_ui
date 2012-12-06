@@ -36,7 +36,7 @@ package info.magnolia.ui.model.form.builder;
 import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
 
 /**
- * Config object creating builders for dialog fields.
+ * Config object creating builders for form fields.
  */
 public class FieldsConfig {
 

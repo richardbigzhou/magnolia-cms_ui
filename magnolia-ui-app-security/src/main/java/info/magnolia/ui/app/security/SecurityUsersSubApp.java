@@ -35,8 +35,8 @@ package info.magnolia.ui.app.security;
 
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
+import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
-import info.magnolia.ui.app.security.view.BaseView;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 
@@ -58,7 +58,7 @@ public class SecurityUsersSubApp extends AbstractContentSubApp {
     private boolean isSystemUserSubApp = false;
 
     @Inject
-    public SecurityUsersSubApp(final SubAppContext subAppContext, BaseView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
+    public SecurityUsersSubApp(final SubAppContext subAppContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
         super(subAppContext, view, workbench, subAppEventBus);
         if ("systemUsers".equals(subAppContext.getSubAppDescriptor().getName())) {
             setCaption("System Users");
