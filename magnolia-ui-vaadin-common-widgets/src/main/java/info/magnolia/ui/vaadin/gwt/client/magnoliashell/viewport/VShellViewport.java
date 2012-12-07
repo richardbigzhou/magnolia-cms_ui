@@ -302,4 +302,8 @@ public class VShellViewport extends ComplexPanel implements Container, Container
         }
     }
 
+    public void causeUpdate() {
+        client.forceLayout();
+    }
+
 }
