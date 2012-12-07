@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
+import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 
@@ -101,5 +102,10 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
         if(actionbar != null) {
             actionbar.asVaadinComponent().setVisible(!hide);
         }
+    }
+
+    @Override
+    public void setWorkbenchView(View workbenchView) {
+
     }
 }

@@ -33,40 +33,42 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog;
 
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * VTabbedDialogHeader.
+ * VDialogHeader.
  */
 public class VDialogHeader extends FlowPanel {
 
-    private static final String ClASSNAME_ERROR = "dialog-error";
-    private static final String CLASSNAME_HEADER = "dialog-header";
-    private static final String ClASSNAME_DESCRIPTION = "dialog-description";
-    private static final String CLASSNAME_HELPBUTTON = "btn-dialog-help";
+    private static final String CLASSNAME_HEADER = "form-header";
+    private static final String ClASSNAME_DESCRIPTION = "form-description";
+    private static final String CLASSNAME_HELPBUTTON = "btn-form-help";
     private static final String CLASSNAME_CLOSEBUTTON = "btn-dialog-close";
-    
-    private final VDialogHeaderCallback callback;
-    
-    private FlowPanel errorPanel = new FlowPanel();
-    
+
+    protected final VDialogHeaderCallback callback;
+
     private FlowPanel descriptionPanel = new FlowPanel();
-    
-    private Element captionContainer = DOM.createDiv();
-    
+
+    protected Element captionContainer = DOM.createDiv();
+
     private Element caption = DOM.createSpan();
-    
+
     private boolean isDescriptionVisible = false;
-    
+
+    private final Button closeButton = new Button("", new ClickHandler() {
+        @Override
+        public void onClick(ClickEvent event) {
+            ((VDialogHeaderCallback)callback).onCloseFired();
+        }
+    });
+
+
     private final Button helpButton = new Button("", new ClickHandler() {
         @Override
         public void onClick(ClickEvent event) {
@@ -75,82 +77,50 @@ public class VDialogHeader extends FlowPanel {
             callback.onDescriptionVisibilityChanged(isDescriptionVisible);
         }
     });
-    
-    private final Button closeButton = new Button("", new ClickHandler() {
-        @Override
-        public void onClick(ClickEvent event) {
-            callback.onCloseFired();
-        }
-    });
-    
-    
-    public VDialogHeader(final VDialogHeaderCallback vDialogHeaderCallback) {
-        this.callback = vDialogHeaderCallback;
-        vDialogHeaderCallback.onDescriptionVisibilityChanged(false);
+
+
+    public void construct() {
+        captionContainer.addClassName(CLASSNAME_HEADER);
+
+        closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
+        closeButton.addStyleName("green");
+        add(closeButton, captionContainer);
+
+        descriptionPanel.addStyleName(ClASSNAME_DESCRIPTION);
+        helpButton.setStyleName(CLASSNAME_HELPBUTTON);
+
+
+        getElement().appendChild(captionContainer);
+        captionContainer.appendChild(caption);
+
+        descriptionPanel.setVisible(false);
+        add(helpButton, captionContainer);
+        add(descriptionPanel);
+    }
+
+
+    public VDialogHeader(final VDialogHeaderCallback callback) {
+        this.callback = callback;
+        callback.onDescriptionVisibilityChanged(false);
         construct();
     }
 
+    public void setDescription(String description) {
+        final Label content = new Label();
+        content.setText(description);
+        descriptionPanel.insert(content, 0);}
 
-    private void construct() {
-        captionContainer.addClassName(CLASSNAME_HEADER);
-        errorPanel.addStyleName(ClASSNAME_ERROR);
-        descriptionPanel.addStyleName(ClASSNAME_DESCRIPTION);    
-        helpButton.setStyleName(CLASSNAME_HELPBUTTON);
-        closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
-        closeButton.addStyleName("green");
-        
-        getElement().appendChild(captionContainer);
-        captionContainer.appendChild(caption);
-        
-        descriptionPanel.setVisible(false);
-        add(closeButton, captionContainer);
-        add(helpButton, captionContainer);
-        add(descriptionPanel);
-        add(errorPanel);
-    }
-    
-    public void setDialogCaption(final String caption) {
+    public void setDialogCaption(String caption) {
         this.caption.setInnerText(caption);
     }
-    
-    public void setDescription(final String dialogDescription) {
-        final Label content = new Label();
-        content.setText(dialogDescription);
-        descriptionPanel.insert(content, 0);
-    }
-    
-    
+
+
     /**
      * Callback interface for the Dialog header.
      */
     public interface VDialogHeaderCallback {
-        
+
         void onCloseFired();
-        
+
         void onDescriptionVisibilityChanged(boolean isVisible);
-
-        void jumpToNextError();
-    }
-
-
-    public void setErrorAmount(int totalProblematicFields) {
-        errorPanel.setVisible(totalProblematicFields > 0);
-        if (totalProblematicFields > 0) {
-            errorPanel.getElement().setInnerHTML("<span>Please correct the <b>" + totalProblematicFields + 
-                    " errors </b> in this form </span>");
-
-            
-            final HTML errorButton = new HTML("[Jump to next error]");
-            errorButton.setStyleName("action-jump-to-next-error");
-            DOM.sinkEvents(errorButton.getElement(), Event.MOUSEEVENTS);
-            errorButton.addDomHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    callback.jumpToNextError();
-                }
-            }, ClickEvent.getType());
-            errorPanel.add(errorButton);
-        }
-    }
-    
-}
+    }}

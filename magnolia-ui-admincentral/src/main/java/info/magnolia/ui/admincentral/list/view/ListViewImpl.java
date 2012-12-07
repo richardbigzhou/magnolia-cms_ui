@@ -34,31 +34,28 @@
 package info.magnolia.ui.admincentral.list.view;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.column.ColumnFormatter;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 
 import java.util.ArrayList;
+
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Item;
+import com.vaadin.data.Container;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-
 
 /**
  * Vaadin UI component that displays a list.
@@ -72,7 +69,7 @@ public class ListViewImpl implements ListView {
 
     private final Table table;
 
-    private final VerticalLayout margin = new VerticalLayout();
+    private final CssLayout margin = new CssLayout();
 
     private final AbstractJcrContainer container;
 
@@ -80,15 +77,19 @@ public class ListViewImpl implements ListView {
         table = new MagnoliaTable();
         table.setSizeFull();
 
-        // next two lines are required to make the browser (Table) react on selection change via mouse
+        // next two lines are required to make the browser (Table) react on
+        // selection change via
+        // mouse
         table.setImmediate(true);
         table.setNullSelectionAllowed(false);
         // table.setMultiSelectMode(MultiSelectMode.DEFAULT);
         table.setMultiSelect(false);
         table.setSortDisabled(false);
-        // Important do not set page length and cache ratio on the Table, rather set them by using
+        // Important do not set page length and cache ratio on the Table, rather
+        // set them by using
         // AbstractJcrContainer corresponding methods. Setting
-        // those value explicitly on the Table will cause the same jcr query to be repeated twice
+        // those value explicitly on the Table will cause the same jcr query to
+        // be repeated twice
         // thus degrading performance greatly.
         table.addListener(new Table.ValueChangeListener() {
 
@@ -103,9 +104,17 @@ public class ListViewImpl implements ListView {
 
             @Override
             public void itemClick(ItemClickEvent event) {
-                if(event.isDoubleClick()) {
+                if (event.isDoubleClick()) {
                     presenterOnDoubleClick(String.valueOf(event.getItemId()));
                 }
+            }
+        });
+        
+        table.setCellStyleGenerator(new Table.CellStyleGenerator() {
+            
+            @Override
+            public String getStyle(Object itemId, Object propertyId) {
+                return presenterGetIcon(itemId, propertyId);
             }
         });
 
@@ -163,31 +172,24 @@ public class ListViewImpl implements ListView {
         }
     }
 
-    @Override
-    public void refreshItem(Item item) {
-        String itemId = ((JcrItemAdapter) item).getItemId();
-        if (container.containsId(itemId)) {
-            container.fireItemSetChange();
-        } else {
-            log.warn("No item found for id [{}]", itemId);
-        }
-    }
-
     private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
         final List<String> columnOrder = new ArrayList<String>();
         final Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
+
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
             if (!workbenchDefinition.isDialogWorkbench() || column.isDisplayInDialog()) {
                 String columnName = column.getName();
                 final String columnProperty = (column.getPropertyName() != null) ? column.getPropertyName() : columnName;
 
-                //FIXME fgrilli workaround for conference
-                //when setting cols width in dialogs we are forced to use explicit px value instead of expand ratios, which for some reason don't work
-                if(workbenchDefinition.isDialogWorkbench()) {
+                // FIXME fgrilli workaround for conference
+                // when setting cols width in dialogs we are forced to use
+                // explicit px value instead
+                // of expand ratios, which for some reason don't work
+                if (workbenchDefinition.isDialogWorkbench()) {
                     table.setColumnWidth(columnProperty, 300);
                 } else {
-                    if(column.getWidth() > 0 ) {
+                    if (column.getWidth() > 0) {
                         table.setColumnWidth(columnProperty, column.getWidth());
                     } else {
                         table.setColumnExpandRatio(columnProperty, column.getExpandRatio());
@@ -195,26 +197,33 @@ public class ListViewImpl implements ListView {
                 }
                 table.setColumnHeader(columnProperty, column.getLabel());
                 container.addContainerProperty(columnProperty, column.getType(), "");
-                //Set Formatter
-                if(StringUtils.isNotBlank(column.getFormatterClass())) {
-                    try {
-                        table.addGeneratedColumn(columnProperty, (ColumnFormatter)componentProvider.newInstance(Class.forName(column.getFormatterClass()),column));
-                   } catch (ClassNotFoundException e) {
-                        log.error("Not able to create the Formatter",e);
-                   }
+
+                // Set Formatter
+                if (column.getFormatterClass() != null) {
+                    table.addGeneratedColumn(columnProperty, componentProvider.newInstance(column.getFormatterClass(), column));
                 }
+
                 columnOrder.add(columnProperty);
             }
+
+            table.setContainerDataSource(container);
+
+            // Set column order
+            table.setVisibleColumns(columnOrder.toArray());
         }
-
-        table.setContainerDataSource(container);
-
-        //Set column order
-        table.setVisibleColumns(columnOrder.toArray());
     }
 
     @Override
     public ViewType getViewType() {
         return ViewType.LIST;
+    }
+
+    private String presenterGetIcon(Object itemId, Object propertyId) {
+        Container container = table.getContainerDataSource();
+        if(listener != null && propertyId == null) {
+            return listener.getItemIcon(container.getItem(itemId));                    
+        }
+        
+        return null;
     }
 }

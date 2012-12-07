@@ -35,22 +35,31 @@ package info.magnolia.ui.admincentral.tree.view;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.content.view.ContentView;
+import info.magnolia.ui.admincentral.event.ItemEditedEvent;
 import info.magnolia.ui.admincentral.tree.container.HierarchicalJcrContainer;
+import info.magnolia.ui.model.column.definition.ColumnDefinition;
+import info.magnolia.ui.model.column.definition.ColumnFormatter;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
-import com.vaadin.data.Item;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Container;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TreeTable;
-import com.vaadin.ui.VerticalLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -60,35 +69,62 @@ public class TreeViewImpl implements TreeView {
 
     private static final Logger log = LoggerFactory.getLogger(TreeViewImpl.class);
 
-    private final WorkbenchTreeTable treeTable;
+    private final Layout layout;
 
-    private final VerticalLayout margin = new VerticalLayout();
-
-    private ContentView.Listener listener;
+    private final TreeTable treeTable;
 
     private final HierarchicalJcrContainer container;
 
-    private Set<?> defaultValue = null;
+    private ContentView.Listener listener;
 
-    public TreeViewImpl(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
+    private Set< ? > defaultValue = null;
+
+    /**
+     * Instantiates a new content tree view.
+     * 
+     * @param workbench the workbench definition
+     * @param componentProvider the component provider
+     * @param container the container data source
+     */
+    public TreeViewImpl(WorkbenchDefinition workbench, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
         this.container = container;
-        treeTable = new WorkbenchTreeTable(workbenchDefinition, componentProvider, container);
-        treeTable.setImmediate(true);
-        treeTable.setNullSelectionAllowed(true);
-        treeTable.setSizeFull();
+
+        treeTable = buildTreeTable(container, workbench, componentProvider);
+        layout = buildLayout();
+        layout.addComponent(treeTable);
+
+        treeTable.addListener(new ItemClickEvent.ItemClickListener() {
+
+            private Object previousSelection;
+
+            @Override
+            public void itemClick(ItemClickEvent event) {
+                Object currentSelection = event.getItemId();
+                if (event.isDoubleClick()) {
+                    presenterOnDoubleClick(String.valueOf(event.getItemId()));
+                } else {
+                    // toggle will deselect
+                    if (previousSelection == currentSelection) {
+                        treeTable.setValue(null);
+                    }
+                }
+
+                previousSelection = currentSelection;
+            }
+        });
 
         treeTable.addListener(new TreeTable.ValueChangeListener() {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
                 if (defaultValue == null && event.getProperty().getValue() instanceof Set) {
-                    defaultValue = (Set<?>) event.getProperty().getValue();
+                    defaultValue = (Set< ? >) event.getProperty().getValue();
                 }
                 final Object value = event.getProperty().getValue();
                 if (value instanceof String) {
                     presenterOnItemSelection(String.valueOf(value));
                 } else if (value instanceof Set) {
-                    final Set<?> set = new HashSet<Object>((Set<?>) value);
+                    final Set< ? > set = new HashSet<Object>((Set< ? >) value);
                     set.removeAll(defaultValue);
                     if (set.size() == 1) {
                         presenterOnItemSelection(String.valueOf(set.iterator().next()));
@@ -99,45 +135,98 @@ public class TreeViewImpl implements TreeView {
                 }
             }
         });
-        
-        treeTable.addListener(new ItemClickEvent.ItemClickListener() {
-            private Object previousSelection;
 
-            @Override
-            public void itemClick(ItemClickEvent event) {
-                Object currentSelection = event.getItemId();
-                if (event.isDoubleClick()) {
-                    presenterOnDoubleClick(String.valueOf(event.getItemId()));
-                } else {
-                    //toggle will deselect
-                    if (previousSelection == currentSelection) {
-                        treeTable.setValue(null);
-                    }
+    }
+
+    // CONFIGURE TREE TABLE
+
+    private TreeTable buildTreeTable(final Container container, WorkbenchDefinition workbench, ComponentProvider componentProvider) {
+
+        TreeTable treeTable = (workbench.isEditable()) ? new InplaceEditingTreeTable() : new MagnoliaTreeTable();
+
+        // basic widget configuration
+        treeTable.setNullSelectionAllowed(true);
+        treeTable.setColumnCollapsingAllowed(false);
+        treeTable.setColumnReorderingAllowed(false);
+        treeTable.setCollapsed(treeTable.firstItemId(), false);
+        treeTable.setSizeFull();
+
+        // data model
+        treeTable.setContainerDataSource(container);
+        buildColumns(treeTable, container, workbench.getColumns(), componentProvider);
+
+        // listeners
+        if (workbench.isEditable()) {
+            ((InplaceEditingTreeTable) treeTable).addListener(new ItemEditedEvent.Handler() {
+
+                @Override
+                public void onItemEdited(ItemEditedEvent event) {
+                    presenterOnEditItem(event);
                 }
-
-                previousSelection = currentSelection;
+            });
+        }
+            
+        treeTable.setCellStyleGenerator(new Table.CellStyleGenerator() {
+            
+            @Override
+            public String getStyle(Object itemId, Object propertyId) {
+                return presenterGetIcon(itemId, propertyId);
             }
         });
-        margin.setSizeFull();
-        margin.setStyleName("mgnl-content-view");
-        margin.addComponent(treeTable);
-    }
 
-    private void presenterOnItemSelection(String id) {
-        if (listener != null) {
-            listener.onItemSelection(treeTable.getItem(id));
-        }
-    }
-    private void presenterOnDoubleClick(String id) {
-        if (listener != null) {
-            listener.onDoubleClick(treeTable.getItem(id));
-        }
+        return treeTable;
     }
 
     /**
-     *
-     * @param path relative to the tree root, must start with /
+     * Sets the columns for the vaadin TreeTable, based on workbench columns configuration.
+     * 
+     * @param treeTable the TreeTable vaadin component
+     * @param container the container data source
+     * @param columns the list of ColumnDefinitions
+     * @param componentProvider the component provider
      */
+    protected void buildColumns(TreeTable treeTable, Container container, List<ColumnDefinition> columns, ComponentProvider componentProvider) {
+        final Iterator<ColumnDefinition> iterator = columns.iterator();
+        final List<String> visibleColumns = new ArrayList<String>();
+        final List<String> editableColumns = new ArrayList<String>();
+
+        while (iterator.hasNext()) {
+            final ColumnDefinition column = iterator.next();
+            final String columnProperty = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
+
+            // Add data column
+            container.addContainerProperty(columnProperty, column.getType(), "");
+            visibleColumns.add(columnProperty);
+
+            // Set appearance
+            treeTable.setColumnHeader(columnProperty, column.getLabel());
+            if (column.getWidth() > 0) {
+                treeTable.setColumnWidth(columnProperty, column.getWidth());
+            } else {
+                treeTable.setColumnExpandRatio(columnProperty, column.getExpandRatio());
+            }
+
+            // Generated columns
+            Class< ? extends ColumnFormatter> formatterClass = column.getFormatterClass();
+            if (formatterClass != null) {
+                ColumnFormatter formatter = componentProvider.newInstance(formatterClass, column);
+                treeTable.addGeneratedColumn(columnProperty, formatter);
+            }
+
+            // Inplace editing
+            if (column.isEditable()) {
+                editableColumns.add(columnProperty);
+            }
+        }
+
+        treeTable.setVisibleColumns(visibleColumns.toArray());
+        if (treeTable instanceof InplaceEditingTreeTable) {
+            ((InplaceEditingTreeTable) treeTable).setEditableColumns(editableColumns.toArray());
+        }
+    }
+
+    // CONTENT VIEW IMPL
+
     @Override
     public void select(String path) {
         treeTable.select(path);
@@ -146,16 +235,7 @@ public class TreeViewImpl implements TreeView {
     @Override
     public void refresh() {
         container.refresh();
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return margin;
-    }
-
-    @Override
-    public void setListener(ContentView.Listener listener) {
-        this.listener = listener;
+        container.fireItemSetChange();
     }
 
     @Override
@@ -164,17 +244,57 @@ public class TreeViewImpl implements TreeView {
     }
 
     @Override
-    public void refreshItem(final Item item) {
-        final String itemId = ((JcrItemAdapter) item).getItemId();
-        if (container.containsId(itemId)) {
-            container.fireItemSetChange();
-        } else {
-            log.warn("No item found for id [{}]", itemId);
-        }
-    }
-
-    @Override
     public ViewType getViewType() {
         return ViewType.TREE;
     }
+
+    @Override
+    public void setListener(ContentView.Listener listener) {
+        this.listener = listener;
+    }
+
+    private void presenterOnItemSelection(String id) {
+        if (listener != null) {
+            listener.onItemSelection(treeTable.getItem(id));
+        }
+    }
+
+    private void presenterOnDoubleClick(String id) {
+        if (listener != null) {
+            listener.onDoubleClick(treeTable.getItem(id));
+        }
+    }
+
+    private void presenterOnEditItem(ItemEditedEvent event) {
+        if (listener != null) {
+            listener.onItemEdited(event.getItem());
+
+            // Clear preOrder cache of itemIds in case node was renamed
+            TreeViewImpl.this.container.fireItemSetChange();
+        }
+    }
+
+    // VAADIN VIEW
+
+    private Layout buildLayout() {
+        CssLayout layout = new CssLayout();
+        layout.setStyleName("mgnl-content-view");
+        layout.setSizeFull();
+        return layout;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return layout;
+    }
+
+    private String presenterGetIcon(Object itemId, Object propertyId) {
+        Container container = treeTable.getContainerDataSource();
+        if(listener != null && propertyId == null) {
+            return listener.getItemIcon(container.getItem(itemId));                    
+        }
+        
+        return null;
+    }
+
 }

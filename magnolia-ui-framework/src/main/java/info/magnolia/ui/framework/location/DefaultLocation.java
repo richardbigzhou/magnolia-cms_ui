@@ -38,8 +38,8 @@ import org.apache.commons.lang.StringUtils;
 import java.util.StringTokenizer;
 
 /**
- * Default location implementation.
- * appType:appId:subAppId;some/parameter
+ * Default location implementation.<p>
+ * {@code appType:appId:subAppId;some/parameter}
  */
 public class DefaultLocation implements Location {
 
@@ -55,6 +55,12 @@ public class DefaultLocation implements Location {
     public DefaultLocation(String appType, String appId) {
         this.appType = appType;
         this.appId = appId;
+    }
+
+    public DefaultLocation(String appType, String appId, String subAppId) {
+        this.appType = appType;
+        this.appId = appId;
+        this.subAppId = subAppId;
     }
 
     public DefaultLocation(String appType, String appId, String subAppId, String parameter) {

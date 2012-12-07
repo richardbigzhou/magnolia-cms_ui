@@ -34,34 +34,31 @@
 package info.magnolia.ui.admincentral.dialog.builder;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.admincentral.dialog.Dialog;
-import info.magnolia.ui.admincentral.dialog.DialogTab;
-import info.magnolia.ui.admincentral.field.FieldBuilder;
-import info.magnolia.ui.admincentral.field.builder.DialogFieldFactory;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.model.tab.definition.TabDefinition;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
-
 import org.apache.commons.lang.StringUtils;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.Field;
-
 /**
- * Builder for Dialogs.
+ * Builder for {@link DialogView} and {@link FormDialogView}.
+ * Receives the definition parameters for the dialog surrounding (like i18n base and caption/description).
+ *
+ * @see info.magnolia.ui.admincentral.dialog.FormDialogPresenter
+ *
  */
 public class DialogBuilder {
+
     /**
-     * @return DialogView populated with values from DialogDefinition and Item.
+     * Builds a {@link DialogView} that has a {@link FormDialogView} as content.
      */
-    public DialogView buildFormDialog(DialogFieldFactory dialogFieldFactory, DialogDefinition dialogDefinition, Item item, FormDialogView view) {
+    public FormDialogView buildFormDialog(DialogDefinition dialogDefinition, FormDialogView view) {
+        return (FormDialogView) buildDialog(dialogDefinition, view);
+    }
 
-        final Dialog dialog = new Dialog(dialogDefinition);
-        view.setItemDataSource(item);
-
+    /**
+     * Builds a {@link DialogView} populated with values from DialogDefinition.
+     */
+    public DialogView buildDialog(DialogDefinition dialogDefinition, DialogView view) {
         final String description = dialogDefinition.getDescription();
         final String label = dialogDefinition.getLabel();
         final String basename = dialogDefinition.getI18nBasename();
@@ -70,34 +67,12 @@ public class DialogBuilder {
             String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
             view.setDialogDescription(i18nDescription);
         }
-        
+
         if (StringUtils.isNotBlank(label)) {
             String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
             view.setCaption(i18nLabel);
         }
 
-        for (TabDefinition tabDefinition : dialogDefinition.getTabs()) {
-            final DialogTab tab = new DialogTab(tabDefinition);
-            tab.setParent(dialog);
-            for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
-                final FieldBuilder dialogField = dialogFieldFactory.create(fieldDefinition, item);
-                if (dialogField != null) {
-                    dialogField.setParent(tab);
-                    final Field field = dialogField.getField();
-                    if (field instanceof AbstractComponent) {
-                        ((AbstractComponent)field).setImmediate(true);
-                    }
-                    tab.addField(field);
-                    if(StringUtils.isNotBlank(fieldDefinition.getDescription())) {
-                        tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
-                    }
-                    view.addField(field);
-                } //This can happen in case of extends/override. FieldDefinition is ConfiguredFieldDefinition and of course no builder is linked to this.
-            }
-            view.addDialogSection(tab.getMessage(tabDefinition.getLabel()), tab.getContainer());
-        }
-        
-        view.setShowAllEnabled(dialogDefinition.getTabs().size() > 1);
         return view;
     }
 }

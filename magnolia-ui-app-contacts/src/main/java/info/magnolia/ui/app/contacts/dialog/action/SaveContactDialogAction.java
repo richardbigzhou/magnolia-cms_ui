@@ -56,8 +56,8 @@ public class SaveContactDialogAction extends SaveDialogAction {
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
-        getPresenter().showValidation(true);
-        if (getPresenter().getView().isValid()) {
+        getPresenter().getForm().showValidation(true);
+        if (getPresenter().getForm().isValid()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) getItem();
 
             try {

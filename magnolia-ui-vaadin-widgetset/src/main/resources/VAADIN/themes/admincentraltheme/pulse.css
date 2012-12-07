@@ -141,8 +141,8 @@
 }
 .v-pulse .v-table-generated-row .v-table-cell-content {
 	border-bottom: 1px solid #888;
-	font-weight: bold;
-	color: #CCC;
+	font-family: Verdana, Geneva, sans-serif;
+	color: #999;
 	padding-top: 20px;
 	padding-bottom: 0px;
 }
@@ -156,4 +156,10 @@
 .v-pulse .navigator-grouping {
 	display: inline-block;
 	margin-left: 50px;
+}
+
+.v-pulse .emptyplaceholder {
+	color: #666;
+	font-weight: bold;
+	text-align: center;
 }

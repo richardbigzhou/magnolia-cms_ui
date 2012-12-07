@@ -33,25 +33,14 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import com.google.common.collect.HashMultimap;
-import com.vaadin.ui.ComponentContainer;
 import info.magnolia.module.ModuleRegistry;
-import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
-import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationBuilder;
-import info.magnolia.objectfactory.configuration.InstanceConfiguration;
-import info.magnolia.objectfactory.guice.GuiceComponentProvider;
-import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
-import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -59,10 +48,8 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
 import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,20 +59,28 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 /**
- * App controller that manages the lifecycle of running apps and raises callbacks to the app.
+ * Implementation of the {@link AppController}.
+ *
+ * The App controller that manages the lifecycle of running apps and raises callbacks to the app.
+ * It provides methods to start, stop and focus already running {@link App}s.
+ * Registers handlers to the following location change events triggered by the {@link LocationController}:
+ * <ul>
+ *     <li>{@link LocationChangedEvent}</li>
+ *     <li>{@link LocationChangeRequestedEvent}</li>
+ * </ul>
+ *
+ * @see LocationController
+ * @see AppContext
+ * @see App
  */
 @Singleton
 public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
 
-    public static final String COMMON_APP_COMPONENTS_ID = "app";
-    public static final String COMMON_SUB_APP_COMPONENTS_ID = "subapp";
-    public static final String COMPONENTS_ID_PREFIX = "app-";
+
 
     private static final Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
 
@@ -105,11 +100,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     private ViewPort viewPort;
 
-    private final Map<String, AppContextImpl> runningApps = new HashMap<String, AppContextImpl>();
+    private final Map<String, AppContext> runningApps = new HashMap<String, AppContext>();
 
-    private final LinkedList<AppContextImpl> appHistory = new LinkedList<AppContextImpl>();
+    private final LinkedList<AppContext> appHistory = new LinkedList<AppContext>();
 
-    private AppContextImpl currentApp;
+    private AppContext currentApp;
 
     @Inject
     public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController, MessagesManager messagesManager, Shell shell, @Named("admincentral") EventBus admincentralEventBus) {
@@ -130,25 +125,42 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         this.viewPort = viewPort;
     }
 
+    /**
+     * This method can be called to launch an {@link App} and then delegate it to the {@link LocationController}.
+     * It should have the same effect as calling the {@link LocationController} directly.
+     * @param appId of the {@link App} to start.
+     * @param location holds information about the subApp to use and the parameters.
+     */
     @Override
-    public App startIfNotAlreadyRunningThenFocus(String name, Location location) {
-        AppContextImpl appContext = doStartIfNotAlreadyRunning(name, location);
+    public App startIfNotAlreadyRunningThenFocus(String appId, Location location) {
+        AppContext appContext = getAppContext(appId);
+        appContext = doStartIfNotAlreadyRunning(appContext, location);
         if (appContext != null) {
             doFocus(appContext);
-            return appContext.app;
+            return appContext.getApp();
         } else {
            return null;
         }
     }
 
+    /**
+     * This method is called to launch an app independent from the {@link LocationController}.
+     * It will not open in the {@link ViewPort}.
+     * This is e.g. used to pass the {@link App} into a dialog and obtain app-specific information from outside the app.
+     *
+     * @param appId of the {@link App} to start.
+     * @param location holds information about the subApp to use and the parameters.
+     */
     @Override
-    public App startIfNotAlreadyRunning(String name, Location location) {
-        return doStartIfNotAlreadyRunning(name, location).app;
+    public App startIfNotAlreadyRunning(String appId, Location location) {
+        AppContext appContext = getAppContext(appId);
+
+        return doStartIfNotAlreadyRunning(appContext, location).getApp();
     }
 
     @Override
-    public void stopApp(String name) {
-        AppContextImpl appContext = runningApps.get(name);
+    public void stopApp(String appId) {
+        AppContext appContext = runningApps.get(appId);
         if (appContext != null) {
             doStop(appContext);
         }
@@ -156,16 +168,17 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Override
     public void stopCurrentApp() {
-        final AppContextImpl appContext = appHistory.peekFirst();
+        final AppContext appContext = appHistory.peekFirst();
         if (appContext != null) {
             stopApp(appContext.getName());
         }
     }
 
     @Override
-    public boolean isAppStarted(String name) {
-        return runningApps.containsKey(name);
+    public boolean isAppStarted(String appId) {
+        return runningApps.containsKey(appId);
     }
+
 
     @Override
     public void focusCurrentApp(){
@@ -173,41 +186,45 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     @Override
-    public Location getCurrentLocation(String name) {
-        AppContextImpl appContext = runningApps.get(name);
+    public Location getCurrentLocation(String appId) {
+        AppContext appContext = runningApps.get(appId);
         return appContext == null ? null : appContext.getCurrentLocation();
     }
 
-    private AppContextImpl doStartIfNotAlreadyRunning(String name, Location location) {
-        AppContextImpl appContext = runningApps.get(name);
-        if (appContext == null) {
+    @Override
+    public AppContext getCurrentApp() {
+        return currentApp;
+    }
 
-            AppDescriptor descriptor = getAppDescriptor(name);
-            if (descriptor == null) {
-                return null;
-            }
+    /**
+     * Delegates the starting of an {@link App} to the {@link AppContext}.
+     * In case the app is already started, it will update its location.
+     */
+    private AppContext doStartIfNotAlreadyRunning(AppContext appContext, Location location) {
 
-            appContext = new AppContextImpl(descriptor);
-
-            if (location == null) {
-                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, name, "", "");
-            }
-
-            appContext.start(location);
-
-            runningApps.put(name, appContext);
-            sendEvent(AppLifecycleEventType.STARTED, descriptor);
+        if (isAppStarted(appContext.getName())) {
+            appContext.onLocationUpdate(location);
+            return appContext;
         }
+
+        appContext.start(location);
+
+        runningApps.put(appContext.getName(), appContext);
+        sendEvent(AppLifecycleEventType.STARTED, appContext.getAppDescriptor());
+
         return appContext;
     }
 
-    private void doFocus(AppContextImpl appContext) {
+    /**
+     * Focuses an already running {@link App} by passing it to the {@link LocationController}.
+     */
+    private void doFocus(AppContext appContext) {
         locationController.goTo(appContext.getCurrentLocation());
         appHistory.addFirst(appContext);
         sendEvent(AppLifecycleEventType.FOCUSED, appContext.getAppDescriptor());
     }
 
-    private void doStop(AppContextImpl appContext) {
+    private void doStop(AppContext appContext) {
         appContext.stop();
         while (appHistory.remove(appContext))
             ;
@@ -227,6 +244,17 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         eventBus.fireEvent(new AppLifecycleEvent(appDescriptor, appEventType));
     }
 
+    /**
+     * Takes care of {@link LocationChangedEvent}s by:
+     * <ul>
+     *     <li>Obtaining the {@link AppDescriptor} associated with the {@link Location}.</li>
+     *     <li>Creating a new {@link AppContext} if not running, otherwise obtain it from the running apps.</li>
+     *     <li>Updating the {@Link Location} and redirecting in case of missing subAppId.</li>
+     *     <li>Starting the App.</li>
+     *     <li>Adding the {@link AppContext} to the appHistory.</li>
+     *     <li>Setting the viewPort and updating the current running app.</li>
+     * </ul>
+     */
     @Override
     public void onLocationChanged(LocationChangedEvent event) {
         Location newLocation = event.getNewLocation();
@@ -240,13 +268,17 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             currentApp.exitFullScreenMode();
         }
 
-        AppContextImpl nextAppContext = runningApps.get(nextApp.getName());
+        AppContext nextAppContext = getAppContext(nextApp.getName());
 
-        if (nextAppContext != null) {
-            nextAppContext.onLocationUpdate(newLocation);
-        } else {
-            nextAppContext = doStartIfNotAlreadyRunning(nextApp.getName(), newLocation);
+        // update location
+        Location updateLocation = updateLocation(nextAppContext, newLocation);
+        if (!updateLocation.equals(newLocation)) {
+            locationController.goTo(updateLocation);
+            return;
         }
+
+        nextAppContext = doStartIfNotAlreadyRunning(nextAppContext, newLocation);
+
 
         if (currentApp != nextAppContext) {
             appHistory.addFirst(nextAppContext);
@@ -254,6 +286,52 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         viewPort.setView(nextAppContext.getView());
         currentApp = nextAppContext;
+        // focus on locationChanged?
+        //focusCurrentApp();
+    }
+
+    /**
+     * Updates the {@link Location} in case of missing subAppId:
+     * <ul>
+     *     <li>If the app is running, it will fetch the current Location associated with the App.</li>
+     *     <li>Will fetch the configured default subAppId otherwise.</li>
+     * </ul>
+     */
+    private Location updateLocation(AppContext appContext, Location location) {
+
+        if (location instanceof DefaultLocation) {
+            DefaultLocation l = (DefaultLocation) location;
+            String appId = l.getAppId();
+            String subAppId = l.getSubAppId();
+
+            if (subAppId == null || subAppId.isEmpty()) {
+
+                if (isAppStarted(appId)) {
+                    AppContext runningAppContext = runningApps.get(appId);
+                    return runningAppContext.getCurrentLocation();
+                }
+                else {
+                    return appContext.getDefaultLocation();
+                }
+            }
+
+        }
+        return location;
+    }
+
+    private AppContext getAppContext(String appId) {
+        if (isAppStarted(appId)) {
+            return runningApps.get(appId);
+        }
+        else {
+            AppDescriptor descriptor = getAppDescriptor(appId);
+            if (descriptor == null) {
+                return null;
+            }
+
+            return new AppContextImpl(moduleRegistry, componentProvider, this, locationController, shell, messagesManager, descriptor);
+
+        }
     }
 
     @Override
@@ -278,387 +356,4 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         return appLauncherLayoutManager.getLayoutForCurrentUser().getAppDescriptor(name);
     }
 
-
-    private class AppContextImpl implements AppContext, AppFrameView.Listener {
-
-        private class SubAppContextImpl implements SubAppContext {
-
-            private SubApp subApp;
-            private Location location;
-            private ComponentProvider subAppComponentProvider;
-            private SubAppDescriptor subAppDescriptor;
-            private AppContext appContext;
-            private String tabId;
-
-
-            private SubAppContextImpl(SubAppDescriptor subAppDescriptor) {
-                this.subAppDescriptor = subAppDescriptor;
-            }
-
-            @Override
-            public AppContext getAppContext() {
-                return appContext;
-            }
-
-            @Override
-            public void setAppContext(AppContext appContext) {
-                this.appContext = appContext;
-            }
-
-            @Override
-            public SubApp getSubApp() {
-                return subApp;
-            }
-
-            @Override
-            public void setSubApp(SubApp subApp) {
-                this.subApp = subApp;
-            }
-
-            @Override
-            public String getSubAppId() {
-               return subAppDescriptor.getName();
-            }
-
-            @Override
-            public Location getLocation() {
-                return location;
-            }
-
-            @Override
-            public void setLocation(Location location) {
-                this.location = location;
-            }
-
-            @Override
-            public void setTabId(String tabId) {
-                this.tabId = tabId;
-            }
-
-            @Override
-            public String getTabId() {
-                return tabId;
-            }
-
-            @Override
-            public void setSubAppComponentProvider(ComponentProvider subAppComponentProvider) {
-                this.subAppComponentProvider = subAppComponentProvider;
-            }
-        }
-
-        private HashMultimap<String, SubAppContext> subAppContexts = HashMultimap.create();
-
-        private final AppDescriptor appDescriptor;
-
-        private App app;
-
-        private AppFrameView appFrameView;
-
-        private ComponentProvider appComponentProvider;
-
-        public AppContextImpl(AppDescriptor appDescriptor) {
-            this.appDescriptor = appDescriptor;
-        }
-
-        @Override
-        public String getName() {
-            return appDescriptor.getName();
-        }
-
-        @Override
-        public AppDescriptor getAppDescriptor() {
-            return appDescriptor;
-        }
-
-        private SubAppDescriptor getDefaultSubAppDescriptor() {
-            Map<String, SubAppDescriptor> subAppDescriptors = getAppDescriptor().getSubApps();
-
-            SubAppDescriptor defaultSubAppDescriptor = null;
-            for (SubAppDescriptor subAppDescriptor : subAppDescriptors.values()) {
-                if (subAppDescriptor.isDefault()) {
-                    defaultSubAppDescriptor = subAppDescriptor;
-                    break;
-                }
-            }
-            return defaultSubAppDescriptor;
-        }
-
-        private SubAppDescriptor getSubAppDescriptorById(String subAppId) {
-            Map<String, SubAppDescriptor> subAppDescriptors = getAppDescriptor().getSubApps();
-            return subAppDescriptors.get(subAppId);
-        }
-
-
-        public View getView() {
-            return appFrameView;
-        }
-
-        /**
-         * Called when the app is launched from the app launcher OR a location change event triggers
-         * it to start.
-         */
-        public void start(Location location) {
-
-            this.appComponentProvider = createAppComponentProvider(appDescriptor.getName(), this);
-
-            app = appComponentProvider.newInstance(appDescriptor.getAppClass());
-
-            appFrameView = new AppFrameView();
-            appFrameView.setListener(this);
-
-            app.start(location);
-        }
-
-
-
-        /**
-         * Called when a location change occurs and the app is already running.
-         */
-        public void onLocationUpdate(Location location) {
-            DefaultLocation l = (DefaultLocation) location;
-            String subAppId = l.getSubAppId();
-
-            // The location targets the current display state, update the fragment only
-            if (subAppId.length() == 0) {
-                SubAppContext subAppContext = getActiveSubAppContext();
-                if (subAppContext != null) {
-                    shell.setFragment(subAppContext.getLocation().toString());
-                }
-                return;
-            }
-
-            openSubApp(location);
-
-            app.locationChanged(location);
-        }
-
-        @Override
-        public void onActiveTabSet(String tabId) {
-            SubAppContext subAppContext = getSubAppContextForTab(tabId);
-            if (subAppContext != null) {
-                locationController.goTo(subAppContext.getLocation());
-            }
-        }
-
-        @Override
-        public void onTabClosed(String tabId) {
-            SubAppContext subAppContext = getSubAppContextForTab(tabId);
-            if (subAppContext != null) {
-                subAppContexts.remove(subAppContext.getSubAppId(), subAppContext);
-            }
-            onActiveTabSet(this.appFrameView.getActiveTabId());
-        }
-
-        public String mayStop() {
-            return null;
-        }
-
-        public void stop() {
-            app.stop();
-        }
-
-        public Location getCurrentLocation() {
-            SubAppContext subAppContext = getActiveSubAppContext();
-            if (subAppContext != null) {
-                return subAppContext.getLocation();
-            }
-            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), "", "");
-        }
-
-        @Override
-        public void openSubApp(Location location) {
-            // If the location targets an existing sub app then activate it and update its location
-            // launch running subapp
-            SubAppContext subAppContext = getSupportingSubAppContext(location);
-            if (subAppContext != null) {
-                // check if location actually changed
-                //if (!subAppContext.getLocation().equals(location)) {
-                subAppContext.setLocation(location);
-                subAppContext.getSubApp().locationChanged(location);
-                //}
-                if (subAppContext.getTabId() != appFrameView.getActiveTab().getTabId()) {
-                    appFrameView.setActiveTabId(subAppContext.getTabId());
-                }
-            }
-            else {
-            // else start new subApp
-            // startSubApp
-
-                subAppContext = startSubApp(location);
-                subAppContexts.put(subAppContext.getSubAppId(), subAppContext);
-
-            }
-
-        }
-
-        private SubAppContext startSubApp(Location location) {
-
-            DefaultLocation l = (DefaultLocation) location;
-
-            SubAppDescriptor subAppDescriptor = getSubAppDescriptorById(l.getSubAppId());
-
-            if (subAppDescriptor == null) {
-                subAppDescriptor = getDefaultSubAppDescriptor();
-            }
-            SubAppContext subAppContext = new SubAppContextImpl(subAppDescriptor);
-
-
-            ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppContext.getSubAppId(), subAppContext, appComponentProvider);
-
-            SubApp subApp = subAppComponentProvider.newInstance(subAppDescriptor.getSubAppClass());
-
-
-
-            subAppContext.setAppContext(this);
-            subAppContext.setLocation(location);
-            subAppContext.setSubApp(subApp);
-            subAppContext.setSubAppComponentProvider(subAppComponentProvider);
-
-            View view = subApp.start(location);
-            String tabId = appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), subApp.getCaption(), !subAppContexts.isEmpty());
-            subAppContext.setTabId(tabId);
-
-            return subAppContext;
-        }
-
-        @Override
-        public void setSubAppLocation(SubApp subApp, Location location) {
-            SubAppContext subAppContext = getSubAppContextForSubApp(subApp);
-            if (subAppContext != null) {
-                subAppContext.setLocation(location);
-                if (currentApp == this && getActiveSubAppContext() == subAppContext) {
-                    shell.setFragment(location.toString());
-                }
-            }
-        }
-
-        @Override
-        public void sendUserMessage(String user, Message message) {
-            messagesManager.sendMessage(user, message);
-        }
-
-        @Override
-        public void sendLocalMessage(Message message) {
-            messagesManager.sendLocalMessage(message);
-        }
-
-        @Override
-        public void broadcastMessage(Message message) {
-            messagesManager.broadcastMessage(message);
-        }
-
-        @Override
-        public void showConfirmationMessage(String message) {
-            log.info("If confirmation message was already implemented you'd get a {} now...", message);
-        }
-
-        @Override
-        public void enterFullScreenMode() {
-            appFrameView.asVaadinComponent().setFullscreen(true);
-            //shell.showFullscreen(view);
-        }
-
-        @Override
-        public void exitFullScreenMode() {
-            appFrameView.asVaadinComponent().setFullscreen(false);
-        }
-
-        private SubAppContext getActiveSubAppContext() {
-            return getSubAppContextForTab(appFrameView.getActiveTabId());
-        }
-
-        private SubAppContext getSubAppContextForTab(String tabId) {
-            for (SubAppContext subAppContext : subAppContexts.values()) {
-                if (subAppContext.getTabId().equals(tabId)) {
-                    return subAppContext;
-                }
-            }
-            return null;
-        }
-
-        // Same instance?!
-        private SubAppContext getSubAppContextForSubApp(SubApp subApp) {
-            for (SubAppContext subAppContext : getSubAppContexts(subApp.getSubAppId())) {
-                if (subAppContext.getSubApp() == subApp)
-                    return subAppContext;
-            }
-            return null;
-        }
-
-        private Set<SubAppContext> getSubAppContexts(String subAppId) {
-            return subAppContexts.get(subAppId);
-        }
-
-        private SubAppContext getSupportingSubAppContext(Location location) {
-            DefaultLocation l = (DefaultLocation) location;
-            SubAppContext supportingContext = null;
-            Set<SubAppContext> subApps = subAppContexts.get(l.getSubAppId());
-            for (SubAppContext context : subApps) {
-                if (context.getSubApp().supportsLocation(l)) {
-                    supportingContext = context;
-                    break;
-                }
-            }
-            return supportingContext;
-        }
-
-    }
-
-    /**
-     * Creates a ComponentProvider dedicated for the app with the AdminCentral ComponentProvider as its parent. This
-     * gives us the ability to inject the AppContext into App components. The components are read from module
-     * descriptors using the convention "app-" + name of the app and merged with the components defined for all apps
-     * with the id "app".
-     */
-    private ComponentProvider createAppComponentProvider(String name, AppContext appContext) {
-
-        ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
-        List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
-
-        // Get components common to all apps
-        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(COMMON_APP_COMPONENTS_ID, moduleDefinitions);
-
-        // Get components for this specific app
-        String componentsId = COMPONENTS_ID_PREFIX + name;
-        log.debug("Reading component configurations from module descriptors for " + componentsId);
-        ComponentProviderConfiguration appComponents = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
-
-        configuration.combine(appComponents);
-
-        // Add the AppContext instance into the component provider.
-        configuration.addComponent(InstanceConfiguration.valueOf(AppContext.class, appContext));
-
-        log.debug("Creating component provider for app " + name);
-        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-        builder.withConfiguration(configuration);
-        builder.withParent((GuiceComponentProvider) componentProvider);
-
-        return builder.build();
-    }
-
-    private ComponentProvider createSubAppComponentProvider(String appName, String subAppName, SubAppContext subAppContext, ComponentProvider parent) {
-
-        ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
-        List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
-
-        // Get components common to all sub apps
-        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(COMMON_SUB_APP_COMPONENTS_ID, moduleDefinitions);
-
-        // Get components for this specific sub app
-        String componentsId = COMPONENTS_ID_PREFIX + appName + "-" + subAppName;
-        log.debug("Reading component configurations from module descriptors for " + componentsId);
-        ComponentProviderConfiguration subAppComponents = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
-
-        configuration.combine(subAppComponents);
-
-        // Add the SubAppContext instance into the component provider.
-        configuration.addComponent(InstanceConfiguration.valueOf(SubAppContext.class, subAppContext));
-
-        log.debug("Creating component provider for sub app " + subAppName);
-        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-        builder.withConfiguration(configuration);
-        builder.withParent((GuiceComponentProvider) parent);
-
-        return builder.build();
-    }
 }

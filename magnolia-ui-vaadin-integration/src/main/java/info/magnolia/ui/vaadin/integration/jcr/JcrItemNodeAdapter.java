@@ -39,69 +39,71 @@ import javax.jcr.Node;
 
 import com.vaadin.data.Item;
 
+
 /**
  * Common definition for child handling and corresponding Node access.
- *
  */
-public interface JcrItemNodeAdapter extends Item{
+public interface JcrItemNodeAdapter extends Item {
 
     /**
-     * Return the Primary node type Name.
-     * This Node type is defined based on the related JCR Node.
-     * In case of new Node, the Type is passed during the construction of the new Item or
-     * if not defined, the Type is equivalent to the Parent Node Type.
+     * Gets the node identifier, i.e. the JCR uuid.
+     * 
+     * @return the node identifier
      */
-    public String getPrimaryNodeTypeName();
+    String getNodeIdentifier();
 
     /**
-     * Return the corresponding node directly from the JCR repository.
-     * <b> The returned Node does not contains all changes
-     * done on the current Item, but it's a representation of the current stored Jcr node. </b>
-     * To get the Jcr Node including the changes done on the current Item, use getNode().
+     * Return the Primary node type Name. This Node type is defined based on the related JCR Node.
+     * In case of new Node, the Type is passed during the construction of the new Item or if not
+     * defined, the Type is equivalent to the Parent Node Type.
      */
-    public Node getNodeFromRepository();
+    String getPrimaryNodeTypeName();
 
     /**
-     * Return the Jcr Node represented by this Item,
-     * Including the Modification done on Property and Child Nodes (added or removed).
+     * Return the corresponding node directly from the JCR repository. <b> The returned Node does
+     * not contains all changes done on the current Item, but it's a representation of the current
+     * stored Jcr node. </b> To get the Jcr Node including the changes done on the current Item, use
+     * getNode().
      */
-    public Node getNode();
+    Node getNodeFromRepository();
+
+    /**
+     * Return the Jcr Node represented by this Item, Including the Modification done on Property and
+     * Child Nodes (added or removed).
+     */
+    Node getNode();
 
     /**
      * @param nodeIdentifier AbstractJcrAdapter.getNodeIdentifier().
-     * @return child JcrItemNodeAdapter if part of the children, or
-     *         Null if not defined.
+     * @return child JcrItemNodeAdapter if part of the children, or null if not defined.
      */
-    public JcrItemNodeAdapter getChild(String nodeIdentifier);
+    JcrItemNodeAdapter getChild(String nodeIdentifier);
 
-    public Map<String, JcrItemNodeAdapter> getChildren();
+    Map<String, JcrItemNodeAdapter> getChildren();
 
     /**
-     * Add a child JcrItemNodeAdapter to the current Item.
-     * <b>Only Child Nodes part of this Map will be persisted into Jcr.</b>
+     * Add a child JcrItemNodeAdapter to the current Item. <b>Only Child Nodes part of this Map will
+     * be persisted into Jcr.</b>
      */
-    public JcrItemNodeAdapter addChild(JcrItemNodeAdapter child);
+    JcrItemNodeAdapter addChild(JcrItemNodeAdapter child);
 
     /**
-     * Remove a Child Node from the child list.
-     * <b>When removing a JcrItemNodeAdapter, this Child will be added to the Remove Child List even if
-     * this Item was not part of the current children list.
-     * All Item part from the removed list are removed from the Jcr repository.</b>
+     * Remove a Child Node from the child list. <b>When removing a JcrItemNodeAdapter, this Child
+     * will be added to the Remove Child List even if this Item was not part of the current children
+     * list. All Item part from the removed list are removed from the Jcr repository.</b>
      */
-    public boolean removeChild(JcrItemNodeAdapter toRemove);
+    boolean removeChild(JcrItemNodeAdapter toRemove);
 
     /**
-     * Return the current Parent Item (If Item is a child).
-     * Parent is set by calling addChild(...
+     * Return the current Parent Item (If Item is a child). Parent is set by calling addChild(...
      */
-    public JcrItemNodeAdapter getParent();
+    JcrItemNodeAdapter getParent();
 
-    public void setParent(JcrItemNodeAdapter parent);
+    void setParent(JcrItemNodeAdapter parent);
 
     /**
-     * Return the current Node Name.
-     * For new Item, this is the name set in the new Item constructor or
-     * Null if not yet defined.
+     * Return the current Node Name. For new Item, this is the name set in the new Item constructor
+     * or null if not yet defined.
      */
-    public String getNodeName();
+    String getNodeName();
 }

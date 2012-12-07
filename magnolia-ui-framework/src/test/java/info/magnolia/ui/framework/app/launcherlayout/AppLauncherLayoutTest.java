@@ -59,9 +59,9 @@ public class AppLauncherLayoutTest {
     @Before
     public void setUp() throws Exception {
         //Init
-        appDescriptor1 = createAppDescriptor("appDescriptor1", "appGroup1");
-        appDescriptor2 = createAppDescriptor("appDescriptor2", "appGroup1");
-        appDescriptor3 = createAppDescriptor("appDescriptor3", "appGroup2");
+        appDescriptor1 = createAppDescriptor("appDescriptor1");
+        appDescriptor2 = createAppDescriptor("appDescriptor2");
+        appDescriptor3 = createAppDescriptor("appDescriptor3");
         appGroup1 = createAppGroup("appGroup1", appDescriptor1, appDescriptor2);
         appGroup2 = createAppGroup("appGroup2", appDescriptor3);
         applayout = new AppLauncherLayout();
@@ -160,9 +160,8 @@ public class AppLauncherLayoutTest {
         return group;
     }
 
-    public static AppDescriptor createAppDescriptor(String name, String categoryName) {
+    public static AppDescriptor createAppDescriptor(String name) {
         ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
-        descriptor.setCategoryName(categoryName);
         descriptor.setName(name);
         return descriptor;
     }

@@ -146,8 +146,8 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
         definition.setRepository(workspaceName);
         definition.setOptions(new ArrayList<SelectFieldOptionDefinition>());
         //Define the name of value and label
-        definition.setValueNodeData("x");
-        definition.setLabelNodeData("z");
+        definition.setValueProperty("x");
+        definition.setLabelProperty("z");
 
         dialogSelect = new SelectFieldBuilder<SelectFieldDefinition>(definition, baseItem);
         dialogSelect.setI18nContentSupport(i18nContentSupport);

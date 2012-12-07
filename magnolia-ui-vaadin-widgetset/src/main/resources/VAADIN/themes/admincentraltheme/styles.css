@@ -1,7 +1,9 @@
 @import url(../chameleon/styles.css);
 @import url(splitfeed.css);
+@import url(form.css);
 @import url(dialog.css);
 @import url(actionbar.css);
+@import url(lightbox.css);
 @import url(tabsheet.css);
 @import url(shellmessage.css);
 @import url(workbench.css);
@@ -94,32 +96,87 @@ button.btn-dialog-selectCallBack {
 
 .v-checkbox > input[type="checkbox"],
 .gwt-CheckBox > input[type="checkbox"] {
-	opacity: 0;
-	width: 10px;
-	height: 10px;
+    position:absolute;
+	margin:0;
+    padding:0;
+    opacity:0;
 }
 
 .v-checkbox > label,
 .gwt-CheckBox > label {
-	position: relative;
-	left: -15px;
-    padding-left: 15px;
-}
-
-.v-checkbox > input[type="checkbox"]:checked + label,
-.gwt-CheckBox > input[type="checkbox"]:checked + label {
-	background: url('img/icon-checkbox_on.svg') left center no-repeat;
-	background: url('img/icon-checkbox_on.png') left center no-repeat\9; /*For IE 8*/
-	background-size: 15px 15px;
-	-o-background-size: 15px 15px;
-    -webkit-background-size: 15px 15px;
+    display:inline-block;
+    padding-left:21px;
+    min-width:15px;
 }
 
 .v-checkbox > input[type="checkbox"] + label,
 .gwt-CheckBox > input[type="checkbox"] + label {
-    background: url('img/icon-checkbox_off.svg') left center no-repeat;
-    background: url('img/icon-checkbox_off.png') left center no-repeat\9; /*For IE 8*/
-    background-size: 15px 15px;
-    -o-background-size: 15px 15px;
-    -webkit-background-size: 15px 15px;
+    background-image:url('img/icon-checkbox_off.png'); /* SVG with PNG fallback technique */
+    background-image:none, url('img/icon-checkbox_off.svg');
+	background-position:0 0;
+	background-repeat:no-repeat;
+    background-size:15px 15px;
+    -o-background-size:15px 15px;
+    -webkit-background-size:15px 15px;
+}
+
+.v-checkbox > input[type="checkbox"]:checked + label,
+.gwt-CheckBox > input[type="checkbox"]:checked + label {
+	background-image:url('img/icon-checkbox_on.png');
+	background-image:none, url('img/icon-checkbox_on.svg');
+}
+
+/*TwinCol styles*/
+
+.v-select-twincol {
+     width: 510px ! important;
+}
+
+.v-select-twincol-buttons {
+     margin-left:3px;
+     margin-right:3px;
+     width: 60px !important;
+}
+
+.v-select-twincol-options {
+     width: 230px ! important;
+}
+
+.v-select-twincol-selections {
+     width: 230px ! important;
+}
+
+.v-select-twincol-buttons .v-button {
+     background: none repeat scroll 0px 0px #666666 ! important;
+     border-radius: 0px 0px 0px 0px ! important;
+     border: medium none;
+     color: #FFFFFF;
+     cursor: pointer;
+     font-family: DINWebPro;
+     font-size: 12px;
+     font-weight: bold;
+     height: 25px;
+     width: 55px;
+     margin-bottom: 3px;
+     text-shadow: none;
+}
+
+.v-select-twincol-buttons .v-button-wrap {
+  background: none !important;
+}
+/*a bit hackish -  right caption is positioned absolutely whereas left caption is floating left */
+.v-select-twincol-caption-right {
+    color: #666;
+    left: 450px;
+    position: absolute;
+    width: 200px !important;
+}
+
+.v-select-twincol-caption-left {
+    color: #666;
+    width: 200px !important;
+}
+
+input.v-textfield-readonly, textarea.v-textarea-readonly {
+    background-color: #e6e6e6 !important;
 }

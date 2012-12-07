@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+  <meta charset="utf-8"></meta>
+  <title>Magnolia 5.0</title>
+  <meta name="description" content=""></meta>
+  <meta name="author" content="Magnolia International AG"></meta>
+
+  <meta name="viewport" content="user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+
+  <meta http-equiv="cache-control" content="no-cache"/>
+  <meta http-equiv="pragma" content="no-cache"/>
+  <meta name="ctxPath" content="${contextPath}"/>
+
+  <link rel="stylesheet" type="text/css" media="screen" href="${contextPath}/.resources/defaultLoginForm/css/reset.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="${contextPath}/.resources/defaultLoginForm/css/login.css" />
+  <script type="text/javascript" src="${contextPath}/.resources/defaultLoginForm/js/conditional-css-include.js"></script>
+
+</head>
+<body>
+<div id="content" style="top: 60px;">
+  <div id="login" class="login-panel" style="display: block; opacity: 1; -webkit-transition: all 0s cubic-bezier(0.25, 0.1, 0.25, 1);" >
+      <div class="header" >
+        <div class="tag-line">
+              Yes, we're open.
+        </div>
+      </div>
+          
+      <form id="loginForm" action="" method="post" class="mgnl-form">
+          <div id="login-divet"></div>
+          <div style="height:28px;"></div>
+          <label>user name</label>
+          <input type="text" value="" id="login-username" name="mgnlUserId" tabindex="1" autofocus autocorrect="off" autocapitalize="off">
+          <br class="float-clear"/>
+          <label>password</label>
+          <input type="password" value="" name="mgnlUserPSWD" tabindex="2"><br class="float-clear"/>
+          <div>
+            <a href="" >Forgot your password?</a>
+            <button class="btn-submit" id="login-button" style="float:right;" tabindex="3">login</button>
+          </div>
+          <br class="float-clear" />
+      </form>
+  </div>
+  <div id="footer">
+        [#if serviceContact?exists]
+        ${serviceContact?html}
+        <br/>
+        [/#if]
+        Magnolia is a registered trademark of Magnolia International Ltd.
+        <br/>
+         &copy; Copyright 2003-2012
+        <a href="http://www.magnolia-cms.com" id="externallink">Magnolia International Ltd.</a>
+      </div>
+</div>
+</body>
+</html>

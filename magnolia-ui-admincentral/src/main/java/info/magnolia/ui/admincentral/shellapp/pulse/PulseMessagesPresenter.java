@@ -42,6 +42,7 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -165,6 +166,24 @@ public class PulseMessagesPresenter implements Serializable {
         }
 
         container.addContainerFilter(sectionFilter);
+    }
+    
+    /**
+     * Return list of child items.
+     * @param itemId parent itemId
+     * @return
+     */
+    public Collection<?> getGroup(Object itemId) {        
+        return container.getChildren(itemId);
+    }
+    
+    /**
+     * Return parent itemId for an item.
+     * @param itemId
+     * @return
+     */
+    public Object getParent(Object itemId) {
+        return container.getParent(itemId);
     }
 
     /*

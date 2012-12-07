@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.field.validator;
 
 
-import info.magnolia.ui.admincentral.dialog.AbstractDialogItem;
+import info.magnolia.ui.admincentral.form.AbstractFormItem;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
 /**
@@ -42,7 +42,7 @@ import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidat
  * .
  * @param <D> definition type.
  */
-public abstract class AbstractFieldValidatorBuilder<D extends ConfiguredFieldValidatorDefinition> extends AbstractDialogItem implements FieldValidatorBuilder {
+public abstract class AbstractFieldValidatorBuilder<D extends ConfiguredFieldValidatorDefinition> extends AbstractFormItem implements FieldValidatorBuilder {
 
     protected D definition;
 

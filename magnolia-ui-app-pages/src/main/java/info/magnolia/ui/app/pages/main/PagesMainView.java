@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.app.pages.main;
 
-import info.magnolia.ui.admincentral.app.content.ContentAppView;
+import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 
 /**
  * View for the Pages app.
  */
-public interface PagesMainView extends ContentAppView {
+public interface PagesMainView extends WorkbenchSubAppView {
 
     /**
      * Listener.

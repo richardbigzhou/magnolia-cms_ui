@@ -1,0 +1,346 @@
+
+/*
+* Tabsheet color
+*/
+.form-panel .v-shell-tabsheet {
+    background-color: #F2F2F2;
+}
+
+.form-panel .v-shell-tabsheet .nav li.active {
+    background-color: #F2F2F2;
+}
+
+.v-form-layout {
+    background-color: #F2F2F2;
+    margin-top: 25px;
+}
+
+.v-form-field-section, .v-form-field-label, select,
+.v-form-field, .validation-message-inline span, .help-message-inline span,
+.form-description {
+    font-family: Verdana, Helvetica, sans-serif !important;
+    font-size: 12px !important;
+}
+
+.v-form-layout .v-form-field {
+    display: inline-block;
+    width:510px;
+    vertical-align: middle;
+}
+
+.form-header,.form-footer,.form-description,.form-error {
+    padding: 12px 16px 12px 24px;
+}
+
+.form-description,.form-footer,.form-content,.form-error {
+    border-top: 2px solid black;
+}
+
+.form-header {
+    background-color: #666;
+    display: block;
+    height: 16px;
+    color: #AABF2F;
+}
+
+.form-header span {
+    font-family: DINWebPro;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 18px;
+}
+
+.form-description {
+    background: none repeat scroll 0px 0px #C1D8DF;
+}
+
+.form-error {
+    background: none repeat scroll 0px 0px #9A3333;
+    color: white;
+}
+
+.form-description span {
+    margin-right: 35px;
+}
+
+.form-panel {
+    background: none repeat scroll 0px 0px #F2F2F2;
+    border: none;
+    margin: 0 auto;
+    padding: 0;
+    width: 900px;
+}
+
+.form-footer {
+    background: none repeat scroll 0px 0px #CCCCCC;
+    text-align: right;
+}
+
+.form-help {
+    float: right;
+    margin-right: 0px;
+}
+
+button.btn-form {
+    font-family: DINWebPro;
+    font-size: 12px;
+    font-weight: bold;
+    background: none repeat scroll 0px 0px #666666;
+    border: none;
+    color: #FFF;
+    cursor: pointer;
+    padding: 4px 12px;
+    text-transform: uppercase;
+}
+
+button.btn-form-select {
+    margin-left: 2px;
+}
+
+.btn-form-select span {
+    font-family: DINWebPro !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 55px !important;
+}
+
+button.btn-form-commit {
+    background: none repeat scroll 0px 0px #689600;
+    margin-left:10px;
+    float: right;
+}
+
+button.btn-form-help {
+    background: url("img/icon-help.png") no-repeat scroll 1px 1px transparent;
+    border: none;
+    float: right;
+    height: 20px;
+    margin: 0;
+    padding: 0;
+    width: 20px;
+}
+
+.form-panel .field-container {
+    color: #999;
+}
+
+.v-form-field.v-customcomponent {
+    width:525px !important;
+}
+
+.v-form-field.v-customcomponent.text-and-content {
+    width: auto !important;
+}
+
+input[type="text"].v-form-field, .v-form-field.v-customcomponent input[type="text"],
+.v-datefield input[type="text"], textarea.v-form-field {
+    background: #FFF;
+    border-radius: 0px;
+    border: 1px solid #CCC;
+    color: #000;
+    display: inline-block;
+    margin: 0px;
+    padding: 6px 7px 6px 7px;
+    height: 14px;
+}
+
+textarea.v-form-field {
+    overflow-y: auto;
+    height:auto;
+}
+.v-form-field-label {
+    display: inline-block;
+    text-align: right;
+    width: 140px;
+    margin-right: 12px;
+    color: #666;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    vertical-align: middle; /*needed by FF*/
+}
+
+.v-form-field-container {
+    display: block;
+    position: relative;
+}
+
+.validation-hilight {
+    border: 2px solid #9A3333;
+    padding: 3px 0px;
+    background-color: white;
+}
+
+.v-form-field-section {
+    color: #000;
+    margin-bottom: 11px;
+}
+
+.triangle {
+
+}
+
+.validation-message-inline,.help-message-inline {
+    margin-bottom: 10px;
+    padding-top: 5px;
+    position: relative;
+}
+
+.validation-message,.help-message {
+    background: none repeat scroll 0px 0px #9A3333;
+    color: white;
+    display: block;
+    padding: 10px;
+}
+
+.help-message {
+    background: none repeat scroll 0px 0px #C1D8DF;
+    color: black;
+}
+
+.help-message span {
+    vertical-align: middle;
+    margin-left: 3px;
+}
+
+.triangle.red path {
+    fill: #9A3333;
+}
+
+.triangle.blue path {
+    fill: #C1D8DF;
+}
+
+.triangle {
+    text-align: center;
+}
+
+.icon-error-white {
+    background: url("img/icons/icon-error-white.png") no-repeat scroll 1px 1px transparent;
+    border: medium none;
+    display: inline-block;
+    height: 20px;
+    margin: 0px 6px 0px 0px;
+    padding: 1px;
+    vertical-align: middle;
+    width: 20px;
+}
+
+select:focus,input[type="text"]:focus,input[type="password"]:focus,textarea:focus
+{
+    border: 1px solid #4B8E9E;
+    box-shadow: 0px 0px 1px 0px #4B8E9E;
+    color: #777;
+}
+
+.action-jump-to-next-error {
+    -moz-user-select: text;
+    background: none repeat scroll 0% 0% transparent;
+    border: medium none;
+    color: #999 !important;
+    display: inline;
+    padding-left: 5px;
+    cursor: pointer;
+}
+
+.action-jump-to-next-error:hover {
+    color: #FFF ! important;
+}
+
+.action-jump-to-next-error:focus {
+    outline-offset: -3px;
+}
+
+.icon-error,.action-validation {
+    background: url("img/icons/icon-error-red.png") no-repeat scroll 1px 1px transparent;
+    border: none;
+    display: inline-block;
+    height: 16px;
+    margin: 0px 1px 0px 2px;
+    padding: 0px;
+    vertical-align: middle;
+    width: 19px;
+}
+
+.action-form-help {
+    background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px transparent;
+    border: none;
+    display: inline-block;
+    height: 20px;
+    margin: 0px 1px 0px 2px;
+    padding: 0px;
+    vertical-align: middle;
+    width: 20px;
+}
+
+fieldset {
+    border: 0px none;
+    padding: 0;
+}
+
+.form-content.show-all fieldset legend {
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    color: black;
+    display: block !important;
+    padding-left: 27px;
+    padding-bottom: 18px;
+}
+
+.form-content.show-all fieldset hr {
+    margin: 22px 24px 0px;
+    border-top: 1px solid black;
+    border-bottom: 0px;
+    border-right: 0px;
+    border-left: 0px;
+    display:block !important;
+    height: 0; /*needed by FF*/
+}
+
+/*do not display hr on under last tab when in show-all mode*/
+.v-shell-tab:last-child fieldset hr {
+    display: none !important;
+}
+
+.v-form-field-container .v-datefield {
+    float: none;
+    display: inline;
+}
+
+.v-form-field-container .v-datefield-button {
+    margin: 2px 0 0 3px;
+}
+
+.v-form-field-label  span.requiredfield {
+    color: black;
+    font-family: inherit;
+    font-size: 18px;
+    vertical-align: -20%;
+    margin-left: 3px;
+}
+
+.content-view-field-wrapper {
+    margin:0px;
+}
+.content-view-field-wrapper .v-form-field-label {
+    display: none;
+}
+
+.content-view-field-wrapper .view-type-arrow {
+    top: 96px;
+}
+
+
+/*
+* used by TextAndButtonField custom component.
+*/
+input[type="text"].small-textfield {
+    width:440px !important;
+}
+
+.v-form-field.v-richtextarea {
+    width: 523px !important;
+}

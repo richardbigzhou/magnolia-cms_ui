@@ -34,13 +34,12 @@
 package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
 
 /**
- * {@link VFormDialog}.
+ * Client side implementation of the dialog that delegates most of the logic/UI to the embedded form. 
  */
 public class VFormDialog extends VBaseDialog {
-    
+
     @Override
     protected VBaseDialogView createView() {
-        return new VFormDialogViewImpl();
+        return new VAdaptingToFormDialogViewImpl();
     }
-
 }

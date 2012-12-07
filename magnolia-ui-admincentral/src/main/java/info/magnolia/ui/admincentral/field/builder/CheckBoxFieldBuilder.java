@@ -40,6 +40,7 @@ import info.magnolia.ui.model.field.definition.FieldDefinition;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 
+
 /**
  * Creates and initializes a checkBox field based on a field definition.
  */
@@ -53,12 +54,12 @@ public class CheckBoxFieldBuilder extends AbstractFieldBuilder<CheckboxFieldDefi
     protected Field buildField() {
         CheckBoxAndLabelField field = new CheckBoxAndLabelField();
         field.setValue(Boolean.valueOf(definition.getSelected()));
-        field.getLabel().setValue(getMessage(definition.getButtonLabel()));
+        field.getCheckBox().setCaption(getMessage(definition.getButtonLabel()));
         return field;
     }
 
     @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+    protected Class< ? > getDefaultFieldType(FieldDefinition fieldDefinition) {
         return Boolean.class;
     }
 }

@@ -86,9 +86,9 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
         }
 
         // Get or create the File Node adapter.
-        JcrItemNodeAdapter item = getOrCreateItem();
+        JcrItemNodeAdapter binaryDataSubNodeItem = getOrCreateSubItemWithBinaryData();
         // Create the File Wrapper.
-        FileItemWrapper fileItem = new FileItemWrapperImpl(item);
+        FileItemWrapper fileItem = new FileItemWrapperImpl(binaryDataSubNodeItem);
         // Create Upload Filed.
         UploadFileFieldImpl uploadField = new UploadFileFieldImpl(fileItem, magnoliaShell);
         uploadField.setInfo(true);
@@ -104,7 +104,7 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
      * Get or Create the imageBinary Item. If this Item doesn't exist yet,
      * initialize all fields (as Property).
      */
-    public JcrItemNodeAdapter getOrCreateItem() {
+    public JcrItemNodeAdapter getOrCreateSubItemWithBinaryData() {
         // Get the related Node
         Node node = getRelatedNode(item);
         JcrItemNodeAdapter child = null;

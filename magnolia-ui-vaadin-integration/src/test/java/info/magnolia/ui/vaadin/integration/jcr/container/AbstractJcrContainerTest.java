@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr.container;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -74,19 +73,27 @@ import com.vaadin.data.Property;
 /**
  * Tests for AbstractJcrContainer.
  */
-public class AbstractJcrContainerTest extends RepositoryTestCase{
+public class AbstractJcrContainerTest extends RepositoryTestCase {
 
     private JcrContainerTestImpl jcrContainer;
+
     private ConfiguredWorkbenchDefinition workbenchDefinition;
-    private String workspace = "config";
-    private String colName1 = "name";
-    private String colName2 = "shortname";
+
+    private final String workspace = "config";
+
+    private final String colName1 = "name";
+
+    private final String colName2 = "shortname";
+
+    private final String TEST_PATH = "/test";
+
     private Session session;
+
     private Node rootNode;
 
     @Override
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         super.setUp();
 
         ConfiguredWorkbenchDefinition configuredWorkbench = new ConfiguredWorkbenchDefinition();
@@ -98,16 +105,17 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         configuredWorkbench.setMainItemType(mainItemType);
 
         WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
-        when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition,Action>>());
+        when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(
+                new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>());
 
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);
         colDef1.setName(colName1);
-        colDef1.setLabel("Label_"+colName1);
+        colDef1.setLabel("Label_" + colName1);
         PropertyTypeColumnDefinition colDef2 = new PropertyTypeColumnDefinition();
         colDef2.setSortable(false);
         colDef2.setName(colName2);
-        colDef2.setLabel("Label_"+colName2);
+        colDef2.setLabel("Label_" + colName2);
 
         configuredWorkbench.addColumn(colDef1);
         configuredWorkbench.addColumn(colDef2);
@@ -117,7 +125,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         jcrContainer = new JcrContainerTestImpl(configuredWorkbench);
         workbenchDefinition = configuredWorkbench;
 
-        //Init session
+        // Init session
         session = MgnlContext.getSystemContext().getJCRSession(workspace);
         rootNode = session.getRootNode();
     }
@@ -133,7 +141,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         final com.vaadin.data.Item item = jcrContainer.getItem(containerItemId);
 
         // THEN
-        assertEquals(node1.getPath(), ((JcrNodeAdapter)item).getJcrItem().getPath());
+        assertEquals(node1.getPath(), ((JcrNodeAdapter) item).getJcrItem().getPath());
     }
 
     @Test
@@ -164,15 +172,15 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         node1.getSession().save();
         String containerItemId1 = node1.getPath();
         String containerItemId2 = node2.getPath();
-        setSorter("name",true);
+        setSorter("name", true);
         jcrContainer.getItem(containerItemId1);
 
         // WHEN
-        String containerItemId2Res = (String)jcrContainer.nextItemId(containerItemId1);
+        String containerItemId2Res = (String) jcrContainer.nextItemId(containerItemId1);
 
         // THEN
         assertEquals(containerItemId2, containerItemId2Res);
-        assertEquals(node2.getPath(),((JcrNodeAdapter)jcrContainer.getItem(containerItemId2Res)).getJcrItem().getPath());
+        assertEquals(node2.getPath(), ((JcrNodeAdapter) jcrContainer.getItem(containerItemId2Res)).getJcrItem().getPath());
     }
 
     @Test
@@ -183,15 +191,14 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         node1.getSession().save();
         String containerItemId1 = node1.getPath();
         String containerItemId2 = node2.getPath();
-        setSorter("name",true);
+        setSorter("name", true);
         jcrContainer.getItem(containerItemId1);
         // WHEN
-        String containerItemId1Res = (String)jcrContainer.prevItemId(containerItemId2);
+        String containerItemId1Res = (String) jcrContainer.prevItemId(containerItemId2);
 
         // THEN
         assertEquals(containerItemId1, containerItemId1Res);
     }
-
 
     @Test
     public void testFirstItemId() throws Exception {
@@ -200,16 +207,15 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
         String containerItemId1 = node1.getPath();
-        setSorter("name",true);
+        setSorter("name", true);
         jcrContainer.getItem(containerItemId1);
 
         // WHEN
-        String containerItemRes = (String)jcrContainer.firstItemId();
+        String containerItemRes = (String) jcrContainer.firstItemId();
 
         // THEN
         assertEquals(containerItemId1, containerItemRes);
     }
-
 
     @Test
     public void testLastItemId() throws Exception {
@@ -224,7 +230,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         jcrContainer.updateSize();
 
         // WHEN
-        final String containerItemRes = (String)jcrContainer.lastItemId();
+        final String containerItemRes = (String) jcrContainer.lastItemId();
 
         // THEN
         assertEquals(containerItemId2, containerItemRes);
@@ -238,7 +244,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         node1.getSession().save();
         String containerItemId1 = node1.getPath();
         String containerItemId2 = node2.getPath();
-        setSorter("name",true);
+        setSorter("name", true);
         jcrContainer.getItem(containerItemId1);
 
         // WHEN
@@ -250,7 +256,6 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         assertEquals(false, containerItemRes2);
     }
 
-
     @Test
     public void testIsLastId() throws Exception {
         // GIVEN
@@ -259,7 +264,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         node1.getSession().save();
         String containerItemId1 = node1.getPath();
         String containerItemId2 = node2.getPath();
-        setSorter("name",true);
+        setSorter("name", true);
         jcrContainer.updateSize();
 
         // WHEN
@@ -271,11 +276,10 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         assertEquals(true, containerItemRes2);
     }
 
-
     @Test
     public void testAddItem() throws Exception {
         // GIVEN
-        Node node1 = rootNode.addNode("node1",NodeTypes.Content.NAME);
+        Node node1 = rootNode.addNode("node1", NodeTypes.Content.NAME);
         String containerItemId = node1.getPath();
         node1.getSession().save();
         // WHEN
@@ -283,7 +287,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
 
         // THEN
 
-        assertEquals(node1.getPath(), ((JcrNodeAdapter)item).getItemId());
+        assertEquals(node1.getPath(), ((JcrNodeAdapter) item).getPath());
     }
 
     @Test
@@ -297,18 +301,17 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
 
         // THEN
         assertEquals(true, property instanceof DefaultProperty);
-        assertEquals("name1",property.getValue().toString());
+        assertEquals("name1", property.getValue().toString());
     }
 
-
     @Test
-    public void testSort_ascending() throws Exception {
+    public void testSortAscending() throws Exception {
         // GIVEN
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
         String containerItemId1 = node1.getPath();
-        boolean[] ascending = {true};
+        boolean[] ascending = { true };
         // WHEN
         jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
 
@@ -316,15 +319,14 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         assertEquals(containerItemId1, jcrContainer.firstItemId());
     }
 
-
     @Test
-    public void testSort_descending() throws Exception {
+    public void testSortDescending() throws Exception {
         // GIVEN
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
         String containerItemId2 = node2.getPath();
-        boolean[] ascending = {false};
+        boolean[] ascending = { false };
 
         // WHEN
         jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
@@ -350,12 +352,11 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         assertEquals(4, jcrContainer.getCurrentOffset());
 
         // WHEN
-        jcrContainer.sort(Arrays.asList("name").toArray(), new boolean[] {true});
+        jcrContainer.sort(Arrays.asList("name").toArray(), new boolean[] { true });
 
         // THEN
         assertEquals(0, jcrContainer.getCurrentOffset());
     }
-
 
     @Test
     public void testContainsIdWithNull() {
@@ -376,7 +377,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     }
 
     @Test
-    public void testContainsId() throws Exception{
+    public void testContainsId() throws Exception {
         // GIVEN
         final String existingKey = "existing";
         final Node node1 = createNode(rootNode, existingKey, NodeTypes.Content.NAME, "name", "name1");
@@ -399,6 +400,20 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     }
 
     @Test
+    public void testConstructJCRQueryWithoutSortWithPathClause() {
+        // GIVEN
+        workbenchDefinition.setPath(TEST_PATH);
+
+        // WHEN
+        final String result = jcrContainer.constructJCRQuery(false);
+
+        // THEN
+        String expectedResult = String.format(AbstractJcrContainer.SELECT_TEMPLATE + " where ", NodeTypes.Content.NAME);
+        expectedResult += String.format(AbstractJcrContainer.WHERE_TEMPLATE_FOR_PATH, TEST_PATH);
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
     public void testConstructJCRQueryWithDefaultSort() {
         // GIVEN
 
@@ -406,32 +421,47 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME) + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME) + AbstractJcrContainer.ORDER_BY
+                + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
     }
-
 
     @Test
     public void testConstructJCRQuerySortBySortableColumn() {
         // GIVEN
-        jcrContainer.sort(new String[]{"jcrName"}, new boolean[]{true});
+        jcrContainer.sort(new String[] { "jcrName" }, new boolean[] { true });
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME) + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME) + AbstractJcrContainer.ORDER_BY
+                + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
     }
 
     @Test
     public void testConstructJCRQuerySortByNonSortableColumn() {
         // GIVEN
-        jcrContainer.sort(new String[]{colName2}, new boolean[]{true});
+        jcrContainer.sort(new String[] { colName2 }, new boolean[] { true });
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME) + AbstractJcrContainer.ORDER_BY + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME) + AbstractJcrContainer.ORDER_BY
+                + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+    }
+
+    @Test
+    public void testGetMainItemTypeWhenNotDefinedProperly() {
+        // GIVEN
+        ConfiguredItemTypeDefinition defWithoutItemType = new ConfiguredItemTypeDefinition();
+        workbenchDefinition.setMainItemType(defWithoutItemType);
+
+        // WHEN
+        final String result = jcrContainer.getMainItemTypeAsString();
+
+        // THEN
+        assertEquals(AbstractJcrContainer.DEFAULT_MAIN_ITEM_TYPE, result);
     }
 
     @Test
@@ -450,34 +480,112 @@ public class AbstractJcrContainerTest extends RepositoryTestCase{
     }
 
     @Test
-    public void testGetMainItemTypeWhenNotDefinedProperly() {
+    public void testGetQueryWhereClauseWorkspacePathWithPath() {
         // GIVEN
-        ConfiguredItemTypeDefinition defWithoutItemType = new ConfiguredItemTypeDefinition();
-        workbenchDefinition.setMainItemType(defWithoutItemType);
+        workbenchDefinition.setPath(TEST_PATH);
 
         // WHEN
-        final String result = jcrContainer.getMainItemTypeAsString();
+        final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
 
         // THEN
-        assertEquals(AbstractJcrContainer.DEFAULT_MAIN_ITEM_TYPE, result);
+        assertEquals(String.format(AbstractJcrContainer.WHERE_TEMPLATE_FOR_PATH, TEST_PATH), result);
+    }
+
+    @Test
+    public void testGetQueryWhereClauseWorkspacePathWithRoot() {
+        // GIVEN
+        final String testPath = "/";
+        workbenchDefinition.setPath(testPath);
+
+        // WHEN
+        final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
+
+        // THEN
+        assertEquals("", result);
+    }
+
+    @Test
+    public void testGetQueryWhereClauseWorkspacePathWithNull() {
+        // GIVEN
+        workbenchDefinition.setPath(null);
+
+        // WHEN
+        final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
+
+        // THEN
+        assertEquals("", result);
+    }
+
+    @Test
+    public void testGetQueryWhereClauseWorkspacePathWithEmptyString() {
+        // GIVEN
+        final String testPath = "";
+        workbenchDefinition.setPath(testPath);
+
+        // WHEN
+        final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
+
+        // THEN
+        assertEquals("", result);
+    }
+
+    @Test
+    public void testGetQueryWhereClausePrependWhereKeywordWhenWorkspacePathIsNotRoot() {
+        // GIVEN
+        workbenchDefinition.setPath(TEST_PATH);
+        final String whereClauseWorkspacePath = jcrContainer.getQueryWhereClauseWorkspacePath();
+
+        // WHEN
+        final String result = jcrContainer.getQueryWhereClause();
+
+        // THEN
+        assertEquals(" where " + whereClauseWorkspacePath, result);
+    }
+
+    @Test
+    public void testGetQueryWhereClauseDoesNotPrependWhereKeywordWhenWorkspacePathIsRoot() {
+        // GIVEN
+        final String testPath = "/";
+        workbenchDefinition.setPath(testPath);
+        final String whereClauseWorkspacePath = jcrContainer.getQueryWhereClauseWorkspacePath();
+
+        // WHEN
+        final String result = jcrContainer.getQueryWhereClause();
+
+        // THEN
+        assertEquals(whereClauseWorkspacePath, result);
+    }
+
+    @Test
+    public void testConstructJCRQueryReturnDefaultSelectStatement() {
+        // GIVEN
+        //default mainItemType used by constructJCRQuery() is mgnl:content
+        final String expected = String.format(AbstractJcrContainer.SELECT_TEMPLATE, "mgnl:content");
+
+        // WHEN
+        final String result = jcrContainer.constructJCRQuery(false);
+
+        // THEN
+        assertTrue(result.contains(expected));
     }
 
     /**
      * Define the sorting criteria.
      */
     private void setSorter(String sortingPorperty, boolean ascending) {
-        boolean[] ascendingOrder = {ascending};
+        boolean[] ascendingOrder = { ascending };
         jcrContainer.sort(Arrays.asList(sortingPorperty).toArray(), ascendingOrder);
     }
 
-    public static Node createNode(Node rootNode, String nodename, String nodeType, String nodePropertyName, String nodePropertyValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException{
-        Node node = rootNode.addNode(nodename,nodeType);
+    public static Node createNode(Node rootNode, String nodename, String nodeType, String nodePropertyName, String nodePropertyValue)
+            throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        Node node = rootNode.addNode(nodename, nodeType);
         node.setProperty(nodePropertyName, nodePropertyValue);
         return node;
     }
 
     /**
-     * Dummy Implementation of the  {AbstractJcrContainer}.
+     * Dummy Implementation of the {AbstractJcrContainer}.
      *
      */
     public class JcrContainerTestImpl extends AbstractJcrContainer {

@@ -39,6 +39,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,7 +58,6 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.RowIterator;
 
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,11 +68,11 @@ import com.vaadin.data.Property;
 
 
 /**
- * Vaadin container that reads its items from a JCR repository. Implements a simple mechanism for
- * lazy loading items from a JCR repository and a cache for items and item ids. Inspired by
- * http://vaadin.com/directory#addon/vaadin-sqlcontainer.
+ * Vaadin container that reads its items from a JCR repository. Implements a simple mechanism for lazy loading items
+ * from a JCR repository and a cache for items and item ids.
  */
-public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
+public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed,
+    Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrContainer.class);
 
@@ -87,7 +87,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     public static final int DEFAULT_PAGE_LENGTH = 30;
 
-    /** Number of items to cache = cacheRatio x pageLength.  */
+    /** Number of items to cache = cacheRatio x pageLength. */
     private int cacheRatio = DEFAULT_CACHE_RATIO;
 
     public static final int DEFAULT_CACHE_RATIO = 2;
@@ -115,6 +115,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String SELECT_TEMPLATE = "select * from [%s] as " + SELECTOR_NAME;
 
+    protected static final String WHERE_TEMPLATE_FOR_PATH = " ISDESCENDANTNODE('%s')";
+
     protected static final String ORDER_BY = " order by ";
 
     protected static final String ASCENDING_KEYWORD = " asc";
@@ -141,8 +143,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                 if (StringUtils.isBlank(propertyName)) {
                     propertyName = columnDefinition.getName();
                     log.debug(
-                            "Column {} is sortable but no propertyName has been defined. Defaulting to column name (sorting may not work as expected).",
-                            columnDefinition.getName());
+                        "Column {} is sortable but no propertyName has been defined. Defaulting to column name (sorting may not work as expected).",
+                        columnDefinition.getName());
                 }
 
                 sortableProperties.add(propertyName);
@@ -240,12 +242,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     @Override
     public Item getItem(Object itemId) {
-        if(itemId == null) {
+        if (itemId == null) {
             return null;
         }
         try {
             final Session jcrSession = MgnlContext.getJCRSession(getWorkspace());
-            if(!jcrSession.itemExists((String) itemId)) {
+            if (!jcrSession.itemExists((String) itemId)) {
                 return null;
             }
             javax.jcr.Item item = jcrSession.getItem((String) itemId);
@@ -288,7 +290,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
         try {
             final Session jcrSession = MgnlContext.getJCRSession(getWorkspace());
-            return jcrSession.nodeExists((String) itemId);
+            return jcrSession.itemExists((String) itemId);
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
@@ -451,8 +453,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * Determines a new offset for updating the row cache. The offset is calculated from the given
-     * index, and will be fixed to match the start of a page, based on the value of pageLength.
+     * Determines a new offset for updating the row cache. The offset is calculated from the given index, and will be
+     * fixed to match the start of a page, based on the value of pageLength.
      *
      * @param index Index of the item that was requested, but not found in cache
      */
@@ -477,18 +479,18 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * Fetches a page from the data source based on the values of pageLength and currentOffset.
-     * Internally it executes the following methods in this order:
+     * Fetches a page from the data source based on the values of pageLength and currentOffset. Internally it executes
+     * the following methods in this order:
      * <ul>
      * <li> {@link #constructJCRQuery(boolean)}
      * <li> {@link #executeQuery(String, String, long, long)}
      * <li> {@link #updateItems(QueryResult)}
      * </ul>
      */
-    public final void getPage() {
+    private final void getPage() {
 
         final String stmt = constructJCRQuery(true);
-        if(StringUtils.isEmpty(stmt)) {
+        if (StringUtils.isEmpty(stmt)) {
             return;
         }
 
@@ -505,15 +507,16 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * Updates this container by storing the items found in the query result passed as argument.
+     *
      * @see #getPage()
      */
-    protected void updateItems(final QueryResult queryResult) throws RepositoryException {
+    private void updateItems(final QueryResult queryResult) throws RepositoryException {
         long start = System.currentTimeMillis();
         log.debug("Starting iterating over QueryResult");
         final RowIterator iterator = queryResult.getRows();
         long rowCount = currentOffset;
         while (iterator.hasNext()) {
-            Node node = iterator.nextRow().getNode(SELECTOR_NAME);
+            final Node node = iterator.nextRow().getNode(SELECTOR_NAME);
             final String id = node.getPath();
             log.debug("Adding node {} to cached items.", id);
             itemIndexes.put(rowCount++, id);
@@ -524,11 +527,22 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * @return a string representing a JCR statement to retrieve this container's items.
+     * It creates a JCR query in the form {@code select * from [mainItemType] as selector [WHERE] [ORDER BY]"}.<p>
+     * Subclasses can customize the optional <code>WHERE</code> clause by overriding {@link #getQueryWhereClause()}.<p>
+     * The main item type (as configured in the {@link WorkbenchDefinition}) in the <code>SELECT</code> statement can be changed to something different by calling  {@link #getSelectStatement(String)}
+     * @param the optional <code>ORDER BY</code> is added if this parameter is <code>true</code>. Sorting options can be configured in the {@link WorkbenchDefinition}.
+     * @see AbstractJcrContainer#getQuerySelectStatement()
+     * @see AbstractJcrContainer#getQueryWhereClause()
+     * @see AbstractJcrContainer#getQueryWhereClauseWorkspacePath()
      * @see AbstractJcrContainer#getPage()
+     * @see OrderBy
      */
-    protected String constructJCRQuery(final boolean considerSorting) {
-        final String select = String.format(SELECT_TEMPLATE, getMainItemTypeAsString());
+    protected final String constructJCRQuery(final boolean considerSorting) {
+        final String select = getQuerySelectStatement();
         final StringBuilder stmt = new StringBuilder(select);
+        // Return results only within the node configured in workbench/path
+        stmt.append(getQueryWhereClause());
+
         if (considerSorting) {
             if (sorters.isEmpty()) {
                 // no sorters set - use defaultOrder (always ascending)
@@ -552,6 +566,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             }
             stmt.delete(stmt.lastIndexOf(","), stmt.length());
         }
+        log.debug("Constructed JCR query is {}", stmt);
         return stmt.toString();
     }
 
@@ -563,9 +578,46 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         if (workbenchDefinition.getMainItemType() != null && StringUtils.isNotBlank(workbenchDefinition.getMainItemType().getItemType())) {
             mainItemType = workbenchDefinition.getMainItemType().getItemType();
         } else {
-            log.warn("WorkbenchDefinition {} does not properly define a MainItemType - hence we'll use the default value '{}'.", workbenchDefinition.getName(), DEFAULT_MAIN_ITEM_TYPE);
+            log.warn("WorkbenchDefinition {} does not properly define a MainItemType - hence we'll use the default value '{}'.",
+                workbenchDefinition.getName(), DEFAULT_MAIN_ITEM_TYPE);
         }
         return mainItemType;
+    }
+
+    /**
+     * @return the JCR query clause to select only nodes with the path configured in the workspace as String - in case
+     * it's not configured return a blank string so that all nodes are considered. Internally calls {@link #getQueryWhereClauseWorkspacePath()} to determine
+     * the path under which to perform the search.
+     */
+    protected String getQueryWhereClause() {
+        String whereClause = "";
+        String clauseWorkspacePath = getQueryWhereClauseWorkspacePath();
+        if (!"".equals(clauseWorkspacePath)) {
+            whereClause = " where " + clauseWorkspacePath;
+        }
+        log.debug("JCR query WHERE clause is {}", whereClause);
+        return whereClause;
+    }
+
+    /**
+     * @return if {@link WorkbenchDefinition#getPath()} is not null or root ("/"), an ISDESCENDATNODE constraint narrowing the scope of search under the configured path, else an empty string.
+     * Used by {@link #getQueryWhereClause()} to build a where clause.
+     */
+    protected final String getQueryWhereClauseWorkspacePath() {
+        // By default, search the root and therefore do not need a query clause.
+        String whereClauseWorkspacePath = "";
+        if (StringUtils.isNotBlank(workbenchDefinition.getPath()) && !"/".equals(workbenchDefinition.getPath())) {
+            whereClauseWorkspacePath = String.format(WHERE_TEMPLATE_FOR_PATH, workbenchDefinition.getPath());
+        }
+        log.debug("Workspace path where-clause is {}", whereClauseWorkspacePath);
+        return whereClauseWorkspacePath;
+    }
+
+    /**
+     * @return a <code>SELECT</code> statement with the main item type as configured in the {@link WorkbenchDefinition}. Can be customized by subclasses to utilize other item types, i.e. {@code select * from [my:fancytype]}. Used internally by {@link #constructJCRQuery(boolean)}.
+     */
+    protected String getQuerySelectStatement() {
+        return String.format(SELECT_TEMPLATE, getMainItemTypeAsString());
     }
 
     /**
@@ -574,7 +626,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     public final void updateSize() {
         try {
             final String stmt = constructJCRQuery(false);
-            if(stmt == null) {
+            if (stmt == null) {
                 return;
             }
             // query for all items in order to get the size
@@ -584,7 +636,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             log.debug("Query resultset contains {} items", pageSize);
 
             updateCount((int) pageSize);
-        } catch (RepositoryException e){
+        } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
     }
@@ -594,8 +646,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * Refreshes the container - clears all caches and resets size and offset. Does NOT remove
-     * sorting or filtering rules!
+     * Refreshes the container - clears all caches and resets size and offset. Does NOT remove sorting or filtering
+     * rules!
      */
     public void refresh() {
         resetOffset();
@@ -626,11 +678,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             if (offset >= 0) {
                 query.setOffset(offset);
             }
-            log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{
-                    getWorkspace(),
-                    statement,
-                    limit,
-                    offset});
+            log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{getWorkspace(),
+                statement, limit, offset});
             long start = System.currentTimeMillis();
             final QueryResult result = query.execute();
             log.debug("Query execution took {} ms", System.currentTimeMillis() - start);

@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.field.upload;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.admincentral.file.FileBufferPropertiesAdapter;
 import info.magnolia.ui.admincentral.file.FileItemWrapper;
 import info.magnolia.ui.framework.shell.Shell;
 
@@ -162,7 +163,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
         setStorageMode();
         createUpload();
     }
-
+        
     /**
      * On Detach, clean Item, and interrupt upload.
      */
@@ -460,7 +461,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
             uploadFailed((FailedEvent) event);
             return;
         }
-        this.fileItem.updateProperties(receiver);
+        this.fileItem.updateProperties(FileBufferPropertiesAdapter.adapt(receiver));
         buildUploadDoneLayout();
         fireValueChange(true);
         this.fileItem.populateJcrItemProperty();

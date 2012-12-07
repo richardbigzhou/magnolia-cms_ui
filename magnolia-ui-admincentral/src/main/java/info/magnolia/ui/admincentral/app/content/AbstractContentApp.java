@@ -58,9 +58,9 @@ public abstract class AbstractContentApp extends AbstractApp {
     
     @Inject
 
-    public AbstractContentApp(AppContext appContext, ChooseDialogFactory pickerDialogFactory) {
+    public AbstractContentApp(AppContext appContext, ChooseDialogFactory chooseDialogFactory) {
         super(appContext);
-        this.chooseDialogFactory = pickerDialogFactory;
+        this.chooseDialogFactory = chooseDialogFactory;
     }
 
     public ChooseDialogPresenter<Item> openChooseDialog() {

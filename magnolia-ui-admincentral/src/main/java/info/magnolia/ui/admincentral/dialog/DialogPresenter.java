@@ -45,7 +45,8 @@ import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
 
 /**
- * Base Dialog presenter.
+ * {@link DialogPresenter} takes care of {@link DialogView} presentation, the main responsibility
+ * of it is to take care of dialog actions/events.
  */
 public interface DialogPresenter {
 

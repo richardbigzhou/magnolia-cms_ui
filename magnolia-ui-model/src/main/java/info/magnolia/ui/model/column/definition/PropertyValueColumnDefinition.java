@@ -38,13 +38,4 @@ package info.magnolia.ui.model.column.definition;
  */
 public class PropertyValueColumnDefinition extends AbstractColumnDefinition {
 
-    private boolean editable = false;
-
-    public boolean isEditable() {
-        return editable;
-    }
-
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-    }
 }

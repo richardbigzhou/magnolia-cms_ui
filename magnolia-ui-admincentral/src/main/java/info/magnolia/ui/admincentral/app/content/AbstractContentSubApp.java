@@ -69,7 +69,7 @@ import javax.inject.Named;
  * </ul>
  *
  * @see ContentWorkbenchPresenter
- * @see ContentAppView
+ * @see WorkbenchSubAppView
  * @see AbstractContentApp
  * @see ContentLocation
  */
@@ -77,11 +77,11 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
 
     private ContentWorkbenchPresenter workbench;
 
-    public AbstractContentSubApp(final SubAppContext subAppContext, final ContentAppView view, final ContentWorkbenchPresenter workbench, final @Named("subapp") EventBus subAppEventBus) {
+    public AbstractContentSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, final ContentWorkbenchPresenter workbench, final @Named("subapp") EventBus subAppEventBus) {
 
         super(subAppContext, view);
         if(subAppContext == null || view == null || workbench == null || subAppEventBus == null) {
-            throw new IllegalArgumentException("Constructor does not allow for null args. Found AppContext = " + subAppContext + ", ContentAppView = " + view + ", ContentWorkbenchPresenter = " + workbench + ", EventBus = " + subAppEventBus);
+            throw new IllegalArgumentException("Constructor does not allow for null args. Found AppContext = " + subAppContext + ", WorkbenchSubAppView = " + view + ", ContentWorkbenchPresenter = " + workbench + ", EventBus = " + subAppEventBus);
         }
         this.workbench = workbench;
         registerSubAppEventsHandlers(subAppEventBus, this);
@@ -111,14 +111,14 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * bookmark. I.e. given a bookmark containing the following URI fragment
      * <p>
      * {@code
-     *   #app:myapp:main:/foo/bar:list
+     *   #app:myapp:main;/foo/bar:list
      * }
      * <p>
      * this method will select the path <code>/foo/bar</code> in the workspace used by the app, set the view type as <code>list</code> and finally update the available actions.
      * <p>
      * In case of a search view the URI fragment will look similar to the following one
      * {@code
-     *   #app:myapp:main:/:search;qux
+     *   #app:myapp:main;/:search:qux
      * }
      * <p>
      * then this method will select the root path, set the view type as <code>search</code>, perform a search for "qux" in the workspace used by the app and finally update the available actions.
@@ -143,24 +143,15 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * @see #locationChanged(Location)
      * @see ActionbarPresenter
      */
-    protected void updateActionbar(final ActionbarPresenter actionbar) {
-
-        if (getWorkbench().getSelectedItemId() == null || "/".equals(getWorkbench().getSelectedItemId())) {
-            actionbar.disable("delete");
-            actionbar.disable("edit");
-        } else {
-            actionbar.enable("delete");
-            actionbar.enable("edit");
-        }
-    }
+    public abstract void updateActionbar(ActionbarPresenter actionbar);
 
     protected final ContentWorkbenchPresenter getWorkbench() {
         return workbench;
     }
 
     @Override
-    public final ContentAppView getView() {
-        return (ContentAppView) super.getView();
+    public final WorkbenchSubAppView getView() {
+        return (WorkbenchSubAppView) super.getView();
     }
 
     /**
@@ -169,17 +160,11 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
     @Override
     public void locationChanged(final Location location) {
         super.locationChanged(location);
-        ContentLocation contentLocation = ContentLocation.wrap(location);
-        String selectedItemPath = contentLocation.getNodePath();
-        if (selectedItemPath != null) {
-            getWorkbench().selectPath(selectedItemPath);
-        }
-        updateActionbar(getWorkbench().getActionbarPresenter());
+        restoreWorkbench(getCurrentLocation());
     }
 
     /**
-     * Wraps the current DefaultLocation in a ContentLocation. Providing getter and setters for used parameters.
-     * @return
+     * Wraps the current DefaultLocation in a {@link ContentLocation}. Providing getter and setters for used parameters.
      */
     @Override
     public ContentLocation getCurrentLocation() {
@@ -232,6 +217,5 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
             }
         });
     }
-
 
 }

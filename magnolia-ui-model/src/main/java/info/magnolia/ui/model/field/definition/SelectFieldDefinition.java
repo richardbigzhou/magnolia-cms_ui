@@ -58,9 +58,9 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 
     private String repository = DEFAULT_REPOSITORY_NAME;
 
-    private String valueNodeData = OPTION_VALUE_PROPERTY_NAME;
+    private String valueProperty = OPTION_VALUE_PROPERTY_NAME;
 
-    private String labelNodeData = OPTION_LABEL_PROPERTY_NAME;
+    private String labelProperty = OPTION_LABEL_PROPERTY_NAME;
 
     private int filteringMode = 0;
 
@@ -95,20 +95,20 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
         this.repository = repository;
     }
 
-    public String getValueNodeData() {
-        return valueNodeData;
+    public String getValueProperty() {
+        return valueProperty;
     }
 
-    public void setValueNodeData(String valueNodeData) {
-        this.valueNodeData = valueNodeData;
+    public void setValueProperty(String valueProperty) {
+        this.valueProperty = valueProperty;
     }
 
-    public String getLabelNodeData() {
-        return labelNodeData;
+    public String getLabelProperty() {
+        return labelProperty;
     }
 
-    public void setLabelNodeData(String labelNodeData) {
-        this.labelNodeData = labelNodeData;
+    public void setLabelProperty(String labelProperty) {
+        this.labelProperty = labelProperty;
     }
 
     public int getFilteringMode() {

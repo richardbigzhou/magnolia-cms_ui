@@ -33,26 +33,12 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import java.util.List;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
+import info.magnolia.ui.vaadin.form.FormView;
 
 /**
- * FormDialogView.
- *
+ * Interface of {@link FormDialog}.
  */
-public interface FormDialogView extends DialogView, Item.Editor {
-    
-    void addDialogSection(String tabName, FormSection inputFields);
+public interface FormDialogView extends DialogView {
 
-    void addField(Field field);
-
-    void showValidation(boolean isVisible);
-    
-    void setShowAllEnabled(boolean enabled);
-    
-    boolean isValid();
-
-    List<Field> getFields();
+    void setFormView(FormView formView);
 }

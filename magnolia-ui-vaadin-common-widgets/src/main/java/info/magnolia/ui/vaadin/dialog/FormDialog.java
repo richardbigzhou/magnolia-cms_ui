@@ -33,112 +33,20 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VFormDialog;
-import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
-
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-import com.vaadin.data.Item;
 import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Field;
+
+import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VFormDialog;
 
 /**
- * FormDialog.
- *
+ * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that 
+ * adapts to the content ({@link FormView}) and delegates the view logic to it.
  */
-@ClientWidget(value = VFormDialog.class, loadStyle = LoadStyle.EAGER)
+@ClientWidget(VFormDialog.class)
 public class FormDialog extends BaseDialog implements FormDialogView {
-
-    private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");
-
-    private MagnoliaTabSheet tabSheet = new MagnoliaTabSheet() {
-        @Override
-        public MagnoliaDialogTab addTab(final String caption, final ComponentContainer c) {
-            if (c instanceof FormSection) {
-                final MagnoliaDialogTab tab = new MagnoliaDialogTab(caption, (FormSection)c);
-                tab.setSizeUndefined();
-                tab.setClosable(false);
-                doAddTab(tab);
-                return tab;
-            }
-            return null;
-        }
-    };
-
-    private Item itemDatasource;
-
-    private List<Field> fields = new LinkedList<Field>();
-
-    public FormDialog() {
-        super.setContent(tabSheet);
-        tabSheet.showAllTab(true, SHOW_ALL);
-        tabSheet.setHeight("500px");
-    }
-
     @Override
-    public void addField(Field field) {
-        fields.add(field);
+    public void setFormView(FormView formView) {
+        super.setContent(formView.asVaadinComponent());
+        formView.asVaadinComponent().setHeight("500px");
     }
-
-    @Override
-    public List<Field> getFields() {
-        return fields;
-    }
-
-    @Override
-    public boolean isValid() {
-        boolean res = true;
-        for (Field field : getFields()) {
-            res &= field.isValid();
-        }
-        return res;
-    }
-
-    @Override
-    public void showValidation(boolean isVisible) {
-        final Iterator<Component> it = tabSheet.getComponentIterator();
-        while (it.hasNext()) {
-            final Component c = it.next();
-            if (c instanceof FormSection) {
-                ((FormSection)c).setValidationVisible(isVisible);
-            }
-        }
-    }
-
-    @Override
-    public void setItemDataSource(Item newDataSource) {
-        this.itemDatasource = newDataSource;
-    }
-
-    @Override
-    public Item getItemDataSource() {
-        return itemDatasource;
-    }
-
-    @Override
-    public void addDialogSection(String tabName, FormSection inputFields) {
-        tabSheet.addTab(tabName, inputFields);
-    }
-
-    @Override
-    protected Component createDefaultContent() {
-        return tabSheet;
-    }
-
-    @Override
-    public FormDialog asVaadinComponent() {
-        return this;
-    }
-
-    @Override
-    public void setShowAllEnabled(boolean enabled) {
-        tabSheet.showAllTab(enabled, SHOW_ALL);
-    };
-
 }

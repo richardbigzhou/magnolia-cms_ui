@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.ui.admincentral.dialog.AbstractDialogItem;
+import info.magnolia.ui.admincentral.form.AbstractFormItem;
 import info.magnolia.ui.admincentral.field.FieldBuilder;
 import info.magnolia.ui.admincentral.field.validator.FieldValidatorBuilder;
 import info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory;
@@ -63,7 +63,7 @@ import com.vaadin.ui.Field;
  *
  * @param <D> definition type
  */
-public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends AbstractDialogItem implements FieldBuilder {
+public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends AbstractFormItem implements FieldBuilder {
     private static final Logger log = LoggerFactory.getLogger(AbstractFieldBuilder.class);
     protected Item item;
     protected Field field;
@@ -132,11 +132,10 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
 
     /**
      * Get a property from the current Item.
-     * If the property already exist, return this property.
-     * If the property does not exist:
-     * Create a new property based on the defined Type, default value, and saveInfo.
+     * If the property already exists, return this property.
+     * <p>If the property does not exist, create a new property based on the defined type, default value, and saveInfo.
      */
-    public Property getOrCreateProperty() {
+    protected Property getOrCreateProperty() {
         String propertyName = getPropertyName();
         DefaultProperty property = (DefaultProperty) item.getItemProperty(propertyName);
         if (property == null) {

@@ -8,12 +8,12 @@
   <versionHandler>info.magnolia.ui.app.contacts.ContactsAppModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
-	<!-- Used to create an App component provider for injection of AppContext for example -->
-	<!-- id of the components should be app-'appname'. 'appname' is the name of the app configured
-	     in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
-   <components>
+  <!-- Used to create an App component provider for injection of AppContext for example -->
+  <!-- id of the components should be app-'appname'. 'appname' is the name of the app configured
+       in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
+  <components>
     <id>app-contacts</id>
-   </components>
+  </components>
 
   <components>
     <id>app-contacts-main</id>
@@ -21,21 +21,13 @@
       <type>info.magnolia.ui.app.contacts.ContactsMainSubApp</type>
       <implementation>info.magnolia.ui.app.contacts.ContactsMainSubApp</implementation>
     </component>
+  </components>
+
+  <components>
+    <id>app-contacts-item</id>
     <component>
-      <type>info.magnolia.ui.app.contacts.ContactsView</type>
-      <implementation>info.magnolia.ui.app.contacts.ContactsViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.content.view.ContentPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.content.view.ContentPresenter</implementation>
+      <type>info.magnolia.ui.app.contacts.item.ContactsItemSubApp</type>
+      <implementation>info.magnolia.ui.app.contacts.item.ContactsItemSubApp</implementation>
     </component>
   </components>
 

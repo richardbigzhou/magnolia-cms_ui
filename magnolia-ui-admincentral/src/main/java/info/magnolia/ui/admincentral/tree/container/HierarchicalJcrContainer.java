@@ -38,6 +38,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 
 import java.util.ArrayList;
@@ -129,11 +130,8 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     @Override
     public boolean areChildrenAllowed(Object itemId) {
-        try {
-            return getItemByPath((String)itemId).isNode();
-        } catch (RepositoryException re) {
-            return false;
-        }
+        final JcrItemAdapter item = ((JcrItemAdapter) getItem(itemId));
+        return item.isNode() && hasChildren(itemId);
     }
 
     @Override
@@ -313,8 +311,12 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     }
 
     private String getPathInWorkspace(String pathInTree) {
+        //if path is absolute, just return it
+        if(pathInTree.startsWith("/")) {
+            return pathInTree;
+        }
         String base = getWorkbenchDefinition().getPath();
-        return "/".equals(base) ? pathInTree : base + pathInTree;
+        return base + pathInTree;
     }
 
 }

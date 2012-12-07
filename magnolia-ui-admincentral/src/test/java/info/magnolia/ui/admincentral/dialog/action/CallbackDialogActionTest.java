@@ -33,23 +33,20 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import static org.junit.Assert.assertEquals;
+import com.vaadin.data.Item;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
+import info.magnolia.ui.admincentral.form.FormItem;
+import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
-import info.magnolia.ui.vaadin.dialog.FormDialog;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
-import info.magnolia.ui.vaadin.dialog.FormSection;
-
-import java.util.List;
-
+import info.magnolia.ui.vaadin.form.FormView;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Main test class for {@link CallbackDialogAction} and
@@ -59,12 +56,12 @@ import com.vaadin.ui.Field;
 public class CallbackDialogActionTest {
     private CallbackDialogAction dialogAction;
     private CallbackDialogActionDefinition dialogActionDefinition;
-    private DialogPresenterTest presenter;
+    private FormDialogPresenterTest presenter;
 
     @Before
     public void setUp() {
         this.dialogActionDefinition = new CallbackDialogActionDefinition();
-        this.presenter = new DialogPresenterTest();
+        this.presenter = new FormDialogPresenterTest();
     }
 
     @Test
@@ -116,16 +113,67 @@ public class CallbackDialogActionTest {
         this.dialogActionDefinition.setSuccessActionName(successActionName!=null?successActionName:"success");
     }
 
-    public static class DialogPresenterTest implements FormDialogPresenter {
-
-        private String callbackActionCalled;
-        public String getCallbackActionCalled() {
-            return callbackActionCalled;
-        }
+    public static class FormPresenterTest implements FormPresenter {
         private Item item;
         public void setTestItem(Item item) {
             this.item = item;
         }
+        @Override
+        public Callback getCallback() {
+            return null;
+        }
+
+        @Override
+        public EventBus getEventBus() {
+            return null;
+        }
+
+        @Override
+        public FormView start(Item item, Callback callback) {
+            return null;
+        }
+
+        @Override
+        public FormView start(Item item, FormItem parent) {
+            return null;
+        }
+
+        @Override
+        public void addAction(String actionName, String actionLabel, FormView.FormActionListener callback) {
+
+        }
+
+        @Override
+        public boolean isValid() {
+            return true;
+        }
+
+        @Override
+        public void showValidation(boolean isVisible) {
+
+        }
+
+        @Override
+        public Item getItemDataSource() {
+            return item;
+        }
+
+        @Override
+        public FormView getView() {
+            return null;
+        }
+    }
+
+    public static class FormDialogPresenterTest implements FormDialogPresenter {
+
+        private String callbackActionCalled;
+
+        private FormPresenter form = new FormPresenterTest();
+
+        public String getCallbackActionCalled() {
+            return callbackActionCalled;
+        }
+
 
         @Override
         public Callback getCallback() {
@@ -145,63 +193,12 @@ public class CallbackDialogActionTest {
 
         @Override
         public FormDialogView getView() {
-            return new FormDialogView() {
-
-                @Override
-                public FormDialog asVaadinComponent() {
-                    return null;
-                }
-
-                @Override
-                public void showValidation(boolean isVisible) {
-                }
-
-                @Override
-                public void setItemDataSource(Item item) {
-                }
-
-                @Override
-                public void setDialogDescription(String description) {
-                }
-
-                @Override
-                public boolean isValid() {
-                    return true;
-                }
-
-                @Override
-                public List<Field> getFields() {
-                    return null;
-                }
-
-                @Override
-                public void addDialogSection(String tabName, FormSection inputFields) {
-                }
-
-                @Override
-                public void addField(Field field) {
-                }
-
-
-                @Override
-                public void setShowAllEnabled(boolean showAll) {
-                }
-
-                @Override
-                public void setCaption(String caption) {
-
-                }
-
-                @Override
-                public Item getItemDataSource() {
-                    return null;
-                }
-            };
+            return null;
         }
 
         @Override
-        public Item getItemDataSource() {
-            return item;
+        public FormPresenter getForm() {
+            return form;
         }
 
         @Override
@@ -212,10 +209,6 @@ public class CallbackDialogActionTest {
         @Override
         public FormDialogView start(Item item, Callback callback) {
             return null;
-        }
-
-        @Override
-        public void showValidation(boolean isVisible) {
         }
 
         @Override

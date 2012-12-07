@@ -49,9 +49,9 @@ import javax.jcr.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.CssLayout;
+
 
 /**
  * LazyThumbnailViewImpl.
@@ -62,15 +62,15 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private ThumbnailContainer container;
 
-    private WorkbenchDefinition workbenchDefinition;
+    private final WorkbenchDefinition workbenchDefinition;
 
     private Listener listener;
 
-    private LazyThumbnailLayout layout;
+    private final LazyThumbnailLayout layout;
 
-    private VerticalLayout margin = new VerticalLayout();
+    private final CssLayout margin = new CssLayout();
 
-    private ImageProvider imageProvider;
+    private final ImageProvider imageProvider;
 
     public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailContainer container) {
         this.workbenchDefinition = definition;
@@ -81,6 +81,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         layout.addStyleName("mgnl-workbench-thumbnail-view");
 
         layout.addThumbnailSelectionListener(new ThumbnailSelectionListener() {
+
             @Override
             public void onThumbnailSelected(final String thumbnailId) {
                 JcrNodeAdapter node = getThumbnailNodeAdapterByIdentifier(thumbnailId);
@@ -108,7 +109,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public void select(String path) {
-      //do something?
+        // do something?
     }
 
     @Override
@@ -122,11 +123,6 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     }
 
     @Override
-    public void refreshItem(Item item) {
-        //do nothing
-    }
-
-    @Override
     public AbstractJcrContainer getContainer() {
         throw new UnsupportedOperationException();
     }
@@ -134,6 +130,12 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     @Override
     public Component asVaadinComponent() {
         return margin;
+    }
+
+    private String prepareJcrSQL2Query() {
+        final String itemType = workbenchDefinition.getMainItemType().getItemType();
+        return "select * from [" + itemType + "] as t order by name(t)";
+
     }
 
     private JcrNodeAdapter getThumbnailNodeAdapterByIdentifier(final String thumbnailId) {

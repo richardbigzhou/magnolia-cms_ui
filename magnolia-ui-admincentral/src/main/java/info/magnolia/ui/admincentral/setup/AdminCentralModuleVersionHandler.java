@@ -39,6 +39,7 @@ import java.util.List;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
+import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.legacy.MarkNodeAsDeletedCommand;
@@ -47,6 +48,15 @@ import info.magnolia.ui.admincentral.legacy.MarkNodeAsDeletedCommand;
  * VersionHandler for the Admin Central module.
  */
 public class AdminCentralModuleVersionHandler extends DefaultModuleVersionHandler {
+
+    private CheckAndModifyPropertyValueTask replaceLoginUriPattern = new CheckAndModifyPropertyValueTask(
+            "",
+            "",
+            RepositoryConstants.CONFIG,
+            "/server/filters/uriSecurity/bypasses/login",
+            "pattern",
+            "/.resources/loginForm",
+            "/.resources/defaultLoginForm");
 
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
@@ -68,6 +78,10 @@ public class AdminCentralModuleVersionHandler extends DefaultModuleVersionHandle
                 RepositoryConstants.CONFIG,
                 "info.magnolia.module.admininterface.commands.MarkNodeAsDeletedCommand",
                 MarkNodeAsDeletedCommand.class.getName()));
+
+        list.add(new IsModuleInstalledOrRegistered("Replace login security pattern",
+                "Replaces old login security pattern '/.resources/loginForm' (if present) with the new one '/.resources/defaultLoginForm'.",
+                "adminInterface", replaceLoginUriPattern));
 
         return list;
     }

@@ -38,6 +38,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
+import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
@@ -59,7 +60,7 @@ public class ContactsMainSubApp extends AbstractContentSubApp {
     private static final Logger log = LoggerFactory.getLogger(ContactsMainSubApp.class);
 
     @Inject
-    public ContactsMainSubApp(final SubAppContext subAppContext, ContactsView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
+    public ContactsMainSubApp(final SubAppContext subAppContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
         super(subAppContext, view, workbench, subAppEventBus);
     }
 
@@ -71,7 +72,6 @@ public class ContactsMainSubApp extends AbstractContentSubApp {
 
     @Override
     public void updateActionbar(final ActionbarPresenter actionbar) {
-        super.updateActionbar(actionbar);
         String selectedItemId = getWorkbench().getSelectedItemId();
 
         // actions disabled based on selection

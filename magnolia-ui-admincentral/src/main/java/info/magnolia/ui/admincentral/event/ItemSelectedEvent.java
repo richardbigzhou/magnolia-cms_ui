@@ -39,8 +39,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 
 /**
- * This event is fired when an item is selected (ie a row in the data grid within the workbench representing either a
- * {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
+ * This event is fired when an item is selected (ie a row in the data grid within the workbench
+ * representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
  */
 public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
 
@@ -52,9 +52,9 @@ public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
         void onItemSelected(ItemSelectedEvent event);
     }
 
-    private String workspace;
+    private final String workspace;
 
-    private JcrItemAdapter item;
+    private final JcrItemAdapter item;
 
     public ItemSelectedEvent(String workspace, JcrItemAdapter item) {
         this.workspace = workspace;
@@ -66,9 +66,9 @@ public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
     }
 
     public String getPath() {
-        return item != null ? item.getItemId() : null;
+        return item != null ? item.getPath() : null;
     }
-    
+
     public JcrItemAdapter getItem() {
         return item;
     }

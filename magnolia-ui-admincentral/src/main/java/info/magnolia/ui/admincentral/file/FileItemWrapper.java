@@ -36,8 +36,6 @@ package info.magnolia.ui.admincentral.file;
 import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
-import org.vaadin.easyuploads.FileBuffer;
-
 import com.vaadin.Application;
 import com.vaadin.ui.Component;
 
@@ -53,7 +51,7 @@ public interface FileItemWrapper {
     /**
      * Update properties based on the informations contained in the receiver.
      */
-    public void updateProperties(FileBuffer receiver);
+    public void updateProperties(FilePropertiesAdapter receiver);
     /**
      * Clear all properties.
      */

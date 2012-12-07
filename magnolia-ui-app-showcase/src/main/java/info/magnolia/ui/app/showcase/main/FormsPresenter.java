@@ -33,11 +33,7 @@
  */
 package info.magnolia.ui.app.showcase.main;
 
-import javax.jcr.Node;
-import javax.jcr.Session;
-
 import com.google.inject.Inject;
-
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
@@ -46,6 +42,9 @@ import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import javax.jcr.Node;
+import javax.jcr.Session;
 
 /**
  * Presenter for form showcase.

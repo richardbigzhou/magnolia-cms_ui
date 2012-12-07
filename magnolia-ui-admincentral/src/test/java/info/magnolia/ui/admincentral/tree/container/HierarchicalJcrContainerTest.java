@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.tree.container;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
@@ -137,6 +136,9 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         // GIVEN
         Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
         node1.getSession().save();
+        
+        Node node2 = AbstractJcrContainerTest.createNode(node1, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
+        node2.getSession().save();
         String containerItemId = node1.getPath();
 
         // WHEN
@@ -376,4 +378,21 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         // THEN
         assertEquals("", hierarchicalJcrContainer.getPathInTree(node1));
     }
+
+    @Test
+    public void testGetItemByPathWhenWorkbenchPathIsOtherThanRoot() throws RepositoryException {
+        // GIVEN
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, colName1, "name1");
+        node1.getSession().save();
+
+
+        // WHEN
+        workbenchDefinition.setPath("/node1");
+        Item res = hierarchicalJcrContainer.getItemByPath(node1.getPath());
+
+        // THEN
+        assertNotNull(res);
+        assertEquals("/node1", res.getPath());
+    }
+
 }

@@ -79,6 +79,8 @@ public class ActionbarBuilder {
                             continue;
                         }
 
+                        actionNames.add(item.getName());
+
                         Resource icon = null;
                         if (StringUtils.isNotBlank(item.getIcon())) {
                             if (item.getIcon().startsWith("icon-")) {

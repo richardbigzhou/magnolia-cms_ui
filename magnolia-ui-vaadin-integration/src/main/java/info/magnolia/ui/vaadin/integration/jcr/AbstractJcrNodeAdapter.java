@@ -41,9 +41,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,20 +58,17 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * {@link javax.jcr.Node}. Implements {Property.ValueChangeListener} in order to inform/change JCR
  * property when a Vaadin property has changed. Access JCR repository for all read Jcr Property.
  */
-public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implements Property.ValueChangeListener, JcrItemNodeAdapter {
+public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implements JcrItemNodeAdapter {
 
-    // Init
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrNodeAdapter.class);
 
-    private String primaryNodeTypeName;
+    private String nodeIdentifier;
 
-    private Map<String, Property> changedProperties = new HashMap<String, Property>();
+    private String primaryNodeType;
 
-    private Map<String, Property> removedProperties = new HashMap<String, Property>();
+    private final Map<String, JcrItemNodeAdapter> children = new HashMap<String, JcrItemNodeAdapter>();
 
-    private Map<String, JcrItemNodeAdapter> children = new HashMap<String, JcrItemNodeAdapter>();
-
-    private Map<String, JcrItemNodeAdapter> removedChildren = new HashMap<String, JcrItemNodeAdapter>();
+    private final Map<String, JcrItemNodeAdapter> removedChildren = new HashMap<String, JcrItemNodeAdapter>();
 
     private JcrItemNodeAdapter parent;
 
@@ -77,39 +76,36 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
 
     public AbstractJcrNodeAdapter(Node jcrNode) {
         super(jcrNode);
-        setPrimaryNodeTypeName(jcrNode);
     }
 
-    /**
-     * Set propertyNodeType.
-     */
-    private void setPrimaryNodeTypeName(Node jcrNode) {
-        String primaryNodeTypeName = null;
+    @Override
+    protected void initCommonAttributes(Item jcrItem) {
+        super.initCommonAttributes(jcrItem);
+        Node node = (Node) jcrItem;
         try {
-            primaryNodeTypeName = jcrNode.getPrimaryNodeType().getName();
+            nodeIdentifier = node.getIdentifier();
+            if(StringUtils.isBlank(primaryNodeType)) {
+                primaryNodeType = node.getPrimaryNodeType().getName();
+            }
+        } catch (RepositoryException e) {
+            log.error("Could not retrieve identifier or primaryNodeType name of JCR Node.", e);
+            nodeIdentifier = UNIDENTIFIED;
+            primaryNodeType = UNIDENTIFIED;
         }
-        catch (RepositoryException e) {
-            log.error("Couldn't retrieve identifier of jcr node", e);
-            primaryNodeTypeName = UN_IDENTIFIED;
-        }
-        this.primaryNodeTypeName = primaryNodeTypeName;
+    }
+
+    @Override
+    public String getNodeIdentifier() {
+        return nodeIdentifier;
     }
 
     protected void setPrimaryNodeTypeName(String primaryNodeTypeName) {
-        this.primaryNodeTypeName = primaryNodeTypeName;
+        this.primaryNodeType = primaryNodeTypeName;
     }
 
     @Override
     public String getPrimaryNodeTypeName() {
-        return primaryNodeTypeName;
-    }
-
-    protected Map<String, Property> getChangedProperties() {
-        return changedProperties;
-    }
-
-    protected Map<String, Property> getRemovedProperties() {
-        return removedProperties;
+        return primaryNodeType;
     }
 
     protected Map<String, JcrItemNodeAdapter> getRemovedChildren() {
@@ -143,8 +139,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
                 log.warn("Property " + id + " already exist.do nothing");
                 return false;
             }
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             log.error("", e);
             return false;
         }
@@ -162,47 +157,19 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
             if (!jcrNode.hasProperty((String) id)) {
                 if (JCR_NAME.equals(id)) {
                     value = jcrNode.getName();
-                }
-                else {
+                } else {
                     return null;
                 }
-            }
-            else {
+            } else {
                 value = PropertyUtil.getPropertyValueObject(jcrNode, (String) id);
             }
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
         DefaultProperty property = new DefaultProperty((String) id, value);
         // add PropertyChange Listener
         property.addListener(this);
         return property;
-    }
-
-    /**
-     * Listener to DefaultProperty value change event. Get this event when a property has changed,
-     * and propagate this Vaadin Property value change to the corresponding JCR property.
-     */
-    @Override
-    public void valueChange(ValueChangeEvent event) {
-        Property property = event.getProperty();
-        if (property instanceof DefaultProperty) {
-            String name = ((DefaultProperty) property).getPropertyName();
-            Object value = property.getValue();
-            try {
-                if (getNodeFromRepository().hasProperty(name)) {
-                    log.debug("Update existing property: {} with value: {}.", name, value);
-                    PropertyUtil.getProperty(getNodeFromRepository(), name).setValue((String) value);
-                }
-                else {
-                    addItemProperty(name, property);
-                }
-            }
-            catch (RepositoryException e) {
-                log.error("", e);
-            }
-        }
     }
 
     /**
@@ -216,67 +183,95 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
     }
 
     /**
-     * Get the referenced node and update the property. Update property will: remove existing JCR
-     * property if requested add newly and setted property update existing modified property. In
-     * addition defined children nodes are updated or removed.
+     * Gets the JCR Node and updates its properties and children. Update will create new properties,
+     * set new values and remove those requested for removal. Children will also be added, updated
+     * or removed.
      */
     @Override
     public Node getNode() {
         Node node = null;
         try {
-            node = getNodeFromRepository();
-            // Update Node property
-            updateProperty(node);
-            // Update Child Nodes
-            if (!children.isEmpty()) {
-                for (JcrItemNodeAdapter child : children.values()) {
-                    child.getNode();
-                }
-            }
-            // Remove child node if needed
-            if (!removedChildren.isEmpty()) {
-                for (JcrItemNodeAdapter removedChild : removedChildren.values()) {
-                    if (node.hasNode(removedChild.getNodeName())) {
-                        node.getNode(removedChild.getNodeName()).remove();
-                    }
-                }
-            }
-            return node;
-        }
-        catch (RepositoryException e) {
+            // get Node from repository
+            node = (Node) getJcrItem();
+
+            // Update Node properties and children
+            updateProperties(node);
+            updateChildren(node);
+
+        } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
+        }
+        return node;
+    }
+
+    /**
+     * Updates and removes children based on the {@link #children} and {@link #removedChildren}
+     * maps.
+     */
+    private void updateChildren(Node node) throws RepositoryException {
+        if (!children.isEmpty()) {
+            for (JcrItemNodeAdapter child : children.values()) {
+                // Update child node as well
+                child.getNode();
+            }
+        }
+        // Remove child node if needed
+        if (!removedChildren.isEmpty()) {
+            for (JcrItemNodeAdapter removedChild : removedChildren.values()) {
+                if (node.hasNode(removedChild.getNodeName())) {
+                    node.getNode(removedChild.getNodeName()).remove();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void updateProperties(Item item) throws RepositoryException {
+        super.updateProperties(item);
+        if (item instanceof Node) {
+            // Remove Properties
+            Node node = (Node) item;
+            for (Entry<String, Property> entry : getRemovedProperties().entrySet()) {
+                if (node.hasProperty(entry.getKey())) {
+                    node.getProperty(entry.getKey()).remove();
+                }
+            }
         }
     }
 
     /**
-     * Update or remove property. Property wit flag saveInfo to false will not be updated. Property
+     * Update or remove property. Property with flag saveInfo to false will not be updated. Property
      * can refer to node property (like name, title) or node.MetaData property like
      * (MetaData/template). Also handle the specific case of node renaming. If property JCR_NAME is
      * present, Rename the node.
      */
-    protected void updateProperty(Node node) throws RepositoryException {
-        // Update property
-        for (Entry<String, Property> entry : changedProperties.entrySet()) {
-            // Check saveInfo Flag
-            if (entry.getValue().isReadOnly()) {
-                continue;
-            }
-            // JCRNAME has changed --> perform the renaming and continue
-            if (entry.getKey().equals(JCR_NAME) && (entry.getValue() != null && !entry.getValue().toString().isEmpty())) {
-                node.getSession().move(
-                    node.getPath(),
-                    NodeUtil.combinePathAndName(node.getParent().getPath(), entry.getValue().getValue().toString()));
-                setPath(node.getPath());
-                continue;
-            }
-            if (entry.getValue().getValue() != null) {
-                PropertyUtil.setProperty(node, entry.getKey(), entry.getValue().getValue());
-            }
+    @Override
+    protected void updateProperty(Item item, String propertyId, Property property) {
+        if (!(item instanceof Node)) {
+            return;
         }
-        // Remove Property
-        for (Entry<String, Property> entry : removedProperties.entrySet()) {
-            if (node.hasProperty(entry.getKey())) {
-                node.getProperty(entry.getKey()).remove();
+        Node node = (Node) item;
+        if (JCR_NAME.equals(propertyId)) {
+            String jcrName = (String) property.getValue();
+            if (jcrName != null && !jcrName.isEmpty()) {
+                try {
+                    String newPath = NodeUtil.combinePathAndName(node.getParent().getPath(), jcrName);
+                    node.getSession().move(node.getPath(), newPath);
+                    setPath(node.getPath());
+                } catch (RepositoryException e) {
+                    log.error("Could not rename JCR Node.", e);
+                }
+            }
+        } else if (propertyId != null && !propertyId.isEmpty()) {
+            if (property.getValue() != null) {
+                try {
+                    if (!node.hasProperty(propertyId)) {
+                        addListenerIfNotYetSet(property, this);
+                    }
+                    PropertyUtil.setProperty(node, propertyId, property.getValue());
+                } catch (RepositoryException e) {
+                    log.error("Could not set JCR Property", e);
+                }
             }
         }
     }
@@ -300,7 +295,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
             removedChildren.remove(child.getNodeName());
         }
         child.setParent(this);
-        if(children.containsKey(child.getNodeName())) {
+        if (children.containsKey(child.getNodeName())) {
             children.remove(child.getNodeName());
         }
         return children.put(child.getNodeName(), child);

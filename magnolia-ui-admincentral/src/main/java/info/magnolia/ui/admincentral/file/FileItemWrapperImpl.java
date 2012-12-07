@@ -47,7 +47,6 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import org.apache.commons.lang.StringUtils;
-import org.vaadin.easyuploads.FileBuffer;
 
 import com.vaadin.Application;
 import com.vaadin.data.Property;
@@ -149,11 +148,11 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      * Update properties.
      */
     @Override
-    public void updateProperties(FileBuffer receiver) {
-        binaryData = (byte[]) receiver.getValue();
-        fileName = receiver.getLastFileName();
-        fileSize = receiver.getLastFileSize();
-        mimeType = receiver.getLastMimeType();
+    public void updateProperties(FilePropertiesAdapter receiver) {
+        binaryData = receiver.getBinaryData();
+        fileName = receiver.getFileName();
+        fileSize = receiver.getFileSize();
+        mimeType = receiver.getMimeType();
         if (isImage()) {
             imageSize = ImageSize.valueOf(new ByteArrayInputStream(getBinaryData()));
             width = imageSize.getWidth();

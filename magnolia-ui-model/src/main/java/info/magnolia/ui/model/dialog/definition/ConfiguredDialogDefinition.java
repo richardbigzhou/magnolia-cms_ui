@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
+import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.model.tab.definition.TabDefinition;
 
 /**
@@ -47,6 +48,7 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
     public static final String TABS_NODE_NAME = "tabs";
     public static final String ACTIONS_NODE_NAME = "actions";
     public static final String EXTEND_PROPERTY_NAME = "extends";
+    public static final String FORM_NODE_NAME = "formDefinition";
 
     private String id;
 
@@ -55,6 +57,8 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
     private String i18nBasename;
 
     private String description;
+
+    private FormDefinition formDefinition;
 
     private List<TabDefinition> tabs = new ArrayList<TabDefinition>();
 
@@ -99,6 +103,15 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
     @Override
     public List<TabDefinition> getTabs() {
         return tabs;
+    }
+
+    public void setFormDefinition(FormDefinition formDefinition) {
+        this.formDefinition = formDefinition;
+    }
+
+    @Override
+    public FormDefinition getFormDefinition() {
+        return formDefinition;
     }
 
     public void setTabs(List<TabDefinition> tabs) {
