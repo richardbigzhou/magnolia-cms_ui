@@ -77,10 +77,12 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
 
         // actions disabled based on selection
         if (getWorkbench().getSelectedItemId() == null || getWorkbench().getSelectedItemId().equals("/")) {
+            actionbar.disable("delete");
             actionbar.disable("preview");
             actionbar.disable("edit");
             actionbar.disable("export");
         } else {
+            actionbar.enable("delete");
             actionbar.enable("preview");
             actionbar.enable("edit");
             actionbar.enable("export");
