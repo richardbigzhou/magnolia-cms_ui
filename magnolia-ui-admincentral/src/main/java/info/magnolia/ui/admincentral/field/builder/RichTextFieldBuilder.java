@@ -84,7 +84,7 @@ public class RichTextFieldBuilder extends
     public static final String EVENT_GET_MAGNOLIA_LINK = "mgnlGetLink";
     
     private final AppController appController;
-    private MagnoliaRichTextField richtexteditor;
+    private MagnoliaRichTextField richTextEditor;
     private static final Logger log = LoggerFactory
             .getLogger(LinkFieldBuilder.class);
 
@@ -117,8 +117,8 @@ public class RichTextFieldBuilder extends
         config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
         config.addPlugin("magnolialink", "/VAADIN/js/magnolialink/");
         
-        richtexteditor = new MagnoliaRichTextField(config);
-        richtexteditor.addListener(new MagnoliaRichTextField.PluginListener() {
+        richTextEditor = new MagnoliaRichTextField(config);
+        richTextEditor.addListener(new MagnoliaRichTextField.PluginListener() {
 
             @Override
             public void onPluginEvent(String eventName, String value) {
@@ -127,15 +127,14 @@ public class RichTextFieldBuilder extends
                         openLinkDialog(value);
                     } catch (Exception e) {
                         log.error("openLinkDialog failed", e);
-                        richtexteditor.firePluginEvent(EVENT_CANCEL_LINK, 
-                                "Could not open target App");
+                        richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, "Could not open target App");
                     }
                 }
             }
         });
         
 
-        return richtexteditor;
+        return richTextEditor;
     }
 
     private void openLinkDialog(String path) {
@@ -144,22 +143,21 @@ public class RichTextFieldBuilder extends
                 new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages",
                         "", ""));
         if (targetApp != null && targetApp instanceof AbstractContentApp) {
-            ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp)
-                    .openChooseDialog(path);
+            ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp).openChooseDialog(path);
             pickerPresenter.getView().setCaption("Select a page");
             pickerPresenter
                     .addValuePickListener(new ValueChosenListener<Item>() {
                         @Override
                         public void onValueChosen(Item pickedValue) {
-                            if(!(pickedValue instanceof JcrItemAdapter)) {
+                            if (!(pickedValue instanceof JcrItemAdapter)) {
                                 return;
                             }
+                            
                             try {                                    
                             
-                                javax.jcr.Item jcrItem = ((JcrItemAdapter) pickedValue)
-                                        .getJcrItem();
+                                javax.jcr.Item jcrItem = ((JcrItemAdapter) pickedValue).getJcrItem();
                                 
-                                if(!jcrItem.isNode()) {
+                                if (!jcrItem.isNode()) {
                                     return;
                                 }
     
@@ -169,27 +167,23 @@ public class RichTextFieldBuilder extends
                                 mlink.identifier = selected.getIdentifier();
                                 mlink.repository = selected.getSession().getWorkspace().getName();
                                 mlink.path = selected.getPath();
-                                if(selected.hasProperty("title")) {
+                                if (selected.hasProperty("title")) {
                                     mlink.caption = selected.getProperty("title").getString();
                                 } else {
                                     mlink.caption = selected.getName();
                                 }
                                                                     
-                                richtexteditor.firePluginEvent(
-                                        EVENT_SEND_MAGNOLIA_LINK,
-                                        gson.toJson(mlink)
-                                );
+                                richTextEditor.firePluginEvent(EVENT_SEND_MAGNOLIA_LINK, gson.toJson(mlink));
                             } catch (Exception e) {
                                 String error = "Not able to access the selected item. Value will not be set.";
                                 log.error(error, e);
-                                
-                                richtexteditor.firePluginEvent(EVENT_CANCEL_LINK, error);
+                                richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, error);
                             }                            
                         }
 
                         @Override
                         public void selectionCanceled() {
-                            richtexteditor.firePluginEvent(EVENT_CANCEL_LINK);
+                            richTextEditor.firePluginEvent(EVENT_CANCEL_LINK);
                         }
                     });
         }
