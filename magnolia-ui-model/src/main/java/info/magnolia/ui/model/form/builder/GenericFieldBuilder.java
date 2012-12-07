@@ -37,15 +37,16 @@ import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
 import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
+
 /**
  * Builder for creating a field using only the standard properties.
- *
+ * 
  * @param <T> type of field definition
  * @see FieldsConfig#custom(info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition)
  */
 public class GenericFieldBuilder<T extends ConfiguredFieldDefinition> extends AbstractFieldBuilder {
 
-    private T definition;
+    private final T definition;
 
     public GenericFieldBuilder(T definition) {
         this.definition = definition;
@@ -147,6 +148,7 @@ public class GenericFieldBuilder<T extends ConfiguredFieldDefinition> extends Ab
         return this;
     }
 
+    @Override
     public GenericFieldBuilder<T> validator(GenericValidatorBuilder validatorBuilder) {
         getDefinition().addValidator(validatorBuilder.exec());
         return this;
