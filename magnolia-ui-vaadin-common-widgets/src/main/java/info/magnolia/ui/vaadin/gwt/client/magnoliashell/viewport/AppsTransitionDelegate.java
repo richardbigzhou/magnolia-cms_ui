@@ -60,7 +60,7 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
     private static final int CURTAIN_FADE_OUT_DELAY = 200;
 
     @Override
-    public void setVisibleApp(VShellViewport viewport, final Widget app) {
+    public void setVisibleApp(final VShellViewport viewport, final Widget app) {
         // zoom-in if switching to a different running app, from appslauncher only
         // closing an app doesn't zoom-in the next app
         // running apps are all hidden explicitely except current one
@@ -68,11 +68,14 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
             viewport.doSetVisibleApp(app);
 
             app.addStyleName("zoom-in");
+            
             new Timer() {
 
                 @Override
                 public void run() {
                     app.removeStyleName("zoom-in");
+                    viewport.causeUpdate();
+
                 }
             }.schedule(500);
         } else {
