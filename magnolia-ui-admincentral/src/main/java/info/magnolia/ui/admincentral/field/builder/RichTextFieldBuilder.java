@@ -121,6 +121,7 @@ public class RichTextFieldBuilder extends
         config.addToolbarLine(toolbars);
         config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
         config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, PLUGIN_PATH_MAGNOLIALINK);
+        config.setResizeEnabled(false);
         
         richtexteditor = new MagnoliaRichTextField(config);
         richtexteditor.addListener(new MagnoliaRichTextField.PluginListener() {
@@ -132,7 +133,6 @@ public class RichTextFieldBuilder extends
                 }
             }
         });
-        
 
         return richtexteditor;
     }
