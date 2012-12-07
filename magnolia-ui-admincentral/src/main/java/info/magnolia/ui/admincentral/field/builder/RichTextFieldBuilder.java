@@ -66,6 +66,10 @@ import com.vaadin.ui.Field;
 public class RichTextFieldBuilder extends
         AbstractFieldBuilder<RichTextFieldDefinition> {
 
+    private static final String PLUGIN_NAME_MAGNOLIALINK = "magnolialink";
+
+    private static final String PLUGIN_PATH_MAGNOLIALINK = "../../../js/magnolialink/";
+
     /**
      * Event is emit from server to client when link has been selected.
      */
@@ -116,7 +120,7 @@ public class RichTextFieldBuilder extends
                 new String[] { "Undo", "Redo" }));
         config.addToolbarLine(toolbars);
         config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
-        config.addPlugin("magnolialink", "/VAADIN/js/magnolialink/");
+        config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, PLUGIN_PATH_MAGNOLIALINK);
         
         richtexteditor = new MagnoliaRichTextField(config);
         richtexteditor.addListener(new MagnoliaRichTextField.PluginListener() {
