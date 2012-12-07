@@ -79,12 +79,10 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
         if (getWorkbench().getSelectedItemId() == null || getWorkbench().getSelectedItemId().equals("/")) {
             actionbar.disable("preview");
             actionbar.disable("edit");
-            actionbar.disable("editProperties");
             actionbar.disable("export");
         } else {
             actionbar.enable("preview");
             actionbar.enable("edit");
-            actionbar.enable("editProperties");
             actionbar.enable("export");
         }
     }
