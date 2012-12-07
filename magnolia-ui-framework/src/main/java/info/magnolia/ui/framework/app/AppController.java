@@ -59,4 +59,6 @@ public interface AppController {
     Location getCurrentLocation(String name);
 
     AppContext getCurrentApp();
+
+    App getAppWithoutStarting(String appId);
 }

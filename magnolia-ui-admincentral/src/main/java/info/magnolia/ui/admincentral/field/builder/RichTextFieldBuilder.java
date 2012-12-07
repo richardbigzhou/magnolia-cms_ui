@@ -33,32 +33,28 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.gson.Gson;
+import com.google.inject.Inject;
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig.ToolbarGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
-import com.google.inject.Inject;
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Creates and initializes an edit field based on a field definition.
@@ -139,9 +135,7 @@ public class RichTextFieldBuilder extends
 
     private void openLinkDialog(String path) {
         // Get the property name to propagate.
-        App targetApp = appController.startIfNotAlreadyRunning("pages",
-                new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages",
-                        "", ""));
+        App targetApp = appController.getAppWithoutStarting("pages");
         if (targetApp != null && targetApp instanceof AbstractContentApp) {
             ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp)
                     .openChooseDialog(path);
