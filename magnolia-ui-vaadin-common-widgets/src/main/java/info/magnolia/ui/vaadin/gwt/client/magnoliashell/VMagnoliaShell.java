@@ -317,6 +317,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
 
     @Override
     public boolean requestLayout(Set<Paintable> children) {
+        client.runDescendentsLayout(this);
         return false;
     }
 

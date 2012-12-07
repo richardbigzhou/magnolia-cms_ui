@@ -43,6 +43,8 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.terminal.gwt.client.Paintable;
+import com.vaadin.terminal.gwt.client.Util;
 
 
 /**
@@ -60,19 +62,18 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
     private static final int CURTAIN_FADE_OUT_DELAY = 200;
 
     @Override
-    public void setVisibleApp(VShellViewport viewport, final Widget app) {
+    public void setVisibleApp(final VShellViewport viewport, final Widget app) {
         // zoom-in if switching to a different running app, from appslauncher only
         // closing an app doesn't zoom-in the next app
-        // running apps are all hidden explicitely except current one
+        // running apps are all hidden explicitly except current one
         if (!viewport.isClosing() && Visibility.HIDDEN.getCssName().equals(app.getElement().getStyle().getVisibility())) {
             viewport.doSetVisibleApp(app);
-
             app.addStyleName("zoom-in");
             new Timer() {
-
                 @Override
                 public void run() {
                     app.removeStyleName("zoom-in");
+                    Util.notifyParentOfSizeChange((Paintable)app, false);
                 }
             }.schedule(500);
         } else {
@@ -168,8 +169,6 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
         if (jq.is(":animated")) {
             jq.stop();
         }
-
-        // callback
 
         // animate
         jq.animate(CURTAIN_FADE_OUT_DURATION, new AnimationSettings() {

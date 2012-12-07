@@ -18,7 +18,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <magnoliaVersion>5.0-SNAPSHOT</magnoliaVersion>
     <vaadinVersion>6.8.4</vaadinVersion>
-    <gwtVersion>2.5.0-rc2</gwtVersion>
+    <gwtVersion>2.5.0</gwtVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
   </properties>
   <scm>
