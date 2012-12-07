@@ -35,11 +35,15 @@ package info.magnolia.ui.app.contacts.field.builder;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
+
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
+import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.app.contacts.field.ContactTextAndButtonField;
 import info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition;
 import info.magnolia.ui.framework.app.AppController;
+import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 
 import javax.inject.Inject;
@@ -47,22 +51,31 @@ import javax.inject.Inject;
 /**
  * Creates and initializes a ContactLinkField field based on a field definition.
  */
-public class ContactLinkFieldBuilder extends LinkFieldBuilder<ContactLinkFieldDefinition>{
+public class ContactLinkFieldBuilder extends LinkFieldBuilder<ContactLinkFieldDefinition> {
 
     private ImageProvider imageThumbnailProvider;
 
     @Inject
-    public ContactLinkFieldBuilder(ImageProvider imageThumbnailProvider, ContactLinkFieldDefinition definition, Item relatedFieldItem, AppController appController) {
+    public ContactLinkFieldBuilder(ContactLinkFieldDefinition definition, Item relatedFieldItem, AppController appController,
+            ComponentProvider componentProvider) {
         super(definition, relatedFieldItem, appController);
-        this.imageThumbnailProvider = imageThumbnailProvider;
+
+        // Create an imageProviderDefinition
+        // TODO: Retrieve imageProviderDefinition from Contact App
+        // configuration. See ticket MGNLUI-374
+        ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
+        cipd.setOriginalImageNodeName("photo");
+        cipd.setImageProviderClass(DefaultImageProvider.class);
+
+        this.imageThumbnailProvider = componentProvider.newInstance(cipd.getImageProviderClass(), cipd);
     }
 
     @Override
     protected Field buildField() {
-        TextAndButtonField textAndButton = (TextAndButtonField)super.buildField();
-        //hide the TextField.
+        TextAndButtonField textAndButton = (TextAndButtonField) super.buildField();
+        // hide the TextField.
         textAndButton.getTextField().setVisible(false);
-        ContactTextAndButtonField field = new ContactTextAndButtonField(textAndButton,imageThumbnailProvider,definition.getWorkspace());
+        ContactTextAndButtonField field = new ContactTextAndButtonField(textAndButton, imageThumbnailProvider, definition.getWorkspace());
         return field;
     }
 }

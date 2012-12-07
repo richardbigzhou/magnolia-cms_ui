@@ -69,6 +69,7 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
         if (!viewport.isClosing() && Visibility.HIDDEN.getCssName().equals(app.getElement().getStyle().getVisibility())) {
             viewport.doSetVisibleApp(app);
             app.addStyleName("zoom-in");
+            
             new Timer() {
                 @Override
                 public void run() {

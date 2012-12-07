@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.tabsheet;
 
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTab;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.vaadin.rpc.ServerSideHandler;
@@ -60,7 +61,7 @@ public class MagnoliaTab extends SimplePanel implements ServerSideHandler {
     
     private String notification = null;
 
-    private ServerSideProxy proxy = new ServerSideProxy(this);
+    private final ServerSideProxy proxy = new ServerSideProxy(this);
     
     public MagnoliaTab(final String caption, final ComponentContainer c) {
         super(c);
@@ -124,6 +125,16 @@ public class MagnoliaTab extends SimplePanel implements ServerSideHandler {
 
     public boolean hasError() {
         return hasError;
+    }
+    
+    @Override
+    public void childRequestedRepaint(Collection<RepaintRequestListener> alreadyNotified) {
+        super.childRequestedRepaint(alreadyNotified);
+    }
+    
+    @Override
+    public void paint(PaintTarget target) throws PaintException {
+        super.paint(target);
     }
     
     @Override
