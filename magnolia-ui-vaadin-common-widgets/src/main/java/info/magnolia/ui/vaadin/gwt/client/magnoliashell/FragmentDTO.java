@@ -65,10 +65,12 @@ public class FragmentDTO {
         if (type.equals("shell")) {
             dto.appType = FragmentType.SHELL_APP;
             dto.appId = ShellAppType.getTypeByFragmentId(extractAppId(fragment));
+            dto.subAppId = extractSubAppId(fragment);
             dto.parameter = extractSubAppId(fragment);
         } else if (type.equals("app")) {
             dto.appType = FragmentType.APP;
             dto.appId = extractAppId(fragment);
+            dto.subAppId = extractSubAppId(fragment);
             dto.parameter = extractParameter(fragment);
         }
         return dto;

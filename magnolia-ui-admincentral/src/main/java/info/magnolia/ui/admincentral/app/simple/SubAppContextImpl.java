@@ -42,6 +42,7 @@ import info.magnolia.ui.framework.location.Location;
 
 /**
  * Implementation of {@link SubAppContext}.
+ * See MGNLUI-379.
  */
 public class SubAppContextImpl implements SubAppContext {
 
