@@ -353,7 +353,7 @@
         <sv:value>f5256eb2-721c-4bee-8398-5930cd8ebef9</sv:value>
       </sv:property>
       <sv:property sv:name="icon" sv:type="String">
-        <sv:value>.resources/icons/24/document_plain_earth.gif</sv:value>
+        <sv:value>icon-file-webpage</sv:value>
       </sv:property>
       <sv:property sv:name="itemType" sv:type="String">
         <sv:value>mgnl:page</sv:value>

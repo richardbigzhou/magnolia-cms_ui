@@ -115,8 +115,8 @@ public class SecurityModule implements ModuleLifecycle {
                     userSubApp(app, cfg, "systemUsers", "/system"),
                     app.subApp("groups").subAppClass(SecurityGroupsSubApp.class)
                     .workbench(cfg.workbenches.workbench().workspace("usergroups").root("/").defaultOrder("jcrName")
-                            .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("/.resources/icons/16/folders.gif"))
-                            .mainItemType(cfg.workbenches.itemType(NodeTypes.Group.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
+                            .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder"))
+                            .mainItemType(cfg.workbenches.itemType(NodeTypes.Group.NAME).icon("icon-user-group"))
                             .imageProvider(cipd)
                             .columns(
                                     cfg.columns.property("jcrName", "Group name").sortable(true).expandRatio(2),
@@ -139,8 +139,8 @@ public class SecurityModule implements ModuleLifecycle {
                     ),
                     app.subApp("roles").subAppClass(SecurityRolesSubApp.class)
                     .workbench(cfg.workbenches.workbench().workspace("userroles").root("/").defaultOrder("jcrName")
-                            .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("/.resources/icons/16/folders.gif"))
-                            .mainItemType(cfg.workbenches.itemType(NodeTypes.Role.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
+                            .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder"))
+                            .mainItemType(cfg.workbenches.itemType(NodeTypes.Role.NAME).icon("icon-user-role"))
                             .imageProvider(cipd)
                             .columns(
                                     cfg.columns.property("jcrName", "Role name").sortable(true).expandRatio(2),
@@ -181,8 +181,8 @@ public class SecurityModule implements ModuleLifecycle {
 
         return app.subApp(name).subAppClass(SecurityUsersSubApp.class)
                 .workbench(cfg.workbenches.workbench().workspace("users").root(root).defaultOrder("jcrName")
-                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("/.resources/icons/16/folders.gif"))  // see MGNLPUR-77
-                        .mainItemType(cfg.workbenches.itemType(NodeTypes.User.NAME).icon("/.resources/icons/16/pawn_glass_yellow.gif"))
+                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder"))  // see MGNLPUR-77
+                        .mainItemType(cfg.workbenches.itemType(NodeTypes.User.NAME).icon("icon-user-magnolia"))
                         .imageProvider(cipd)
                         .columns(
                                 cfg.columns.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class).expandRatio(2),

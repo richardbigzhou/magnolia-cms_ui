@@ -405,7 +405,7 @@
               <sv:value>344e0bd4-941a-44e8-8b06-05fa9735fbbd</sv:value>
             </sv:property>
             <sv:property sv:name="icon" sv:type="String">
-              <sv:value>.resources/icons/16/cubes.gif</sv:value>
+              <sv:value>icon-node-content</sv:value>
             </sv:property>
             <sv:property sv:name="itemType" sv:type="String">
               <sv:value>mgnl:contentNode</sv:value>
@@ -770,7 +770,7 @@
               <sv:value>3ede7e65-23a8-4da1-9035-135f13691453</sv:value>
             </sv:property>
             <sv:property sv:name="icon" sv:type="String">
-              <sv:value>.resources/icons/16/folder_cubes.gif</sv:value>
+              <sv:value>icon-node-folder</sv:value>
             </sv:property>
             <sv:property sv:name="itemType" sv:type="String">
               <sv:value>mgnl:content</sv:value>

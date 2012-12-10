@@ -112,8 +112,8 @@ public class ContactsModule implements ModuleLifecycle {
                 .subApps(
                         app.subApp("main").subAppClass(ContactsMainSubApp.class).defaultSubApp()
                                 .workbench(cfg.workbenches.workbench().workspace("contacts").root("/").defaultOrder("jcrName")
-                                        .groupingItemType(cfg.workbenches.itemType("mgnl:folder").icon("/.resources/icons/16/folders.gif"))
-                                        .mainItemType(cfg.workbenches.itemType("mgnl:contact").icon("/.resources/icons/16/pawn_glass_yellow.gif"))
+                                        .groupingItemType(cfg.workbenches.itemType("mgnl:folder").icon("icon-node-folder"))
+                                        .mainItemType(cfg.workbenches.itemType("mgnl:contact").icon("icon-node-content"))
                                         .imageProvider(cipd)
                                         .columns(
                                                 cfg.columns.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(ContactNameColumnFormatter.class).expandRatio(2),
