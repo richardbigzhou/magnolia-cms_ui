@@ -52,6 +52,7 @@
 
 .form-description {
     background: none repeat scroll 0px 0px #C1D8DF;
+    border-bottom: 2px solid black;
 }
 
 .form-error {
@@ -338,7 +339,7 @@ fieldset {
 * used by TextAndButtonField custom component.
 */
 input[type="text"].small-textfield {
-    width:440px !important;
+    width:400px !important;
 }
 
 .v-form-field.v-richtextarea {

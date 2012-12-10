@@ -68,7 +68,7 @@ public class VMagnoliaTab extends SimplePanel implements Container, ClientSideHa
 
     private VShellTabLabel label;
 
-    private ClientSideProxy proxy = new ClientSideProxy(this) {
+    private final ClientSideProxy proxy = new ClientSideProxy(this) {
         {
             register("setTabId", new Method() {
                 @Override
@@ -149,6 +149,7 @@ public class VMagnoliaTab extends SimplePanel implements Container, ClientSideHa
 
     @Override
     public boolean requestLayout(Set<Paintable> children) {
+        client.runDescendentsLayout(this);
         return false;
     }
 

@@ -130,8 +130,7 @@ public class VForm extends Composite implements Container, ClientSideHandler, VF
 
     @Override
     public boolean requestLayout(Set<Paintable> children) {
-        client.runDescendentsLayout(view);
-        return false;
+        return true;
     }
 
     @Override

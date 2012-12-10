@@ -62,15 +62,15 @@ import com.vaadin.terminal.gwt.client.Util;
  */
 public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTabSheetView {
 
-    private ScrollPanel scroller = new ScrollPanel();
+    private final ScrollPanel scroller = new ScrollPanel();
 
-    private FlowPanel tabPanel = new FlowPanel();
+    private final FlowPanel tabPanel = new FlowPanel();
 
-    private VMagnoliaTabNavigator tabContainer;
+    private final VMagnoliaTabNavigator tabContainer;
 
     private VMagnoliaTab activeTab = null;
 
-    private Presenter presenter;
+    private final Presenter presenter;
 
     private boolean isActiveTabFullscreen = false;
 
@@ -172,7 +172,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     public void updateTab(VMagnoliaTab tab) {
         if (!tabs.contains(tab)) {
             getTabs().add(tab);
-            tabPanel.add((Widget) tab);
+            tabPanel.add(tab);
             fireEvent(new TabSetChangedEvent((VMagnoliaTabSheet)presenter));
         }
     }

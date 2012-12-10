@@ -132,7 +132,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         contentPresenter.initContentView(view);
         ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar(), actionFactory);
         view.setActionbarView(actionbar);
-
         bindHandlers();
         return view;
     }

@@ -181,3 +181,7 @@ button.btn-dialog-selectCallBack {
 input.v-textfield-readonly, textarea.v-textarea-readonly {
     background-color: #e6e6e6 !important;
 }
+
+.cke_contents {
+	height: 120px !important;
+}

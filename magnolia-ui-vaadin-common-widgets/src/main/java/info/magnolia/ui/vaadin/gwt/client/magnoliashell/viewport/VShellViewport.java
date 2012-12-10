@@ -270,6 +270,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
 
     @Override
     public boolean requestLayout(Set<Paintable> children) {
+        client.runDescendentsLayout(this);
         return false;
     }
 

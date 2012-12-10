@@ -62,7 +62,7 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
         this.view.setListener(this);
         this.dispatcher = dispatcher;
     }
-    
+
     @Override
     public String getCaption() {
         return CAPTION;
@@ -77,12 +77,14 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
 
         // actions disabled based on selection
         if (getWorkbench().getSelectedItemId() == null || getWorkbench().getSelectedItemId().equals("/")) {
+            actionbar.disable("delete");
             actionbar.disable("preview");
-            actionbar.disable("editProperties");
+            actionbar.disable("edit");
             actionbar.disable("export");
         } else {
+            actionbar.enable("delete");
             actionbar.enable("preview");
-            actionbar.enable("editProperties");
+            actionbar.enable("edit");
             actionbar.enable("export");
         }
     }

@@ -123,4 +123,5 @@ public class AbstractItemSubApp extends AbstractSubApp {
     public String getCaption() {
         return caption;
     }
+   
 }

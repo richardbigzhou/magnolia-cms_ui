@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.view.View;
@@ -61,6 +62,8 @@ public interface AppContext {
 
     String getName();
 
+    void setApp(App app);
+
     App getApp();
 
     void setSubAppLocation(SubApp subApp, Location location);
@@ -80,4 +83,6 @@ public interface AppContext {
     View getView();
 
     Location getDefaultLocation();
+
+    ComponentProvider createAppComponentProvider(String name, AppContext appContext);
 }

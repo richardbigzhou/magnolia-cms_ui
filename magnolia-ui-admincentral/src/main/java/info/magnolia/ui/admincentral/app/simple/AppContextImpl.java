@@ -66,6 +66,8 @@ import java.util.Set;
 
 /**
  * Implementation of {@link AppContext}.
+ *
+ * See MGNLUI-379.
  */
 public class AppContextImpl implements AppContext, AppFrameView.Listener {
 
@@ -100,6 +102,11 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
         this.shell = shell;
         this.messagesManager = messagesManager;
         this.appDescriptor = appDescriptor;
+    }
+
+    @Override
+    public void setApp(App app) {
+        this.app = app;
     }
 
     @Override
@@ -361,7 +368,8 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
      * descriptors using the convention "app-" + name of the app and merged with the components defined for all apps
      * with the id "app".
      */
-    private ComponentProvider createAppComponentProvider(String name, AppContext appContext) {
+    @Override
+    public ComponentProvider createAppComponentProvider(String name, AppContext appContext) {
 
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();

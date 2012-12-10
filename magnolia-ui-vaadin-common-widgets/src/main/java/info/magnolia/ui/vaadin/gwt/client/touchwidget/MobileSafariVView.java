@@ -34,9 +34,6 @@
 package info.magnolia.ui.vaadin.gwt.client.touchwidget;
 
 import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.googlecode.mgwt.dom.client.event.touch.TouchCancelEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchMoveEvent;
@@ -61,15 +58,7 @@ public class MobileSafariVView extends VView {
     public MobileSafariVView() {
         super();
         addStyleName("tablet");
-        Event.addNativePreviewHandler(new NativePreviewHandler() {
-            @Override
-            public void onPreviewNativeEvent(NativePreviewEvent event) {
-                int code = event.getTypeInt();
-                if ((Event.ONTOUCHMOVE & code) != 0) {
-                    event.getNativeEvent().preventDefault();
-                }
-            }
-        });
+
         if (handlerManager != null && 
             handlerManager.getHandlerCount(com.google.gwt.event.dom.client.TouchStartEvent.getType()) > 0) {
             com.google.gwt.event.dom.client.TouchStartHandler eh = 
