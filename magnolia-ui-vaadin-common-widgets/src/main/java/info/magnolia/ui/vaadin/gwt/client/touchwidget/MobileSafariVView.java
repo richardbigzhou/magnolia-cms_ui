@@ -34,6 +34,9 @@
 package info.magnolia.ui.vaadin.gwt.client.touchwidget;
 
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.googlecode.mgwt.dom.client.event.touch.TouchCancelEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchMoveEvent;
@@ -41,35 +44,57 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
 import com.vaadin.terminal.gwt.client.ui.VView;
 
 /**
- * Special implementation of {@link VView} that would preinitialize mgwt   
+ * Special implementation of {@link VView} that would preinitialize mgwt
  * touch events, so that those will not interfere with native GWT touch events.
  */
 public class MobileSafariVView extends VView {
 
     private HandlerManager handlerManager;
-    
+
     static {
         new TouchStartEvent(){};
         new TouchEndEvent(){};
         new TouchMoveEvent(){};
         new TouchCancelEvent(){};
     }
-    
+
     public MobileSafariVView() {
         super();
         addStyleName("tablet");
 
-        if (handlerManager != null && 
+        Event.addNativePreviewHandler(new NativePreviewHandler() {
+
+            @Override
+            public void onPreviewNativeEvent(NativePreviewEvent event) {
+                if (event.getTypeInt() == Event.ONTOUCHMOVE) {
+                    lockPageScroll(event.getNativeEvent());
+                }
+            }
+        });
+
+        if (handlerManager != null &&
             handlerManager.getHandlerCount(com.google.gwt.event.dom.client.TouchStartEvent.getType()) > 0) {
-            com.google.gwt.event.dom.client.TouchStartHandler eh = 
+            com.google.gwt.event.dom.client.TouchStartHandler eh =
                     handlerManager.getHandler(com.google.gwt.event.dom.client.TouchStartEvent.getType(), 0);
             handlerManager.removeHandler(com.google.gwt.event.dom.client.TouchStartEvent.getType(), eh);
         }
     }
-    
+
     @Override
     protected HandlerManager createHandlerManager() {
         handlerManager = super.createHandlerManager();
         return handlerManager;
     }
+
+    /**
+     * Checks if event target is within a v-scrollable view. The root view is also a v-scrollable so there needs to be
+     * at least two v-scrollable ancestors to allow touch scrolling.
+     */
+    private static native void lockPageScroll(Object e)
+    /*-{
+       jq = e.target.ownerDocument.defaultView.jQuery;
+       if (jq(e.target).parents(".v-scrollable").length <= 1) {
+           e.preventDefault();
+       }
+    }-*/;
 }
