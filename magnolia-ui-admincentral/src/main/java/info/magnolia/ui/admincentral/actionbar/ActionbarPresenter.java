@@ -139,6 +139,18 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         }
     }
 
+    public void enableGroup(String groupName, String sectionName) {
+        if (actionbar != null) {
+            actionbar.enableGroup(groupName, sectionName);
+        }
+    }
+
+    public void disableGroup(String groupName, String sectionName) {
+        if (actionbar != null) {
+            actionbar.disableGroup(groupName, sectionName);
+        }
+    }
+
     public void showSection(String sectionName) {
         if (actionbar != null) {
             actionbar.showSection(sectionName);
