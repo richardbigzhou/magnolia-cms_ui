@@ -126,8 +126,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                         cfg.actionbars.section("contactsActions").label("Contacts")
                                                                 .groups(
                                                                         cfg.actionbars.group("addActions").items(
-                                                                                cfg.actionbars.item("addContact").label("New contact").icon("icon-add-item").action(addContactAction),
-                                                                                cfg.actionbars.item("addFolder").label("New folder").icon("icon-add-item").action(new AddFolderActionDefinition())),
+                                                                                cfg.actionbars.item("addContact").label("New contact").icon("icon-add-item").action(addContactAction)),
                                                                         cfg.actionbars.group("editActions").items(
                                                                                 cfg.actionbars.item("edit").label("Edit contact").icon("icon-edit").action(editContactAction),
                                                                                 cfg.actionbars.item("editindialog").label("Edit contact in Dialog").icon("icon-edit").action(editContactActionInDialog),
@@ -137,7 +136,6 @@ public class ContactsModule implements ModuleLifecycle {
                                                         cfg.actionbars.section("folderActions").label("Folder")
                                                                 .groups(
                                                                         cfg.actionbars.group("addActions").items(
-                                                                                cfg.actionbars.item("addContact").label("New contact").icon("icon-add-item").action(addContactAction),
                                                                                 cfg.actionbars.item("addFolder").label("New folder").icon("icon-add-item").action(new AddFolderActionDefinition())),
                                                                         cfg.actionbars.group("editActions").items(
                                                                                 cfg.actionbars.item("edit").label("Edit folder").icon("icon-edit").action(editFolderAction),
