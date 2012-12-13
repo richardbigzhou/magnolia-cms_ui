@@ -67,4 +67,9 @@ public class ContentSubAppBuilder {
     public SubAppDescriptor exec() {
         return descriptor;
     }
+
+    public ContentSubAppBuilder label(String label) {
+        descriptor.setLabel(label);
+        return this;
+    }
 }
