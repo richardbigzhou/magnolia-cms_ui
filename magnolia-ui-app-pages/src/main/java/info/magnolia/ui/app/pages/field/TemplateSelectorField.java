@@ -96,11 +96,11 @@ public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDe
         return messages.getWithDefault(templateDefinition.getTitle(), templateDefinition.getTitle());
     }
 
-    private Node asNode(final Item fieldRelatedItem) {
-        if (fieldRelatedItem instanceof JcrNewNodeAdapter) {
-            return ((JcrNewNodeAdapter) fieldRelatedItem).getNode();
+    private Node asNode(final Item item) {
+        if (item instanceof JcrNewNodeAdapter) {
+            return ((JcrNewNodeAdapter) item).getNode();
         } else {
-            return ((JcrNodeAdapter) fieldRelatedItem).getNode();
+            return ((JcrNodeAdapter) item).getNode();
         }
     }
 }
