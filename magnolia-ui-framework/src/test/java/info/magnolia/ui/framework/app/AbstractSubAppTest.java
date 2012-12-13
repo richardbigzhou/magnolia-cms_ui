@@ -49,8 +49,8 @@ public class AbstractSubAppTest {
     private static final String APP_LABEL = "App label";
     private static final String SUBAPP_LABEL = "SubApp label";
     private AbstractSubApp subApp;
-    private SubAppDescriptor subAppDescriptor;
     private AppDescriptor appDescriptor;
+    private SubAppDescriptor subAppDescriptor;
 
     @Before
     public void setUp() throws Exception {
@@ -103,6 +103,19 @@ public class AbstractSubAppTest {
         //GIVEN
         when(subAppDescriptor.getLabel()).thenReturn("");
         when(appDescriptor.getLabel()).thenReturn("");
+
+        //WHEN
+        String caption = subApp.getCaption();
+
+        //THEN
+        assertEquals("", caption);
+    }
+
+    @Test
+    public void testGetCaptionReturnsEmptyStringIfConfiguredLabelIsNull() throws Exception {
+        //GIVEN
+        when(subAppDescriptor.getLabel()).thenReturn(null);
+        when(appDescriptor.getLabel()).thenReturn(null);
 
         //WHEN
         String caption = subApp.getCaption();
