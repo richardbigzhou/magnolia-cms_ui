@@ -65,12 +65,6 @@ public class ContactsMainSubApp extends AbstractContentSubApp {
     }
 
     @Override
-    public String getCaption() {
-        return "Contacts";
-    }
-
-
-    @Override
     public void updateActionbar(final ActionbarPresenter actionbar) {
         String selectedItemId = getWorkbench().getSelectedItemId();
 

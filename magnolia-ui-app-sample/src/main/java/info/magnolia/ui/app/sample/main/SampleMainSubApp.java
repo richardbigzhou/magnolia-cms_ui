@@ -79,9 +79,4 @@ public class SampleMainSubApp extends AbstractSubApp implements SampleMainView.L
         sampleMainView.setRightView(contentDisplayView);
         return sampleMainView;
     }
-
-    @Override
-    public String getCaption() {
-        return "Sample";
-    }
 }

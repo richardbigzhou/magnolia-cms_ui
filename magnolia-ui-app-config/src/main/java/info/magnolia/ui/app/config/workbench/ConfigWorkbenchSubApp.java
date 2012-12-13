@@ -65,11 +65,6 @@ public class ConfigWorkbenchSubApp extends AbstractContentSubApp {
     }
 
     @Override
-    public String getCaption() {
-        return "Configuration";
-    }
-
-    @Override
     public void updateActionbar(final ActionbarPresenter actionbar) {
         final String selectedItemId = getWorkbench().getSelectedItemId();
 

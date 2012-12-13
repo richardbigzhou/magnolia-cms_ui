@@ -49,8 +49,6 @@ import javax.inject.Named;
  */
 public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainView.Listener {
 
-    private static final String CAPTION = "Pages";
-
     private final PagesMainView view;
 
     private final InstantPreviewDispatcher dispatcher;
@@ -61,11 +59,6 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
         this.view = view;
         this.view.setListener(this);
         this.dispatcher = dispatcher;
-    }
-
-    @Override
-    public String getCaption() {
-        return CAPTION;
     }
 
     @Override
