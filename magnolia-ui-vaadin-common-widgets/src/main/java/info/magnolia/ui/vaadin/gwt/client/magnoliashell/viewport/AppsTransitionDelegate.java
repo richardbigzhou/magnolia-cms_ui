@@ -39,12 +39,12 @@ import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate.BaseTransitionDelegate;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.Util;
 
 
 /**
@@ -68,15 +68,26 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
         // running apps are all hidden explicitly except current one
         if (!viewport.isClosing() && Visibility.HIDDEN.getCssName().equals(app.getElement().getStyle().getVisibility())) {
             viewport.doSetVisibleApp(app);
-            app.addStyleName("zoom-in");
             
-            new Timer() {
+            /* This is strictly speaking a hack. Starting animation here immediately would cause size calculations
+             * to be done to a zero sized layout which would cause corruption. Avoid this by letting layouts resize 
+             * themselves first and animate after. User may witness switching app flicking shortly before the animation.
+             */
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                
                 @Override
-                public void run() {
-                    app.removeStyleName("zoom-in");
-                    Util.notifyParentOfSizeChange((Paintable)app, false);
+                public void execute() {
+                    app.addStyleName("zoom-in");
+                    
+                    new Timer() {
+                        @Override
+                        public void run() {
+                            app.removeStyleName("zoom-in");
+                        }
+                    }.schedule(500);
                 }
-            }.schedule(500);
+            });
+
         } else {
             viewport.doSetVisibleApp(app);
         }
