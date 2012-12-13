@@ -54,7 +54,11 @@ public class AddPropertyActionTest {
 
     private final static String WORKSPACE = "workspace";
 
-    private final static String JOHN_NODE = "johnNode";
+    private final static String JOHN_NODE_NAME = "johnNode";
+
+    private final static String UNTITLED_PROPERTY_NAME = "untitled";
+
+    private final static String UNTITLED_PROPERTY_VALUE = "preset";
 
     private static final AddPropertyActionDefinition DEFINITION = new AddPropertyActionDefinition();
 
@@ -110,7 +114,7 @@ public class AddPropertyActionTest {
     public void testExecute_onJohnNode_Once() throws Exception {
         // GIVEN
         Node root = session.getRootNode();
-        Node john = root.addNode(JOHN_NODE);
+        Node john = root.addNode(JOHN_NODE_NAME);
         long propertiesCount = john.getProperties().getSize();
         AddPropertyAction action = new AddPropertyAction(DEFINITION, john, eventBus);
 
@@ -125,7 +129,7 @@ public class AddPropertyActionTest {
     public void testExecute_onJohnNode_Twice() throws Exception {
         // GIVEN
         Node root = session.getRootNode();
-        Node john = root.addNode(JOHN_NODE);
+        Node john = root.addNode(JOHN_NODE_NAME);
         long propertiesCount = john.getProperties().getSize();
         AddPropertyAction action = new AddPropertyAction(DEFINITION, john, eventBus);
 
@@ -135,6 +139,23 @@ public class AddPropertyActionTest {
 
         // THEN
         assertEquals(propertiesCount + 2, john.getProperties().getSize());
+    }
+
+    @Test
+    public void testExecute_onJohnNode_WithExistingUntitled() throws Exception {
+        // GIVEN
+        Node root = session.getRootNode();
+        Node john = root.addNode(JOHN_NODE_NAME);
+        john.setProperty(UNTITLED_PROPERTY_NAME, UNTITLED_PROPERTY_VALUE);
+        long propertiesCount = john.getProperties().getSize();
+        AddPropertyAction action = new AddPropertyAction(DEFINITION, john, eventBus);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertEquals(propertiesCount + 1, john.getProperties().getSize());
+        assertEquals(john.getProperty(UNTITLED_PROPERTY_NAME).getString(), UNTITLED_PROPERTY_VALUE);
     }
 
 }
