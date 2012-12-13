@@ -69,7 +69,7 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
         actionbar.disable("duplicate");
 
         // actions disabled based on selection
-        if ("/".equals(getWorkbench().getSelectedItemId())) {
+        if (getWorkbench().getSelectedItemId() == null || "/".equals(getWorkbench().getSelectedItemId())) {
             actionbar.disable("delete");
             actionbar.disable("preview");
             actionbar.disable("edit");
