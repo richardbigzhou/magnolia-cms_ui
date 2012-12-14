@@ -70,7 +70,7 @@ import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
-import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.model.form.definition.ConfiguredTabDefinition;
 
 /**
  * Module class for the contacts module.
