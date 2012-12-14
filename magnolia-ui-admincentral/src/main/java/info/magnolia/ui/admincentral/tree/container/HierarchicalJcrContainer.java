@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral.tree.container;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -213,8 +213,9 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             ArrayList<Property> properties = new ArrayList<Property>();
             PropertyIterator propertyIterator = node.getProperties();
             while (propertyIterator.hasNext()) {
-                Property property = propertyIterator.nextProperty();
-                if (!property.getName().startsWith(MgnlNodeType.JCR_PREFIX)) {
+                final Property property = propertyIterator.nextProperty();
+                final String propertyName = property.getName();
+                if (!propertyName.startsWith(NodeTypes.JCR_PREFIX) && !propertyName.startsWith(NodeTypes.MGNL_PREFIX)) {
                     properties.add(property);
                 }
             }
