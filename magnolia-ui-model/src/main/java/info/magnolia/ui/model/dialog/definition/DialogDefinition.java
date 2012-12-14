@@ -37,7 +37,7 @@ import java.util.List;
 
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
-import info.magnolia.ui.model.tab.definition.TabDefinition;
+import info.magnolia.ui.model.form.definition.TabDefinition;
 
 /**
  * Defines a dialog.
