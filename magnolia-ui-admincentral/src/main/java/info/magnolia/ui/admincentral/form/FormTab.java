@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.form;
 
-import info.magnolia.ui.model.tab.definition.TabDefinition;
+import info.magnolia.ui.model.form.definition.TabDefinition;
 import info.magnolia.ui.vaadin.form.FormSection;
 
 import com.vaadin.ui.Component;

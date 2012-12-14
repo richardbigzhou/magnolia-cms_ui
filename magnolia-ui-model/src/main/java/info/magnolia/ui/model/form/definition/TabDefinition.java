@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,63 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.tab.definition;
+package info.magnolia.ui.model.form.definition;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 /**
- * A tab in a dialog. Holds a list of fields contained in the tab.
+ * Defines a tab within a form. Holds a list of fields contained in this tab.
+ *
+ * @see info.magnolia.ui.model.form.definition.FormDefinition
+ * @see FieldDefinition
  */
-public class ConfiguredTabDefinition implements TabDefinition {
+public interface TabDefinition {
 
-    private String name;
+    String getName();
 
-    private String label;
+    String getLabel();
 
-    private String i18nBasename;
+    String getI18nBasename();
 
-    private List<FieldDefinition> fields = new ArrayList<FieldDefinition>();
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    @Override
-    public String getI18nBasename() {
-        return i18nBasename;
-    }
-
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
-    }
-
-    @Override
-    public List<FieldDefinition> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<FieldDefinition> fields) {
-        this.fields = fields;
-    }
-
-    public void addField(FieldDefinition fieldDefinition) {
-        fields.add(fieldDefinition);
-    }
+    List<FieldDefinition> getFields();
 }
