@@ -60,6 +60,7 @@ import info.magnolia.ui.app.security.dialog.field.validator.UniqueRoleIdValidato
 import info.magnolia.ui.app.security.dialog.field.validator.UniqueUserIdValidatorDefinition;
 import info.magnolia.ui.framework.app.builder.App;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.builder.UiConfig;
 import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
 import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
@@ -114,12 +115,12 @@ public class SecurityModule implements ModuleLifecycle {
                     userSubApp(app, cfg, "users", "/admin").defaultSubApp().label("Users"),
                     userSubApp(app, cfg, "systemUsers", "/system").label("System users"),
                     app.subApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
-                    .workbench(cfg.workbenches.workbench().workspace("usergroups").root("/").defaultOrder("jcrName")
+                    .workbench(cfg.workbenches.workbench().workspace("usergroups").root("/").defaultOrder(ModelConstants.JCR_NAME)
                             .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder"))
                             .mainItemType(cfg.workbenches.itemType(NodeTypes.Group.NAME).icon("icon-user-group"))
                             .imageProvider(cipd)
                             .columns(
-                                    cfg.columns.property("jcrName", "Group name").sortable(true).expandRatio(2),
+                                    cfg.columns.property(ModelConstants.JCR_NAME, "Group name").sortable(true).expandRatio(2),
                                     cfg.columns.property("title", "Full group name").sortable(true).displayInDialog(false).expandRatio(2),
                                     cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
                                     cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
@@ -138,12 +139,12 @@ public class SecurityModule implements ModuleLifecycle {
                             )
                     ),
                     app.subApp("roles").subAppClass(SecurityRolesSubApp.class).label("Roles")
-                    .workbench(cfg.workbenches.workbench().workspace("userroles").root("/").defaultOrder("jcrName")
+                    .workbench(cfg.workbenches.workbench().workspace("userroles").root("/").defaultOrder(ModelConstants.JCR_NAME)
                             .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder"))
                             .mainItemType(cfg.workbenches.itemType(NodeTypes.Role.NAME).icon("icon-user-role"))
                             .imageProvider(cipd)
                             .columns(
-                                    cfg.columns.property("jcrName", "Role name").sortable(true).expandRatio(2),
+                                    cfg.columns.property(ModelConstants.JCR_NAME, "Role name").sortable(true).expandRatio(2),
                                     cfg.columns.property("title", "Full role name").sortable(true).displayInDialog(false).expandRatio(2),
                                     cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
                                     cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
@@ -180,12 +181,12 @@ public class SecurityModule implements ModuleLifecycle {
         cipd.setImageProviderClass(DefaultImageProvider.class);
 
         return app.subApp(name).subAppClass(SecurityUsersSubApp.class)
-                .workbench(cfg.workbenches.workbench().workspace("users").root(root).defaultOrder("jcrName")
+                .workbench(cfg.workbenches.workbench().workspace("users").root(root).defaultOrder(ModelConstants.JCR_NAME)
                         .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder"))  // see MGNLPUR-77
                         .mainItemType(cfg.workbenches.itemType(NodeTypes.User.NAME).icon("icon-user-magnolia"))
                         .imageProvider(cipd)
                         .columns(
-                                cfg.columns.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(UserNameColumnFormatter.class).expandRatio(2),
+                                cfg.columns.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME).formatterClass(UserNameColumnFormatter.class).expandRatio(2),
                                 cfg.columns.property("title", "Full name").sortable(true).expandRatio(2),
                                 cfg.columns.property("email", "Email").sortable(true).sortable(true).displayInDialog(false).expandRatio(1),
                                 cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
@@ -219,7 +220,7 @@ public class SecurityModule implements ModuleLifecycle {
     @Dialog("ui-security-app:user")
     public void userDialog(DialogBuilder dialog, UiConfig cfg, boolean editMode) {
 
-        AbstractFieldBuilder username = cfg.fields.text("jcrName")
+        AbstractFieldBuilder username = cfg.fields.text(ModelConstants.JCR_NAME)
                                            .label("User name")
                                            .description("Define user name")
                                            .required(!editMode)
@@ -283,7 +284,7 @@ public class SecurityModule implements ModuleLifecycle {
 
     public void groupDialog(DialogBuilder dialog, UiConfig cfg, boolean editMode) {
 
-        AbstractFieldBuilder groupName = cfg.fields.text("jcrName")
+        AbstractFieldBuilder groupName = cfg.fields.text(ModelConstants.JCR_NAME)
                                             .label("Group name")
                                             .description("Define group name")
                                             .required(!editMode)
@@ -339,7 +340,7 @@ public class SecurityModule implements ModuleLifecycle {
 
     public void roleDialog(DialogBuilder dialog, UiConfig cfg, boolean editMode) {
 
-        AbstractFieldBuilder roleName = cfg.fields.text("jcrName")
+        AbstractFieldBuilder roleName = cfg.fields.text(ModelConstants.JCR_NAME)
                                            .label("Role name")
                                            .description("Define unique role name")
                                            .required(!editMode)

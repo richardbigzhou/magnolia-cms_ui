@@ -43,6 +43,7 @@ import static org.mockito.Mockito.when;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
@@ -428,7 +429,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testConstructJCRQuerySortBySortableColumn() {
         // GIVEN
-        jcrContainer.sort(new String[] { "jcrName" }, new boolean[] { true });
+        jcrContainer.sort(new String[] {ModelConstants.JCR_NAME}, new boolean[] { true });
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(true);

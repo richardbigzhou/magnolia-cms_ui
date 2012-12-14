@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.jcr;
-
-import com.vaadin.data.Item;
-
+package info.magnolia.ui.model;
 
 /**
- * Define common operation for Jcr Item Adapter.
+ * Constants used UI Model layer and higher.
  */
-public interface JcrItemAdapter extends Item {
+public interface ModelConstants {
 
-    boolean isNode();
-
-    String getWorkspace();
-
-    String getPath();
-
-    javax.jcr.Item getJcrItem();
-
+    /**
+     * Defines what value is used to indicate it is the name of {@link javax.jcr.Item} - not a property of a {@link javax.jcr.Node}.
+     */
+    public static final String JCR_NAME = "jcrName";
 }

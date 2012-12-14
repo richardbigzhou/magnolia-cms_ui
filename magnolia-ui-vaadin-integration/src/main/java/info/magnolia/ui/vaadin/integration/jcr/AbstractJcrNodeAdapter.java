@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.integration.jcr;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.ui.model.ModelConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -155,7 +156,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         try {
             final Node jcrNode = getNodeFromRepository();
             if (!jcrNode.hasProperty((String) id)) {
-                if (JCR_NAME.equals(id)) {
+                if (ModelConstants.JCR_NAME.equals(id)) {
                     value = jcrNode.getName();
                 } else {
                     return null;
@@ -251,7 +252,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
             return;
         }
         Node node = (Node) item;
-        if (JCR_NAME.equals(propertyId)) {
+        if (ModelConstants.JCR_NAME.equals(propertyId)) {
             String jcrName = (String) property.getValue();
             if (jcrName != null && !jcrName.isEmpty()) {
                 try {

@@ -34,12 +34,12 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.MockValue;
+import info.magnolia.ui.model.ModelConstants;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
@@ -115,7 +115,7 @@ public class JcrPropertyAdapterTest {
         JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
 
         // WHEN
-        Property nameProperty = adapter.getItemProperty(JcrItemAdapter.JCR_NAME);
+        Property nameProperty = adapter.getItemProperty(ModelConstants.JCR_NAME);
         Property valueProperty = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
         Property typeProperty = adapter.getItemProperty(JcrPropertyAdapter.TYPE_PROPERTY);
 
@@ -123,7 +123,7 @@ public class JcrPropertyAdapterTest {
         assertEquals(propertyName, nameProperty.getValue());
         assertEquals(propertyValue, valueProperty.getValue());
         assertEquals(PropertyType.nameFromValue(PropertyType.STRING), typeProperty.getValue());
-        assertNotSame(nameProperty, adapter.getItemProperty(JcrItemAdapter.JCR_NAME));
+        assertNotSame(nameProperty, adapter.getItemProperty(ModelConstants.JCR_NAME));
     }
 
     @Test
@@ -135,7 +135,7 @@ public class JcrPropertyAdapterTest {
         String newJcrName = "propertyRenamed";
 
         // WHEN
-        adapter.getItemProperty(JcrItemAdapter.JCR_NAME).setValue(newJcrName);
+        adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(newJcrName);
         adapter.updateProperties();
 
         // THEN
@@ -152,7 +152,7 @@ public class JcrPropertyAdapterTest {
         String newJcrName = propertyName;
 
         // WHEN
-        adapter.getItemProperty(JcrItemAdapter.JCR_NAME).setValue(newJcrName);
+        adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(newJcrName);
         adapter.updateProperties();
 
         // THEN

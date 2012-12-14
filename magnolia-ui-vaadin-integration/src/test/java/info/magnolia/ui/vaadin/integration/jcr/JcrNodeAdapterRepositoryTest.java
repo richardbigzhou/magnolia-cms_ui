@@ -38,6 +38,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.model.ModelConstants;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
@@ -79,7 +80,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     @Test
     public void testGetNode_NewName() throws Exception {
         // GIVEN
-        String id = JcrNodeAdapter.JCR_NAME;
+        String id = ModelConstants.JCR_NAME;
         String value = "newParent";
 
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
@@ -103,7 +104,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     @Test
     public void testGetNode_NewProperty() throws Exception {
         // GIVEN
-        String id = JcrNodeAdapter.JCR_NAME;
+        String id = ModelConstants.JCR_NAME;
         String value = "newParent";
 
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
