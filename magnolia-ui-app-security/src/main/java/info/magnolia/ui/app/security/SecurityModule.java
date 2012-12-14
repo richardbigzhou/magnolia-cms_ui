@@ -111,9 +111,9 @@ public class SecurityModule implements ModuleLifecycle {
 
         app.label("Security").icon("icon-security-app").appClass(SecurityApp.class) // .categoryName("MANAGE")
             .subApps(
-                    userSubApp(app, cfg, "users", "/admin").defaultSubApp(),
-                    userSubApp(app, cfg, "systemUsers", "/system"),
-                    app.subApp("groups").subAppClass(SecurityGroupsSubApp.class)
+                    userSubApp(app, cfg, "users", "/admin").defaultSubApp().label("Users"),
+                    userSubApp(app, cfg, "systemUsers", "/system").label("System users"),
+                    app.subApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
                     .workbench(cfg.workbenches.workbench().workspace("usergroups").root("/").defaultOrder("jcrName")
                             .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder"))
                             .mainItemType(cfg.workbenches.itemType(NodeTypes.Group.NAME).icon("icon-user-group"))
@@ -137,7 +137,7 @@ public class SecurityModule implements ModuleLifecycle {
                                     )
                             )
                     ),
-                    app.subApp("roles").subAppClass(SecurityRolesSubApp.class)
+                    app.subApp("roles").subAppClass(SecurityRolesSubApp.class).label("Roles")
                     .workbench(cfg.workbenches.workbench().workspace("userroles").root("/").defaultOrder("jcrName")
                             .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder"))
                             .mainItemType(cfg.workbenches.itemType(NodeTypes.Role.NAME).icon("icon-user-role"))

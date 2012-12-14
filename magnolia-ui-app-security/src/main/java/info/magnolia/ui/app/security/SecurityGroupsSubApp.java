@@ -58,11 +58,6 @@ public class SecurityGroupsSubApp extends AbstractContentSubApp {
     }
 
     @Override
-    public String getCaption() {
-        return "Groups";
-    }
-
-    @Override
     public void updateActionbar(ActionbarPresenter actionbar) {
         String selectedItemId = getWorkbench().getSelectedItemId();
         if(selectedItemId == null) {

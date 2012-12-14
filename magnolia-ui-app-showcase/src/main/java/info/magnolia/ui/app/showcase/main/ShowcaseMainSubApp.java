@@ -74,14 +74,4 @@ public class ShowcaseMainSubApp extends AbstractSubApp implements
         view.setUnsupportedVaadinView(unsupportedPresenter.start());
         return view;
     }
-
-    @Override
-    public void locationChanged(Location location) {
-
-    }
-
-    @Override
-    public String getCaption() {
-        return "showcase";
-    }
 }

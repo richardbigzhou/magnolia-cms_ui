@@ -53,26 +53,14 @@ public class SecurityUsersSubApp extends AbstractContentSubApp {
 
     private static final Logger log = LoggerFactory.getLogger(SecurityUsersSubApp.class);
 
-    private String caption = "Users";
-
     private boolean isSystemUserSubApp = false;
 
     @Inject
     public SecurityUsersSubApp(final SubAppContext subAppContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
         super(subAppContext, view, workbench, subAppEventBus);
         if ("systemUsers".equals(subAppContext.getSubAppDescriptor().getName())) {
-            setCaption("System Users");
             isSystemUserSubApp = true;
         }
-    }
-
-    @Override
-    public String getCaption() {
-        return this.caption;
-    }
-
-    public void setCaption(String caption) {
-        this.caption = caption;
     }
 
     @Override

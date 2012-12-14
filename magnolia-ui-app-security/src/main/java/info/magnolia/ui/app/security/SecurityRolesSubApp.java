@@ -57,10 +57,6 @@ public class SecurityRolesSubApp extends AbstractContentSubApp {
         super(subAppContext, view, workbench, subAppEventBus);
     }
 
-    @Override
-    public String getCaption() {
-        return "Roles";
-    }
 
     @Override
     public void updateActionbar(ActionbarPresenter actionbar) {
