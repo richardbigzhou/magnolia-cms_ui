@@ -71,17 +71,14 @@ public class ConfigWorkbenchSubApp extends AbstractContentSubApp {
         if (selectedItemId == null || "/".equals(selectedItemId)) {
             actionbar.disable("delete");
         } else {
-            actionbar.enable("addFolder");
-            actionbar.enable("addNode");
-            actionbar.enable("addProperty");
-            actionbar.enable("delete");
+            actionbar.enable("addFolder", "addNode", "addProperty", "delete");
+
             try {
                 final Session session = MgnlContext.getJCRSession("config");
                 final boolean isProperty = session.propertyExists(selectedItemId);
+
                 if(isProperty) {
-                    actionbar.disable("addFolder");
-                    actionbar.disable("addNode");
-                    actionbar.disable("addProperty");
+                    actionbar.disable("addFolder", "addNode", "addProperty");
                     return;
                 }
                 final Node node = session.getNode(selectedItemId);
