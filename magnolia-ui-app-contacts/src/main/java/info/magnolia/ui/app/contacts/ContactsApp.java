@@ -46,10 +46,9 @@ import javax.inject.Inject;
  */
 public class ContactsApp extends AbstractContentApp {
 
-
     @Inject
-    public ContactsApp(AppContext appContext, ChooseDialogFactory pickerDialogFactory) {
-        super(appContext, pickerDialogFactory);
+    public ContactsApp(AppContext appContext, ChooseDialogFactory chooseDialogFactory) {
+        super(appContext, chooseDialogFactory);
     }
 
 }

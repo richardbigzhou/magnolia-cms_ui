@@ -57,7 +57,6 @@ public abstract class AbstractContentApp extends AbstractApp {
     private Shell shell;
     
     @Inject
-
     public AbstractContentApp(AppContext appContext, ChooseDialogFactory chooseDialogFactory) {
         super(appContext);
         this.chooseDialogFactory = chooseDialogFactory;
@@ -68,9 +67,9 @@ public abstract class AbstractContentApp extends AbstractApp {
     }
     
     public ChooseDialogPresenter<Item> openChooseDialog(String defaultPath) {
-        final WorkbenchChooseDialogPresenter picker = chooseDialogFactory.createWorkbenchChooseDialog(defaultPath);
-        ((MagnoliaShell)shell).openDialog(picker);
-        return picker;
+        final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogFactory.createWorkbenchChooseDialog(defaultPath);
+        ((MagnoliaShell)shell).openDialog(workbenchChooseDialogPresenter);
+        return workbenchChooseDialogPresenter;
     }
 
 }

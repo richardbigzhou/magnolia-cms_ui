@@ -114,18 +114,18 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                 final App targetApp = appController.getAppWithoutStarting(appName);
                 if (targetApp != null) {
                     if (targetApp instanceof AbstractContentApp) {
-                        final ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp).openChooseDialog();
-                        pickerPresenter.addValuePickListener(new ValueChosenListener<Item>() {
+                        final ChooseDialogPresenter<Item> chooseDialogPresenter = ((AbstractContentApp) targetApp).openChooseDialog();
+                        chooseDialogPresenter.addValueChosenListener(new ValueChosenListener<Item>() {
                             @Override
-                            public void onValueChosen(final Item pickedValue) {
-                                javax.jcr.Item jcrItem = ((JcrItemAdapter) pickedValue).getJcrItem();
+                            public void onValueChosen(final Item chosenValue) {
+                                javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
                                 if (jcrItem.isNode()) {
                                     final Node selected = (Node) jcrItem;
                                     try {
-                                        boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && 
+                                        boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) &&
                                                 !PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
                                         textButton.setValue(isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath());
-                                        
+
                                         if ("assets".equals(appName)) {
                                             selected.setProperty("image", "dms");
                                         }
