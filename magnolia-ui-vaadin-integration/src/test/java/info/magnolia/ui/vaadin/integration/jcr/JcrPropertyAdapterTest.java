@@ -160,6 +160,25 @@ public class JcrPropertyAdapterTest {
     }
 
     @Test
+    public void testUpdateProperty_JcrName_Existing() throws Exception {
+        // GIVEN
+        String existingName = "existingName";
+        Node node = session.getRootNode();
+        node.setProperty(existingName, "42");
+        node.setProperty(propertyName, propertyValue);
+        long propertyCount = node.getProperties().getSize();
+        JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
+
+        // WHEN
+        adapter.getItemProperty(JcrItemAdapter.JCR_NAME).setValue(existingName);
+        adapter.updateProperties();
+
+        // THEN
+        assertTrue(node.hasProperty(existingName));
+        assertEquals(propertyCount, node.getProperties().getSize());
+    }
+
+    @Test
     public void testUpdateProperty_Value() throws Exception {
         // GIVEN
         Node node = session.getRootNode();
