@@ -39,5 +39,32 @@ package info.magnolia.ui.framework.location;
 public interface Location {
 
     Location NOWHERE = new Location() {
+        @Override
+        public String getParameter() {
+            return null;
+        }
+
+        @Override
+        public String getAppType() {
+            return null;
+        }
+
+        @Override
+        public String getAppId() {
+            return null;
+        }
+
+        @Override
+        public String getSubAppId() {
+            return null;
+        }
     };
+
+    String getParameter();
+
+    String getAppType();
+
+    String getAppId();
+
+    String getSubAppId();
 }

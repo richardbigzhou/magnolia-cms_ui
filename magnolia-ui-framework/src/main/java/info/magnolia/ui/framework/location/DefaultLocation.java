@@ -87,18 +87,22 @@ public class DefaultLocation implements Location {
         this.subAppId = (tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "";
     }
 
+    @Override
     public String getAppType() {
         return appType;
     }
 
+    @Override
     public String getAppId() {
         return appId;
     }
 
+    @Override
     public String getSubAppId() {
         return subAppId;
     }
 
+    @Override
     public String getParameter() {
         return parameter;
     }
