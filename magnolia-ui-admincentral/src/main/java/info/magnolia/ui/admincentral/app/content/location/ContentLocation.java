@@ -127,8 +127,7 @@ public class ContentLocation extends DefaultLocation {
     }
 
     public static ContentLocation wrap(Location location) {
-        DefaultLocation l = (DefaultLocation) location;
-        return new ContentLocation(l.getAppId(), l.getSubAppId(), l.getParameter());
+        return new ContentLocation(location.getAppId(), location.getSubAppId(), location.getParameter());
     }
 
     public void updateNodePath(String newNodePath) {

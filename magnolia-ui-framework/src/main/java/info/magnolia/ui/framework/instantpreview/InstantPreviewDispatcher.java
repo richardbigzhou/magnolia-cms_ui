@@ -74,9 +74,9 @@ public class InstantPreviewDispatcher implements PreviewLocationListener {
             @Override
             public void onLocationChanged(LocationChangedEvent event) {
                 final Location location = event.getNewLocation();
-                if (isSharing() && location instanceof DefaultLocation && "app".equals(((DefaultLocation)location).getAppType())) {
-                    final String appName = ((DefaultLocation)location).getAppId();
-                    final String params = ((DefaultLocation)location).getParameter();
+                if (isSharing() && "app".equals(location.getAppType())) {
+                    final String appName = location.getAppId();
+                    final String params = location.getParameter();
                     if ("pages".equals(appName) && params.contains("preview")) {
                         InstantPreviewDispatcher.this.manager.sendPreviewToken(hostId, params);
                     }

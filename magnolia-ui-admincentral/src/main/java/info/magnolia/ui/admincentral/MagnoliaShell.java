@@ -250,7 +250,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
             if (location == null) {
                 location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appId, subAppId, parameter);
             }
-            super.navigateToApp(appId, subAppId, ((DefaultLocation) location).getParameter());
+            super.navigateToApp(appId, subAppId, location.getParameter());
 
         } else {
             super.navigateToApp(appId, subAppId, parameter);
@@ -265,7 +265,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
             if (location == null) {
                 location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_SHELL_APP, shellAppId, "", parameter);
             }
-            super.navigateToShellApp(shellAppId, ((DefaultLocation) location).getParameter());
+            super.navigateToShellApp(shellAppId, location.getParameter());
 
         } else {
             super.navigateToShellApp(shellAppId, parameter);

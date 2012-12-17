@@ -67,9 +67,8 @@ public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
 
     @Override
     public String getFragment(Location location) {
-        DefaultLocation defaultLocation = (DefaultLocation) location;
 
-        if (!supported(defaultLocation.getAppType(), defaultLocation.getAppId(), defaultLocation.getSubAppId(), defaultLocation.getParameter())) {
+        if (!supported(location.getAppType(), location.getAppId(), location.getSubAppId(), location.getParameter())) {
             return null;
         }
 

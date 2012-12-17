@@ -195,8 +195,7 @@ public class LocationHistoryHandlerTest {
 
         @Override
         public String getFragment(Location location) {
-            DefaultLocation defaultLocation = (DefaultLocation) location;
-            if (defaultLocation.getAppType().equals("app") && defaultLocation.getAppId().equals("foo")) {
+            if (location.getAppType().equals("app") && location.getAppId().equals("foo")) {
                 return location.toString();
             }
             return null;

@@ -84,14 +84,12 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
 
     @Override
     public void locationChanged(Location location) {
-        DefaultLocation pulsePlace = (DefaultLocation) location;
-        List<String> pathParams = parsePathParamsFromToken(pulsePlace.getParameter());
+        List<String> pathParams = parsePathParamsFromToken(location.getParameter());
         if (pathParams.size() > 0) {
             final String tabName = pathParams.remove(0);
             pulseView.setCurrentPulseTab(tabName, pathParams);
         }
         shell.hideAllMessages();
-//        pulsePlace.setCurrentPulseTab(displayedTabId);
     }
 
     private List<String> parsePathParamsFromToken(String token) {

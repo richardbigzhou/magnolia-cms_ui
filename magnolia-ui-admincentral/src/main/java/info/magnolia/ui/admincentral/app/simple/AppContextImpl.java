@@ -249,9 +249,7 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
 
     private SubAppContext startSubApp(Location location) {
 
-        DefaultLocation l = (DefaultLocation) location;
-
-        SubAppDescriptor subAppDescriptor = getSubAppDescriptorById(l.getSubAppId());
+        SubAppDescriptor subAppDescriptor = getSubAppDescriptorById(location.getSubAppId());
 
         if (subAppDescriptor == null) {
             subAppDescriptor = getDefaultSubAppDescriptor();
@@ -346,15 +344,13 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     }
 
     private SubAppContext getSupportingSubAppContext(Location location) {
-        DefaultLocation l = (DefaultLocation) location;
-
         // If the location has no subAppId defined, get default
-        String subAppId = (l.getSubAppId().isEmpty()) ? getDefaultSubAppDescriptor().getName() : l.getSubAppId();
+        String subAppId = (location.getSubAppId().isEmpty()) ? getDefaultSubAppDescriptor().getName() : location.getSubAppId();
 
         SubAppContext supportingContext = null;
         Set<SubAppContext> subApps = subAppContexts.get(subAppId);
         for (SubAppContext context : subApps) {
-            if (context.getSubApp().supportsLocation(l)) {
+            if (context.getSubApp().supportsLocation(location)) {
                 supportingContext = context;
                 break;
             }
