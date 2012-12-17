@@ -35,11 +35,13 @@ package info.magnolia.ui.framework.view;
 
 /**
  * Implemented by displays that can be given an {@link View} to show.
+ *
+ * @see View
  */
 public interface ViewPort {
 
     /**
-     * Set the only component of the receiver, replacing the previous component if there was one.
+     * Set the only component of the receiver, replacing the previous view if there was one.
      */
     void setView(View view);
 

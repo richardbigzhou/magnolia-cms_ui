@@ -37,6 +37,7 @@ package info.magnolia.ui.framework.instantpreview;
  * InstantPreviewLocationManager.
  */
 public interface InstantPreviewLocationManager {
+
     /**
      * Starts sharing the host session and returns the host id as a String representing a random positive integer of 9 digits. This id is used by
      * Instant Preview clients to connect to the host.
