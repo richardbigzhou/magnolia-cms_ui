@@ -39,6 +39,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -76,8 +77,8 @@ public class FormsPresenter implements FormsView.Listener {
         Node parentNode = session.getNode(path);
 
         final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, MgnlNodeType.NT_COMPONENT);
-        DefaultProperty property = new DefaultProperty(JcrNodeAdapter.JCR_NAME, "0");
-        item.addItemProperty(JcrNodeAdapter.JCR_NAME, property);
+        DefaultProperty property = new DefaultProperty(ModelConstants.JCR_NAME, "0");
+        item.addItemProperty(ModelConstants.JCR_NAME, property);
         
         formPresenter.start(item, new FormDialogPresenter.Callback() {
 

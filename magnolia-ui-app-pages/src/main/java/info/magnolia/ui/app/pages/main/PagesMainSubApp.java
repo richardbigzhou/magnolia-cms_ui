@@ -65,20 +65,14 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
     public void updateActionbar(ActionbarPresenter actionbar) {
 
         // actions currently always disabled
-        actionbar.disable("move");
-        actionbar.disable("duplicate");
+        actionbar.disable("move", "duplicate");
 
         // actions disabled based on selection
+        final String[] defaultActions = new String[] {"delete", "preview", "edit", "export"};
         if (getWorkbench().getSelectedItemId() == null || "/".equals(getWorkbench().getSelectedItemId())) {
-            actionbar.disable("delete");
-            actionbar.disable("preview");
-            actionbar.disable("edit");
-            actionbar.disable("export");
+            actionbar.disable(defaultActions);
         } else {
-            actionbar.enable("delete");
-            actionbar.enable("preview");
-            actionbar.enable("edit");
-            actionbar.enable("export");
+            actionbar.enable(defaultActions);
         }
     }
 

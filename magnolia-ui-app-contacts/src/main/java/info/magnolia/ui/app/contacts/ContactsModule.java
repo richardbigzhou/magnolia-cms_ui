@@ -58,6 +58,7 @@ import info.magnolia.ui.app.contacts.form.action.SaveContactFormActionDefinition
 import info.magnolia.ui.app.contacts.item.ContactsItemSubApp;
 import info.magnolia.ui.framework.app.builder.App;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.builder.UiConfig;
 import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
 import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
@@ -69,7 +70,7 @@ import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
-import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.model.form.definition.ConfiguredTabDefinition;
 
 /**
  * Module class for the contacts module.
@@ -111,12 +112,12 @@ public class ContactsModule implements ModuleLifecycle {
         app.label("Contacts").icon("icon-people").appClass(ContactsApp.class)
                 .subApps(
                         app.subApp("main").subAppClass(ContactsMainSubApp.class).defaultSubApp()
-                                .workbench(cfg.workbenches.workbench().workspace("contacts").root("/").defaultOrder("jcrName")
+                                .workbench(cfg.workbenches.workbench().workspace("contacts").root("/").defaultOrder(ModelConstants.JCR_NAME)
                                         .groupingItemType(cfg.workbenches.itemType("mgnl:folder").icon("icon-node-folder"))
                                         .mainItemType(cfg.workbenches.itemType("mgnl:contact").icon("icon-node-content"))
                                         .imageProvider(cipd)
                                         .columns(
-                                                cfg.columns.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName("jcrName").formatterClass(ContactNameColumnFormatter.class).expandRatio(2),
+                                                cfg.columns.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME).formatterClass(ContactNameColumnFormatter.class).expandRatio(2),
                                                 cfg.columns.property("email", "Email").sortable(true).displayInDialog(false).expandRatio(1),
                                                 cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
                                                 cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification Date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
@@ -147,7 +148,7 @@ public class ContactsModule implements ModuleLifecycle {
                                 ),
 
                         app.subApp("item").subAppClass(ContactsItemSubApp.class)
-                                .workbench(cfg.workbenches.workbench().workspace("contacts").root("/").defaultOrder("jcrName")
+                                .workbench(cfg.workbenches.workbench().workspace("contacts").root("/").defaultOrder(ModelConstants.JCR_NAME)
                                         .form(cfg.forms.form().description("Define the contact information")
                                                 .tabs(
                                                         cfg.forms.tab("Personal").label("Personal tab")
@@ -199,7 +200,7 @@ public class ContactsModule implements ModuleLifecycle {
         dialog.addTab(tab);
 
         TextFieldDefinition name = new TextFieldDefinition();
-        name.setName("jcrName");
+        name.setName(ModelConstants.JCR_NAME);
         name.setLabel("Name");
         name.setDescription("Folder name");
         tab.addField(name);

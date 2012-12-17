@@ -31,38 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
-
-import java.util.List;
-
-import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
-import info.magnolia.ui.model.form.definition.FormDefinition;
-import info.magnolia.ui.model.form.definition.TabDefinition;
+package info.magnolia.ui.model;
 
 /**
- * Defines a dialog.
- *
- * @see TabDefinition
- * @see info.magnolia.ui.model.field.definition.FieldDefinition
- * @see DialogActionDefinition
+ * Constants used UI Model layer and higher.
  */
-public interface DialogDefinition {
+public interface ModelConstants {
 
     /**
-     * Unique identifier for this dialog.
+     * Defines what value is used to indicate it is the name of {@link javax.jcr.Item} - not a property of a {@link javax.jcr.Node}.
      */
-    String getId();
-
-    String getLabel();
-
-    String getI18nBasename();
-
-    String getDescription();
-
-    List<TabDefinition> getTabs();
-
-    FormDefinition getFormDefinition();
-
-    List<DialogActionDefinition> getActions();
-
+    public static final String JCR_NAME = "jcrName";
 }

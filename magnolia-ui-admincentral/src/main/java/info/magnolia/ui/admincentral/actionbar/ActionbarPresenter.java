@@ -115,15 +115,19 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     // JUST DELEGATING CONTEXT SENSITIVITY TO WIDGET
 
-    public void enable(String actionName) {
+    public void enable(String... actionNames) {
         if (actionbar != null) {
-            actionbar.enable(actionName);
+            for (String action: actionNames) {
+                actionbar.enable(action);
+            }
         }
     }
 
-    public void disable(String actionName) {
+    public void disable(String... actionNames) {
         if (actionbar != null) {
-            actionbar.disable(actionName);
+            for (String action: actionNames) {
+                actionbar.disable(action);
+            }
         }
     }
 
@@ -151,15 +155,19 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         }
     }
 
-    public void showSection(String sectionName) {
+    public void showSection(String... sectionNames) {
         if (actionbar != null) {
-            actionbar.showSection(sectionName);
+            for (String section: sectionNames) {
+                actionbar.showSection(section);
+            }
         }
     }
 
-    public void hideSection(String sectionName) {
+    public void hideSection(String... sectionNames) {
         if (actionbar != null) {
-            actionbar.hideSection(sectionName);
+            for (String section: sectionNames) {
+                actionbar.hideSection(section);
+            }
         }
     }
 

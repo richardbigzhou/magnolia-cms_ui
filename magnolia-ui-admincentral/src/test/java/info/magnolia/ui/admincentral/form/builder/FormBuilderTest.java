@@ -53,7 +53,7 @@ import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
-import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.model.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.vaadin.form.Form;
 import info.magnolia.ui.vaadin.form.FormView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;

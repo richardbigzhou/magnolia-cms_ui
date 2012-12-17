@@ -40,6 +40,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.model.ModelConstants;
 
 import java.util.Collection;
 
@@ -232,7 +233,7 @@ public class AbstractJcrNodeAdapterTest {
         DummyJcrNodeAdapter adapter = new DummyJcrNodeAdapter(subNode);
 
         // WHEN
-        adapter.getItemProperty(JcrItemAdapter.JCR_NAME).setValue(existingName);
+        adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(existingName);
         adapter.updateProperties();
 
         // THEN
