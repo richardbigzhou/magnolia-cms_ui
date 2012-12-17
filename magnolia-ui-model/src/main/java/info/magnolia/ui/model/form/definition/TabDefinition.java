@@ -31,16 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.tab.definition;
+package info.magnolia.ui.model.form.definition;
 
 import java.util.List;
 
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 /**
- * Defines a tab within a dialog.
+ * Defines a tab within a form. Holds a list of fields contained in this tab.
  *
- * @see info.magnolia.ui.model.dialog.definition.DialogDefinition
+ * @see info.magnolia.ui.model.form.definition.FormDefinition
  * @see FieldDefinition
  */
 public interface TabDefinition {
@@ -52,5 +52,4 @@ public interface TabDefinition {
     String getI18nBasename();
 
     List<FieldDefinition> getFields();
-
 }

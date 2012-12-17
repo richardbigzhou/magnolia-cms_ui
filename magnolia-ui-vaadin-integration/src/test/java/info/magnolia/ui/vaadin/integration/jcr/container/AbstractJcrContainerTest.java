@@ -43,6 +43,7 @@ import static org.mockito.Mockito.when;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
@@ -305,7 +306,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testSort_ascending() throws Exception {
+    public void testSortAscending() throws Exception {
         // GIVEN
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
@@ -320,7 +321,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testSort_descending() throws Exception {
+    public void testSortDescending() throws Exception {
         // GIVEN
         Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
@@ -408,8 +409,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         final String result = jcrContainer.constructJCRQuery(false);
 
         // THEN
-        String expectedResult = String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME);
-        expectedResult += String.format(AbstractJcrContainer.SELECT_TEMPLATE_PATH_CLAUSE, TEST_PATH);
+        String expectedResult = String.format(AbstractJcrContainer.SELECT_TEMPLATE + " where ", NodeTypes.Content.NAME);
+        expectedResult += String.format(AbstractJcrContainer.WHERE_TEMPLATE_FOR_PATH, TEST_PATH);
         assertEquals(expectedResult, result);
     }
 
@@ -428,7 +429,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testConstructJCRQuerySortBySortableColumn() {
         // GIVEN
-        jcrContainer.sort(new String[] { "jcrName" }, new boolean[] { true });
+        jcrContainer.sort(new String[] {ModelConstants.JCR_NAME}, new boolean[] { true });
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(true);
@@ -480,53 +481,93 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void getWorkspacePathQueryClause_WithPath() {
+    public void testGetQueryWhereClauseWorkspacePathWithPath() {
         // GIVEN
         workbenchDefinition.setPath(TEST_PATH);
 
         // WHEN
-        final String result = jcrContainer.getWorkspacePathQueryClause();
+        final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
 
         // THEN
-        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE_PATH_CLAUSE, TEST_PATH), result);
+        assertEquals(String.format(AbstractJcrContainer.WHERE_TEMPLATE_FOR_PATH, TEST_PATH), result);
     }
 
     @Test
-    public void getWorkspacePathQueryClause_WithRoot() {
+    public void testGetQueryWhereClauseWorkspacePathWithRoot() {
         // GIVEN
         final String testPath = "/";
         workbenchDefinition.setPath(testPath);
 
         // WHEN
-        final String result = jcrContainer.getWorkspacePathQueryClause();
+        final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
 
         // THEN
         assertEquals("", result);
     }
 
     @Test
-    public void getWorkspacePathQueryClause_WithNull() {
+    public void testGetQueryWhereClauseWorkspacePathWithNull() {
         // GIVEN
         workbenchDefinition.setPath(null);
 
         // WHEN
-        final String result = jcrContainer.getWorkspacePathQueryClause();
+        final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
 
         // THEN
         assertEquals("", result);
     }
 
     @Test
-    public void getWorkspacePathQueryClause_WithEmptyString() {
+    public void testGetQueryWhereClauseWorkspacePathWithEmptyString() {
         // GIVEN
         final String testPath = "";
         workbenchDefinition.setPath(testPath);
 
         // WHEN
-        final String result = jcrContainer.getWorkspacePathQueryClause();
+        final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
 
         // THEN
         assertEquals("", result);
+    }
+
+    @Test
+    public void testGetQueryWhereClausePrependWhereKeywordWhenWorkspacePathIsNotRoot() {
+        // GIVEN
+        workbenchDefinition.setPath(TEST_PATH);
+        final String whereClauseWorkspacePath = jcrContainer.getQueryWhereClauseWorkspacePath();
+
+        // WHEN
+        final String result = jcrContainer.getQueryWhereClause();
+
+        // THEN
+        assertEquals(" where " + whereClauseWorkspacePath, result);
+    }
+
+    @Test
+    public void testGetQueryWhereClauseDoesNotPrependWhereKeywordWhenWorkspacePathIsRoot() {
+        // GIVEN
+        final String testPath = "/";
+        workbenchDefinition.setPath(testPath);
+        final String whereClauseWorkspacePath = jcrContainer.getQueryWhereClauseWorkspacePath();
+
+        // WHEN
+        final String result = jcrContainer.getQueryWhereClause();
+
+        // THEN
+        assertEquals(whereClauseWorkspacePath, result);
+    }
+
+    @Test
+    public void testConstructJCRQueryReturnDefaultSelectStatement() {
+        // GIVEN
+        //default mainItemType used by constructJCRQuery() is mgnl:content
+        final String expected = String.format(AbstractJcrContainer.SELECT_TEMPLATE, "mgnl:content");
+
+        // WHEN
+        final String result = jcrContainer.constructJCRQuery(false);
+
+        // THEN
+        assertTrue(result.contains(expected));
     }
 
     /**

@@ -36,17 +36,17 @@ package info.magnolia.ui.admincentral.dialog;
 import com.vaadin.data.Item;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
+import info.magnolia.ui.vaadin.dialog.FormDialogView;
 
 /**
- * FormDialogPresenter.
+ * Interface for {@link FormDialogPresenterImpl}.
  */
 public interface FormDialogPresenter extends DialogPresenter {
 
     DialogView start(Item item, DialogPresenter.Callback callback);
 
     @Override
-    NewFormDialogView getView();
+    FormDialogView getView();
 
     FormPresenter getForm();
 }

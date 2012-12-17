@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.lightbox;
+package info.magnolia.ui.vaadin.dialog;
 
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.ui.ClientWidget;
+
+import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VFormDialog;
 
 /**
- * The VLight vaadin client-side proxy for the Icon component.
+ * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that 
+ * adapts to the content ({@link FormView}) and delegates the view logic to it.
  */
-public class VLightBox extends GwtLightBox implements Paintable {
-
-    private ApplicationConnection client;
-
-    private String paintableId;
-
-    public VLightBox() {
-
-    }
-
+@ClientWidget(VFormDialog.class)
+public class FormDialog extends BaseDialog implements FormDialogView {
     @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        this.client = client;
-        this.paintableId = uidl.getId();
-        if (client.updateComponent(this, uidl, true)) {
-            return;
-        }
-
-        updateLightBox(uidl);
+    public void setFormView(FormView formView) {
+        super.setContent(formView.asVaadinComponent());
+        formView.asVaadinComponent().setHeight("500px");
     }
-
-
-    protected void updateLightBox(UIDL uidl) {
-        if (uidl.hasAttribute("imagePath")) {
-            updateImageUrl(uidl.getStringAttribute("imagePath"));
-        }
-    }
-
 }

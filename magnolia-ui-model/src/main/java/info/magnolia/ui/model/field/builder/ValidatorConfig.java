@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.item;
+package info.magnolia.ui.model.field.builder;
 
-import com.vaadin.ui.Component;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.model.field.validation.definition.EmailValidatorDefinition;
+import info.magnolia.ui.model.field.validation.definition.RegexpValidatorDefinition;
 
 /**
- * ContactsItemViewImpl.
- * see MGNLUI-230.
+ * Config object creating builders for validator definitions.
  */
-public class ContactsItemViewImpl implements ContactsItemView {
+public class ValidatorConfig {
 
+    private static final String DIGITS_ONLY_PATTERN = "[0-9]+";
 
-    private View workbenchView;
-
-    @Override
-    public Component asVaadinComponent() {
-        return workbenchView.asVaadinComponent();
+    public GenericValidatorBuilder digitsOnly() {
+        RegexpValidatorDefinition definition = new RegexpValidatorDefinition();
+        definition.setPattern(DIGITS_ONLY_PATTERN);
+        return new GenericValidatorBuilder(definition);
     }
 
-    @Override
-    public void setWorkbenchView(View workbenchView) {
-        this.workbenchView = workbenchView;
+    public GenericValidatorBuilder email() {
+        EmailValidatorDefinition definition = new EmailValidatorDefinition();
+        return new GenericValidatorBuilder(definition);
+    }
+
+    public GenericValidatorBuilder regexp(String pattern) {
+        RegexpValidatorDefinition definition = new RegexpValidatorDefinition();
+        definition.setPattern(pattern);
+        return new GenericValidatorBuilder(definition);
+    }
+
+    public GenericValidatorBuilder custom(ConfiguredFieldValidatorDefinition definition) {
+        return new GenericValidatorBuilder(definition);
     }
 }

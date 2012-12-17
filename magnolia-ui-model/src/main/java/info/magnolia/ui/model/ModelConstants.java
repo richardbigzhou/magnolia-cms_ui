@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dummy;
-
-import info.magnolia.ui.framework.view.View;
-
+package info.magnolia.ui.model;
 
 /**
- * View for a dummy app.
+ * Constants used UI Model layer and higher.
  */
-public interface DummyView extends View {
+public interface ModelConstants {
 
     /**
-     * Listener.
+     * Defines what value is used to indicate it is the name of {@link javax.jcr.Item} - not a property of a {@link javax.jcr.Node}.
      */
-    public interface Listener {
-
-    }
-
-    void setListener(Listener listener);
+    public static final String JCR_NAME = "jcrName";
 }

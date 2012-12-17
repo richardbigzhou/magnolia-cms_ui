@@ -80,7 +80,7 @@ import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * Client side impl of lazy asset thumbnails layout.
- *
+ * 
  */
 public class VLazyThumbnailLayout extends Composite implements Paintable, ClientSideHandler {
 
@@ -101,18 +101,18 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
 
     private final List<VThumbnail> thumbnailStubs = new ArrayList<VThumbnail>();
 
-    private ScrollPanel scroller = new ScrollPanel();
-    private FlowPanel basePanel = new FlowPanel();
+    private final ScrollPanel scroller = new ScrollPanel();
+    private final FlowPanel basePanel = new FlowPanel();
 
-    private SliderClientBundle thumbnailBundle = GWT.create(SliderClientBundle.class);
-    private MSlider thumbnailSizeSlider = new MSlider(thumbnailBundle.css());
+    private final SliderClientBundle thumbnailBundle = GWT.create(SliderClientBundle.class);
+    private final MSlider thumbnailSizeSlider = new MSlider(thumbnailBundle.css());
 
-    private CSSRule thumbnailImageStyle = CSSRule.create(".thumbnail-image");
-    private CSSRule thumbnailStyle = CSSRule.create(".thumbnail");
+    private final CSSRule thumbnailImageStyle = CSSRule.create(".thumbnail-image");
+    private final CSSRule thumbnailStyle = CSSRule.create(".thumbnail");
 
-    private FlowPanel imageContainer = new FlowPanel();
+    private final FlowPanel imageContainer = new FlowPanel();
 
-    private ClientSideProxy proxy = new ClientSideProxy(this) {
+    private final ClientSideProxy proxy = new ClientSideProxy(this) {
         {
             register("addThumbnails", new Method() {
                 @Override
@@ -186,13 +186,14 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         });
 
         final TouchDelegate touchDelegate = new TouchDelegate(this);
-        touchDelegate.addTouchHandler(new MagnoliaPinchRecognizer(touchDelegate, new UIObjectToOffsetProvider(scroller)));
+        touchDelegate
+                .addTouchHandler(new MagnoliaPinchRecognizer(touchDelegate, new UIObjectToOffsetProvider(scroller)));
         MultiTapRecognizer multitapRecognizer = new MultiTapRecognizer(touchDelegate, 1, 2);
         addHandler(new MultiTapHandler() {
             @Override
             public void onMultiTap(MultiTapEvent event) {
-                final Element element = Util.getElementFromPoint(event.getTouchStarts().get(0).get(0).getPageX(), event.getTouchStarts().get(0)
-                        .get(0).getPageY());
+                final Element element = Util.getElementFromPoint(event.getTouchStarts().get(0).get(0).getPageX(), event
+                        .getTouchStarts().get(0).get(0).getPageY());
                 final VThumbnail thumbnail = Util.findWidget(element, VThumbnail.class);
                 proxy.call("thumbnailDoubleClicked", thumbnail.getId());
             }
@@ -204,8 +205,10 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
             @Override
             public void onPinchMove(MagnoliaPinchMoveEvent event) {
                 double scaleFactor = 1 / event.getScaleFactor();
-                int width = Math.max((int) (ComputedStyle.parseInt(thumbnailStyle.getProperty("width")) * scaleFactor), 25);
-                int height = Math.max((int) (ComputedStyle.parseInt(thumbnailStyle.getProperty("height")) * scaleFactor), 25);
+                int width = Math.max((int) (ComputedStyle.parseInt(thumbnailStyle.getProperty("width")) * scaleFactor),
+                        25);
+                int height = Math.max(
+                        (int) (ComputedStyle.parseInt(thumbnailStyle.getProperty("height")) * scaleFactor), 25);
 
                 scroller.setVerticalScrollPosition((int) (scroller.getVerticalScrollPosition() * scaleFactor));
                 setThumbnailSize(width, height);
@@ -299,7 +302,7 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         createStubsAndQueryThumbnails();
     }
 
-    private Timer queryTimer = new Timer() {
+    private final Timer queryTimer = new Timer() {
         @Override
         public void run() {
             doQueryThumbnails(thumbnailStubs.size());
@@ -318,10 +321,15 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
     private void setThumbnailAmount(int thumbnailAmount) {
         this.thumbnailAmount = thumbnailAmount;
         int width = getOffsetWidth();
-        int thumbnailsInRow = (int) (width / (thumbnailWidth + getHorizontalMargin()) * 1d);
-        int rows = (int) (thumbnailAmount / thumbnailsInRow * 1d) * (thumbnailHeight + getVerticalMargin());
-        imageContainer.getElement().getStyle().setHeight(rows, Unit.PX);
-        createStubsAndQueryThumbnails();
+        int totalThumbnailWidth = (thumbnailWidth + getHorizontalMargin());
+        if (totalThumbnailWidth != 0) {
+            int thumbnailsInRow = (int) (width / totalThumbnailWidth * 1d);
+            if (thumbnailsInRow != 0) {
+                int rows = (int) (thumbnailAmount / thumbnailsInRow * 1d) * (thumbnailHeight + getVerticalMargin());
+                imageContainer.getElement().getStyle().setHeight(rows, Unit.PX);
+                createStubsAndQueryThumbnails();
+            }
+        }
     }
 
     private void doQueryThumbnails(int amount) {
@@ -376,13 +384,17 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
-        addStubs(calculateThumbnailsNeeded());
-        queryTimer.schedule(QUERY_TIMER_DELAY);
+        final Integer heightPx = ComputedStyle.parseInt(height);
+        if (heightPx != null) {
+            scroller.setHeight((heightPx - thumbnailSizeSlider.getOffsetHeight()) + "px");
+            addStubs(calculateThumbnailsNeeded());
+            queryTimer.schedule(QUERY_TIMER_DELAY);   
+        }
     }
 
     public static native JsArray<VThumbnailData> parseStringArray(String json) /*-{
-                                                                               return eval('(' + json + ')');
-                                                                               }-*/;
+        return eval('(' + json + ')');
+    }-*/;
 
     private int getHorizontalMargin() {
         return ComputedStyle.parseInt(thumbnailStyle.getProperty("marginTop")) * 2;

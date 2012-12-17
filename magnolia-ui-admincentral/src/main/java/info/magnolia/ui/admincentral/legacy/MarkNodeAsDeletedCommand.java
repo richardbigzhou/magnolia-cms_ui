@@ -138,6 +138,7 @@ public class MarkNodeAsDeletedCommand extends BaseRepositoryCommand {
         if (metadata.getActivationStatus() != MetaData.ACTIVATION_STATUS_NOT_ACTIVATED) {
             metadata.setModificationDate();
         }
+        node.updateMetaData();
     }
 
     protected void purgeContent(Content node) throws RepositoryException {

@@ -37,7 +37,7 @@
 }
 
 .form-header {
-    background-color: #E6E6E6;
+    background-color: #666;
     display: block;
     height: 16px;
     color: #AABF2F;
@@ -52,6 +52,7 @@
 
 .form-description {
     background: none repeat scroll 0px 0px #C1D8DF;
+    border-bottom: 2px solid black;
 }
 
 .form-error {
@@ -157,7 +158,6 @@ textarea.v-form-field {
     width: 140px;
     margin-right: 12px;
     color: #666;
-    white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     vertical-align: middle; /*needed by FF*/
@@ -339,7 +339,7 @@ fieldset {
 * used by TextAndButtonField custom component.
 */
 input[type="text"].small-textfield {
-    width:440px !important;
+    width:400px !important;
 }
 
 .v-form-field.v-richtextarea {

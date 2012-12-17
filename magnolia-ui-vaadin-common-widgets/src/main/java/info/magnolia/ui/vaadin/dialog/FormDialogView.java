@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.vaadin.dialog;
 
-import com.vaadin.ui.Component;
-
-import info.magnolia.ui.framework.view.View;
-
+import info.magnolia.ui.vaadin.form.FormView;
 
 /**
- * View implementation for the Contacts app.
+ * Interface of {@link FormDialog}.
  */
-public class ContactsViewImpl implements ContactsView {
+public interface FormDialogView extends DialogView {
 
-    private View workbenchView;
-
-    @Override
-    public Component asVaadinComponent() {
-        return workbenchView.asVaadinComponent();
-    }
-
-    @Override
-    public void setWorkbenchView(View workbenchView) {
-        this.workbenchView = workbenchView;
-    }
+    void setFormView(FormView formView);
 }

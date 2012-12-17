@@ -31,13 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.view;
+package info.magnolia.ui.model.field.builder;
 
-import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
+import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+
+import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.model.field.validation.definition.EmailValidatorDefinition;
+import info.magnolia.ui.model.field.validation.definition.RegexpValidatorDefinition;
 
 /**
- * Basic View definition for the Security App.
+ * Tests for {@link ValidatorConfig}.
  */
-public interface BaseView extends WorkbenchSubAppView {
+public class ValidatorConfigTest {
 
+    private ValidatorConfig validators = new ValidatorConfig();
+
+    @Test
+    public void testDigitsOnly() {
+
+        GenericValidatorBuilder builder = validators.digitsOnly();
+        RegexpValidatorDefinition definition = (RegexpValidatorDefinition) builder.exec();
+
+        assertTrue(definition.getPattern().equals("[0-9]+"));
+    }
+
+    @Test
+    public void testRegexp() {
+
+        GenericValidatorBuilder builder = validators.regexp("test-pattern");
+        RegexpValidatorDefinition definition = (RegexpValidatorDefinition) builder.exec();
+
+        assertTrue(definition.getPattern().equals("test-pattern"));
+    }
+
+    @Test
+    public void testEmail() {
+
+        GenericValidatorBuilder builder = validators.email();
+        ConfiguredFieldValidatorDefinition definition = builder.exec();
+
+        assertTrue(definition instanceof EmailValidatorDefinition);
+    }
 }

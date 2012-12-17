@@ -33,19 +33,10 @@
  */
 package info.magnolia.ui.model.dialog.builder;
 
-import info.magnolia.ui.model.form.builder.FieldsConfig;
-import info.magnolia.ui.model.form.builder.TabBuilder;
-
 /**
  * Config object creating builders for dialog related definitions.
  */
 public class DialogConfig {
-
-    public final FieldsConfig fields = new FieldsConfig();
-
-    public TabBuilder tab(String name) {
-        return new TabBuilder(name);
-    }
 
     public DialogActionBuilder action(String name) {
         return new DialogActionBuilder(name);

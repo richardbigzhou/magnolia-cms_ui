@@ -105,10 +105,9 @@ button.btn-dialog-selectCallBack {
 .v-checkbox > label,
 .gwt-CheckBox > label {
     display:inline-block;
-    padding-left: 15px;
+    padding-left:21px;
     min-width:15px;
-    height:15px;
-    margin:-2px 0 0 -2px;
+    min-height:15px;
 }
 
 .v-checkbox > input[type="checkbox"] + label,
@@ -171,8 +170,18 @@ button.btn-dialog-selectCallBack {
     color: #666;
     left: 450px;
     position: absolute;
+    width: 200px !important;
 }
 
 .v-select-twincol-caption-left {
     color: #666;
+    width: 200px !important;
+}
+
+input.v-textfield-readonly, textarea.v-textarea-readonly {
+    background-color: #e6e6e6 !important;
+}
+
+.cke_contents {
+	height: 120px !important;
 }

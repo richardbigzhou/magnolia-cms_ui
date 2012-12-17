@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.model.form.builder;
 
+import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
 import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
@@ -142,5 +143,11 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder {
     @Override
     public FileUploadFieldBuilder validator(ConfiguredFieldValidatorDefinition validatorDefinition) {
         return (FileUploadFieldBuilder) super.validator(validatorDefinition);
+    }
+
+    @Override
+    public FileUploadFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
+        getDefinition().addValidator(validatorBuilder.exec());
+        return this;
     }
 }

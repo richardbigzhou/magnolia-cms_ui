@@ -43,7 +43,7 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
-import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
+import info.magnolia.ui.vaadin.dialog.FormDialogView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -103,7 +103,7 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
 
     @Override
     public FormDialogPresenter createDialogPresenterByDefinition(DialogDefinition definition) {
-        NewFormDialogView view = componentProvider.getComponent(NewFormDialogView.class);
+        FormDialogView view = componentProvider.getComponent(FormDialogView.class);
         return new FormDialogPresenterImpl(view, dialogBuilder, formPresenterFactory, definition, shell, eventBus, actionFactory);
 
 

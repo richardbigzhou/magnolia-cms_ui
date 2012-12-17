@@ -41,8 +41,8 @@ import org.slf4j.LoggerFactory;
 
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
+import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
-import info.magnolia.ui.app.security.view.BaseView;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 
@@ -53,18 +53,24 @@ public class SecurityRolesSubApp extends AbstractContentSubApp {
     private static final Logger log = LoggerFactory.getLogger(SecurityRolesSubApp.class);
 
     @Inject
-    public SecurityRolesSubApp(final SubAppContext subAppContext, BaseView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
+    public SecurityRolesSubApp(final SubAppContext subAppContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
         super(subAppContext, view, workbench, subAppEventBus);
     }
 
-    @Override
-    public String getCaption() {
-        return "Roles";
-    }
 
     @Override
     public void updateActionbar(ActionbarPresenter actionbar) {
-        // nothing to update yet
+        String selectedItemId = getWorkbench().getSelectedItemId();
+        if(selectedItemId == null) {
+            selectedItemId = "/";
+        }
+        if ("/".equals(selectedItemId)) {
+            actionbar.enableGroup("addActions");
+            actionbar.disableGroup("editActions");
+        } else {
+            actionbar.enableGroup("editActions");
+            actionbar.disableGroup("addActions");
+        }
     }
 
 }

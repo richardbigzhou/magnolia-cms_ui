@@ -129,12 +129,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     private void updateActions() {
 
         // actions currently always disabled
-        actionbarPresenter.disable("moveComponent");
-        actionbarPresenter.disable("copyComponent");
-        actionbarPresenter.disable("pasteComponent");
-        actionbarPresenter.disable("undo");
-        actionbarPresenter.disable("redo");
-
+        actionbarPresenter.disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
     }
 
     @Override
@@ -206,13 +201,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     }
 
     private void hideAllSections() {
-        actionbarPresenter.hideSection("pagePreviewActions");
-        actionbarPresenter.hideSection("pageActions");
-        actionbarPresenter.hideSection("areaActions");
-        actionbarPresenter.hideSection("optionalAreaActions");
-        actionbarPresenter.hideSection("editableAreaActions");
-        actionbarPresenter.hideSection("optionalEditableAreaActions");
-        actionbarPresenter.hideSection("componentActions");
+        actionbarPresenter.hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions");
     }
 
     private void showEditor() {

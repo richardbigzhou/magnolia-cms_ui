@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.integration.jcr.container;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -69,8 +70,7 @@ import com.vaadin.data.Property;
 
 /**
  * Vaadin container that reads its items from a JCR repository. Implements a simple mechanism for lazy loading items
- * from a JCR repository and a cache for items and item ids. Inspired by
- * http://vaadin.com/directory#addon/vaadin-sqlcontainer.
+ * from a JCR repository and a cache for items and item ids.
  */
 public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed,
     Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
@@ -116,18 +116,13 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String SELECT_TEMPLATE = "select * from [%s] as " + SELECTOR_NAME;
 
-    protected static final String SELECT_TEMPLATE_PATH_CLAUSE = " WHERE ISDESCENDANTNODE('%s')";
+    protected static final String WHERE_TEMPLATE_FOR_PATH = " ISDESCENDANTNODE('%s')";
 
     protected static final String ORDER_BY = " order by ";
 
     protected static final String ASCENDING_KEYWORD = " asc";
 
     protected static final String DESCENDING_KEYWORD = " desc";
-
-    /**
-     * Caution: this property gets special treatment as we'll have to call a function to be able to order by it.
-     */
-    protected static final String NAME_PROPERTY = "jcrName";
 
     protected static final String JCR_NAME_FUNCTION = "name(" + SELECTOR_NAME + ")";
 
@@ -456,7 +451,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * Determines a new offset for updating the row cache. The offset is calculated from the given index, and will be
      * fixed to match the start of a page, based on the value of pageLength.
-     * 
+     *
      * @param index Index of the item that was requested, but not found in cache
      */
     private void updateOffsetAndCache(int index) {
@@ -488,7 +483,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * <li> {@link #updateItems(QueryResult)}
      * </ul>
      */
-    public final void getPage() {
+    private final void getPage() {
 
         final String stmt = constructJCRQuery(true);
         if (StringUtils.isEmpty(stmt)) {
@@ -508,16 +503,16 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * Updates this container by storing the items found in the query result passed as argument.
-     * 
+     *
      * @see #getPage()
      */
-    protected void updateItems(final QueryResult queryResult) throws RepositoryException {
+    private void updateItems(final QueryResult queryResult) throws RepositoryException {
         long start = System.currentTimeMillis();
         log.debug("Starting iterating over QueryResult");
         final RowIterator iterator = queryResult.getRows();
         long rowCount = currentOffset;
         while (iterator.hasNext()) {
-            Node node = iterator.nextRow().getNode(SELECTOR_NAME);
+            final Node node = iterator.nextRow().getNode(SELECTOR_NAME);
             final String id = node.getPath();
             log.debug("Adding node {} to cached items.", id);
             itemIndexes.put(rowCount++, id);
@@ -528,12 +523,21 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * @return a string representing a JCR statement to retrieve this container's items.
+     * It creates a JCR query in the form {@code select * from [mainItemType] as selector [WHERE] [ORDER BY]"}.<p>
+     * Subclasses can customize the optional <code>WHERE</code> clause by overriding {@link #getQueryWhereClause()}.<p>
+     * The main item type (as configured in the {@link WorkbenchDefinition}) in the <code>SELECT</code> statement can be changed to something different by calling  {@link #getSelectStatement(String)}
+     * @param the optional <code>ORDER BY</code> is added if this parameter is <code>true</code>. Sorting options can be configured in the {@link WorkbenchDefinition}.
+     * @see AbstractJcrContainer#getQuerySelectStatement()
+     * @see AbstractJcrContainer#getQueryWhereClause()
+     * @see AbstractJcrContainer#getQueryWhereClauseWorkspacePath()
      * @see AbstractJcrContainer#getPage()
+     * @see OrderBy
      */
-    protected String constructJCRQuery(final boolean considerSorting) {
-        final String select = String.format(SELECT_TEMPLATE, getMainItemTypeAsString());
+    protected final String constructJCRQuery(final boolean considerSorting) {
+        final String select = getQuerySelectStatement();
         final StringBuilder stmt = new StringBuilder(select);
-        stmt.append(getWorkspacePathQueryClause());
+        // Return results only within the node configured in workbench/path
+        stmt.append(getQueryWhereClause());
 
         if (considerSorting) {
             if (sorters.isEmpty()) {
@@ -549,7 +553,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             for (OrderBy orderBy : sorters) {
                 String propertyName = orderBy.getProperty();
                 sortOrder = orderBy.isAscending() ? ASCENDING_KEYWORD : DESCENDING_KEYWORD;
-                if (NAME_PROPERTY.equals(propertyName)) {
+                if (ModelConstants.JCR_NAME.equals(propertyName)) {
                     stmt.append(JCR_NAME_FUNCTION).append(sortOrder).append(", ");
                     continue;
                 }
@@ -558,6 +562,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             }
             stmt.delete(stmt.lastIndexOf(","), stmt.length());
         }
+        log.debug("Constructed JCR query is {}", stmt);
         return stmt.toString();
     }
 
@@ -577,17 +582,38 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * @return the JCR query clause to select only nodes with the path configured in the workspace as String - in case
-     * it's not configured return a blank string so that all nodes are considered.
+     * it's not configured return a blank string so that all nodes are considered. Internally calls {@link #getQueryWhereClauseWorkspacePath()} to determine
+     * the path under which to perform the search.
      */
-    protected String getWorkspacePathQueryClause() {
-        String workspacePathQueryClause;
-        if (StringUtils.isNotBlank(workbenchDefinition.getPath()) && !"/".equals(workbenchDefinition.getPath())) {
-            workspacePathQueryClause = String.format(SELECT_TEMPLATE_PATH_CLAUSE, workbenchDefinition.getPath());
-        } else {
-            // By default, search the root and therefore need no query clause.
-            workspacePathQueryClause = "";
+    protected String getQueryWhereClause() {
+        String whereClause = "";
+        String clauseWorkspacePath = getQueryWhereClauseWorkspacePath();
+        if (!"".equals(clauseWorkspacePath)) {
+            whereClause = " where " + clauseWorkspacePath;
         }
-        return workspacePathQueryClause;
+        log.debug("JCR query WHERE clause is {}", whereClause);
+        return whereClause;
+    }
+
+    /**
+     * @return if {@link WorkbenchDefinition#getPath()} is not null or root ("/"), an ISDESCENDATNODE constraint narrowing the scope of search under the configured path, else an empty string.
+     * Used by {@link #getQueryWhereClause()} to build a where clause.
+     */
+    protected final String getQueryWhereClauseWorkspacePath() {
+        // By default, search the root and therefore do not need a query clause.
+        String whereClauseWorkspacePath = "";
+        if (StringUtils.isNotBlank(workbenchDefinition.getPath()) && !"/".equals(workbenchDefinition.getPath())) {
+            whereClauseWorkspacePath = String.format(WHERE_TEMPLATE_FOR_PATH, workbenchDefinition.getPath());
+        }
+        log.debug("Workspace path where-clause is {}", whereClauseWorkspacePath);
+        return whereClauseWorkspacePath;
+    }
+
+    /**
+     * @return a <code>SELECT</code> statement with the main item type as configured in the {@link WorkbenchDefinition}. Can be customized by subclasses to utilize other item types, i.e. {@code select * from [my:fancytype]}. Used internally by {@link #constructJCRQuery(boolean)}.
+     */
+    protected String getQuerySelectStatement() {
+        return String.format(SELECT_TEMPLATE, getMainItemTypeAsString());
     }
 
     /**

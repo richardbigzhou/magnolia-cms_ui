@@ -31,48 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dummy;
+package info.magnolia.ui.model.column.builder;
 
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.shell.Shell;
-
-import javax.inject.Inject;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Label;
-
+import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
+import info.magnolia.ui.model.column.definition.PropertyColumnDefinition;
 
 /**
- * View implementation for a dummy app.
+ * Config object creating builders for column definitions.
  */
-public class DummyViewImpl implements DummyView {
+public class ColumnConfig {
 
-    private final CssLayout layout = new CssLayout();
-
-    private Listener listener;
-
-    private final AppContext appContext;
-
-    @Inject
-    public DummyViewImpl(final Shell shell, final AppContext appContext) {
-        this.appContext = appContext;
-        Label icon = new Label("");
-        Label label = new Label(appContext.getAppDescriptor().getLabel());
-        icon.setStyleName("dummy-app-icon");
-        icon.addStyleName(appContext.getAppDescriptor().getIcon());
-        label.setStyleName("dummy-app-teaser");
-        layout.addComponent(icon);
-        layout.addComponent(label);
+    public <T extends AbstractColumnDefinition> ColumnBuilder<T> column(T definition) {
+        return new ColumnBuilder<T>(definition);
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
-    }
-
-    @Override
-    public void setListener(Listener listener) {
-        this.listener = listener;
+    public ColumnBuilder property(String propertyName, String label) {
+        ColumnBuilder<PropertyColumnDefinition> columnBuilder = new ColumnBuilder<PropertyColumnDefinition>(new PropertyColumnDefinition());
+        return columnBuilder.name(propertyName).label(label).propertyName(propertyName);
     }
 }

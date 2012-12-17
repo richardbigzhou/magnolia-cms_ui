@@ -33,13 +33,10 @@
  */
 package info.magnolia.ui.admincentral.tree.container;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import info.magnolia.cms.core.MgnlNodeType;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
@@ -107,7 +104,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench.addColumn(colDef2);
 
         ItemTypeDefinition itemType = new ConfiguredItemTypeDefinition();
-        ((ConfiguredItemTypeDefinition) itemType).setItemType(MgnlNodeType.NT_CONTENT);
+        ((ConfiguredItemTypeDefinition) itemType).setItemType(NodeTypes.Content.NAME);
         configuredWorkbench.setMainItemType(itemType);
 
         workbenchDefinition = configuredWorkbench;
@@ -122,7 +119,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetItem_NodeType() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         node1.getSession().save();
         String containerItemId = node1.getPath();
 
@@ -137,10 +134,10 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testAreChildrenAllowed_true() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         node1.getSession().save();
-        
-        Node node2 = AbstractJcrContainerTest.createNode(node1, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
+
+        Node node2 = AbstractJcrContainerTest.createNode(node1, "node2", NodeTypes.Content.NAME, "name", "name2");
         node2.getSession().save();
         String containerItemId = node1.getPath();
 
@@ -154,7 +151,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testAreChildrenAllowed_false() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         node1.getSession().save();
         String containerItemId = node1.getProperty("name").getPath();
 
@@ -168,10 +165,10 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testRootItemIds() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
-        AbstractJcrContainerTest.createNode(node1, "node1_1", MgnlNodeType.NT_CONTENT, "name", "name1_1");
-        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
-        AbstractJcrContainerTest.createNode(node2, "node2_1", MgnlNodeType.NT_CONTENT, "name", "name2_1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
+        AbstractJcrContainerTest.createNode(node1, "node1_1", NodeTypes.Content.NAME, "name", "name1_1");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
+        AbstractJcrContainerTest.createNode(node2, "node2_1", NodeTypes.Content.NAME, "name", "name2_1");
         node1.getSession().save();
 
         String containerItemId1 = node1.getPath();
@@ -189,8 +186,8 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testisRoot_true() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
-        AbstractJcrContainerTest.createNode(node1, "node1_1", MgnlNodeType.NT_CONTENT, "name", "name1_1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
+        AbstractJcrContainerTest.createNode(node1, "node1_1", NodeTypes.Content.NAME, "name", "name1_1");
         node1.getSession().save();
 
         String containerItemId1 = node1.getPath();
@@ -205,8 +202,8 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testisRoot_false() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
-        Node node1_1 = AbstractJcrContainerTest.createNode(node1, "node1_1", MgnlNodeType.NT_CONTENT, "name", "name1_1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
+        Node node1_1 = AbstractJcrContainerTest.createNode(node1, "node1_1", NodeTypes.Content.NAME, "name", "name1_1");
         node1.getSession().save();
 
         String containerItemId1_1 = node1_1.getPath();
@@ -221,10 +218,10 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetChildren() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
-        Node node1_1 = AbstractJcrContainerTest.createNode(node1, "node1_1", MgnlNodeType.NT_CONTENT, "name", "name1_1");
-        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
-        AbstractJcrContainerTest.createNode(node2, "node2_1", MgnlNodeType.NT_CONTENT, "name", "name2_1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
+        Node node1_1 = AbstractJcrContainerTest.createNode(node1, "node1_1", NodeTypes.Content.NAME, "name", "name1_1");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
+        AbstractJcrContainerTest.createNode(node2, "node2_1", NodeTypes.Content.NAME, "name", "name2_1");
         node1.getSession().save();
 
         String containerItemId1 = node1.getPath();
@@ -240,10 +237,10 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetParent() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
-        Node node1_1 = AbstractJcrContainerTest.createNode(node1, "node1_1", MgnlNodeType.NT_CONTENT, "name", "name1_1");
-        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
-        AbstractJcrContainerTest.createNode(node2, "node2_1", MgnlNodeType.NT_CONTENT, "name", "name2_1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
+        Node node1_1 = AbstractJcrContainerTest.createNode(node1, "node1_1", NodeTypes.Content.NAME, "name", "name1_1");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
+        AbstractJcrContainerTest.createNode(node2, "node2_1", NodeTypes.Content.NAME, "name", "name2_1");
         node1.getSession().save();
 
         String containerItemId1 = node1.getPath();
@@ -259,8 +256,8 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     public void testGetRootItemIds() throws RepositoryException {
         // GIVEN
         Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:page", colName1, "name1");
-        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", MgnlNodeType.NT_CONTENT, colName1, "name2");
-        Node node2_1 = AbstractJcrContainerTest.createNode(node2, "node2_1", MgnlNodeType.NT_CONTENT, colName1, "name2_1");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", NodeTypes.Content.NAME, colName1, "name2");
+        Node node2_1 = AbstractJcrContainerTest.createNode(node2, "node2_1", NodeTypes.Content.NAME, colName1, "name2_1");
         node1.getSession().save();
         // Initial check
         Collection<Item> res = hierarchicalJcrContainer.getRootItemIds();
@@ -280,8 +277,8 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     public void testIsRoot() throws RepositoryException {
         // GIVEN
         Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:page", colName1, "name1");
-        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", MgnlNodeType.NT_CONTENT, colName1, "name2");
-        Node node2_1 = AbstractJcrContainerTest.createNode(node2, "node2_1", MgnlNodeType.NT_CONTENT, colName1, "name2_1");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", NodeTypes.Content.NAME, colName1, "name2");
+        Node node2_1 = AbstractJcrContainerTest.createNode(node2, "node2_1", NodeTypes.Content.NAME, colName1, "name2_1");
         node1.getSession().save();
 
         // WHEN
@@ -301,7 +298,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetItemByPath_Node() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, colName1, "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, colName1, "name1");
         node1.getSession().save();
 
         // WHEN
@@ -315,7 +312,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetItemByPath_Property() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, colName1, "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, colName1, "name1");
         node1.getSession().save();
 
         // WHEN
@@ -329,7 +326,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetChildren_OnlyNode_oneNodeType() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", "mgnl:page", "name", "name2");
         AbstractJcrContainerTest.createNode(node2, "node2_1", "mgnl:contentNode", "name", "name2_1");
         node1.getSession().save();
@@ -347,13 +344,13 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetChildren_NodeAndProperty() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, "name", "name1");
-        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", MgnlNodeType.NT_CONTENT, "name", "name2");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         rootNode.setProperty("jcr:name", "excluded");
         rootNode.setProperty("name", "included");
         node1.getSession().save();
         ConfiguredItemTypeDefinition type1 = new ConfiguredItemTypeDefinition();
-        type1.setItemType(MgnlNodeType.NT_CONTENT);
+        type1.setItemType(NodeTypes.Content.NAME);
         workbenchDefinition.setMainItemType(type1);
         workbenchDefinition.setIncludeProperties(true);
         // WHEN
@@ -370,7 +367,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testPathInTree() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, colName1, "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, colName1, "name1");
         node1.getSession().save();
         // Initial Check
         assertEquals("/node1", hierarchicalJcrContainer.getPathInTree(node1));
@@ -385,7 +382,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetItemByPathWhenWorkbenchPathIsOtherThanRoot() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", MgnlNodeType.NT_CONTENT, colName1, "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, colName1, "name1");
         node1.getSession().save();
 
 
@@ -396,6 +393,28 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         // THEN
         assertNotNull(res);
         assertEquals("/node1", res.getPath());
+    }
+
+    @Test
+    public void testGetChildrenDoesNotIncludeMgnlAndJcrProperties() throws RepositoryException {
+        // GIVEN
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
+        node1.setProperty("jcr:name", "baz");
+        node1.setProperty("mgnl:createdBy", "qux");
+        node1.setProperty("foo", "meh");
+        node1.setProperty("bar", "duh");
+        rootNode.getSession().save();
+        ConfiguredItemTypeDefinition type1 = new ConfiguredItemTypeDefinition();
+        type1.setItemType(NodeTypes.Content.NAME);
+        workbenchDefinition.setMainItemType(type1);
+        workbenchDefinition.setIncludeProperties(true);
+
+        // WHEN
+        Collection<Item> res = hierarchicalJcrContainer.getChildren(node1);
+
+        // THEN
+        assertEquals(3, res.size());
+
     }
 
 }

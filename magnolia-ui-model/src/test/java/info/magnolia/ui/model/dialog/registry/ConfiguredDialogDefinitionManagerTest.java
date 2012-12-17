@@ -55,8 +55,8 @@ import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
-import info.magnolia.ui.model.tab.definition.TabDefinition;
+import info.magnolia.ui.model.form.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.model.form.definition.TabDefinition;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

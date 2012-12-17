@@ -80,7 +80,7 @@ public interface ContentView extends View {
             else {
                 return defaultViewType();
             }
-            throw new IllegalArgumentException("No view type could be found for " + text);
+            throw new IllegalArgumentException("No view type could be found for ["+ text+"]");
         }
 
         private static ViewType defaultViewType() {
@@ -92,7 +92,7 @@ public interface ContentView extends View {
 
     /**
      * Selects the item with given path in the content view.
-     * 
+     *
      * @param path relative to the tree root, must start with '/'
      */
     void select(String path);
@@ -111,8 +111,10 @@ public interface ContentView extends View {
         void onItemSelection(Item item);
 
         void onDoubleClick(Item item);
-        
+
         void onItemEdited(Item item);
+
+        String getItemIcon(Item item);
 
     }
 }

@@ -42,12 +42,14 @@ import info.magnolia.ui.vaadin.grid.MagnoliaTable;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 
 import java.util.ArrayList;
+
 import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
@@ -55,10 +57,9 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Table;
 
-
 /**
  * Vaadin UI component that displays a list.
- * 
+ *
  */
 public class ListViewImpl implements ListView {
 
@@ -76,16 +77,19 @@ public class ListViewImpl implements ListView {
         table = new MagnoliaTable();
         table.setSizeFull();
 
-        // next two lines are required to make the browser (Table) react on selection change via
+        // next two lines are required to make the browser (Table) react on
+        // selection change via
         // mouse
         table.setImmediate(true);
         table.setNullSelectionAllowed(false);
         // table.setMultiSelectMode(MultiSelectMode.DEFAULT);
         table.setMultiSelect(false);
         table.setSortDisabled(false);
-        // Important do not set page length and cache ratio on the Table, rather set them by using
+        // Important do not set page length and cache ratio on the Table, rather
+        // set them by using
         // AbstractJcrContainer corresponding methods. Setting
-        // those value explicitly on the Table will cause the same jcr query to be repeated twice
+        // those value explicitly on the Table will cause the same jcr query to
+        // be repeated twice
         // thus degrading performance greatly.
         table.addListener(new Table.ValueChangeListener() {
 
@@ -103,6 +107,14 @@ public class ListViewImpl implements ListView {
                 if (event.isDoubleClick()) {
                     presenterOnDoubleClick(String.valueOf(event.getItemId()));
                 }
+            }
+        });
+        
+        table.setCellStyleGenerator(new Table.CellStyleGenerator() {
+            
+            @Override
+            public String getStyle(Object itemId, Object propertyId) {
+                return presenterGetIcon(itemId, propertyId);
             }
         });
 
@@ -163,6 +175,7 @@ public class ListViewImpl implements ListView {
     private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
         final List<String> columnOrder = new ArrayList<String>();
         final Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
+
         while (iterator.hasNext()) {
             ColumnDefinition column = iterator.next();
             if (!workbenchDefinition.isDialogWorkbench() || column.isDisplayInDialog()) {
@@ -170,7 +183,8 @@ public class ListViewImpl implements ListView {
                 final String columnProperty = (column.getPropertyName() != null) ? column.getPropertyName() : columnName;
 
                 // FIXME fgrilli workaround for conference
-                // when setting cols width in dialogs we are forced to use explicit px value instead
+                // when setting cols width in dialogs we are forced to use
+                // explicit px value instead
                 // of expand ratios, which for some reason don't work
                 if (workbenchDefinition.isDialogWorkbench()) {
                     table.setColumnWidth(columnProperty, 300);
@@ -188,6 +202,7 @@ public class ListViewImpl implements ListView {
                 if (column.getFormatterClass() != null) {
                     table.addGeneratedColumn(columnProperty, componentProvider.newInstance(column.getFormatterClass(), column));
                 }
+
                 columnOrder.add(columnProperty);
             }
 
@@ -201,5 +216,14 @@ public class ListViewImpl implements ListView {
     @Override
     public ViewType getViewType() {
         return ViewType.LIST;
+    }
+
+    private String presenterGetIcon(Object itemId, Object propertyId) {
+        Container container = table.getContainerDataSource();
+        if(listener != null && propertyId == null) {
+            return listener.getItemIcon(container.getItem(itemId));                    
+        }
+        
+        return null;
     }
 }

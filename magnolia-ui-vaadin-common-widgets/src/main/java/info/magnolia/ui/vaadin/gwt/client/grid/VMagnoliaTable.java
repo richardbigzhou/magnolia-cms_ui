@@ -35,6 +35,8 @@ package info.magnolia.ui.vaadin.gwt.client.grid;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -175,6 +177,18 @@ public class VMagnoliaTable extends VScrollTablePatched {
 
             public MagnoliaTableRow(UIDL uidl, char[] aligns) {
                 super(uidl, aligns);
+                //Minor hack. Use row style for icon definition.
+                if(uidl.hasAttribute("rowstyle")) {
+                    String iconFontStyle = uidl.getStringAttribute("rowstyle");
+                    if(iconFontStyle.startsWith("icon-")) {
+                        SpanElement iconElement = Document.get().createSpanElement();
+                        iconElement.setClassName(iconFontStyle);
+                        iconElement.addClassName("v-table-icon-element");
+                        Node parentNode = selectionCheckBox.getElement().getParentNode();
+                        //insert before cell text and this will also work with tree table.
+                        parentNode.insertBefore(iconElement, parentNode.getLastChild());
+                    }
+                }   
             }
 
             public MagnoliaTableRow() {

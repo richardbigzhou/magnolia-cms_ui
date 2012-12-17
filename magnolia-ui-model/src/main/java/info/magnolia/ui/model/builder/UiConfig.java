@@ -31,50 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.lightbox;
+package info.magnolia.ui.model.builder;
 
-
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-
+import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
+import info.magnolia.ui.model.column.builder.ColumnConfig;
+import info.magnolia.ui.model.dialog.builder.DialogConfig;
+import info.magnolia.ui.model.field.builder.ValidatorConfig;
+import info.magnolia.ui.model.form.builder.FieldsConfig;
+import info.magnolia.ui.model.form.builder.FormConfig;
+import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
 
 /**
- * The GwtLightBox widget.
+ * Main config object for creating UI definitions.
  */
-public class GwtLightBox extends Widget {
+public class UiConfig {
 
-    private static final String CLASSNAME = "lightbox";
-
-    private static final int SIZE_DEFAULT = 24;
-
-    private final Element root = DOM.createDiv();
-    private final Element image = DOM.createImg();
-
-    VerticalPanel panel = new VerticalPanel();
-
-    //private final  Image image = new Image();
-
-    public GwtLightBox() {
-        setElement(root);
-        setStylePrimaryName(CLASSNAME);
-
-        //root.appendChild(image);
-        //image.setAttribute("src", "");
-
-        //root.add(image);
-    }
-
-    public void updateImageUrl(String imageUrl){
-        image.setAttribute("src", imageUrl);
-    }
-
-    public void updateColor(String value) {
-        root.getStyle().setColor(value);
-    }
-
-
-
-
+    public final WorkbenchConfig workbenches = new WorkbenchConfig();
+    public final ActionbarConfig actionbars = new ActionbarConfig();
+    public final FormConfig forms = new FormConfig();
+    public final DialogConfig dialogs = new DialogConfig();
+    public final FieldsConfig fields = new FieldsConfig();
+    public final ColumnConfig columns = new ColumnConfig();
+    public final ValidatorConfig validators = new ValidatorConfig();
 }

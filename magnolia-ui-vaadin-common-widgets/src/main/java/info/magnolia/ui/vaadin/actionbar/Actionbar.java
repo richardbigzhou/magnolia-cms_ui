@@ -50,6 +50,7 @@ import org.vaadin.rpc.client.Method;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.terminal.Resource;
@@ -60,7 +61,6 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.VerticalLayout;
-
 
 /**
  * The Actionbar widget, consisting of sections and groups of actions.
@@ -145,7 +145,7 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
                 doAddAction(action, section.getName());
             }
         }
-        return new Object[]{};
+        return new Object[] {};
     }
 
     private void doAddSection(final ActionbarSection section) {
@@ -157,8 +157,7 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     }
 
     private void doAddAction(final ActionbarItem action, String sectionName) {
-        GsonBuilder gson = new GsonBuilder()
-            .registerTypeAdapter(Resource.class, new ResourceSerializer());
+        GsonBuilder gson = new GsonBuilder().registerTypeAdapter(Resource.class, new ResourceSerializer());
         proxy.call("addAction", gson.create().toJson(action), action.getGroupName(), sectionName);
     }
 
@@ -250,12 +249,18 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
             final VerticalLayout previewContainer = new VerticalLayout();
             previewContainer.setWidth("100%");
 
-            if (previewResource instanceof IconFontResource){
-                String cssClassName = ((IconFontResource)previewResource).getCssClassName();
-                Icon previewIconFont = new Icon(cssClassName,100,"#000000");
+            if (previewResource instanceof IconFontResource) {
+                String cssClassName = ((IconFontResource) previewResource).getCssClassName();
+                Icon previewIconFont = new Icon(cssClassName, 100, "#000000");
                 previewContainer.addComponent(previewIconFont);
-            }else{
-                Embedded preview = new Embedded(null, previewResource);
+            } else {
+
+                // Add a cache buster to the preview image to ensure that it is
+                // updated to the new image after any edits.
+                String resourcePath = ((ExternalResource) previewResource).getURL();
+                ExternalResource cacheBustedPreviewResource = new ExternalResource(resourcePath + "?cb=" + System.currentTimeMillis());
+
+                Embedded preview = new Embedded(null, cacheBustedPreviewResource);
                 preview.setWidth("100%");
                 previewContainer.addComponent(preview);
             }
@@ -540,15 +545,16 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
     }
 
     /**
-     * Legacy class for compatibility of GSON serialization of Resources, in case the item uses an
-     * image icon.
+     * Legacy class for compatibility of GSON serialization of Resources, in
+     * case the item uses an image icon.
      */
     public static class ActionbarResourceItem extends ActionbarItem {
 
         private final Resource icon;
 
         /**
-         * Use {@link ActionbarItem#ActionbarItem(String, String, String)} instead.
+         * Use {@link ActionbarItem#ActionbarItem(String, String, String)}
+         * instead.
          */
         @Deprecated
         public ActionbarResourceItem(String name, String label, Resource icon, String groupName) {

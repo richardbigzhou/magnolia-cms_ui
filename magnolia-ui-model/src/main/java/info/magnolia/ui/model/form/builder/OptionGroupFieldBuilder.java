@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.model.form.builder;
 
+import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
 import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
@@ -165,4 +166,9 @@ public class OptionGroupFieldBuilder extends SelectFieldBuilder {
         return (OptionGroupFieldBuilder) super.validator(validatorDefinition);
     }
 
+    @Override
+    public OptionGroupFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
+        getDefinition().addValidator(validatorBuilder.exec());
+        return this;
+    }
 }

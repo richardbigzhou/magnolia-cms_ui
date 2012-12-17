@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.ui.model.ModelConstants;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Item;
@@ -162,9 +163,9 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
             throw new IllegalArgumentException("Item cannot be null.");
         }
         String nodeName = "";
-        if (getChangedProperties().containsKey(JCR_NAME)) {
-            nodeName = getChangedProperties().get(JCR_NAME).toString();
-            getChangedProperties().remove(JCR_NAME);
+        if (getChangedProperties().containsKey(ModelConstants.JCR_NAME)) {
+            nodeName = getChangedProperties().get(ModelConstants.JCR_NAME).toString();
+            getChangedProperties().remove(ModelConstants.JCR_NAME);
         }
 
         return Path.getUniqueLabel(item.getSession(), item.getPath(), StringUtils.isNotBlank(nodeName) ? nodeName : "untitled");

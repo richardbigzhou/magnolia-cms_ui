@@ -43,7 +43,7 @@ import info.magnolia.ui.model.form.action.FormActionDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
 
 /**
- * FormPresenter.
+ * Interface of {@link FormPresenterImpl}.
  */
 public interface FormPresenter {
 
@@ -71,7 +71,7 @@ public interface FormPresenter {
     }
 
     /**
-     * A Helper class for operations with {@link info.magnolia.ui.admincentral.dialog.DialogPresenter}.
+     * A Helper class for operations with {@link info.magnolia.ui.admincentral.form.FormPresenter}.
      */
     public class FormPresenterUtil {
 

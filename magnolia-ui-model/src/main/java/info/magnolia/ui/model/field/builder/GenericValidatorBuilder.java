@@ -31,27 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.view;
+package info.magnolia.ui.model.field.builder;
 
-import info.magnolia.ui.framework.view.View;
-
-import com.vaadin.ui.Component;
+import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
 /**
- * Users view implementation for the Security App.
+ * Builder for creating a validator using only the standard properties.
+ *
+ * @see ValidatorConfig#custom(info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition)
  */
-public class BaseViewImpl implements BaseView {
+public class GenericValidatorBuilder {
 
-    private View workbenchView;
+    private ConfiguredFieldValidatorDefinition definition;
 
-    @Override
-    public Component asVaadinComponent() {
-        return workbenchView.asVaadinComponent();
+    public GenericValidatorBuilder(ConfiguredFieldValidatorDefinition definition) {
+        this.definition = definition;
     }
 
-    @Override
-    public void setWorkbenchView(View workbenchView) {
-        this.workbenchView = workbenchView;
+    public GenericValidatorBuilder errorMessage(String errorMessage) {
+        definition.setErrorMessage(errorMessage);
+        return this;
     }
 
+    public GenericValidatorBuilder i18nBasename(String i18nBasename) {
+        definition.setI18nBasename(i18nBasename);
+        return this;
+    }
+
+    public ConfiguredFieldValidatorDefinition exec() {
+        return definition;
+    }
 }

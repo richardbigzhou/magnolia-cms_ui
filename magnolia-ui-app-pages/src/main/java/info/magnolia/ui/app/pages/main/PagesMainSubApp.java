@@ -49,8 +49,6 @@ import javax.inject.Named;
  */
 public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainView.Listener {
 
-    private static final String CAPTION = "Pages";
-
     private final PagesMainView view;
 
     private final InstantPreviewDispatcher dispatcher;
@@ -62,28 +60,19 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
         this.view.setListener(this);
         this.dispatcher = dispatcher;
     }
-    
-    @Override
-    public String getCaption() {
-        return CAPTION;
-    }
 
     @Override
     public void updateActionbar(ActionbarPresenter actionbar) {
 
         // actions currently always disabled
-        actionbar.disable("move");
-        actionbar.disable("duplicate");
+        actionbar.disable("move", "duplicate");
 
         // actions disabled based on selection
-        if (getWorkbench().getSelectedItemId() == null || getWorkbench().getSelectedItemId().equals("/")) {
-            actionbar.disable("preview");
-            actionbar.disable("editProperties");
-            actionbar.disable("export");
+        final String[] defaultActions = new String[] {"delete", "preview", "edit", "export"};
+        if (getWorkbench().getSelectedItemId() == null || "/".equals(getWorkbench().getSelectedItemId())) {
+            actionbar.disable(defaultActions);
         } else {
-            actionbar.enable("preview");
-            actionbar.enable("editProperties");
-            actionbar.enable("export");
+            actionbar.enable(defaultActions);
         }
     }
 

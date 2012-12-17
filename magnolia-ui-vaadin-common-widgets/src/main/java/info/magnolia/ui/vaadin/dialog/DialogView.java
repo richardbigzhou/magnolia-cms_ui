@@ -36,7 +36,7 @@ package info.magnolia.ui.vaadin.dialog;
 import info.magnolia.ui.framework.view.View;
 
 /**
- * DialogView.
+ * Interface for {@link BaseDialog}.
  */
 public interface DialogView extends View {
     

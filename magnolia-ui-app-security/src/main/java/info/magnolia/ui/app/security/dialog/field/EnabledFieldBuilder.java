@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
+import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
 import info.magnolia.ui.model.form.builder.CheckboxFieldBuilder;
 
 /**
@@ -52,4 +53,9 @@ public class EnabledFieldBuilder extends CheckboxFieldBuilder {
         return this.definition;
     }
 
+    @Override
+    public EnabledFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
+        getDefinition().addValidator(validatorBuilder.exec());
+        return this;
+    }
 }

@@ -31,23 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.dummy;
+package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.framework.app.AbstractApp;
-import info.magnolia.ui.framework.app.AppContext;
-
-import javax.inject.Inject;
-
+import com.vaadin.ui.Component;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * A dummy app.
+ * View for Workbench subApps. Used for implementers of {@link AbstractContentSubApp} and {@link AbstractItemSubApp}.
  */
-public class DummyApp extends AbstractApp {
+public class WorkbenchSubAppViewImpl implements WorkbenchSubAppView {
 
+    private View workbenchView;
 
-    @Inject
-    public DummyApp(AppContext appContext) {
-        super(appContext);
+    @Override
+    public void setWorkbenchView(View workbenchView) {
+        this.workbenchView = workbenchView;
     }
 
+    @Override
+    public Component asVaadinComponent() {
+        return workbenchView.asVaadinComponent();
+    }
 }

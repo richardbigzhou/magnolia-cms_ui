@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,65 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.model.form.definition;
 
-import info.magnolia.ui.vaadin.form.FormView;
+import java.util.ArrayList;
+import java.util.List;
+
+import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 /**
- * NewFormDialog.
+ * Standard tab definition implementation.
+ *
+ * @see TabDefinition
  */
-public class NewFormDialog extends BaseDialog implements NewFormDialogView {
+public class ConfiguredTabDefinition implements TabDefinition {
+
+    private String name;
+
+    private String label;
+
+    private String i18nBasename;
+
+    private List<FieldDefinition> fields = new ArrayList<FieldDefinition>();
+
     @Override
-    public void setFormView(FormView formView) {
-        super.setContent(formView.asVaadinComponent());
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @Override
+    public String getI18nBasename() {
+        return i18nBasename;
+    }
+
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
+    }
+
+    @Override
+    public List<FieldDefinition> getFields() {
+        return fields;
+    }
+
+    public void setFields(List<FieldDefinition> fields) {
+        this.fields = fields;
+    }
+
+    public void addField(FieldDefinition fieldDefinition) {
+        fields.add(fieldDefinition);
     }
 }

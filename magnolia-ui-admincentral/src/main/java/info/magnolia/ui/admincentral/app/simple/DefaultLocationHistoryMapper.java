@@ -53,36 +53,37 @@ public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
     @Override
     public Location getLocation(String fragment) {
 
-        String type = DefaultLocation.extractAppType(fragment);
-        String prefix = DefaultLocation.extractAppId(fragment);
-        String token = DefaultLocation.extractParameter(fragment);
+        String appType = DefaultLocation.extractAppType(fragment);
+        String appId = DefaultLocation.extractAppId(fragment);
+        String subAppId = DefaultLocation.extractSubAppId(fragment);
+        String parameter = DefaultLocation.extractParameter(fragment);
 
-        if (!supported(type, prefix, token)) {
+        if (!supported(appType, appId, subAppId, parameter)) {
             return null;
         }
 
-        return new DefaultLocation(type, prefix, "", token);
+        return new DefaultLocation(appType, appId, subAppId, parameter);
     }
 
     @Override
     public String getFragment(Location location) {
         DefaultLocation defaultLocation = (DefaultLocation) location;
 
-        if (!supported(defaultLocation.getAppType(), defaultLocation.getAppId(), defaultLocation.getParameter())) {
+        if (!supported(defaultLocation.getAppType(), defaultLocation.getAppId(), defaultLocation.getSubAppId(), defaultLocation.getParameter())) {
             return null;
         }
 
         return location.toString();
     }
 
-    private boolean supported(String type, String prefix, String token) {
+    private boolean supported(String appType, String appId, String subAppId, String parameter) {
 
-        if (type.equals(DefaultLocation.LOCATION_TYPE_SHELL_APP) && (prefix.equals("applauncher") || prefix.equals("pulse") || prefix.equals("favorite"))) {
+        if (appType.equals(DefaultLocation.LOCATION_TYPE_SHELL_APP) && (appId.equals("applauncher") || appId.equals("pulse") || appId.equals("favorite"))) {
             return true;
         }
 
         AppLauncherLayout appLauncherLayout = appLauncherLayoutManager.getLayoutForCurrentUser();
-        return type.equals(DefaultLocation.LOCATION_TYPE_APP) && appLauncherLayout.containsApp(prefix);
+        return appType.equals(DefaultLocation.LOCATION_TYPE_APP) && appLauncherLayout.containsApp(appId);
 
     }
 

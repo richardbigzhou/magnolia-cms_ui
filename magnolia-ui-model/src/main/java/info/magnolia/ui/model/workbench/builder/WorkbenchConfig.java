@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.model.workbench.builder;
 
-import info.magnolia.ui.model.column.builder.ColumnBuilder;
-import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
-
 /**
  * Config object creating builders for workbench related definitions.
  */
@@ -47,9 +44,5 @@ public class WorkbenchConfig {
 
     public ItemTypeBuilder itemType(String itemType) {
         return new ItemTypeBuilder(itemType);
-    }
-
-    public <T extends AbstractColumnDefinition> ColumnBuilder<T> column(T definition) {
-        return new ColumnBuilder<T>(definition);
     }
 }

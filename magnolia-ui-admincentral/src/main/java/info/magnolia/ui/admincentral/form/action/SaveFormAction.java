@@ -33,21 +33,16 @@
  */
 package info.magnolia.ui.admincentral.form.action;
 
+import com.vaadin.data.Item;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * Action for saving Items in Forms.
@@ -92,31 +87,5 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
 
     protected Item getItem() {
         return item;
-    }
-
-    private void traceNodeProperties(Node nodeOp) throws RepositoryException {
-        // debug by logging properties.
-        PropertyIterator propIter;
-        propIter = nodeOp.getProperties();
-        log.info("TRACE NODE PROPS:");
-        while (propIter.hasNext()) {
-            Property prop = propIter.nextProperty();
-            log.info(prop.toString() + " " + upToNCharacters(prop.getString(), 30));
-        }
-    }
-
-    private void traceNodeChildren(Node nodeOp) throws RepositoryException {
-        // debug by logging properties.
-        NodeIterator nodeIter;
-        nodeIter = nodeOp.getNodes();
-        log.info("TRACE NODE CHILDREN:");
-        while (nodeIter.hasNext()) {
-            Node n = nodeIter.nextNode();
-            log.info(n.toString());
-        }
-    }
-
-    private String upToNCharacters(String s, int n) {
-        return s.substring(0, Math.min(s.length(), n));
     }
 }

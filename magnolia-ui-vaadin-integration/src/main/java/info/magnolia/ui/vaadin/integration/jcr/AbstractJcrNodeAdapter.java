@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.integration.jcr;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.ui.model.ModelConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +63,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrNodeAdapter.class);
 
-    private String uuid;
+    private String nodeIdentifier;
 
     private String primaryNodeType;
 
@@ -78,26 +79,25 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         super(jcrNode);
     }
 
-
     @Override
     protected void initCommonAttributes(Item jcrItem) {
         super.initCommonAttributes(jcrItem);
         Node node = (Node) jcrItem;
         try {
-            uuid = node.getIdentifier();
+            nodeIdentifier = node.getIdentifier();
             if(StringUtils.isBlank(primaryNodeType)) {
                 primaryNodeType = node.getPrimaryNodeType().getName();
             }
         } catch (RepositoryException e) {
             log.error("Could not retrieve identifier or primaryNodeType name of JCR Node.", e);
-            uuid = UN_IDENTIFIED;
-            primaryNodeType = UN_IDENTIFIED;
+            nodeIdentifier = UNIDENTIFIED;
+            primaryNodeType = UNIDENTIFIED;
         }
     }
 
     @Override
     public String getNodeIdentifier() {
-        return uuid;
+        return nodeIdentifier;
     }
 
     protected void setPrimaryNodeTypeName(String primaryNodeTypeName) {
@@ -156,7 +156,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         try {
             final Node jcrNode = getNodeFromRepository();
             if (!jcrNode.hasProperty((String) id)) {
-                if (JCR_NAME.equals(id)) {
+                if (ModelConstants.JCR_NAME.equals(id)) {
                     value = jcrNode.getName();
                 } else {
                     return null;
@@ -252,7 +252,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
             return;
         }
         Node node = (Node) item;
-        if (JCR_NAME.equals(propertyId)) {
+        if (ModelConstants.JCR_NAME.equals(propertyId)) {
             String jcrName = (String) property.getValue();
             if (jcrName != null && !jcrName.isEmpty()) {
                 try {

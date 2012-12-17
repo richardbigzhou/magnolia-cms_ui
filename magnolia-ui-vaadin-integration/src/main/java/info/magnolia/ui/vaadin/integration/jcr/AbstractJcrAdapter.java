@@ -50,13 +50,13 @@ import com.vaadin.data.Property.ValueChangeEvent;
 
 
 /**
- * Common base for {JcrItemAdapter} implementation.
+ * Common base for {@link JcrItemAdapter} implementation.
  */
 public abstract class AbstractJcrAdapter implements Property.ValueChangeListener, JcrItemAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrAdapter.class);
 
-    static final String UN_IDENTIFIED = "?";
+    static final String UNIDENTIFIED = "?";
 
     private boolean isNode;
 
@@ -82,8 +82,8 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
             path = jcrItem.getPath();
         } catch (RepositoryException e) {
             log.error("Could not retrieve workspace or path of JCR Item.", e);
-            path = UN_IDENTIFIED;
-            workspace = UN_IDENTIFIED;
+            path = UNIDENTIFIED;
+            workspace = UNIDENTIFIED;
         }
     }
 
@@ -107,7 +107,7 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     }
 
     /**
-     * @return The represented JCR Item, or null in case of {RepositoryException}.
+     * @return The represented JCR Item, or null in case of {@link RepositoryException}.
      */
     @Override
     public javax.jcr.Item getJcrItem() {
@@ -154,7 +154,6 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
      * Updates and removes properties on given item, based on the {@link #changedProperties} and
      * {@link #removedProperties} maps. Read-only properties will not be updated.
      */
-    @SuppressWarnings("unused")
     public void updateProperties(Item item) throws RepositoryException {
         for (Entry<String, Property> entry : changedProperties.entrySet()) {
             if (entry.getValue().isReadOnly()) {

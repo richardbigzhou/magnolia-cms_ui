@@ -48,8 +48,8 @@ import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.vaadin.dialog.NewFormDialog;
-import info.magnolia.ui.vaadin.dialog.NewFormDialogView;
+import info.magnolia.ui.vaadin.dialog.FormDialog;
+import info.magnolia.ui.vaadin.dialog.FormDialogView;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -96,10 +96,10 @@ public class DialogBuilderTest {
         // GIVEN
         final DialogBuilder builder = new DialogBuilder();
         final DialogDefinition def = new ConfiguredDialogDefinition();
-        final NewFormDialogView dialog = new NewFormDialog();
+        final FormDialogView dialog = new FormDialog();
 
         // WHEN
-        final NewFormDialogView result = builder.buildFormDialog(def, dialog);
+        final FormDialogView result = builder.buildFormDialog(def, dialog);
 
         // THEN
         assertEquals(result, dialog);

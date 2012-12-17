@@ -54,11 +54,6 @@ public class MessagesMainSubApp extends AbstractSubApp implements MessagesView.L
     }
 
     @Override
-    public String getCaption() {
-        return "Messages";
-    }
-
-    @Override
     public void locationChanged(Location location) {
 
     }

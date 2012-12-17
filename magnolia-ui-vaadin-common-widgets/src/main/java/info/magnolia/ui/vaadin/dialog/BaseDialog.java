@@ -55,7 +55,9 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * BaseDialog.
+ * Basic implementation of dialogs.
+ * Is capable of displaying any content inside it's content component.
+ * Provides Action registration and callbacks to the view.
  */
 @ClientWidget(value = VBaseDialog.class, loadStyle = LoadStyle.EAGER)
 public class BaseDialog extends AbstractComponent implements ServerSideHandler, DialogView {
@@ -106,6 +108,7 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
             }
             this.content = actualContent;
             actualContent.setParent(this);
+            actualContent.setCaption(getCaption());
         }
     }
 
@@ -165,6 +168,7 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
 
     @Override
     public void setCaption(String caption) {
+        super.setCaption(caption);
         content.setCaption(caption);
     }
 

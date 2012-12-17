@@ -138,5 +138,5 @@ button.btn-dialog-help {
 
 .dialog-panel input[type="text"].v-form-field, .dialog-panel .v-form-field.v-customcomponent input[type="text"],
 .dialog-panel .v-datefield input[type="text"], .dialog-panel textarea.v-form-field {
-    border: 1px solid #999;
+    border: 1px solid #CCC;
 }

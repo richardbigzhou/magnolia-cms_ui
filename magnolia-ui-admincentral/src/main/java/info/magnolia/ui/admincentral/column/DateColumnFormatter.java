@@ -31,13 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.item;
+package info.magnolia.ui.admincentral.column;
 
-import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
+import java.util.Date;
+import java.util.Locale;
+
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
+import javax.inject.Inject;
+import org.apache.commons.lang.time.FastDateFormat;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.Table;
 
 /**
- * ContactsItemView.
- * see MGNLUI-230.
+ * Date Column formatter. Formats dates to a compact format.
  */
-public interface ContactsItemView extends WorkbenchSubAppView {
+public class DateColumnFormatter extends AbstractColumnFormatter<MetaDataColumnDefinition> {
+
+    private final FastDateFormat dateFormatter;
+
+    @Inject
+    public DateColumnFormatter(MetaDataColumnDefinition definition) {
+        super(definition);
+
+        final Locale locale = MgnlContext.getLocale();
+        dateFormatter = FastDateFormat.getDateTimeInstance(FastDateFormat.MEDIUM, FastDateFormat.SHORT, locale);
+    }
+
+    @Override
+    public Object generateCell(Table source, Object itemId, Object columnId) {
+        Item item = source.getItem(itemId);
+        Property prop = item.getItemProperty(columnId);
+        // Need to check prop.getValue() before prop.getType() to avoid
+        // nullpointerexception if value is null.
+        if (prop != null && prop.getValue() != null && prop.getType().equals(Date.class)) {
+            return dateFormatter.format(prop.getValue());
+        }
+        return null;
+    }
 }
