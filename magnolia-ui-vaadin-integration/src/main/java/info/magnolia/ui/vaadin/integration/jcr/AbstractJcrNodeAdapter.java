@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
@@ -255,6 +256,8 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
             String jcrName = (String) property.getValue();
             if (jcrName != null && !jcrName.isEmpty()) {
                 try {
+                    // make sure new path is clear
+                    jcrName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), jcrName);
                     String newPath = NodeUtil.combinePathAndName(node.getParent().getPath(), jcrName);
                     node.getSession().move(node.getPath(), newPath);
                     setPath(node.getPath());

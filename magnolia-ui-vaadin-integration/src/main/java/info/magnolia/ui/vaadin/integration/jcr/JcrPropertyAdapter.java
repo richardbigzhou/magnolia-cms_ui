@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.PropertyUtil;
 
@@ -141,6 +142,8 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
                     if (isNameUnchanged) {
                         return;
                     }
+                    // make sure new path is clear
+                    jcrName = Path.getUniqueLabel(jcrProperty.getSession(), jcrProperty.getParent().getPath(), jcrName);
                     PropertyUtil.renameProperty(jcrProperty, jcrName);
                 } catch (RepositoryException e) {
                     log.error("Could not rename JCR Property.", e);
