@@ -209,14 +209,14 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
         if (subAppContext != null) {
             return subAppContext.getLocation();
         }
-        return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), "", "");
+        return new DefaultLocation(Location.LOCATION_TYPE_APP, appDescriptor.getName(), "", "");
     }
 
     @Override
     public Location getDefaultLocation() {
         SubAppDescriptor subAppDescriptor= getDefaultSubAppDescriptor();
         if (subAppDescriptor != null) {
-            return new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appDescriptor.getName(), subAppDescriptor.getName(), "");
+            return new DefaultLocation(Location.LOCATION_TYPE_APP, appDescriptor.getName(), subAppDescriptor.getName(), "");
         }
         else return null;
     }

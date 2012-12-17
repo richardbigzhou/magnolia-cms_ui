@@ -43,9 +43,6 @@ import java.util.StringTokenizer;
  */
 public class DefaultLocation implements Location {
 
-    public static final String LOCATION_TYPE_APP = "app";
-    public static final String LOCATION_TYPE_SHELL_APP = "shell";
-
     private String appType;
     private String appId;
     private String subAppId;

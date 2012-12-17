@@ -102,7 +102,7 @@ public class InstantPreviewDispatcher implements PreviewLocationListener {
 
     @Override
     public void onPreviewLocationReceived(String path) {
-        final Location location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", "", path);
+        final Location location = new DefaultLocation(Location.LOCATION_TYPE_APP, "pages", "", path);
         controller.goTo(location);
         shell.pushToClient();
     }

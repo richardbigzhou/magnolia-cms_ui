@@ -36,7 +36,7 @@ package info.magnolia.ui.app.sample.main;
 import javax.inject.Inject;
 
 import info.magnolia.ui.app.sample.editor.location.EditorLocation;
-import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
 
 /**
@@ -66,6 +66,6 @@ public class ContentDisplayPresenter implements ContentDisplayView.Listener {
 
     @Override
     public void onOpenInNewEditor() {
-        locationController.goTo(new EditorLocation(DefaultLocation.LOCATION_TYPE_APP, "sample", "editor", name));
+        locationController.goTo(new EditorLocation(Location.LOCATION_TYPE_APP, "sample", "editor", name));
     }
 }

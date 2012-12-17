@@ -77,12 +77,12 @@ public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
 
     private boolean supported(String appType, String appId, String subAppId, String parameter) {
 
-        if (appType.equals(DefaultLocation.LOCATION_TYPE_SHELL_APP) && (appId.equals("applauncher") || appId.equals("pulse") || appId.equals("favorite"))) {
+        if (appType.equals(Location.LOCATION_TYPE_SHELL_APP) && (appId.equals("applauncher") || appId.equals("pulse") || appId.equals("favorite"))) {
             return true;
         }
 
         AppLauncherLayout appLauncherLayout = appLauncherLayoutManager.getLayoutForCurrentUser();
-        return appType.equals(DefaultLocation.LOCATION_TYPE_APP) && appLauncherLayout.containsApp(appId);
+        return appType.equals(Location.LOCATION_TYPE_APP) && appLauncherLayout.containsApp(appId);
 
     }
 

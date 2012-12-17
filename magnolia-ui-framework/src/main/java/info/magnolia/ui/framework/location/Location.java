@@ -38,6 +38,9 @@ package info.magnolia.ui.framework.location;
  */
 public interface Location {
 
+    String LOCATION_TYPE_APP = "app";
+    String LOCATION_TYPE_SHELL_APP = "shell";
+
     Location NOWHERE = new Location() {
         @Override
         public String getParameter() {

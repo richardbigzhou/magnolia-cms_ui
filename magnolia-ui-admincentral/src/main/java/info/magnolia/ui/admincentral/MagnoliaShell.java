@@ -118,7 +118,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
                 final String appId = String.valueOf(params[0]);
                 final String subAppId = String.valueOf(params[1]);
                 final String parameter = String.valueOf(params[2]);
-                locationControllerProvider.get().goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appId, subAppId, parameter));
+                locationControllerProvider.get().goTo(new DefaultLocation(Location.LOCATION_TYPE_APP, appId, subAppId, parameter));
             }
         });
 
@@ -248,7 +248,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
             Location location = appController.getCurrentLocation(appId);
             if (location == null) {
-                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, appId, subAppId, parameter);
+                location = new DefaultLocation(Location.LOCATION_TYPE_APP, appId, subAppId, parameter);
             }
             super.navigateToApp(appId, subAppId, location.getParameter());
 
@@ -263,7 +263,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
             Location location = shellAppControllerProvider.get().getCurrentLocation(shellAppId);
             if (location == null) {
-                location = new DefaultLocation(DefaultLocation.LOCATION_TYPE_SHELL_APP, shellAppId, "", parameter);
+                location = new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, shellAppId, "", parameter);
             }
             super.navigateToShellApp(shellAppId, location.getParameter());
 
