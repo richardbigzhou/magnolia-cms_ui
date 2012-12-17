@@ -42,7 +42,7 @@ import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.Shell;
 
 /**
- * Manages the user's location in the app and controls location changes.
+ * Manages the user's location in the application and controls location changes.
  */
 @Singleton
 public class LocationController {
