@@ -230,12 +230,13 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         return getChildren(getRootNode());
     }
 
+    /**
+     * Checks if an item is a root. Since root node is never shown, we consider its child nodes and properties as roots
+     * to remove unnecessary offset in trees.
+     */
     public boolean isRoot(Item item) throws RepositoryException {
-        if (!item.isNode()) {
-            return false;
-        }
-        int depthOfRootNodesInTree = getRootNode().getDepth() + 1;
-        return item.getDepth() <= depthOfRootNodesInTree;
+        int rootDepth = getRootNode().getDepth();
+        return item.getDepth() <= rootDepth + 1;
     }
 
     public Item getItemByPath(String path) throws RepositoryException {
