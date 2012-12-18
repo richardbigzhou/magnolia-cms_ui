@@ -280,16 +280,19 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         // GIVEN
         Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", NodeTypes.Content.NAME, PROPERTY_1, "name2");
         Node node2_1 = AbstractJcrContainerTest.createNode(node2, "node2_1", NodeTypes.Content.NAME, PROPERTY_1, "name2_1");
+        rootNode.setProperty(PROPERTY_2, "rootLevelProperty");
 
         // WHEN
         boolean isRoot_rootNode = hierarchicalJcrContainer.isRoot(rootNode);
         boolean isRoot_node2 = hierarchicalJcrContainer.isRoot(node2);
         boolean isRoot_node2_1 = hierarchicalJcrContainer.isRoot(node2_1);
+        boolean isRoot_rootNode_property = hierarchicalJcrContainer.isRoot(rootNode.getProperty(PROPERTY_2));
         boolean isRoot_node2_property = hierarchicalJcrContainer.isRoot(node2.getProperty(PROPERTY_1));
 
         // THEN
         assertTrue(isRoot_rootNode);
         assertTrue(isRoot_node2);
+        assertTrue(isRoot_rootNode_property);
         assertFalse(isRoot_node2_1);
         assertFalse(isRoot_node2_property);
     }
