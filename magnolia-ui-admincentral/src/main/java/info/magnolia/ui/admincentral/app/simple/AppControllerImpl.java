@@ -43,7 +43,6 @@ import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
@@ -320,10 +319,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      */
     private Location updateLocation(AppContext appContext, Location location) {
 
-        if (location instanceof DefaultLocation) {
-            DefaultLocation l = (DefaultLocation) location;
-            String appId = l.getAppId();
-            String subAppId = l.getSubAppId();
+            String appId = location.getAppId();
+            String subAppId = location.getSubAppId();
 
             if (subAppId == null || subAppId.isEmpty()) {
 
@@ -336,7 +333,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
                 }
             }
 
-        }
         return location;
     }
 
@@ -366,11 +362,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     private AppDescriptor getAppForLocation(Location newLocation) {
-        if (newLocation instanceof DefaultLocation) {
-            DefaultLocation appLocation = (DefaultLocation) newLocation;
-            return getAppDescriptor(appLocation.getAppId());
-        }
-        return null;
+        return getAppDescriptor(newLocation.getAppId());
     }
 
     private AppDescriptor getAppDescriptor(String name) {

@@ -41,17 +41,17 @@ import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
 import com.vaadin.data.Item;
 
 /**
- * WorkbenchPickerDialogPresenter.
+ * WorkbenchChooseDialogPresenter.
  */
 public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implements ChooseDialogPresenter<Item> {
 
     private Item currentValue = null;
     
-    private final ChooseDialogView pickerView;
+    private final ChooseDialogView chooseDialogView;
     
     public WorkbenchChooseDialogPresenter(DialogActionFactory actionFactory, ChooseDialogView view, EventBus workbenchEventBus) {
         super(view, workbenchEventBus);
-        this.pickerView = view;
+        this.chooseDialogView = view;
         workbenchEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
@@ -77,11 +77,11 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
 
     @Override
     public ChooseDialogView getView() {
-        return pickerView;
+        return chooseDialogView;
     }
     
     @Override
-    public void addValuePickListener(final ValueChosenListener<Item> listener) {
+    public void addValueChosenListener(final ValueChosenListener<Item> listener) {
         addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
@@ -98,7 +98,7 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
     }
 
     @Override
-    public void removeValuePickListener(ValueChosenListener<Item> listener) {
+    public void removeValueChosenListener(ValueChosenListener<Item> listener) {
         //FIXME implement or remove forever!
     }
 

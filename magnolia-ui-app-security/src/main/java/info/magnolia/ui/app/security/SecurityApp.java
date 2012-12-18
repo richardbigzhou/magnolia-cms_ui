@@ -48,17 +48,17 @@ import info.magnolia.ui.framework.location.Location;
 public class SecurityApp extends AbstractContentApp {
 
     @Inject
-    public SecurityApp(AppContext appContext, ChooseDialogFactory pickerDialogFactory) {
-        super(appContext, pickerDialogFactory);
+    public SecurityApp(AppContext appContext, ChooseDialogFactory chooseDialogFactory) {
+        super(appContext, chooseDialogFactory);
     }
 
     @Override
     public void start(Location location) {
         super.start(location);
-        getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "systemUsers", "/system" ));
-        getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "groups", "" ));
-        getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "roles", "" ));
-        getAppContext().openSubApp(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "security", "users", "/admin" ));
+        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "systemUsers", "/system" ));
+        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "groups", "" ));
+        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "roles", "" ));
+        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "users", "/admin" ));
     }
 
 }

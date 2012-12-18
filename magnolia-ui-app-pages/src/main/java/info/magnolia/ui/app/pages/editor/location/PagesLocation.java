@@ -74,6 +74,6 @@ public class PagesLocation extends DefaultLocation {
     }
 
     public static PagesLocation wrap(Location location) {
-        return new PagesLocation(((DefaultLocation)location).getParameter());
+        return new PagesLocation(location.getParameter());
     }
 }

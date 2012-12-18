@@ -37,6 +37,7 @@ package info.magnolia.ui.framework.message;
  * The type of message.
  */
 public enum MessageType {
+
     UNKNOWN(""),
     ERROR("Error"), 
     WARNING("Warning"), 
@@ -55,10 +56,11 @@ public enum MessageType {
 
     public boolean isSignificant() {
         switch (this) {
-        case INFO: case UNKNOWN:
-            return false;
-        default:
-            return true;
+            case INFO:
+            case UNKNOWN:
+                return false;
+            default:
+                return true;
         }
     }
 }

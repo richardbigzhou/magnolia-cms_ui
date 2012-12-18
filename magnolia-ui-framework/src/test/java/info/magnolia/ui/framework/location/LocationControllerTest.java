@@ -72,6 +72,25 @@ public class LocationControllerTest {
         assertEquals(Location.NOWHERE, locationController.getWhere());
 
         Location newLocation = new Location() {
+            @Override
+            public String getParameter() {
+                return null;
+            }
+
+            @Override
+            public String getAppType() {
+                return null;
+            }
+
+            @Override
+            public String getAppId() {
+                return null;
+            }
+
+            @Override
+            public String getSubAppId() {
+                return null;
+            }
         };
 
         // WHEN
@@ -116,6 +135,25 @@ public class LocationControllerTest {
         assertEquals(Location.NOWHERE, locationController.getWhere());
 
         Location newLocation = new Location() {
+            @Override
+            public String getParameter() {
+                return null;
+            }
+
+            @Override
+            public String getAppType() {
+                return null;
+            }
+
+            @Override
+            public String getAppId() {
+                return null;
+            }
+
+            @Override
+            public String getSubAppId() {
+                return null;
+            }
         };
 
         // WHEN
@@ -162,6 +200,25 @@ public class LocationControllerTest {
         assertEquals(Location.NOWHERE, locationController.getWhere());
 
         Location newLocation = new Location() {
+            @Override
+            public String getParameter() {
+                return null;
+            }
+
+            @Override
+            public String getAppType() {
+                return null;
+            }
+
+            @Override
+            public String getAppId() {
+                return null;
+            }
+
+            @Override
+            public String getSubAppId() {
+                return null;
+            }
         };
 
         // WHEN
@@ -189,6 +246,25 @@ public class LocationControllerTest {
         assertEquals(Location.NOWHERE, locationController.getWhere());
 
         Location newLocation = new Location() {
+            @Override
+            public String getParameter() {
+                return null;
+            }
+
+            @Override
+            public String getAppType() {
+                return null;
+            }
+
+            @Override
+            public String getAppId() {
+                return null;
+            }
+
+            @Override
+            public String getSubAppId() {
+                return null;
+            }
         };
 
         locationController.goTo(newLocation);

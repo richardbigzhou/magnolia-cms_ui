@@ -137,37 +137,37 @@ public class RichTextFieldBuilder extends
         // Get the property name to propagate.
         App targetApp = appController.getAppWithoutStarting("pages");
         if (targetApp != null && targetApp instanceof AbstractContentApp) {
-            ChooseDialogPresenter<Item> pickerPresenter = ((AbstractContentApp) targetApp)
+            ChooseDialogPresenter<Item> chooseDialogPresenter = ((AbstractContentApp) targetApp)
                     .openChooseDialog(path);
-            pickerPresenter.getView().setCaption("Select a page");
-            pickerPresenter
-                    .addValuePickListener(new ValueChosenListener<Item>() {
+            chooseDialogPresenter.getView().setCaption("Select a page");
+            chooseDialogPresenter
+                    .addValueChosenListener(new ValueChosenListener<Item>() {
                         @Override
-                        public void onValueChosen(Item pickedValue) {
-                            if(!(pickedValue instanceof JcrItemAdapter)) {
+                        public void onValueChosen(Item chosenValue) {
+                            if (!(chosenValue instanceof JcrItemAdapter)) {
                                 return;
                             }
-                            
-                            javax.jcr.Item jcrItem = ((JcrItemAdapter) pickedValue)
+
+                            javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue)
                                     .getJcrItem();
-                            
-                            if(!jcrItem.isNode()) {
+
+                            if (!jcrItem.isNode()) {
                                 return;
                             }
 
                             final Node selected = (Node) jcrItem;
-                            try {                                    
+                            try {
                                 Gson gson = new Gson();
                                 MagnoliaLink mlink = new MagnoliaLink();
                                 mlink.identifier = selected.getIdentifier();
                                 mlink.repository = selected.getSession().getWorkspace().getName();
                                 mlink.path = selected.getPath();
-                                if(selected.hasProperty("title")) {
+                                if (selected.hasProperty("title")) {
                                     mlink.caption = selected.getProperty("title").getString();
                                 } else {
                                     mlink.caption = selected.getName();
                                 }
-                                                                    
+
                                 richtexteditor.firePluginEvent(
                                         EVENT_SEND_MAGNOLIA_LINK,
                                         gson.toJson(mlink)
@@ -175,10 +175,10 @@ public class RichTextFieldBuilder extends
                             } catch (RepositoryException e) {
                                 String error = "Not able to access the configured property. Value will not be set.";
                                 log.error(error, e);
-                                
+
                                 richtexteditor.firePluginEvent(EVENT_CANCEL_LINK, error);
                             }
-                            
+
                         }
 
                         @Override

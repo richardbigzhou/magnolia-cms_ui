@@ -38,6 +38,7 @@ import static org.mockito.Mockito.mock;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent.Handler;
 import info.magnolia.ui.framework.location.LocationController;
@@ -99,8 +100,8 @@ public class InstantPreviewDispatcherTest {
 
         // THEN
         assertEquals(2, events.size());
-        assertEquals(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", "", path1), events.get(0).getNewLocation());
-        assertEquals(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, "pages", "", path2), events.get(1).getNewLocation());
+        assertEquals(new DefaultLocation(Location.LOCATION_TYPE_APP, "pages", "", path1), events.get(0).getNewLocation());
+        assertEquals(new DefaultLocation(Location.LOCATION_TYPE_APP, "pages", "", path2), events.get(1).getNewLocation());
     }
 
     @Test

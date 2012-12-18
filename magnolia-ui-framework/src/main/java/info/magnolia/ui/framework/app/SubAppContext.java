@@ -37,9 +37,10 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.location.Location;
 
 /**
- * SubAppContext.
+ * Provides functionality used by a sub app to interact with the Magnolia shell.
  */
 public interface SubAppContext {
+
     String getSubAppId();
 
     SubApp getSubApp();

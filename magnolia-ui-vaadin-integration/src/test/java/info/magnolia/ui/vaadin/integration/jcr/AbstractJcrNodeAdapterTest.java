@@ -33,36 +33,41 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
+import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.model.ModelConstants;
 
 import java.util.Collection;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.vaadin.data.Property;
 
 
 public class AbstractJcrNodeAdapterTest {
 
-    private final String workspaceName = "workspace";
+    private static final String WORKSPACE_NAME = "workspace";
 
     private MockSession session;
 
     @Before
     public void setUp() {
-        session = new MockSession(workspaceName);
+        session = new MockSession(WORKSPACE_NAME);
         MockContext ctx = new MockContext();
-        ctx.addSession(workspaceName, session);
+        ctx.addSession(WORKSPACE_NAME, session);
         MgnlContext.setInstance(ctx);
     }
 
@@ -85,8 +90,6 @@ public class AbstractJcrNodeAdapterTest {
         assertEquals(testNode.getIdentifier(), ((Node) adapter.getJcrItem()).getIdentifier());
         assertEquals(testNode.getPrimaryNodeType().getName(), adapter.getPrimaryNodeTypeName());
     }
-
-    // assertEquals(testNode.getIdentifier(), adapter.getNodeIdentifier());
 
     @Test
     public void testGetItemProperty_ExistingProperty() throws Exception {
@@ -192,6 +195,53 @@ public class AbstractJcrNodeAdapterTest {
 
         // THEN
         assertEquals(propertyValue, underlyingNode.getProperty(propertyName).getString());
+    }
+
+    @Test
+    public void testUpdateProperties_JcrName_Existing() throws Exception {
+
+        // spy hooks for session move
+        final MockSession session = spy(this.session);
+        final Node root = new MockNode(session);
+        doReturn(root).when(session).getRootNode();
+
+        MockContext ctx = (MockContext) MgnlContext.getInstance();
+        ctx.addSession(WORKSPACE_NAME, session);
+
+        // mocking rename operation
+        doAnswer(new Answer<Void>() {
+
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                String srcAbsPath = (String) invocation.getArguments()[0];
+                String dstAbsPath = (String) invocation.getArguments()[1];
+                session.removeItem(srcAbsPath);
+                String dstRelPath = StringUtils.substringAfter(dstAbsPath, root.getPath());
+                root.addNode(dstRelPath);
+                return null;
+            }
+        }).when(session).move(anyString(), anyString());
+
+        // GIVEN
+        String existingName = "existingName";
+        String subNodeName = "subNode";
+        Node node = session.getRootNode();
+        node.setProperty(existingName, "42");
+        Node subNode = node.addNode(subNodeName);
+        long nodeCount = node.getNodes().getSize();
+        long propertyCount = node.getProperties().getSize();
+        DummyJcrNodeAdapter adapter = new DummyJcrNodeAdapter(subNode);
+
+        // WHEN
+        adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(existingName);
+        adapter.updateProperties();
+
+        // THEN
+        assertTrue(node.hasProperty(existingName));
+        assertFalse(node.hasNode(existingName));
+        assertFalse(node.hasNode(subNodeName));
+        assertEquals(nodeCount, node.getNodes().getSize());
+        assertEquals(propertyCount, node.getProperties().getSize());
     }
 
     /**
