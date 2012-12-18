@@ -44,7 +44,7 @@
       <workspaces>
         <workspace>contacts</workspace>
       </workspaces>
-      <nodeTypeFile>/mgnl-nodetypes/magnolia-contacts-nodetype.xml</nodeTypeFile>
+      <nodeTypeFile>/mgnl-nodetypes/magnolia-contacts-nodetypes.xml</nodeTypeFile>
     </repository>
   </repositories>
 </module>
