@@ -56,7 +56,7 @@ public abstract class AbstractSubApp implements SubApp {
 
     protected AbstractSubApp(final SubAppContext subAppContext, final View view) {
         if(subAppContext == null || view == null) {
-            throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", ContentAppView = " + view);
+            throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", View = " + view);
         }
         this.subAppContext = subAppContext;
         this.view = view;

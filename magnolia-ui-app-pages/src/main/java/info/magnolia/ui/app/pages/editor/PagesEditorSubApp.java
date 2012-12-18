@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
@@ -274,15 +274,15 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
                     Node node = session.getNode(path);
 
                     hideAllSections();
-                    if (node.isNodeType(MgnlNodeType.NT_PAGE)) {
+                    if (node.isNodeType(NodeTypes.Page.NAME)) {
                         actionbarPresenter.showSection("pageActions");
-                    } else if (node.isNodeType(MgnlNodeType.NT_AREA)) {
+                    } else if (node.isNodeType(NodeTypes.Area.NAME)) {
                         if (dialog == null) {
                             actionbarPresenter.showSection("areaActions");
                         } else {
                             actionbarPresenter.showSection("editableAreaActions");
                         }
-                    } else if (node.isNodeType(MgnlNodeType.NT_COMPONENT)) {
+                    } else if (node.isNodeType(NodeTypes.Component.NAME)) {
                         actionbarPresenter.showSection("componentActions");
                     }
                 } catch (RepositoryException e) {

@@ -70,11 +70,11 @@ public class ChooseDialogFactoryImpl implements ChooseDialogFactory {
     @Override
     public WorkbenchChooseDialogPresenter createWorkbenchChooseDialog(String defaultPath) {
         final ChooseDialogView selectionDialogView = componentProvider.getComponent(ChooseDialogView.class);
-        final WorkbenchChooseDialogPresenter workbenchPickerDialogPresenter = 
+        final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter =
                 new WorkbenchChooseDialogPresenter(actionFactory, selectionDialogView, chooseDialogEventBus);
 
         final ChooseDialogContentPresenter presenter = componentProvider.getComponent(ChooseDialogContentPresenter.class);
-        final BaseDialog dialog = (BaseDialog) workbenchPickerDialogPresenter.getView();
+        final BaseDialog dialog = (BaseDialog) workbenchChooseDialogPresenter.getView();
         
         ((ContentWorkbenchView) dialog.getContent()).setListener(new Listener() {
             
@@ -94,7 +94,7 @@ public class ChooseDialogFactoryImpl implements ChooseDialogFactory {
         if(defaultPath != null && !defaultPath.isEmpty()) {
             ((ContentWorkbenchView) dialog.getContent()).selectPath(defaultPath);
         }
-        return workbenchPickerDialogPresenter;
+        return workbenchChooseDialogPresenter;
     }
 
 }

@@ -38,9 +38,14 @@ import java.io.Serializable;
 import com.vaadin.ui.Component;
 
 /**
- * Marker interface for views. Extends Serializable as all Vaadin components will have to.
+ * Marker interface for views. Extends {@link Serializable} because all Vaadin components need to be serializable.
+ *
+ * @see ViewPort
  */
 public interface View extends Serializable {
 
+    /**
+     * Returns the Vaadin component representing this view.
+     */
     Component asVaadinComponent();
 }

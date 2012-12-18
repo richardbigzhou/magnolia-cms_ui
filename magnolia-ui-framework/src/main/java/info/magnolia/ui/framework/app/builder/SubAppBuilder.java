@@ -38,7 +38,7 @@ import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
 
 /**
- * Builder used to build a content app descriptor.
+ * Builder used to build a sub app descriptor.
  */
 public class SubAppBuilder {
 

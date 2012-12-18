@@ -38,6 +38,8 @@ import info.magnolia.ui.framework.view.View;
 
 /**
  * Sub apps represents a view open in a tab within an app.
+ *
+ * @see SubAppContext
  */
 public interface SubApp {
 

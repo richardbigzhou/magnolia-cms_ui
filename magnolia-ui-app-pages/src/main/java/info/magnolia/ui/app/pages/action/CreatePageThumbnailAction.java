@@ -34,9 +34,9 @@
 package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.pageexport.renderer.Renderer;
 import info.magnolia.module.pageexport.renderer.definition.RendererDefinition;
 import info.magnolia.module.pageexport.renderer.registry.RendererRegistry;
@@ -45,6 +45,7 @@ import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 
+import org.apache.jackrabbit.JcrConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,13 +109,13 @@ public class CreatePageThumbnailAction extends ActionBase<CreatePageThumbnailAct
         if (node.hasNode(IMAGE_NODE_NAME)) {
             child = node.getNode(IMAGE_NODE_NAME);
         } else {
-            child = node.addNode(IMAGE_NODE_NAME, MgnlNodeType.NT_RESOURCE);
+            child = node.addNode(IMAGE_NODE_NAME, NodeTypes.Resource.NAME);
         }
 
         final Session session = node.getSession();
         final Binary binary = session.getValueFactory().createBinary(inputStream);
 
-        child.setProperty(MgnlNodeType.JCR_DATA, binary);
+        child.setProperty(JcrConstants.JCR_DATA, binary);
 
         child.setProperty(FileProperties.PROPERTY_FILENAME, fileName);
         child.setProperty(FileProperties.PROPERTY_CONTENTTYPE, contentType);
