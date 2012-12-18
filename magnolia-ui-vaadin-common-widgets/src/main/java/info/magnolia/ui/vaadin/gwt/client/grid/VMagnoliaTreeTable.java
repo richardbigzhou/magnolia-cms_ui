@@ -37,15 +37,15 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Event;
 import com.vaadin.terminal.gwt.client.UIDL;
-import com.vaadin.terminal.gwt.client.ui.VTreeTable;
-
+import com.vaadin.terminal.gwt.client.ui.VTreeTablePatched;
 
 /**
- * VMagnoliaTreeTable.
+ * VMagnoliaTreeTable extends VTreeTable by ways that patching is required to expose the necessary private fields.
  */
-public class VMagnoliaTreeTable extends VTreeTable {
+public class VMagnoliaTreeTable extends VTreeTablePatched {
     
     @Override
     protected VScrollTableBody createScrollBody() {
@@ -58,7 +58,15 @@ public class VMagnoliaTreeTable extends VTreeTable {
         return (uidl.getTag().equals("column")) ? super.buildCaptionHtmlSnippet(uidl) : uidl.getStringAttribute("caption");
     }
     
+    /**
+     * Extension for Scroll body.
+     */
     public class VMagnoliaTreeTableScrollBody extends VTreeTableScrollBody {
+        
+        protected VMagnoliaTreeTableScrollBody() {
+            super();
+        }
+        
         @Override
         protected VScrollTableRow createRow(UIDL uidl, char[] aligns2) {
             if (uidl.hasAttribute("gen_html")) {
@@ -68,12 +76,18 @@ public class VMagnoliaTreeTable extends VTreeTable {
             return new VMagnoliaTreeTableRow(uidl, aligns2);
         }
         
+        /**
+         * Extension for table row.
+         */
         class VMagnoliaTreeTableRow extends VTreeTableRow {
 
             public VMagnoliaTreeTableRow(UIDL uidl, char[] aligns2) {
                 super(uidl, aligns2);
             }
             
+            /*
+             * Forked from VTreeTable.
+             */
             @Override
             protected boolean addTreeSpacer(UIDL rowUidl) {
                 if (cellShowsTreeHierarchy(getElement().getChildCount() - 1)) {
@@ -104,7 +118,7 @@ public class VMagnoliaTreeTable extends VTreeTable {
                     container.insertAfter(treeSpacer, container.getFirstChild());
                     depth = rowUidl.hasAttribute("depth") ? rowUidl
                             .getIntAttribute("depth") : 0;
-                    setIdent();
+                    setIndent();
                     isTreeCellAdded = true;
                     return true;
                 }
@@ -124,6 +138,14 @@ public class VMagnoliaTreeTable extends VTreeTable {
                         return;
                     }
                     super.onBrowserEvent(event);
+            }
+            
+            @Override
+            public void setIndent() {
+                if (getIndentWidth() > 0 && depth != 0) {
+                    treeSpacer.getStyle().setWidth(
+                            (depth + 1) * getIndentWidth(), Unit.PX);
+                }
             }
         }
     }
