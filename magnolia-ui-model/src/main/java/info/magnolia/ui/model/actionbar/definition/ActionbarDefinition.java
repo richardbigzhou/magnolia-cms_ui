@@ -42,14 +42,7 @@ import java.util.List;
 public interface ActionbarDefinition {
 
     /**
-     * Gets the action bar name.
-     * 
-     * @return the name string
-     */
-    String getName();
-
-    /**
-     * Gets the default action name.
+     * Gets the name of the default action.
      * 
      * @return the default action name
      */

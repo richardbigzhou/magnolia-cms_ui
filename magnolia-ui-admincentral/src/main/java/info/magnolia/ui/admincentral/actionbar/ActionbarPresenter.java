@@ -195,9 +195,8 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         if (chunks.length != 2) {
             log
                 .warn(
-                    "Invalid actionToken [{}]: it is expected to be in the form sectionName:actionName. ActionDefintion cannot be retrieved. Please, check [{}] actionbar definition.",
-                    actionToken,
-                    definition.getName());
+                    "Invalid actionToken [{}]: it is expected to be in the form sectionName:actionName. ActionDefintion cannot be retrieved. Please check actionbar definition.",
+                    actionToken);
             return null;
         }
         final String sectionName = chunks[0];
@@ -211,9 +210,8 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                             final ActionDefinition actionDefinition = action.getActionDefinition();
                             if (actionDefinition == null) {
                                 log.warn(
-                                    "No action definition found for actionToken [{}]. Please check [{}] actionbar definition.",
-                                    actionToken,
-                                    definition.getName());
+                                    "No action definition found for actionToken [{}]. Please check actionbar definition.",
+                                    actionToken);
                             }
                             return actionDefinition;
                         }
@@ -223,7 +221,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                 break;
             }
         }
-        log.warn("No action definition found for actionToken [{}]. Please check [{}] actionbar definition.", actionToken, definition.getName());
+        log.warn("No action definition found for actionToken [{}]. Please check actionbar definition.", actionToken);
         return null;
     }
 
@@ -237,7 +235,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     public ActionDefinition getDefaultActionDefinition() {
         String defaultAction = definition.getDefaultAction();
         if (StringUtils.isBlank(defaultAction)) {
-            log.warn("Default action is null. Please check [{}] actionbar definition.", definition.getName());
+            log.warn("Default action is null. Please check actionbar definition.");
             return null;
         }
 
@@ -252,9 +250,8 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                                     final ActionDefinition actionDefinition = action.getActionDefinition();
                                     if (actionDefinition == null) {
                                         log.warn(
-                                            "No action definition found for default action [{}]. Please check [{}] actionbar definition.",
-                                            defaultAction,
-                                            definition.getName());
+                                            "No action definition found for default action [{}]. Please check actionbar definition.",
+                                            defaultAction);
                                     }
                                     return actionDefinition;
                                 }
@@ -264,7 +261,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                 }
             }
         }
-        log.warn("No action definition found for default action [{}]. Please check [{}] actionbar definition.", defaultAction, definition.getName());
+        log.warn("No action definition found for default action [{}]. Please check actionbar definition.", defaultAction);
         return null;
     }
 
