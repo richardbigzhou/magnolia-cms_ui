@@ -274,25 +274,22 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testIsRoot() throws RepositoryException {
+    public void testIsRoot_byItem() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:page", colName1, "name1");
         Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", NodeTypes.Content.NAME, colName1, "name2");
         Node node2_1 = AbstractJcrContainerTest.createNode(node2, "node2_1", NodeTypes.Content.NAME, colName1, "name2_1");
-        node1.getSession().save();
 
         // WHEN
-        boolean isRoot_1 = hierarchicalJcrContainer.isRoot(node2);
-        boolean isNotRoot_1 = hierarchicalJcrContainer.isRoot(node2_1);
-        boolean isNotRoot_2 = hierarchicalJcrContainer.isRoot(node2.getProperty("name"));
-        boolean isRoot_2 = hierarchicalJcrContainer.isRoot(rootNode);
+        boolean isRoot_rootNode = hierarchicalJcrContainer.isRoot(rootNode);
+        boolean isRoot_node2 = hierarchicalJcrContainer.isRoot(node2);
+        boolean isRoot_node2_1 = hierarchicalJcrContainer.isRoot(node2_1);
+        boolean isRoot_node2_property = hierarchicalJcrContainer.isRoot(node2.getProperty("name"));
 
         // THEN
-        assertEquals(true, isRoot_1);
-        assertEquals(true, isRoot_2);
-        assertEquals(false, isNotRoot_1);
-        assertEquals(false, isNotRoot_2);
-
+        assertTrue(isRoot_rootNode);
+        assertTrue(isRoot_node2);
+        assertFalse(isRoot_node2_1);
+        assertFalse(isRoot_node2_property);
     }
 
     @Test
