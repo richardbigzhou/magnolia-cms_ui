@@ -39,7 +39,7 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import javax.inject.Inject;
 
 /**
- * Picks value from a workbench.
+ * Chooses a value from a workbench.
  *
  */
 public class WorkbenchValueChooseDialog extends BaseDialog implements ChooseDialogView {

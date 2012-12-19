@@ -51,8 +51,8 @@ public class PagesApp extends AbstractContentApp {
     public static final String PREVIEW_TOKEN = "preview";
 
     @Inject
-    public PagesApp(AppContext appContext, ChooseDialogFactory pickerDialogFactory) {
-        super(appContext, pickerDialogFactory);
+    public PagesApp(AppContext appContext, ChooseDialogFactory chooseDialogFactory) {
+        super(appContext, chooseDialogFactory);
     }
 
 }

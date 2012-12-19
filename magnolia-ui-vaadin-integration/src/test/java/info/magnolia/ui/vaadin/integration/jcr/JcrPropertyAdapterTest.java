@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
@@ -157,6 +158,25 @@ public class JcrPropertyAdapterTest {
 
         // THEN
         assertTrue(node.hasProperty(propertyName));
+    }
+
+    @Test
+    public void testUpdateProperty_JcrName_Existing() throws Exception {
+        // GIVEN
+        String existingName = "existingName";
+        Node node = session.getRootNode();
+        node.setProperty(existingName, "42");
+        node.setProperty(propertyName, propertyValue);
+        long propertyCount = node.getProperties().getSize();
+        JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
+
+        // WHEN
+        adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(existingName);
+        adapter.updateProperties();
+
+        // THEN
+        assertTrue(node.hasProperty(existingName));
+        assertEquals(propertyCount, node.getProperties().getSize());
     }
 
     @Test

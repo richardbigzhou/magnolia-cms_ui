@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.magnoliashell;
 
 import info.magnolia.ui.framework.event.EventHandlerCollection;
-import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
@@ -108,11 +108,11 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Com
     }
 
     public void navigateToApp(final String appId, final String subAppId, final String parameter) {
-        doNavigateWithinViewport(getAppViewport(), DefaultLocation.LOCATION_TYPE_APP, appId, subAppId, parameter);
+        doNavigateWithinViewport(getAppViewport(), Location.LOCATION_TYPE_APP, appId, subAppId, parameter);
     }
 
     public void navigateToShellApp(final String shellAppId, final String parameter) {
-        doNavigateWithinViewport(getShellAppViewport(), DefaultLocation.LOCATION_TYPE_SHELL_APP, shellAppId, "", parameter);
+        doNavigateWithinViewport(getShellAppViewport(), Location.LOCATION_TYPE_SHELL_APP, shellAppId, "", parameter);
     }
 
     // the fragment generation should not be hardcoded. Create a util method in DefaultLocation.

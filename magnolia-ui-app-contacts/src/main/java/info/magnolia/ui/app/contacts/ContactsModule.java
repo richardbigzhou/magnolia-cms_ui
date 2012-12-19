@@ -69,6 +69,7 @@ import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.model.field.definition.TextFieldDefinition;
+import info.magnolia.ui.model.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.model.form.definition.ConfiguredTabDefinition;
 
@@ -194,10 +195,13 @@ public class ContactsModule implements ModuleLifecycle {
         dialog.setLabel("Folder");
         dialog.setDescription("Rename folder");
 
+        ConfiguredFormDefinition form = new ConfiguredFormDefinition();
+        dialog.setFormDefinition(form);
+
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("folder");
         tab.setLabel("Folder");
-        dialog.addTab(tab);
+        form.addTab(tab);
 
         TextFieldDefinition name = new TextFieldDefinition();
         name.setName(ModelConstants.JCR_NAME);

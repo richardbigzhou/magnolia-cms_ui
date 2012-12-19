@@ -46,9 +46,8 @@ import javax.inject.Inject;
  */
 public class ConfigApp extends AbstractContentApp {
 
-
     @Inject
-    public ConfigApp(AppContext appContext, ChooseDialogFactory pickerDialogFactory) {
-        super(appContext, pickerDialogFactory);
+    public ConfigApp(AppContext appContext, ChooseDialogFactory chooseDialogFactory) {
+        super(appContext, chooseDialogFactory);
     }
 }

@@ -43,20 +43,9 @@ import java.util.List;
  */
 public class ConfiguredActionbarDefinition implements ActionbarDefinition {
 
-    private String name;
-
     private String defaultAction;
 
     private List<ActionbarSectionDefinition> sections = new ArrayList<ActionbarSectionDefinition>();
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     @Override
     public String getDefaultAction() {

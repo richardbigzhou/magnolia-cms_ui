@@ -34,10 +34,40 @@
 package info.magnolia.ui.framework.location;
 
 /**
- * Represents a location within an app, such as the open view and the selected item.
+ * Represents a location within the application, such as the open view and the selected item.
  */
 public interface Location {
 
+    String LOCATION_TYPE_APP = "app";
+    String LOCATION_TYPE_SHELL_APP = "shell";
+
     Location NOWHERE = new Location() {
+        @Override
+        public String getParameter() {
+            return null;
+        }
+
+        @Override
+        public String getAppType() {
+            return null;
+        }
+
+        @Override
+        public String getAppId() {
+            return null;
+        }
+
+        @Override
+        public String getSubAppId() {
+            return null;
+        }
     };
+
+    String getParameter();
+
+    String getAppType();
+
+    String getAppId();
+
+    String getSubAppId();
 }

@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.message;
 
 /**
- * Models a message. Except timestamp all fields are optional.
+ * Models a message. Except for timestamp all fields are optional.
  */
 public class Message implements Cloneable {
 

@@ -37,7 +37,6 @@ import info.magnolia.ui.app.sample.editor.location.EditorLocation;
 import info.magnolia.ui.framework.app.AbstractSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
@@ -65,7 +64,7 @@ public class SampleEditorSubApp extends AbstractSubApp implements SampleEditorVi
     @Override
     public View start(Location location) {
         super.start(location);
-        this.view.setName(((DefaultLocation) location).getParameter());
+        this.view.setName(location.getParameter());
         this.view.setListener(this);
         return view;
     }
