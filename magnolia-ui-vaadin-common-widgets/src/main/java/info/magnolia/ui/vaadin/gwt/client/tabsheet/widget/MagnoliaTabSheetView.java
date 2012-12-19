@@ -31,13 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.event;
+package info.magnolia.ui.vaadin.gwt.client.tabsheet.widget;
 
-import com.google.gwt.event.shared.EventHandler;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent.HasActiveTabChangeHandlers;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent.HasTabSetChangedHandlers;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
+
+import java.util.List;
+
+import com.google.gwt.event.dom.client.HasScrollHandlers;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Handler of the active tab changed event.
+ * VShellTabView.
  */
-public interface ActiveTabChangedHandler extends EventHandler {
-    void onActiveTabChanged(final ActiveTabChangedEvent event);
+public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHandlers, HasTabSetChangedHandlers, HasActiveTabChangeHandlers {
+
+    /**
+     * Presenter.
+     */
+    public interface Presenter {
+        void updateLayout();
+        void updateLayoutOfActiveTab();
+    }
+    
+    List<MagnoliaTabWidget> getTabs();
+
+    void updateTab(MagnoliaTabWidget tab);
+
+    Widget getScroller();
+
+    VMagnoliaTabNavigator getTabContainer();
+
+    MagnoliaTabWidget getActiveTab();
+
+    void setShowActiveTabFullscreen(boolean isFullscreen);
+
+    void setActiveTab(MagnoliaTabWidget tab);
+
+    void removeTab(MagnoliaTabWidget tabToOrphan);
+
+    void showAllTabContents(boolean visible);
+
+    int getTabHeight(MagnoliaTabWidget child);
+
 }

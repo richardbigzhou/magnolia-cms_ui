@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,34 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet;
+package info.magnolia.ui.vaadin.gwt.client.tabsheet.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ShowAllTabsEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ShowAllTabsHandler;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabCloseEventHandler;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabLabel;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.util.CollectionUtil;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
-import com.vaadin.terminal.gwt.client.UIDL;
-
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * A bar that contains the tab labels and controls the switching between tabs.
@@ -67,19 +60,17 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
 
     private static final String SINGLE_TAB_CLASSNAME = "single-tab";
 
-    private final Element tabList = DOM.createElement("ul");
+    private final List<MagnoliaTabLabel> tabLabels = new LinkedList<MagnoliaTabLabel>();
 
-    private final List<VShellTabLabel> tabLabels = new LinkedList<VShellTabLabel>();
-
-    private final Map<VMagnoliaTab, VShellTabLabel> labelMap = new LinkedHashMap<VMagnoliaTab, VShellTabLabel>();
+    private final Element tabContainer = DOM.createElement("ul");
+    
+    private final EventBus eventBus;
 
     private VShellShowAllTabLabel showAllTab;
 
-    private final EventBus eventBus;
-
     public VMagnoliaTabNavigator(EventBus eventBus) {
         this.eventBus = eventBus;
-        setElement(tabList);
+        setElement(tabContainer);
         setStyleName("nav");
         addStyleDependentName("tabs");
     }
@@ -96,10 +87,10 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
 
             @Override
             public void onActiveTabChanged(final ActiveTabChangedEvent event) {
-                final VMagnoliaTab tab = event.getTab();
-                final VShellTabLabel label = labelMap.get(tab);
+                final MagnoliaTabWidget tab = event.getTab();
+                final MagnoliaTabLabel label = tab.getLabel();
                 if (label != null) {
-                    for (final VShellTabLabel tabLabel : tabLabels) {
+                    for (final MagnoliaTabLabel tabLabel : tabLabels) {
                         tabLabel.removeStyleName("active");
                     }
                     label.addStyleName("active");
@@ -112,16 +103,15 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
 
             @Override
             public void onTabClosed(TabCloseEvent event) {
-                final VShellTabLabel tabLabel = labelMap.get(event.getTab());
+                final MagnoliaTabLabel tabLabel = event.getTab().getLabel();
                 boolean wasActive = tabLabel.getStyleName().contains("active");
                 if (wasActive) {
-                    final VShellTabLabel nextLabel = getNextLabel(tabLabel);
+                    final MagnoliaTabLabel nextLabel = getNextLabel(tabLabel);
                     if (nextLabel != null) {
                         nextLabel.addStyleName("active");
                     }
                 }
                 tabLabels.remove(tabLabel);
-                labelMap.remove(event.getTab());
                 remove(tabLabel);
                 updateSingleTabStyle();
             }
@@ -131,7 +121,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
 
             @Override
             public void onShowAllTabs(ShowAllTabsEvent event) {
-                for (final VShellTabLabel tabLabel : tabLabels) {
+                for (final MagnoliaTabLabel tabLabel : tabLabels) {
                     tabLabel.removeStyleName("active");
                 }
                 showAll(true);
@@ -139,36 +129,23 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
         });
     }
 
-    protected VShellTabLabel getNextLabel(final VShellTabLabel label) {
+    protected MagnoliaTabLabel getNextLabel(final MagnoliaTabLabel label) {
         return CollectionUtil.getNext(tabLabels, label);
     }
 
-    public void updateTab(final VMagnoliaTab component, final UIDL uidl) {
-        VShellTabLabel label = labelMap.get(component);
-        if (label == null) {
-            label = new VShellTabLabel();
-            labelMap.put(component, label);
-            tabLabels.add(label);
-
-            label.setTab(component);
-            label.updateCaption(uidl);
-            label.setClosable(component.isClosable());
-
-            component.setLabel(label);
-            add(label, getElement());
-            updateSingleTabStyle();
-        }
-        label.updateCaption(uidl);
+    public void updateTab(final MagnoliaTabWidget component, final String caption) {
+        component.getLabel().updateCaption(caption);
+        component.getLabel().setEventBus(eventBus);
     }
 
     public void updateSingleTabStyle() {
         if (tabLabels.size() <= 1) {
-            if (!tabList.getClassName().contains(SINGLE_TAB_CLASSNAME)) {
-                tabList.addClassName(SINGLE_TAB_CLASSNAME);
+            if (!tabContainer.getClassName().contains(SINGLE_TAB_CLASSNAME)) {
+                tabContainer.addClassName(SINGLE_TAB_CLASSNAME);
             }
         } else {
-            if (tabList.getClassName().contains(SINGLE_TAB_CLASSNAME)) {
-                tabList.removeClassName(SINGLE_TAB_CLASSNAME);
+            if (tabContainer.getClassName().contains(SINGLE_TAB_CLASSNAME)) {
+                tabContainer.removeClassName(SINGLE_TAB_CLASSNAME);
             }
         }
     }
@@ -180,106 +157,6 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
         } else if (!showAll && showAllTab != null) {
             remove(showAllTab);
             showAllTab = null;
-        }
-    }
-
-    /**
-     * Tab label in the tabbar.
-     */
-    public class VShellTabLabel extends SimplePanel {
-
-        private Element indicatorsWrapper = DOM.createDiv();
-
-        private final Element notificationBox = DOM.createDiv();
-
-        private final Element closeElement = DOM.createSpan();
-
-        private final Element errorIndicator = DOM.createDiv();
-
-        private final Element textWrapper = DOM.createSpan();
-
-        private VMagnoliaTab tab;
-
-        private final TouchDelegate touchDelegate = new TouchDelegate(this);
-
-        public VShellTabLabel() {
-            super(DOM.createElement("li"));
-
-            getElement().addClassName("clearfix");
-
-            indicatorsWrapper.addClassName("indicators-wrapper");
-            textWrapper.setClassName("tab-title");
-            getElement().appendChild(textWrapper);
-
-            // TODO 20120816 mgeljic: implement subtitle
-
-            indicatorsWrapper = getElement();
-
-            closeElement.setClassName("v-shell-tab-close");
-            closeElement.addClassName("icon-close");
-            notificationBox.setClassName("v-shell-tab-notification");
-            errorIndicator.setClassName("v-shell-tab-error");
-
-            getElement().appendChild(closeElement);
-            getElement().appendChild(notificationBox);
-            getElement().appendChild(errorIndicator);
-
-            DOM.sinkEvents(getElement(), Event.MOUSEEVENTS | Event.TOUCHEVENTS);
-            hideNotification();
-            setHasError(false);
-        }
-
-        @Override
-        protected void onLoad() {
-            super.onLoad();
-            bindHandlers();
-        }
-
-        private void bindHandlers() {
-            touchDelegate.addTouchEndHandler(new TouchEndHandler() {
-
-                @Override
-                public void onTouchEnd(TouchEndEvent event) {
-                    final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
-                    if (closeElement.isOrHasChild(target)) {
-                        eventBus.fireEvent(new TabCloseEvent(tab));
-                    } else {
-                        eventBus.fireEvent(new ActiveTabChangedEvent(tab));
-                    }
-                }
-            });
-        }
-
-        public void setTab(final VMagnoliaTab tab) {
-            this.tab = tab;
-        }
-
-        public VMagnoliaTab getTab() {
-            return tab;
-        }
-
-        public void updateCaption(final UIDL uidl) {
-            if (uidl.hasAttribute("caption")) {
-                final String caption = uidl.getStringAttribute("caption");
-                textWrapper.setInnerText(caption);
-            }
-        }
-
-        public void setClosable(boolean isClosable) {
-            closeElement.getStyle().setDisplay(isClosable ? Display.INLINE : Display.NONE);
-        }
-
-        public void updateNotification(final String text) {
-            notificationBox.getStyle().setDisplay(Display.INLINE_BLOCK);
-            ((Element) notificationBox.getChild(0)).setInnerText(text);
-        }
-
-        public void hideNotification() {
-            notificationBox.getStyle().setDisplay(Display.NONE);
-        }
-
-        public void setHasError(boolean hasError) {
-            errorIndicator.getStyle().setDisplay(hasError ? Display.INLINE_BLOCK : Display.NONE);
         }
     }
 

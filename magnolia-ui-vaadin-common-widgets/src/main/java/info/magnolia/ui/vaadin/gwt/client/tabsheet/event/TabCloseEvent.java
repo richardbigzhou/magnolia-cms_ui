@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.tabsheet.event;
 
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTab;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -44,13 +44,13 @@ public class TabCloseEvent extends GwtEvent<TabCloseEventHandler>{
 
     public static Type<TabCloseEventHandler> TYPE = new Type<TabCloseEventHandler>();
     
-    private VMagnoliaTab tab;
+    private MagnoliaTabWidget tab;
     
-    public TabCloseEvent(final VMagnoliaTab tab) {
+    public TabCloseEvent(final MagnoliaTabWidget tab) {
         this.tab = tab;
     }
     
-    public VMagnoliaTab getTab() {
+    public MagnoliaTabWidget getTab() {
         return tab;
     }
     

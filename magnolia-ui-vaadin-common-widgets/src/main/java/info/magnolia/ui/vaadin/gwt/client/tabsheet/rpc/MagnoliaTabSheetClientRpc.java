@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.event;
+package info.magnolia.ui.vaadin.gwt.client.tabsheet.rpc;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.vaadin.shared.communication.ClientRpc;
 
 /**
- * Handler of the active tab changed event.
+ * MagnoliaTabSheetClientRpc.
  */
-public interface ActiveTabChangedHandler extends EventHandler {
-    void onActiveTabChanged(final ActiveTabChangedEvent event);
+public interface MagnoliaTabSheetClientRpc extends ClientRpc {
+
+    void toggleFullScreenMode(boolean isFullScreen);
 }

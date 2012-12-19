@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.event;
+package info.magnolia.ui.vaadin.gwt.client.tabsheet.connector;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.vaadin.shared.AbstractComponentState;
+import com.vaadin.shared.Connector;
+
 
 /**
- * Handler of the active tab changed event.
+ * MagnoliaTabSheetState.
  */
-public interface ActiveTabChangedHandler extends EventHandler {
-    void onActiveTabChanged(final ActiveTabChangedEvent event);
+public class MagnoliaTabSheetState extends AbstractComponentState {
+
+    public Connector activeTab;
+ 
+    public String showAllLabel;
+    
+    public boolean showAllEnabled;
 }

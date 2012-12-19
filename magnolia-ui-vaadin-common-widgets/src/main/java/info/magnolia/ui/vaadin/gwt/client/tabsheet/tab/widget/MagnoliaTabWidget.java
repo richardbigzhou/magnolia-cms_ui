@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.event;
+package info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * Handler of the active tab changed event.
+ * MagnoliaTabWidget.
  */
-public interface ActiveTabChangedHandler extends EventHandler {
-    void onActiveTabChanged(final ActiveTabChangedEvent event);
+public class MagnoliaTabWidget extends SimplePanel {
+
+    private MagnoliaTabLabel label = new MagnoliaTabLabel();
+
+    public MagnoliaTabWidget() {
+        super();
+        setStyleName("v-shell-tab");
+    }
+
+    public void setLabel(MagnoliaTabLabel label) {
+        this.label = label;
+    }
+    
+    public MagnoliaTabLabel getLabel() {
+        return label;
+    }
 }

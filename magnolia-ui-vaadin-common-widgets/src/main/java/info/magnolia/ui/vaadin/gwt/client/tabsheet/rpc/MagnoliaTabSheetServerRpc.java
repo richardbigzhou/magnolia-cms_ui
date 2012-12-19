@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,50 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet;
+package info.magnolia.ui.vaadin.gwt.client.tabsheet.rpc;
 
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.vaadin.shared.Connector;
+import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * Fired when the set of TabSheet's tabs is changed.
+ * MagnoliaTabSheetServerRpc.
  */
-public class TabSetChangedEvent extends GwtEvent<TabSetChangedEvent.Handler> {
+public interface MagnoliaTabSheetServerRpc extends ServerRpc {
 
-    public static final Type<TabSetChangedEvent.Handler> TYPE = new Type<TabSetChangedEvent.Handler>();
+    void closeTab(Connector tabConnector);
     
-    private VMagnoliaTabSheet tabSheet;
-    
-    /**
-     *  HasTabSetChangedHandlers.
-     */
-    public interface HasTabSetChangedHandlers {
-        HandlerRegistration addTabSetChangedHandlers(Handler handler);
-    }
-    
-    /**
-     * Handler.
-     */
-    public interface Handler extends EventHandler {
-        void onTabSetChanged(final TabSetChangedEvent event);
-    }
-
-    public TabSetChangedEvent(final VMagnoliaTabSheet tabSheet) {
-        this.tabSheet = tabSheet;
-    }
-    
-    public VMagnoliaTabSheet getTabSheet() {
-        return tabSheet;
-    }
-    
-    @Override
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(Handler handler) {
-        handler.onTabSetChanged(this);
-    }
+    void setActiveTab(Connector tabConnector);
 }

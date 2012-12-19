@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.tabsheet.event;
 
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTab;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -60,17 +60,17 @@ public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedEvent.Handle
         HandlerRegistration addActiveTabChangedHandler(Handler handler);
     }
     
-    private final VMagnoliaTab tab;
+    private final MagnoliaTabWidget tab;
 
     private boolean isShowingAllTabs = false;
     
     private boolean notifyServer = true;
     
-    public ActiveTabChangedEvent(final VMagnoliaTab tab) {
+    public ActiveTabChangedEvent(final MagnoliaTabWidget tab) {
         this.tab = tab;
     }
 
-    public ActiveTabChangedEvent(final VMagnoliaTab tab, boolean notifyServer) {
+    public ActiveTabChangedEvent(final MagnoliaTabWidget tab, boolean notifyServer) {
         this.tab = tab;
         this.notifyServer = notifyServer;
     }
@@ -89,7 +89,7 @@ public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedEvent.Handle
         return notifyServer;
     }
     
-    public VMagnoliaTab getTab() {
+    public MagnoliaTabWidget getTab() {
         return tab;
     }
 

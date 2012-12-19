@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet;
+package info.magnolia.ui.vaadin.gwt.client.tabsheet.event;
 
-import java.util.List;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.widget.MagnoliaTabSheetView;
 
-import com.google.gwt.event.dom.client.HasScrollHandlers;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
- * VShellTabView.
+ * Fired when the set of TabSheet's tabs is changed.
  */
-public interface VMagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHandlers {
+public class TabSetChangedEvent extends GwtEvent<TabSetChangedEvent.Handler> {
 
-    List<VMagnoliaTab> getTabs();
-
-    void updateTab(VMagnoliaTab tab);
-
+    public static final Type<TabSetChangedEvent.Handler> TYPE = new Type<TabSetChangedEvent.Handler>();
+    
+    private final MagnoliaTabSheetView tabSheet;
+    
     /**
-     * Presenter.
+     *  HasTabSetChangedHandlers.
      */
-    public interface Presenter {
-        void updateLayout();
-        void updateLayoutOfActiveTab();
+    public interface HasTabSetChangedHandlers {
+        HandlerRegistration addTabSetChangedHandlers(Handler handler);
+    }
+    
+    /**
+     * Handler.
+     */
+    public interface Handler extends EventHandler {
+        void onTabSetChanged(final TabSetChangedEvent event);
     }
 
-    Widget getScroller();
+    public TabSetChangedEvent(final MagnoliaTabSheetView tabSheet) {
+        this.tabSheet = tabSheet;
+    }
+    
+    public MagnoliaTabSheetView getTabSheet() {
+        return tabSheet;
+    }
+    
+    @Override
+    public Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
 
-    VMagnoliaTabNavigator getTabContainer();
-
-    VMagnoliaTab getTabById(String tabId);
-
-    VMagnoliaTab getActiveTab();
-
-    void setShowActiveTabFullscreen(boolean isFullscreen);
-
-    void setActiveTab(VMagnoliaTab tab);
-
-    void removeTab(VMagnoliaTab tabToOrphan);
-
-    void showAllTabContents(boolean visible);
-
-    int getTabHeight(VMagnoliaTab child);
-
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.onTabSetChanged(this);
+    }
 }
