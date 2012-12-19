@@ -45,8 +45,6 @@ import java.util.Map;
  */
 public class ConfiguredAppDescriptor implements AppDescriptor {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * unique identifier.
      */
