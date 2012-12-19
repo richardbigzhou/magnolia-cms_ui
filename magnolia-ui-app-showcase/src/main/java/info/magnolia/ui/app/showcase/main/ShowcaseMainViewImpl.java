@@ -51,8 +51,6 @@ import com.vaadin.ui.Layout;
  */
 public class ShowcaseMainViewImpl implements ShowcaseMainView {
 
-    private static final long serialVersionUID = 1832253846080472161L;
-
     @SuppressWarnings("unused")
     private Listener listener;
 

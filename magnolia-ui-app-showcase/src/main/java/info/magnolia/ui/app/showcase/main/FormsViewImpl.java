@@ -57,8 +57,6 @@ import com.vaadin.ui.Button.ClickEvent;
  */
 public class FormsViewImpl implements FormsView {
 
-    private static final long serialVersionUID = -6955085822490659756L;
-
     CssLayout layout = new CssLayout();
 
     private Listener listener;
@@ -70,8 +68,6 @@ public class FormsViewImpl implements FormsView {
                 " Form or Dialog. Configurable by repository or code."));
 
         layout.addComponent(new Button("View in dialog", new Button.ClickListener() {
-
-            private static final long serialVersionUID = 3728932069745421056L;
 
             @Override
             public void buttonClick(ClickEvent event) {

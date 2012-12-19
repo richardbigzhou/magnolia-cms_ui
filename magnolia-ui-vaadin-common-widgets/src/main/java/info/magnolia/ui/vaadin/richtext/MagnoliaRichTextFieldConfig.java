@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -49,7 +49,6 @@ import com.google.gson.Gson;
  */
 public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
 
-    private static final long serialVersionUID = 9993500103615659L;
     private List<String> events = new ArrayList<String>();
     private Map<String, String> serverSidePlugins = new HashMap<String, String>();
 

@@ -39,8 +39,6 @@ package info.magnolia.ui.framework.instantpreview;
  */
 public class InstantPreviewHostNotFoundException extends RuntimeException {
 
-    private static final long serialVersionUID = 1L;
-
     public InstantPreviewHostNotFoundException(String message) {
         super(message);
     }
