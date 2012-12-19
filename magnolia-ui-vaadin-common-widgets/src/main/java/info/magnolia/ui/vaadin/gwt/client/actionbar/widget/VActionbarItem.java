@@ -31,9 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.actionbar;
+package info.magnolia.ui.vaadin.gwt.client.actionbar.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.actionbar.event.ActionTriggerEvent;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +52,8 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.ui.Icon;
+import com.vaadin.client.ApplicationConnection;
+import com.vaadin.client.ui.Icon;
 
 
 /**
@@ -72,7 +73,7 @@ public class VActionbarItem extends Widget {
 
     private final Icon iconImage;
 
-    protected final VActionbarItemJSO data;
+    protected final ActionbarItem data;
 
     protected final EventBus eventBus;
 
@@ -82,6 +83,8 @@ public class VActionbarItem extends Widget {
 
     protected List<HandlerRegistration> handlers = new ArrayList<HandlerRegistration>();
 
+    protected boolean isEnabled = true;
+    
     /**
      * Instantiates a new action in action bar.
      * 
@@ -92,7 +95,7 @@ public class VActionbarItem extends Widget {
      * Use {@link #VActionbarItem(VActionbarItemJSO, VActionbarGroup, EventBus)} instead.
      */
     @Deprecated
-    public VActionbarItem(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus, Icon icon) {
+    public VActionbarItem(ActionbarItem data, VActionbarGroup group, EventBus eventBus, Icon icon) {
         super();
         this.data = data;
         this.group = group;
@@ -111,7 +114,7 @@ public class VActionbarItem extends Widget {
      * @param group the group
      * @param eventBus the event bus
      */
-    public VActionbarItem(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus) {
+    public VActionbarItem(ActionbarItem data, VActionbarGroup group, EventBus eventBus) {
         super();
         this.data = data;
         this.group = group;
@@ -187,27 +190,35 @@ public class VActionbarItem extends Widget {
     }
 
     public void setEnabled(boolean enabled) {
-        data.setEnabled(enabled);
+        this.isEnabled = enabled;
         update();
     }
 
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+    
     public void update() {
         text.setInnerText(data.getLabel());
 
         if (data.getIcon() != null) {
             icon.setClassName("v-icon");
-            icon.addClassName(data.getIcon());
+            icon.addClassName(String.valueOf(data.getIcon()));
         } else if (iconImage != null) {
-            iconImage.setUri(data.getIcon());
+            iconImage.setUri(String.valueOf(data.getIcon()));
         }
 
-        if (data.isEnabled() && root.getClassName().contains(ApplicationConnection.DISABLED_CLASSNAME)) {
+        if (isEnabled() && root.getClassName().contains(ApplicationConnection.DISABLED_CLASSNAME)) {
             root.removeClassName(ApplicationConnection.DISABLED_CLASSNAME);
             bindHandlers();
-        } else if (!data.isEnabled() && !root.getClassName().contains(ApplicationConnection.DISABLED_CLASSNAME)) {
+        } else if (!isEnabled() && !root.getClassName().contains(ApplicationConnection.DISABLED_CLASSNAME)) {
             root.addClassName(ApplicationConnection.DISABLED_CLASSNAME);
             unbindHandlers();
         }
     }
-
+    
+    public ActionbarItem getData() {
+        return data;
+    }
+   
 }

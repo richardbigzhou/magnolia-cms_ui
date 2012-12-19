@@ -31,7 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.actionbar;
+package info.magnolia.ui.vaadin.gwt.client.actionbar.widget;
+
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -55,7 +57,7 @@ public class VActionbarSection extends FlowPanel {
 
     private final Element heading = DOM.createElement("h3");
 
-    private final VActionbarSectionJSO data;
+    private final ActionbarSection data;
 
     private final Map<String, VActionbarGroup> groups = new LinkedHashMap<String, VActionbarGroup>();
 
@@ -66,22 +68,18 @@ public class VActionbarSection extends FlowPanel {
      *
      * @param data the data
      */
-    public VActionbarSection(VActionbarSectionJSO data) {
+    public VActionbarSection(ActionbarSection data) {
         this.data = data;
-
-        // construct DOM
         setStyleName(CLASSNAME);
         getElement().appendChild(header);
         heading.addClassName("v-actionbar-section-title");
         header.appendChild(heading);
-
         update();
     }
 
     public String getName() {
         return data.getName();
     }
-
 
     public Map<String, VActionbarGroup> getGroups() {
         return groups;
@@ -103,7 +101,10 @@ public class VActionbarSection extends FlowPanel {
     public void update() {
         heading.setInnerText(data.getName());
         heading.setInnerText(data.getCaption());
-        setVisible(data.isVisible());
+    }
+
+    public ActionbarSection getData() {
+        return data;
     }
 
 }

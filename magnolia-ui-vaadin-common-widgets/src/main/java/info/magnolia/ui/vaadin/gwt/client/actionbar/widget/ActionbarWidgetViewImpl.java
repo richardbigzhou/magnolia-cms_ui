@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,10 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.actionbar;
+package info.magnolia.ui.vaadin.gwt.client.actionbar.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.actionbar.event.ActionTriggerEvent;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -44,21 +47,19 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
 import com.googlecode.mgwt.ui.client.MGWT;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
-import com.vaadin.terminal.gwt.client.ui.Icon;
 
 
 /**
  * The Class VActionbarViewImpl, GWT implementation for the VActionbarView interface.
  */
-public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, ActionTriggerEvent.Handler {
-
+public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWidgetView, ActionTriggerEvent.Handler {
+    
     public static final String CLASSNAME = "v-actionbar";
 
     public static final String CLASSNAME_TOGGLE = "v-actionbar-toggle";
@@ -85,7 +86,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
 
     private int tabletColumn = 0;
 
-    private final boolean isDeviceTablet;
+    private final boolean isDeviceTablet = isDeviceTablet();;
 
     private boolean isToggledOpen = false;
 
@@ -95,25 +96,18 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
 
     private final Map<String, VActionbarSection> sections = new LinkedHashMap<String, VActionbarSection>();
 
-    public VActionbarViewImpl(final EventBus eventBus) {
+    public ActionbarWidgetViewImpl(final EventBus eventBus) {
         setElement(root);
         addStyleName(CLASSNAME);
 
         this.eventBus = eventBus;
         this.eventBus.addHandler(ActionTriggerEvent.TYPE, this);
 
-        isDeviceTablet = isDeviceTablet();
-        tabletRow = -1;
 
-        prepareToggling();
-        prepareFullScreenButton();
+        createToggleControl();
+        createFullScreenControl();
 
-        if (isDeviceTablet) {
-            isToggledOpen = false;
-        } else {
-            isToggledOpen = true;
-        }
-
+        isToggledOpen = !isDeviceTablet;
         actualizeToggleState(isToggledOpen);
     }
 
@@ -127,7 +121,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
         return !(MGWT.getOsDetection().isDesktop() || Window.Location.getQueryString().indexOf("tablet=true") >= 0);
     }
 
-    private void prepareToggling() {
+    private void createToggleControl() {
 
         toggleButton.addStyleName(CLASSNAME_TOGGLE);
         add(toggleButton, root);
@@ -140,10 +134,9 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
         delegate.addTouchStartHandler(new TouchStartHandler() {
 
             @Override
-            public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
+            public void onTouchStart(TouchStartEvent event) {
                 isToggledOpen = !isToggledOpen;
-                actualizeToggleState(isToggledOpen);
-                presenter.forceLayout();
+                presenter.setOpened(isToggledOpen);
             }
         });
     }
@@ -192,7 +185,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
         setToggleAndFullScreenButtonHeights(tabletRow);
     }
 
-    private void prepareFullScreenButton() {
+    private void createFullScreenControl() {
 
         fullScreenButton.addStyleName(CLASSNAME_FULLSCREEN);
 
@@ -281,21 +274,13 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
         this.presenter = presenter;
     }
 
-    @Override
-    public void addSection(VActionbarSectionJSO sectionParams) {
+    public void addSection(ActionbarSection sectionParams) {
         VActionbarSection section = new VActionbarSection(sectionParams);
         sections.put(sectionParams.getName(), section);
         add(section, root);
     }
 
-    @Override
-    public void removeSection(String sectionName) {
-        VActionbarSection section = sections.remove(sectionName);
-        section.removeFromParent();
-    }
-
-    @Override
-    public void addAction(VActionbarItemJSO actionParams, Icon icon, String groupName, String sectionName) {
+    /*public void addAction(ActionbarItem actionParams, Icon icon, String groupName, String sectionName) {
         VActionbarSection section = sections.get(sectionName);
         if (section != null) {
             VActionbarGroup group = section.getGroups().get(groupName);
@@ -320,17 +305,16 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
             }
             group.addAction(action);
         }
-    }
+    }*/
 
-    @Override
-    public void addAction(VActionbarItemJSO actionParams, String groupName, String sectionName) {
+    public void addAction(ActionbarItem actionParams, String sectionName) {
         VActionbarSection section = sections.get(sectionName);
         if (section != null) {
-            VActionbarGroup group = section.getGroups().get(groupName);
+            VActionbarGroup group = section.getGroups().get(actionParams.getGroupName());
             if (group == null) {
                 tabletColumn = 0;
                 tabletRow++;
-                group = new VActionbarGroup(groupName);
+                group = new VActionbarGroup(actionParams.getGroupName());
                 section.addGroup(group);
 
                 setToggleAndFullScreenButtonHeights(tabletRow);
@@ -355,36 +339,81 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
      */
     private void setToggleAndFullScreenButtonHeights(int tabletRow) {
         // Position toggleButton and fullScreenButton at bottom of stack.
-
         toggleButton.setStyleName(CLASSNAME_TOGGLE + " row-" + (tabletRow + 1));
-
         fullScreenButton.setStyleName(CLASSNAME_FULLSCREEN + " row-" + (tabletRow + 1));
     }
 
     @Override
     public void onActionTriggered(ActionTriggerEvent event) {
         VActionbarItem action = event.getSource();
-        VActionbarSection section = getParentSection(action);
+        VActionbarSection section = (VActionbarSection)action.getParent().getParent();
         presenter.triggerAction(section.getName() + ":" + action.getName());
     }
-
-    private VActionbarSection getParentSection(VActionbarItem item) {
-        // parent is group, grandparent is section
-        return (VActionbarSection) item.getParent().getParent();
+    
+    @Override
+    public void setSections(Collection<ActionbarSection> newSections) {
+        for (final VActionbarSection section : this.sections.values()) {
+            remove(section);
+        }
+        sections.clear();
+        for (final ActionbarSection section : newSections) {
+            addSection(section);
+            for (final ActionbarItem action : section.getActions().values()) {
+                addAction(action, section.getName());
+            }
+        }
+        refreshActionsPositionsTablet();
     }
 
     @Override
-    public boolean hasChildComponent(Widget component) {
-        if (sections.containsValue(component)) {
-            return true;
-        } else {
-            for (VActionbarSection section : sections.values()) {
-                if (section.getWidgetIndex(component) != -1) {
-                    return true;
+    public void setVisibleSections(Collection<ActionbarSection> visibleSections) {
+        for (final VActionbarSection section : sections.values()) {
+            section.setVisible(visibleSections.contains(section.getData()));
+        }
+        refreshActionsPositionsTablet();
+    }
+
+    @Override
+    public void setEnabledActions(Collection<ActionbarItem> enabledActions) {
+        for (final VActionbarSection section : sections.values()) {
+            for (final VActionbarGroup group : section.getGroups().values()) {
+                for (final VActionbarItem action : group.getActions()) {
+                    action.setEnabled(enabledActions.contains(action.getData()));
                 }
             }
         }
-        return false;
     }
 
+    @Override
+    public boolean isOpen() {
+        return isToggledOpen;
+    }
+
+    @Override
+    public void setOpen(boolean isOpen) {
+        actualizeToggleState(isToggledOpen);
+        presenter.forceLayout();        
+    }
+    
+    /*   
+    register("addAction", new Method() {
+
+        @Override
+        public void invoke(String methodName, Object[] params) {
+            String jsonIcon = String.valueOf(params[0]);
+            final VActionbarItemJSO action = VActionbarItemJSO.parse(jsonIcon);
+            String groupName = String.valueOf(params[1]);
+            String sectionName = String.valueOf(params[2]);
+
+            if (action.getIcon().startsWith("icon-")) {
+                view.addAction(action, groupName, sectionName);
+            } else {
+                Icon icon = null;
+                if (action.getIcon() != null) {
+                    icon = new Icon(client, action.getIcon());
+                }
+                view.addAction(action, icon, groupName, sectionName);
+            }
+        }
+    });*/
 }

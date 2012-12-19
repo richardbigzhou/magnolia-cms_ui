@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.actionbar;
+package info.magnolia.ui.vaadin.gwt.client.actionbar.widget;
 
 import java.util.ArrayList;
 import java.util.List;

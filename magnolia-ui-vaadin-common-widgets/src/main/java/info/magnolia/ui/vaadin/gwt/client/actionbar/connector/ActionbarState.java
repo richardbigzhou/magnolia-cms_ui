@@ -31,34 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.actionbar;
+package info.magnolia.ui.vaadin.gwt.client.actionbar.connector;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.vaadin.shared.AbstractComponentState;
 
 /**
- * Description for client-side action bar section.
+ * ActionbarState.
  */
-public final class VActionbarSectionJSO extends JavaScriptObject {
+public class ActionbarState extends AbstractComponentState {
 
-    protected VActionbarSectionJSO() {}
+    public Map<String, ActionbarSection> sections = new LinkedHashMap<String, ActionbarSection>();
 
-    public static native VActionbarSectionJSO parse(String json) /*-{
-       try {
-         return eval('(' + json + ')');
-       } catch(e) {
-           return null;
-       }
-    }-*/;
-
-    public final native String getName() /*-{
-        return this.name;
-}-*/;
-
-    public final native String getCaption() /*-{
-        return this.caption;
-    }-*/;
-
-    public final native boolean isVisible() /*-{
-        return this.visible;
-    }-*/;
+    public List<ActionbarSection> visibleSections = new ArrayList<ActionbarSection>();
+    
+    public List<ActionbarItem> enabledActions = new ArrayList<ActionbarItem>();
+    
+    public boolean isOpen;
 }

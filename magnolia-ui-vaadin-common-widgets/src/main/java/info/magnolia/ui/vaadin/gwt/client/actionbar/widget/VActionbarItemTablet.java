@@ -31,16 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.actionbar;
+package info.magnolia.ui.vaadin.gwt.client.actionbar.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.actionbar.event.ActionTriggerEvent;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
-import com.vaadin.terminal.gwt.client.ui.Icon;
+import com.vaadin.client.ui.Icon;
 
 
 /**
@@ -56,12 +57,12 @@ public class VActionbarItemTablet extends VActionbarItem {
 
     private int column;
 
-    public VActionbarItemTablet(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus, Icon icon) {
+    public VActionbarItemTablet(ActionbarItem data, VActionbarGroup group, EventBus eventBus, Icon icon) {
         super(data, group, eventBus, icon);
         initialize();
     }
 
-    public VActionbarItemTablet(VActionbarItemJSO data, VActionbarGroup group, EventBus eventBus) {
+    public VActionbarItemTablet(ActionbarItem data, VActionbarGroup group, EventBus eventBus) {
         super(data, group, eventBus);
         initialize();
     }

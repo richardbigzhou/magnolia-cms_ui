@@ -31,51 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.actionbar.event;
-
-import info.magnolia.ui.vaadin.gwt.client.actionbar.widget.VActionbarItem;
-
-import com.google.web.bindery.event.shared.Event;
-
+package info.magnolia.ui.vaadin.gwt.client.actionbar.shared;
 
 /**
- * Event for triggering actions based on action name.
+ * Legacy class for compatibility of GSON serialization of Resources, in
+ * case the item uses an image icon.
  */
-public class ActionTriggerEvent extends Event<ActionTriggerEvent.Handler> {
-
-    public static final Type<Handler> TYPE = new Type<Handler>();
-
-    private final String actionName;
-
-    public ActionTriggerEvent(final String actionName, final VActionbarItem source) {
-        this.actionName = actionName;
-        setSource(source);
-    }
-
-    public String getActionName() {
-        return actionName;
-    }
-
-    @Override
-    public VActionbarItem getSource() {
-        return (VActionbarItem) super.getSource();
-    }
-
-    @Override
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(Handler handler) {
-        handler.onActionTriggered(this);
-    }
+public class ActionbarResourceItem extends ActionbarItem {
 
     /**
-     * Handler for the action trigger event.
+     * TODO - resolve this situation with those bloody icon-fonts!!!
      */
-    public interface Handler {
+    //private final Resource icon;
 
-        void onActionTriggered(final ActionTriggerEvent event);
+    public ActionbarResourceItem() {
+        // TODO Auto-generated constructor stub
     }
+    
+    /**
+     * Use {@link ActionbarItem#ActionbarItem(String, String, String)}
+     * instead.
+     */
+    @Deprecated
+    public ActionbarResourceItem(String name, String label, /*Resource icon,*/ String groupName) {
+        super(name, label, groupName);
+        //this.icon = icon;
+    }
+
+    /*@Override
+    public Resource getIcon() {
+        return icon;
+    }*/
 }

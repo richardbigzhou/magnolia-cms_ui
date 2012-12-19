@@ -33,15 +33,13 @@
  */
 package info.magnolia.ui.vaadin.actionbar;
 
-import info.magnolia.ui.framework.view.View;
-
-import com.vaadin.terminal.Resource;
+import com.vaadin.server.Resource;
 
 
 /**
  * Base interface for an action bar view.
  */
-public interface ActionbarView extends View {
+public interface ActionbarView /*extends View*/ {
 
     void setListener(Listener listener);
 
@@ -60,26 +58,17 @@ public interface ActionbarView extends View {
     void setPreview(Resource previewResource, String sectionName);
 
     // ENABLE / DISABLE
-    void enable(String actionName);
+    void setActionEnabled(String actionName, boolean isEnabled);
 
-    void enable(String actionName, String sectionName);
+    void setActionEnabled(String actionName, String sectionName, boolean isEnabled);
 
-    void enableGroup(String groupName);
+    void setGroupEnabled(String groupName, boolean isEnabled);
 
-    void enableGroup(String groupName, String sectionName);
+    void setGroupEnabled(String groupName, String sectionName, boolean isEnabled);
 
-    void disable(String actionName);
-
-    void disable(String actionName, String sectionName);
-
-    void disableGroup(String groupName);
-
-    void disableGroup(String groupName, String sectionName);
 
     // SHOW / HIDE SECTIONS
-    void showSection(String sectionName);
-
-    void hideSection(String sectionName);
+    void setSectionVisible(String sectionName, boolean isVisible);
 
     boolean isSectionVisible(String sectionName);
 

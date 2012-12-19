@@ -31,43 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.actionbar;
+package info.magnolia.ui.vaadin.gwt.client.actionbar.rpc;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * Description for client-side action bar item.
+ *  {@link ActionbarServerRpc}.
  */
-public final class VActionbarItemJSO extends JavaScriptObject {
+public interface ActionbarServerRpc extends ServerRpc {
 
-    protected VActionbarItemJSO() {}
-
-    public static native VActionbarItemJSO parse(String json) /*-{
-       try {
-         return eval('(' + json + ')');
-       } catch(e) {
-           return null;
-       }
-    }-*/;
-
-    public final native String getName() /*-{
-        return this.name;
-}-*/;
-
-    public final native String getLabel() /*-{
-        return this.label;
-    }-*/;
-
-    public final native String getIcon() /*-{
-        return this.icon;
-    }-*/;
-
-    public final native boolean isEnabled() /*-{
-        return this.enabled;
-    }-*/;
-
-    public final native void setEnabled(boolean enabled) /*-{
-        this.enabled = enabled;
-    }-*/;
-
+    void onActionTriggered(String actionToken);
+    
+    void onFullScreenModeToggle(boolean isFullScreen);
+    
+    void setOpen(boolean isOpen);
 }

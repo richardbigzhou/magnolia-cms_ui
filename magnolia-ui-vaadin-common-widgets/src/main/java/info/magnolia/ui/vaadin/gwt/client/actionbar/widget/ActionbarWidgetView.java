@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,20 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.actionbar;
+package info.magnolia.ui.vaadin.gwt.client.actionbar.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
+
+import java.util.Collection;
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.terminal.gwt.client.ui.Icon;
 
 
 /**
  * View interface of client-side action bar.
  */
-public interface VActionbarView extends HasWidgets, IsWidget {
+public interface ActionbarWidgetView extends HasWidgets, IsWidget {
 
     /**
      * Gets the section widgets inside this action bar view.
@@ -60,41 +62,11 @@ public interface VActionbarView extends HasWidgets, IsWidget {
      */
     void setPresenter(Presenter presenter);
 
-    /**
-     * Adds a section to this action bar.
-     *
-     * @param sectionParams the section parameters
-     */
-    void addSection(VActionbarSectionJSO sectionParams);
+    void setSections(Collection<ActionbarSection> sections);
 
-    /**
-     * Removes the section from this action bar.
-     *
-     * @param sectionName the section name
-     */
-    void removeSection(String sectionName);
-
-    /**
-     * Adds an action item to this action bar.
-     *
-     * @param actionParams the action parameters
-     * @param icon the icon ui object
-     * @param groupName the group name
-     * @param sectionName the section name
-     *
-     * use {@link #addAction(VActionbarItemJSO, String, String)} instead.
-     */
-    @Deprecated
-    void addAction(VActionbarItemJSO actionParams, Icon icon, String groupName, String sectionName);
-
-    /**
-     * Adds an action item to this action bar.
-     *
-     * @param actionParams the action parameters including the icon CSS class name
-     * @param groupName the group name
-     * @param sectionName the section name
-     */
-    void addAction(VActionbarItemJSO actionParams, String groupName, String sectionName);
+    void setVisibleSections(Collection<ActionbarSection> visibleSections);
+    
+    void setEnabledActions(Collection<ActionbarItem> enabledActions);
 
     /**
      * Update the classes on the actions so that they are positioned correctly.
@@ -103,14 +75,9 @@ public interface VActionbarView extends HasWidgets, IsWidget {
      */
     void refreshActionsPositionsTablet();
 
-    /**
-     * Checks if given widget is a child of this component.
-     *
-     * @param component the component
-     * @return true, if successful
-     */
-    boolean hasChildComponent(Widget component);
-
+    boolean isOpen();
+    
+    void setOpen(boolean isOpen);
     /**
      * Presenter for the Actionbar view.
      */

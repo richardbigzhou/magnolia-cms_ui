@@ -31,51 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.actionbar.event;
-
-import info.magnolia.ui.vaadin.gwt.client.actionbar.widget.VActionbarItem;
-
-import com.google.web.bindery.event.shared.Event;
+package info.magnolia.ui.vaadin.gwt.client.actionbar.shared;
 
 
 /**
- * Event for triggering actions based on action name.
+ * Class for GSON serialization of actionbar items using the icon font.
  */
-public class ActionTriggerEvent extends Event<ActionTriggerEvent.Handler> {
+public class ActionbarFontItem extends ActionbarItem {
 
-    public static final Type<Handler> TYPE = new Type<Handler>();
+    private final String icon;
 
-    private final String actionName;
-
-    public ActionTriggerEvent(final String actionName, final VActionbarItem source) {
-        this.actionName = actionName;
-        setSource(source);
-    }
-
-    public String getActionName() {
-        return actionName;
+    public ActionbarFontItem(String name, String label, String icon, String groupName) {
+        super(name, label, groupName);
+        this.icon = icon;
     }
 
     @Override
-    public VActionbarItem getSource() {
-        return (VActionbarItem) super.getSource();
-    }
-
-    @Override
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(Handler handler) {
-        handler.onActionTriggered(this);
-    }
-
-    /**
-     * Handler for the action trigger event.
-     */
-    public interface Handler {
-
-        void onActionTriggered(final ActionTriggerEvent event);
+    public String getIcon() {
+        return icon;
     }
 }
