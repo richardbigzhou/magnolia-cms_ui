@@ -37,6 +37,8 @@ import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
+
+import info.magnolia.ui.admincentral.AdminCentralApplication;
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
@@ -64,7 +66,7 @@ public class RichTextFieldBuilder extends
 
     private static final String PLUGIN_NAME_MAGNOLIALINK = "magnolialink";
 
-    private static final String PLUGIN_PATH_MAGNOLIALINK = "../../../js/magnolialink/";
+    private static final String PLUGIN_PATH_MAGNOLIALINK = "/VAADIN/js/magnolialink/";
 
     /**
      * Event is emit from server to client when link has been selected.
@@ -99,7 +101,7 @@ public class RichTextFieldBuilder extends
     @Override
     protected Field buildField() {
         // RichTextFieldDefinition editDefinition = definition;
-        MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
+        final MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
 
         List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
         toolbars.add(new ToolbarGroup("basictyles", new String[] { "Bold",
@@ -116,13 +118,16 @@ public class RichTextFieldBuilder extends
                 new String[] { "Undo", "Redo" }));
         config.addToolbarLine(toolbars);
         config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
-        config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, PLUGIN_PATH_MAGNOLIALINK);
         config.setResizeEnabled(false);
         
         richtexteditor = new MagnoliaRichTextField(config) {
             @Override
             public void attach() {
-
+                if (getApplication() instanceof AdminCentralApplication) {
+                    AdminCentralApplication admincentral = (AdminCentralApplication)getApplication();
+                    String path = admincentral.getAdminCentralPath();
+                    config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path+PLUGIN_PATH_MAGNOLIALINK);
+                }
             }
         };
         richtexteditor.addListener(new MagnoliaRichTextField.PluginListener() {

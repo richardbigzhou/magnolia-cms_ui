@@ -65,6 +65,8 @@ public class AdminCentralApplication extends Application implements HttpServletR
     private static final Boolean isDeviceOverrideTablet = true;
 
     private Window window;
+    
+    private String contextPath = "";
 
     public boolean getIsDeviceOverrideTablet() {
         return isDeviceOverrideTablet;
@@ -98,11 +100,17 @@ public class AdminCentralApplication extends Application implements HttpServletR
 
     @Override
     public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("ctx path: "+request.getServletPath());
+        if (request.getContextPath() != null) {
+            this.contextPath = request.getContextPath();
+        }
     }
 
     @Override
     public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
 
+    }
+    
+    public String getAdminCentralPath() {
+        return this.contextPath;
     }
 }
