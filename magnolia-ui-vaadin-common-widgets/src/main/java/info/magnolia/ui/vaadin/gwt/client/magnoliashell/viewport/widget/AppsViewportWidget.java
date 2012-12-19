@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,15 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.icon.GwtLoadingIcon;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.Callbacks;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMagnoliaShell;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.AppsTransitionDelegate;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.MagnoliaSwipeRecognizer;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate;
 
 import java.util.Iterator;
 
@@ -64,14 +66,12 @@ import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveHandler;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeStartEvent;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeStartHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.UIDL;
 
 
 /**
  * Client side implementation of Apps viewport.
  */
-public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
+public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandlers {
 
     private static final int SWIPE_OUT_THRESHOLD = 300;
 
@@ -90,7 +90,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
             final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
             if (target.getClassName().contains(CLOSE_CLASSNAME)) {
                 setClosing(true);
-                getEventBus().fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.APP_VIEWPORT));
+                getEventBus().fireEvent(new ViewportCloseEvent(ViewportType.APP_VIEWPORT));
             }
         }
     };
@@ -98,25 +98,11 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
     /**
      * Instantiates a new apps viewport.
      */
-    public VAppsViewport() {
+    public AppsViewportWidget() {
         super();
         addDomHandler(closeHandler, ClickEvent.getType());
         bindTouchHandlers();
         setTransitionDelegate(TransitionDelegate.APPS_TRANSITION_DELEGATE);
-    }
-
-    @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        super.updateFromUIDL(uidl, client);
-        if (RootPanel.get().getWidgetIndex(preloader) >= 0) {
-            new Timer() {
-
-                @Override
-                public void run() {
-                    RootPanel.get().remove(preloader);
-                }
-            }.schedule(500);
-        }
     }
 
     /* CURTAIN INTEGRATION */
@@ -152,7 +138,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
     /**
      * Default non-transitioning behavior, accessible to transition delegates as a fall back.
      */
-    void doSetCurtainVisible(boolean visible) {
+    public void doSetCurtainVisible(boolean visible) {
         if (visible && getCurtain().getParentElement() != getElement()) {
             getElement().appendChild(getCurtain());
         } else if (!visible && getCurtain().getParentElement() == getElement()) {
@@ -167,7 +153,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
     /* APP CLOSING */
 
     @Override
-    void doSetVisibleApp(Widget w) {
+    public void doSetVisibleApp(Widget w) {
         if (getVisibleApp() != null) {
             // do not hide app if closing
             if (!isClosing()) {
@@ -188,7 +174,7 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
     }
 
     @Override
-    void doRemoveWidget(Widget w) {
+    public void doRemoveWidget(Widget w) {
         super.doRemoveWidget(w);
         setClosing(false);
     }
@@ -413,7 +399,10 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
             loading.addClassName("v-caption");
             loading.setInnerText("Loading");
 
-            preloader.appendChild(new GwtLoadingIcon().getElement());
+            /*
+             * TODO: FIX!
+             * preloader.appendChild(new GwtLoadingIcon().getElement());
+             */
             preloader.appendChild(DOM.createElement("br"));
             preloader.appendChild(loading);
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMagnoliaShell.ViewportType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ViewportCloseHandler;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
 
 import com.google.gwt.event.shared.GwtEvent;
 

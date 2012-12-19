@@ -36,7 +36,7 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.Callbacks;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMagnoliaShellView;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellView;
 
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -63,7 +63,7 @@ public abstract class VShellMessage extends HTML {
 
     private HandlerRegistration eventPreviewReg = null;
 
-    private final VMagnoliaShellView shell;
+    private final MagnoliaShellView shell;
 
     private Element messageTypeEl = DOM.createElement("b");
 
@@ -79,7 +79,7 @@ public abstract class VShellMessage extends HTML {
 
     private final String topic;
 
-    public VShellMessage(VMagnoliaShellView shell, String topic, String message, String id) {
+    public VShellMessage(MagnoliaShellView shell, String topic, String message, String id) {
         super();
         this.topic = topic;
         this.shell = shell;
@@ -183,7 +183,7 @@ public abstract class VShellMessage extends HTML {
         return header;
     }
 
-    protected final VMagnoliaShellView getShell() {
+    protected final MagnoliaShellView getShell() {
         return shell;
     }
 

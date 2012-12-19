@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,10 +35,7 @@ package info.magnolia.ui.vaadin.magnoliashell;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map;
 
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.Component;
 
@@ -58,41 +55,30 @@ public class DeckLayout extends AbstractComponentContainer {
     }
 
     @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
-        for (final Component child : children) {
-            child.paint(target);
-        }
-    }
-
-    @Override
     public void addComponent(Component c) {
-
         // Check first if this is the same as the currently shown, saves a paint request and eliminates flicker
-        if (!children.isEmpty() && children.getFirst() == c) {
-            return;
+        if (children.isEmpty() || children.getFirst() == c) {
+            super.addComponent(c);
+            if (children.contains(c)) {
+                children.remove(c);
+            }
+            children.addFirst(c);
+            markAsDirty();
         }
-
-        super.addComponent(c);
-        if (children.contains(c)) {
-            children.remove(c);
-        }
-        children.addFirst(c);
-        requestRepaint();
     }
 
     @Override
     public void removeComponent(Component c) {
         super.removeComponent(c);
         children.remove(c);
-        requestRepaint();
+        markAsDirty();
     }
 
     @Override
     public void removeAllComponents() {
         super.removeAllComponents();
         children.clear();
-        requestRepaint();
+        markAsDirty();
     }
 
     @Override
@@ -100,26 +86,27 @@ public class DeckLayout extends AbstractComponentContainer {
         removeComponent(oldComponent);
         addComponent(newComponent);
     }
-
-    @Override
-    public void changeVariables(Object source, Map<String, Object> variables) {
-        super.changeVariables(source, variables);
-    }
-    
-    @Override
-    public Iterator<Component> getComponentIterator() {
-        return children.iterator();
-    }
+   
     
     public void pop() {
         if (!children.isEmpty()) {
             final Component currentVisible = children.removeFirst();
             removeComponent(currentVisible);
-            requestRepaint();
+            markAsDirty();
         } 
     }
     
     public boolean isEmpty() {
         return children.isEmpty();
+    }
+
+    @Override
+    public int getComponentCount() {
+        return children.size();
+    }
+
+    @Override
+    public Iterator<Component> iterator() {
+        return children.iterator();
     }
 }

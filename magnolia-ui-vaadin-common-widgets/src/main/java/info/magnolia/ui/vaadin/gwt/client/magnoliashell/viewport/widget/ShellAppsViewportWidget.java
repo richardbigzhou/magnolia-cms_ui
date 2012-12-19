@@ -31,24 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigationEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate;
 
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
 /**
  * Shell apps viewport client side.
  */
-public class VShellAppsViewport extends VShellViewport {
+public class ShellAppsViewportWidget extends ViewportWidget {
 
     private ShellAppNavigationEvent refreshEvent;
 
-    public VShellAppsViewport() {
+    public ShellAppsViewportWidget() {
         super();
-        setForceContentAlign(true);
         setTransitionDelegate(TransitionDelegate.SHELL_APPS_TRANSITION_DELEGATE);
     }
 
@@ -59,7 +60,7 @@ public class VShellAppsViewport extends VShellViewport {
      * @return the shell app widget
      */
     public Widget getShellAppByType(ShellAppType type) {
-        return (Widget) client.getPaintable("PID_S" + type.getClassId());
+        return new FlowPanel();//TODO: (Widget) client.getPaintable("PID_S" + type.getClassId());
     }
 
     /* SERVER REFRESH AFTER CLIENT TRANSITIONS */
@@ -79,7 +80,7 @@ public class VShellAppsViewport extends VShellViewport {
     }
 
     @Override
-    void doSetActive(boolean active) {
+    public void doSetActive(boolean active) {
         super.doSetActive(active);
         if (getTransitionDelegate() == null && active) {
             refreshShellApp();
@@ -87,9 +88,12 @@ public class VShellAppsViewport extends VShellViewport {
     }
 
     @Override
-    void doSetVisibleApp(Widget w) {
+    public void doSetVisibleApp(Widget w) {
         super.doSetVisibleApp(w);
-        iLayout();
+        /**
+         * FIXME: verify it is not needed anymore.
+         */
+        //iLayout();
         if (getTransitionDelegate() == null) {
             refreshShellApp();
         }

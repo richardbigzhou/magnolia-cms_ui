@@ -31,17 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMagnoliaShell.ViewportType;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellMessage.MessageType;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VAppsViewport.PreloaderCallback;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VShellViewport;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget.PreloaderCallback;
 
 import java.util.Collection;
-
-import org.vaadin.artur.icepush.client.ui.VICEPush;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -51,15 +49,15 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The view interface for MagnoliaShell (implemented by GWT part of MagnoliaShell).
  */
-public interface VMagnoliaShellView extends HasWidgets, IsWidget {
+public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
     int getViewportHeight();
 
     int getViewportWidth();
 
-    void setActiveViewport(ViewportType viewportType);
+    void setActiveViewport(ViewportWidget viewport);
 
-    void updateViewport(VShellViewport viewport, ViewportType type);
+    void updateViewport(ViewportWidget viewport, ViewportType type);
 
     void setPresenter(final Presenter presenter);
 
@@ -71,13 +69,13 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
 
     void shiftViewportsVertically(int shiftPx, boolean animated);
 
-    void setPusher(VICEPush pusher);
+    //void setPusher(VICEPush pusher);
 
     void setShellAppIndication(ShellAppType type, int indication);
 
     Presenter getPresenter();
 
-    Collection<VShellViewport> getViewports();
+    Collection<ViewportWidget> getViewports();
 
     void closeMessageEager(String id);
 
@@ -94,7 +92,7 @@ public interface VMagnoliaShellView extends HasWidgets, IsWidget {
 
         void loadShellApp(ShellAppType shellAppType, String token);
 
-        void updateViewportLayout(VShellViewport activeViewport);
+        void updateViewportLayout(ViewportWidget activeViewport);
 
         void destroyChild(final Widget child);
 

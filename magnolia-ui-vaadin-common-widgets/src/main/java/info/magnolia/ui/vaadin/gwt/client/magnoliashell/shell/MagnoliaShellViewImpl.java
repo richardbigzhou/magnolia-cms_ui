@@ -31,47 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMagnoliaShell.ViewportType;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppActivatedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigationEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ShellNavigationHandler;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ViewportCloseHandler;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VInfoMessage;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellErrorMessage;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellMessage;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellMessage.MessageType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VWarningMessage;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VAppsViewport;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VAppsViewport.PreloaderCallback;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VDialogViewport;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VShellAppsViewport;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VShellViewport;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget.PreloaderCallback;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.DialogViewportWidget;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ShellAppsViewportWidget;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
-import org.vaadin.artur.icepush.client.ui.VICEPush;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.IFrameElement;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
@@ -80,50 +72,31 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
  */
-public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShellView, ViewportCloseHandler {
+public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellView, ViewportCloseHandler {
 
     public static final String CLASSNAME = "v-magnolia-shell";
 
-    private final Map<ViewportType, VShellViewport> viewports = new EnumMap<ViewportType, VShellViewport>(ViewportType.class);
+    private final Map<ViewportType, ViewportWidget> viewports = new EnumMap<ViewportType, ViewportWidget>(ViewportType.class);
 
-    private ViewportType activeViewportType = null;
-
-    private final VMainLauncher mainAppLauncher;
-
-    private Presenter presenter;
+    private final ShellAppLauncher mainAppLauncher;
 
     private final EventBus eventBus;
 
     private VShellMessage lowPriorityMessage;
 
     private VShellMessage hiPriorityMessage;
+    
+    private ViewportWidget activeViewport = null;
 
-    public VMagnoliaShellViewImpl(final EventBus eventBus) {
+    private Presenter presenter;
+    
+    public MagnoliaShellViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
-        this.mainAppLauncher = new VMainLauncher(eventBus);
+        this.mainAppLauncher = new ShellAppLauncher(eventBus);
         setStyleName(CLASSNAME);
         add(mainAppLauncher, getElement());
         bindEventHandlers();
-
-        // TODO:Very useful for debugging/development - but perhaps should be removed - Christopher
-        // Zimmermann
-        if (Window.Location.getQueryString().indexOf("tablet=true") >= 0) {
-            RootPanel.get().addStyleName("tablet");
-        }
-
-        final IFrameElement iframe = Document.get().createIFrameElement();
-        getElement().appendChild(iframe);
-        iframe.setPropertyString("width", "100%");
-        iframe.setPropertyString("height", "100%");
-        iframe.getStyle().setProperty("border", "none");
-        // iframe.setSrc("http://www.sport-express.ru");
-        iframe.getStyle().setPosition(Position.ABSOLUTE);
-        iframe.getStyle().setLeft(0, Unit.PX);
-        iframe.getStyle().setTop(0, Unit.PX);
-        iframe.getStyle().setWidth(100, Unit.PCT);
-        iframe.getStyle().setHeight(100, Unit.PCT);
-        // iframe.getStyle().setZIndex(1000);
     }
 
     private void bindEventHandlers() {
@@ -140,32 +113,32 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         });
     }
 
-    protected VAppsViewport getAppViewport() {
-        return (VAppsViewport) viewports.get(ViewportType.APP_VIEWPORT);
+    protected AppsViewportWidget getAppViewport() {
+        return (AppsViewportWidget) viewports.get(ViewportType.APP_VIEWPORT);
     }
 
-    protected VShellAppsViewport getShellAppViewport() {
-        return (VShellAppsViewport) viewports.get(ViewportType.SHELL_APP_VIEWPORT);
+    protected ShellAppsViewportWidget getShellAppViewport() {
+        return (ShellAppsViewportWidget) viewports.get(ViewportType.SHELL_APP_VIEWPORT);
     }
 
-    protected VDialogViewport getDialogViewport() {
-        return (VDialogViewport) viewports.get(ViewportType.DIALOG_VIEWPORT);
+    protected DialogViewportWidget getDialogViewport() {
+        return (DialogViewportWidget) viewports.get(ViewportType.DIALOG_VIEWPORT);
     }
 
     @Override
-    public void setActiveViewport(final ViewportType type) {
-        if (activeViewportType != type) {
-            final VShellViewport shellAppViewport = getShellAppViewport();
-            final VShellViewport appViewport = getAppViewport();
+    public void setActiveViewport(ViewportWidget viewport) {
+        if (activeViewport != viewport) {
+            final ViewportWidget shellAppViewport = getShellAppViewport();
+            final ViewportWidget appViewport = getAppViewport();
 
-            boolean appViewportActive = type.equals(ViewportType.APP_VIEWPORT);
+            boolean appViewportActive = appViewport == viewport;
             if (appViewportActive) {
                 mainAppLauncher.deactivateControls();
             }
             shellAppViewport.setActive(!appViewportActive);
             appViewport.setActive(appViewportActive);
 
-            activeViewportType = type;
+            activeViewport = viewport;
         }
     }
 
@@ -266,15 +239,15 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     }
 
     @Override
-    public void updateViewport(VShellViewport viewport, ViewportType type) {
+    public void updateViewport(ViewportWidget viewport, ViewportType type) {
         doUpdateViewport(viewport, type);
     }
 
     private final ShellNavigationHandler navigationHandler = new ShellNavigationHandler() {
-
         @Override
         public void onAppActivated(AppActivatedEvent event) {
-            final String fragment = activeViewportType.getFragmentPrefix()
+            String prefix = activeViewport == getAppViewport() ? "app" : "shell";
+            final String fragment = prefix
                 + event.getAppId()
                 + ":"
                 + event.getSubAppId()
@@ -286,7 +259,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         @Override
         public void onShellAppNavigation(final ShellAppNavigationEvent event) {
 
-            VShellAppsViewport viewport = getShellAppViewport();
+            ShellAppsViewportWidget viewport = getShellAppViewport();
             Widget shellApp = viewport.getShellAppByType(event.getType());
             ShellAppNavigationEvent refreshEvent = viewport.getRefreshEvent();
 
@@ -303,7 +276,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
                 viewport.setVisibleApp(shellApp);
                 // trigger viewport active transition if it was not.
                 if (!viewport.isActive()) {
-                    setActiveViewport(ViewportType.SHELL_APP_VIEWPORT);
+                    setActiveViewport(getShellAppViewport());
                 }
             } else {
                 viewport.setRefreshEvent(null);
@@ -316,7 +289,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     @Override
     public void onViewportClose(ViewportCloseEvent event) {
-        final VMagnoliaShell.ViewportType viewportType = event.getViewportType();
+        final ViewportType viewportType = event.getViewportType();
         if (viewportType == ViewportType.SHELL_APP_VIEWPORT) {
             getShellAppViewport().setClosing(true);
             presenter.closeCurrentShellApp();
@@ -327,11 +300,11 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     @Override
     public void navigate(String appId, String subAppId, String parameter) {
-        eventBus.fireEvent(new AppActivatedEvent(activeViewportType == ViewportType.SHELL_APP_VIEWPORT, appId, subAppId, parameter));
+        eventBus.fireEvent(new AppActivatedEvent(activeViewport == getShellAppViewport(), appId, subAppId, parameter));
     }
 
     @Override
-    public Collection<VShellViewport> getViewports() {
+    public Collection<ViewportWidget> getViewports() {
         return Collections.unmodifiableCollection(viewports.values());
     }
 
@@ -342,7 +315,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
 
     @Override
     public void shiftViewportsVertically(int shiftPx, boolean animated) {
-        for (final VShellViewport viewport : viewports.values()) {
+        for (final ViewportWidget viewport : viewports.values()) {
             final AnimationSettings settings = new AnimationSettings();
             settings.setProperty("top", "+=" + shiftPx);
             settings.setProperty("height", "+=" + -shiftPx);
@@ -357,12 +330,12 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         }
     }
 
-    @Override
+    /*@Override
     public void setPusher(final VICEPush pusher) {
         if (getWidgetIndex(pusher) != -1) {
             insert(pusher, 0);
         }
-    }
+    }*/
 
     @Override
     public void setShellAppIndication(ShellAppType type, int indication) {
@@ -379,18 +352,18 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         presenter.loadShellApp(ShellAppType.PULSE, "messages/" + id);
     }
 
-    private void doUpdateViewport(VShellViewport viewport, ViewportType shellAppViewport) {
-        final VShellViewport oldViewport = viewports.get(shellAppViewport);
+    private void doUpdateViewport(ViewportWidget viewport, ViewportType type) {
+        final ViewportWidget oldViewport = viewports.get(type);
         if (oldViewport != viewport) {
             replaceWidget(oldViewport, viewport);
             viewport.setEventBus(eventBus);
-            viewports.put(shellAppViewport, viewport);
+            viewports.put(type, viewport);
         }
     }
 
     @Override
     public void showAppPreloader(String prefix, PreloaderCallback preloaderCallback) {
-        setActiveViewport(ViewportType.APP_VIEWPORT);
+        //setActiveViewport(ViewportType.APP_VIEWPORT);
         getAppViewport().showAppPreloader(prefix, preloaderCallback);
     }
 }

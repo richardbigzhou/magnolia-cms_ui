@@ -20,14 +20,34 @@
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-rendering</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
+   
+   
+   
+   
+         <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-server</artifactId>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
-      <artifactId>vaadin</artifactId>
+      <artifactId>vaadin-client-compiled</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-themes</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+   
+    
     <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>icepush</artifactId>
@@ -39,22 +59,6 @@
     <dependency>
       <groupId>org.icepush</groupId>
       <artifactId>icepush-gwt</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addon</groupId>
-      <artifactId>confirmdialog</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>super-dev-mode-for-vaadin-6</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>widget-rpc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>autoreplacefield</artifactId>
     </dependency>
     <dependency>
       <groupId>com.googlecode.mgwt</groupId>
@@ -71,10 +75,6 @@
     <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>customfield</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addon</groupId>
-      <artifactId>propertytranslator</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -104,8 +104,8 @@
        -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
-        <artifactId>gwt-maven-plugin</artifactId>
-        <version>${gwtVersion}</version>
+        <artifactId>vaadin-maven-plugin</artifactId>
+        <version>7.0.0.beta10</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

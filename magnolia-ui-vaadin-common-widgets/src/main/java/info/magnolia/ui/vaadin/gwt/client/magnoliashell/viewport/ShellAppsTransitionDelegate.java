@@ -37,6 +37,8 @@ import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.Callbacks;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ShellAppsViewportWidget;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -67,7 +69,7 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
      * Slides down if active, fades out if inactive - except if the viewport is closing.
      */
     @Override
-    public void setActive(final VShellViewport viewport, boolean active) {
+    public void setActive(final ViewportWidget viewport, boolean active) {
         final Callbacks callbacks = Callbacks.create();
 
         if (active) {
@@ -78,11 +80,11 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
                 @Override
                 public void execute(JQueryWrapper query) {
                     viewportReady = true;
-                    refreshShellApp((VShellAppsViewport) viewport);
+                    refreshShellApp((ShellAppsViewportWidget) viewport);
                 }
             });
             slideDown(viewport, callbacks);
-            viewport.iLayout();
+            //viewport.iLayout();
         } else {
 
             // slide up only if closing shell app
@@ -106,7 +108,7 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
      * Cross-fades between shell apps.
      */
     @Override
-    public void setVisibleApp(final VShellViewport viewport, final Widget app) {
+    public void setVisibleApp(final ViewportWidget viewport, final Widget app) {
         final Callbacks callbacks = Callbacks.create();
 
         if (viewport.getVisibleApp() == null || !viewport.isActive()) {
@@ -122,15 +124,18 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
                 @Override
                 public void execute(JQueryWrapper query) {
                     visibleAppReady = true;
-                    refreshShellApp((VShellAppsViewport) viewport);
+                    refreshShellApp((ShellAppsViewportWidget) viewport);
                 }
             });
             fadeIn(app, callbacks);
-            viewport.iLayout();
+            /**
+             * FIXME - verify it is not needed anymore.
+             */
+            //viewport.iLayout();
         }
     }
 
-    private void refreshShellApp(VShellAppsViewport viewport) {
+    private void refreshShellApp(ShellAppsViewportWidget viewport) {
         if (viewportReady && visibleAppReady) {
             viewport.refreshShellApp();
         }
@@ -142,7 +147,7 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
      * @param viewport the viewport widget
      * @param callbacks the callbacks
      */
-    private void slideDown(final VShellViewport viewport, final Callbacks callbacks) {
+    private void slideDown(final ViewportWidget viewport, final Callbacks callbacks) {
         JQueryWrapper jq = JQueryWrapper.select(viewport);
 
         // init
@@ -183,7 +188,7 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
      * @param viewport the viewport widget
      * @param callbacks the callbacks
      */
-    private void slideUp(final VShellViewport viewport, final Callbacks callbacks) {
+    private void slideUp(final ViewportWidget viewport, final Callbacks callbacks) {
         JQueryWrapper jq = JQueryWrapper.select(viewport);
 
         // init

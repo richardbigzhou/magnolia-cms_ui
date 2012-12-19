@@ -38,20 +38,22 @@ import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.Callbacks;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate.BaseTransitionDelegate;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.Paintable;
+import com.vaadin.client.Util;
 
 
 /**
  * The AppsTransitionDelegate provides custom transition logic when launching, closing an app, or
  * switching between apps.
  */
-class AppsTransitionDelegate extends BaseTransitionDelegate {
+public class AppsTransitionDelegate extends BaseTransitionDelegate {
 
     private static final double CURTAIN_ALPHA = 0.9;
 
@@ -62,41 +64,27 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
     private static final int CURTAIN_FADE_OUT_DELAY = 200;
 
     @Override
-    public void setVisibleApp(final VShellViewport viewport, final Widget app) {
+    public void setVisibleApp(final ViewportWidget viewport, final Widget app) {
         // zoom-in if switching to a different running app, from appslauncher only
         // closing an app doesn't zoom-in the next app
         // running apps are all hidden explicitly except current one
         if (!viewport.isClosing() && Visibility.HIDDEN.getCssName().equals(app.getElement().getStyle().getVisibility())) {
             viewport.doSetVisibleApp(app);
+            app.addStyleName("zoom-in");
             
-            /* Starting animation here immediately would cause size calculations to be done to a zero sized layout 
-             * which would cause corruption. Avoid this by letting layouts resize themselves first and animate after.
-             * Avoid flicking app before animation begins by setting opacity to zero. User would experience a fluent 
-             * animation from solid background.
-             */
-            app.addStyleName("beginzoom");
-            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-                
+            new Timer() {
                 @Override
-                public void execute() {
-                    app.removeStyleName("beginzoom");
-                    app.addStyleName("zoom-in");
-                    
-                    new Timer() {
-                        @Override
-                        public void run() {
-                            app.removeStyleName("zoom-in");
-                        }
-                    }.schedule(500);
+                public void run() {
+                    app.removeStyleName("zoom-in");
+                    Util.notifyParentOfSizeChange(app, false);
                 }
-            });
-
+            }.schedule(500);
         } else {
             viewport.doSetVisibleApp(app);
         }
     }
 
-    public void setCurtainVisible(final VAppsViewport viewport, boolean visible) {
+    public void setCurtainVisible(final AppsViewportWidget viewport, boolean visible) {
         final Element curtain = viewport.getCurtain();
         final Callbacks callbacks = Callbacks.create();
 
@@ -123,7 +111,7 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
         }
     }
 
-    public void removeWidget(final VAppsViewport viewport, final Widget w) {
+    public void removeWidget(final AppsViewportWidget viewport, final Widget w) {
         w.addStyleName("zoom-out");
         new Timer() {
 

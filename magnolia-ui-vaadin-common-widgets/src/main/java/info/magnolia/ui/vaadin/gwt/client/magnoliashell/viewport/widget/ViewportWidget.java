@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.loading.LoadingPane;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMagnoliaShell;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.ComplexPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Container;
-import com.vaadin.terminal.gwt.client.ContainerResizedListener;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.RenderSpace;
-import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.client.ApplicationConnection;
 
 
 /**
  * An overlay that displays the open app in the shell on top of each other.
  */
-public class VShellViewport extends ComplexPanel implements Container, ContainerResizedListener {
+public class ViewportWidget extends FlowPanel {
 
     protected ApplicationConnection client;
 
-    private boolean active;
-
     private Widget visibleApp;
-
-    private boolean forceContentAlign;
+    
+    private boolean active;
 
     private boolean closing;
 
@@ -84,13 +71,11 @@ public class VShellViewport extends ComplexPanel implements Container, Container
 
     private final LoadingPane loadingPane = new LoadingPane();
 
-    public VShellViewport() {
+    public ViewportWidget() {
         super();
-        setElement(DOM.createDiv());
         addStyleName("v-viewport");
         DOM.sinkEvents(this.getElement(), Event.TOUCHEVENTS);
         bindHandlers();
-
         loadingPane.appendTo(this);
     }
 
@@ -105,7 +90,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
             public void onTouchEnd(TouchEndEvent event) {
                 final Element target = event.getNativeEvent().getEventTarget().cast();
                 if (target == getElement()) {
-                    eventBus.fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.SHELL_APP_VIEWPORT));
+                    eventBus.fireEvent(new ViewportCloseEvent(ViewportType.SHELL_APP_VIEWPORT));
                 }
             }
         });
@@ -153,12 +138,8 @@ public class VShellViewport extends ComplexPanel implements Container, Container
     /**
      * Default non-transitioning behavior, accessible to transition delegates as a fall back.
      */
-    void doSetActive(boolean active) {
-        if (active) {
-            setVisible(true);
-        } else {
-            setVisible(false);
-        }
+    public void doSetActive(boolean active) {
+        setVisible(active);
     }
 
     /* CHANGING VISIBLE APP */
@@ -181,62 +162,13 @@ public class VShellViewport extends ComplexPanel implements Container, Container
     /**
      * Default non-transitioning behavior, accessible to transition delegates as a fall back.
      */
-    void doSetVisibleApp(Widget w) {
+    public void doSetVisibleApp(Widget w) {
         if (visibleApp != null) {
             visibleApp.setVisible(false);
         }
         w.setVisible(true);
     }
 
-    @Override
-    public void updateFromUIDL(final UIDL uidl, final ApplicationConnection client) {
-
-        this.client = client;
-        if (!client.updateComponent(this, uidl, true)) {
-
-            final Collection<Widget> oldWidgets = new HashSet<Widget>();
-            for (final Iterator<Widget> iterator = iterator(); iterator.hasNext();) {
-                oldWidgets.add(iterator.next());
-            }
-
-            // Widget formerWidget = visibleWidget;
-            if (uidl.getChildCount() > 0) {
-                Widget app = null;
-                for (int i = 0; i < uidl.getChildCount(); i++) {
-                    final UIDL childUIdl = uidl.getChildUIDL(i);
-                    final Paintable paintable = client.getPaintable(childUIdl);
-                    oldWidgets.remove(paintable);
-                    final Widget w = (Widget) paintable;
-                    if (i == 0) {
-                        app = w;
-                    }
-                    if (w.getParent() != this) {
-                        add(w, getElement());
-                    }
-
-                    // make sure handling of visibility is left to viewport
-                    boolean visible = w.isVisible();
-                    paintable.updateFromUIDL(childUIdl, client);
-                    if (forceContentAlign) {
-                        alignChild(w);
-                    }
-                    w.setVisible(visible);
-
-                }
-                if (app != null) {
-                    setVisibleApp(app);
-                }
-            } else {
-                visibleApp = null;
-            }
-
-            for (Widget w : oldWidgets) {
-                removeWidget(w);
-            }
-        }
-
-        loadingPane.hide();
-    }
 
     protected void removeWidget(Widget w) {
         doRemoveWidget(w);
@@ -247,60 +179,6 @@ public class VShellViewport extends ComplexPanel implements Container, Container
      */
     void doRemoveWidget(Widget w) {
         remove(w);
-        if (w instanceof Paintable) {
-            client.unregisterPaintable((Paintable) w);
-        }
-    }
-
-    private void alignChild(Widget w) {
-        final Element el = w.getElement();
-        if (w.isAttached()) {
-            final Style style = el.getStyle();
-            style.setLeft(50, Unit.PCT);
-            style.setMarginLeft(-el.getOffsetWidth() / 2, Unit.PX);
-        }
-    }
-
-    /* CONTAINER INTERFACE IMPL */
-
-    @Override
-    public boolean hasChildComponent(Widget component) {
-        return getChildren().contains(component);
-    }
-
-    @Override
-    public boolean requestLayout(Set<Paintable> children) {
-        client.runDescendentsLayout(this);
-        return false;
-    }
-
-    @Override
-    public RenderSpace getAllocatedSpace(Widget child) {
-        if (hasChildComponent(child)) {
-            return new RenderSpace(getOffsetWidth(), getOffsetHeight());
-        }
-        return new RenderSpace();
-    }
-
-    @Override
-    public void updateCaption(Paintable component, UIDL uidl) {
-    }
-
-    @Override
-    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
-    }
-
-    public void setForceContentAlign(boolean forceContentAlign) {
-        this.forceContentAlign = forceContentAlign;
-    }
-
-    @Override
-    public void iLayout() {
-        if (forceContentAlign) {
-            for (final Widget w : getChildren()) {
-                alignChild(w);
-            }
-        }
     }
 
 }

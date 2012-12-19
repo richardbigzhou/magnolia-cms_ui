@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport;
 
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
+
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -40,11 +42,11 @@ import com.google.gwt.user.client.ui.Widget;
  * Viewports might have different ways of displaying the content. This interface helps to define
  * them from outside.
  */
-interface TransitionDelegate {
+public interface TransitionDelegate {
 
-    void setActive(VShellViewport viewport, boolean active);
+    void setActive(ViewportWidget viewport, boolean active);
 
-    void setVisibleApp(VShellViewport viewport, Widget app);
+    void setVisibleApp(ViewportWidget viewport, Widget app);
 
     final static TransitionDelegate SHELL_APPS_TRANSITION_DELEGATE = new ShellAppsTransitionDelegate();
 
@@ -56,12 +58,12 @@ interface TransitionDelegate {
     static abstract class BaseTransitionDelegate implements TransitionDelegate {
 
         @Override
-        public void setActive(VShellViewport viewport, boolean active) {
+        public void setActive(ViewportWidget viewport, boolean active) {
             viewport.doSetActive(active);
         }
 
         @Override
-        public void setVisibleApp(VShellViewport viewport, Widget app) {
+        public void setVisibleApp(ViewportWidget viewport, Widget app) {
             viewport.doSetVisibleApp(app);
         }
     };

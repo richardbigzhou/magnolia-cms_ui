@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
+
+
 
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.UIDL;
 
 
 /**
  * Dialogs viewport.
  * 
  */
-public class VDialogViewport extends VShellViewport {
+public class DialogViewportWidget extends ViewportWidget {
 
     private Element curtain;
 
-    public VDialogViewport() {
+    public DialogViewportWidget() {
         getElement().getStyle().setVisibility(Visibility.HIDDEN);
     }
 
     @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        super.updateFromUIDL(uidl, client);
-
-        if (getWidgetCount() < 1) {
-            setActive(false);
-        } else {
-            setActive(true);
-        }
-    }
-
-    @Override
-    void doSetActive(boolean active) {
+    public void doSetActive(boolean active) {
         super.doSetActive(active);
         if (active) {
             getElement().getStyle().clearVisibility();

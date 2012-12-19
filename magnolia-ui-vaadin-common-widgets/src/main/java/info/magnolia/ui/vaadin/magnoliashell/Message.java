@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,51 +31,79 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
-
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ShellNavigationHandler;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
-
-import com.google.gwt.event.shared.GwtEvent;
+package info.magnolia.ui.vaadin.magnoliashell;
 
 /**
- * Navigation event fired when the controls in the headers are triggered.
+ * Models a message. Except timestamp all fields are optional.
  */
-public class ShellAppNavigationEvent extends GwtEvent<ShellNavigationHandler> {
-    
-    public static Type<ShellNavigationHandler> TYPE = new Type<ShellNavigationHandler>();
+public class Message implements Cloneable {
 
-    private ShellAppType type;
-    
-    private String token;
-    
-    public ShellAppNavigationEvent(final ShellAppType type, final String token) {
-        this.token = token;
-        this.type = type;
-    }
-    
-    @Override
-    protected void dispatch(ShellNavigationHandler handler) {
-        handler.onShellAppNavigation(this);
+    private String id;
+
+    private final long timestamp;
+
+    private MessageType type;
+
+    private String subject;
+
+    private String message;
+
+    private boolean cleared;
+
+    public Message() {
+        this(System.currentTimeMillis());
     }
 
-    @Override
-    public GwtEvent.Type<ShellNavigationHandler> getAssociatedType() {
-        return TYPE;
+    public Message(long timestampInMillis) {
+        this.timestamp = timestampInMillis;
     }
-    
-    public ShellAppType getType() {
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public MessageType getType() {
         return type;
     }
-    
-    public String getToken() {
-        return token;
+
+    public void setType(MessageType type) {
+        this.type = type;
     }
-    
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public boolean isCleared() {
+        return cleared;
+    }
+
+    public void setCleared(boolean cleared) {
+        this.cleared = cleared;
+    }
+
     @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("[Shell App Navigation]");
-        sb.append("type: ").append(type).append(" token: ").append(token);
-        return sb.toString();
+    protected Message clone() throws CloneNotSupportedException {
+        return (Message) super.clone();
     }
 }

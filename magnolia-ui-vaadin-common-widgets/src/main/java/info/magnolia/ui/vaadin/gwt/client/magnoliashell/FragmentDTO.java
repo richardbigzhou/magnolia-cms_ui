@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
 
 /**
  * Helper class for holding the parsed info from the fragment.

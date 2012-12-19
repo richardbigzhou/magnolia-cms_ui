@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,22 +33,29 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VShellAppsViewport;
+import info.magnolia.ui.vaadin.applauncher.AppLauncher;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
 import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
-
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
 
 
 /**
  * Shell apps viewport.
  */
-@ClientWidget(value = VShellAppsViewport.class, loadStyle = LoadStyle.EAGER)
 public class ShellAppsViewport extends ShellViewport {
 
     public ShellAppsViewport(BaseMagnoliaShell shell) {
         super(shell);
         addStyleName("shellapps");
+        getState().type = ViewportType.SHELL_APP_VIEWPORT;
+        
+        final AppLauncher al = new AppLauncher();
+        al.addAppGroup("test", "test", "blue", true, false);
+        al.addAppTile("Test", "Test", "sample", "test");
+        
+        al.addAppGroup("test1", "test1", "red", false, true);
+        al.addAppTile("Test1", "Test1", "sample", "test1");
+        
+        addComponent(al);
     }
 
 }

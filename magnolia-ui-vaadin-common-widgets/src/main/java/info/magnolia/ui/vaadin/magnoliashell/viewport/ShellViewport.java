@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,14 +35,12 @@ package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VShellViewport;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ViewportState;
 import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.DeckLayout;
 
 import java.util.Iterator;
 
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 
 
@@ -50,7 +48,6 @@ import com.vaadin.ui.Component;
  * The server side implementation of the shell viewport. MagnoliaShell is capable of holding of such for the shell apps,
  * one - for the regular apps.
  */
-@ClientWidget(value = VShellViewport.class, loadStyle = LoadStyle.EAGER)
 public class ShellViewport extends DeckLayout implements ViewPort {
 
     private String currentShellFragment = "";
@@ -84,6 +81,11 @@ public class ShellViewport extends DeckLayout implements ViewPort {
         }
     }
 
+    @Override
+    protected ViewportState getState() {
+        return (ViewportState)super.getState();
+    }
+    
     /**
      * Viewports need to set visible state on the server first, for being able to resync to client on browser refresh.
      */

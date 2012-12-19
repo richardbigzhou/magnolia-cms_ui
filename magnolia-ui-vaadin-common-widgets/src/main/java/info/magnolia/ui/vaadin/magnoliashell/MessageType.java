@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,20 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler;
-
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppActivatedEvent;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigationEvent;
-
-import com.google.gwt.event.shared.EventHandler;
+package info.magnolia.ui.vaadin.magnoliashell;
 
 /**
- * Event handler for the header controls events. 
+ * The type of message.
  */
-public interface ShellNavigationHandler extends EventHandler {
+public enum MessageType {
+    UNKNOWN(""),
+    ERROR("Error"), 
+    WARNING("Warning"), 
+    INFO("Info");
+    
+    private String caption;
+    
+    private MessageType(final String caption) {
+        this.caption = caption;
+    }
+    
+    @Override
+    public String toString() {
+        return caption;
+    }
 
-    void onShellAppNavigation(final ShellAppNavigationEvent event);
-    
-    void onAppActivated(final AppActivatedEvent event);
-    
+    public boolean isSignificant() {
+        switch (this) {
+        case INFO: case UNKNOWN:
+            return false;
+        default:
+            return true;
+        }
+    }
 }

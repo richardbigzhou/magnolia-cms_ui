@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,9 +31,8 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
-import info.magnolia.ui.vaadin.gwt.client.icon.GwtBadgeIcon;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppActivatedEvent;
@@ -41,6 +40,7 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigation
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ShellNavigationAdapter;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ShellNavigationHandler;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -68,7 +68,7 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 /**
  * Navigation bar.
  */
-public class VMainLauncher extends FlowPanel {
+public class ShellAppLauncher extends FlowPanel {
 
     private final static int DIVET_ANIMATION_SPEED = 200;
 
@@ -86,7 +86,7 @@ public class VMainLauncher extends FlowPanel {
 
     private class NavigatorButton extends FlowPanel {
 
-        private final GwtBadgeIcon indicator = new GwtBadgeIcon();
+        //private final GwtBadgeIcon indicator = new GwtBadgeIcon();
 
         private final TouchDelegate delegate = new TouchDelegate(this);
 
@@ -97,20 +97,24 @@ public class VMainLauncher extends FlowPanel {
             root.setId("btn-" + type.getClassId());
             root.addClassName("icon-" + type.getClassId());
 
-            indicator.updateFillColor("#fff");
-            indicator.updateStrokeColor("#689600");
-            indicator.updateOutline(true);
-            root.appendChild(indicator.getElement());
+            /**
+             * TODO:
+             * indicator.updateFillColor("#fff");
+             * indicator.updateStrokeColor("#689600");
+             * indicator.updateOutline(true);
+             * root.appendChild(indicator.getElement()); 
+             */
+            
+            
 
             DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
             delegate.addTouchEndHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler() {
-
                 @Override
                 public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
                     // Has user clicked on the active shell app?
                     if (type == getActiveShellType()) {
                         // if open then close it.
-                        eventBus.fireEvent(new ViewportCloseEvent(VMagnoliaShell.ViewportType.SHELL_APP_VIEWPORT));
+                        eventBus.fireEvent(new ViewportCloseEvent(ViewportType.SHELL_APP_VIEWPORT));
                     } else {
                         log("Going to " + type);
                         // If closed, then open it.
@@ -121,13 +125,13 @@ public class VMainLauncher extends FlowPanel {
         }
 
         public void setIndication(int indication) {
-            indicator.updateValue(indication);
+            //indicator.updateValue(indication);
         }
     };
 
     private final native void log(String msg) /*-{
-                                              $wnd.console.log(msg);
-                                              }-*/;
+		$wnd.console.log(msg);
+    }-*/;
 
     /**
      * Type of the "shell app" to be loaded.
@@ -179,7 +183,7 @@ public class VMainLauncher extends FlowPanel {
 
     private final EventBus eventBus;
 
-    public VMainLauncher(final EventBus eventBus) {
+    public ShellAppLauncher(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
         getElement().setId(ID);
@@ -190,14 +194,10 @@ public class VMainLauncher extends FlowPanel {
 
     private void navigateToShellApp(final ShellAppType type) {
         eventBus.fireEvent(new ShellAppNavigationEvent(type, ""));
-
     }
 
     private void construct() {
         divetWrapper.setId("divet");
-
-        // logo
-
         logoImg.setId("logo");
         String baseUrl = GWT.getModuleBaseURL().replace("widgetsets/" + GWT.getModuleName() + "/", "");
         logoImg.setAttribute("src", baseUrl + "themes/admincentraltheme/img/logo-magnolia.svg");
@@ -217,9 +217,7 @@ public class VMainLauncher extends FlowPanel {
 
     private void bindHandlers() {
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
-
         logo.addTouchEndHandler(new TouchEndHandler() {
-
             @Override
             public void onTouchEnd(TouchEndEvent event) {
                 emergencyRestartApplication();
@@ -243,12 +241,9 @@ public class VMainLauncher extends FlowPanel {
         super.onLoad();
         expandedHeight = getOffsetHeight();
         getElement().getStyle().setTop(-60, Unit.PX);
-        JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {
-
-            {
+        JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {{
                 setProperty("top", 0);
-            }
-        });
+        }});
         eventBus.addHandler(AppActivatedEvent.TYPE, navigationHandler);
     }
 
