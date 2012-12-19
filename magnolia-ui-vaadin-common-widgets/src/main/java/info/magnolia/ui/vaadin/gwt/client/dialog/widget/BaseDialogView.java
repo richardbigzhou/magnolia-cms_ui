@@ -31,18 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
-import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView;
+
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
+
 
 /**
- * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that 
- * adapts to the content ({@link FormView}) and delegates the view logic to it.
+ * {@link BaseDialogView}.
  */
-public class FormDialog extends BaseDialog implements FormDialogView {
-    @Override
-    public void setFormView(FormView formView) {
-        //super.setContent(formView.asVaadinComponent());
-        //formView.asVaadinComponent().setHeight("500px");
+public interface BaseDialogView extends 
+    EditorLikeView<BaseDialogView.Presenter>, IsWidget, HasWidgets {
+    
+    /**
+     * Presenter.
+     */
+    public interface Presenter extends EditorLikeView.Presenter {
+
+        void closeDialog();
     }
+
 }

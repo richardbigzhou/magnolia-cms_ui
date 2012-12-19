@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,12 +33,11 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.ui.framework.view.View;
 
 /**
  * Interface for {@link BaseDialog}.
  */
-public interface DialogView extends View {
+public interface DialogView/* extends View*/ {
     
     /**
      * Action execution callback.
@@ -52,6 +51,6 @@ public interface DialogView extends View {
     
     void setCaption(String caption);
     
-    @Override
-    public BaseDialog asVaadinComponent();
+    //@Override
+    //public BaseDialog asVaadinComponent();
 }

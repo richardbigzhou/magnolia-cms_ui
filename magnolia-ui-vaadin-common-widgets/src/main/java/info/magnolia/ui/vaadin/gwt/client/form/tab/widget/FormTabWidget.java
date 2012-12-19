@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,11 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.form;
+package info.magnolia.ui.vaadin.gwt.client.form.tab.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.form.ValidationChangedEvent.Handler;
-import info.magnolia.ui.vaadin.gwt.client.form.ValidationChangedEvent.HasValidationChangeHanlders;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTab;
+import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent.Handler;
+import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent.HasValidationChangeHanlders;
+import info.magnolia.ui.vaadin.gwt.client.form.formsection.widget.FormSectionWidget;
+import info.magnolia.ui.vaadin.gwt.client.form.widget.FormFieldWrapper;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -45,18 +48,18 @@ import com.google.gwt.user.client.ui.Widget;
 
 
 /**
- * VFormTab.
+ * FormTabWidget.
  */
-public class VFormTab extends VMagnoliaTab implements HasValidationChangeHanlders {
+public class FormTabWidget extends MagnoliaTabWidget implements HasValidationChangeHanlders {
 
-    private VFormSection content;
+    private FormSectionWidget content;
 
     @Override
     public void setWidget(Widget w) {
-        if (!(w instanceof VFormSection)) {
+        if (!(w instanceof FormSectionWidget)) {
             throw new RuntimeException("Invalid type of tab content. Must be VFormSection. You have used: " + w.getClass());
         }
-        content = (VFormSection) w;
+        content = (FormSectionWidget) w;
         super.setWidget(w);
     }
 
@@ -71,18 +74,6 @@ public class VFormTab extends VMagnoliaTab implements HasValidationChangeHanlder
         if (content != null) {
             content.setDescriptionVisible(visible);
         }
-    }
-
-    public void setValidationVisible(boolean isVisible) {
-        if (content != null) {
-            content.setValidationVisible(isVisible);
-        }
-    }
-
-    @Override
-    public void setHasError(boolean hasError) {
-        super.setHasError(hasError);
-        fireEvent(new ValidationChangedEvent());
     }
 
     public int getErrorAmount() {

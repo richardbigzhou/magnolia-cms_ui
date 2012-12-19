@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,7 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.form;
+package info.magnolia.ui.vaadin.gwt.client.form.widget;
+
+import info.magnolia.ui.vaadin.gwt.client.form.formsection.widget.InlineMessageWidget;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -48,7 +50,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.impl.FocusImpl;
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VInlineMessage;
 
 /**
  * Wrapper widget that provides help and error indication.
@@ -65,9 +66,9 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
 
     private Button errorAction = new Button();
 
-    private VInlineMessage errorSection = null;
+    private InlineMessageWidget errorSection = null;
 
-    private VInlineMessage helpSection = null;
+    private InlineMessageWidget helpSection = null;
 
     private String helpDescription = null;
 
@@ -98,7 +99,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
     }
 
     protected void showHelp() {
-        helpSection = VInlineMessage.createHelpMessage();
+        helpSection = InlineMessageWidget.createHelpMessage();
         helpSection.setMessage(helpDescription);
         add(helpSection, root);
     }
@@ -119,7 +120,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         errorAction.setVisible(true);
         fieldWrapper.addClassName("validation-highlight");
         if (errorSection == null) {
-            errorSection = VInlineMessage.createErrorMessage();
+            errorSection = InlineMessageWidget.createErrorMessage();
         }
         errorSection.addMessage(errorDescription);
         add(errorSection, root);
@@ -155,7 +156,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         }
     }
 
-    public void clearErrors() {
+    public void clearError() {
         if (errorSection != null) {
             remove(errorSection);
             errorSection = null;

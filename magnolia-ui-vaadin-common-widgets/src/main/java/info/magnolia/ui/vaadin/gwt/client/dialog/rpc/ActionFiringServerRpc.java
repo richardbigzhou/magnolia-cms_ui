@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
+package info.magnolia.ui.vaadin.gwt.client.dialog.rpc;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * {@link VBaseDialogView}.
+ * BaseDialogServerRpc.
  */
-public interface VBaseDialogView extends IsWidget, HasWidgets {
+public interface ActionFiringServerRpc extends ServerRpc {
 
-    void addAction(String name, String label);
-
-    void setDescription(String description);
-
-    void setCaption(String caption);
-
-    int getContentWidth();
-
-    int getContentHeight();
-
-    void setContent(Widget contentWidget);
-
-    Widget getContent();
+    void fireAction(String actionId);
     
-    void setPresenter(Presenter presenter);
-    
-    void setActionLabel(String actionName, String label);
-    
-    Presenter getPresenter();
-    
-    /**
-     * Presenter.
-     */
-    public interface Presenter {
-        
-        void fireAction(String action);
-
-        void closeDialog();
-    }
-
+    void closeSelf();
 }

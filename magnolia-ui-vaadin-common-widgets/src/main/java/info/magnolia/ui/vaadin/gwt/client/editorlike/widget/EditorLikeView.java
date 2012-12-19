@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
+package info.magnolia.ui.vaadin.gwt.client.editorlike.widget;
 
-import com.google.web.bindery.event.shared.Event;
+import java.util.Map;
+
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Event that is fired by the VForm in order to enable/disable help controls.
+ * EditorLikeView.
+ * @param <T>
  */
-public class HelpAccessibilityEvent extends Event<HelpAccessibilityEvent.Handler>{
+public interface EditorLikeView <T extends EditorLikeView.Presenter> extends IsWidget, HasWidgets {
 
-    public static final Type<Handler> TYPE = new Type<HelpAccessibilityEvent.Handler>();
+    void setActions(Map<String, String> actionMap);
+    
+    void setDescription(String description);
 
-    private boolean isHelpAccesible;
-    
-    public HelpAccessibilityEvent(boolean isHelpAccessible) {
-        this.isHelpAccesible = isHelpAccessible;
-    }
-    
-    public boolean isHelpAccesible() {
-        return isHelpAccesible;
-    }
-    
-    @Override
-    public Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
+    void setCaption(String caption);
 
-    @Override
-    protected void dispatch(Handler handler) {
-        handler.onHelpAccessibilityChanged(this);
-    }
+    int getContentWidth();
+
+    int getContentHeight();
+
+    void setContent(Widget contentWidget);
+
+    void setPresenter(T presenter);
+    
+    T getPresenter();
     
     /**
-     * Event handler. 
+     * Presenter.
      */
-    public interface Handler {
-        void onHelpAccessibilityChanged(HelpAccessibilityEvent event);
+    public interface Presenter {
+        
+        void fireAction(String action);
     }
+
 }

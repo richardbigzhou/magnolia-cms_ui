@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,15 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
+package info.magnolia.ui.vaadin.gwt.client.form.formsection.event;
+
+import com.google.web.bindery.event.shared.Event;
 
 /**
- * Client side implementation of the dialog that delegates most of the logic/UI to the embedded form. 
+ * Event that is fired by the VForm in order to enable/disable help controls.
  */
-public class VFormDialog extends VBaseDialog {
+public class HelpAccessibilityEvent extends Event<HelpAccessibilityEvent.Handler>{
+
+    public static final Type<Handler> TYPE = new Type<HelpAccessibilityEvent.Handler>();
+
+    private boolean isHelpAccesible;
+    
+    public HelpAccessibilityEvent(boolean isHelpAccessible) {
+        this.isHelpAccesible = isHelpAccessible;
+    }
+    
+    public boolean isHelpAccesible() {
+        return isHelpAccesible;
+    }
+    
+    @Override
+    public Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
 
     @Override
-    protected VBaseDialogView createView() {
-        return new VAdaptingToFormDialogViewImpl();
+    protected void dispatch(Handler handler) {
+        handler.onHelpAccessibilityChanged(this);
+    }
+    
+    /**
+     * Event handler. 
+     */
+    public interface Handler {
+        void onHelpAccessibilityChanged(HelpAccessibilityEvent event);
     }
 }

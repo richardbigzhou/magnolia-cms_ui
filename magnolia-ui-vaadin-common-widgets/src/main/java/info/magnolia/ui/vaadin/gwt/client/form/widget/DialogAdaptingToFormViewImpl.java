@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,86 +31,61 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
+package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.form.VForm;
-import info.magnolia.ui.vaadin.gwt.client.form.VFormView;
+import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
+
+import java.util.Map;
 
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Implements {@link VBaseDialogView} by delegating to embedded form.
+ * Implements {@link BaseDialogView} by delegating to embedded form.
  */
-public class VAdaptingToFormDialogViewImpl extends SimplePanel implements VBaseDialogView {
+public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDialogView {
 
-    private VForm form;
+    private FormView form;
     
     private Presenter presenter;
     
-    public VAdaptingToFormDialogViewImpl() {
+    public DialogAdaptingToFormViewImpl() {
         setStyleName("dialog-panel");
-    }
-    
-    @Override
-    public Widget asWidget() {
-        return this;
-    }
-
-    @Override
-    public void addAction(String name, String label) {
-        form.getView().addAction(name, label);
     }
 
     @Override
     public void setDescription(String description) {
-        form.getView().setDescription(description);
+        form.setDescription(description);
     }
 
     @Override
     public void setCaption(String caption) {
-        form.getView().setCaption(caption);
+        form.setCaption(caption);
     }
 
     @Override
     public int getContentWidth() {
-        return form.getView().getFormWidth();
+        return form.getContentWidth();
     }
 
     @Override
     public int getContentHeight() {
-        return form.getView().getFormHeight();
+        return form.getContentHeight();
     }
 
     @Override
     public void setContent(Widget contentWidget) {
-        if (contentWidget instanceof VForm) {
-            this.form = ((VForm)contentWidget);
-            this.form.getView().setPresenter(new VFormView.Presenter() {
-                @Override
-                public void fireAction(String action) {
-                    presenter.fireAction(action);
-                }
-                
-                @Override
-                public void runLayout() {
-                    
-                }
-            });
+        if (contentWidget instanceof FormView) {
+            this.form = ((FormView)contentWidget);
             setWidget(contentWidget);
         }
-    }
-
-    @Override
-    public Widget getContent() {
-        return getWidget();
     }
 
     @Override
     public void setPresenter(final Presenter presenter) {
         this.presenter = presenter;
         if (form != null) {
-            form.getView().setPresenter(new VFormView.Presenter() {
+            form.setPresenter(new FormView.Presenter() {
                 @Override
                 public void fireAction(String action) {
                     presenter.fireAction(action);
@@ -118,19 +93,20 @@ public class VAdaptingToFormDialogViewImpl extends SimplePanel implements VBaseD
                 
                 @Override
                 public void runLayout() {
-                    form.runLayout();
                 }
             });            
         }
     }
 
-    @Override
-    public void setActionLabel(String actionName, String label) {
-    }
 
     @Override
     public Presenter getPresenter() {
         return presenter;
+    }
+
+    @Override
+    public void setActions(Map<String, String> actionMap) {
+        form.setActions(actionMap);
     }
 
 }

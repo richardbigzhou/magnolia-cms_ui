@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,7 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
+package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -40,15 +45,11 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
-import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogHeader;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * {@link VBaseDialogViewImpl}. Implements {@link VBaseDialogView}.
+ * {@link BaseDialogViewImpl}. Implements {@link BaseDialogView}.
  */
-public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView {
+public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
 
     private static final String CLASSNAME = "dialog-panel";
 
@@ -57,12 +58,8 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
     private static final String CLASSNAME_FOOTER = "dialog-footer";
 
     private static final String CLASSNAME_BUTTON = "btn-dialog";
-
-    private Presenter presenter;
     
-    private Widget content;
-    
-    private final VDialogHeader header = createHeader();
+    private final DialogHeaderWidget header = createHeader();
     
     private final Element contentEl = DOM.createDiv();
     
@@ -70,7 +67,11 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
     
     private final Map<String, Button> actionMap = new HashMap<String, Button>();
     
-    public VBaseDialogViewImpl() {
+    private Presenter presenter;
+    
+    private Widget content;
+    
+    public BaseDialogViewImpl() {
         final Element root = DOM.createDiv();
         root.addClassName("dialog-root");
         setElement(root);
@@ -82,37 +83,8 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
         footerEl.addClassName(CLASSNAME_FOOTER);
     }
     
-    protected VDialogHeader createHeader() {
-        return new VDialogHeader(createHeaderCallback());
-    }
-
-    @Override
-    public void addAction(final String name, String label) {
-        final Button control =  actionMap.get(name);
-        if (control == null) {
-            final Button button = new Button(label);
-            button.setStyleName(CLASSNAME_BUTTON);
-            button.addStyleDependentName(name);
-            button.addClickHandler(new ClickHandler() {
-
-                @Override
-                public void onClick(final ClickEvent event) {
-                    getPresenter().fireAction(name);
-                }
-
-            });
-            add(button, footerEl);
-        } else {
-            control.setHTML(label);
-        }
-    }
-
-    @Override
-    public void setActionLabel(String actionName, String label) {
-        final Button control = actionMap.get(actionName);
-        if (control != null) {
-            control.setHTML(label);
-        }
+    protected DialogHeaderWidget createHeader() {
+        return new DialogHeaderWidget(createHeaderCallback());
     }
     
     @Override
@@ -125,13 +97,10 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
         return presenter;
     }
     
-    protected VDialogHeader.VDialogHeaderCallback createHeaderCallback() {
-        return new VDialogHeader.VDialogHeaderCallback() {
-            
+    protected DialogHeaderWidget.VDialogHeaderCallback createHeaderCallback() {
+        return new DialogHeaderWidget.VDialogHeaderCallback() {
             @Override
-            public void onDescriptionVisibilityChanged(boolean isVisible) {
-                
-            }
+            public void onDescriptionVisibilityChanged(boolean isVisible) {}
             
             @Override
             public void onCloseFired() {
@@ -140,7 +109,7 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
         };
     }
     
-    protected VDialogHeader getHeader() {
+    protected DialogHeaderWidget getHeader() {
         return header;
     }
 
@@ -172,14 +141,31 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
         this.content = contentWidget;
         add(contentWidget, contentEl);
     }
-
-    @Override
-    public Widget getContent() {
-        return content;
-    }
-    
     
     public Element getContentEl() {
         return contentEl;
+    }
+    
+    @Override
+    public void setActions(Map<String, String> actions) {
+        for (final Button actionButton : this.actionMap.values()) {
+            remove(actionButton);
+        }
+        actionMap.clear();
+        final Iterator<Entry<String, String>> it = actions.entrySet().iterator();
+        while (it.hasNext()) {
+            final Entry<String, String> entry = it.next();
+                final Button button =  new Button(entry.getValue());
+                button.setStyleName(CLASSNAME_BUTTON);
+                button.addStyleDependentName(entry.getKey());
+                button.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(final ClickEvent event) {
+                        getPresenter().fireAction(entry.getKey());
+                    }
+                });
+                actionMap.put(entry.getKey(), button);
+                add(button, footerEl);
+        }
     }
 }

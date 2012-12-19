@@ -31,18 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.vaadin.form.tab;
 
-import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.form.FormSection;
+import info.magnolia.ui.vaadin.gwt.client.form.tab.rpc.FormTabServerRpc;
+import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 
 /**
- * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that 
- * adapts to the content ({@link FormView}) and delegates the view logic to it.
+ * Dialog tab.
+ *
  */
-public class FormDialog extends BaseDialog implements FormDialogView {
-    @Override
-    public void setFormView(FormView formView) {
-        //super.setContent(formView.asVaadinComponent());
-        //formView.asVaadinComponent().setHeight("500px");
+public class MagnoliaFormTab extends MagnoliaTab {
+
+    private final FormSection content;
+
+    public MagnoliaFormTab(String caption, FormSection content) {
+        super(caption, content);
+        this.content = content;
+        //DialogLayout needs this info to display it when show all tab is active
+        this.content.setCaption(caption);
+        registerRpc(new FormTabServerRpc() { 
+            @Override
+            public void setHasErrors(boolean errorOccured) {
+                setHasError(errorOccured);
+            }
+        });
     }
+
+    public void setValidationVisible(boolean isVisible) {
+        content.setValidationVisible(isVisible);
+    }
+    
+    @Override
+    public void beforeClientResponse(boolean initial) {
+        super.beforeClientResponse(initial);
+        setHasError(content.hasError());
+    }
+
 }

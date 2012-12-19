@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,19 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.form;
+package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.form.tab.widget.FormTabWidget;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.TabSetChangedEvent;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTab;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheet;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.widget.MagnoliaTabSheetView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -53,13 +60,13 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.terminal.gwt.client.Util;
+import com.vaadin.client.Util;
 
 /**
  * Actual client side implementation of the form view.
  * Provides the methods for the client side presenter {@link VForm}.
  */
-public class VFormViewImpl extends FlowPanel implements VFormView {
+public class FormViewImpl extends FlowPanel implements FormView {
 
     private static final String CLASSNAME = "form-panel";
 
@@ -69,7 +76,9 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
 
     private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
 
-    private final List<VFormTab> formTabs = new ArrayList<VFormTab>();
+    private final Map<String, Button> actionMap = new HashMap<String, Button>();
+    
+    private final List<FormTabWidget> formTabs = new ArrayList<FormTabWidget>();
 
     private final Element contentEl = DOM.createDiv();
 
@@ -77,8 +86,10 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
 
     private FormFieldWrapper lastShownProblematicField = null;
     
-    private VMagnoliaTabSheet tabSheet;
+    private MagnoliaTabSheetView tabSheet;
 
+    private Presenter presenter;
+    
     private final FocusHandler problematicFieldFocusHandler = new FocusHandler() {
         @Override
         public void onFocus(FocusEvent event) {
@@ -86,7 +97,7 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
             final FormFieldWrapper field = Util.findWidget(target, FormFieldWrapper.class);
             if (field != null) {
                 lastShownProblematicField = null;
-                final List<FormFieldWrapper> fields = ((VFormTab)tabSheet.getActiveTab()).getFields();
+                final List<FormFieldWrapper> fields = ((FormTabWidget)tabSheet.getActiveTab()).getFields();
                 int index = fields.indexOf(field);
                 if (index >= 0) {
                     if (field.hasError()) {
@@ -117,7 +128,7 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
 
         @Override
         public void jumpToNextError() {
-            VFormTab activeTab = (VFormTab)tabSheet.getActiveTab();
+            FormTabWidget activeTab = (FormTabWidget)tabSheet.getActiveTab();
             final List<FormFieldWrapper> problematicFields = activeTab.getProblematicFields();
             if (lastShownProblematicField == null && !problematicFields.isEmpty()) {
                 final FormFieldWrapper field = problematicFields.get(0);
@@ -130,12 +141,12 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
                     lastShownProblematicField = nextField;
                     scrollTo(lastShownProblematicField);
                 } else {
-                    final List<VMagnoliaTab> tabs = tabSheet.getTabs();
+                    final List<MagnoliaTabWidget> tabs = tabSheet.getTabs();
                     int tabIndex = tabs.indexOf(activeTab);
                     for (int i = 0; i < tabs.size() - 1; ++i) {
-                        final VFormTab nextTab = (VFormTab)tabs.get(++tabIndex % tabs.size());
+                        final FormTabWidget nextTab = (FormTabWidget)tabs.get(++tabIndex % tabs.size());
                         if (nextTab.getProblematicFields().size() > 0) {
-                            tabSheet.getEventBus().fireEvent(new ActiveTabChangedEvent(nextTab));
+                            //tabSheet.getEventBus().fireEvent(new ActiveTabChangedEvent(nextTab));
                             lastShownProblematicField = null;
                             jumpToNextError();
                             break;
@@ -146,9 +157,7 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
         }
     });
 
-    private Presenter presenter;
-
-    public VFormViewImpl() {
+    public FormViewImpl() {
         super();
         setStylePrimaryName(CLASSNAME);
         footer.addClassName(CLASSNAME_FOOTER);
@@ -159,22 +168,22 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
 
     @Override
     public void setContent(Widget contentWidget) {
-        if (contentWidget instanceof VMagnoliaTabSheet) {
+        if (contentWidget instanceof MagnoliaTabSheetView) {
             if (tabSheet != null) {
                 remove(tabSheet);
             }
 
-            this.tabSheet = (VMagnoliaTabSheet)contentWidget;
+            this.tabSheet = (MagnoliaTabSheetView)contentWidget;
             tabSheet.addTabSetChangedHandlers(new TabSetChangedEvent.Handler() {
                 @Override
                 public void onTabSetChanged(TabSetChangedEvent event) {
-                    final List<VMagnoliaTab> tabs = event.getTabSheet().getTabs();
+                    final List<MagnoliaTabWidget> tabs = event.getTabSheet().getTabs();
                     formTabs.clear();
-                    for (final VMagnoliaTab tab : tabs) {
-                        if (tab instanceof VFormTab) {
-                            formTabs.add((VFormTab) tab);
-                            ((VFormTab)tab).addValidationChangeHandler(VFormViewImpl.this);
-                            final List<FormFieldWrapper> fields = ((VFormTab) tab).getFields();
+                    for (final MagnoliaTabWidget tab : tabs) {
+                        if (tab instanceof FormTabWidget) {
+                            formTabs.add((FormTabWidget) tab);
+                            ((FormTabWidget)tab).addValidationChangeHandler(FormViewImpl.this);
+                            final List<FormFieldWrapper> fields = ((FormTabWidget) tab).getFields();
                             for (final FormFieldWrapper field : fields) {
                                 field.addFocusHandler(problematicFieldFocusHandler);
                             }
@@ -194,7 +203,7 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
                     }
                 }
             });
-            add(tabSheet, contentEl);
+            add(tabSheet.asWidget(), contentEl);
         }
     }
 
@@ -203,70 +212,58 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
         this.presenter = presenter;
     }
 
+    @Override
     public Presenter getPresenter() {
         return presenter;
     }
 
     @Override
-    public VMagnoliaTabSheet getContent() {
-        return tabSheet;
+    public void setActions(Map<String, String> actions) {
+        for (final Button actionButton : this.actionMap.values()) {
+            remove(actionButton);
+        }
+        actionMap.clear();
+        final Iterator<Entry<String, String>> it = actions.entrySet().iterator();
+        while (it.hasNext()) {
+            final Entry<String, String> entry = it.next();
+                final Button button =  new Button(entry.getValue());
+                button.setStyleName(CLASSNAME_BUTTON);
+                button.addStyleDependentName(entry.getKey());
+                button.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(final ClickEvent event) {
+                        getPresenter().fireAction(entry.getKey());
+                    }
+                });
+                actionMap.put(entry.getKey(), button);
+                add(button, footer);
+        }
     }
-
-    @Override
-    public void addAction(final String name, final String label) {
-        final Button button = new Button(label);
-        button.setStyleName(CLASSNAME_BUTTON);
-        button.addStyleDependentName(name);
-        button.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(final com.google.gwt.event.dom.client.ClickEvent event) {
-                getPresenter().fireAction(name);
-            }
-
-        });
-        add(button, footer);
-    }
-
+    
     @Override
     public void setDescription(final String description) {
         formHeader.setDescription(description);
     }
 
     void setDescriptionVisible(boolean isVisible) {
-        for (final VFormTab tab : formTabs) {
+        for (final FormTabWidget tab : formTabs) {
             tab.setDescriptionVisible(isVisible);
         }
     }
 
-    @Override
-    public int getFormWidth() {
-        return getOffsetWidth();
-    }
-
-    @Override
-    public int getFormHeight() {
-        if (getParent() != null) {
-            int baseHeight = getParent().getOffsetHeight();
-            int headerHeight = formHeader.getOffsetHeight();
-            int footerHeight = footer.getOffsetHeight();
-            return baseHeight - headerHeight - footerHeight;
-        }
-        return 0;
-    }
 
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
         Integer heightPx = JQueryWrapper.parseInt(height); 
         if (tabSheet != null && heightPx != null) {
-            tabSheet.setHeight((heightPx - formHeader.getOffsetHeight() - footer.getOffsetHeight()) + "px");            
+            tabSheet.asWidget().setHeight((heightPx - formHeader.getOffsetHeight() - footer.getOffsetHeight()) + "px");            
         }
     }
 
     private void scrollTo(final FormFieldWrapper field) {
         final int top = JQueryWrapper.select(field).position().top();
-        JQueryWrapper.select(tabSheet).children(".v-shell-tabsheet-scroller").animate(500, new AnimationSettings() {
+        JQueryWrapper.select(tabSheet.asWidget()).children(".v-shell-tabsheet-scroller").animate(500, new AnimationSettings() {
             {
                 setProperty("scrollTop", top - 30);
                 addCallback(new JQueryCallback() {
@@ -287,9 +284,9 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
     @Override
     public void onValidationChanged(ValidationChangedEvent event) {
         int totalProblematicFields = 0;
-        for (final VFormTab tab : formTabs) {
+        for (final FormTabWidget tab : formTabs) {
             totalProblematicFields += tab.getErrorAmount();
-            final VFormTab formTab = tab;
+            final FormTabWidget formTab = tab;
             for (final FormFieldWrapper field : formTab.getFields()) {
                 field.addFocusHandler(problematicFieldFocusHandler);
             }
@@ -300,5 +297,21 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
     @Override
     public void setCaption(String caption) {
         formHeader.setFormCaption(caption);
+    }
+
+    @Override
+    public int getContentWidth() {
+        return getOffsetWidth();
+    }
+
+    @Override
+    public int getContentHeight() {
+        if (getParent() != null) {
+            int baseHeight = getParent().getOffsetHeight();
+            int headerHeight = formHeader.getOffsetHeight();
+            int footerHeight = footer.getOffsetHeight();
+            return baseHeight - headerHeight - footerHeight;
+        }
+        return 0;
     }
 }

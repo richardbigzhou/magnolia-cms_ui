@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.form;
+package info.magnolia.ui.vaadin.gwt.client.form.tab.rpc;
 
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTabSheet;
-
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * Interface of {@link VFormViewImpl}.
+ * FormTabServerRpc.
  */
-public interface VFormView extends IsWidget, HasWidgets, ValidationChangedEvent.Handler {
+public interface FormTabServerRpc extends ServerRpc {
 
-    void setContent(Widget contentWidget);
-
-    /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
-     */
-    public interface Presenter {
-
-        void fireAction(String action);
-        
-        void runLayout();
-
-    }
-
-    VMagnoliaTabSheet getContent();
-    
-    void setPresenter(Presenter presenter);
-
-    void addAction(String label, String action);
-
-    void setDescription(String description);
-
-    void setCaption(final String caption);
-    
-    int getFormWidth();
-
-    int getFormHeight();
-
+    void setHasErrors(boolean errorOccured);
 }

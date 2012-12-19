@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.form;
+package info.magnolia.ui.vaadin.gwt.client.form.tab.connector;
 
-import info.magnolia.ui.vaadin.gwt.client.form.VFormTab;
-import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
+import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.form.tab.rpc.FormTabServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.connector.MagnoliaTabConnector;
 
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.ClientWidget;
+import com.vaadin.client.communication.RpcProxy;
+import com.vaadin.client.communication.StateChangeEvent;
+import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 
 /**
- * Dialog tab.
- *
+ * FormTabConnector.
  */
-@ClientWidget(VFormTab.class)
-public class MagnoliaFormTab extends MagnoliaTab {
+public class FormTabConnector extends MagnoliaTabConnector {
 
-    private final FormSection content;
-
-    public MagnoliaFormTab(String caption, FormSection content) {
-        super(caption, content);
-        this.content = content;
-        //DialogLayout needs this info to display it when show all tab is active
-        this.content.setCaption(caption);
-    }
-
-    public void setValidationVisible(boolean isVisible) {
-        content.setValidationVisible(isVisible);
-    }
-
+    private final FormTabServerRpc rpc = RpcProxy.create(FormTabServerRpc.class, this);
+    
     @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        setHasError(content.hasError());
-        super.paintContent(target);
+    protected void init() {
+        super.init();
+        addStateChangeHandler("hasError", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                fireEvent(new ValidationChangedEvent());
+            }
+        });
     }
-
+    
+    public void setHasErrors(boolean hasErrors) {
+        rpc.setHasErrors(hasErrors);
+    }
+    
 }

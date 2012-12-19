@@ -31,18 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.vaadin.gwt.client.editorlike.connector;
 
-import info.magnolia.ui.vaadin.form.FormView;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.vaadin.shared.AbstractComponentState;
 
 /**
- * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that 
- * adapts to the content ({@link FormView}) and delegates the view logic to it.
+ * EditorLikeComponentState.
  */
-public class FormDialog extends BaseDialog implements FormDialogView {
-    @Override
-    public void setFormView(FormView formView) {
-        //super.setContent(formView.asVaadinComponent());
-        //formView.asVaadinComponent().setHeight("500px");
-    }
+public class EditorLikeComponentState extends AbstractComponentState {
+
+    public String componentDescription = "";
+
+    public Map<String, String> actions = new HashMap<String, String>();
 }

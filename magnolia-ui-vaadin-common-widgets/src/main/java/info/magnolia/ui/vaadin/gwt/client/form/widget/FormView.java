@@ -31,18 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
-import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView;
+import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent;
 
 /**
- * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that 
- * adapts to the content ({@link FormView}) and delegates the view logic to it.
+ * Interface of {@link FormViewImpl}.
  */
-public class FormDialog extends BaseDialog implements FormDialogView {
-    @Override
-    public void setFormView(FormView formView) {
-        //super.setContent(formView.asVaadinComponent());
-        //formView.asVaadinComponent().setHeight("500px");
+public interface FormView extends EditorLikeView<FormView.Presenter>, ValidationChangedEvent.Handler {
+    
+    /**
+     * Presenter. Meant for Vaadin part of MagnoliaShell.
+     */
+    public interface Presenter extends EditorLikeView.Presenter {
+        
+        @Deprecated
+        void runLayout();
+
     }
 }

@@ -31,18 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
 
-import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.ActionFiringServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
+import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView.Presenter;
+import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogViewImpl;
+import info.magnolia.ui.vaadin.gwt.client.editorlike.connector.EditorLikeComponentConnector;
+
+import com.vaadin.client.communication.RpcProxy;
+import com.vaadin.shared.ui.Connect;
 
 /**
- * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that 
- * adapts to the content ({@link FormView}) and delegates the view logic to it.
+ * BaseDialogConnector.
  */
-public class FormDialog extends BaseDialog implements FormDialogView {
+@Connect(BaseDialog.class)
+public class BaseDialogConnector extends EditorLikeComponentConnector<BaseDialogView.Presenter, BaseDialogView> {
+    
+    private final ActionFiringServerRpc rpc = RpcProxy.create(ActionFiringServerRpc.class, this);
+    
     @Override
-    public void setFormView(FormView formView) {
-        //super.setContent(formView.asVaadinComponent());
-        //formView.asVaadinComponent().setHeight("500px");
+    protected BaseDialogView createView() {
+        return new BaseDialogViewImpl();
+    }
+
+    @Override
+    protected Presenter createPresenter() {
+        return new BaseDialogView.Presenter() {
+            @Override
+            public void fireAction(String action) {
+                rpc.fireAction(action);
+            }
+            
+            @Override
+            public void closeDialog() {
+                rpc.closeSelf();
+            }
+        };
     }
 }

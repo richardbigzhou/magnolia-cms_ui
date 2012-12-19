@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
+package info.magnolia.ui.vaadin.gwt.client.form.formsection.widget;
 
 import org.vaadin.gwtgraphics.client.DrawingArea;
 import org.vaadin.gwtgraphics.client.shape.Path;
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Error/Help bubble widget. 
  */
-public abstract class VInlineMessage extends FlowPanel {
+public abstract class InlineMessageWidget extends FlowPanel {
     
     protected Widget triangleSVG = createErrorDecoration();
     
@@ -54,7 +54,7 @@ public abstract class VInlineMessage extends FlowPanel {
     
     protected Element messageEl = DOM.createSpan();
     
-    protected VInlineMessage() {
+    protected InlineMessageWidget() {
         construct();
     }
     
@@ -85,8 +85,8 @@ public abstract class VInlineMessage extends FlowPanel {
         messageEl.setInnerHTML(message);
     }
     
-    public static VInlineMessage createErrorMessage() {
-        final VInlineMessage result = new VInlineMessage() {
+    public static InlineMessageWidget createErrorMessage() {
+        final InlineMessageWidget result = new InlineMessageWidget() {
             @Override
             protected void applyStyles() {
                 addStyleName("validation-message-inline");
@@ -98,8 +98,8 @@ public abstract class VInlineMessage extends FlowPanel {
         return result;
     }
     
-    public static VInlineMessage createHelpMessage() {
-        final VInlineMessage result = new VInlineMessage() {
+    public static InlineMessageWidget createHelpMessage() {
+        final InlineMessageWidget result = new InlineMessageWidget() {
             @Override
             protected void applyStyles() {
                 addStyleName("help-message-inline");

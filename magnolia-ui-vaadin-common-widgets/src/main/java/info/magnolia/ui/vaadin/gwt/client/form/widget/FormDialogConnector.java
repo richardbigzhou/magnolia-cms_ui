@@ -31,18 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
-import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.dialog.FormDialog;
+import info.magnolia.ui.vaadin.gwt.client.dialog.connector.BaseDialogConnector;
+import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
+
+import com.vaadin.shared.ui.Connect;
 
 /**
- * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that 
- * adapts to the content ({@link FormView}) and delegates the view logic to it.
+ * Client side implementation of the dialog that delegates most of the logic/UI to the embedded form. 
  */
-public class FormDialog extends BaseDialog implements FormDialogView {
+@Connect(FormDialog.class)
+public class FormDialogConnector extends BaseDialogConnector {
+
     @Override
-    public void setFormView(FormView formView) {
-        //super.setContent(formView.asVaadinComponent());
-        //formView.asVaadinComponent().setHeight("500px");
+    protected BaseDialogView createView() {
+        return new DialogAdaptingToFormViewImpl();
     }
 }
