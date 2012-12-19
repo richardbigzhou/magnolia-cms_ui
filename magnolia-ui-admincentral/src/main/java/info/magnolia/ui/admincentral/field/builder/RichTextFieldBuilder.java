@@ -119,7 +119,12 @@ public class RichTextFieldBuilder extends
         config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, PLUGIN_PATH_MAGNOLIALINK);
         config.setResizeEnabled(false);
         
-        richtexteditor = new MagnoliaRichTextField(config);
+        richtexteditor = new MagnoliaRichTextField(config) {
+            @Override
+            public void attach() {
+
+            }
+        };
         richtexteditor.addListener(new MagnoliaRichTextField.PluginListener() {
 
             @Override

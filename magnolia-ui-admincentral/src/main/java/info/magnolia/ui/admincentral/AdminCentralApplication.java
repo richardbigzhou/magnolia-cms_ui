@@ -44,17 +44,21 @@ import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.Application;
+import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.Window;
 
 
 /**
  * The Application's "main" class.
  */
-public class AdminCentralApplication extends Application {
+public class AdminCentralApplication extends Application implements HttpServletRequestListener {
 
     private static final Logger log = LoggerFactory.getLogger(AdminCentralApplication.class);
 
@@ -90,5 +94,15 @@ public class AdminCentralApplication extends Application {
         window.setContent(((MagnoliaShellView) presenter.start()).asVaadinComponent());
 
         setMainWindow(window);
+    }
+
+    @Override
+    public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("ctx path: "+request.getServletPath());
+    }
+
+    @Override
+    public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
+
     }
 }
