@@ -69,14 +69,17 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
         if (!viewport.isClosing() && Visibility.HIDDEN.getCssName().equals(app.getElement().getStyle().getVisibility())) {
             viewport.doSetVisibleApp(app);
             
-            /* This is strictly speaking a hack. Starting animation here immediately would cause size calculations
-             * to be done to a zero sized layout which would cause corruption. Avoid this by letting layouts resize 
-             * themselves first and animate after. User may witness switching app flicking shortly before the animation.
+            /* Starting animation here immediately would cause size calculations to be done to a zero sized layout 
+             * which would cause corruption. Avoid this by letting layouts resize themselves first and animate after.
+             * Avoid flicking app before animation begins by setting opacity to zero. User would experience a fluent 
+             * animation from solid background.
              */
+            app.addStyleName("beginzoom");
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                 
                 @Override
                 public void execute() {
+                    app.removeStyleName("beginzoom");
                     app.addStyleName("zoom-in");
                     
                     new Timer() {
