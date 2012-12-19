@@ -112,7 +112,7 @@ public class VMagnoliaTreeTable extends VTreeTablePatched {
                         classname += open ? " icon-arrow1_s" : " icon-arrow1_e";
                     }
 
-                    treeSpacer = Document.get().createSpanElement();
+                    treeSpacer = Document.get().createDivElement();
                     treeSpacer.getStyle().setDisplay(Display.INLINE_BLOCK);
                     treeSpacer.setClassName(classname);
                     container.insertAfter(treeSpacer, container.getFirstChild());
