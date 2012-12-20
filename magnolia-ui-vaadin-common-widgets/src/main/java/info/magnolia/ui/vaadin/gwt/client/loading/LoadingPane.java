@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.loading;
 
-import info.magnolia.ui.vaadin.gwt.client.icon.GwtLoadingIcon;
+import info.magnolia.ui.vaadin.gwt.client.icon.widget.LoadingIconWidget;
 
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.DOM;
@@ -45,9 +45,9 @@ import com.google.gwt.user.client.ui.Widget;
  * Also inhibits interaction by covering the area with an invisible div.
  * To use - call the appendTo method with widget it should cover.
  */
-public class LoadingPane{
+public class LoadingPane {
 
-   private final GwtLoadingIcon loadingIcon = new GwtLoadingIcon();
+   private final LoadingIconWidget loadingIcon = new LoadingIconWidget();
    private final Element iconPanel = DOM.createDiv();
    private final Element loadingIconPositioner = DOM.createDiv();
    private final Element loadingModalityCurtain = DOM.createDiv();

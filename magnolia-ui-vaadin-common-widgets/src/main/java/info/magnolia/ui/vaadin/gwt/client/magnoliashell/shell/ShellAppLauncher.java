@@ -130,7 +130,7 @@ public class ShellAppLauncher extends FlowPanel {
     };
 
     private final native void log(String msg) /*-{
-		$wnd.console.log(msg);
+        $wnd.console.log(msg);
     }-*/;
 
     /**

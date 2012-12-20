@@ -45,7 +45,6 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.Paintable;
 import com.vaadin.client.Util;
 
 
