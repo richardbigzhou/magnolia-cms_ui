@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.icon;
+package info.magnolia.ui.vaadin.gwt.client.icon.connector;
+
+import info.magnolia.ui.vaadin.gwt.client.icon.widget.LoadingIconWidget;
+import info.magnolia.ui.vaadin.icon.LoadingIcon;
+
+import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.ui.AbstractComponentConnector;
+import com.vaadin.shared.communication.SharedState;
+import com.vaadin.shared.ui.Connect;
+
 
 /**
- * The GwtLoadingIcon widget.
+ * LoadingIconConnector.
  */
-public class GwtLoadingIcon extends GwtIcon {
+@Connect(LoadingIcon.class)
+public class LoadingIconConnector extends AbstractComponentConnector {
 
-    private static final String CLASSNAME = "spinner-icon";
-
-    public GwtLoadingIcon() {
-        setStylePrimaryName(CLASSNAME);
-        for (int i = 1; i <= 8; i++) {
-            GwtIcon bit = new GwtIcon();
-            bit.updateIconName("spinner-" + i);
-            getElement().appendChild(bit.getElement());
-        }
+    @Override
+    protected Widget createWidget() {
+        return new LoadingIconWidget();
     }
-
+    
+    @Override
+    protected SharedState createState() {
+        return new LoadingIconState();
+    }
 }

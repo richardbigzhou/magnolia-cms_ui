@@ -31,22 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.icon;
+package info.magnolia.ui.vaadin.gwt.client.icon.connector;
+
+import info.magnolia.ui.vaadin.gwt.client.icon.widget.BadgeIconWidget;
+import info.magnolia.ui.vaadin.icon.BadgeIcon;
+
+import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.ui.AbstractComponentConnector;
+import com.vaadin.shared.communication.SharedState;
+import com.vaadin.shared.ui.Connect;
 
 /**
- * The HelpIcon.
+ * {@link BadgeIconConnector}.
  */
-public class HelpIcon extends CompositeIcon {
+@Connect(BadgeIcon.class)
+public class BadgeIconConnector extends AbstractComponentConnector {
 
-    public HelpIcon() {
-        this(Icon.SIZE_DEFAULT);
+    @Override
+    protected SharedState createState() {
+        return new BadgeIconState();
     }
-
-    public HelpIcon(int size) {
-        super(
-            new Icon("shape-circle-plus", size, "#fff"),
-            new Icon("shape-circle", size, Icon.COLOR_HELP),
-            new Icon("help-mark", size, "#fff"));
-    }
-
+    
+    @Override
+    protected Widget createWidget() {
+        return new BadgeIconWidget();
+    };
 }

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.icon;
+package info.magnolia.ui.vaadin.gwt.client.icon.widget;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The GwtIcon widget.
  */
-public class GwtIcon extends Widget {
+public class IconWidget extends Widget {
 
     private static final String CLASSNAME = "icon";
 
@@ -58,7 +58,7 @@ public class GwtIcon extends Widget {
 
     private boolean innerIcon;
 
-    public GwtIcon() {
+    public IconWidget() {
         setElement(root);
         setStylePrimaryName(CLASSNAME);
     }
@@ -80,7 +80,7 @@ public class GwtIcon extends Widget {
         style.setDisplay(Display.INLINE_BLOCK);
     }
 
-    public void updateIconName(String iconName) {
+    public void setIconName(String iconName) {
         if (this.iconName != null) {
             removeStyleDependentName(this.iconName);
         }
@@ -88,13 +88,13 @@ public class GwtIcon extends Widget {
         this.iconName = iconName;
     }
 
-    public void updateSize(int value) {
+    public void setSize(int value) {
         if (!innerIcon) {
             root.getStyle().setFontSize(value, Unit.PX);
         }
     }
 
-    public void updateColor(String value) {
+    public void setColor(String value) {
         root.getStyle().setColor(value);
     }
 

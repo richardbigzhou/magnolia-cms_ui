@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,13 +33,9 @@
  */
 package info.magnolia.ui.vaadin.icon;
 
-import info.magnolia.ui.vaadin.gwt.client.icon.VIcon;
+import info.magnolia.ui.vaadin.gwt.client.icon.connector.IconState;
 
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
 
 
 /**
@@ -47,27 +43,20 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
  * implementation is based on the icon font technique, which means it only allows for monochromatic
  * icons. For multilayer icons, please head to the CompositeIcon.
  */
-@ClientWidget(value = VIcon.class, loadStyle = LoadStyle.EAGER)
 public class Icon extends AbstractComponent {
 
-    public static final String COLOR_ERROR = "#9a3332";
+    public transient static final String COLOR_ERROR = "#9a3332";
 
-    public static final String COLOR_WARNING = "#ffbf28";
+    public transient static final String COLOR_WARNING = "#ffbf28";
 
-    public static final String COLOR_INFO = "#999";
+    public transient static final String COLOR_INFO = "#999";
 
-    public static final String COLOR_GREEN_BADGE = "#689600";
+    public transient static final String COLOR_GREEN_BADGE = "#689600";
 
-    public static final String COLOR_HELP = "#4b8e9e";
+    public transient static final String COLOR_HELP = "#4b8e9e";
 
-    public static final int SIZE_DEFAULT = 24;
-
-    private String iconName;
-
-    private int size;
-
-    private String color;
-
+    public transient static final int SIZE_DEFAULT = 24;
+    
     public Icon(String iconName) {
         this(iconName, SIZE_DEFAULT);
     }
@@ -87,39 +76,37 @@ public class Icon extends AbstractComponent {
     }
 
     @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
-        target.addAttribute("iconName", iconName);
-        if (size != SIZE_DEFAULT) {
-            target.addAttribute("size", size);
-        }
-        if (color != null) {
-            target.addAttribute("color", color);
-        }
+    protected IconState getState(boolean markDirty) {
+        return (IconState)super.getState(markDirty);
     }
-
+    
+    @Override
+    protected IconState getState() {
+        return (IconState)super.getState();
+    }
+    
     public String getIconName() {
-        return iconName;
+        return getState(false).iconName;
     }
 
     public void setIconName(String iconName) {
-        this.iconName = iconName;
+        getState().iconName = iconName;
     }
 
     public int getSize() {
-        return size;
+        return getState(false).size;
     }
 
     public void setSize(int size) {
-        this.size = size;
+        getState().size = size;
     }
 
     public String getColor() {
-        return color;
+        return getState(false).color;
     }
 
     public void setColor(String color) {
-        this.color = color;
+        getState().color = color;
     }
 
 }

@@ -31,22 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.icon;
+package info.magnolia.ui.vaadin.gwt.client.icon.connector;
+
+import info.magnolia.ui.vaadin.gwt.client.icon.widget.IconWidget;
+import info.magnolia.ui.vaadin.icon.CompositeIcon;
+
+import com.vaadin.client.ComponentConnector;
+import com.vaadin.client.ConnectorHierarchyChangeEvent;
+import com.vaadin.client.ui.AbstractLayoutConnector;
+import com.vaadin.shared.ui.Connect;
 
 /**
- * The HelpIcon.
+ * {@link CompositeIconConnector}.
  */
-public class HelpIcon extends CompositeIcon {
+@Connect(CompositeIcon.class)
+public class CompositeIconConnector extends AbstractLayoutConnector {
 
-    public HelpIcon() {
-        this(Icon.SIZE_DEFAULT);
+    @Override
+    public IconWidget getWidget() {
+        return (IconWidget)super.getWidget();
     }
 
-    public HelpIcon(int size) {
-        super(
-            new Icon("shape-circle-plus", size, "#fff"),
-            new Icon("shape-circle", size, Icon.COLOR_HELP),
-            new Icon("help-mark", size, "#fff"));
+    @Override
+    protected IconWidget createWidget() {
+        return new IconWidget();
     }
 
+    @Override
+    protected CompositeIconState createState() {
+        return new CompositeIconState();
+    }
+
+    @Override
+    public void updateCaption(ComponentConnector connector) {}
+
+    @Override
+    public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent event) {
+        for (final ComponentConnector cc : getChildComponents()) {
+            if (cc instanceof IconConnector) {
+                getWidget().getElement().appendChild(cc.getWidget().getElement());
+            }
+        }
+    }
 }

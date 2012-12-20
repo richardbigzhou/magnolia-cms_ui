@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.icon;
-
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.UIDL;
+package info.magnolia.ui.vaadin.gwt.client.icon.connector;
 
 
 /**
- * The VIcon vaadin client-side proxy for the Icon component.
+ * {@link CompositeIconState}.
  */
-public class VIcon extends GwtIcon implements Paintable {
-
-    private ApplicationConnection client;
-
-    private String paintableId;
-
-    public VIcon() {
-    }
-
-    @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        this.client = client;
-        this.paintableId = uidl.getId();
-        if (client.updateComponent(this, uidl, true)) {
-            return;
-        }
-
-        updateIcon(uidl);
-    }
-
-    protected void updateIcon(UIDL uidl) {
-        updateBaseStyles();
-        updateIconName(uidl.getStringAttribute("iconName"));
-        if (uidl.hasAttribute("size")) {
-            updateSize(uidl.getIntAttribute("size"));
-        }
-        if (uidl.hasAttribute("color")) {
-            updateColor(uidl.getStringAttribute("color"));
-        }
-    }
-
-}
+public class CompositeIconState extends IconState {}

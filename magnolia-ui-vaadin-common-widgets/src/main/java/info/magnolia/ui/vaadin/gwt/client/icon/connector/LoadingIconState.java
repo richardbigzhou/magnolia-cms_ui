@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.icon;
+package info.magnolia.ui.vaadin.gwt.client.icon.connector;
 
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.shared.AbstractComponentState;
 
 
 /**
- * The VLoadingIcon vaadin client-side proxy for the LoadingIcon component.
+ * LoadingIconState.
  */
-public class VLoadingIcon extends GwtLoadingIcon implements Paintable {
+public class LoadingIconState extends AbstractComponentState {
 
-    private ApplicationConnection client;
-
-    private String paintableId;
-
-    public VLoadingIcon() {
-    }
-
-    @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        this.client = client;
-        this.paintableId = uidl.getId();
-        if (client.updateComponent(this, uidl, true)) {
-            return;
-        }
-        if (uidl.hasAttribute("size")) {
-            updateSize(uidl.getIntAttribute("size"));
-        }
-    }
-
+    public int size;
 }

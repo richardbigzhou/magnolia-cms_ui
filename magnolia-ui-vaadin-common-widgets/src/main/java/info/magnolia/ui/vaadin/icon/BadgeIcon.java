@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,13 +33,9 @@
  */
 package info.magnolia.ui.vaadin.icon;
 
-import info.magnolia.ui.vaadin.gwt.client.icon.VBadgeIcon;
+import info.magnolia.ui.vaadin.gwt.client.icon.connector.BadgeIconState;
 
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
 
 
 /**
@@ -47,20 +43,7 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
  * notifications counters for instance. The client-side implementation is scalable and only relies
  * on browser support for rounded corners.
  */
-@ClientWidget(value = VBadgeIcon.class, loadStyle = LoadStyle.EAGER)
 public class BadgeIcon extends AbstractComponent {
-
-    public static final int SIZE_DEFAULT = 16;
-
-    private int size = SIZE_DEFAULT;
-
-    private String fill;
-
-    private String stroke;
-
-    private boolean outline;
-
-    private int value;
 
     /**
      * Creates a new badge icon, with default style.
@@ -78,69 +61,14 @@ public class BadgeIcon extends AbstractComponent {
      * @param outline whether the outline should be rendered.
      */
     public BadgeIcon(int size, String fill, String stroke, boolean outline) {
-        setSize(size);
-        setFill(fill);
-        setStroke(stroke);
-        setOutline(outline);
+        getState().size = size;
+        getState().fill = fill;
+        getState().stroke = stroke;
+        getState().outline = outline;
     }
 
     @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
-        if (size != SIZE_DEFAULT) {
-            target.addAttribute("size", size);
-        }
-        if (fill != null) {
-            target.addAttribute("fill", fill);
-        }
-        if (stroke != null) {
-            target.addAttribute("stroke", stroke);
-        }
-        if (outline) {
-            target.addAttribute("outline", true);
-        }
-        target.addVariable(this, "value", value);
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public String getFill() {
-        return fill;
-    }
-
-    public void setFill(String fill) {
-        this.fill = fill;
-    }
-
-    public String getStroke() {
-        return stroke;
-    }
-
-    public void setStroke(String stroke) {
-        this.stroke = stroke;
-    }
-
-    public boolean hasOutline() {
-        return outline;
-    }
-
-    public void setOutline(boolean outline) {
-        this.outline = outline;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
-        requestRepaint();
-    }
-
+    protected BadgeIconState getState() {
+        return (BadgeIconState)super.getState();
+    };
 }

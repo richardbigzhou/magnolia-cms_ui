@@ -31,22 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.icon;
+package info.magnolia.ui.vaadin.gwt.client.icon.connector;
+
+import com.vaadin.shared.AbstractComponentState;
+import com.vaadin.shared.annotations.DelegateToWidget;
+
 
 /**
- * The HelpIcon.
+ * IconState.
  */
-public class HelpIcon extends CompositeIcon {
+public class IconState extends AbstractComponentState {
 
-    public HelpIcon() {
-        this(Icon.SIZE_DEFAULT);
-    }
+    @DelegateToWidget
+    public String iconName;
 
-    public HelpIcon(int size) {
-        super(
-            new Icon("shape-circle-plus", size, "#fff"),
-            new Icon("shape-circle", size, Icon.COLOR_HELP),
-            new Icon("help-mark", size, "#fff"));
-    }
+    @DelegateToWidget
+    public int size;
 
+    @DelegateToWidget
+    public String color;
 }

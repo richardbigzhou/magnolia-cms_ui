@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.icon;
+package info.magnolia.ui.vaadin.gwt.client.icon.connector;
 
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.UIDL;
-
+import com.vaadin.shared.AbstractComponentState;
+import com.vaadin.shared.annotations.DelegateToWidget;
 
 /**
- * The VBadgeIcon vaadin client-side proxy for the BadgeIcon component.
+ * {@link BadgeIconState}.
  */
-public class VBadgeIcon extends GwtBadgeIcon implements Paintable {
+public class BadgeIconState extends AbstractComponentState {
 
-    private ApplicationConnection client;
+    public transient static final int SIZE_DEFAULT = 16;
 
-    private String paintableId;
+    public int size = SIZE_DEFAULT;
 
-    public VBadgeIcon() {
-    }
+    @DelegateToWidget
+    public String fill;
 
-    @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        this.client = client;
-        this.paintableId = uidl.getId();
-        if (client.updateComponent(this, uidl, true)) {
-            return;
-        }
-        if (uidl.hasAttribute("size")) {
-            updateSize(uidl.getIntAttribute("size"));
-        }
-        if (uidl.hasAttribute("fill")) {
-            updateFillColor(uidl.getStringAttribute("fill"));
-        }
-        if (uidl.hasAttribute("stroke")) {
-            updateStrokeColor(uidl.getStringAttribute("stroke"));
-        }
-        if (uidl.hasAttribute("outline")) {
-            updateOutline(uidl.getBooleanAttribute("outline"));
-        }
-        updateValue(uidl.getIntVariable("value"));
-    }
+    @DelegateToWidget
+    public String stroke;
+
+    @DelegateToWidget
+    public boolean outline;
+
+    @DelegateToWidget
+    public int value;
+    
 }

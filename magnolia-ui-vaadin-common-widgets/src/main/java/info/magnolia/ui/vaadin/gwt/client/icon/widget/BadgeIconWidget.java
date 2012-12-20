@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.icon;
+package info.magnolia.ui.vaadin.gwt.client.icon.widget;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
@@ -42,17 +42,15 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The GwtBadgeIcon widget.
  */
-public class GwtBadgeIcon extends Widget {
+public class BadgeIconWidget extends Widget {
 
     private static final String CLASSNAME = "badge-icon";
-
-    private static final int SIZE_DEFAULT = 16;
 
     private final Element root = DOM.createSpan();
 
     private final Element text = DOM.createSpan();
 
-    public GwtBadgeIcon() {
+    public BadgeIconWidget() {
         setElement(root);
         setStylePrimaryName(CLASSNAME);
         text.addClassName("text");
@@ -72,20 +70,20 @@ public class GwtBadgeIcon extends Widget {
         text.setInnerHTML(s);
     }
 
-    public void updateSize(int value) {
+    public void setSize(int value) {
         root.getStyle().setFontSize(value, Unit.PX);
     }
 
-    public void updateFillColor(String value) {
+    public void setFillColor(String value) {
         root.getStyle().setBackgroundColor(value);
     }
 
-    public void updateStrokeColor(String value) {
+    public void setStrokeColor(String value) {
         root.getStyle().setColor(value);
         root.getStyle().setBorderColor(value);
     }
 
-    public void updateOutline(boolean outline) {
+    public void setOutline(boolean outline) {
         if (outline) {
             root.getStyle().setBorderWidth(0.13, Unit.EM);
         } else {

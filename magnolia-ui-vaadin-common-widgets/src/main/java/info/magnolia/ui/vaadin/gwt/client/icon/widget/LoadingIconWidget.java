@@ -31,48 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.icon;
-
-import java.util.Iterator;
-
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.UIDL;
-
+package info.magnolia.ui.vaadin.gwt.client.icon.widget;
 
 /**
- * The VCompositeIcon vaadin client-side proxy for the CompositeIcon component.
+ * The GwtLoadingIcon widget.
  */
-public class VCompositeIcon extends VIcon implements Paintable {
+public class LoadingIconWidget extends IconWidget {
 
-    private ApplicationConnection client;
+    private static final String CLASSNAME = "spinner-icon";
 
-    private String paintableId;
-
-    public VCompositeIcon() {
-    }
-
-    @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        this.client = client;
-        this.paintableId = uidl.getId();
-        if (client.updateComponent(this, uidl, true)) {
-            return;
-        }
-
-        boolean processedRoot = false;
-        Iterator<Object> iterator = uidl.getChildIterator();
-        while (iterator.hasNext()) {
-            UIDL childUidl = (UIDL) iterator.next();
-            if (!processedRoot) {
-                updateIcon(childUidl);
-                processedRoot = true;
-            } else {
-                VIcon icon = (VIcon) client.getPaintable(childUidl);
-                icon.setInnerIcon(true);
-                icon.updateFromUIDL(childUidl, client);
-                getElement().appendChild(icon.getElement());
-            }
+    public LoadingIconWidget() {
+        setStylePrimaryName(CLASSNAME);
+        for (int i = 1; i <= 8; i++) {
+            IconWidget bit = new IconWidget();
+            bit.setIconName("spinner-" + i);
+            getElement().appendChild(bit.getElement());
         }
     }
 

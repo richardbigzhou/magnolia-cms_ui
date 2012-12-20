@@ -31,22 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.icon;
+package info.magnolia.ui.vaadin.gwt.client.icon.connector;
+
+import info.magnolia.ui.vaadin.gwt.client.icon.widget.IconWidget;
+import info.magnolia.ui.vaadin.icon.Icon;
+
+import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.communication.StateChangeEvent;
+import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
+import com.vaadin.client.ui.AbstractComponentConnector;
+import com.vaadin.shared.communication.SharedState;
+import com.vaadin.shared.ui.Connect;
+
 
 /**
- * The HelpIcon.
+ * IconConnector.
  */
-public class HelpIcon extends CompositeIcon {
+@Connect(Icon.class)
+public class IconConnector extends AbstractComponentConnector {
 
-    public HelpIcon() {
-        this(Icon.SIZE_DEFAULT);
+    @Override
+    protected void init() {
+        super.init();
+        addStateChangeHandler(new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                ((IconWidget)getWidget()).updateBaseStyles();
+            }
+        });
     }
 
-    public HelpIcon(int size) {
-        super(
-            new Icon("shape-circle-plus", size, "#fff"),
-            new Icon("shape-circle", size, Icon.COLOR_HELP),
-            new Icon("help-mark", size, "#fff"));
+    
+    @Override
+    protected Widget createWidget() {
+        return new IconWidget();
     }
 
+    @Override
+    protected SharedState createState() {
+        return super.createState();
+    }
 }
