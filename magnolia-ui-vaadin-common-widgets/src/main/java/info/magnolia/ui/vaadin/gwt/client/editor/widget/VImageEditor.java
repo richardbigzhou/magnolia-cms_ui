@@ -31,12 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor;
+package info.magnolia.ui.vaadin.gwt.client.editor.widget;
 
-import org.vaadin.csstools.client.ComputedStyle;
-import org.vaadin.rpc.client.ClientSideHandler;
-import org.vaadin.rpc.client.ClientSideProxy;
-import org.vaadin.rpc.client.Method;
+import info.magnolia.ui.vaadin.gwt.client.editor.shared.SelectionArea;
 
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
@@ -44,17 +41,14 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.UIDL;
-import com.vaadin.terminal.gwt.client.VConsole;
+import com.vaadin.client.ComputedStyle;
 
 
 
 /**
  * Client side implementtaion for ImageEditor widget.
  */
-public class VImageEditor extends VerticalPanel implements Paintable, ClientSideHandler {
+public class VImageEditor extends VerticalPanel {
 
 public static final String CLASSNAME = "v-image-editor";
     
@@ -72,9 +66,7 @@ public static final String CLASSNAME = "v-image-editor";
     
     private Image img = null;
 
-    private final GWTSelector selector = new GWTSelector();
-    
-    protected ApplicationConnection client;
+    private final ImageSelectorWidget selector = new ImageSelectorWidget();
     
     private final Label scaleLabel = new Label();
     
@@ -84,91 +76,55 @@ public static final String CLASSNAME = "v-image-editor";
     
     private final Label mimeLabel = new Label();
     
-    private final ClientSideProxy proxy = new ClientSideProxy(this) {
-        {
-            register("setFileName", new Method() {
-
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    fileNameLabel.setText(String.valueOf(params[0]));
-                }
-            });
-            
-            register("setMimeType", new Method() {
-
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    mimeLabel.setText(String.valueOf(params[0]));
-                }
-            });
-            
-            register("setSource", new Method() {
-
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    if (img != null) {
-                        System.out.println("Remving old img " + img);
-                        remove(img);
-                    }
-                    img = new Image(String.valueOf(params[0]));
-                    img.addLoadHandler(new LoadHandler() {
-                        @Override
-                        public void onLoad(LoadEvent event) {
-                            nativeImageWidth = img.getOffsetWidth();
-                            nativeImageHeight = img.getOffsetHeight();
-                            sizeLabel.setText(nativeImageWidth + " x " + nativeImageHeight);
-                            updateImage();
-                        }
-                    });
-                    insert(img, 1);
-                }
-            });
-
-            register("setCropping", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    setCropping((Boolean) params[0]);
-                }
-            });
-
-            register("setMarginsPx", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    margins = (Integer)params[0];
-                    updateImage();
-                }
-            });
-            
-            register("fetchCropArea", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    int x = (int)(selector.getSelectionXCoordinate() / scaleRatio);
-                    int y = (int)(selector.getSelectionYCoordinate() / scaleRatio);
-                    int w = (int)(selector.getSelectionWidth() / scaleRatio);
-                    int h = (int)(selector.getSelectionHeight() / scaleRatio);
-                    call("croppedAreaReady", x, y, w, h);
-                }
-            });
-
-            register("lockAspectRatio", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    boolean isAspectRatioLocked = (Boolean) params[0];
-                    if (selector != null) {
-                        selector.setAspectRatio(isAspectRatioLocked ? img.getOffsetWidth() * 1d / img.getOffsetHeight() : -1);
-                    }
-                }
-            });
-            
-            register("setMinDimension", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    int minDimension = (Integer)params[0];
-                }
-            });
+    public void setMimeType(String mimeType) {    
+        mimeLabel.setText(mimeType);
+    }
+    
+    public void setSource(String sourceUrl) {
+        if (img != null) {
+            System.out.println("Remving old img " + img);
+            remove(img);
         }
-    };
+        img = new Image(sourceUrl);
+        img.addLoadHandler(new LoadHandler() {
+            @Override
+            public void onLoad(LoadEvent event) {
+                nativeImageWidth = img.getOffsetWidth();
+                nativeImageHeight = img.getOffsetHeight();
+                sizeLabel.setText(nativeImageWidth + " x " + nativeImageHeight);
+                updateImage();
+            }
+        });
+        insert(img, 1);
+    }
 
+    public void setMarginsPx(int marginsPx) {
+        this.margins = marginsPx;
+        updateImage();        
+    }
+    
+    public SelectionArea getSelectionArea() {
+        int x = (int)(selector.getSelectionXCoordinate() / scaleRatio);
+        int y = (int)(selector.getSelectionYCoordinate() / scaleRatio);
+        int w = (int)(selector.getSelectionWidth() / scaleRatio);
+        int h = (int)(selector.getSelectionHeight() / scaleRatio);
+        return new SelectionArea(x, y, w, h);
+    }
+    
+    public void setFileName(String fileName) {
+        fileNameLabel.setText(fileName);
+    }
+    
+    public void setMinDimension(int minDimension) {
+        
+    }
+    
+    public void setIsCropAspectRatioLocked(boolean isAspectRatioLocked) {
+        if (selector != null) {
+            selector.setAspectRatio(isAspectRatioLocked ? img.getOffsetWidth() * 1d / img.getOffsetHeight() : -1);
+        }
+    }
+    
     public VImageEditor() {
         setStyleName(CLASSNAME);
         getElement().getStyle().setBackgroundColor("rgba(51,51,51,1)");
@@ -187,12 +143,6 @@ public static final String CLASSNAME = "v-image-editor";
         details.add(mimeLabel);
         add(details);
         add(scaleLabel);
-    }
-
-    @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        proxy.update(this, uidl, client);
-        this.client = client;
     }
 
     @Override
@@ -223,7 +173,7 @@ public static final String CLASSNAME = "v-image-editor";
         }
     }
 
-    private void setCropping(Boolean isCropping) {
+    public void setIsCropping(boolean isCropping) {
         if (isCropping) {
             remove(img);
             selector.cropImage(img);
@@ -250,15 +200,5 @@ public static final String CLASSNAME = "v-image-editor";
             
             scaleLabel.setText("Showing " + (int)(width * 1d / nativeImageWidth * 100) + "% of original size");
         }
-    }
-    
-    @Override
-    public boolean initWidget(Object[] params) {
-        return false;
-    }
-
-    @Override
-    public void handleCallFromServer(String method, Object[] params) {
-        VConsole.error("Unhandled server call: " + method);
     }
 }

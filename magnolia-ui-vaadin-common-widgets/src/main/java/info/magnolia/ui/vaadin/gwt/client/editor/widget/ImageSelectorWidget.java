@@ -31,9 +31,8 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor;
+package info.magnolia.ui.vaadin.gwt.client.editor.widget;
 
-import org.vaadin.csstools.client.ComputedStyle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -54,11 +53,12 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.vaadin.client.ComputedStyle;
 
 /**
  * Modified version of GWTCropper widget.
  */
-public class GWTSelector extends HTMLPanel implements MouseMoveHandler, MouseUpHandler, MouseOutHandler {
+public class ImageSelectorWidget extends HTMLPanel implements MouseMoveHandler, MouseUpHandler, MouseOutHandler {
 
     private final IBundleResources bundleResources = GWT.create(IBundleResources.class);
 
@@ -124,7 +124,7 @@ public class GWTSelector extends HTMLPanel implements MouseMoveHandler, MouseUpH
         GWTCropperStyle css();
     }
 
-    public GWTSelector() {
+    public ImageSelectorWidget() {
         super("");
         this.container = new AbsolutePanel();
         bundleResources.css().ensureInjected();
@@ -133,7 +133,7 @@ public class GWTSelector extends HTMLPanel implements MouseMoveHandler, MouseUpH
         addDomHandler(this, MouseOutEvent.getType());
     }
 
-    public GWTSelector(Image image) {
+    public ImageSelectorWidget(Image image) {
         this();
         cropImage(image);
     }

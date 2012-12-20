@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor;
+package info.magnolia.ui.vaadin.gwt.client.editor.widget;
 
 /**
  * Constants used in ImageEditor widget.
