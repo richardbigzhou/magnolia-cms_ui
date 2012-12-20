@@ -31,41 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.vaadin.gwt.client.shared;
 
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+import java.io.Serializable;
 
 
 /**
- * PageEditorView.
+ * AbstractElement.
  */
-public interface PageEditorView extends View {
+public abstract class AbstractElement implements Serializable {
 
-    void setListener(Listener listener);
+    private String workspace;
 
-    void refresh();
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
+    }
 
-    void load(PageEditorParameters parameters);
+    public void setPath(String path) {
+        this.path = path;
+    }
 
-    void init();
+    public void setDialog(String dialog) {
+        this.dialog = dialog;
+    }
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
+    private String path;
+    private String dialog;
 
-        void editComponent(String workspace, String path, String dialog);
+    public AbstractElement(String workspace, String path, String dialog) {
+        this.workspace = workspace;
+        this.path = path;
+        this.dialog = dialog;
+    }
 
-        void newArea(String workspace, String nodeType, String path);
+    public String getWorkspace() {
+        return workspace;
+    }
 
-        void newComponent(String workspace, String path, String availableComponents);
+    public String getPath() {
+        return path;
+    }
 
-        void deleteComponent(String workspace, String path);
-
-        void sortComponent(String workspace, String parentPath, String source, String target, String order);
-
-        void selectElement(AbstractElement nodeSelection);
+    public String getDialog() {
+        return dialog;
     }
 }

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar;
+package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
 import com.google.gwt.user.client.ui.Label;
 

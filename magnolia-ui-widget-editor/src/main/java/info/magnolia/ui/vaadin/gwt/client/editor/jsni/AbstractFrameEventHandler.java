@@ -36,8 +36,8 @@ package info.magnolia.ui.vaadin.gwt.client.editor.jsni;
 import com.google.gwt.dom.client.Element;
 import com.google.web.bindery.event.shared.EventBus;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.VPageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.editor.jsni.event.FrameLoadedEvent;
+import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView;
 
 /**
  * AbstractFrameEventHandler.
@@ -47,7 +47,7 @@ abstract public class AbstractFrameEventHandler {
 
     private EventBus eventBus;
 
-    private VPageEditorView view;
+    private PageEditorView view;
 
 
     /**
@@ -80,11 +80,11 @@ abstract public class AbstractFrameEventHandler {
         this.eventBus = eventBus;
     }
 
-    public void setView(VPageEditorView view) {
+    public void setView(PageEditorView view) {
         this.view = view;
     }
 
-    public VPageEditorView getView() {
+    public PageEditorView getView() {
         return view;
     }
 
@@ -98,12 +98,12 @@ abstract public class AbstractFrameEventHandler {
      * Takes care of the mouse up events for selecting elements inside the page editor.
      * Unfortunately the GWT handlers do not work, so using jsni.
      */
-    public native void initNativeTouchSelectionListener(Element element, VPageEditorView.Listener listener) /*-{
+    public native void initNativeTouchSelectionListener(Element element, PageEditorView.Listener listener) /*-{
         if (element != 'undefined') {
             var ref = this;
             var that = listener;
             element.contentDocument.ontouchend = function(event) {
-                that.@info.magnolia.ui.vaadin.gwt.client.editor.VPageEditor::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
+                that.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView.Listener::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
             }
         }
     }-*/;
@@ -112,14 +112,12 @@ abstract public class AbstractFrameEventHandler {
      * Takes care of the touch end events for selecting elements inside the page editor.
      * Unfortunately the GWT handlers do not work, so using jsni.
      */
-    public native void initNativeMouseSelectionListener(Element element, VPageEditorView.Listener listener) /*-{
+    public native void initNativeMouseSelectionListener(Element element, PageEditorView.Listener listener) /*-{
         if (element != 'undefined') {
             var that = listener;
             element.contentDocument.onmouseup = function(event) {
-                that.@info.magnolia.ui.vaadin.gwt.client.editor.VPageEditor::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
-
+                that.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView.Listener::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
             }
-
         }
     }-*/;
 }

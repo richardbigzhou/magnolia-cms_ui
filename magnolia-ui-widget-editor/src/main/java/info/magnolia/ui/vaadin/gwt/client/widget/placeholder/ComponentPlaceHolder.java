@@ -31,8 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.widget.placeholder;
+package info.magnolia.ui.vaadin.gwt.client.widget.placeholder;
 
+
+import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
+import info.magnolia.rendering.template.AreaDefinition;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.NewComponentEvent;
+
+import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -41,17 +48,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
-import info.magnolia.rendering.template.AreaDefinition;
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.NewComponentEvent;
-
-import java.util.Map;
-
-import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * A Widget for adding components to area.

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.widget;
+package info.magnolia.ui.vaadin.gwt.client.widget;
 
 
 import com.google.gwt.core.client.GWT;

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.widget.dnd;
+package info.magnolia.ui.vaadin.gwt.client.rpc;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.vaadin.shared.communication.ClientRpc;
 
 /**
- * MoveWidget. Used for the legacy moving.
+ * PageEditorClientRpc.
  */
-public class MoveWidget extends FlowPanel {
+public interface PageEditorClientRpc extends ClientRpc {
 
-    public MoveWidget(int height, int width) {
-
-        setStyleName("mgnlEditorMoveDiv");
-
-        getElement().getStyle().setWidth(width, Unit.PX);
-        getElement().getStyle().setHeight(height, Unit.PX);
-        getElement().setId("mgnlEditorMoveDiv");
-
-        attach();
-    }
-
-    private void attach() {
-        Document.get().getBody().appendChild(this.getElement());
-        super.onAttach();
-    }
-
-    public void detach() {
-        Document.get().getBody().removeChild(this.getElement());
-        super.onDetach();
-    }
-
+    void refresh();
+    
 }

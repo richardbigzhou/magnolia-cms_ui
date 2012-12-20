@@ -31,41 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.vaadin.gwt.client.widget.dnd;
 
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar;
+
+import com.google.gwt.core.client.GWT;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * PageEditorView.
+ * DragAndDrop.
  */
-public interface PageEditorView extends View {
+public abstract class DragAndDrop {
 
-    void setListener(Listener listener);
+    private static final DragAndDropImpl dndImpl = GWT.create(DragAndDropImpl.class);
 
-    void refresh();
-
-    void load(PageEditorParameters parameters);
-
-    void init();
-
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void editComponent(String workspace, String path, String dialog);
-
-        void newArea(String workspace, String nodeType, String path);
-
-        void newComponent(String workspace, String path, String availableComponents);
-
-        void deleteComponent(String workspace, String path);
-
-        void sortComponent(String workspace, String parentPath, String source, String target, String order);
-
-        void selectElement(AbstractElement nodeSelection);
+    public static void dragAndDrop (EventBus eventBus, final ComponentBar abstractBar) {
+        dndImpl.dragAndDrop(eventBus, abstractBar);
     }
 }

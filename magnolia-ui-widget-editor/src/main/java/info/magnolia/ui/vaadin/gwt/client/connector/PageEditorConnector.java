@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.HeadElement;
-import com.google.gwt.dom.client.LinkElement;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.ui.Composite;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.UIDL;
-import com.vaadin.terminal.gwt.client.VConsole;
+package info.magnolia.ui.vaadin.gwt.client.connector;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.Comment;
@@ -71,194 +57,158 @@ import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.ModelImpl;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModelImpl;
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.PageBar;
-
-import org.vaadin.rpc.client.ClientSideHandler;
-import org.vaadin.rpc.client.ClientSideProxy;
-import org.vaadin.rpc.client.Method;
+import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorClientRpc;
+import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView;
+import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorViewImpl;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.PageBar;
 
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.HeadElement;
+import com.google.gwt.dom.client.LinkElement;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.SimpleEventBus;
+import com.vaadin.client.communication.RpcProxy;
+import com.vaadin.client.communication.StateChangeEvent;
+import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
+import com.vaadin.client.ui.AbstractComponentConnector;
 
 /**
- * Vaadin implementation of PageEditor client side.
+ * PageEditorConnector.
  */
-public class VPageEditor extends Composite implements VPageEditorView.Listener, Paintable, ClientSideHandler {
-
+public class PageEditorConnector extends AbstractComponentConnector implements PageEditorView.Listener {
 
     private static final String PAGE_EDITOR_CSS = "/VAADIN/themes/admincentraltheme/pageeditor.css";
-
-
-    private final VPageEditorView view;
-    private final Model model;
-    private final EventBus eventBus;
-    private final FocusModel focusModel;
-
-    protected ApplicationConnection client;
-    private ClientSideProxy proxy;
-    private String paintableId;
-
-    private VPageEditorParameters pageEditorParameters;
-
-   
-    public VPageEditor() {
-        this.eventBus = new SimpleEventBus();
-
-        this.view = new VPageEditorViewImpl(eventBus);
+    
+    private PageEditorServerRpc rpc = RpcProxy.create(PageEditorServerRpc.class, this);
+    
+    private EventBus eventBus = new SimpleEventBus();
+    
+    private PageEditorView view;
+    
+    private Model model;
+    
+    private FocusModel focusModel;
+    
+    @Override
+    protected void init() {
+        super.init();
         this.model = new ModelImpl();
         this.focusModel = new FocusModelImpl(eventBus, model);
-
-
-        initWidget(view.asWidget());
-
-        view.setListener(this);
-
-        registerDomEventHandlers();
-        registerEditorEventHandlers();
-
-
-        
-        proxy = new ClientSideProxy(this) {
-            {
-                register("refresh", new Method() {
-                    @Override
-                    public void invoke(String methodName, Object[] params) {
-                        view.reload();
-                    }
-                });
-
-                register("load", new Method() {
-                    @Override
-                    public void invoke(String methodName, Object[] params) {
-                        String json = String.valueOf(params[0]);
-                        pageEditorParameters = VPageEditorParameters.parse(json);
-                        view.setUrl(pageEditorParameters.getContextPath() + pageEditorParameters.getNodePath());
-                    }
-                });
+        addStateChangeHandler(new StateChangeHandler() { 
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                PageEditorParameters params = getState().parameters;
+                view.setUrl(params.getContextPath() + params.getNodePath());        
             }
-        };
-
-    }
-
-    @Override
-    public boolean initWidget(Object[] objects) {
-        return false;
-    }
-
-    @Override
-    public void handleCallFromServer(String method, Object[] params) {
-        VConsole.error("Unhandled RPC call from server: " + method);
-    }
-
-    @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        this.client = client;
-        this.paintableId = uidl.getId();
-        if (client.updateComponent(this, uidl, true)) {
-            return;
-        }
-
-        proxy.update(this, uidl, client);
-    }
-
-    private void registerDomEventHandlers() {
-
+        });
+        
+        registerRpc(PageEditorClientRpc.class, new PageEditorClientRpc() {
+            @Override
+            public void refresh() {
+                view.reload();
+            }
+        });
+        
         eventBus.addHandler(FrameLoadedEvent.TYPE, new FrameLoadedEvent.Handler() {
 
             @Override
             public void handle(FrameLoadedEvent event) {
                 model.reset();
-                if (pageEditorParameters.isPreview()) {
-                    return;
+                if (!getState().parameters.isPreview()) {
+                    view.initSelectionListener();
+                    Document document = event.getFrameDocument();
+                    process(event.getFrameDocument());
+                    if (model.getRootPage().getControlBar() != null) {
+                        ((PageBar)model.getRootPage().getControlBar()).setPageTitle(document.getTitle());
+                    }
+                    focusModel.init();
                 }
-
-                view.initSelectionListener();
-
-                Document document = event.getFrameDocument();
-                process(event.getFrameDocument());
-
-                if (model.getRootPage().getControlBar() != null) {
-                    ((PageBar)model.getRootPage().getControlBar()).setPageTitle(document.getTitle());
-                }
-                focusModel.init();
             }
 
         });
-    }
-
-    private void registerEditorEventHandlers() {
-
+        
         eventBus.addHandler(SelectElementEvent.TYPE, new SelectElementEventHandler() {
-
             @Override
             public void onSelectElement(SelectElementEvent selectElementEvent) {
-                proxy.call("selectElement", selectElementEvent.getType(), selectElementEvent.getJson());
+                rpc.selectElement(selectElementEvent.getType(), selectElementEvent.getAttributes());
             }
-
         });
 
         eventBus.addHandler(NewAreaEvent.TYPE, new NewAreaEventHandler() {
             @Override
             public void onNewArea(NewAreaEvent newAreaEvent) {
-                proxy.call("newArea", newAreaEvent.getWorkSpace(), newAreaEvent.getNodeType(), newAreaEvent.getPath());
+                rpc.newArea(newAreaEvent.getWorkSpace(), newAreaEvent.getNodeType(), newAreaEvent.getPath());
             }
         });
 
         eventBus.addHandler(NewComponentEvent.TYPE, new NewComponentEventHandler() {
             @Override
             public void onNewComponent(NewComponentEvent newComponentEvent) {
-                proxy.call("newComponent", newComponentEvent.getWorkSpace(), newComponentEvent.getPath(), newComponentEvent.getAvailableComponents());
+                rpc.newComponent(newComponentEvent.getWorkSpace(), newComponentEvent.getPath(), newComponentEvent.getAvailableComponents());
             }
         });
 
         eventBus.addHandler(EditComponentEvent.TYPE, new EditComponentEventHandler() {
             @Override
             public void onEditComponent(EditComponentEvent editComponentEvent) {
-                proxy.call("editComponent", editComponentEvent.getWorkspace(), editComponentEvent.getPath(), editComponentEvent.getDialog());
+                rpc.editComponent(editComponentEvent.getWorkspace(), editComponentEvent.getPath(), editComponentEvent.getDialog());
             }
         });
 
         eventBus.addHandler(DeleteComponentEvent.TYPE, new DeleteComponentEventHandler() {
             @Override
             public void onDeleteComponent(DeleteComponentEvent deleteComponentEvent) {
-                proxy.call("deleteComponent", deleteComponentEvent.getWorkspace(), deleteComponentEvent.getPath());
+                rpc.deleteComponent(deleteComponentEvent.getWorkspace(), deleteComponentEvent.getPath());
             }
         });
         eventBus.addHandler(SortComponentEvent.TYPE, new SortComponentEventHandler() {
             @Override
             public void onSortComponent(SortComponentEvent sortComponentEvent) {
-                proxy.call("sortComponent", sortComponentEvent.getWorkspace(), sortComponentEvent.getParentPath(), sortComponentEvent.getSourcePath(), sortComponentEvent.getTargetPath(), sortComponentEvent.getOrder());
+                rpc.sortComponent(sortComponentEvent.getWorkspace(), sortComponentEvent.getParentPath(), sortComponentEvent.getSourcePath(), sortComponentEvent.getTargetPath(), sortComponentEvent.getOrder());
             }
         });
     }
-
-    public Model getModel() {
-        return model;
+    
+    @Override
+    protected Widget createWidget() {
+        this.view = new PageEditorViewImpl(eventBus);
+        this.view.setListener(this);
+        return view.asWidget();
+    }
+    
+    @Override
+    public PageEditorState getState() {
+        return (PageEditorState)super.getState();
     }
 
     @Override
-    public void selectElement(final Element element) {
+    public void selectElement(Element element) {
         focusModel.selectElement(element);
     }
-
+    
     private void injectEditorStyles(final Document document) {
         HeadElement head = HeadElement.as(document.getElementsByTagName("head").getItem(0));
         LinkElement cssLink = document.createLinkElement();
         cssLink.setType("text/css");
         cssLink.setRel("stylesheet");
-        cssLink.setHref(pageEditorParameters.getContextPath() + PAGE_EDITOR_CSS);
+        cssLink.setHref(getState().parameters.getContextPath() + PAGE_EDITOR_CSS);
         head.insertFirst(cssLink);
     }
 
     private void process(final Document document) {
         injectEditorStyles(document);
-
         long startTime = System.currentTimeMillis();
         processDocument(document.getDocumentElement(), null);
         processMgnlElements();
-
         GWT.log("Time spent to process cms comments: " + (System.currentTimeMillis() - startTime) + "ms");
-
     }
 
     private void processDocument(Node node, MgnlElement mgnlElement) {
@@ -269,7 +219,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         for (int i = 0; i < node.getChildCount(); i++) {
             Node childNode = node.getChild(i);
             if (childNode.getNodeType() == Comment.COMMENT_NODE) {
-
                 try {
                     CommentProcessor processor = new CommentProcessor();
                     mgnlElement = processor.process(model, childNode, mgnlElement);
@@ -293,7 +242,6 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
         List<CmsNode> elements = root.getDescendants();
         elements.add(root);
         for (CmsNode element : elements) {
-
             try {
                 AbstractMgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(model, eventBus, element.asMgnlElement());
                 processor.process();
@@ -302,5 +250,5 @@ public class VPageEditor extends Composite implements VPageEditorView.Listener, 
             }
         }
     }
-
+    
 }

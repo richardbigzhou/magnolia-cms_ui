@@ -37,7 +37,6 @@ import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
@@ -87,7 +86,7 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
 
     @Override
     public void setActionbarView(final ActionbarView actionbar) {
-        actionbar.asVaadinComponent().setWidth(Sizeable.SIZE_UNDEFINED, 0);
+        actionbar.asVaadinComponent().setWidth(null);
         root.addComponent(actionbar.asVaadinComponent());
         this.actionbar = actionbar;
     }

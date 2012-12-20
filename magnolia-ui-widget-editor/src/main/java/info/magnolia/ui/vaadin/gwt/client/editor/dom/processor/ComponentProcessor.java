@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.EventBus;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.ComponentBar;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar;
 
 import java.util.Map;
+
+import com.google.gwt.core.client.GWT;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Factory Class for MgnlElement processors.

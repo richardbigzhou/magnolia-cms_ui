@@ -31,58 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar;
+package info.magnolia.ui.vaadin.gwt.client.widget.dnd;
 
-
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.FlowPanel;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
-
-
 /**
- * Area bar.
+ * MoveWidget. Used for the legacy moving.
  */
-public class AreaEndBar extends FlowPanel {
+public class MoveWidget extends FlowPanel {
 
-    private MgnlElement mgnlElement;
+    public MoveWidget(int height, int width) {
 
-    private final static String FOCUS_CLASSNAME = "focus";
-    private final static String CHILD_FOCUS_CLASSNAME = "childFocus";
+        setStyleName("mgnlEditorMoveDiv");
 
-    public AreaEndBar(MgnlElement mgnlElement) {
+        getElement().getStyle().setWidth(width, Unit.PX);
+        getElement().getStyle().setHeight(height, Unit.PX);
+        getElement().setId("mgnlEditorMoveDiv");
 
-        this.mgnlElement = mgnlElement;
-        this.setStyleName("mgnlEditor mgnlEditorBar");
-        this.addStyleName("area");
-        this.addStyleName("end");
-
-        setVisible(false);
-
-
+        attach();
     }
 
-    @Override
-    public void onAttach() {
+    private void attach() {
+        Document.get().getBody().appendChild(this.getElement());
         super.onAttach();
     }
 
-    public void setFocus(boolean focus, boolean child) {
-        String className = (child) ? "childFocus" : "focus";
-        if (focus) {
-            addStyleName(className);
-        }
-        else {
-            removeStyleName(className);
-        }
+    public void detach() {
+        Document.get().getBody().removeChild(this.getElement());
+        super.onDetach();
     }
 
-    public void removeFocus() {
-        removeStyleName(FOCUS_CLASSNAME);
-        removeStyleName(CHILD_FOCUS_CLASSNAME);
-    }
-
-    public void setFocus(boolean child) {
-        String className = (child) ? CHILD_FOCUS_CLASSNAME : FOCUS_CLASSNAME;
-        addStyleName(className);
-    }
 }

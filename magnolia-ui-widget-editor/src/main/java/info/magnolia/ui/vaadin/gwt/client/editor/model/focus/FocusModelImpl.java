@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.model.focus;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.shared.EventBus;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.SelectElementEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
+
+import com.google.gwt.dom.client.Element;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Helper class to keep track of selected items. Welcome to the MindTwister.
@@ -265,10 +265,8 @@ public class FocusModelImpl implements FocusModel {
     }
 
     private void select(MgnlElement mgnlElement) {
-
-        String json = mgnlElement.getJsonAttributes();
         String type = mgnlElement.getType();
-        eventBus.fireEvent(new SelectElementEvent(type, json.toString()));
+        eventBus.fireEvent(new SelectElementEvent(type, mgnlElement.getAttributes()));
     }
 
 }

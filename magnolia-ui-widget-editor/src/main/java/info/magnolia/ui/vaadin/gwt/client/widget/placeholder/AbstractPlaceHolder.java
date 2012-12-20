@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,49 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.vaadin.gwt.client.widget.placeholder;
 
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * PageEditorView.
+ * Abstract Widget for area and component placeholder.
  */
-public interface PageEditorView extends View {
+public class AbstractPlaceHolder extends FlowPanel {
 
-    void setListener(Listener listener);
+    private MgnlElement mgnlElement;
+    private EventBus eventBus;
 
-    void refresh();
+    public AbstractPlaceHolder(EventBus eventBus, MgnlElement mgnlElement) {
+        super();
+        this.eventBus = eventBus;
 
-    void load(PageEditorParameters parameters);
+        this.setMgnlElement(mgnlElement);
 
-    void init();
+        setStyleName("mgnlEditor mgnlEditorPlaceholder");
+    }
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
+    public void toggleVisible() {
+        isVisible();
+        setVisible(!isVisible());
+    }
 
-        void editComponent(String workspace, String path, String dialog);
+    @Override
+    public void onAttach() {
+        super.onAttach();
+    }
 
-        void newArea(String workspace, String nodeType, String path);
+    public void setMgnlElement(MgnlElement mgnlElement) {
+        this.mgnlElement = mgnlElement;
+    }
 
-        void newComponent(String workspace, String path, String availableComponents);
+    public MgnlElement getMgnlElement() {
+        return mgnlElement;
+    }
 
-        void deleteComponent(String workspace, String path);
-
-        void sortComponent(String workspace, String parentPath, String source, String target, String order);
-
-        void selectElement(AbstractElement nodeSelection);
+    public EventBus getEventBus() {
+        return eventBus;
     }
 }

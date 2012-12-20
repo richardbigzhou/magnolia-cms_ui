@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.widget.dnd;
+package info.magnolia.ui.vaadin.gwt.client.connector;
 
+import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.EventBus;
-
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.ComponentBar;
+import com.vaadin.shared.AbstractComponentState;
 
 /**
- * DragAndDrop.
+ * PageEditorState.
  */
-public abstract class DragAndDrop {
-
-    private static final DragAndDropImpl dndImpl = GWT.create(DragAndDropImpl.class);
-
-    public static void dragAndDrop (EventBus eventBus, final ComponentBar abstractBar) {
-        dndImpl.dragAndDrop(eventBus, abstractBar);
-    }
+public class PageEditorState extends AbstractComponentState {
+    
+    public PageEditorParameters parameters;
+    
 }

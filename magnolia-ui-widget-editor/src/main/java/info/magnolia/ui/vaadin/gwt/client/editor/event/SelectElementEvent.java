@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.event;
 
+import java.util.Map;
+
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.web.bindery.event.shared.Event;
 
@@ -46,12 +48,11 @@ public class SelectElementEvent extends Event<SelectElementEventHandler> {
 
     private final String type;
 
-    private final String json;
+    private final Map<String, String> attributes;
 
-
-    public SelectElementEvent(String type, String json) {
+    public SelectElementEvent(String type, Map<String, String> atttributes) {
         this.type = type;
-        this.json = json;
+        this.attributes = atttributes;
 
     }
 
@@ -69,8 +70,8 @@ public class SelectElementEvent extends Event<SelectElementEventHandler> {
         return type;
     }
 
-    public String getJson() {
-        return json;
+    public Map<String, String> getAttributes() {
+        return attributes;
     }
 
 }

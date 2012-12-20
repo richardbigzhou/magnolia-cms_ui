@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.widget.placeholder;
+package info.magnolia.ui.vaadin.gwt.client.widget;
 
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.FlowPanel;
-
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Abstract Widget for area and component placeholder.
+ * VPageEditorParameters.
  */
-public class AbstractPlaceHolder extends FlowPanel {
+public class VPageEditorParameters  extends JavaScriptObject {
 
-    private MgnlElement mgnlElement;
-    private EventBus eventBus;
+    protected VPageEditorParameters() {}
 
-    public AbstractPlaceHolder(EventBus eventBus, MgnlElement mgnlElement) {
-        super();
-        this.eventBus = eventBus;
+    public static native VPageEditorParameters parse(String json) /*-{
+        try {
+            return eval('(' + json + ')');
+        } catch(e) {
+            return null;
+        }
+    }-*/;
 
-        this.setMgnlElement(mgnlElement);
+    public final native String getContextPath() /*-{
+        return this.contextPath;
+    }-*/;
 
-        setStyleName("mgnlEditor mgnlEditorPlaceholder");
-    }
+    public final native String getNodePath() /*-{
+        return this.nodePath;
+    }-*/;
 
-    public void toggleVisible() {
-        isVisible();
-        setVisible(!isVisible());
-    }
+    public final native boolean isPreview() /*-{
+        return this.preview;
+    }-*/;
 
-    @Override
-    public void onAttach() {
-        super.onAttach();
-    }
-
-    public void setMgnlElement(MgnlElement mgnlElement) {
-        this.mgnlElement = mgnlElement;
-    }
-
-    public MgnlElement getMgnlElement() {
-        return mgnlElement;
-    }
-
-    public EventBus getEventBus() {
-        return eventBus;
-    }
 }
+

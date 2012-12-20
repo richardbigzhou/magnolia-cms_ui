@@ -31,36 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor;
-
-import com.google.gwt.core.client.JavaScriptObject;
+package info.magnolia.ui.vaadin.gwt.client.shared;
 
 /**
- * VPageEditorParameters.
+ * PageEditorParameters.
  */
-public class VPageEditorParameters  extends JavaScriptObject {
+public class PageEditorParameters {
 
-    protected VPageEditorParameters() {}
+    private final String contextPath;
 
-    public static native VPageEditorParameters parse(String json) /*-{
-        try {
-            return eval('(' + json + ')');
-        } catch(e) {
-            return null;
-        }
-    }-*/;
+    private final String nodePath;
 
-    public final native String getContextPath() /*-{
-        return this.contextPath;
-    }-*/;
+    private final boolean preview;
 
-    public final native String getNodePath() /*-{
-        return this.nodePath;
-    }-*/;
+    public PageEditorParameters(String contextPath, String nodePath, boolean preview) {
+        this.contextPath = contextPath;
+        this.nodePath = nodePath;
+        this.preview = preview;
+    }
 
-    public final native boolean isPreview() /*-{
-        return this.preview;
-    }-*/;
+    public String getContextPath() {
+        return contextPath;
+    }
 
+    public String getNodePath() {
+        return nodePath;
+    }
+
+    public boolean isPreview() {
+        return preview;
+    }
 }
-

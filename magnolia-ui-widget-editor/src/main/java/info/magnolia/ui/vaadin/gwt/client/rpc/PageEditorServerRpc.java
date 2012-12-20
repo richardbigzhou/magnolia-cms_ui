@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.vaadin.gwt.client.rpc;
 
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+import java.util.Map;
 
+import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * PageEditorView.
+ * PageEditorServerRpc.
  */
-public interface PageEditorView extends View {
+public interface PageEditorServerRpc extends ServerRpc {
 
-    void setListener(Listener listener);
+    void selectElement(String type, Map<String, String> attributes);
+    
+    void newArea(String workspace, String eventType, String path);
+   
+    void newComponent(String workspace, String eventType, String availableComponents);
 
-    void refresh();
-
-    void load(PageEditorParameters parameters);
-
-    void init();
-
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void editComponent(String workspace, String path, String dialog);
-
-        void newArea(String workspace, String nodeType, String path);
-
-        void newComponent(String workspace, String path, String availableComponents);
-
-        void deleteComponent(String workspace, String path);
-
-        void sortComponent(String workspace, String parentPath, String source, String target, String order);
-
-        void selectElement(AbstractElement nodeSelection);
-    }
+    void editComponent(String workspace, String eventType, String dialog);
+    
+    void deleteComponent(String workspace, String path);
+    
+    void sortComponent(String workspace, String parentPath, String sourcePath, String targetPath, String order);
+   
 }

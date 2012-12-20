@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,34 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.vaadin.gwt.client.shared;
+
 
 /**
- * PageEditorParameters.
+ * Class for GSON serialization of area elements.
  */
-public class PageEditorParameters {
+public class PageElement extends AbstractElement {
 
-    private final String contextPath;
-
-    private final String nodePath;
-
-    private final boolean preview;
-
-    public PageEditorParameters(String contextPath, String nodePath, boolean preview) {
-        this.contextPath = contextPath;
-        this.nodePath = nodePath;
-        this.preview = preview;
+    public PageElement(String workspace, String path, String dialog) {
+        super(workspace, path, dialog);
     }
 
-    public String getContextPath() {
-        return contextPath;
-    }
-
-    public String getNodePath() {
-        return nodePath;
-    }
-
-    public boolean isPreview() {
-        return preview;
-    }
 }

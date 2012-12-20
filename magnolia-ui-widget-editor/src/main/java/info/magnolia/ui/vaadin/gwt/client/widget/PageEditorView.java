@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.vaadin.gwt.client.widget;
 
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * PageEditorView.
+ * VPageEditorView.
  */
-public interface PageEditorView extends View {
+public interface PageEditorView extends IsWidget {
 
-    void setListener(Listener listener);
+    void initSelectionListener();
 
-    void refresh();
-
-    void load(PageEditorParameters parameters);
-
-    void init();
+    Widget getContent();
 
     /**
      * Listener.
      */
-    public interface Listener {
+    interface Listener {
 
-        void editComponent(String workspace, String path, String dialog);
-
-        void newArea(String workspace, String nodeType, String path);
-
-        void newComponent(String workspace, String path, String availableComponents);
-
-        void deleteComponent(String workspace, String path);
-
-        void sortComponent(String workspace, String parentPath, String source, String target, String order);
-
-        void selectElement(AbstractElement nodeSelection);
+        void selectElement(Element element);
     }
+
+    Frame getFrame();
+
+    void setListener(Listener listener);
+
+    void setUrl(String url);
+
+    void reload();
+
 }

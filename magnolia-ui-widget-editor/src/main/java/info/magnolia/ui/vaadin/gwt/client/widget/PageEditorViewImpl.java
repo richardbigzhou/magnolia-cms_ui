@@ -31,8 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor;
+package info.magnolia.ui.vaadin.gwt.client.widget;
 
+
+import info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -42,37 +44,30 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.vaadin.terminal.gwt.client.BrowserInfo;
-
-import info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler;
+import com.vaadin.client.BrowserInfo;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
  *
  */
-public class VPageEditorViewImpl extends Composite implements VPageEditorView {
-
+public class PageEditorViewImpl extends Composite implements PageEditorView {
 
     private Listener listener;
+
     private Frame iframe = new Frame();
+    
     private String url;
 
-    final SimplePanel content;
+    private SimplePanel content;
 
     private AbstractFrameEventHandler handler;
-    private EventBus eventBus;
-    public VPageEditorViewImpl(EventBus eventBus) {
+    
+    public PageEditorViewImpl(EventBus eventBus) {
         super();
-        this.eventBus = eventBus;
         this.handler = GWT.create(AbstractFrameEventHandler.class);
+        this.content = BrowserInfo.get().isTouchDevice() ? new ScrollPanel() : new SimplePanel();
         handler.setView(this);
         handler.setEventBus(eventBus);
-
-        if (BrowserInfo.get().isTouchDevice()) {
-            content = new ScrollPanel();
-        } else {
-            content = new SimplePanel();
-        }
         content.setWidget(iframe);
         initWidget(content);
         setStyleName("pageEditor");
@@ -111,7 +106,6 @@ public class VPageEditorViewImpl extends Composite implements VPageEditorView {
         else {
             getFrame().setUrl(url);
             this.url = url;
-
         }
         handler.notifyUrlChange();
     }

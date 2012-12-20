@@ -31,41 +31,58 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+
+import com.google.gwt.user.client.ui.FlowPanel;
+
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 
 
 /**
- * PageEditorView.
+ * Area bar.
  */
-public interface PageEditorView extends View {
+public class AreaEndBar extends FlowPanel {
 
-    void setListener(Listener listener);
+    private MgnlElement mgnlElement;
 
-    void refresh();
+    private final static String FOCUS_CLASSNAME = "focus";
+    private final static String CHILD_FOCUS_CLASSNAME = "childFocus";
 
-    void load(PageEditorParameters parameters);
+    public AreaEndBar(MgnlElement mgnlElement) {
 
-    void init();
+        this.mgnlElement = mgnlElement;
+        this.setStyleName("mgnlEditor mgnlEditorBar");
+        this.addStyleName("area");
+        this.addStyleName("end");
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
+        setVisible(false);
 
-        void editComponent(String workspace, String path, String dialog);
 
-        void newArea(String workspace, String nodeType, String path);
+    }
 
-        void newComponent(String workspace, String path, String availableComponents);
+    @Override
+    public void onAttach() {
+        super.onAttach();
+    }
 
-        void deleteComponent(String workspace, String path);
+    public void setFocus(boolean focus, boolean child) {
+        String className = (child) ? "childFocus" : "focus";
+        if (focus) {
+            addStyleName(className);
+        }
+        else {
+            removeStyleName(className);
+        }
+    }
 
-        void sortComponent(String workspace, String parentPath, String source, String target, String order);
+    public void removeFocus() {
+        removeStyleName(FOCUS_CLASSNAME);
+        removeStyleName(CHILD_FOCUS_CLASSNAME);
+    }
 
-        void selectElement(AbstractElement nodeSelection);
+    public void setFocus(boolean child) {
+        String className = (child) ? CHILD_FOCUS_CLASSNAME : FOCUS_CLASSNAME;
+        addStyleName(className);
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,37 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor;
+package info.magnolia.ui.vaadin.gwt.client.shared;
 
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
- * VPageEditorView.
+ * Class for GSON serialization of area elements.
  */
-public interface VPageEditorView extends IsWidget {
+public class AreaElement extends AbstractElement {
 
-    void initSelectionListener();
+    private String availableComponents;
 
-    Widget getContent();
-
-    /**
-     * Listener.
-     */
-    interface Listener {
-
-        void selectElement(Element element);
+    public AreaElement(String workspace, String path, String dialog, String availableComponents) {
+        super(workspace, path, dialog);
+        this.availableComponents = availableComponents;
     }
 
-    Frame getFrame();
-
-    void setListener(Listener listener);
-
-    void setUrl(String url);
-
-    void reload();
-
+    public String getAvailableComponents() {
+        return availableComponents;
+    }
 }
