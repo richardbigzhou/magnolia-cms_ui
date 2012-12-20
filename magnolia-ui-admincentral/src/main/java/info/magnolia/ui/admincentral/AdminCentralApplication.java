@@ -47,29 +47,28 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.Application;
-import com.vaadin.ui.Window;
+import com.vaadin.annotations.Theme;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.ui.UI;
 
 
 /**
  * The Application's "main" class.
  */
-public class AdminCentralApplication extends Application {
+@Theme("admincentraltheme")
+public class AdminCentralApplication extends UI {
 
     private static final Logger log = LoggerFactory.getLogger(AdminCentralApplication.class);
 
     private static final Boolean isDeviceOverrideTablet = true;
-
-    private Window window;
 
     public boolean getIsDeviceOverrideTablet() {
         return isDeviceOverrideTablet;
     }
 
     @Override
-    public void init() {
+    protected void init(VaadinRequest request) {
         log.debug("Init AdminCentralApplication...");
-        setTheme("admincentraltheme");
 
         log.debug("Read component configurations from module descriptors...");
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
@@ -77,7 +76,7 @@ public class AdminCentralApplication extends Application {
         ComponentProviderConfiguration admincentralConfig = configurationBuilder.getComponentsFromModules("admincentral", moduleDefinitions);
 
         ComponentProviderConfiguration configuration = admincentralConfig.clone();
-        configuration.addComponent(InstanceConfiguration.valueOf(Application.class, this));
+        configuration.addComponent(InstanceConfiguration.valueOf(UI.class, this));
 
         log.debug("Creating the component provider...");
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
@@ -86,9 +85,7 @@ public class AdminCentralApplication extends Application {
         GuiceComponentProvider componentProvider = builder.build();
         final MagnoliaShellPresenter presenter = componentProvider.newInstance(MagnoliaShellPresenter.class);
 
-        window = new Window("Magnolia 5.0");
-        window.setContent(((MagnoliaShellView) presenter.start()).asVaadinComponent());
-
-        setMainWindow(window);
+        getPage().setTitle("Magnolia 5.0");
+        setContent(((MagnoliaShellView) presenter.start()).asVaadinComponent());
     }
 }

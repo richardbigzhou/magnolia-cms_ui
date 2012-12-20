@@ -36,10 +36,13 @@ package info.magnolia.ui.admincentral.field;
 import info.magnolia.ui.admincentral.field.translator.Base64Translator;
 
 import org.apache.commons.lang.StringUtils;
-import org.vaadin.addon.customfield.CustomField;
 
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.data.util.converter.Converter.ConversionException;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.VerticalLayout;
@@ -48,7 +51,7 @@ import com.vaadin.ui.VerticalLayout;
  * A base custom field displaying one ore two Password Fields.
  * Implement the Logic to check the validity of typed passwords.
  */
-public class PasswordFields extends CustomField {
+public class PasswordFields extends CustomField<String> {
 
     private PasswordField passwordField;
     private PasswordField verificationField;
@@ -56,6 +59,7 @@ public class PasswordFields extends CustomField {
     private String verificationErrorMessage;
     private VerticalLayout layout;
     private Base64Translator translator;
+    private String verificationMessage;
 
     /**
      * Create a {@link CustomField} based on a {@link VerticalLayout}.
@@ -68,10 +72,15 @@ public class PasswordFields extends CustomField {
     public PasswordFields(boolean verification, String verificationMessage, String verificationErrorMessage, boolean encode) {
         this.verification = verification;
         this.verificationErrorMessage = verificationErrorMessage;
+        this.verificationMessage = verificationMessage;
         // Initialize encoder
         if(encode) {
             this.translator = new Base64Translator();
         }
+    }
+
+    @Override
+    protected Component initContent() {
         // Init layout
         layout = new VerticalLayout();
         passwordField = new PasswordField();
@@ -82,9 +91,8 @@ public class PasswordFields extends CustomField {
             verificationField = new PasswordField();
             layout.addComponent(verificationField);
         }
-        setCompositionRoot(layout);
+        return layout;
     }
-
 
     public VerticalLayout getVerticalLayout() {
         return this.layout;
@@ -120,7 +128,7 @@ public class PasswordFields extends CustomField {
     }
 
     @Override
-    public Class< ? > getType() {
+    public Class<String> getType() {
         return String.class;
     }
 
@@ -130,7 +138,7 @@ public class PasswordFields extends CustomField {
     }
 
     @Override
-    public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+    public void setValue(String newValue) throws ReadOnlyException {
         passwordField.setValue(newValue);
     }
 

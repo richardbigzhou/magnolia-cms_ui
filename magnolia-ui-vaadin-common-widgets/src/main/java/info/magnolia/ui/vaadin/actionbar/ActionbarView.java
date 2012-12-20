@@ -33,13 +33,15 @@
  */
 package info.magnolia.ui.vaadin.actionbar;
 
+import info.magnolia.ui.framework.view.View;
+
 import com.vaadin.server.Resource;
 
 
 /**
  * Base interface for an action bar view.
  */
-public interface ActionbarView /*extends View*/ {
+public interface ActionbarView extends View {
 
     void setListener(Listener listener);
 

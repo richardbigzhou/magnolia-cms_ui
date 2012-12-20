@@ -112,10 +112,10 @@ public class BaseDialog extends AbstractSingleComponentContainer implements Dial
         return new VerticalLayout();
     }
 
-    /*@Override
+    @Override
     public BaseDialog asVaadinComponent() {
         return this;
-    }*/
+    }
 
     public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
         addAction(actionName, actionLabel);

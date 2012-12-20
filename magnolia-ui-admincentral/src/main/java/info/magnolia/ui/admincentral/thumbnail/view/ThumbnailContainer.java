@@ -58,7 +58,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.AbstractInMemoryContainer;
 import com.vaadin.data.util.AbstractProperty;
-import com.vaadin.terminal.Resource;
+import com.vaadin.server.Resource;
 
 /**
  * Container that provides thumbnails lazily.
@@ -245,7 +245,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
         }
 
         @Override
-        public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+        public void setValue(Object newValue) throws ReadOnlyException {
             this.resourcePath = String.valueOf(newValue);
         }
 

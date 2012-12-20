@@ -77,10 +77,10 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
         });
     }
 
-    /*@Override
-    public Component asVaadinComponent() {
+    @Override
+    public Actionbar asVaadinComponent() {
         return this;
-    }*/
+    }
 
     @Override
     public void setListener(ActionbarView.Listener listener) {

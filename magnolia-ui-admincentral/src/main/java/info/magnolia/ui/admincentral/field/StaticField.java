@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.field;
 
-import org.vaadin.addon.customfield.CustomField;
-
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
@@ -42,25 +42,25 @@ import com.vaadin.ui.Label;
 /**
  * A base custom field displaying a simple text.
  */
-public class StaticField extends CustomField {
+public class StaticField extends CustomField<Object> {
 
     private Label label;
 
-    public StaticField() {
-
+    @Override
+    protected Component initContent() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSpacing(true);
         label = new Label();
         layout.addComponent(label);
-        setCompositionRoot(layout);
+        return layout;
     }
-
+    
     public Label getLabel() {
         return this.label;
     }
 
     @Override
-    public Class< ? > getType() {
+    public Class<?> getType() {
         return getPropertyDataSource().getType();
     }
 

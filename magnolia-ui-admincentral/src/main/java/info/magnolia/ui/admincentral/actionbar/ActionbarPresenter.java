@@ -58,7 +58,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
-import com.vaadin.terminal.Resource;
+import com.vaadin.server.Resource;
 
 
 /**
@@ -118,7 +118,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     public void enable(String... actionNames) {
         if (actionbar != null) {
             for (String action: actionNames) {
-                actionbar.enable(action);
+                actionbar.setActionEnabled(action, true);
             }
         }
     }
@@ -126,39 +126,39 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     public void disable(String... actionNames) {
         if (actionbar != null) {
             for (String action: actionNames) {
-                actionbar.disable(action);
+                actionbar.setActionEnabled(action, false);
             }
         }
     }
 
     public void enableGroup(String groupName) {
         if (actionbar != null) {
-            actionbar.enableGroup(groupName);
+            actionbar.setGroupEnabled(groupName, true);
         }
     }
 
     public void disableGroup(String groupName) {
         if (actionbar != null) {
-            actionbar.disableGroup(groupName);
+            actionbar.setGroupEnabled(groupName, false);
         }
     }
 
     public void enableGroup(String groupName, String sectionName) {
         if (actionbar != null) {
-            actionbar.enableGroup(groupName, sectionName);
+            actionbar.setGroupEnabled(groupName, sectionName, true);
         }
     }
 
     public void disableGroup(String groupName, String sectionName) {
         if (actionbar != null) {
-            actionbar.disableGroup(groupName, sectionName);
+            actionbar.setGroupEnabled(groupName, sectionName, false);
         }
     }
 
     public void showSection(String... sectionNames) {
         if (actionbar != null) {
             for (String section: sectionNames) {
-                actionbar.showSection(section);
+                actionbar.setSectionVisible(section, true);
             }
         }
     }
@@ -166,7 +166,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     public void hideSection(String... sectionNames) {
         if (actionbar != null) {
             for (String section: sectionNames) {
-                actionbar.hideSection(section);
+                actionbar.setSectionVisible(section, false);
             }
         }
     }

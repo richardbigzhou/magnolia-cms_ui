@@ -33,11 +33,6 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
 import info.magnolia.ui.admincentral.content.item.ItemView;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.framework.view.View;
@@ -46,14 +41,17 @@ import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import java.util.EnumMap;
 import java.util.Map;
 
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalLayout;
+
 /**
  * Implementation of {@link ItemWorkbenchView}.
  * Holds the {@link ActionbarView} and {@link ItemView}
  * Currently lacking some functionality planned. See MGNLUI-154.
  */
-public class ItemWorkbenchViewImpl extends CustomComponent implements ItemWorkbenchView {
+public class ItemWorkbenchViewImpl extends HorizontalLayout implements ItemWorkbenchView {
 
-    private final HorizontalLayout root = new HorizontalLayout();
     private final CssLayout itemViewContainer = new CssLayout();
     private final Map<ContentView.ViewType, ContentView> contentViews = new EnumMap<ContentView.ViewType, ContentView>(ContentView.ViewType.class);
 
@@ -66,22 +64,21 @@ public class ItemWorkbenchViewImpl extends CustomComponent implements ItemWorkbe
 
     public ItemWorkbenchViewImpl() {
         super();
-        setCompositionRoot(root);
         setSizeFull();
 
-        root.setSizeFull();
-        root.setStyleName("workbench");
+        setSizeFull();
+        setStyleName("workbench");
         
         itemViewContainer.setSizeFull();
-        root.addComponent(itemViewContainer);
-        root.setExpandRatio(itemViewContainer, 1);
-        root.setSpacing(true);
-        root.setMargin(false);
+        addComponent(itemViewContainer);
+        setExpandRatio(itemViewContainer, 1);
+        setSpacing(true);
+        setMargin(false);
     }
 
     @Override
     public Component asVaadinComponent() {
-        return root;
+        return this;
     }
 
     @Override
@@ -115,18 +112,18 @@ public class ItemWorkbenchViewImpl extends CustomComponent implements ItemWorkbe
 
     @Override
     public void setItemView(final View itemView) {
-        itemView.asVaadinComponent().setWidth(Sizeable.SIZE_UNDEFINED, 0);
+        itemView.asVaadinComponent().setWidth(null);
         itemView.asVaadinComponent().setHeight("100%");
         itemViewContainer.addComponent(itemView.asVaadinComponent());
     }
 
     @Override
     public void setActionbarView(final ActionbarView actionbar) {
-        actionbar.asVaadinComponent().setWidth(Sizeable.SIZE_UNDEFINED, 0);
+        actionbar.asVaadinComponent().setWidth(null);
         if (this.actionbar == null) {
-            root.addComponent(actionbar.asVaadinComponent());
+            addComponent(actionbar.asVaadinComponent());
         } else {
-            root.replaceComponent(this.actionbar.asVaadinComponent(), actionbar.asVaadinComponent());
+            replaceComponent(this.actionbar.asVaadinComponent(), actionbar.asVaadinComponent());
         }
         this.actionbar = actionbar;
     }

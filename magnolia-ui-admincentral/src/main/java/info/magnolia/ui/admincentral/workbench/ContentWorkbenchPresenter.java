@@ -70,7 +70,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.terminal.Resource;
+import com.vaadin.server.Resource;
 
 
 /**
