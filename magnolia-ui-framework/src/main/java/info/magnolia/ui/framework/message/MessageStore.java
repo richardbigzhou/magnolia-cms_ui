@@ -44,8 +44,8 @@ import org.apache.jackrabbit.commons.JcrUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 
 /**
@@ -68,7 +68,7 @@ public class MessageStore {
 
     private static final String WORKSPACE_NAME = "messages";
     private static final String WORKSPACE_PATH = "/";
-    private static final String USER_NODE_TYPE = MgnlNodeType.NT_CONTENT;
+    private static final String USER_NODE_TYPE = NodeTypes.Content.NAME;
 
     /**
      * Stores a new message or overwrites an existing one depending on whether there's an id set. That is, the id of the
