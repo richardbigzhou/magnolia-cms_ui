@@ -387,7 +387,7 @@
   <servlets>
     <servlet>
       <name>AdminCentral</name>
-      <class>info.magnolia.ui.vaadin.integration.servlet.MultipleBrowserWindowsApplicationServlet</class>
+      <class>com.vaadin.server.VaadinServlet</class>
       <mappings>
         <mapping>/.magnolia/admincentral</mapping>
         <mapping>/.magnolia/admincentral/*</mapping>
