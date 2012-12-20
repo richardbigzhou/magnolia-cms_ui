@@ -69,16 +69,12 @@
        <artifactId>magnolia-rendering</artifactId>
      </dependency>
      <dependency>
-       <groupId>com.google.gwt</groupId>
-       <artifactId>gwt-user</artifactId>
+       <groupId>com.vaadin</groupId>
+       <artifactId>vaadin-client</artifactId>
      </dependency>
      <dependency>
        <groupId>com.vaadin</groupId>
-       <artifactId>vaadin</artifactId>
-     </dependency>
-     <dependency>
-       <groupId>org.vaadin.addons</groupId>
-       <artifactId>widget-rpc</artifactId>
+       <artifactId>vaadin-server</artifactId>
      </dependency>
 </dependencies>
 </project>

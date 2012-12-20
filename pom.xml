@@ -16,9 +16,8 @@
     <javaVersion>1.6</javaVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <magnoliaVersion>5.0-SNAPSHOT</magnoliaVersion>
-    <vaadinVersion>6.8.4</vaadinVersion>
-    <gwtVersion>2.5.0</gwtVersion>
+    <magnoliaVersion>5.0-alpha1-rc1</magnoliaVersion>
+    <vaadinVersion>7.0.0.beta10</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
   </properties>
   <scm>
@@ -56,29 +55,14 @@
         <version>12.0</version>
       </dependency>
       <dependency>
-        <groupId>com.vaadin</groupId>
-        <artifactId>vaadin</artifactId>
-        <version>${vaadinVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.vaadin.addon</groupId>
-        <artifactId>confirmdialog</artifactId>
-        <version>1.2.1</version>
-      </dependency>
-      <dependency>
         <groupId>org.vaadin.addons</groupId>
         <artifactId>gwt-graphics</artifactId>
         <version>1.0.0</version>
       </dependency>
       <dependency>
         <groupId>org.vaadin.addons</groupId>
-        <artifactId>widget-rpc</artifactId>
-        <version>1.1.5</version>
-      </dependency>
-      <dependency>
-        <groupId>org.vaadin.addons</groupId>
         <artifactId>icepush</artifactId>
-        <version>0.2.1</version>
+        <version>0.5.3</version>
       </dependency>
       <dependency>
         <groupId>org.icefaces</groupId>
@@ -133,23 +117,45 @@
         <artifactId>filters</artifactId>
         <version>2.0.235</version>
       </dependency>
-      <dependency>
-        <groupId>org.vaadin.addons</groupId>
-        <artifactId>super-dev-mode-for-vaadin-6</artifactId>
-        <version>0.9.0</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-user</artifactId>
-        <version>${gwtVersion}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-dev</artifactId>
-        <version>${gwtVersion}</version>
-        <scope>provided</scope>
-      </dependency>
+      
+      
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-server</artifactId>
+			<version>${vaadinVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-client-compiled</artifactId>
+			<version>${vaadinVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-client</artifactId>
+			<version>${vaadinVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-themes</artifactId>
+			<version>${vaadinVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- this replaces gwt-dev.jar -->
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-client-compiler</artifactId>
+			<version>${vaadinVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+    
+    
       <dependency>
         <groupId>com.googlecode.mgwt</groupId>
         <artifactId>mgwt</artifactId>
