@@ -115,7 +115,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Com
         doNavigateWithinViewport(getShellAppViewport(), Location.LOCATION_TYPE_SHELL_APP, shellAppId, "", parameter);
     }
 
-    // the fragment generation should not be hardcoded. Create a util method in DefaultLocation.
+    // the fragment generation should not be hardcoded. Create a util method in DefaultLocation. See ticket MGNLUI-448
     public void doNavigateWithinViewport(final ShellViewport viewport, String appType, String appId, String subAppId, String parameter) {
         viewport.setCurrentShellFragment(appId + ":" + subAppId + ";" + parameter);
         setActiveViewport(viewport);
