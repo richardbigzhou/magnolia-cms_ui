@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.layout;
+package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc;
 
-
-import com.vaadin.ui.Component;
-
+import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * The basic layout for content apps, consisting of two columns, one for the content view and one
- * for an action bar.
+ * ThumbnailLayoutServerRpc.
  */
-public class ContentAppLayout extends CompositeComponent {
+public interface ThumbnailLayoutServerRpc extends ServerRpc {
 
-    private static final String CLASSNAME = "contentapplayout";
-
-    private Component contentView;
-
-    private Component actionbar;
-
-    private final LightLayout contentViewLayout = new LightLayout();
-
-    public ContentAppLayout() {
-        setStyleName(CLASSNAME);
-        contentViewLayout.setStyleName("contentview");
-        root.addComponentAsFirst(contentViewLayout);
-    }
-
-    public void setContentView(Component contentView) {
-        if (this.contentView != null) {
-            contentViewLayout.replaceComponent(this.contentView, contentView);
-        } else {
-            contentViewLayout.addComponent(contentView);
-        }
-        this.contentView = contentView;
-    }
-
-    public void setActionbar(Component actionbar) {
-        if (this.actionbar != null) {
-            root.replaceComponent(this.actionbar, actionbar);
-        } else {
-            root.addComponent(actionbar);
-        }
-        this.actionbar = actionbar;
-    }
-
+    void onThumbnailSelected(String id);
+    
+    void onThumbnailDoubleClicked(String id);
+    
+    void loadThumbnails(int amount);
+    
+    void clear();
 }

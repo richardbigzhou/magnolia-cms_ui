@@ -33,97 +33,66 @@
  */
 package info.magnolia.ui.vaadin.layout;
 
-import info.magnolia.ui.vaadin.gwt.client.layout.VLazyThumbnailLayout;
-import info.magnolia.ui.vaadin.integration.serializer.ResourceSerializer;
+import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.connector.ThumbnailLayoutState;
+import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc.ThumbnailLayoutClientRpc;
+import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc.ThumbnailLayoutServerRpc;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.vaadin.rpc.ServerSideHandler;
-import org.vaadin.rpc.ServerSideProxy;
-import org.vaadin.rpc.client.Method;
-
-import com.google.gson.GsonBuilder;
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Ordered;
-import com.vaadin.terminal.KeyMapper;
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.terminal.Resource;
+import com.vaadin.server.KeyMapper;
+import com.vaadin.server.Resource;
 import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.ClientWidget;
 
 /**
  * Lazy layout of asset thumbnails.
  *
  */
-@ClientWidget(VLazyThumbnailLayout.class)
-public class LazyThumbnailLayout extends AbstractComponent implements ServerSideHandler, Container.Viewer {
+public class LazyThumbnailLayout extends AbstractComponent implements Container.Viewer {
 
-    private int thumbnailsAmount = 0;
+    private final List<ThumbnailSelectionListener> selectionListeners = new ArrayList<LazyThumbnailLayout.ThumbnailSelectionListener>();
 
-    private int thumbnailWidth = 0;
-
-    private int thumbnailHeight = 0;
-
-    private List<ThumbnailSelectionListener> selectionListeners = new ArrayList<LazyThumbnailLayout.ThumbnailSelectionListener>();
-
-    private List<ThumbnailDblClickListener> dblClickListeners = new ArrayList<LazyThumbnailLayout.ThumbnailDblClickListener>();
+    private final List<ThumbnailDblClickListener> dblClickListeners = new ArrayList<LazyThumbnailLayout.ThumbnailDblClickListener>();
 
     private Ordered container;
 
     private Object lastQueried = null;
 
-    private KeyMapper mapper = new KeyMapper();
+    private final KeyMapper<Object> mapper = new KeyMapper<Object>();
 
-    private ServerSideProxy proxy = new ServerSideProxy(this) {
-        {
-            register("loadThumbnails", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    final GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(Resource.class, new ResourceSerializer());
-                    int amount = (Integer) params[0];
-                    final List<Thumbnail> resources = fetchThumbnails(amount);
-                    final String gson = gsonBuilder.create().toJson(resources);
-                    proxy.call("addThumbnails", gson);
-                }
-            });
+    private final ThumbnailLayoutServerRpc rpcHandler = new ThumbnailLayoutServerRpc() {
+        @Override
+        public void onThumbnailSelected(String id) {
+            final Object itemId = mapper.get(id);
+            if (itemId != null) {
+                select(itemId);
+            }   
+        }
+        
+        @Override
+        public void onThumbnailDoubleClicked(String id) {
+            final Object itemId = mapper.get(id);
+            if (itemId != null) {
+                LazyThumbnailLayout.this.onThumbnailDoubleClicked(itemId);
+            }
+        }
+        
+        @Override
+        public void loadThumbnails(int amount) {
+            getRpcProxy(ThumbnailLayoutClientRpc.class).addThumbnails(fetchThumbnails(amount));
+        }
 
-            register("thumbnailSelected", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    final String key = String.valueOf(params[0]);
-                    final Object itemId = mapper.get(key);
-                    if (itemId != null) {
-                        select(itemId);
-                    }
-                }
-            });
-
-            register("thumbnailDoubleClicked", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    final String key = String.valueOf(params[0]);
-                    final Object itemId = mapper.get(key);
-                    if (itemId != null) {
-                        onThumbnailDoubleClicked(itemId);
-                    }
-                }
-            });
-
-            register("clear", new Method() {
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    clearSelf();
-                }
-            });
+        @Override
+        public void clear() {
+            LazyThumbnailLayout.this.clear();
         }
     };
-
+    
     public LazyThumbnailLayout() {
         setImmediate(true);
+        registerRpc(rpcHandler);
     }
 
     private void onThumbnailDoubleClicked(Object itemId) {
@@ -138,8 +107,8 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
         }
     }
 
-    private List<Thumbnail> fetchThumbnails(int amount) {
-        List<Thumbnail> thumbnails = new ArrayList<Thumbnail>();
+    private List<String> fetchThumbnails(int amount) {
+        List<String> thumbnails = new ArrayList<String>();
         Object id = lastQueried;
         if (id == null) {
             id = container.firstItemId();
@@ -147,7 +116,8 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
         int i = 0;
         while (id != null && i < amount) {
             Resource resource = (Resource) container.getContainerProperty(id, "thumbnail").getValue();
-            thumbnails.add(new Thumbnail(mapper.key(id), resource));
+            setResource(mapper.key(id), resource);
+            thumbnails.add(mapper.key(id));
             id = container.nextItemId(id);
             ++i;
         }
@@ -156,58 +126,32 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
     }
 
     private void setThumbnailAmount(int thumbnailAmount) {
-        this.thumbnailsAmount = thumbnailAmount;
-        proxy.callOnce("setThumbnailAmount", Math.max(thumbnailAmount, 0));
+        getState().thumbnailsAmount = Math.max(thumbnailAmount, 0);
     }
 
     public void setThumbnailSize(int width, int height) {
-        this.thumbnailWidth = width;
-        this.thumbnailHeight = height;
-        proxy.callOnce("setThumbnailSize", width, height);
+        getState().size.height = height;
+        getState().size.width = width;
     }
 
     public int getThumbnailWidth() {
-        return thumbnailWidth;
+        return getState(false).size.width;
     }
 
     public int getThumbnailHeight() {
-        return thumbnailHeight;
-    }
-
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
-        proxy.paintContent(target);
-    }
-
-    @Override
-    public void changeVariables(Object source, Map<String, Object> variables) {
-        super.changeVariables(source, variables);
-        proxy.changeVariables(source, variables);
-    }
-
-    @Override
-    public Object[] initRequestFromClient() {
-        refresh();
-        proxy.callOnce("setThumbnailSize", thumbnailWidth, thumbnailHeight);
-        proxy.callOnce("setThumbnailAmount", thumbnailsAmount);
-        return new Object[] {};
-    }
-
-    @Override
-    public void callFromClient(String method, Object[] params) {
-        throw new RuntimeException("Unknown client side call: " + method);
+        return getState(false).size.height;
     }
 
     public void clear() {
-        clearSelf();
-        proxy.callOnce("clear");
-    }
-
-    private void clearSelf() {
+        getRpcProxy(ThumbnailLayoutClientRpc.class).clear();
+        for (final String key : getState().resources.keySet()) {
+            setResource(key, null);
+        }
         lastQueried = null;
         mapper.removeAll();
+
     }
+
 
     public void refresh() {
         clear();
@@ -229,7 +173,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
         if (newDataSource instanceof Ordered) {
             this.container = (Ordered) newDataSource;
             refresh();
-            requestRepaint();
+            markAsDirty();
         } else {
             throw new IllegalArgumentException("Container must be ordered.");
         }
@@ -240,6 +184,17 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
         return container;
     }
 
+
+    @Override
+    protected ThumbnailLayoutState getState() {
+        return (ThumbnailLayoutState)super.getState();
+    }
+    
+    @Override
+    protected ThumbnailLayoutState getState(boolean markAsDirty) {
+        return (ThumbnailLayoutState)super.getState(markAsDirty);
+    }
+    
     /**
      * Listener interface for thumbnail selection.
      */
@@ -265,29 +220,6 @@ public class LazyThumbnailLayout extends AbstractComponent implements ServerSide
 
         List<Resource> getThumbnails(int amount);
 
-    }
-
-    /**
-     * DTO object for thumbnails.
-     */
-    public static class Thumbnail implements Serializable {
-
-        private final String id;
-
-        private Resource resource;
-
-        public Thumbnail(String id, Resource resource) {
-            this.id = id;
-            this.resource = resource;
-        }
-
-        public Resource getResource() {
-            return resource;
-        }
-
-        public String getId() {
-            return id;
-        }
     }
 
 }

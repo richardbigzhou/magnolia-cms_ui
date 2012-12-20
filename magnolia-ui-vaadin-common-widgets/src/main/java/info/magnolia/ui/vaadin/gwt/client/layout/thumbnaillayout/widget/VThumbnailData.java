@@ -31,20 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.layout;
+package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.layout.VDivLayout;
-
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.ClientWidget;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * DivLayout
+ * Client side DTO for the thumbnail.
  *
- * See VDivLayout.
  */
-@ClientWidget(VDivLayout.class)
-public class DivLayout extends CssLayout  {
+public class VThumbnailData extends JavaScriptObject {
 
+    protected VThumbnailData() {
+
+    }
+
+    public static final native VThumbnailData parse(String json)
+    /*-{
+        return eval('(' + json + ')');
+    }-*/;
+
+    public final native String getId()
+    /*-{
+        return this.id;
+    }-*/;
+
+    public final native String getSrc()
+    /*-{
+      return this.resource;
+    }-*/;
 
 }

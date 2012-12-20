@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,10 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.layout;
-
-import info.magnolia.ui.vaadin.gwt.client.icon.GwtIcon;
-import info.magnolia.ui.vaadin.integration.serializer.ResourceSerializer;
+package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.widget;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
@@ -42,49 +39,52 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Thumbnail widget.
- *
+ * 
  */
-public class VThumbnail extends Composite {
+public class ThumbnailWidget extends Composite {
 
     private final SimplePanel panel = new SimplePanel();
 
-    private VThumbnailData data;
+    private String id;
 
     private boolean isSelected = false;
 
-    public VThumbnail() {
+    public ThumbnailWidget() {
         super();
         initWidget(panel);
         addStyleName("thumbnail");
     }
 
     public String getId() {
-        return data.getId();
+        return id;
     }
 
-    public void setData(VThumbnailData data) {
-        this.data = data;
+    public void setData(String id, String src) {
+        this.id = id;
 
-        if (data != null) {
-            String src = data.getSrc();
-            if (src != null) {
-                if (src.startsWith(ResourceSerializer.RESOURCE_URI_SCHEME_ICONFONT)) {
-                    // iconFont
-                    GwtIcon fileIcon = new GwtIcon();
-                    String iconFontClass = data.getSrc().substring(ResourceSerializer.RESOURCE_URI_SCHEME_ICONFONT.length());
-                    fileIcon.updateIconName(iconFontClass);
-                    panel.setWidget(fileIcon);
+        if (src != null) {
+            /**
+             * TODO: refactor so this works again. The best approach would be to create an appropriate resource type for the
+             * icon-fonts.
+             */
+            /*if (src.startsWith(ResourceSerializer.RESOURCE_URI_SCHEME_ICONFONT)) {
+                // iconFont
+                GwtIcon fileIcon = new GwtIcon();
+                String iconFontClass = data.getSrc()
+                        .substring(ResourceSerializer.RESOURCE_URI_SCHEME_ICONFONT.length());
+                fileIcon.updateIconName(iconFontClass);
+                panel.setWidget(fileIcon);
 
-                } else {
-                    // image
-                    Image image = new Image(LazyThumbnailLayoutImageBundle.INSTANCE.getStubImage().getSafeUri());
-                    // Add cachebuster so that browser definitely displays updated thumbnails after edits.
-                    String cacheBuster = "?cb=" + System.currentTimeMillis();
-                    image.setUrl(data.getSrc() + cacheBuster);
-                    image.setStyleName("thumbnail-image");
-                    panel.setWidget(image);
-                }
-            }
+            } else {*/
+                // image
+                Image image = new Image(LazyThumbnailLayoutImageBundle.INSTANCE.getStubImage().getSafeUri());
+                // Add cachebuster so that browser definitely displays updated
+                // thumbnails after edits.
+                String cacheBuster = "?cb=" + System.currentTimeMillis();
+                image.setUrl(src + cacheBuster);
+                image.setStyleName("thumbnail-image");
+                panel.setWidget(image);
+            //}
         }
     }
 

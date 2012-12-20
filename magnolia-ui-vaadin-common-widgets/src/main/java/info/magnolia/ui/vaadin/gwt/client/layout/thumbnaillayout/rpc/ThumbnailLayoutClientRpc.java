@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,33 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.layout;
+package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import java.util.List;
+
+import com.vaadin.shared.communication.ClientRpc;
 
 /**
- * Client side DTO for the thumbnail.
- *
+ * ThumbnailLayoutClientRpc.
  */
-public class VThumbnailData extends JavaScriptObject {
+public interface ThumbnailLayoutClientRpc extends ClientRpc {
 
-    protected VThumbnailData() {
+    void clear();
 
-    }
-
-    public static final native VThumbnailData parse(String json)
-    /*-{
-        return eval('(' + json + ')');
-    }-*/;
-
-    public final native String getId()
-    /*-{
-        return this.id;
-    }-*/;
-
-    public final native String getSrc()
-    /*-{
-      return this.resource;
-    }-*/;
-
+    void addThumbnails(final List<String> ids);
 }

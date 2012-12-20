@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.layout;
+package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.connector;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
+import java.io.Serializable;
+
+import com.vaadin.shared.AbstractComponentState;
+import com.vaadin.shared.annotations.DelegateToWidget;
 
 /**
- * ImageBundle for the lazy thumbnail layout.
- *
+ * ThumbnailLayoutState.
  */
-public interface LazyThumbnailLayoutImageBundle extends ClientBundle {
+public class ThumbnailLayoutState extends AbstractComponentState {
 
+    @DelegateToWidget
+    public int thumbnailsAmount = 0;
 
-    final static String imgPath = "info/magnolia/ui/vaadin/gwt/public/img/";
-
-    public static LazyThumbnailLayoutImageBundle INSTANCE = GWT.create(LazyThumbnailLayoutImageBundle.class);
-
-    @Source(imgPath + "thumbnail-placeholder.gif")
-    ImageResource getStubImage();
+    public ThumbnailSize size = new ThumbnailSize();
+    
+    /**
+     * ThumbnailSize.
+     */
+    public static class ThumbnailSize implements Serializable {
+        
+        public int width = 0;
+        
+        public int height = 0;
+    }
+    
 }
