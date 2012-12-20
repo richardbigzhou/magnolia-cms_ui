@@ -48,9 +48,10 @@ import java.util.Date;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Sizeable;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.slider.SliderOrientation;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.AbstractSplitPanel;
 import com.vaadin.ui.Button;
@@ -263,7 +264,7 @@ public class VaadinViewImpl implements VaadinView {
             super();
             setWidth("230px");
             setHeight("120px");
-            addComponent(new Label(
+            setContent(new Label(
                 "<h4>Panel content</h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada volutpat vestibulum. Quisque elementum quam sed sem ultrices lobortis. Pellentesque non ligula ac dolor posuere tincidunt sed eu mi. Integer mattis fringilla nulla, ut cursus mauris scelerisque eu. Etiam bibendum placerat euismod. Nam egestas adipiscing orci sed tristique. Sed vitae enim nisi. Sed ac vehicula ipsum. Nulla quis quam nisi. Proin interdum lacus ipsum, at tristique nibh. Curabitur at ipsum sem. Donec venenatis aliquet neque, sit amet cursus lectus condimentum et. In mattis egestas erat, non cursus metus consectetur ac. Pellentesque eget nisl tellus.",
                 Label.CONTENT_XHTML));
         }
@@ -284,13 +285,13 @@ public class VaadinViewImpl implements VaadinView {
         Slider s = new Slider();
         s.setWidth("200px");
         try {
-            s.setValue(50);
+            s.setValue(50d);
             grid.addComponent(s);
 
             s = new Slider();
-            s.setOrientation(Slider.ORIENTATION_VERTICAL);
+            s.setOrientation(SliderOrientation.VERTICAL);
             s.setHeight("70px");
-            s.setValue(50);
+            s.setValue(50d);
         } catch (ValueOutOfBoundsException e) {
 
         }
@@ -389,7 +390,7 @@ public class VaadinViewImpl implements VaadinView {
             } else {
                 badge = new BadgeIcon(BadgeIcon.SIZE_DEFAULT, "#fff", Icon.COLOR_GREEN_BADGE, true);
             }
-            badge.setValue(fib(m));
+            badge.setValue(fib(m) * 1d);
             layout5.addComponent(badge);
         }
 

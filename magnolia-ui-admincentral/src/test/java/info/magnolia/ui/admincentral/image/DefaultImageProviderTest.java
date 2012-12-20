@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.image;
 
+import static org.junit.Assert.*;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.objectfactory.Components;
@@ -44,19 +45,16 @@ import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDe
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 import info.magnolia.ui.vaadin.integration.terminal.IconFontResource;
 
+import java.io.ByteArrayInputStream;
+
+import javax.jcr.Node;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Resource;
-
-import javax.jcr.Node;
-import java.io.ByteArrayInputStream;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertNotNull;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Resource;
 
 /**
  * Tests.

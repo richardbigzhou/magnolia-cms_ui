@@ -38,7 +38,7 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.vaadin.applauncher.AppLauncher;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
 
 import com.vaadin.ui.Component;
 

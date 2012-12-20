@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.app.showcase.main;
 
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Component;
-
+import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.GridLayout;
@@ -50,7 +50,6 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Button.ClickEvent;
 
 /**
  * Implementation for forms example.
@@ -62,7 +61,10 @@ public class FormsViewImpl implements FormsView {
     private Listener listener;
 
     public FormsViewImpl() {
-        layout.setMargin(true, true, false, true);
+        /**
+         * TODO: HANDLE MARGINS IN CSS.
+         */
+        //layout.setMargin(true, true, false, true);
         layout.setSizeFull();
         layout.addComponent(new Label("The fields available in a Magnolia" +
                 " Form or Dialog. Configurable by repository or code."));

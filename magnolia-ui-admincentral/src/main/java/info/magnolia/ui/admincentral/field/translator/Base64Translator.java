@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.field.translator;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.vaadin.addon.propertytranslator.PropertyTranslator;
 
 /**
  * {@link PropertyTranslator} used to encode and decode password fields see {link Base64}.

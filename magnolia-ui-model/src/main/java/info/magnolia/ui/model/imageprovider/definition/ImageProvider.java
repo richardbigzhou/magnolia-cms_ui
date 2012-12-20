@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.model.imageprovider.definition;
 
-import com.vaadin.terminal.Resource;
+import com.vaadin.server.Resource;
 
 
 /**

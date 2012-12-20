@@ -47,8 +47,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Resource;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Resource;
 
 /**
  * Superclass for all thumbnail providers.

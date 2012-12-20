@@ -44,11 +44,10 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.vaadin.Application;
-import com.vaadin.terminal.ApplicationResource;
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.JsonPaintTarget;
+import com.vaadin.server.Resource;
+import com.vaadin.server.ThemeResource;
 
 /**
  * Gson custom serializer to serialize vaadin resources with appropriate uri.

@@ -71,11 +71,6 @@
       </dependency>
       <dependency>
         <groupId>org.vaadin.addons</groupId>
-        <artifactId>customfield</artifactId>
-        <version>1.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.vaadin.addons</groupId>
         <artifactId>css-tools</artifactId>
         <version>0.3</version>
       </dependency>

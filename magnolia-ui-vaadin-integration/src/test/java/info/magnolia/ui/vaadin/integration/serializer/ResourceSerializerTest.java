@@ -39,8 +39,8 @@ import info.magnolia.ui.vaadin.integration.terminal.IconFontResource;
 import org.junit.Test;
 
 import com.google.gson.GsonBuilder;
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.Resource;
+import com.vaadin.server.ThemeResource;
 
 public class ResourceSerializerTest {
 

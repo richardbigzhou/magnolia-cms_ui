@@ -38,7 +38,7 @@ import info.magnolia.repository.RepositoryConstants;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vaadin.ui.AbstractSelect;
+import com.vaadin.shared.ui.combobox.FilteringMode;
 
 /**
  * Field definition for a select field.
@@ -111,16 +111,14 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
         this.labelProperty = labelProperty;
     }
 
-    public int getFilteringMode() {
+    public FilteringMode getFilteringMode() {
         switch (filteringMode) {
-            case 0 :
-                return AbstractSelect.Filtering.FILTERINGMODE_OFF;
             case 1 :
-                return AbstractSelect.Filtering.FILTERINGMODE_CONTAINS;
+                return FilteringMode.CONTAINS;
             case 2 :
-                return AbstractSelect.Filtering.FILTERINGMODE_STARTSWITH;
+                return FilteringMode.STARTSWITH;
             default :
-                return AbstractSelect.Filtering.FILTERINGMODE_OFF;
+                return FilteringMode.OFF;
         }
     }
 

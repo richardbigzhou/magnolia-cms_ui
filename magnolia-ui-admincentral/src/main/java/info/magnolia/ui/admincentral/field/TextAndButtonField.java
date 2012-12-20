@@ -34,12 +34,13 @@
 package info.magnolia.ui.admincentral.field;
 
 import org.apache.commons.lang.StringUtils;
-import org.vaadin.addon.customfield.CustomField;
-import org.vaadin.addon.propertytranslator.PropertyTranslator;
 
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ReadOnlyException;
+import com.vaadin.data.util.converter.Converter.ConversionException;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;

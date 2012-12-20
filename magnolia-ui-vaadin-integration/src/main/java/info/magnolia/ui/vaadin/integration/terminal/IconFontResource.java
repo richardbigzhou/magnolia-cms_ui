@@ -35,7 +35,7 @@ package info.magnolia.ui.vaadin.integration.terminal;
 
 import java.io.Serializable;
 
-import com.vaadin.terminal.Resource;
+import com.vaadin.server.Resource;
 
 /**
  * A Resource which represents a single icon which one can extract from

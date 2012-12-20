@@ -48,11 +48,10 @@ import java.util.TimeZone;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 
-import com.vaadin.Application;
 import com.vaadin.data.Property;
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.StreamResource;
+import com.vaadin.server.Resource;
+import com.vaadin.server.Sizeable;
+import com.vaadin.server.StreamResource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;

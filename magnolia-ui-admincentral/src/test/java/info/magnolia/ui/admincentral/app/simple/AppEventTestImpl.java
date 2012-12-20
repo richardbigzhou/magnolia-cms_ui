@@ -33,12 +33,10 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import javax.inject.Named;
-
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.InvocationCountingTestEventHandler;
-import info.magnolia.ui.framework.event.TestEvent;
+
+import javax.inject.Named;
 
 import com.google.inject.Inject;
 

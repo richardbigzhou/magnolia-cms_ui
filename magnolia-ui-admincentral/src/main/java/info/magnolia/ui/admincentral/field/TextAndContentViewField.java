@@ -35,9 +35,10 @@ package info.magnolia.ui.admincentral.field;
 
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 
-import org.vaadin.addon.customfield.CustomField;
-
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ReadOnlyException;
+import com.vaadin.data.util.converter.Converter.ConversionException;
+import com.vaadin.ui.CustomField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 

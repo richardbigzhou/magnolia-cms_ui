@@ -66,14 +66,6 @@
       <artifactId>gwt-graphics</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>css-tools</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>customfield</artifactId>
-    </dependency>
-    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
@@ -81,10 +73,6 @@
     <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>ckeditor-wrapper-for-vaadin</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>imagefilter</artifactId>
     </dependency>
     <dependency>
       <groupId>com.jhlabs</groupId>

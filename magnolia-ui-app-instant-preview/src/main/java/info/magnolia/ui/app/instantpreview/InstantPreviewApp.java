@@ -48,6 +48,7 @@ public class InstantPreviewApp extends AbstractApp {
 
     @Inject
     public InstantPreviewApp(AppContext appContext) {
+        super(appContext);
         this.appContext = appContext;
     }
 

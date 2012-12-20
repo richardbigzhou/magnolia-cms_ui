@@ -34,17 +34,17 @@
 package info.magnolia.ui.admincentral.field;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.addon.customfield.CustomField;
 
-import com.vaadin.terminal.ExternalResource;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;

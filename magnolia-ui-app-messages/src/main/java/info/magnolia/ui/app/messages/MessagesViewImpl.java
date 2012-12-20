@@ -39,7 +39,6 @@ import java.io.Serializable;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -75,10 +74,13 @@ public class MessagesViewImpl implements MessagesView {
         form.setItemDataSource(messageItem);
         form.setFormFieldFactory(new MessageFieldFactory());
         form.setVisibleItemProperties(new String[]{"title", "content", "type", "scope", "user"});
-        form.setWriteThrough(false);
+        //form.setWriteThrough(false);
         form.setImmediate(true);
-        form.setWidth(100, Sizeable.UNITS_PERCENTAGE);
-        form.getLayout().setMargin(false);
+        form.setWidth("100%");
+        /**
+         * TODO: HANDLE MARGINS
+         */
+        //form.getLayout().setMargin(false);
         ((FormLayout) form.getLayout()).setSpacing(true);
 
         // send button
@@ -133,12 +135,15 @@ public class MessagesViewImpl implements MessagesView {
         CssLayout container = new CssLayout();
         container.setSizeFull();
         container.addStyleName("small-app-panel");
-        container.setMargin(true, true, true, false);
+        /**
+         * TODO: handle margins in CSS stylesheet.
+         */
+        //container.setMargin(true, true, true, false);
         container.addComponent(form);
 
         CssLayout root = new CssLayout();
         root.setSizeFull();
-        root.setWidth(900, Sizeable.UNITS_PIXELS);
+        root.setWidth("900px");
         root.setStyleName("small-app");
         root.addComponent(intro);
         root.addComponent(container);
@@ -172,7 +177,7 @@ public class MessagesViewImpl implements MessagesView {
                 subjectField.setSizeFull();
                 subjectField.setRequired(true);
                 // force plain input
-                subjectField.setRows(0);
+                subjectField.setColumns(0);
                 f = subjectField;
 
             } else if ("content".equals(propertyId)) {
@@ -213,7 +218,7 @@ public class MessagesViewImpl implements MessagesView {
 
                 final TextField userField = new TextField();
                 userField.addStyleName("relative");
-                userField.setWidth(360, Sizeable.UNITS_PIXELS);
+                userField.setWidth("360px");
                 f = userField;
 
             } else {

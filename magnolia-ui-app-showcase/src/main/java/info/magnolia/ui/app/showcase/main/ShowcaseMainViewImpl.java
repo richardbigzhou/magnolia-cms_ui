@@ -38,7 +38,7 @@ import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
 import javax.inject.Inject;
 
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CssLayout;

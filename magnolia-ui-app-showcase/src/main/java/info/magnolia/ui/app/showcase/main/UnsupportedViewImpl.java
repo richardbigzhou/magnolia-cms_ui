@@ -36,7 +36,7 @@ package info.magnolia.ui.app.showcase.main;
 import java.util.Date;
 
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -58,7 +58,10 @@ public class UnsupportedViewImpl implements UnsupportedView {
     VerticalLayout layout = new VerticalLayout();
 
     public UnsupportedViewImpl() {
-        layout.setMargin(true, true, false, true);
+        /**
+         * TODO handle margins in CSS Style sheet.
+         */
+        //layout.setMargin(true, true, false, true);
         layout.setSpacing(true);
         layout.addComponent(new Label("The UI elements in the Vaadin framework" +
             " that are not recommended for use with Magnolia. These elements" +

@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import com.vaadin.data.util.AbstractProperty;
+import com.vaadin.data.util.converter.Converter.ConversionException;
 
 /**
  * Basic implementation of {@link com.vaadin.data.Property}.

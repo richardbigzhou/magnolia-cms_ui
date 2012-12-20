@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.ui.admincentral.components.SplitFeed;
 import info.magnolia.ui.admincentral.components.SplitFeed.FeedSection;
-import info.magnolia.ui.vaadin.layout.DivLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,9 +42,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
-//import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 
@@ -179,22 +177,22 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
     /**
      * The Class DashboardSection.
      */
-    public static class DashboardSection extends DivLayout {
+    public static class DashboardSection extends CssLayout {
 
         public DashboardSection() {
             addStyleName("pulse-dashboard-section");
-            setWidth(100, Sizeable.UNITS_PERCENTAGE);
+            setWidth("100%");
         }
     }
 
     /**
      * The Class DashboardEntry.
      */
-    public static class DashboardEntry extends DivLayout {
+    public static class DashboardEntry extends CssLayout {
 
         private final Label iconElement = new Label();
 
-        private final DivLayout wrapper = new DivLayout();
+        private final CssLayout wrapper = new CssLayout();
 
         private final Label textElement = new Label();
 
@@ -208,11 +206,11 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
 
         public DashboardEntry(final Icon icon, final String text, final Page page, final Date date) {
             addStyleName("v-dashboard-entry");
-            setWidth(100, Sizeable.UNITS_PERCENTAGE);
-            setMargin(true, false, true, false);
+            setWidth("100%");
+            //setMargin(true, false, true, false);
             // setSpacing(true);
             iconElement.setContentMode(Label.CONTENT_XHTML);
-            iconElement.setWidth(Sizeable.SIZE_UNDEFINED, 0);
+            iconElement.setWidth(null);
             iconElement.setStyleName("icon");
             textElement.setContentMode(Label.CONTENT_XHTML);
             textElement.setStyleName("text");
@@ -220,8 +218,9 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
             commentElement.setContentMode(Label.CONTENT_XHTML);
             dateElement.setStyleName("date");
             wrapper.addStyleName("content");
-            wrapper.setWidth(100, Sizeable.UNITS_PERCENTAGE);
-            wrapper.setMargin(false, false, false, true);
+            wrapper.setWidth("100%");
+            //TODO: HANDLE MARGINS IN CSS STYLESHEET
+            //wrapper.setMargin(false, false, false, true);
             wrapper.addComponent(textElement);
             wrapper.addComponent(dateElement);
             addComponent(iconElement);
