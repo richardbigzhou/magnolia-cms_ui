@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.applauncher;
+package info.magnolia.ui.vaadin.gwt.client.applauncher.widget;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -89,7 +89,6 @@ public class VTemporaryAppGroupBar extends FlowPanel {
     public void addGroup(String caption, VAppTileGroup group) {
         VTemporaryAppGroupBarTile groupTile  = new VTemporaryAppGroupBarTile(caption, group, this);
         groupMap.put(groupTile, (VTemporaryAppTileGroup) group);
-
         add(groupTile);
     }
 

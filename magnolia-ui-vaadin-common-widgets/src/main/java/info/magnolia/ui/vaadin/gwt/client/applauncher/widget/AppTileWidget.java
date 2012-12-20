@@ -31,11 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.applauncher;
+package info.magnolia.ui.vaadin.gwt.client.applauncher.widget;
 
 import com.google.gwt.dom.client.Style;
 
 import info.magnolia.ui.vaadin.gwt.client.applauncher.event.AppActivationEvent;
+import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppTile;
 
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
@@ -56,7 +57,7 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
  * The tile of one single app in AppLauncher.
  *
  */
-public class VAppTile extends Widget {
+public class AppTileWidget extends Widget {
 
     private final Element icon = DOM.createDiv();
 
@@ -68,7 +69,7 @@ public class VAppTile extends Widget {
 
     private final Element iconContent = DOM.createSpan();
 
-    private final VAppTileJSO appTileData;
+    private final AppTile appTile;
 
     private final EventBus eventBus;
 
@@ -76,9 +77,9 @@ public class VAppTile extends Widget {
 
     private TouchDelegate touchDelegate = new TouchDelegate(this);
 
-    public VAppTile(EventBus eventBus, VAppTileJSO appTile) {
+    public AppTileWidget(EventBus eventBus, AppTile appTile) {
         super();
-        this.appTileData = appTile;
+        this.appTile = appTile;
         this.eventBus = eventBus;
         constructDOM();
         bindHandlers();
@@ -137,7 +138,7 @@ public class VAppTile extends Widget {
             public void onTouchEnd(TouchEndEvent event) {
                 getElement().removeClassName("hover");
                 setActiveState(true);
-                eventBus.fireEvent(new AppActivationEvent(appTileData.getName()));
+                eventBus.fireEvent(new AppActivationEvent(appTile.getName()));
             }
         });
     }
@@ -199,11 +200,11 @@ public class VAppTile extends Widget {
     }
 
     public String getName() {
-        return appTileData.getName();
+        return appTile.getName();
     }
 
     public String getCaption() {
-        return appTileData.getCaption();
+        return appTile.getCaption();
     }
 
     public boolean isActive() {
@@ -216,12 +217,12 @@ public class VAppTile extends Widget {
     }
 
     public void updateCaption() {
-        if (appTileData != null) {
-            label.setInnerText(appTileData.getCaption());
+        if (appTile != null) {
+            label.setInnerText(appTile.getCaption());
         }
     }
 
     public void updateIcon() {
-        iconContent.addClassName(appTileData.getIcon());
+        iconContent.addClassName(appTile.getIcon());
     }
 }

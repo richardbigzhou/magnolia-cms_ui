@@ -31,37 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.previewtoken;
+package info.magnolia.ui.vaadin.gwt.client.applauncher.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.previewtoken.VPreviewTokenField;
-
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.TextField;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 
 /**
- * TODO fgrilli: This should be used by instant-preview app only. Remove it in case instant preview app is removed as well. See SCRUM-1670.
- * ###-###-### type text field.
+ * The permanent App Group.
+ *
  */
-@ClientWidget(VPreviewTokenField.class)
-public class PreviewTokenField extends TextField {
+public class VPermanentAppTileGroup extends VAppTileGroup {
 
-    public PreviewTokenField() {
-        setNullRepresentation("");
+    private String caption;
+    
+    final Element sectionEl = DOM.createDiv();
+
+    public VPermanentAppTileGroup(String caption, String color) {
+        super(color);
+        this.caption = caption;
+        construct();
     }
-
-
+    
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
+    
+    private void createSectionItem() {
+        final Element sectionEl = DOM.createDiv();
+        final Element sectionLabel = DOM.createSpan();
+        
+        sectionEl.appendChild(sectionLabel);
+        sectionEl.addClassName("item");
+        sectionEl.addClassName("section");
+        
+        sectionLabel.addClassName("label");
+        sectionLabel.setInnerText(caption);
+        sectionEl.getStyle().setBackgroundColor(getColor());
+        getElement().appendChild(sectionEl);
+    }
+    
     @Override
-    public Long getValue() {
-        final String strValue = String.valueOf(super.getValue()).replaceAll("-", "");
-        try {
-            return Long.parseLong(strValue);
-        } catch (NumberFormatException e) {
-            return null;
-        }
+    protected void construct() {
+        createSectionItem();
     }
-
-    @Override
-    public Class<Long> getType() {
-        return Long.class;
+    
+    public Element getSectionEl() {
+        return sectionEl;
     }
+    
 }

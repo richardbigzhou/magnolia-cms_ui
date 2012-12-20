@@ -31,64 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.applauncher;
+package info.magnolia.ui.vaadin.gwt.client.applauncher.widget;
 
-import java.util.HashMap;
-import java.util.Map;
+import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppGroup;
+import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppTile;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.ComplexPanel;
-
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * The container that groups semantically similar apps.
+ * View interface of client side AppLauncher.
+ * 
  */
-public abstract class VAppTileGroup extends ComplexPanel {
+public interface AppLauncherView extends HasWidgets, IsWidget {
 
-    private String color;
+    /**
+     * Presenter for the AppLauncher view.
+     */
+    public interface Presenter {
 
-    private boolean clientGroup;
-
-    private final Map<String, VAppTile> appTileMap = new HashMap<String, VAppTile>();
-
-    public VAppTileGroup(String color) {
-        super();
-        this.color = color;
-        setElement(DOM.createElement("section"));
-
-        addStyleName("app-list");
-        addStyleName("section");
-        addStyleName("clearfix");
+        void activateApp(String appName);
     }
 
-    protected abstract void construct();
+    void setPresenter(Presenter presenter);
+    
+    void setAppActive(String appName, boolean isActive);
+    
+    void addAppGroup(AppGroup group);
 
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public boolean isClientGroup() {
-        return clientGroup;
-    }
-
-    public void setClientGroup(boolean clientGroup) {
-        this.clientGroup = clientGroup;
-    }
-
-    public void addAppTile(final VAppTile tile) {
-        add(tile, getElement());
-        appTileMap.put(tile.getName(), tile);
-    }
-
-    public boolean hasApp(String appName) {
-        return appTileMap.containsKey(appName);
-    }
-
-    public VAppTile getAppTile(String appName) {
-        return appTileMap.get(appName);
-    }
+    void addAppTile(AppTile appTile, AppGroup groupName);
 }

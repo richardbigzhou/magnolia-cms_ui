@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,52 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.applauncher;
+package info.magnolia.ui.vaadin.gwt.client.applauncher.connector;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
+import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppGroup;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.vaadin.shared.AbstractComponentState;
 
 /**
- * The permanent App Group.
- *
+ * {@link AppLauncherState}.
  */
-public class VPermanentAppTileGroup extends VAppTileGroup {
-
-    private String caption;
+public class AppLauncherState extends AbstractComponentState {
     
-    final Element sectionEl = DOM.createDiv();
-
-    public VPermanentAppTileGroup(String caption, String color) {
-        super(color);
-        this.caption = caption;
-        construct();
-    }
+    public List<String> runningApps = new ArrayList<String>();
     
-    public void setCaption(String caption) {
-        this.caption = caption;
-    }
-    
-    private void createSectionItem() {
-        final Element sectionEl = DOM.createDiv();
-        final Element sectionLabel = DOM.createSpan();
-        
-        sectionEl.appendChild(sectionLabel);
-        sectionEl.addClassName("item");
-        sectionEl.addClassName("section");
-        
-        sectionLabel.addClassName("label");
-        sectionLabel.setInnerText(caption);
-        sectionEl.getStyle().setBackgroundColor(getColor());
-        getElement().appendChild(sectionEl);
-    }
-    
-    @Override
-    protected void construct() {
-        createSectionItem();
-    }
-    
-    public Element getSectionEl() {
-        return sectionEl;
-    }
-    
+    public Map<String, AppGroup> appGroups = new LinkedHashMap<String, AppGroup>();
+   
 }

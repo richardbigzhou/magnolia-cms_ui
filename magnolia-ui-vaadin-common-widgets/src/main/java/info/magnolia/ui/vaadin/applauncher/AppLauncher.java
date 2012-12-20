@@ -33,207 +33,53 @@
  */
 package info.magnolia.ui.vaadin.applauncher;
 
-import info.magnolia.ui.vaadin.gwt.client.applauncher.VAppLauncher;
+import info.magnolia.ui.vaadin.gwt.client.applauncher.connector.AppLauncherState;
+import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppGroup;
+import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppTile;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.vaadin.rpc.ServerSideHandler;
-import org.vaadin.rpc.ServerSideProxy;
-
-import com.google.gson.Gson;
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
 
 
 /**
  * Server side of AppLauncher.
  */
-@ClientWidget(value = VAppLauncher.class, loadStyle = LoadStyle.EAGER)
-public class AppLauncher extends AbstractComponent implements ServerSideHandler {
-
-    private final Map<String, AppGroup> appGroups = new LinkedHashMap<String, AppGroup>();
-
-    private final ServerSideProxy proxy = new ServerSideProxy(this);
-
-    private boolean isAttached = false;
-
-    private List<String> runningApps = new ArrayList<String>();
+public class AppLauncher extends AbstractComponent {
     
     public AppLauncher() {
         super();
-        setSizeFull();
         setImmediate(true);
+        addStyleName("v-app-launcher");
     }
 
     public void addAppGroup(String name, String caption, String color, boolean isPermanent, boolean clientGroup) {
-        final AppGroup group = new AppGroup(name, caption, color, isPermanent, clientGroup);
-        appGroups.put(name, group);
-        doAddGroup(group);
+        getState().appGroups.put(name, new AppGroup(name, caption, color, isPermanent, clientGroup));
     }
 
-    private void doAddGroup(final AppGroup group) {
-        if (isAttached) {
-            proxy.call("addAppGroup", new Gson().toJson(group));
-        }
+    @Override
+    protected AppLauncherState getState() {
+        return (AppLauncherState)super.getState();
     }
 
     public void addAppTile(String name, String caption, String icon, String groupName) {
-        final AppGroup group = appGroups.get(groupName);
+        final AppGroup group = getState().appGroups.get(groupName);
         if (group != null) {
-            final AppTile tile = new AppTile(name, caption, icon);
-            group.addAppTile(tile);
-            doAddAppTile(tile, groupName);
+            group.addAppTile(new AppTile(name, caption, icon));
         }
-    }
-
-    private void doAddAppTile(final AppTile tile, String groupName) {
-        if (isAttached) {
-            proxy.call("addAppTile", new Gson().toJson(tile), groupName);
-        }
-    }
-
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
-        proxy.paintContent(target);
-    }
-
-    @Override
-    public void changeVariables(Object source, Map<String, Object> variables) {
-        super.changeVariables(source, variables);
-        proxy.changeVariables(source, variables);
-    }
-
-    @Override
-    public Object[] initRequestFromClient() {
-        for (final AppGroup group : appGroups.values()) {
-            doAddGroup(group);
-            for (final AppTile tile : group.getAppTiles()) {
-                doAddAppTile(tile, group.getName());
-            }
-        }
-        for (final String appName : runningApps) {
-            proxy.call("setAppActive", appName, true);
-        }
-        return new Object[]{};
-    }
-
-    @Override
-    public void attach() {
-        super.attach();
-        isAttached = true;
     }
 
     public void clear() {
-        isAttached = false;
-        for (final AppGroup group : appGroups.values()) {
-            group.getAppTiles().clear();
-        }
-        appGroups.clear();
-    }
-
-    @Override
-    public void callFromClient(String method, Object[] params) {
-        throw new RuntimeException("Unknown call from client: " + method);
+        getState().appGroups.clear();
+        getState().runningApps.clear();
     }
 
     public void setAppActive(String appName, boolean isActive) {
-        proxy.call("setAppActive", appName, isActive);
+        final List<String> runningApps = getState().runningApps;
         if (isActive && !runningApps.contains(appName)) {
             runningApps.add(appName);
         } else {
             runningApps.remove(appName);
-        }
-    }
-
-    /**
-     * Represents one tile in the AppLauncher.
-     */
-    public static class AppTile implements Serializable {
-
-        private final String name;
-
-        private final String caption;
-
-        private final String icon;
-
-        public AppTile(String name, String caption, String icon) {
-            this.name = name;
-            this.caption = caption;
-            this.icon = icon;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getCaption() {
-            return caption;
-        }
-
-        public String getIcon() {
-            return icon;
-        }
-    }
-
-    /**
-     * Represents a group of tiles in the AppLauncher.
-     */
-    public static class AppGroup implements Serializable {
-
-        private transient List<AppTile> appTiles = new ArrayList<AppTile>();
-
-        private final String name;
-
-        private final String caption;
-
-        private final String backgroundColor;
-
-        private final boolean isPermanent;
-
-        private final boolean clientGroup;
-
-        public AppGroup(String name, String caption, String backgroundColor, boolean isPermanent, boolean clientGroup) {
-            this.name = name;
-            this.caption = caption;
-            this.backgroundColor = backgroundColor;
-            this.isPermanent = isPermanent;
-            this.clientGroup = clientGroup;
-        }
-
-        public void addAppTile(final AppTile tile) {
-            appTiles.add(tile);
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getCaption() {
-            return caption;
-        }
-
-        public String getBackgroundColor() {
-            return backgroundColor;
-        }
-
-        public List<AppTile> getAppTiles() {
-            return appTiles;
-        }
-
-        public boolean isPermanent() {
-            return isPermanent;
-        }
-
-        public boolean isClientGroup() {
-            return clientGroup;
         }
     }
 }

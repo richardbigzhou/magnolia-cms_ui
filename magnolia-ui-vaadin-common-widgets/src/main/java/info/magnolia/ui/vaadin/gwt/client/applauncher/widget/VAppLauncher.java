@@ -31,33 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.applauncher;
+package info.magnolia.ui.vaadin.gwt.client.applauncher.widget;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * App tile data object received from server.
- *
- * @see info.magnolia.ui.vaadin.applauncher.AppLauncher.AppTile
+ * Client side impl of AppLauncher.
+ * 
  */
-public class VAppTileJSO extends JavaScriptObject {
+public class VAppLauncher extends Composite implements AppLauncherView.Presenter {
     
-    protected VAppTileJSO() {}
-    
-    public native static VAppTileJSO parse(String json) /*-{
-        return eval('(' + json + ')');
-    }-*/;
+    private final AppLauncherView view;
 
-    public native final String  getName() /*-{
-        return this.name;
-    }-*/;
+    private final EventBus internalEventBus = new SimpleEventBus();
+    
+    public VAppLauncher() {
+        super();
+        this.view = new AppLauncherViewImpl(internalEventBus);
+        this.view.setPresenter(this);
+        initWidget(view.asWidget());
+    }
 
-    public native final String  getCaption() /*-{
-        return this.caption;
-    }-*/;
-    
-    public native final String  getIcon() /*-{
-        return this.icon;
-    }-*/;
-    
+
+    @Override
+    public void activateApp(String appName) {
+        History.newItem("app:" + appName, true);
+    }
+
 }

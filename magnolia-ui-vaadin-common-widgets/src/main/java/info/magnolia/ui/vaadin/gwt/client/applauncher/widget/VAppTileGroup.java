@@ -31,47 +31,65 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.applauncher;
+package info.magnolia.ui.vaadin.gwt.client.applauncher.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.ComplexPanel;
+
 
 /**
- * The temporary app group.
+ * The container that groups semantically similar apps.
  */
-public class VTemporaryAppTileGroup extends VAppTileGroup {
+public abstract class VAppTileGroup extends ComplexPanel {
 
-    private static final int OPEN_STATE_HEIGHT_PX = 80;
+    private String color;
 
-    private static final int VISIBILITY_TOGGLE_SPEED = 200;
+    private boolean clientGroup;
 
-    public VTemporaryAppTileGroup(String color) {
-        super(color);
-        construct();
+    private final Map<String, AppTileWidget> appTileMap = new HashMap<String, AppTileWidget>();
+
+    public VAppTileGroup(String color) {
+        super();
+        this.color = color;
+        setElement(DOM.createElement("section"));
+
+        addStyleName("app-list");
+        addStyleName("section");
+        addStyleName("clearfix");
     }
 
-    @Override
-    protected void construct() {
-        addStyleName("temporary");
-        closeSection();
+    protected abstract void construct();
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
-    public void closeSection() {
-        JQueryWrapper.select(this).animate(VISIBILITY_TOGGLE_SPEED, new AnimationSettings() {
-
-            {
-                setProperty("height", 0);
-            }
-        });
+    public String getColor() {
+        return color;
     }
 
-    public void showSection() {
-        JQueryWrapper.select(this).animate(VISIBILITY_TOGGLE_SPEED, new AnimationSettings() {
-
-            {
-                setProperty("height", OPEN_STATE_HEIGHT_PX);
-            }
-        });
+    public boolean isClientGroup() {
+        return clientGroup;
     }
 
+    public void setClientGroup(boolean clientGroup) {
+        this.clientGroup = clientGroup;
+    }
+
+    public void addAppTile(final AppTileWidget tile) {
+        add(tile, getElement());
+        appTileMap.put(tile.getName(), tile);
+    }
+
+    public boolean hasApp(String appName) {
+        return appTileMap.containsKey(appName);
+    }
+
+    public AppTileWidget getAppTile(String appName) {
+        return appTileMap.get(appName);
+    }
 }

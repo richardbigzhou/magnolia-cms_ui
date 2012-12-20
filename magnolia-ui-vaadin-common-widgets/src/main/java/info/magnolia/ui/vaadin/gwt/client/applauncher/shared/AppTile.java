@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,29 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.applauncher;
+package info.magnolia.ui.vaadin.gwt.client.applauncher.shared;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import java.io.Serializable;
 
 /**
- * View interface of client side AppLauncher.
- * 
+ * Represents one tile in the AppLauncher.
  */
-public interface VAppLauncherView extends IsWidget {
+public class AppTile implements Serializable {
 
-    /**
-     * Presenter for the AppLauncher view.
-     */
-    public interface Presenter {
+    private String name;
 
-        void activateApp(String appName);
+    private String caption;
+
+    private String icon;
+
+    public AppTile() {}
+    
+    public AppTile(String name, String caption, String icon) {
+        this.name = name;
+        this.caption = caption;
+        this.icon = icon;
     }
 
-    void setPresenter(Presenter presenter);
+    public void setName(String name) {
+        this.name = name;
+    }
     
-    void setAppActive(String appName, boolean isActive);
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
     
-    void addAppGroup(VAppGroupJSO group);
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+    
+    public String getName() {
+        return name;
+    }
 
-    void addAppTile(VAppTileJSO appTile, String groupName);
+    public String getCaption() {
+        return caption;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
 }

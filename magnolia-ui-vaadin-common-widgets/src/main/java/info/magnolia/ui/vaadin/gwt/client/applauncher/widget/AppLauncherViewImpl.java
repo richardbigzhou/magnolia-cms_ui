@@ -31,16 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.applauncher;
+package info.magnolia.ui.vaadin.gwt.client.applauncher.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.applauncher.event.AppActivationEvent;
+import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppGroup;
+import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppTile;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -48,7 +48,7 @@ import com.google.web.bindery.event.shared.EventBus;
  * Implementation of AppLauncher view.
  *
  */
-public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView, AppActivationEvent.Handler {
+public class AppLauncherViewImpl extends FlowPanel implements AppLauncherView, AppActivationEvent.Handler {
 
     private final Map<String, VAppTileGroup> groups = new HashMap<String, VAppTileGroup>();
 
@@ -58,19 +58,15 @@ public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView,
 
     private Presenter presenter;
 
-    private final Element rootEl = DOM.createDiv();
-
-    public VAppLauncherViewImpl(final EventBus eventBus) {
+    public AppLauncherViewImpl(final EventBus eventBus) {
         super();
-        getElement().appendChild(rootEl);
         this.eventBus = eventBus;
-        rootEl.addClassName("v-app-launcher");
         add(temporarySectionsBar);
         this.eventBus.addHandler(AppActivationEvent.TYPE, this);
     }
 
     @Override
-    public void addAppGroup(VAppGroupJSO group) {
+    public void addAppGroup(AppGroup group) {
         if (group.isPermanent()) {
             addPermanentAppGroup(group);
         } else {
@@ -78,19 +74,19 @@ public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView,
         }
     }
 
-    public void addTemporaryAppGroup(VAppGroupJSO groupParams) {
+    public void addTemporaryAppGroup(AppGroup groupParams) {
         final VAppTileGroup group = new VTemporaryAppTileGroup(groupParams.getBackgroundColor());
         group.setClientGroup(groupParams.isClientGroup());
         groups.put(groupParams.getName(), group);
         temporarySectionsBar.addGroup(groupParams.getCaption(), group);
-        add(group, rootEl);
+        add(group);
     }
 
-    public void addPermanentAppGroup(VAppGroupJSO groupParams) {
+    public void addPermanentAppGroup(AppGroup groupParams) {
         final VPermanentAppTileGroup group = new VPermanentAppTileGroup(groupParams.getCaption(), groupParams.getBackgroundColor());
         group.setClientGroup(groupParams.isClientGroup());
         groups.put(groupParams.getName(), group);
-        add(group, rootEl);
+        add(group);
     }
 
     @Override
@@ -107,18 +103,28 @@ public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView,
     public void setAppActive(String appName, boolean isActive) {
         for (Entry<String, VAppTileGroup> entry : groups.entrySet()) {
             if (entry.getValue().hasApp(appName)) {
-                final VAppTile tile = entry.getValue().getAppTile(appName);
+                final AppTileWidget tile = entry.getValue().getAppTile(appName);
                 tile.setActiveState(isActive);
             }
         }
     }
 
     @Override
-    public void addAppTile(VAppTileJSO tileJSO, String groupName) {
-        final VAppTile tile = new VAppTile(eventBus, tileJSO);
-        final VAppTileGroup group = groups.get(groupName);
+    public void addAppTile(AppTile tileData, AppGroup groupData) {
+        final AppTileWidget tile = new AppTileWidget(eventBus, tileData);
+        final VAppTileGroup group = groups.get(groupData.getName());
         if (group != null) {
             group.addAppTile(tile);
         }
     }
+    
+    @Override
+    public void clear() {
+        temporarySectionsBar.clear();
+        for (final VAppTileGroup group : groups.values()) {
+            remove(group);
+        }
+        groups.clear();
+    }
+    
 }

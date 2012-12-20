@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.applauncher;
+package info.magnolia.ui.vaadin.gwt.client.applauncher.rpc;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import com.vaadin.shared.communication.ClientRpc;
 
 /**
- * Client side of App group description class.
- *
- * @see info.magnolia.ui.vaadin.applauncher.AppLauncher.AppGroup
+ * {@link AppLauncherClientRpc}.
  */
-public final class VAppGroupJSO extends JavaScriptObject {
+public interface AppLauncherClientRpc extends ClientRpc {
 
-    protected VAppGroupJSO() {}
-
-    public static native VAppGroupJSO parse(String json) /*-{
-       try {
-         return eval('(' + json + ')');
-       } catch(e) {
-           return null;
-       }
-    }-*/;
-
-    public native final String  getName() /*-{
-        return this.name;
-    }-*/;
-
-    public final native String getCaption() /*-{
-        return this.caption;
-    }-*/;
-
-    public final native String getBackgroundColor() /*-{
-        return this.backgroundColor;
-    }-*/;
-
-    public final native boolean isPermanent() /*-{
-        return this.isPermanent;
-    }-*/;
-
-    public final native boolean isClientGroup() /*-{
-        return this.clientGroup;
-    }-*/;
+    
 }
