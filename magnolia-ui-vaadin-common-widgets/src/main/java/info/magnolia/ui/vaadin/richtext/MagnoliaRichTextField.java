@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -54,8 +54,6 @@ import com.vaadin.terminal.PaintTarget;
 @com.vaadin.ui.ClientWidget(VMagnoliaRichTextField.class)
 public class MagnoliaRichTextField extends CKEditorTextField {
 
-    private static final long serialVersionUID = -5194325714251243359L;
-    
     private String fireEvent = null;
     private String fireEventValue = null;
     private String[] customEvents = null;

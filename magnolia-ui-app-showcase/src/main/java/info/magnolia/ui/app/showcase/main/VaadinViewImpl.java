@@ -85,8 +85,6 @@ import com.vaadin.ui.themes.BaseTheme;
  */
 public class VaadinViewImpl implements VaadinView {
 
-    private static final long serialVersionUID = 4937209277244291844L;
-
     private final VerticalLayout layout;
    
     public VaadinViewImpl() {
@@ -260,8 +258,6 @@ public class VaadinViewImpl implements VaadinView {
      * Private class to show custom panel content.
      */
     private class DemoPanel extends Panel {
-
-        private static final long serialVersionUID = 1215861781775905773L;
 
         DemoPanel() {
             super();
