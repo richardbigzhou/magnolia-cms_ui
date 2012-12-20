@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.form;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.vaadin.form.tab.MagnoliaFormTab;
 import info.magnolia.ui.vaadin.gwt.client.form.connector.FormState;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
@@ -57,7 +58,7 @@ import com.vaadin.ui.Field;
  */
 public class Form extends AbstractSingleComponentContainer implements FormView {
 
-    private final String SHOW_ALL = "";// MessagesUtil.get("dialogs.show.all");
+    private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");
 
     private final FieldGroup fieldGroup = new FieldGroup();
     
@@ -165,9 +166,9 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
         return (FormState)super.getState(markAsDirty);
     }
     
-    /*@Override
+    @Override
     public Component asVaadinComponent() {
         return this;
-    }*/
+    }
 
 }

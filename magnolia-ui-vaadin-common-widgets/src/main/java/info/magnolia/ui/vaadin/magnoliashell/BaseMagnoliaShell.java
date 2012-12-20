@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.magnoliashell;
 import info.magnolia.ui.framework.event.EventHandlerCollection;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellState;

@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.form;
 
+import info.magnolia.ui.framework.view.View;
+
 import java.util.Collection;
 
 import com.vaadin.data.Item;
@@ -41,7 +43,7 @@ import com.vaadin.ui.Field;
 /**
  * Interface for {@link Form}.
  */
-public interface FormView extends /*View,*/ Item.Editor {
+public interface FormView extends View, Item.Editor {
 
     /**
      * Action execution callback.
