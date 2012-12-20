@@ -101,8 +101,8 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
     @Override
     public void onLocationChanged(LocationChangedEvent event) {
 
-        DefaultLocation newLocation = (DefaultLocation) event.getNewLocation();
-        if (!newLocation.getAppType().equals(DefaultLocation.LOCATION_TYPE_SHELL_APP)) {
+        Location newLocation = event.getNewLocation();
+        if (!newLocation.getAppType().equals(Location.LOCATION_TYPE_SHELL_APP)) {
             viewPort.setView(null);
             return;
         }
@@ -132,7 +132,7 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
 
         public ShellAppContextImpl(String name) {
             this.name = name;
-            this.currentLocation = new DefaultLocation(DefaultLocation.LOCATION_TYPE_SHELL_APP, name, "", "");
+            this.currentLocation = new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, name, "", "");
         }
 
         public String getName() {
@@ -162,7 +162,7 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
             view = shellApp.start(this);
         }
 
-        public void onLocationUpdate(DefaultLocation newLocation) {
+        public void onLocationUpdate(Location newLocation) {
             shellApp.locationChanged(newLocation);
         }
     }

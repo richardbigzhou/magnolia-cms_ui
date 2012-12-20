@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -45,7 +45,6 @@ import info.magnolia.cms.exchange.ActivationManagerFactory;
 import info.magnolia.cms.exchange.Subscriber;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.cms.security.AccessDeniedException;
-import info.magnolia.cms.util.ExclusiveWrite;
 import info.magnolia.context.Context;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.admininterface.commands.BaseRepositoryCommand;
@@ -95,13 +94,11 @@ public class MarkNodeAsDeletedCommand extends BaseRepositoryCommand {
     private void preDeleteNode(Content node, Context context) throws RepositoryException, AccessDeniedException {
         // TODO: versioning might be "unsupported" do we still purge in such case?
         version(node, context);
-        synchronized (ExclusiveWrite.getInstance()) {
-            markAsDeleted(node);
-            purgeContent(node);
-            storeDeletionInfo(node, context);
-            // save changes before progressing on sub node - means we can't roll back, but session doesn't grow out of limits
-            node.save();
-        }
+        markAsDeleted(node);
+        purgeContent(node);
+        storeDeletionInfo(node, context);
+        // save changes before progressing on sub node - means we can't roll back, but session doesn't grow out of limits
+        node.save();
         for(Content childPage : node.getChildren(ItemType.CONTENT)) {
             preDeleteNode(childPage, context);
         }
@@ -117,14 +114,12 @@ public class MarkNodeAsDeletedCommand extends BaseRepositoryCommand {
 
     private void version(Content node, Context context) throws UnsupportedRepositoryOperationException, RepositoryException {
         if (versionManually) {
-            synchronized (ExclusiveWrite.getInstance()) {
-                String comment = (String) context.get("comment");
-                if (comment == null) {
-                    comment = MessagesManager.get("versions.comment.deleted");
-                }
-                NodeTypes.Versionable.set(node.getJCRNode(), comment);
-                node.save();
+            String comment = (String) context.get("comment");
+            if (comment == null) {
+                comment = MessagesManager.get("versions.comment.deleted");
             }
+            NodeTypes.Versionable.set(node.getJCRNode(), comment);
+            node.save();
             node.addVersion();
         }
     }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -49,9 +49,9 @@ public interface ValueChosenListener<VT> {
      */
     interface HasValueChosenListener<VT> {
         
-        void addValuePickListener(final ValueChosenListener<VT> listener);
+        void addValueChosenListener(final ValueChosenListener<VT> listener);
         
-        void removeValuePickListener(final ValueChosenListener<VT> listener);
+        void removeValueChosenListener(final ValueChosenListener<VT> listener);
     }
     
 }

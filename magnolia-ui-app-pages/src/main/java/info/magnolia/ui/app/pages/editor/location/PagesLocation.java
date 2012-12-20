@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -74,6 +74,6 @@ public class PagesLocation extends DefaultLocation {
     }
 
     public static PagesLocation wrap(Location location) {
-        return new PagesLocation(((DefaultLocation)location).getParameter());
+        return new PagesLocation(location.getParameter());
     }
 }

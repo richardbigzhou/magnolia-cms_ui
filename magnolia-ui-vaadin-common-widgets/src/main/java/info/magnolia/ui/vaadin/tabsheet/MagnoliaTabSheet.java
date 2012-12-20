@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -70,7 +70,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer implements Serv
     protected ServerSideProxy proxy = createProxy();
 
     private boolean isFullscreen = false;
-    
+
     public MagnoliaTabSheet() {
         super();
         setImmediate(true);
@@ -122,7 +122,8 @@ public class MagnoliaTabSheet extends AbstractComponentContainer implements Serv
     }
 
     @Override
-    public void callFromClient(String method, Object[] params) {}
+    public void callFromClient(String method, Object[] params) {
+    }
 
     @Override
     public void changeVariables(Object source, Map<String, Object> variables) {
@@ -137,10 +138,10 @@ public class MagnoliaTabSheet extends AbstractComponentContainer implements Serv
     public void setFullscreen(boolean isFullscreen) {
         if (this.isFullscreen != isFullscreen) {
             this.isFullscreen = isFullscreen;
-            proxy.call("setActiveTabFullscreen", isFullscreen);   
+            proxy.call("setActiveTabFullscreen", isFullscreen);
         }
     }
-    
+
     protected void closeTab(final String tabId) {
         final MagnoliaTab tab = (MagnoliaTab) mapper.get(tabId);
         if (tab != null) {
@@ -208,7 +209,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer implements Serv
     }
 
     protected MagnoliaTab getTabById(final String tabId) {
-        return (MagnoliaTab)mapper.get(tabId);
+        return (MagnoliaTab) mapper.get(tabId);
     }
 
     @Override
@@ -238,7 +239,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer implements Serv
         }
         target.endTag("tabs");
     }
-    
+
     @Override
     public void removeAllComponents() {
         /**
@@ -265,15 +266,15 @@ public class MagnoliaTabSheet extends AbstractComponentContainer implements Serv
     public void setActiveTabId(final String tabId) {
         Object tab = mapper.get(tabId);
         if (tab != null) {
-            setActiveTab((MagnoliaTab)tab);
+            setActiveTab((MagnoliaTab) tab);
         }
     }
 
     public void setActiveTab(final MagnoliaTab tab) {
         if (tabs.contains(tab)) {
             this.activeTab = tab;
-        proxy.callOnce("setActiveTab", mapper.key(tab));
-        requestRepaint();
+            proxy.callOnce("setActiveTab", mapper.key(tab));
+            requestRepaint();
         }
 
     };

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -37,12 +37,10 @@ import java.util.List;
 
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
-import info.magnolia.ui.model.tab.definition.TabDefinition;
 
 /**
  * Defines a dialog.
  *
- * @see TabDefinition
  * @see info.magnolia.ui.model.field.definition.FieldDefinition
  * @see DialogActionDefinition
  */
@@ -58,8 +56,6 @@ public interface DialogDefinition {
     String getI18nBasename();
 
     String getDescription();
-
-    List<TabDefinition> getTabs();
 
     FormDefinition getFormDefinition();
 

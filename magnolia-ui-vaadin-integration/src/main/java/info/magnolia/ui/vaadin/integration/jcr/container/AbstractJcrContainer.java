@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.integration.jcr.container;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -122,11 +123,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     protected static final String ASCENDING_KEYWORD = " asc";
 
     protected static final String DESCENDING_KEYWORD = " desc";
-
-    /**
-     * Caution: this property gets special treatment as we'll have to call a function to be able to order by it.
-     */
-    protected static final String NAME_PROPERTY = "jcrName";
 
     protected static final String JCR_NAME_FUNCTION = "name(" + SELECTOR_NAME + ")";
 
@@ -557,7 +553,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             for (OrderBy orderBy : sorters) {
                 String propertyName = orderBy.getProperty();
                 sortOrder = orderBy.isAscending() ? ASCENDING_KEYWORD : DESCENDING_KEYWORD;
-                if (NAME_PROPERTY.equals(propertyName)) {
+                if (ModelConstants.JCR_NAME.equals(propertyName)) {
                     stmt.append(JCR_NAME_FUNCTION).append(sortOrder).append(", ");
                     continue;
                 }

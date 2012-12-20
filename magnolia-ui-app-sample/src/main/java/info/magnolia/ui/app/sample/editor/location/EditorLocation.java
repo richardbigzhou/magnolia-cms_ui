@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -52,9 +52,8 @@ public class EditorLocation extends DefaultLocation {
         return viewName;
     }
 
-    public static EditorLocation wrap (Location location) {
-        DefaultLocation defaultLocation = (DefaultLocation) location;
-        return new EditorLocation(defaultLocation.getAppType(), defaultLocation.getAppId(), defaultLocation.getSubAppId(), defaultLocation.getParameter());
+    public static EditorLocation wrap(Location location) {
+        return new EditorLocation(location.getAppType(), location.getAppId(), location.getSubAppId(), location.getParameter());
     }
 
 }

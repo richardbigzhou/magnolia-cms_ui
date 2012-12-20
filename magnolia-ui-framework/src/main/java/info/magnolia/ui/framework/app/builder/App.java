@@ -40,7 +40,7 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Annotations used on methods on a module class that provide an app descriptor.
+ * Annotation used on methods in a module class that provide an app descriptor.
  */
 @Target(ElementType.METHOD)
 @Retention(RUNTIME)

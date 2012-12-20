@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.file;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.PathUtil;
 import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
@@ -47,6 +46,7 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.JcrConstants;
 
 import com.vaadin.Application;
 import com.vaadin.data.Property;
@@ -83,7 +83,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
             initJcrItemProperty(jcrItem);
         } else {
             fileName = (String) jcrItem.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue();
-            Property data = jcrItem.getItemProperty(MgnlNodeType.JCR_DATA);
+            Property data = jcrItem.getItemProperty(JcrConstants.JCR_DATA);
             if (data != null) {
                 binaryData = (byte[]) data.getValue();
                 fileSize = Long.parseLong(jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).getValue().toString());
@@ -106,7 +106,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
         // Attach the Item to the parent in order to be stored.
         jcrItem.getParent().addChild(jcrItem);
         // Populate Data
-        Property data = jcrItem.getItemProperty(MgnlNodeType.JCR_DATA);
+        Property data = jcrItem.getItemProperty(JcrConstants.JCR_DATA);
 
         if (binaryData != null) {
             data.setValue(new ByteArrayInputStream(binaryData));
@@ -126,7 +126,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      * Initialize a JcrNode Adapter with the mandatory File property.
      */
     protected void initJcrItemProperty(JcrItemNodeAdapter jcrItem) {
-        jcrItem.addItemProperty(MgnlNodeType.JCR_DATA, DefaultPropertyUtil.newDefaultProperty(MgnlNodeType.JCR_DATA, "Binary", null));
+        jcrItem.addItemProperty(JcrConstants.JCR_DATA, DefaultPropertyUtil.newDefaultProperty(JcrConstants.JCR_DATA, "Binary", null));
         jcrItem.addItemProperty(FileProperties.PROPERTY_FILENAME,
                 DefaultPropertyUtil.newDefaultProperty(FileProperties.PROPERTY_FILENAME, "String", null));
         jcrItem.addItemProperty(FileProperties.PROPERTY_CONTENTTYPE,

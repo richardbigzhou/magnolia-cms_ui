@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.app.contacts;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
@@ -65,36 +65,62 @@ public class ContactsMainSubApp extends AbstractContentSubApp {
     }
 
     @Override
-    public String getCaption() {
-        return "Contacts";
-    }
-
-
-    @Override
     public void updateActionbar(final ActionbarPresenter actionbar) {
         String selectedItemId = getWorkbench().getSelectedItemId();
 
         // actions disabled based on selection
-        if (selectedItemId == null || selectedItemId.equals("/")) {
-            actionbar.showSection("contactsActions");
-            actionbar.hideSection("folderActions");
+        if (selectedItemId == null || "/".equals(selectedItemId)) {
+            rootNodeActions(actionbar);
         } else {
-
             try {
+                final Session session = MgnlContext.getJCRSession("contacts");
+                final Node node = session.getNode(selectedItemId);
 
-                Session session = MgnlContext.getJCRSession("contacts");
-
-                Node node = session.getNode(selectedItemId);
-                if (NodeUtil.isNodeType(node, MgnlNodeType.NT_FOLDER)) {
-                    actionbar.hideSection("contactsActions");
-                    actionbar.showSection("folderActions");
+                if (NodeUtil.isNodeType(node, NodeTypes.Folder.NAME)) {
+                    folderActions(actionbar);
                 } else {
-                    actionbar.showSection("contactsActions");
-                    actionbar.hideSection("folderActions");
+
+                    contactActions(actionbar);
                 }
             } catch (RepositoryException e) {
                 log.warn("Unable to determine node type of {}", selectedItemId);
             }
         }
+    }
+
+    /**
+     * contact selected.<p>
+     * - can only edit/delete contact
+     */
+    private void contactActions(final ActionbarPresenter actionbar) {
+        actionbar.hideSection("folderActions");
+        actionbar.showSection("contactsActions");
+        actionbar.disableGroup("addActions");
+        actionbar.enableGroup("editActions");
+    }
+
+    /**
+     * folder selected.<p>
+     * - can create/edit/delete folder or create contact
+     */
+    private void folderActions(final ActionbarPresenter actionbar) {
+        actionbar.showSection("folderActions");
+        actionbar.enableGroup("addActions", "folderActions");
+        actionbar.enableGroup("editActions", "folderActions");
+        actionbar.showSection("contactsActions");
+        actionbar.enableGroup("addActions", "contactsActions");
+    }
+
+    /**
+     * initial state (root selected).<p>
+     *  - can create folder or contact
+     */
+    private void rootNodeActions(final ActionbarPresenter actionbar) {
+        actionbar.showSection("contactsActions");
+        actionbar.enableGroup("addActions", "contactsActions");
+        actionbar.disableGroup("editActions", "contactsActions");
+        actionbar.showSection("folderActions");
+        actionbar.enableGroup("addActions", "folderActions");
+        actionbar.disableGroup("editActions", "folderActions");
     }
 }

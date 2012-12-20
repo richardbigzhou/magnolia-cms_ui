@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.dialog;
 
 
 /**
- * Factory interface for creating Value Picker Dialogs.
+ * Factory interface for creating choose dialogs.
  */
 public interface ChooseDialogFactory {
 

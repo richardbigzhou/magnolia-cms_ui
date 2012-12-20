@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
@@ -129,12 +129,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     private void updateActions() {
 
         // actions currently always disabled
-        actionbarPresenter.disable("moveComponent");
-        actionbarPresenter.disable("copyComponent");
-        actionbarPresenter.disable("pasteComponent");
-        actionbarPresenter.disable("undo");
-        actionbarPresenter.disable("redo");
-
+        actionbarPresenter.disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
     }
 
     @Override
@@ -206,13 +201,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     }
 
     private void hideAllSections() {
-        actionbarPresenter.hideSection("pagePreviewActions");
-        actionbarPresenter.hideSection("pageActions");
-        actionbarPresenter.hideSection("areaActions");
-        actionbarPresenter.hideSection("optionalAreaActions");
-        actionbarPresenter.hideSection("editableAreaActions");
-        actionbarPresenter.hideSection("optionalEditableAreaActions");
-        actionbarPresenter.hideSection("componentActions");
+        actionbarPresenter.hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions");
     }
 
     private void showEditor() {
@@ -285,15 +274,15 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
                     Node node = session.getNode(path);
 
                     hideAllSections();
-                    if (node.isNodeType(MgnlNodeType.NT_PAGE)) {
+                    if (node.isNodeType(NodeTypes.Page.NAME)) {
                         actionbarPresenter.showSection("pageActions");
-                    } else if (node.isNodeType(MgnlNodeType.NT_AREA)) {
+                    } else if (node.isNodeType(NodeTypes.Area.NAME)) {
                         if (dialog == null) {
                             actionbarPresenter.showSection("areaActions");
                         } else {
                             actionbarPresenter.showSection("editableAreaActions");
                         }
-                    } else if (node.isNodeType(MgnlNodeType.NT_COMPONENT)) {
+                    } else if (node.isNodeType(NodeTypes.Component.NAME)) {
                         actionbarPresenter.showSection("componentActions");
                     }
                 } catch (RepositoryException e) {

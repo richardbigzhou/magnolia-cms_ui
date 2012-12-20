@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.tab.definition;
+package info.magnolia.ui.model.form.definition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,9 @@ import java.util.List;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 /**
- * A tab in a dialog. Holds a list of fields contained in the tab.
+ * Standard tab definition implementation.
+ *
+ * @see TabDefinition
  */
 public class ConfiguredTabDefinition implements TabDefinition {
 

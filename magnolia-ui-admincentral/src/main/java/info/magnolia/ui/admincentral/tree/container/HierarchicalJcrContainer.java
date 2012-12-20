@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral.tree.container;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -213,8 +213,9 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             ArrayList<Property> properties = new ArrayList<Property>();
             PropertyIterator propertyIterator = node.getProperties();
             while (propertyIterator.hasNext()) {
-                Property property = propertyIterator.nextProperty();
-                if (!property.getName().startsWith(MgnlNodeType.JCR_PREFIX)) {
+                final Property property = propertyIterator.nextProperty();
+                final String propertyName = property.getName();
+                if (!propertyName.startsWith(NodeTypes.JCR_PREFIX) && !propertyName.startsWith(NodeTypes.MGNL_PREFIX)) {
                     properties.add(property);
                 }
             }
@@ -229,12 +230,13 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         return getChildren(getRootNode());
     }
 
+    /**
+     * Checks if an item is a root. Since root node is never shown, we consider its child nodes and properties as roots
+     * to remove unnecessary offset in trees.
+     */
     public boolean isRoot(Item item) throws RepositoryException {
-        if (!item.isNode()) {
-            return false;
-        }
-        int depthOfRootNodesInTree = getRootNode().getDepth() + 1;
-        return item.getDepth() <= depthOfRootNodesInTree;
+        int rootDepth = getRootNode().getDepth();
+        return item.getDepth() <= rootDepth + 1;
     }
 
     public Item getItemByPath(String path) throws RepositoryException {

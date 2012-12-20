@@ -87,9 +87,10 @@ public class SaveUserDialogAction extends SaveDialogAction {
     private void createOrUpdateUser(final JcrNodeAdapter userItem) throws ActionExecutionException {
         try {
             final Node userNode = userItem.getNode();
+            final String parentPath = userNode.getParent() != null ? userNode.getParent().getPath() : "/";
 
-            if("/".equals(userNode.getPath())) {
-                throw new ActionExecutionException("Users cannot be created directly under root");
+            if("/".equals(parentPath)) {
+                throw new ActionExecutionException("Users cannot be created directly under root. Path to new user was [" + userNode.getPath() +"]");
             }
 
             final String userName = userNode.getName();

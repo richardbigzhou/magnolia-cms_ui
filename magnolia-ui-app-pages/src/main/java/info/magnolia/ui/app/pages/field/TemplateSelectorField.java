@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -42,10 +42,14 @@ import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
 import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import javax.jcr.Node;
 
 import com.vaadin.data.Item;
 
@@ -67,7 +71,7 @@ public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDe
     public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition(){
         List<SelectFieldOptionDefinition> res = new ArrayList<SelectFieldOptionDefinition>();
         TemplateDefinitionAssignment templateAssignment = Components.getComponent(TemplateDefinitionAssignment.class);
-        Collection<TemplateDefinition> templates = templateAssignment.getAvailableTemplates(getRelatedNode(item));
+        Collection<TemplateDefinition> templates = templateAssignment.getAvailableTemplates(asNode(item));
 
         for (TemplateDefinition templateDefinition : templates) {
             SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
@@ -90,5 +94,13 @@ public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDe
     public static synchronized String getI18nTitle(TemplateDefinition templateDefinition) {
         Messages messages = MessagesManager.getMessages(templateDefinition.getI18nBasename());
         return messages.getWithDefault(templateDefinition.getTitle(), templateDefinition.getTitle());
+    }
+
+    private Node asNode(final Item item) {
+        if (item instanceof JcrNewNodeAdapter) {
+            return ((JcrNewNodeAdapter) item).getNode();
+        } else {
+            return ((JcrNodeAdapter) item).getNode();
+        }
     }
 }

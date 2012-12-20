@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -44,7 +44,7 @@ import info.magnolia.ui.admincentral.form.FormItem;
 import info.magnolia.ui.admincentral.form.FormTab;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
-import info.magnolia.ui.model.tab.definition.TabDefinition;
+import info.magnolia.ui.model.form.definition.TabDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
 import org.apache.commons.lang.StringUtils;
 

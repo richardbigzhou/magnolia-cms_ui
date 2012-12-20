@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,15 +34,17 @@
 package info.magnolia.ui.model.form.definition;
 
 import info.magnolia.ui.model.form.action.FormActionDefinition;
-import info.magnolia.ui.model.tab.definition.TabDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ConfiguredFormDefinition.
+ * Standard form definition implementation.
+ *
+ * @see FormDefinition
  */
 public class ConfiguredFormDefinition implements FormDefinition {
+
     public static final String TABS_NODE_NAME = "tabs";
     public static final String ACTIONS_NODE_NAME = "actions";
     public static final String EXTEND_PROPERTY_NAME = "extends";

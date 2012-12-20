@@ -66,7 +66,6 @@ public class ActionbarBuilderTest {
 
         // GIVEN
         ConfiguredActionbarDefinition def = new ConfiguredActionbarDefinition();
-        def.setName("myActionbar");
 
         // common group
         ActionbarGroupDefinition previewGroup = buildGroup("0",
@@ -118,7 +117,6 @@ public class ActionbarBuilderTest {
     public void testBuildingActionbarWithEmptyGroup() {
         // GIVEN
         ConfiguredActionbarDefinition def = new ConfiguredActionbarDefinition();
-        def.setName("myActionbar");
         ActionbarSectionDefinition sectionDef = buildSection(SECTION_A,
             buildGroup("0"),
             buildGroup("1",
@@ -142,7 +140,6 @@ public class ActionbarBuilderTest {
     public void testBuildingActionbarWithDuplicateAction() {
         // GIVEN
         ConfiguredActionbarDefinition def = new ConfiguredActionbarDefinition();
-        def.setName("myActionbar");
         ActionbarSectionDefinition aSection = buildSection(SECTION_A,
             buildGroup("0",
                 buildItem("0.0"),

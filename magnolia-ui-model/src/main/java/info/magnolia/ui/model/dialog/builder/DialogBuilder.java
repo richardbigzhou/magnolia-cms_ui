@@ -36,7 +36,6 @@ package info.magnolia.ui.model.dialog.builder;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.form.builder.FormBuilder;
-import info.magnolia.ui.model.form.builder.TabBuilder;
 
 /**
  * Builder for building a dialog definition.
@@ -66,13 +65,6 @@ public class DialogBuilder {
 
     public DialogDefinition exec() {
         return definition;
-    }
-
-    public DialogBuilder tabs(TabBuilder... builders) {
-        for (TabBuilder builder : builders) {
-            definition.addTab(builder.exec());
-        }
-        return this;
     }
 
     public DialogBuilder form(FormBuilder builder) {

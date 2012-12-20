@@ -115,15 +115,19 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     // JUST DELEGATING CONTEXT SENSITIVITY TO WIDGET
 
-    public void enable(String actionName) {
+    public void enable(String... actionNames) {
         if (actionbar != null) {
-            actionbar.enable(actionName);
+            for (String action: actionNames) {
+                actionbar.enable(action);
+            }
         }
     }
 
-    public void disable(String actionName) {
+    public void disable(String... actionNames) {
         if (actionbar != null) {
-            actionbar.disable(actionName);
+            for (String action: actionNames) {
+                actionbar.disable(action);
+            }
         }
     }
 
@@ -139,15 +143,31 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         }
     }
 
-    public void showSection(String sectionName) {
+    public void enableGroup(String groupName, String sectionName) {
         if (actionbar != null) {
-            actionbar.showSection(sectionName);
+            actionbar.enableGroup(groupName, sectionName);
         }
     }
 
-    public void hideSection(String sectionName) {
+    public void disableGroup(String groupName, String sectionName) {
         if (actionbar != null) {
-            actionbar.hideSection(sectionName);
+            actionbar.disableGroup(groupName, sectionName);
+        }
+    }
+
+    public void showSection(String... sectionNames) {
+        if (actionbar != null) {
+            for (String section: sectionNames) {
+                actionbar.showSection(section);
+            }
+        }
+    }
+
+    public void hideSection(String... sectionNames) {
+        if (actionbar != null) {
+            for (String section: sectionNames) {
+                actionbar.hideSection(section);
+            }
         }
     }
 
@@ -175,9 +195,8 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         if (chunks.length != 2) {
             log
                 .warn(
-                    "Invalid actionToken [{}]: it is expected to be in the form sectionName:actionName. ActionDefintion cannot be retrieved. Please, check [{}] actionbar definition.",
-                    actionToken,
-                    definition.getName());
+                    "Invalid actionToken [{}]: it is expected to be in the form sectionName:actionName. ActionDefintion cannot be retrieved. Please check actionbar definition.",
+                    actionToken);
             return null;
         }
         final String sectionName = chunks[0];
@@ -191,9 +210,8 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                             final ActionDefinition actionDefinition = action.getActionDefinition();
                             if (actionDefinition == null) {
                                 log.warn(
-                                    "No action definition found for actionToken [{}]. Please check [{}] actionbar definition.",
-                                    actionToken,
-                                    definition.getName());
+                                    "No action definition found for actionToken [{}]. Please check actionbar definition.",
+                                    actionToken);
                             }
                             return actionDefinition;
                         }
@@ -203,7 +221,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                 break;
             }
         }
-        log.warn("No action definition found for actionToken [{}]. Please check [{}] actionbar definition.", actionToken, definition.getName());
+        log.warn("No action definition found for actionToken [{}]. Please check actionbar definition.", actionToken);
         return null;
     }
 
@@ -217,7 +235,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     public ActionDefinition getDefaultActionDefinition() {
         String defaultAction = definition.getDefaultAction();
         if (StringUtils.isBlank(defaultAction)) {
-            log.warn("Default action is null. Please check [{}] actionbar definition.", definition.getName());
+            log.warn("Default action is null. Please check actionbar definition.");
             return null;
         }
 
@@ -232,9 +250,8 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                                     final ActionDefinition actionDefinition = action.getActionDefinition();
                                     if (actionDefinition == null) {
                                         log.warn(
-                                            "No action definition found for default action [{}]. Please check [{}] actionbar definition.",
-                                            defaultAction,
-                                            definition.getName());
+                                            "No action definition found for default action [{}]. Please check actionbar definition.",
+                                            defaultAction);
                                     }
                                     return actionDefinition;
                                 }
@@ -244,7 +261,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                 }
             }
         }
-        log.warn("No action definition found for default action [{}]. Please check [{}] actionbar definition.", defaultAction, definition.getName());
+        log.warn("No action definition found for default action [{}]. Please check actionbar definition.", defaultAction);
         return null;
     }
 

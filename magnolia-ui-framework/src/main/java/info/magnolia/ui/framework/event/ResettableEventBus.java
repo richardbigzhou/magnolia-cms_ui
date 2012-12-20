@@ -37,7 +37,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Wraps an EventBus to hold on to any HandlerRegistrations, so that they can easily all be cleared at once.
+ * Wraps an EventBus and remembers all handlers registered via this wrapper, so that they can easily all be cleared at once.
  *
  * Inspired by {@link com.google.gwt.event.shared.ResettableEventBus}.
  */

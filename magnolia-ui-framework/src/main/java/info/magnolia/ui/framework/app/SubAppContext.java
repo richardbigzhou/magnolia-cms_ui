@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -37,9 +37,10 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.location.Location;
 
 /**
- * SubAppContext.
+ * Provides functionality used by a sub app to interact with the Magnolia shell.
  */
 public interface SubAppContext {
+
     String getSubAppId();
 
     SubApp getSubApp();

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -107,8 +107,7 @@ public class ItemLocation extends DefaultLocation {
     }
 
     public static ItemLocation wrap(Location location) {
-        DefaultLocation l = (DefaultLocation) location;
-        return new ItemLocation(l.getAppId(), l.getSubAppId(), l.getParameter());
+        return new ItemLocation(location.getAppId(), location.getSubAppId(), location.getParameter());
     }
 
     public void updateNodePath(String newNodePath) {

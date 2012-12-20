@@ -39,7 +39,7 @@ import com.google.inject.util.Providers;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
 /**
- * Configures an {@link info.magnolia.ui.framework.event.EventBus} bound to the name <code>subapp</code>.
+ * Configures an {@link EventBus} bound to the name <code>subapp</code>.
  */
 public class SubAppEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 

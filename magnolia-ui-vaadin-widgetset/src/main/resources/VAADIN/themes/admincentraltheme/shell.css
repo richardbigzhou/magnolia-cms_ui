@@ -186,6 +186,10 @@ button.action-close {
     /*-webkit-animation-timing-function: ease-out;*/
 }
 
+.beginzoom {
+    opacity: 0;
+}
+
 .zoom-in {
 	z-index:300 !important;
 

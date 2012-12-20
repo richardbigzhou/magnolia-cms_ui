@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.model.form.builder;
 
-import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.model.form.definition.ConfiguredTabDefinition;
 
 /**
  * Builder for building a tab definition.

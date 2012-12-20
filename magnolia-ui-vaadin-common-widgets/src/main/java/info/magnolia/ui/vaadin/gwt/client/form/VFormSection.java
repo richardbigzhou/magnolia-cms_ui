@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,11 +34,13 @@
 package info.magnolia.ui.vaadin.gwt.client.form;
 
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
+import com.vaadin.terminal.gwt.client.ComputedStyle;
 import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
@@ -58,17 +60,17 @@ import java.util.Set;
  */
 public class VFormSection extends FlowPanel implements Container {
 
-    private List<Widget> children = new LinkedList<Widget>();
+    private final List<Widget> children = new LinkedList<Widget>();
 
-    private Map<Widget, FormFieldWrapper> sections = new LinkedHashMap<Widget, FormFieldWrapper>();
+    private final Map<Widget, FormFieldWrapper> sections = new LinkedHashMap<Widget, FormFieldWrapper>();
 
-    private List<FormFieldWrapper> problematicSections = new ArrayList<FormFieldWrapper>();
+    private final List<FormFieldWrapper> problematicSections = new ArrayList<FormFieldWrapper>();
 
-    private Element fieldSet = DOM.createElement("fieldset");
+    private final Element fieldSet = DOM.createElement("fieldset");
 
-    private Element legend = DOM.createElement("legend");
+    private final Element legend = DOM.createElement("legend");
 
-    private Element horizontalRule = DOM.createElement("hr");
+    private final Element horizontalRule = DOM.createElement("hr");
 
     private boolean isValidationVisible = false;
 
@@ -174,7 +176,7 @@ public class VFormSection extends FlowPanel implements Container {
     public RenderSpace getAllocatedSpace(Widget child) {
         final FormFieldWrapper fs = sections.get(child);
         if (fs != null) {
-            return new RenderSpace(fs.getFieldAreaWidth(), fs.getFieldAreaHeight());
+            return new RenderSpace(getOffsetWidth(), getOffsetHeight());
         }
         return new RenderSpace();
     }
@@ -190,6 +192,15 @@ public class VFormSection extends FlowPanel implements Container {
         return false;
     }
 
+    @Override
+    public void setHeight(String height) {
+        super.setHeight(height);
+        final Integer heightPx = ComputedStyle.parseInt(height);
+        if (heightPx != null) {
+            fieldSet.getStyle().setHeight(heightPx, Unit.PX);   
+        }
+    }
+    
     public void setValidationVisible(boolean isVisible) {
         this.isValidationVisible = isVisible;
     }

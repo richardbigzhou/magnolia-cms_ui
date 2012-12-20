@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,16 +34,20 @@
 package info.magnolia.ui.model.form.definition;
 
 import info.magnolia.ui.model.form.action.FormActionDefinition;
-import info.magnolia.ui.model.tab.definition.TabDefinition;
 
 import java.util.List;
 
 /**
- * FormDefinition.
+ * Defines a form.
+ *
+ * @see TabDefinition
+ * @see info.magnolia.ui.model.field.definition.FieldDefinition
+ * @see FormActionDefinition
  */
 public interface FormDefinition {
+
     /**
-     * Unique identifier for this dialog.
+     * Unique identifier for this form.
      */
     String getId();
 

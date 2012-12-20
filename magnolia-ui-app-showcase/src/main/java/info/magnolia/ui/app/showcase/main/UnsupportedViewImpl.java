@@ -55,8 +55,6 @@ import com.vaadin.ui.Window;
  */
 public class UnsupportedViewImpl implements UnsupportedView {
 
-    private static final long serialVersionUID = 4074959561953183899L;
-
     VerticalLayout layout = new VerticalLayout();
 
     public UnsupportedViewImpl() {
@@ -111,11 +109,6 @@ public class UnsupportedViewImpl implements UnsupportedView {
 
         Button win = new Button("Open normal sub-window",
             new Button.ClickListener() {
-
-                /**
-                     *
-                     */
-                private static final long serialVersionUID = -5643160479156903516L;
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -195,8 +188,6 @@ public class UnsupportedViewImpl implements UnsupportedView {
      * Private class to display custom Accordion.
      */
     private class DemoAccordion extends Accordion {
-
-        private static final long serialVersionUID = 4615829029016072624L;
 
         DemoAccordion(boolean closable) {
             super();

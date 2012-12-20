@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,7 +34,9 @@
 package info.magnolia.ui.framework.app;
 
 /**
- * SubAppDescriptor.
+ * Describes a sub app.
+ *
+ * @see SubApp
  */
 public interface SubAppDescriptor {
 

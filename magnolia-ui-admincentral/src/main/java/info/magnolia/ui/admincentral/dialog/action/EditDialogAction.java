@@ -39,6 +39,7 @@ import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -86,7 +87,7 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
             @Override
             public void onSuccess(String actionName) {
-                final String newItemId = (String) item.getItemProperty(JcrNodeAdapter.JCR_NAME).getValue();
+                final String newItemId = (String) item.getItemProperty(ModelConstants.JCR_NAME).getValue();
 
                 final String itemId = newItemId == null ? item.getPath() : NodeUtil.combinePathAndName(parentNodePath, newItemId);
                 eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), itemId));

@@ -33,10 +33,18 @@
  */
 package info.magnolia.ui.admincentral.legacy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+import info.magnolia.cms.core.MetaData;
+import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.cms.exchange.ActivationManager;
+import info.magnolia.cms.exchange.Subscriber;
+import info.magnolia.cms.security.MgnlUser;
+import info.magnolia.context.Context;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.test.mock.MockContext;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,17 +58,6 @@ import javax.jcr.Node;
 import org.junit.Before;
 import org.junit.Test;
 
-import info.magnolia.cms.core.MetaData;
-import info.magnolia.cms.core.MgnlNodeType;
-import info.magnolia.cms.exchange.ActivationManager;
-import info.magnolia.cms.exchange.Subscriber;
-import info.magnolia.cms.security.MgnlUser;
-import info.magnolia.context.Context;
-import info.magnolia.context.MgnlContext;
-import info.magnolia.test.ComponentsTestUtil;
-import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.test.mock.MockContext;
-
 public class MarkNodeAsDeletedCommandTest extends RepositoryTestCase {
 
     private Node node;
@@ -68,6 +65,7 @@ public class MarkNodeAsDeletedCommandTest extends RepositoryTestCase {
     private MarkNodeAsDeletedCommand cmd;
     private Context ctx;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();

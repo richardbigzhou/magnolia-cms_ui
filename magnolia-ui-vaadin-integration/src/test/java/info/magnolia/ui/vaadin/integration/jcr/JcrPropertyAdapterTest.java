@@ -40,6 +40,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.MockValue;
+import info.magnolia.ui.model.ModelConstants;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
@@ -115,7 +116,7 @@ public class JcrPropertyAdapterTest {
         JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
 
         // WHEN
-        Property nameProperty = adapter.getItemProperty(JcrItemAdapter.JCR_NAME);
+        Property nameProperty = adapter.getItemProperty(ModelConstants.JCR_NAME);
         Property valueProperty = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
         Property typeProperty = adapter.getItemProperty(JcrPropertyAdapter.TYPE_PROPERTY);
 
@@ -123,7 +124,7 @@ public class JcrPropertyAdapterTest {
         assertEquals(propertyName, nameProperty.getValue());
         assertEquals(propertyValue, valueProperty.getValue());
         assertEquals(PropertyType.nameFromValue(PropertyType.STRING), typeProperty.getValue());
-        assertNotSame(nameProperty, adapter.getItemProperty(JcrItemAdapter.JCR_NAME));
+        assertNotSame(nameProperty, adapter.getItemProperty(ModelConstants.JCR_NAME));
     }
 
     @Test
@@ -135,7 +136,7 @@ public class JcrPropertyAdapterTest {
         String newJcrName = "propertyRenamed";
 
         // WHEN
-        adapter.getItemProperty(JcrItemAdapter.JCR_NAME).setValue(newJcrName);
+        adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(newJcrName);
         adapter.updateProperties();
 
         // THEN
@@ -152,11 +153,30 @@ public class JcrPropertyAdapterTest {
         String newJcrName = propertyName;
 
         // WHEN
-        adapter.getItemProperty(JcrItemAdapter.JCR_NAME).setValue(newJcrName);
+        adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(newJcrName);
         adapter.updateProperties();
 
         // THEN
         assertTrue(node.hasProperty(propertyName));
+    }
+
+    @Test
+    public void testUpdateProperty_JcrName_Existing() throws Exception {
+        // GIVEN
+        String existingName = "existingName";
+        Node node = session.getRootNode();
+        node.setProperty(existingName, "42");
+        node.setProperty(propertyName, propertyValue);
+        long propertyCount = node.getProperties().getSize();
+        JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
+
+        // WHEN
+        adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(existingName);
+        adapter.updateProperties();
+
+        // THEN
+        assertTrue(node.hasProperty(existingName));
+        assertEquals(propertyCount, node.getProperties().getSize());
     }
 
     @Test

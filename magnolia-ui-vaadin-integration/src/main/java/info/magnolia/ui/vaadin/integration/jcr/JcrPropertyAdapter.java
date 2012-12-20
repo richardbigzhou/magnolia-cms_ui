@@ -33,8 +33,10 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.ui.model.ModelConstants;
 
 import java.util.Collection;
 
@@ -95,7 +97,7 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
     public Property getItemProperty(Object id) {
         Object value = null;
         try {
-            if (JCR_NAME.equals(id)) {
+            if (ModelConstants.JCR_NAME.equals(id)) {
                 value = getProperty().getName();
             } else if (VALUE_PROPERTY.equals(id)) {
                 value = getProperty().getString();
@@ -120,7 +122,7 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
 
     /**
      * JcrPropertyAdapter custom logic to update one single vaadin property. If updated propertyId is
-     * {@link info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter#JCR_NAME}, then rename JCR Property. If propertyId
+     * {@link info.magnolia.ui.model.ModelConstants#JCR_NAME}, then rename JCR Property. If propertyId
      * is {@link #VALUE_PROPERTY}, set new property value. If propertyId is {@link #TYPE_PROPERTY}, set new property
      * type. Otherwise, do nothing.
      */
@@ -132,7 +134,7 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
         javax.jcr.Property jcrProperty = (javax.jcr.Property) item;
 
         // JCR_NAME name then move this Node
-        if (JCR_NAME.equals(propertyId)) {
+        if (ModelConstants.JCR_NAME.equals(propertyId)) {
             String jcrName = (String) property.getValue();
             if (jcrName != null && !jcrName.isEmpty()) {
                 try {
@@ -141,6 +143,8 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
                     if (isNameUnchanged) {
                         return;
                     }
+                    // make sure new path is clear
+                    jcrName = Path.getUniqueLabel(jcrProperty.getSession(), jcrProperty.getParent().getPath(), jcrName);
                     PropertyUtil.renameProperty(jcrProperty, jcrName);
                 } catch (RepositoryException e) {
                     log.error("Could not rename JCR Property.", e);

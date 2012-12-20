@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -47,6 +47,7 @@ import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.app.pages.field.TemplateSelectorField;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.dialog.builder.DialogBuilder;
 import info.magnolia.ui.model.dialog.builder.DialogConfig;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
@@ -153,8 +154,8 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             Node parentNode = session.getNode(path);
 
             final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, MgnlNodeType.NT_COMPONENT);
-            DefaultProperty property = new DefaultProperty(JcrNodeAdapter.JCR_NAME, "0");
-            item.addItemProperty(JcrNodeAdapter.JCR_NAME, property);
+            DefaultProperty property = new DefaultProperty(ModelConstants.JCR_NAME, "0");
+            item.addItemProperty(ModelConstants.JCR_NAME, property);
 
             // perform custom chaining of dialogs
             dialogPresenter.start(item, new FormDialogPresenter.Callback() {

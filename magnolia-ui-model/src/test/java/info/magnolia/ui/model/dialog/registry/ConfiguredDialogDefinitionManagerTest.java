@@ -55,8 +55,8 @@ import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.tab.definition.ConfiguredTabDefinition;
-import info.magnolia.ui.model.tab.definition.TabDefinition;
+import info.magnolia.ui.model.form.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.model.form.definition.TabDefinition;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -94,8 +94,8 @@ public class ConfiguredDialogDefinitionManagerTest {
         session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
             A_DIALOG_PATH + ".id=aModule:aDialog",
             A_DIALOG_PATH + ".class="+ConfiguredDialogDefinition.class.getName(),
-            A_DIALOG_PATH + "/tabs/taba",
-            A_DIALOG_PATH + "/tabs/taba.label=label",
+            A_DIALOG_PATH + "/formDefinition/tabs/taba",
+            A_DIALOG_PATH + "/formDefinition/tabs/taba.label=label",
             B_DIALOG_PATH + ".id=bModule:bDialog",
             B_DIALOG_PATH + "/actions/actionb",
             B_DIALOG_PATH + "/actions/actionb.label=label",

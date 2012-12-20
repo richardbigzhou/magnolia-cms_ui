@@ -43,7 +43,6 @@ import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
@@ -126,6 +125,23 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
+     * This method is called to create an instant of an app independent from the {@link LocationController} and the {@link AppController} handling.
+     * It will not open in the {@link ViewPort} and will not register itself to the running apps.
+     * This is e.g. used to pass the {@link App} into a dialog and obtain app-specific information from outside the app.
+     *
+     * @param appId of the {@link App} to instantiate.
+     */
+    @Override
+    public App getAppWithoutStarting(String appId) {
+        AppContext appContext = getAppContext(appId);
+        ComponentProvider appComponentProvider = appContext.createAppComponentProvider(appContext.getName(), appContext);
+        App app = appComponentProvider.newInstance(appContext.getAppDescriptor().getAppClass());
+
+        appContext.setApp(app);
+        return app;
+    }
+
+    /**
      * This method can be called to launch an {@link App} and then delegate it to the {@link LocationController}.
      * It should have the same effect as calling the {@link LocationController} directly.
      * @param appId of the {@link App} to start.
@@ -148,9 +164,13 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      * It will not open in the {@link ViewPort}.
      * This is e.g. used to pass the {@link App} into a dialog and obtain app-specific information from outside the app.
      *
+     * See MGNLUI-379.
      * @param appId of the {@link App} to start.
      * @param location holds information about the subApp to use and the parameters.
+     *
+     * @deprecated since introduction of {@link #getAppWithoutStarting(String appId) getAppWithoutStarting}
      */
+    @Deprecated
     @Override
     public App startIfNotAlreadyRunning(String appId, Location location) {
         AppContext appContext = getAppContext(appId);
@@ -299,10 +319,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      */
     private Location updateLocation(AppContext appContext, Location location) {
 
-        if (location instanceof DefaultLocation) {
-            DefaultLocation l = (DefaultLocation) location;
-            String appId = l.getAppId();
-            String subAppId = l.getSubAppId();
+            String appId = location.getAppId();
+            String subAppId = location.getSubAppId();
 
             if (subAppId == null || subAppId.isEmpty()) {
 
@@ -315,7 +333,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
                 }
             }
 
-        }
         return location;
     }
 
@@ -345,11 +362,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     private AppDescriptor getAppForLocation(Location newLocation) {
-        if (newLocation instanceof DefaultLocation) {
-            DefaultLocation appLocation = (DefaultLocation) newLocation;
-            return getAppDescriptor(appLocation.getAppId());
-        }
-        return null;
+        return getAppDescriptor(newLocation.getAppId());
     }
 
     private AppDescriptor getAppDescriptor(String name) {

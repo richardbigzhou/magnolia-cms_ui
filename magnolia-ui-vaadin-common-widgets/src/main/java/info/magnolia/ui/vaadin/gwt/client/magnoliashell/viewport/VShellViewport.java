@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -270,6 +270,7 @@ public class VShellViewport extends ComplexPanel implements Container, Container
 
     @Override
     public boolean requestLayout(Set<Paintable> children) {
+        client.runDescendentsLayout(this);
         return false;
     }
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -69,9 +69,9 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
 
     public static final String THUMBNAIL_PROPERTY_ID = "thumbnail";
 
-    private WorkbenchDefinition workbenchDefinition;
+    private final WorkbenchDefinition workbenchDefinition;
 
-    private ImageProvider imageProvider;
+    private final ImageProvider imageProvider;
 
     private String workspaceName = "";
 
@@ -107,11 +107,20 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
         return null;
     }
 
-    private String prepareJcrSQL2Query() {
+    protected String prepareSelectQueryStatement() {
         final String itemType = workbenchDefinition.getMainItemType().getItemType();
-        return "select * from [" + itemType + "] as t order by name(t)";
+        return String.format("select * from ['%s'] as t ", itemType);
+    }
+    
+    protected String prepareFilterQueryStatement() {
+        return "";
+    }
+    
+    protected String prepareOrderQueryStatement() {
+        return " order by name(t)";
     }
 
+    
     /**
      * @return a List of JCR identifiers for all the nodes recursively found
      *         under <code>initialPath</code>. This method is called in
@@ -123,10 +132,10 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
      */
     protected List<String> getAllIdentifiers(final String workspaceName) {
         List<String> uuids = new ArrayList<String>();
-        final String query = prepareJcrSQL2Query();
+        final String query = prepareSelectQueryStatement();
         try {
             QueryManager qm = MgnlContext.getJCRSession(workspaceName).getWorkspace().getQueryManager();
-            Query q = qm.createQuery(prepareJcrSQL2Query(), Query.JCR_SQL2);
+            Query q = qm.createQuery(constructQuery(), Query.JCR_SQL2);
 
             log.debug("Executing query statement [{}] on workspace [{}]", query, workspaceName);
             long start = System.currentTimeMillis();
@@ -144,6 +153,10 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
             throw new RuntimeRepositoryException(e);
         }
         return uuids;
+    }
+
+    private String constructQuery() {
+        return prepareSelectQueryStatement() + prepareFilterQueryStatement() + prepareOrderQueryStatement();
     }
 
     @Override
@@ -247,7 +260,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
      */
     public class ThumbnailItem implements Item {
 
-        private String id;
+        private final String id;
 
         public ThumbnailItem(final String id) {
             this.id = id;

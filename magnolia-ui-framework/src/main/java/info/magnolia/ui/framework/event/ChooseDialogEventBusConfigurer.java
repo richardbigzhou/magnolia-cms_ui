@@ -39,7 +39,7 @@ import com.google.inject.util.Providers;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
 /**
- * Configures an {@link info.magnolia.ui.framework.event.EventBus} bound to the name <code>choosedialog</code>.
+ * Configures an {@link EventBus} bound to the name <code>choosedialog</code>.
  */
 public class ChooseDialogEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
