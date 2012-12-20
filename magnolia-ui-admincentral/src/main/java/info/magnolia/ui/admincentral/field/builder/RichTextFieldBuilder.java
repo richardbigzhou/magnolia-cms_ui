@@ -53,7 +53,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,14 +146,14 @@ public class RichTextFieldBuilder extends
             chooseDialogPresenter.getView().setCaption("Select a page");
             chooseDialogPresenter.addValueChosenListener(new ValueChosenListener<Item>() {
                 @Override
-                public void onValueChosen(Item pickedValue) {
-                    if (!(pickedValue instanceof JcrItemAdapter)) {
+                public void onValueChosen(Item chosenValue) {
+                    if (!(chosenValue instanceof JcrItemAdapter)) {
                         return;
                     }
                     
                     try {                                    
                     
-                        javax.jcr.Item jcrItem = ((JcrItemAdapter) pickedValue).getJcrItem();
+                        javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
                         
                         if (!jcrItem.isNode()) {
                             return;
