@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.field.upload.UploadFileFieldImpl;
 import info.magnolia.ui.admincentral.file.FileItemWrapper;
@@ -113,7 +113,7 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
                 child = new JcrNodeAdapter(node.getNode(definition.getImageNodeName()));
                 child.setParent((JcrItemNodeAdapter) item);
             } else {
-                child = new JcrNewNodeAdapter(node, MgnlNodeType.NT_RESOURCE, definition.getImageNodeName());
+                child = new JcrNewNodeAdapter(node, NodeTypes.Resource.NAME, definition.getImageNodeName());
                 child.setParent((JcrItemNodeAdapter) item);
             }
         } catch (RepositoryException e) {
