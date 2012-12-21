@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
@@ -56,7 +56,7 @@ import com.vaadin.data.Property;
 public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
 
     private Node node;
-    private String nodeName = "parent";
+    private final String nodeName = "parent";
 
     @Override
     @Before
@@ -78,7 +78,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetNode_NewName() throws Exception {
+    public void testGetNodeUpdatesNodeWithNewName() throws Exception {
         // GIVEN
         String id = ModelConstants.JCR_NAME;
         String value = "newParent";
@@ -86,7 +86,6 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Get the node name as property
         Property property = adapter.getItemProperty(id);
-        assertEquals(nodeName, property.getValue().toString());
         //Change the property node name
         property.setValue(value);
 
@@ -94,33 +93,11 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         Node res = adapter.getNode();
 
         // THEN
-        // should have a new NodeName
+        // should have a new node name and still all its properties
         assertEquals(value, res.getName());
-        assertEquals(true, res.hasProperty("propertyString"));
+        assertTrue(res.hasNode("child"));
+        assertTrue(res.hasProperty("propertyString"));
         assertEquals("hello", res.getProperty("propertyString").getString());
-        assertEquals(true, res.hasNode("child"));
     }
 
-    @Test
-    public void testGetNode_NewProperty() throws Exception {
-        // GIVEN
-        String id = ModelConstants.JCR_NAME;
-        String value = "newParent";
-
-        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
-        // Get the node name as property
-        Property property = adapter.getItemProperty(id);
-        assertEquals(nodeName, property.getValue().toString());
-        //Change the property node name
-        property.setValue(value);
-
-        // WHEN
-        Node res = adapter.getNode();
-
-        // THEN
-        // should have a new NodeName
-        assertEquals(value, res.getName());
-        assertEquals(true, res.hasProperty("propertyString"));
-        assertEquals(true, res.hasNode("child"));
-    }
 }
