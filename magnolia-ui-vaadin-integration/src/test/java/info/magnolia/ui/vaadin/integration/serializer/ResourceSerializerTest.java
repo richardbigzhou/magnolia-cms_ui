@@ -48,7 +48,7 @@ public class ResourceSerializerTest {
     private final String themeResourceName = "path/to/myResource.svg";
 
     @Test
-    public void testSerialize_IconFontResource() {
+    public void testSerializeIconFontResource() {
         // GIVEN
         IconFontResource resource = new IconFontResource(iconClassName);
         DummyResourceWrapper wrapperObject = new DummyResourceWrapper(resource);
@@ -69,7 +69,7 @@ public class ResourceSerializerTest {
     }
 
     @Test
-    public void testSerialize_ThemeResource() {
+    public void testSerializeThemeResource() {
         // GIVEN
         ThemeResource resource = new ThemeResource(themeResourceName);
         DummyResourceWrapper wrapperObject = new DummyResourceWrapper(resource);

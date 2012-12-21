@@ -150,7 +150,7 @@ public class ContentWorkbenchPresenterTest {
     }
 
     @Test
-    public void testEditItem_updatesLastModified_withNode() throws Exception {
+    public void testEditItemWithNodeUpdatesLastModified() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
         node.addMixin(LastModified.NAME);
@@ -172,7 +172,7 @@ public class ContentWorkbenchPresenterTest {
     }
 
     @Test
-    public void testEditItem_updatesLastModified_withProperty() throws Exception {
+    public void testEditItemWithPropertyUpdatesLastModified() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
         node.addMixin(LastModified.NAME);
