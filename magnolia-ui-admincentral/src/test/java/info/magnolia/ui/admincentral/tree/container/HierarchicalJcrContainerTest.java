@@ -35,9 +35,11 @@ package info.magnolia.ui.admincentral.tree.container;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
@@ -49,6 +51,7 @@ import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainerTest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -416,6 +419,27 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         // THEN
         assertEquals(3, res.size());
 
+    }
+
+    @Test
+    public void testGetChildrenRetainsJcrOrder() throws RepositoryException, IOException {
+        // GIVEN
+        ConfiguredItemTypeDefinition itemTypeDef = new ConfiguredItemTypeDefinition();
+        itemTypeDef.setItemType(NodeTypes.ContentNode.NAME);
+        workbenchDefinition.setMainItemType(itemTypeDef);
+        workbenchDefinition.setIncludeProperties(true);
+        Session session = SessionTestUtil.createSession("config", "/server/filters/zzz", "/server/filters/abc", "/server/filters/aaa", "/server/filters/foo", "/server/filters/qux");
+
+        // WHEN
+        Collection<Item> res = hierarchicalJcrContainer.getChildren(session.getNode("/server/filters"));
+
+        // THEN
+        Item[] items = res.toArray(new Item[] {});
+        assertEquals("/server/filters/zzz", items[0].getPath());
+        assertEquals("/server/filters/abc", items[1].getPath());
+        assertEquals("/server/filters/aaa", items[2].getPath());
+        assertEquals("/server/filters/foo", items[3].getPath());
+        assertEquals("/server/filters/qux", items[4].getPath());
     }
 
 }
