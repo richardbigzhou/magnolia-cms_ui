@@ -68,13 +68,11 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
 
     private final Element root = DOM.createElement("section");
 
-    private final FlowPanel toggleButton = new FlowPanel(); // Must be a widget so that it can
-                                                            // capture events
+    private final FlowPanel toggleButton = new FlowPanel(); // Must be a widget so that it can capture events
 
     private final Element toggleButtonIcon = DOM.createElement("span");
 
-    private final TouchPanel fullScreenButton = new TouchPanel(); // Must be a widget so that it can
-                                                                  // capture events
+    private final TouchPanel fullScreenButton = new TouchPanel(); // Must be a widget so that it can capture events
 
     private final Element fullScreenButtonIcon = DOM.createElement("span");
 
@@ -96,10 +94,11 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
 
     private final Map<String, VActionbarSection> sections = new LinkedHashMap<String, VActionbarSection>();
 
-    public ActionbarWidgetViewImpl(final EventBus eventBus) {
+    public ActionbarWidgetViewImpl(final EventBus eventBus, Presenter presenter) {
         setElement(root);
         addStyleName(CLASSNAME);
 
+        this.presenter = presenter;
         this.eventBus = eventBus;
         this.eventBus.addHandler(ActionTriggerEvent.TYPE, this);
 
@@ -130,9 +129,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         toggleButton.getElement().appendChild(toggleButtonIcon);
 
         DOM.sinkEvents(toggleButton.getElement(), Event.TOUCHEVENTS);
-
         delegate.addTouchStartHandler(new TouchStartHandler() {
-
             @Override
             public void onTouchStart(TouchStartEvent event) {
                 isToggledOpen = !isToggledOpen;
@@ -186,20 +183,14 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
     }
 
     private void createFullScreenControl() {
-
-        fullScreenButton.addStyleName(CLASSNAME_FULLSCREEN);
-
+        DOM.sinkEvents(fullScreenButton.getElement(), Event.TOUCHEVENTS);
         add(fullScreenButton, root);
-
+        
+        fullScreenButton.addStyleName(CLASSNAME_FULLSCREEN);
         fullScreenButtonIcon.addClassName("v-actionbar-fullscreen-icon");
         fullScreenButtonIcon.addClassName("icon-open-fullscreen");
-
         fullScreenButton.getElement().appendChild(fullScreenButtonIcon);
-
-        DOM.sinkEvents(fullScreenButton.getElement(), Event.TOUCHEVENTS);
-
         fullScreenButton.addTouchStartHandler(new TouchStartHandler() {
-
             @Override
             public void onTouchStart(TouchStartEvent event) {
                 isFullScreen = !isFullScreen;
@@ -219,7 +210,6 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
             fullScreenButtonIcon.addClassName("icon-open-fullscreen");
             fullScreenButtonIcon.removeClassName("icon-close-fullscreen");
         }
-
         presenter.changeFullScreen(isFullScreen);
     }
 
@@ -228,39 +218,16 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
      */
     private void actualizeToggleState(boolean isOpen) {
         if (isOpen) {
-            toggleButtonIcon.addClassName("open");// NOTE:CLZ:With icon fonts this class name will
-                                                  // change.
-
-            if (presenter != null) {
-                presenter.setOpened(true);
-            }
-
-            // For Tablet: Add "open" style from all actions
-            if (isDeviceTablet) {
-                for (final VActionbarSection section : sections.values()) {
-                    for (final VActionbarGroup group : section.getGroups().values()) {
-                        group.openHorizontal();
-                    }
-                }
-            }
-
+            toggleButtonIcon.addClassName("open");// NOTE:CLZ:With icon fonts this class name will change.
         } else {
-            toggleButtonIcon.removeClassName("open");// NOTE:CLZ:With icon fonts this class name
-                                                     // will change.
-
-            if (presenter != null) {
-                presenter.setOpened(false);
-            }
-
-            // For Tablet: Remove "open" style from all actions
-            if (isDeviceTablet) {
-                for (final VActionbarSection section : sections.values()) {
-                    for (final VActionbarGroup group : section.getGroups().values()) {
-                        group.closeHorizontal();
-                    }
+            toggleButtonIcon.removeClassName("open");// NOTE:CLZ:With icon fonts this class name will change.
+        }
+        if (isDeviceTablet) {
+            for (final VActionbarSection section : sections.values()) {
+                for (final VActionbarGroup group : section.getGroups().values()) {
+                    group.setOpenHorizontally(isOpen);
                 }
             }
-
         }
     }
 
@@ -279,33 +246,6 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         sections.put(sectionParams.getName(), section);
         add(section, root);
     }
-
-    /*public void addAction(ActionbarItem actionParams, Icon icon, String groupName, String sectionName) {
-        VActionbarSection section = sections.get(sectionName);
-        if (section != null) {
-            VActionbarGroup group = section.getGroups().get(groupName);
-
-            if (group == null) {
-                tabletColumn = 0;
-                tabletRow++;
-                group = new VActionbarGroup(groupName);
-                section.addGroup(group);
-
-                setToggleAndFullScreenButtonHeights(tabletRow);
-            }
-
-            VActionbarItem action;
-            if (isDeviceTablet) {
-                action = new VActionbarItemTablet(actionParams, group, eventBus, icon);
-                ((VActionbarItemTablet) action).setRow(tabletRow);
-                ((VActionbarItemTablet) action).setColumn(tabletColumn);
-                tabletColumn++;
-            } else {
-                action = new VActionbarItem(actionParams, group, eventBus, icon);
-            }
-            group.addAction(action);
-        }
-    }*/
 
     public void addAction(ActionbarItem actionParams, String sectionName) {
         VActionbarSection section = sections.get(sectionName);
@@ -394,26 +334,5 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         actualizeToggleState(isToggledOpen);
         presenter.forceLayout();        
     }
-    
-    /*   
-    register("addAction", new Method() {
-
-        @Override
-        public void invoke(String methodName, Object[] params) {
-            String jsonIcon = String.valueOf(params[0]);
-            final VActionbarItemJSO action = VActionbarItemJSO.parse(jsonIcon);
-            String groupName = String.valueOf(params[1]);
-            String sectionName = String.valueOf(params[2]);
-
-            if (action.getIcon().startsWith("icon-")) {
-                view.addAction(action, groupName, sectionName);
-            } else {
-                Icon icon = null;
-                if (action.getIcon() != null) {
-                    icon = new Icon(client, action.getIcon());
-                }
-                view.addAction(action, icon, groupName, sectionName);
-            }
-        }
-    });*/
+   
 }

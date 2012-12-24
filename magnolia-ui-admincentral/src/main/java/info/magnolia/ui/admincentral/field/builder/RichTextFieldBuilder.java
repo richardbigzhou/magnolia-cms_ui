@@ -33,10 +33,6 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import com.google.gson.Gson;
-import com.google.inject.Inject;
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
@@ -46,15 +42,17 @@ import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
-import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig;
-import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig.ToolbarGroup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
+import com.google.inject.Inject;
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
 
 /**
  * Creates and initializes an edit field based on a field definition.
@@ -99,9 +97,11 @@ public class RichTextFieldBuilder extends
     @Override
     protected Field buildField() {
         // RichTextFieldDefinition editDefinition = definition;
-        MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
 
-        List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
+        /**
+         * TODO FIX CKEDITOR FUNC!!!
+         */
+        /*List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
         toolbars.add(new ToolbarGroup("basictyles", new String[] { "Bold",
                 "Italic", "Underline", "SpecialChar" }));
         toolbars.add(new ToolbarGroup("paragraph", new String[] {
@@ -113,13 +113,18 @@ public class RichTextFieldBuilder extends
         toolbars.add(new ToolbarGroup("objects", new String[] { "Image",
                 "Table" }));
         toolbars.add(new ToolbarGroup("special",
-                new String[] { "Undo", "Redo" }));
+                new String[] { "Undo", "Redo" }));*/
+        
+        /**
+         * TODO - fix the CKEDITOR STUFF.
+         */
+        /*MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
         config.addToolbarLine(toolbars);
         config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
         config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, PLUGIN_PATH_MAGNOLIALINK);
-        config.setResizeEnabled(false);
+        config.setResizeEnabled(false);*/
         
-        richtexteditor = new MagnoliaRichTextField(config);
+        richtexteditor = new MagnoliaRichTextField(/*config*/);
         richtexteditor.addListener(new MagnoliaRichTextField.PluginListener() {
 
             @Override

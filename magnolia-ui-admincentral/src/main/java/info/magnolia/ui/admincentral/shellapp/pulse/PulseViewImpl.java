@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
@@ -45,7 +44,6 @@ import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
 
 
 /**
@@ -53,21 +51,20 @@ import com.vaadin.ui.ComponentContainer;
  */
 public class PulseViewImpl implements PulseView {
 
-
-    private String id= ShellAppType.PULSE.getClassId();
-
     @Override
     public String getId(){
-        return id;
+        return "pulse";
     }
 
     private final MagnoliaTabSheet tabsheet = new MagnoliaTabSheet() {
 
         @Override
-        public void onActiveTabSet(String tabId) {
-            super.onActiveTabSet(tabId);
-            presenter.onPulseTabChanged(m.getKey(getTabById(tabId)).toString().toLowerCase());
-        }
+        public void setActiveTab(MagnoliaTab tab) {
+            super.setActiveTab(tab);
+            if (presenter != null) {
+                presenter.onPulseTabChanged(m.getKey(tab).toString().toLowerCase());   
+            }            
+        };
     };
 
     private enum PulseTabType {
@@ -89,14 +86,12 @@ public class PulseViewImpl implements PulseView {
 
         this.messagesView = messagesView;
         tabsheet.addStyleName("v-shell-tabsheet-light");
-        final MagnoliaTab dashboard = tabsheet.addTab("Dashboard", (ComponentContainer) dashboardView.asVaadinComponent());
-        final MagnoliaTab messages = tabsheet.addTab("Messages", (ComponentContainer) messagesView.asVaadinComponent());
+        final MagnoliaTab dashboard = tabsheet.addTab("Dashboard", dashboardView.asVaadinComponent());
+        final MagnoliaTab messages = tabsheet.addTab("Messages", messagesView.asVaadinComponent());
 
         tabsheet.addStyleName("v-pulse");
         tabsheet.setSizeFull();
         tabsheet.setWidth("900px");
-
-        tabsheet.setDebugId(id);
 
         m.put(PulseTabType.DASHBOARD, dashboard);
         m.put(PulseTabType.MESSAGES, messages);

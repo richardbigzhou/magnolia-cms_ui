@@ -42,9 +42,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import com.vaadin.ui.Component;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Label;
 
 
@@ -83,7 +84,7 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
         }
 
         // recent pages
-        Label recentPage = new Label(getRecentPages(), Label.CONTENT_XHTML);
+        Label recentPage = new Label(getRecentPages(), ContentMode.HTML);
 
         splitPanel.getLeftContainer().setTitle("Activity Stream");
         splitPanel.getLeftContainer().setTitleLinkEnabled(true);
@@ -166,7 +167,7 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
     }
 
     @Override
-    public Component asVaadinComponent() {
+    public HasComponents asVaadinComponent() {
         return this;
     }
 
@@ -196,7 +197,7 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
 
         private final Label textElement = new Label();
 
-        private final Label commentDivet = new Label("<span class=\"comment-divet icon-arrow2_n\"></span>", Label.CONTENT_XHTML);
+        private final Label commentDivet = new Label("<span class=\"comment-divet icon-arrow2_n\"></span>", ContentMode.HTML);
 
         private final Label commentElement = new Label();
 
@@ -209,13 +210,13 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
             setWidth("100%");
             //setMargin(true, false, true, false);
             // setSpacing(true);
-            iconElement.setContentMode(Label.CONTENT_XHTML);
+            iconElement.setContentMode(ContentMode.HTML);
             iconElement.setWidth(null);
             iconElement.setStyleName("icon");
-            textElement.setContentMode(Label.CONTENT_XHTML);
+            textElement.setContentMode(ContentMode.HTML);
             textElement.setStyleName("text");
             commentElement.setStyleName("comment");
-            commentElement.setContentMode(Label.CONTENT_XHTML);
+            commentElement.setContentMode(ContentMode.HTML);
             dateElement.setStyleName("date");
             wrapper.addStyleName("content");
             wrapper.setWidth("100%");

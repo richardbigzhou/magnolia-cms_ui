@@ -33,22 +33,15 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
 /**
  * Helper class for holding the parsed info from the fragment.
  */
-public class FragmentDTO {
+public class Fragment {
     
-    /**
-     * Enum for the types of fragments used within MagnoliaShell.
-     */
-    public enum FragmentType {
-        APP,
-        SHELL_APP
-    }
-    
-    private FragmentType appType = FragmentType.SHELL_APP;
+    private ViewportType appViewportType = ViewportType.SHELL_APP_VIEWPORT;
 
     private String appId = "";
 
@@ -56,19 +49,18 @@ public class FragmentDTO {
 
     private String parameter = "";
 
-    protected FragmentDTO() {
-    }
+    protected Fragment() {}
 
-    public static FragmentDTO fromFragment(final String fragment) {
-        final FragmentDTO dto = new FragmentDTO();
+    public static Fragment fromFragment(final String fragment) {
+        Fragment dto = new Fragment();
         String type = extractAppType(fragment);
         if (type.equals("shell")) {
-            dto.appType = FragmentType.SHELL_APP;
+            dto.appViewportType = ViewportType.SHELL_APP_VIEWPORT;
             dto.appId = ShellAppType.getTypeByFragmentId(extractAppId(fragment));
             dto.subAppId = extractSubAppId(fragment);
             dto.parameter = extractSubAppId(fragment);
         } else if (type.equals("app")) {
-            dto.appType = FragmentType.APP;
+            dto.appViewportType = ViewportType.APP_VIEWPORT;
             dto.appId = extractAppId(fragment);
             dto.subAppId = extractSubAppId(fragment);
             dto.parameter = extractParameter(fragment);
@@ -76,8 +68,24 @@ public class FragmentDTO {
         return dto;
     }
 
-    public FragmentType getAppType() {
-        return appType;
+    public void setParameter(String parameter) {
+        this.parameter = parameter;
+    }
+    
+    public void setSubAppId(String subAppId) {
+        this.subAppId = subAppId;
+    }
+    
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+    
+    public void setAppViewportType(ViewportType type) {
+        this.appViewportType = type;
+    }
+    
+    public ViewportType getAppViewportType() {
+        return appViewportType;
     }
 
     public String getAppId() {
@@ -94,6 +102,15 @@ public class FragmentDTO {
 
     // These methods are duplicated from info.magnolia.ui.framework.location.DefaultLocation
 
+    public String toFragment() {
+        return toString();
+    }
+    
+    @Override
+    public String toString() {
+        return appId + ":" + subAppId + ";" + parameter;
+    }
+    
     public static String extractAppType(String fragment) {
         int i = fragment.indexOf(':');
         return i != -1 ? fragment.substring(0, i) : fragment;

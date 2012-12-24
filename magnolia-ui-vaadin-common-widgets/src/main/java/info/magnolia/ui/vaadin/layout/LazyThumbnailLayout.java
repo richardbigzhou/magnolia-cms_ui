@@ -126,7 +126,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
     }
 
     private void setThumbnailAmount(int thumbnailAmount) {
-        getState().thumbnailsAmount = Math.max(thumbnailAmount, 0);
+        getState().thumbnailAmount = Math.max(thumbnailAmount, 0);
     }
 
     public void setThumbnailSize(int width, int height) {

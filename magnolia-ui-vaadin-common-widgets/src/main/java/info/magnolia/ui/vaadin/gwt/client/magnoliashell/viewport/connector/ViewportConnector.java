@@ -33,18 +33,20 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
 
 import java.util.List;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
+import com.vaadin.client.LayoutManager;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractLayoutConnector;
@@ -63,26 +65,30 @@ public class ViewportConnector extends AbstractLayoutConnector {
     protected ElementResizeListener childCenterer = new ElementResizeListener() {
         @Override
         public void onElementResize(ElementResizeEvent e) {
-            int width = e.getLayoutManager().getOuterWidth(e.getElement());
-            final Style style = e.getElement().getStyle();
-            style.setLeft(50, Unit.PCT);
-            style.setMarginLeft(-width / 2, Unit.PX);            
+            alignContent(e.getElement(), e.getLayoutManager());
         }
     };
     
     @Override
     protected void init() {
-        addStateChangeHandler(new StateChangeHandler() {
+        addStateChangeHandler("activeComponent", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent event) {
                 final ComponentConnector candidate = (ComponentConnector)getState().activeComponent; 
                 if (getWidget().getVisibleApp() != candidate) {
-                    getWidget().setVisibleApp(candidate.getWidget());
+                    getWidget().setVisibleApp(candidate.getWidget() != null ? candidate.getWidget() : null);
                 }
             }
         });
     };
     
+    protected void alignContent(Element e, LayoutManager layoutManager) {
+        int width = layoutManager.getOuterWidth(e);
+        final Style style = e.getStyle();
+        style.setLeft(50, Unit.PCT);
+        style.setMarginLeft(-width / 2, Unit.PX);
+    }
+
     @Override
     public void updateCaption(ComponentConnector connector) {}
 
@@ -91,15 +97,6 @@ public class ViewportConnector extends AbstractLayoutConnector {
         final ViewportWidget viewport = getWidget();
         final List<ComponentConnector> children = getChildComponents();
         final List<ComponentConnector> oldChildren = event.getOldChildren();
-        int index = 0;
-        for (final ComponentConnector cc : children) {
-            final Widget w = cc.getWidget();
-            if (w != viewport) {
-                viewport.insert(w, index++);
-                getLayoutManager().addElementResizeListener(w.getElement(), childCenterer);
-            }
-        }
-        
         
         if (oldChildren.removeAll(children)) {
             for (final ComponentConnector cc : oldChildren) {
@@ -108,15 +105,17 @@ public class ViewportConnector extends AbstractLayoutConnector {
             }
         }
         
+        int index = 0;
+        for (final ComponentConnector cc : children) {
+            final Widget w = cc.getWidget();
+            if (w.getParent() != viewport) {
+                viewport.insert(w, index);
+                getLayoutManager().addElementResizeListener(w.getElement(), childCenterer);
+            }
+            ++index;
+        }
         /*
         if (!client.updateComponent(this, uidl, true)) {
-
-            final Collection<Widget> oldWidgets = new HashSet<Widget>();
-            for (final Iterator<Widget> iterator = iterator(); iterator.hasNext();) {
-                oldWidgets.add(iterator.next());
-            }
-
-            // Widget formerWidget = visibleWidget;
             if (uidl.getChildCount() > 0) {
                 Widget app = null;
                 for (int i = 0; i < uidl.getChildCount(); i++) {
@@ -130,7 +129,6 @@ public class ViewportConnector extends AbstractLayoutConnector {
                     if (w.getParent() != this) {
                         add(w, getElement());
                     }
-
                     // make sure handling of visibility is left to viewport
                     boolean visible = w.isVisible();
                     paintable.updateFromUIDL(childUIdl, client);
@@ -138,7 +136,6 @@ public class ViewportConnector extends AbstractLayoutConnector {
                         alignChild(w);
                     }
                     w.setVisible(visible);
-
                 }
                 if (app != null) {
                     setVisibleApp(app);
@@ -146,12 +143,10 @@ public class ViewportConnector extends AbstractLayoutConnector {
             } else {
                 visibleApp = null;
             }
-
             for (Widget w : oldWidgets) {
                 removeWidget(w);
             }
         }
-
         loadingPane.hide();
         */
     }
@@ -159,11 +154,6 @@ public class ViewportConnector extends AbstractLayoutConnector {
     @Override
     public ViewportWidget getWidget() {
         return (ViewportWidget)super.getWidget();
-    }
-    
-    @Override
-    protected ViewportWidget createWidget() {
-        return new ViewportWidget();
     }
     
     public void setEventBus(EventBus eventBus) {

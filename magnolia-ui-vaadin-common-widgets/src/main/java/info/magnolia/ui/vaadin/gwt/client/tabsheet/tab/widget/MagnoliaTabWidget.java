@@ -45,6 +45,7 @@ public class MagnoliaTabWidget extends SimplePanel {
     public MagnoliaTabWidget() {
         super();
         setStyleName("v-shell-tab");
+        label.setTab(this);
     }
 
     public void setLabel(MagnoliaTabLabel label) {

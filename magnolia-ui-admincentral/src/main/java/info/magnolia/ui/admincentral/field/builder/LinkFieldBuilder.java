@@ -33,10 +33,6 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Field;
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
@@ -47,13 +43,19 @@ import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Field;
 
 /**
  * Creates and initializes a LinkField field based on a field definition.
@@ -78,18 +80,18 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
     }
 
     @Override
-    protected Field buildField() {
+    protected Field<String> buildField() {
         // Create Translator if we need to store the Identifier
-        IdentifierToPathTranslator translator = null;
+        IdentifierToPathTranslator converter = null;
         if (definition.isIdentifier()) {
-            translator = new IdentifierToPathTranslator(definition.getWorkspace());
+            converter = new IdentifierToPathTranslator(definition.getWorkspace());
         }
-        textButton = new TextAndButtonField(translator, getMessage(definition.getButtonSelectNewLabel()),
+        textButton = new TextAndButtonField(converter, getMessage(definition.getButtonSelectNewLabel()),
                 getMessage(definition.getButtonSelectOtherLabel()));
         final Button selectButton = textButton.getSelectButton();
 
         if (StringUtils.isNotBlank(definition.getDialogName()) || StringUtils.isNotBlank(definition.getAppName())) {
-            selectButton.addListener(createButtonClickListener(definition.getDialogName(), definition.getAppName()));
+            selectButton.addClickListener(createButtonClickListener(definition.getDialogName(), definition.getAppName()));
         } else {
             selectButton.setCaption(getMessage("field.link.select.error"));
         }
@@ -97,7 +99,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
     }
 
     @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+    protected Class<String> getDefaultFieldType(FieldDefinition fieldDefinition) {
         return String.class;
     }
 
@@ -110,14 +112,14 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
             @Override
             public void buttonClick(ClickEvent event) {
                 // Get the property name to propagate.
-                final String propertyName = getPropertyName();
-                final App targetApp = appController.getAppWithoutStarting(appName);
+                App targetApp = appController.getAppWithoutStarting(appName);
                 if (targetApp != null) {
                     if (targetApp instanceof AbstractContentApp) {
-                        final ChooseDialogPresenter<Item> chooseDialogPresenter = ((AbstractContentApp) targetApp).openChooseDialog();
+                        ChooseDialogPresenter<Item> chooseDialogPresenter = ((AbstractContentApp) targetApp).openChooseDialog();
                         chooseDialogPresenter.addValueChosenListener(new ValueChosenListener<Item>() {
                             @Override
                             public void onValueChosen(final Item chosenValue) {
+                                String propertyName = getPropertyName();
                                 javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
                                 if (jcrItem.isNode()) {
                                     final Node selected = (Node) jcrItem;
@@ -125,10 +127,6 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                                         boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) &&
                                                 !PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
                                         textButton.setValue(isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath());
-
-                                        if ("assets".equals(appName)) {
-                                            selected.setProperty("image", "dms");
-                                        }
                                     } catch (RepositoryException e) {
                                         log.error("Not able to access the configured property. Value will not be set.", e);
                                     }

@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.richtext;
 
-import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditor;
+import com.vaadin.client.ui.VRichTextArea;
 
 /**
  * Add support for handling custom plugins to CKEditor instance.
  */
-public class VMagnoliaRichTextEditor extends CKEditor {
+public class VMagnoliaRichTextEditor extends VRichTextArea /*CKEditor*/ {
     protected VMagnoliaRichTextEditor() {
     }
     

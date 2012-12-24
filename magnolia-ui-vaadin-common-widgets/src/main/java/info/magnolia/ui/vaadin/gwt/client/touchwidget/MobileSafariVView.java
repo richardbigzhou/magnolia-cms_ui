@@ -41,13 +41,13 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchCancelEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchMoveEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
-import com.vaadin.terminal.gwt.client.ui.VView;
+import com.vaadin.client.ui.VUI;
 
 /**
  * Special implementation of {@link VView} that would preinitialize mgwt
  * touch events, so that those will not interfere with native GWT touch events.
  */
-public class MobileSafariVView extends VView {
+public class MobileSafariVView extends VUI {
 
     private HandlerManager handlerManager;
 

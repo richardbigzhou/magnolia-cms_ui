@@ -36,16 +36,12 @@ package info.magnolia.ui.vaadin.gwt.client.actionbar.widget;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.event.ActionTriggerEvent;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -80,8 +76,6 @@ public class VActionbarItem extends Widget {
     protected VActionbarGroup group;
 
     protected TouchDelegate delegate = new TouchDelegate(this);
-
-    protected List<HandlerRegistration> handlers = new ArrayList<HandlerRegistration>();
 
     protected boolean isEnabled = true;
     
@@ -148,41 +142,27 @@ public class VActionbarItem extends Widget {
 
         DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
 
-        handlers.add(addDomHandler(new MouseDownHandler() {
-
+        addDomHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
                 addStyleName("mousedown");
             }
-        }, MouseDownEvent.getType()));
+        }, MouseDownEvent.getType());
 
-        handlers.add(addDomHandler(new MouseOutHandler() {
-
+        addDomHandler(new MouseOutHandler() {
             @Override
             public void onMouseOut(MouseOutEvent event) {
                 removeStyleName("mousedown");
             }
-        }, MouseOutEvent.getType()));
+        }, MouseOutEvent.getType());
 
-        handlers.add(addDomHandler(new MouseUpHandler() {
-
+        addDomHandler(new MouseUpHandler() {
             @Override
             public void onMouseUp(MouseUpEvent event) {
                 removeStyleName("mousedown");
                 eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItem.this));
             }
-        }, MouseUpEvent.getType()));
-    }
-
-    /**
-     * Unbinds all handlers to freeze visual state and not fire actions.
-     */
-    private void unbindHandlers() {
-        if (handlers != null && !handlers.isEmpty()) {
-            for (HandlerRegistration handler : handlers) {
-                handler.removeHandler();
-            }
-        }
+        }, MouseUpEvent.getType());
     }
 
     public String getName() {
@@ -213,7 +193,6 @@ public class VActionbarItem extends Widget {
             bindHandlers();
         } else if (!isEnabled() && !root.getClassName().contains(ApplicationConnection.DISABLED_CLASSNAME)) {
             root.addClassName(ApplicationConnection.DISABLED_CLASSNAME);
-            unbindHandlers();
         }
     }
     

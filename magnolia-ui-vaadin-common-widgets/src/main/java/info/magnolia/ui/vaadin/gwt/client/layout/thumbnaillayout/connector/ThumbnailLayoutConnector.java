@@ -38,6 +38,7 @@ import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc.ThumbnailLa
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.widget.ThumbnailWidget;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.widget.VLazyThumbnailLayout;
 import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchStartEvent;
+import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,10 +54,12 @@ import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractComponentConnector;
+import com.vaadin.shared.ui.Connect;
 
 /**
  * ThumbnailLayoutConnector.
  */
+@Connect(LazyThumbnailLayout.class)
 public class ThumbnailLayoutConnector extends AbstractComponentConnector {
 
     private final ThumbnailLayoutServerRpc rpc = RpcProxy.create(ThumbnailLayoutServerRpc.class, this);

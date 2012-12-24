@@ -103,7 +103,7 @@ public class AppLauncherViewImpl extends FlowPanel implements AppLauncherView, A
     public void setAppActive(String appName, boolean isActive) {
         for (Entry<String, VAppTileGroup> entry : groups.entrySet()) {
             if (entry.getValue().hasApp(appName)) {
-                final AppTileWidget tile = entry.getValue().getAppTile(appName);
+                AppTileWidget tile = entry.getValue().getAppTile(appName);
                 tile.setActiveState(isActive);
             }
         }
@@ -111,8 +111,8 @@ public class AppLauncherViewImpl extends FlowPanel implements AppLauncherView, A
 
     @Override
     public void addAppTile(AppTile tileData, AppGroup groupData) {
-        final AppTileWidget tile = new AppTileWidget(eventBus, tileData);
-        final VAppTileGroup group = groups.get(groupData.getName());
+        AppTileWidget tile = new AppTileWidget(eventBus, tileData);
+        VAppTileGroup group = groups.get(groupData.getName());
         if (group != null) {
             group.addAppTile(tile);
         }
@@ -120,7 +120,7 @@ public class AppLauncherViewImpl extends FlowPanel implements AppLauncherView, A
     
     @Override
     public void clear() {
-        temporarySectionsBar.clear();
+        temporarySectionsBar.clear(); 
         for (final VAppTileGroup group : groups.values()) {
             remove(group);
         }

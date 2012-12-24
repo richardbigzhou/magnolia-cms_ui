@@ -37,24 +37,24 @@ import info.magnolia.ui.vaadin.integration.terminal.IconFontResource;
 
 import java.lang.reflect.Type;
 
-import org.apache.commons.lang.SerializationException;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.JsonPaintTarget;
 import com.vaadin.server.Resource;
-import com.vaadin.server.ThemeResource;
 
 /**
  * Gson custom serializer to serialize vaadin resources with appropriate uri.
  *
  * @see JsonPaintTarget#addAttribute(String, Resource)
  */
-@SuppressWarnings("deprecation")
+
+/**
+ * TODO - get rid of this class but some iconfont logic should probably stay
+ * ResourceSerializer.
+ */
 public class ResourceSerializer implements JsonSerializer<Resource> {
 
     public static final String RESOURCE_URI_SCHEME_ICONFONT = "iconfont://";
@@ -72,7 +72,7 @@ public class ResourceSerializer implements JsonSerializer<Resource> {
         } else if (src instanceof IconFontResource) {
             return new JsonPrimitive(RESOURCE_URI_SCHEME_ICONFONT + ((IconFontResource) src).getCssClassName());
 
-        } else if (src instanceof ApplicationResource) {
+        }/* else if (src instanceof ApplicationResource) {
             final ApplicationResource r = (ApplicationResource) src;
             final Application a = r.getApplication();
             if (a == null) {
@@ -82,7 +82,7 @@ public class ResourceSerializer implements JsonSerializer<Resource> {
 
         } else if (src instanceof ThemeResource) {
             return new JsonPrimitive(RESOURCE_URI_SCHEME_THEME + ((ThemeResource) src).getResourceId());
-        }
+        }*/
 
         return new JsonPrimitive(src.toString());
     }

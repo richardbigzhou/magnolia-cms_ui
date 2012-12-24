@@ -75,8 +75,7 @@ public class ShellViewport extends DeckLayout implements ViewPort {
     public void setView(final View view) {
         if (view != null) {
             this.view = view;
-            final Component c = this.view.asVaadinComponent();
-            display(c);
+            display(this.view.asVaadinComponent());
             parentShell.setActiveViewport(this);
         }
     }
@@ -92,14 +91,11 @@ public class ShellViewport extends DeckLayout implements ViewPort {
     @Override
     public void display(Component content) {
         super.display(content);
+        getState().activeComponent = content;
         Iterator<Component> iterator = getComponentIterator();
         while (iterator.hasNext()) {
             Component childComponent = iterator.next();
-            if (childComponent == content) {
-                childComponent.setVisible(true);
-            } else {
-                childComponent.setVisible(false);
-            }
+            childComponent.setVisible(childComponent == content);
         }
     }
 }

@@ -60,13 +60,13 @@ import com.googlecode.mgwt.ui.client.theme.base.ScrollPanelCss;
 import com.googlecode.mgwt.ui.client.theme.base.SliderCss;
 import com.googlecode.mgwt.ui.client.theme.base.TabBarCss;
 import com.googlecode.mgwt.ui.client.theme.base.UtilCss;
-import com.vaadin.terminal.gwt.client.ui.VView;
+import com.vaadin.client.ui.VUI;
 
 
 /**
  * Special implementation of {@link VView} that burns mgwt theme styles down.
  */
-public class DesktopVView extends VView {
+public class DesktopVView extends VUI {
 
     public DesktopVView() {
         MGWTStyle.setTheme(new MGWTTheme() {

@@ -97,7 +97,7 @@ public class VActionbarItemTablet extends VActionbarItem {
 
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
 
-        handlers.add(delegate.addTouchStartHandler(new TouchStartHandler() {
+        delegate.addTouchStartHandler(new TouchStartHandler() {
 
             @Override
             public void onTouchStart(com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent event) {
@@ -107,9 +107,9 @@ public class VActionbarItemTablet extends VActionbarItem {
                     holdTimer.schedule(400);
                 }
             }
-        }));
+        });
 
-        handlers.add(delegate.addTouchEndHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler() {
+        delegate.addTouchEndHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler() {
 
             @Override
             public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
@@ -118,10 +118,10 @@ public class VActionbarItemTablet extends VActionbarItem {
 
                 if (!holdingTouch) {
                     eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItemTablet.this));
-                    group.closeHorizontal();
+                    group.setOpenHorizontally(false);
                 }
             }
-        }));
+        });
 
     }
 }

@@ -26,6 +26,22 @@
 	clear:both;
 }
 
+.v-shell-tabsheet-scroller {
+	position:absolute;
+	top: 25px;
+	bottom: 0;
+	width: 100%;
+}
+
+.v-shell-tabsheet-scroller > div { 
+	height: 100%;
+}
+
+.v-shell-tabsheet-tab-wrapper {
+	height: 100%;
+	width: 100%;
+}
+
 /* tabs */
 .v-shell-tabsheet .nav {
     height:24px;

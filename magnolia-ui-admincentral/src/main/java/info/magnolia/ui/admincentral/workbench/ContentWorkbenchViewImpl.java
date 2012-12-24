@@ -118,7 +118,8 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
         viewModes.addComponent(treeButton);
         viewModes.addComponent(listButton);
         viewModes.addComponent(thumbsButton);
-
+        
+        contentViewContainer.addStyleName("v-workbench-content");
         contentViewContainer.setSizeFull();
         contentViewContainer.addComponent(viewModes);
         contentViewContainer.addComponent(viewTypeArrow);

@@ -33,12 +33,16 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.Fragment;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigationEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellMessage.MessageType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ViewportConnector;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget.PreloaderCallback;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
 
 import java.util.Iterator;
@@ -54,6 +58,8 @@ import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractLayoutConnector;
+import com.vaadin.client.ui.layout.ElementResizeEvent;
+import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.communication.SharedState;
 import com.vaadin.shared.ui.Connect;
@@ -65,39 +71,22 @@ import com.vaadin.shared.ui.Connect;
 @Connect(BaseMagnoliaShell.class)
 public class MagnoliaShellConnector extends AbstractLayoutConnector implements MagnoliaShellView.Presenter {
 
-    /**
-     * Enumeration of possible viewport types.
-     */
-    public enum ViewportType {
-        SHELL_APP_VIEWPORT("shell:"), APP_VIEWPORT("app:"), DIALOG_VIEWPORT("");
-
-        private String fragmentPrefix;
-
-        private ViewportType(String fragmentPrefix) {
-            this.fragmentPrefix = fragmentPrefix;
-        }
-        
-        
-        public String getFragmentPrefix() {
-            return fragmentPrefix;
-        }
-
-    }
-
     private ShellServerRpc rpc = RpcProxy.create(ShellServerRpc.class, this);
 
     private MagnoliaShellView view;
 
     private EventBus eventBus = new SimpleEventBus();
 
-    public MagnoliaShellConnector() {
+    @Override
+    protected void init() {
+        super.init();
         addStateChangeHandler(new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent event) {
                 MagnoliaShellState state = getState();
-                Iterator<Entry<ShellAppLauncher.ShellAppType, Integer>> it = getState().indications.entrySet().iterator();
+                Iterator<Entry<ShellAppType, Integer>> it = getState().indications.entrySet().iterator();
                 while (it.hasNext()) {
-                    final Entry<ShellAppLauncher.ShellAppType, Integer> entry = it.next();
+                    final Entry<ShellAppType, Integer> entry = it.next();
                     view.setShellAppIndication(entry.getKey(), entry.getValue());
                 }
                 final Connector active = state.activeViewport;
@@ -130,33 +119,31 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 view.hideAllMessages();
             }
         });
+        
+        getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() { 
+            @Override
+            public void onElementResize(ElementResizeEvent e) {
+                view.updateShellDivet();
+            }
+        });
     }
-
+    
     @Override
-    public void updateCaption(ComponentConnector connector) {
-
-    }
+    public void updateCaption(ComponentConnector connector) {}
 
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {
         List<ComponentConnector> children = getChildComponents();
-        
         for (ComponentConnector connector : children) {
             final ViewportConnector vc = (ViewportConnector)connector;
             view.updateViewport(vc.getWidget(), vc.getType());
         }
-        
-//      }
-//      boolean handleCurrentHistory = !proxy.isClientInitialized();
-//      proxy.update(this, uidl, client);
-//      if (handleCurrentHistory) {
-//          History.fireCurrentHistoryState();
-//      }
     }
 
     @Override
     protected Widget createWidget() {
         this.view = new MagnoliaShellViewImpl(eventBus);
+        this.view.setPresenter(this);
         return view.asWidget();
     }
 
@@ -176,23 +163,18 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     }
 
     @Override
-    public void loadApp(String appId, String subAppId, String parameter) {
-        rpc.activateApp(appId, subAppId, parameter);
+    public void activateRunningApp(Fragment fragment) {
+        rpc.activateRunningApp(fragment);
     }
 
     @Override
-    public void loadShellApp(ShellAppType shellAppType, String token) {
-        rpc.activateShellApp(shellAppType.name().toLowerCase(), token);
+    public void loadShellApp(Fragment f) {
+        rpc.activateShellApp(f);
     }
 
     @Override
     public void updateViewportLayout(ViewportWidget activeViewport) {
         // client.runDescendentsLayout(viewport);
-    }
-
-    @Override
-    public void destroyChild(Widget child) {
-
     }
 
     @Override
@@ -221,29 +203,41 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     }
 
     @Override
-    public void startApp(String appId, String subAppId, String parameter) {
-        rpc.startApp(appId, subAppId, parameter);
+    public void startApp(Fragment dto) {
+        rpc.startApp(dto);
     }
 
     @Override
     public void handleHistoryChange(String fragment) {
-        /*
-         * if (!proxy.isClientInitialized()) { return; } final FragmentDTO dto =
-         * FragmentDTO.fromFragment(fragment); if (dto.getAppType() ==
-         * FragmentType.SHELL_APP) { eventBus.fireEvent(new
-         * ShellAppNavigationEvent(ShellAppType.resolveType(dto.getAppId()),
-         * dto.getParameter())); } else { final String appId = dto.getAppId();
-         * final String subAppId = dto.getSubAppId(); final String parameter =
-         * dto.getParameter(); if (isAppRegistered(appId)) { if
-         * (!isAppRunning(appId)) { view.showAppPreloader(appId, new
-         * PreloaderCallback() {
-         * 
-         * @Override public void onPreloaderShown(String appName) {
-         * startApp(appName, subAppId, parameter); } }); } else { loadApp(appId,
-         * "", parameter); } } else { eventBus.fireEvent(new
-         * ShellAppNavigationEvent(ShellAppType.APPLAUNCHER,
-         * dto.getParameter())); } }
-         */
+        final Fragment dto = Fragment.fromFragment(fragment);
+        if (dto.getAppViewportType() == ViewportType.SHELL_APP_VIEWPORT) {
+            eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.resolveType(dto.getAppId()), dto.getParameter()));
+        } else {
+            final String appId = dto.getAppId();
+            if (isAppRegistered(appId)) {
+                if (!isAppRunning(appId)) {
+                    view.showAppPreloader(appId, new PreloaderCallback() {
+                        @Override
+                        public void onPreloaderShown(String appName) {
+                            startApp(dto);
+                        }
+                    });
+                } else {
+                    activateRunningApp(dto);
+                }
+            } else {
+                goToAppLauncher(dto.getParameter());
+            }
+        }
     }
 
+    @Override
+    public Widget getShellAppWidget(ShellAppType type) {
+        final Connector c = getState().shellApps.get(type);
+        return c != null ? ((ComponentConnector)c).getWidget() : null; 
+    }
+    
+    private void goToAppLauncher(String parameter) {
+        eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.APPLAUNCHER, parameter));
+    }
 }

@@ -40,7 +40,8 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigation
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ShellNavigationAdapter;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ShellNavigationHandler;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -86,6 +87,9 @@ public class ShellAppLauncher extends FlowPanel {
 
     private class NavigatorButton extends FlowPanel {
 
+        /**
+         * TODO - HANDLE ICONS.
+         */
         //private final GwtBadgeIcon indicator = new GwtBadgeIcon();
 
         private final TouchDelegate delegate = new TouchDelegate(this);
@@ -94,8 +98,8 @@ public class ShellAppLauncher extends FlowPanel {
             super();
             addStyleName("btn-shell");
             Element root = getElement();
-            root.setId("btn-" + type.getClassId());
-            root.addClassName("icon-" + type.getClassId());
+            root.setId("btn-" + type.getCssClass());
+            root.addClassName("icon-" + type.getCssClass());
 
             /**
              * TODO:
@@ -132,42 +136,6 @@ public class ShellAppLauncher extends FlowPanel {
     private final native void log(String msg) /*-{
         $wnd.console.log(msg);
     }-*/;
-
-    /**
-     * Type of the "shell app" to be loaded.
-     */
-    public static enum ShellAppType {
-        APPLAUNCHER("appslauncher"), PULSE("pulse"), FAVORITE("favorites");
-
-        private String classId;
-
-        public String getClassId() {
-            return classId;
-        }
-
-        private ShellAppType(final String classId) {
-            this.classId = classId;
-        }
-
-        public static String getTypeByFragmentId(final String id) {
-            for (final ShellAppType type : ShellAppType.values()) {
-                if (type.name().equalsIgnoreCase(id)) {
-                    return type.name();
-                }
-            }
-            return ShellAppType.APPLAUNCHER.name();
-        }
-
-        public static ShellAppType resolveType(String id) {
-            ShellAppType result = null;
-            try {
-                result = ShellAppType.valueOf(id);
-            } catch (Exception e) {
-                return ShellAppType.APPLAUNCHER;
-            }
-            return result;
-        }
-    };
 
     private int expandedHeight = 0;
 

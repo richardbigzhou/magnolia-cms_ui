@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
-import info.magnolia.ui.vaadin.applauncher.AppLauncher;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
 
 
@@ -47,15 +46,6 @@ public class ShellAppsViewport extends ShellViewport {
         super(shell);
         addStyleName("shellapps");
         getState().type = ViewportType.SHELL_APP_VIEWPORT;
-        
-        final AppLauncher al = new AppLauncher();
-        al.addAppGroup("test", "test", "blue", true, false);
-        al.addAppTile("Test", "Test", "sample", "test");
-        
-        al.addAppGroup("test1", "test1", "red", false, true);
-        al.addAppTile("Test1", "Test1", "sample", "test1");
-        
-        addComponent(al);
     }
 
 }

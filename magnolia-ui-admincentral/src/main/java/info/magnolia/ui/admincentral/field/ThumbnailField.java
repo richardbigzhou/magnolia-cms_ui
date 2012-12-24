@@ -42,23 +42,24 @@ import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 
 /**
  * A base custom field comprising of a Thumbnail and related image information.
  * This Field is waiting for path Node value.
  */
-public class ThumbnailField extends CustomField{
+public class ThumbnailField extends CustomField<String> {
     private static final Logger log = LoggerFactory.getLogger(ThumbnailField.class);
     private HorizontalLayout layout;
     private Label label;
-    private Embedded embedded;
+    private Image embedded = new Image();
 
     private ImageProvider imageThumbnailProvider;
     private String workspace;
@@ -69,33 +70,31 @@ public class ThumbnailField extends CustomField{
         this.imageThumbnailProvider = imageThumbnailProvider;
         this.workspace = workspace;
 
-        // Init layout
-        label = new Label("", Label.CONTENT_XHTML);
+        label = new Label("", ContentMode.HTML);
         label.addStyleName("thumbnail-info");
-        embedded = new Embedded(null);
-        embedded.setType(Embedded.TYPE_IMAGE);
-        layout = new HorizontalLayout();
-
-        layout.addComponent(embedded);
-        layout.addComponent(label);
-        setCompositionRoot(layout);
 
         addStyleName("thumbnail-field");
         setSizeUndefined();
     }
 
     @Override
-    public Class< ? > getType() {
+    protected Component initContent() {
+        layout = new HorizontalLayout();
+        layout.addComponent(embedded);
+        layout.addComponent(label);
+        return layout;
+    }
+    
+    @Override
+    public Class<String> getType() {
         return String.class;
     }
 
     /**
      * Create a value change listener in order to refresh the View.
      */
-    public void ValueChangeListener(Field field) {
-
-        field.addListener(new ValueChangeListener() {
-
+    public void ValueChangeListener(Field<?> field) {
+        field.addValueChangeListener(new ValueChangeListener() {
             @Override
             public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
                 try {
@@ -108,11 +107,7 @@ public class ThumbnailField extends CustomField{
                         // Set Thumbnail
                         String path = imageThumbnailProvider.getPortraitPath(workspace, parentNode.getPath());
                         layout.removeComponent(embedded);
-                        if(path != null) {
-                            embedded = new Embedded("", new ExternalResource(path));
-                        } else {
-                            embedded = new Embedded(null);
-                        }
+                        embedded = path != null ? new Image("", new ExternalResource(path)) : new Image(null);
                         layout.addComponent(embedded);
                     }
                 } catch (RepositoryException e) {

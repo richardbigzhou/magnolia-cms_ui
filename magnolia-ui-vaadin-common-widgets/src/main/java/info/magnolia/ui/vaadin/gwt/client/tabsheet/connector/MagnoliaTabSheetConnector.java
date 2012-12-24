@@ -43,7 +43,7 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.rpc.MagnoliaTabSheetServerRpc
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.connector.MagnoliaTabConnector;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.widget.MagnoliaTabSheetView;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.widget.VMagnoliaTabSheetViewImpl;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.widget.MagnoliaTabSheetViewImpl;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
 import java.util.List;
@@ -58,7 +58,6 @@ import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractComponentContainerConnector;
-import com.vaadin.shared.communication.SharedState;
 import com.vaadin.shared.ui.Connect;
 
 
@@ -81,19 +80,9 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
     }
 
     @Override
-    public Widget getWidget() {
-        return super.getWidget();
-    }
-
-    @Override
     protected Widget createWidget() {
-        this.view = new VMagnoliaTabSheetViewImpl(eventBus, this);
-        return super.createWidget();
-    }
-
-    @Override
-    protected SharedState createState() {
-        return super.createState();
+        this.view = new MagnoliaTabSheetViewImpl(eventBus, this);
+        return view.asWidget();
     }
 
     @Override
@@ -104,8 +93,10 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
             @Override
             public void onStateChanged(StateChangeEvent event) {
                 final MagnoliaTabConnector tabConnector = (MagnoliaTabConnector)getState().activeTab;
-                view.setActiveTab(tabConnector.getWidget());
-                eventBus.fireEvent(new ActiveTabChangedEvent(tabConnector.getWidget(), false));
+                if (tabConnector != null) {
+                    view.setActiveTab(tabConnector.getWidget());
+                    eventBus.fireEvent(new ActiveTabChangedEvent(tabConnector.getWidget(), false));   
+                }
             }
         });
         
@@ -174,7 +165,9 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
 
     @Override
     public void updateLayoutOfActiveTab() {
-        getLayoutManager().setNeedsMeasure((ComponentConnector)getState().activeTab);
+        if (getState().activeTab != null) {
+            getLayoutManager().setNeedsMeasure((ComponentConnector)getState().activeTab);   
+        }
     }
 
     @Override

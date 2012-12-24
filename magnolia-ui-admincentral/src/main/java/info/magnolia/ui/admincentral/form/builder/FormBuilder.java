@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.admincentral.form.builder;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.Field;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.field.FieldBuilder;
 import info.magnolia.ui.admincentral.field.builder.FieldFactory;
@@ -46,7 +43,12 @@ import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.model.form.definition.TabDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
+
 import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Field;
 
 /**
  * Builder for forms.
@@ -76,13 +78,13 @@ public class FormBuilder {
         }
 
         for (TabDefinition tabDefinition : formDefinition.getTabs()) {
-            final FormTab tab = new FormTab(tabDefinition);
+            FormTab tab = new FormTab(tabDefinition);
             tab.setParent(form);
             for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
                 final FieldBuilder formField = fieldFactory.create(fieldDefinition, item);
                 if (formField != null) {
                     formField.setParent(tab);
-                    final Field field = formField.getField();
+                    final Field<?> field = formField.getField();
                     if (field instanceof AbstractComponent) {
                         ((AbstractComponent)field).setImmediate(true);
                     }
@@ -90,9 +92,9 @@ public class FormBuilder {
                     if(StringUtils.isNotBlank(fieldDefinition.getDescription())) {
                         tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
                     }
-                    view.addField(field);
                 }
             }
+            
             view.addFormSection(tab.getMessage(tabDefinition.getLabel()), tab.getContainer());
         }
         view.setShowAllEnabled(formDefinition.getTabs().size() > 1);

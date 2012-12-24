@@ -33,10 +33,9 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.loading.LoadingPane;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -47,7 +46,6 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
-import com.vaadin.client.ApplicationConnection;
 
 
 /**
@@ -55,37 +53,24 @@ import com.vaadin.client.ApplicationConnection;
  */
 public class ViewportWidget extends FlowPanel {
 
-    protected ApplicationConnection client;
+    //private LoadingPane loadingPane = new LoadingPane();
 
     private Widget visibleApp;
+
+    private EventBus eventBus;
     
+    private TransitionDelegate transitionDelegate;
+
     private boolean active;
 
     private boolean closing;
-
-    private EventBus eventBus;
-
-    private final TouchDelegate touchDelegate = new TouchDelegate(this);
-
-    private TransitionDelegate transitionDelegate;
-
-    private final LoadingPane loadingPane = new LoadingPane();
-
+    
     public ViewportWidget() {
         super();
         addStyleName("v-viewport");
+        //loadingPane.appendTo(this);
         DOM.sinkEvents(this.getElement(), Event.TOUCHEVENTS);
-        bindHandlers();
-        loadingPane.appendTo(this);
-    }
-
-    public void showLoadingPane() {
-        loadingPane.show();
-    }
-
-    private void bindHandlers() {
-        touchDelegate.addTouchEndHandler(new TouchEndHandler() {
-
+        new TouchDelegate(this).addTouchEndHandler(new TouchEndHandler() {
             @Override
             public void onTouchEnd(TouchEndEvent event) {
                 final Element target = event.getNativeEvent().getEventTarget().cast();
@@ -94,6 +79,10 @@ public class ViewportWidget extends FlowPanel {
                 }
             }
         });
+    }
+
+    public void showLoadingPane() {
+        //loadingPane.show();
     }
 
     public EventBus getEventBus() {
@@ -180,5 +169,4 @@ public class ViewportWidget extends FlowPanel {
     void doRemoveWidget(Widget w) {
         remove(w);
     }
-
 }

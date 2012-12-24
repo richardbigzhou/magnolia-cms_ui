@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.instantpreview;
 
 import info.magnolia.ui.framework.app.AbstractSubApp;
-import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.instantpreview.InstantPreviewDispatcher;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
@@ -48,12 +48,13 @@ import javax.inject.Inject;
  */
 public class InstantPreviewAppMainSubApp extends AbstractSubApp implements InstantPreviewView.Listener {
 
-    private AppContext appContext;
+    private SubAppContext appContext;
     private InstantPreviewView view;
     private InstantPreviewDispatcher dispatcher;
 
     @Inject
-    public InstantPreviewAppMainSubApp(AppContext appContext, InstantPreviewView view, InstantPreviewDispatcher dispatcher) {
+    public InstantPreviewAppMainSubApp(SubAppContext appContext, InstantPreviewView view, InstantPreviewDispatcher dispatcher) {
+        super(appContext, view);
         this.appContext = appContext;
         this.view = view;
         this.dispatcher = dispatcher;
@@ -97,7 +98,7 @@ public class InstantPreviewAppMainSubApp extends AbstractSubApp implements Insta
         message.setMessage(msg);
         message.setType(type);
         message.setSubject(getCaption());
-        appContext.sendLocalMessage(message);
+        appContext.getAppContext().sendLocalMessage(message);
     }
 
 }

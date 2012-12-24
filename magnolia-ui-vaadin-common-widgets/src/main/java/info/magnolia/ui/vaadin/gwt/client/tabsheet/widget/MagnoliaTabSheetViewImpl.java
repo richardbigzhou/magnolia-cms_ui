@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.gwt.client.tabsheet.widget;
 
 
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.loading.LoadingPane;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent;
@@ -46,6 +45,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
@@ -54,7 +54,6 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.vaadin.client.Util;
 
 /**
  * VShellTabSheetViewImpl.
@@ -63,7 +62,7 @@ import com.vaadin.client.Util;
  * this enables a single showing tab to be scrolled - or the contents of all the tabs to be scrolled together when they are stacked in the
  * 'ShowAllTabs' mode.
  */
-public class VMagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSheetView {
+public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSheetView {
 
     private final ScrollPanel scroller = new ScrollPanel();
 
@@ -83,7 +82,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabS
 
     private final EventBus eventBus;
     
-    public VMagnoliaTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
+    public MagnoliaTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
         this.presenter = presenter;
         this.tabContainer =  new VMagnoliaTabNavigator(eventBus);
@@ -95,9 +94,9 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabS
         add(tabContainer);
         add(scroller);
         scroller.setWidget(tabPanel);
-
-        loadingPane.appendTo(tabPanel);
-        loadingPane.hide();
+        scroller.getElement().getStyle().setPosition(Position.ABSOLUTE);
+        //loadingPane.appendTo(tabPanel);
+        //loadingPane.hide();
     }
 
     @Override
@@ -120,13 +119,10 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabS
     @Override
     public void setActiveTab(final MagnoliaTabWidget tab) {
         loadingPane.show();
-
         // Hide all tabs
         showAllTabContents(false);
-
         tab.getElement().getStyle().setDisplay(Display.BLOCK);
         activeTab = tab;
-
         // updateLayout in a 10ms Timer so that the browser has a chance to show the indicator before the processing begins.
         new Timer() {
             @Override
@@ -136,9 +132,6 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabS
                 fireEvent(new ActiveTabChangedEvent(tab));
             }
         }.schedule(10);
-
-
-
     }
 
     @Override
@@ -166,7 +159,9 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabS
         }
     }
 
-    @Override
+    /**
+     * TODO: Restore full screen stuff.
+     * @Override
     public void setHeight(String height) {
         super.setHeight(height);
         if (!isActiveTabFullscreen && !height.isEmpty()) {
@@ -177,7 +172,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabS
             scroller.setHeight(RootPanel.get().getOffsetHeight() + "px");
         }
         Util.runWebkitOverflowAutoFix(scroller.getElement());
-    }
+    }*/
 
     @Override
     protected void onLoad() {
@@ -214,14 +209,16 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabS
         }
     }
 
-    @Override
+    /**
+     * TODO: V7 review fullscreen.
+     * @Override
     public int getTabHeight(MagnoliaTabWidget tab) {
         if (!isActiveTabFullscreen || tab != getActiveTab()) {
             return getOffsetHeight() - tabContainer.getOffsetHeight();
         } else {
             return RootPanel.get().getOffsetHeight();
         }
-    }
+    }*/
     
     @Override
     public HandlerRegistration addTabSetChangedHandlers(Handler handler) {

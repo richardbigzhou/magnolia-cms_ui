@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.admincentral.components.SplitFeed;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -49,20 +48,17 @@ public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
 
     //private final SplitFeed splitPanel = new SplitFeed();
 
-    private String id = ShellAppType.FAVORITE.getClassId();
-
     @Override
     public String getId(){
-        return id;
+        return "favorite";
     }
 
 
     public FavoritesViewImpl() {
         super();
         addStyleName("favorites");
-        //setHeight("100%");
+        setHeight("100%");
         setWidth("900px");
-        this.setDebugId(id);
         construct();
     }
 

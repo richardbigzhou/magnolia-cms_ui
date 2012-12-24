@@ -44,7 +44,7 @@ import com.vaadin.shared.annotations.DelegateToWidget;
 public class ThumbnailLayoutState extends AbstractComponentState {
 
     @DelegateToWidget
-    public int thumbnailsAmount = 0;
+    public int thumbnailAmount = 0;
 
     public ThumbnailSize size = new ThumbnailSize();
     

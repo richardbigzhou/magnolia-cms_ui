@@ -97,8 +97,8 @@ public class CssRule {
         }
 
         var theRules = new Array();
-        if (sheet.CssRules)
-            theRules = sheet.CssRules
+        if (sheet.cssRules)
+            theRules = sheet.cssRules
         else if (sheet.rules)
             theRules = sheet.rules
 
@@ -173,8 +173,8 @@ public class CssRule {
         var sheet = sheets[i];
         if(sheet.href && sheet.href.indexOf("VAADIN/themes")>-1) {
             if(sheet.insertRule) {
-                sheet.insertRule(selector + "{}", sheet.CssRules.length);
-                var r = sheet.CssRules[sheet.CssRules.length-1];
+                sheet.insertRule(selector + "{}", sheet.cssRules.length);
+                var r = sheet.cssRules[sheet.cssRules.length-1];
             } else { // IE
                 sheet.addRule(selector, "foo:bar");
                 var r = sheet.rules[sheet.rules.length-1];

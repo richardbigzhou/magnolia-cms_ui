@@ -42,6 +42,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -84,7 +85,6 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         layout = new CssLayout();
         layout.setSizeUndefined();
         setRootLayout(createDropZone(layout));
-        setCompositionRoot(getRootLayout());
 
         addStyleName("upload-image-field");
         addStyleName("no-horizontal-drag-hints");
@@ -94,6 +94,11 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         createCancelButton();
         createDeleteButton();
         createFileDetail();
+    }
+    
+    @Override
+    protected Component initContent() {
+        return getRootLayout();
     }
 
     /**
@@ -123,7 +128,7 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         layout.removeAllComponents();
         setUploadButtonCaption(selectImageCaption);
         layout.addComponent(getDefaultComponent(DefaultComponent.UPLOAD));
-        Label uploadText = new Label(dragHintCaption, Label.CONTENT_XHTML);
+        Label uploadText = new Label(dragHintCaption, ContentMode.HTML);
         uploadText.addStyleName("upload-text");
         layout.addComponent(uploadText);
         getRootLayout().removeStyleName("start");
@@ -168,7 +173,7 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
 
         //Create preview Image
         if(preview && !fileItem.isEmpty()) {
-            Component preview = fileItem.createPreview(getApplication());
+            Component preview = fileItem.createPreview();
             layout.addComponent(preview);
         }
         getRootLayout().addStyleName("upload");
@@ -196,7 +201,7 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
 
     @Override
     public Component createPreviewComponent() {
-        Component preview = this.fileItem.createPreview(getApplication());
+        Component preview = this.fileItem.createPreview();
         getDefaultComponents().put(DefaultComponent.PREVIEW, preview);
         return preview;
     }

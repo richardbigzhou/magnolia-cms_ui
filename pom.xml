@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>info.magnolia</groupId>
@@ -69,38 +70,13 @@
         <artifactId>icepush</artifactId>
         <version>3.0.1</version>
       </dependency>
-      <dependency>
-        <groupId>org.vaadin.addons</groupId>
-        <artifactId>css-tools</artifactId>
-        <version>0.3</version>
-      </dependency>
-      <!-- The autoreplace addon should be used only by instant-preview app,
-         which is currently disabled. Should it be not re-enabled the dep can be removed.
-         See SCRUM-1670 -->
-      <dependency>
-        <groupId>org.vaadin.addons</groupId>
-        <artifactId>autoreplacefield</artifactId>
-        <version>1.0.1</version>
-      </dependency>
+      <!-- The autoreplace addon should be used only by instant-preview app, 
+        which is currently disabled. Should it be not re-enabled the dep can be removed. 
+        See SCRUM-1670 -->
       <dependency>
         <groupId>org.icepush</groupId>
         <artifactId>icepush-gwt</artifactId>
         <version>2.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.vaadin.addon</groupId>
-        <artifactId>propertytranslator</artifactId>
-        <version>0.0.2</version>
-      </dependency>
-      <dependency>
-        <groupId>org.vaadin.addons</groupId>
-        <artifactId>easyuploads</artifactId>
-        <version>0.5.1</version>
-      </dependency>
-      <dependency>
-        <groupId>org.vaadin.addons</groupId>
-        <artifactId>ckeditor-wrapper-for-vaadin</artifactId>
-        <version>1.6.7</version>
       </dependency>
       <dependency>
         <groupId>org.vaadin.addons</groupId>
@@ -112,45 +88,57 @@
         <artifactId>filters</artifactId>
         <version>2.0.235</version>
       </dependency>
-      
-      
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-server</artifactId>
-			<version>${vaadinVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-client-compiled</artifactId>
-			<version>${vaadinVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-client</artifactId>
-			<version>${vaadinVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-themes</artifactId>
-			<version>${vaadinVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.4</version>
-			<scope>provided</scope>
-		</dependency>
 
-		<!-- this replaces gwt-dev.jar -->
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-client-compiler</artifactId>
-			<version>${vaadinVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-    
-    
+
+      <dependency>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-server</artifactId>
+        <version>${vaadinVersion}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-client-compiled</artifactId>
+        <version>${vaadinVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-client</artifactId>
+        <version>${vaadinVersion}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-themes</artifactId>
+        <version>${vaadinVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.4</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <!-- this replaces gwt-dev.jar -->
+      <dependency>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-client-compiler</artifactId>
+        <version>${vaadinVersion}</version>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+
       <dependency>
         <groupId>com.googlecode.mgwt</groupId>
         <artifactId>mgwt</artifactId>

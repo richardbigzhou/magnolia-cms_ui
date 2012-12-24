@@ -46,7 +46,7 @@ public class UniqueRoleIdValidator extends AbstractStringValidator {
     }
 
     @Override
-    protected boolean isValidString(String value) {
+    protected boolean isValidValue(String value) {
         if (Security.getRoleManager().getRole(value) != null) {
             // role with such name already exists
             return false;

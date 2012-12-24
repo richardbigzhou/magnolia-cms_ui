@@ -38,7 +38,7 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.vaadin.applauncher.AppLauncher;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import com.vaadin.ui.Component;
 
@@ -56,7 +56,7 @@ import com.vaadin.ui.Component;
 public class AppLauncherViewImpl  implements AppLauncherView {
 
 
-    private String id=ShellAppType.APPLAUNCHER.getClassId();
+    private String id = ShellAppType.APPLAUNCHER.getCssClass();
 
     @Override
     public String getId(){

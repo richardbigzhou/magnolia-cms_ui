@@ -76,7 +76,7 @@ public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFi
 
         // THEN
         assertEquals(true, field.getDefaultComponent(DefaultComponent.UPLOAD).isVisible());
-        assertEquals(true, field.getRootLayout() instanceof DragAndDropWrapper);
+        assertEquals(true, (field.getRootLayout() instanceof DragAndDropWrapper));
     }
 
 

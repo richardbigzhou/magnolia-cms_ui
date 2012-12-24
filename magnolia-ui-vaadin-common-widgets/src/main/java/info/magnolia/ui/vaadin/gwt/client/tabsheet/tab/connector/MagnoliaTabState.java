@@ -40,12 +40,12 @@ import com.vaadin.shared.AbstractComponentState;
  */
 public class MagnoliaTabState extends AbstractComponentState {
 
-    public boolean isClosable;
+    public boolean isClosable = false;
     
-    public boolean hasError;
+    public boolean hasError = false;
     
-    public boolean isNotificationHidden;
+    public boolean isNotificationHidden = true;
     
-    public String notification;
+    public String notification = null;
     
 }

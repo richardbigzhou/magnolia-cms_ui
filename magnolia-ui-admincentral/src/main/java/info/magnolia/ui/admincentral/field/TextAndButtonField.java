@@ -36,10 +36,11 @@ package info.magnolia.ui.admincentral.field;
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ReadOnlyException;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.data.util.converter.Converter.ConversionException;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeButton;
@@ -51,20 +52,20 @@ import com.vaadin.ui.TextField;
  * A {@link PropertyTranslator} can be set in order to have a different display and property stored.
  * For example, display can be the Item path and value stored is the identifier of the Item.
  */
-public class TextAndButtonField extends CustomField {
+public class TextAndButtonField extends CustomField<String> {
 
     private final Button selectButton;
     
     private final TextField textField;
     
-    private final PropertyTranslator translator;
+    private final Converter<String, ?> converter;
     
     private final String buttonCaptionNew;
     
     private final String buttonCaptionOther;
 
-    public TextAndButtonField(PropertyTranslator translator, String buttonCaptionNew, String buttonCaptionOther) {
-        this.translator = translator;
+    public TextAndButtonField(Converter<String, ?> converter, String buttonCaptionNew, String buttonCaptionOther) {
+        this.converter = converter;
         this.buttonCaptionNew = buttonCaptionNew;
         this.buttonCaptionOther = buttonCaptionOther;
         
@@ -75,16 +76,18 @@ public class TextAndButtonField extends CustomField {
         
         selectButton = new NativeButton();
         selectButton.addStyleName("btn-form btn-form-select");
+    }
 
+    @Override
+    protected Component initContent() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setWidth("100%");
         layout.addComponent(textField);
         layout.addComponent(selectButton);
         layout.setComponentAlignment(selectButton, Alignment.MIDDLE_CENTER);
-        
-        setCompositionRoot(layout);
+        return layout;
     }
-
+    
     public TextField getTextField() {
         return this.textField;
     }
@@ -95,14 +98,14 @@ public class TextAndButtonField extends CustomField {
 
 
     @Override
-    public Object getValue() {
+    public String getValue() {
         return textField.getValue();
     }
 
     @Override
-    public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+    public void setValue(String newValue) throws ReadOnlyException, ConversionException {
         textField.setValue(newValue);
-        setButtonCaption(newValue.toString());
+        setButtonCaption(newValue);
     }
 
     /**
@@ -110,28 +113,24 @@ public class TextAndButtonField extends CustomField {
      * If the translator is not null, set it as datasource.
      */
     @Override
+    @SuppressWarnings("rawtypes")
     public void setPropertyDataSource(Property newDataSource) {
-        if(translator!=null) {
-            translator.setPropertyDataSource(newDataSource);
-            textField.setPropertyDataSource(translator);
-        } else {
-            textField.setPropertyDataSource(newDataSource);
+        if(converter!=null) {
+            textField.setConverter(converter);
         }
+        textField.setPropertyDataSource(newDataSource);
         setButtonCaption(newDataSource.getValue().toString());
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public Property getPropertyDataSource() {
-        if(translator!=null) {
-            return translator.getPropertyDataSource();
-        } else {
-            return textField.getPropertyDataSource();
-        }
+        return textField.getPropertyDataSource();
     }
 
     @Override
-    public Class<?> getType() {
-        return getPropertyDataSource().getType();
+    public Class<String> getType() {
+        return String.class;
     }
 
     private void setButtonCaption(String value) {

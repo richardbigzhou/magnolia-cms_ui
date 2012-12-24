@@ -38,9 +38,7 @@ import info.magnolia.ui.admincentral.field.translator.Base64Translator;
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.data.util.converter.Converter.ConversionException;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Label;
@@ -76,6 +74,7 @@ public class PasswordFields extends CustomField<String> {
         // Initialize encoder
         if(encode) {
             this.translator = new Base64Translator();
+            passwordField.setConverter(translator);
         }
     }
 
@@ -133,7 +132,7 @@ public class PasswordFields extends CustomField<String> {
     }
 
     @Override
-    public Object getValue() {
+    public String getValue() {
         return passwordField.getValue();
     }
 
@@ -143,27 +142,16 @@ public class PasswordFields extends CustomField<String> {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void setPropertyDataSource(Property newDataSource) {
-        if(translator != null) {
-            translator.setPropertyDataSource(newDataSource);
-            passwordField.setPropertyDataSource(translator);
-        } else {
-            passwordField.setPropertyDataSource(newDataSource);
-        }
-
+        passwordField.setPropertyDataSource(newDataSource);
         if(this.verification) {
             verificationField.setValue(new String (passwordField.getPropertyDataSource().getValue().toString()));
         }
     }
 
     @Override
-    public Property getPropertyDataSource() {
-        Property property = null;
-        if(translator != null) {
-            property = translator.getPropertyDataSource();
-        } else {
-            property = passwordField.getPropertyDataSource();
-        }
-        return property;
+    public Property<?> getPropertyDataSource() {
+        return passwordField.getPropertyDataSource();
     }
 }

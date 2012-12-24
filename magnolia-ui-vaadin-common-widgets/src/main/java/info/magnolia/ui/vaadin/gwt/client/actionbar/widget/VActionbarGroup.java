@@ -49,15 +49,13 @@ public class VActionbarGroup extends ComplexPanel {
 
     private static final String CLASSNAME = "v-actionbar-group";
 
+    private boolean isOpenHorizontal = false;
+    
     private final Element list = DOM.createElement("ul");
 
     private final List<VActionbarItem> actions = new ArrayList<VActionbarItem>();
 
     private final String name;
-
-    private boolean isOpenHorizontal = false;
-
-
 
     /**
      * Instantiates a new action bar group.
@@ -81,14 +79,13 @@ public class VActionbarGroup extends ComplexPanel {
         }
     }
 
-    public void closeHorizontal(){
-        isOpenHorizontal = false;
-        removeStyleName("open");
-    }
-
-    public void openHorizontal(){
-        isOpenHorizontal = true;
-        addStyleName("open");
+    public void setOpenHorizontally(boolean isOpenHorizontally) {
+        this.isOpenHorizontal = isOpenHorizontally;
+        if (isOpenHorizontal) {
+            addStyleName("open");      
+        } else {
+            removeStyleName("open");
+        }
     }
 
     @Override
@@ -109,6 +106,5 @@ public class VActionbarGroup extends ComplexPanel {
         add(action);
     }
 
-    public void update() {
-    }
+    public void update() {}
 }

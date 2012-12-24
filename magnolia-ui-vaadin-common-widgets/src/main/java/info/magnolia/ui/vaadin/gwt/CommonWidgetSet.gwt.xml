@@ -3,13 +3,11 @@
 	<!-- WS Compiler: manually edited -->
 	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
 
-	<inherits name="org.vaadin.autoreplacefield.AutoreplacefieldWidgetset" />
-	<inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
-	<inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
-	<inherits name="org.vaadin.csstools.CssToolsWidgetset" />
-	<inherits name='org.vaadin.artur.superdevmode.SuperdevmodeaddonWidgetset' />
-	<inherits name="org.vaadin.rpc.WidgetRPC" />
-
+	<!--<inherits name="org.vaadin.autoreplacefield.AutoreplacefieldWidgetset" />
+	  <inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
+	
+	<inherits name='org.vaadin.artur.superdevmode.SuperdevmodeaddonWidgetset' />-->
+    <inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
 	<inherits name='com.googlecode.mgwt.dom.DOM' />
 	<inherits name='com.googlecode.mgwt.ui.UI' />
 
@@ -19,8 +17,9 @@
 
     <stylesheet src="imageeditor/styles.css"/>
   
-	<inherits
-		name='org.vaadin.openesignforms.ckeditor.widgetset.VaadinCKEditorWidgetset' />
+    <!--  -->
+	<!--  <inherits
+		name='org.vaadin.openesignforms.ckeditor.widgetset.VaadinCKEditorWidgetset' />-->
 
 	<replace-with
 		class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariTouchWidgetImplProxy">

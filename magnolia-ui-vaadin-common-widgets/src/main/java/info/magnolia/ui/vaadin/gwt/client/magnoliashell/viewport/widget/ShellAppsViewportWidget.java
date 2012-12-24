@@ -34,10 +34,8 @@
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigationEvent;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate;
 
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -51,16 +49,6 @@ public class ShellAppsViewportWidget extends ViewportWidget {
     public ShellAppsViewportWidget() {
         super();
         setTransitionDelegate(TransitionDelegate.SHELL_APPS_TRANSITION_DELEGATE);
-    }
-
-    /**
-     * Gets a shell app widget if it has already been loaded in the viewport.
-     * 
-     * @param type the shell app type
-     * @return the shell app widget
-     */
-    public Widget getShellAppByType(ShellAppType type) {
-        return new FlowPanel();//TODO: (Widget) client.getPaintable("PID_S" + type.getClassId());
     }
 
     /* SERVER REFRESH AFTER CLIENT TRANSITIONS */
@@ -90,10 +78,6 @@ public class ShellAppsViewportWidget extends ViewportWidget {
     @Override
     public void doSetVisibleApp(Widget w) {
         super.doSetVisibleApp(w);
-        /**
-         * FIXME: verify it is not needed anymore.
-         */
-        //iLayout();
         if (getTransitionDelegate() == null) {
             refreshShellApp();
         }

@@ -56,8 +56,8 @@ public class DeckLayout extends AbstractComponentContainer {
 
     @Override
     public void addComponent(Component c) {
-        // Check first if this is the same as the currently shown, saves a paint request and eliminates flicker
-        if (children.isEmpty() || children.getFirst() == c) {
+        // Check first if this is the same as the currently shown, eliminates flicker
+        if (children.isEmpty() || children.getFirst() != c) {
             super.addComponent(c);
             if (children.contains(c)) {
                 children.remove(c);
@@ -90,8 +90,7 @@ public class DeckLayout extends AbstractComponentContainer {
     
     public void pop() {
         if (!children.isEmpty()) {
-            final Component currentVisible = children.removeFirst();
-            removeComponent(currentVisible);
+            removeComponent(children.removeFirst());
             markAsDirty();
         } 
     }

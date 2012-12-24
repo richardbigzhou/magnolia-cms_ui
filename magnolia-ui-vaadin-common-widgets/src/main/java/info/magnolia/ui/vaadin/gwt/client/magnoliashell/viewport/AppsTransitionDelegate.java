@@ -45,7 +45,6 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.Util;
 
 
 /**
@@ -75,7 +74,6 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
                 @Override
                 public void run() {
                     app.removeStyleName("zoom-in");
-                    Util.notifyParentOfSizeChange(app, false);
                 }
             }.schedule(500);
         } else {
@@ -140,17 +138,14 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
 
         // callback
         callbacks.add(new JQueryCallback() {
-
             @Override
             public void execute(JQueryWrapper query) {
                 el.getStyle().clearOpacity();
             }
-
         });
 
         // animate
         jq.animate(CURTAIN_FADE_IN_DURATION, new AnimationSettings() {
-
             {
                 setProperty("opacity", CURTAIN_ALPHA);
                 setCallbacks(callbacks);
@@ -174,7 +169,6 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
 
         // animate
         jq.animate(CURTAIN_FADE_OUT_DURATION, new AnimationSettings() {
-
             {
                 setProperty("opacity", 0);
                 setCallbacks(callbacks);

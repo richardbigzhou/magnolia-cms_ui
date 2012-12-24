@@ -33,17 +33,11 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.previewtoken;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.vaadin.terminal.gwt.client.ui.VTextField;
 
 /**
  * VPreviewTokenField.
  */
-public class VPreviewTokenField extends VTextField {
+/*public class VPreviewTokenField extends VTextField {
 
     public VPreviewTokenField() {
 
@@ -74,4 +68,4 @@ public class VPreviewTokenField extends VTextField {
             }
         });
     }
-}
+}*/

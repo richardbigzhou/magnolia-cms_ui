@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.connector;
 
+import info.magnolia.ui.vaadin.editor.PageEditor;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.Comment;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
@@ -79,10 +80,12 @@ import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractComponentConnector;
+import com.vaadin.shared.ui.Connect;
 
 /**
  * PageEditorConnector.
  */
+@Connect(PageEditor.class)
 public class PageEditorConnector extends AbstractComponentConnector implements PageEditorView.Listener {
 
     private static final String PAGE_EDITOR_CSS = "/VAADIN/themes/admincentraltheme/pageeditor.css";

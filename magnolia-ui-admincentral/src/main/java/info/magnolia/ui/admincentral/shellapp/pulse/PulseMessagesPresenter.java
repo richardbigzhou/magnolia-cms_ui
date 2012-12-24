@@ -39,7 +39,7 @@ import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigato
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -103,7 +103,7 @@ public class PulseMessagesPresenter implements Serializable {
         });
 
         shell.setIndication(
-            VMainLauncher.ShellAppType.PULSE,
+            ShellAppType.PULSE,
             messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
     }
 

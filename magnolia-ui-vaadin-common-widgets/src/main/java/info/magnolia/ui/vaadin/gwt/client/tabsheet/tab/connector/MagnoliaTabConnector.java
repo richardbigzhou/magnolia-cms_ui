@@ -53,7 +53,7 @@ public class MagnoliaTabConnector extends AbstractSingleComponentContainerConnec
     @Override
     protected void init() {
         super.init();
-        addStateChangeHandler("closable", new StateChangeHandler() { 
+        addStateChangeHandler("isClosable", new StateChangeHandler() { 
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
                 getWidget().getLabel().setClosable(getState().isClosable);
@@ -109,13 +109,12 @@ public class MagnoliaTabConnector extends AbstractSingleComponentContainerConnec
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent e) {
         if (!e.getOldChildren().isEmpty()) {
-            final ComponentConnector oldContent = getChildComponents().get(0);
+            final ComponentConnector oldContent = e.getOldChildren().get(0);
             getWidget().remove(oldContent.getWidget());
         }
         
-        if (!getChildComponents().isEmpty()) {
-            final ComponentConnector newContent = getChildComponents().get(0);
-            getWidget().setWidget(newContent.getWidget());
+        if (getContent() != null) {
+            getWidget().setWidget(getContent().getWidget());
         }
     }
 }

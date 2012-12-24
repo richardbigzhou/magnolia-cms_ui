@@ -44,6 +44,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.server.Resource;
 import com.vaadin.ui.AbstractComponent;
 
@@ -52,7 +55,7 @@ import com.vaadin.ui.AbstractComponent;
  */
 public class Actionbar extends AbstractComponent implements ActionbarView {
 
-    //private static final Logger log = LoggerFactory.getLogger(Actionbar.class);
+    private static final Logger log = LoggerFactory.getLogger(Actionbar.class);
 
     private ActionbarView.Listener listener;
 
@@ -72,7 +75,12 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
             }
             @Override
             public void setOpen(boolean isOpen) {
-                setOpen(isOpen);
+                getState().isOpen = isOpen;
+                if (isOpen && !getStyleName().contains("open")) {
+                    addStyleName("open");
+                } else if (!isOpen && getStyleName().contains("open")) {
+                    removeStyleName("open");
+                }
             }
         });
     }
@@ -103,7 +111,7 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
     
     @Override
     protected ActionbarState getState(boolean markAsDirty) {
-        return (ActionbarState)super.getState();
+        return (ActionbarState)super.getState(markAsDirty);
     }
     
     
@@ -136,7 +144,7 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
         if (section != null) {
             section.addAction(action);
         } else {
-            //log.warn("Action was not added: no section found with name '" + sectionName + "'.");
+            log.warn("Action was not added: no section found with name '" + sectionName + "'.");
         }        
     }
     

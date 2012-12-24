@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellMessage.MessageType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget.PreloaderCallback;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
 import java.util.Collection;
 
@@ -50,10 +51,6 @@ import com.google.gwt.user.client.ui.Widget;
  * The view interface for MagnoliaShell (implemented by GWT part of MagnoliaShell).
  */
 public interface MagnoliaShellView extends HasWidgets, IsWidget {
-
-    int getViewportHeight();
-
-    int getViewportWidth();
 
     void setActiveViewport(ViewportWidget viewport);
 
@@ -83,18 +80,22 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
     void showAppPreloader(String prefix, PreloaderCallback preloaderCallback);
 
+    void updateShellDivet();
+    
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
      */
     interface Presenter {
 
-        void loadApp(String appId, String subAppId, String parameter);
+        Widget getShellAppWidget(ShellAppType type);
+        
+        void activateRunningApp(Fragment dto);
 
-        void loadShellApp(ShellAppType shellAppType, String token);
+        void startApp(Fragment f);
+        
+        void loadShellApp(Fragment f);
 
         void updateViewportLayout(ViewportWidget activeViewport);
-
-        void destroyChild(final Widget child);
 
         void closeCurrentApp();
 
@@ -106,8 +107,7 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
         boolean isAppRunning(String appName);
 
-        void startApp(String appId, String subAppId, String parameter);
-
         void handleHistoryChange(String fragment);
+        
     }
 }

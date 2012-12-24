@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ShellNavigationHandler;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import com.google.gwt.event.shared.GwtEvent;
 

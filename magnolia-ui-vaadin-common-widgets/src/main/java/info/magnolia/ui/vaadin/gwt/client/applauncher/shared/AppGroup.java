@@ -68,6 +68,10 @@ public class AppGroup implements Serializable {
         appTiles.add(tile);
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+    
     public String getName() {
         return name;
     }

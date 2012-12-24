@@ -33,38 +33,49 @@
  */
 package info.magnolia.ui.admincentral.field.translator;
 
+import java.util.Locale;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.data.util.converter.Converter;
 
 /**
  * {@link PropertyTranslator} used to encode and decode password fields see {link Base64}.
  * In general, if the translation is not possible, return emptyString.
  */
-@SuppressWarnings("unchecked")
-public class Base64Translator extends PropertyTranslator {
+public class Base64Translator implements Converter<String, String> {
 
-    public Base64Translator() {
+    /**
+     * Encode.
+     */
+    @Override
+    public String convertToModel(String decoded, Locale locale) throws Converter.ConversionException {
+        if(StringUtils.isBlank(decoded)) {
+            return StringUtils.EMPTY;
+        }
+        return  new String(Base64.encodeBase64(decoded.getBytes()));
     }
 
     /**
      * Decode.
      */
     @Override
-    public Object translateFromDatasource(Object encoded) {
-        if(StringUtils.isBlank((String)encoded)) {
+    public String convertToPresentation(String encoded, Locale locale) throws Converter.ConversionException {
+        if(StringUtils.isBlank(encoded)) {
             return StringUtils.EMPTY;
         }
-        return new String(Base64.decodeBase64(((String)encoded).getBytes()));
+        return new String(Base64.decodeBase64(encoded.getBytes()));
     }
-    /**
-     * Encode.
-     */
+
     @Override
-    public Object translateToDatasource(Object decoded) throws Exception {
-        if(StringUtils.isBlank((String)decoded)) {
-            return StringUtils.EMPTY;
-        }
-        return  new String(Base64.encodeBase64(((String)decoded).getBytes()));
+    public Class<String> getModelType() {
+        return String.class;
+    }
+
+    @Override
+    public Class<String> getPresentationType() {
+        return String.class;
     }
 
 }

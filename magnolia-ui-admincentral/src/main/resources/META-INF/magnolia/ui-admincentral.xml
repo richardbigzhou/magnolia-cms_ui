@@ -394,7 +394,7 @@
       </mappings>
       <params>
         <param>
-          <name>application</name>
+          <name>UI</name>
           <value>info.magnolia.ui.admincentral.AdminCentralApplication</value>
         </param>
         <param>

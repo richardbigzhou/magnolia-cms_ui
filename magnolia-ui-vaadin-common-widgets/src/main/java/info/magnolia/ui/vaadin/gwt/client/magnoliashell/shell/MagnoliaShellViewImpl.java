@@ -36,13 +36,12 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppActivatedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigationEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ShellNavigationHandler;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ViewportCloseHandler;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VInfoMessage;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellErrorMessage;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellMessage;
@@ -53,6 +52,8 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsView
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.DialogViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ShellAppsViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -67,7 +68,6 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
-
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
@@ -85,11 +85,11 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     private VShellMessage lowPriorityMessage;
 
     private VShellMessage hiPriorityMessage;
-    
+
     private ViewportWidget activeViewport = null;
 
     private Presenter presenter;
-    
+
     public MagnoliaShellViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
@@ -105,7 +105,6 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         eventBus.addHandler(AppActivatedEvent.TYPE, navigationHandler);
 
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
-
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 presenter.handleHistoryChange(event.getValue());
@@ -142,24 +141,6 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         }
     }
 
-    @Override
-    public int getViewportHeight() {
-        int errorMessageHeight = hiPriorityMessage == null &&
-            (getWidgetIndex(hiPriorityMessage) > -1) ? hiPriorityMessage.getOffsetHeight() : 0;
-        return getOffsetHeight() - mainAppLauncher.getExpandedHeight() - errorMessageHeight;
-    }
-
-    @Override
-    public int getViewportWidth() {
-        return getOffsetWidth();
-    }
-
-    @Override
-    public boolean remove(Widget w) {
-        presenter.destroyChild(w);
-        return super.remove(w);
-    }
-
     protected void replaceWidget(final Widget oldWidget, final Widget newWidget) {
         if (oldWidget != newWidget) {
             if (oldWidget != null) {
@@ -177,42 +158,32 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     }
 
     @Override
-    public void setWidth(String width) {
-        Integer pxWidth = JQueryWrapper.parseInt(width);
-        boolean widthChanged = pxWidth != null && pxWidth != getOffsetWidth();
-        super.setWidth(width);
-        if (widthChanged) {
-            mainAppLauncher.updateDivet();
-        }
-    }
-
-    @Override
     public void showMessage(MessageType type, String topic, String message, String id) {
         final VShellMessage msg;
         switch (type) {
-            case WARNING :
-                msg = new VWarningMessage(this, topic, message, id);
-                if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
-                    lowPriorityMessage.hide();
-                }
-                lowPriorityMessage = msg;
-                break;
-            case INFO :
-                msg = new VInfoMessage(this, topic, message, id);
-                if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
-                    lowPriorityMessage.hide();
-                }
-                lowPriorityMessage = msg;
-                break;
-            case ERROR :
-                msg = new VShellErrorMessage(this, topic, message, id);
-                if (hiPriorityMessage != null && getWidgetIndex(hiPriorityMessage) != -1) {
-                    hiPriorityMessage.hide();
-                }
-                hiPriorityMessage = msg;
-                break;
-            default :
-                msg = null;
+        case WARNING:
+            msg = new VWarningMessage(this, topic, message, id);
+            if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
+                lowPriorityMessage.hide();
+            }
+            lowPriorityMessage = msg;
+            break;
+        case INFO:
+            msg = new VInfoMessage(this, topic, message, id);
+            if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
+                lowPriorityMessage.hide();
+            }
+            lowPriorityMessage = msg;
+            break;
+        case ERROR:
+            msg = new VShellErrorMessage(this, topic, message, id);
+            if (hiPriorityMessage != null && getWidgetIndex(hiPriorityMessage) != -1) {
+                hiPriorityMessage.hide();
+            }
+            hiPriorityMessage = msg;
+            break;
+        default:
+            msg = null;
         }
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
@@ -247,20 +218,14 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         @Override
         public void onAppActivated(AppActivatedEvent event) {
             String prefix = activeViewport == getAppViewport() ? "app" : "shell";
-            final String fragment = prefix
-                + event.getAppId()
-                + ":"
-                + event.getSubAppId()
-                + ";"
-                + event.getParameter();
+            String fragment = prefix + event.getAppId() + ":" + event.getSubAppId() + ";" + event.getParameter();
             History.newItem(fragment, false);
         }
 
         @Override
         public void onShellAppNavigation(final ShellAppNavigationEvent event) {
-
+            Widget shellApp = presenter.getShellAppWidget(event.getType());
             ShellAppsViewportWidget viewport = getShellAppViewport();
-            Widget shellApp = viewport.getShellAppByType(event.getType());
             ShellAppNavigationEvent refreshEvent = viewport.getRefreshEvent();
 
             // if interrupting to another shell app before refresh event comes
@@ -281,7 +246,7 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
             } else {
                 viewport.setRefreshEvent(null);
                 getShellAppViewport().showLoadingPane();
-                presenter.loadShellApp(event.getType(), event.getToken());
+                presenter.loadShellApp(Fragment.fromFragment("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken()));
             }
         }
 
@@ -330,12 +295,10 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         }
     }
 
-    /*@Override
-    public void setPusher(final VICEPush pusher) {
-        if (getWidgetIndex(pusher) != -1) {
-            insert(pusher, 0);
-        }
-    }*/
+    /*
+     * @Override public void setPusher(final VICEPush pusher) { if
+     * (getWidgetIndex(pusher) != -1) { insert(pusher, 0); } }
+     */
 
     @Override
     public void setShellAppIndication(ShellAppType type, int indication) {
@@ -349,7 +312,7 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
     @Override
     public void navigateToMessageDetails(String id) {
-        presenter.loadShellApp(ShellAppType.PULSE, "messages/" + id);
+        presenter.loadShellApp(Fragment.fromFragment("shell:pulse:messages/" + id));
     }
 
     private void doUpdateViewport(ViewportWidget viewport, ViewportType type) {
@@ -363,7 +326,12 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
     @Override
     public void showAppPreloader(String prefix, PreloaderCallback preloaderCallback) {
-        //setActiveViewport(ViewportType.APP_VIEWPORT);
+        // setActiveViewport(ViewportType.APP_VIEWPORT);
         getAppViewport().showAppPreloader(prefix, preloaderCallback);
+    }
+
+    @Override
+    public void updateShellDivet() {
+        mainAppLauncher.updateDivet();
     }
 }

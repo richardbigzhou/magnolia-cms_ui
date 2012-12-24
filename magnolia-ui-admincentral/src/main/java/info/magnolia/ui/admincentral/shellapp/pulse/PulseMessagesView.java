@@ -33,10 +33,14 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
+import com.vaadin.ui.HasComponents;
+
 
 /**
  * Messages Pulse tab UI. 
  */
 public interface PulseMessagesView extends PulseSubView {
 
+    @Override
+    public HasComponents asVaadinComponent();
 }

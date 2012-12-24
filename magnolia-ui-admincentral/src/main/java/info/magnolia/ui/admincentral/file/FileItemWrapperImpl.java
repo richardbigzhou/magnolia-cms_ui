@@ -50,10 +50,11 @@ import org.apache.jackrabbit.JcrConstants;
 
 import com.vaadin.data.Property;
 import com.vaadin.server.Resource;
-import com.vaadin.server.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.StreamResource;
+import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 
 /**
@@ -82,7 +83,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
             initJcrItemProperty(jcrItem);
         } else {
             fileName = (String) jcrItem.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue();
-            Property data = jcrItem.getItemProperty(JcrConstants.JCR_DATA);
+            Property<?> data = jcrItem.getItemProperty(JcrConstants.JCR_DATA);
             if (data != null) {
                 binaryData = (byte[]) data.getValue();
                 fileSize = Long.parseLong(jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).getValue().toString());
@@ -105,7 +106,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
         // Attach the Item to the parent in order to be stored.
         jcrItem.getParent().addChild(jcrItem);
         // Populate Data
-        Property data = jcrItem.getItemProperty(JcrConstants.JCR_DATA);
+        Property<Object> data = jcrItem.getItemProperty(JcrConstants.JCR_DATA);
 
         if (binaryData != null) {
             data.setValue(new ByteArrayInputStream(binaryData));
@@ -179,36 +180,33 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      * Create a preview Component object.
      */
     @Override
-    public Component createPreview(Application application) {
-        if (isImage()) {
-            return createImagePreview(application);
-        } else {
-            return createFilePreview();
-        }
+    public Component createPreview() {
+        return isImage() ? createImagePreview() : createFilePreview();
     }
 
     /**
      * Create an Embedded Image.
      */
-    private Component createImagePreview(Application application) {
+    private Component createImagePreview() {
         ImageSize scaledImageSize = imageSize.scaleToFitIfLarger(150, 150);
-        final byte[] pngData = getBinaryData();
-        Resource imageResource = new StreamResource(new StreamResource.StreamSource() {
+        
+        final StreamSource source = new StreamResource.StreamSource() {
             @Override
             public InputStream getStream() {
-                return new ByteArrayInputStream(pngData);
+                return new ByteArrayInputStream(getBinaryData());
             }
-        }, "", application) {
+        };
+        
+        final Resource imageResource = new StreamResource(source, "") {
             @Override
             public String getMIMEType() {
                 return getMimeType();
             }
         };
 
-        Embedded embedded = new Embedded(null, imageResource);
-        embedded.setType(Embedded.TYPE_IMAGE);
-        embedded.setWidth(scaledImageSize.getWidth(), Sizeable.UNITS_PIXELS);
-        embedded.setHeight(scaledImageSize.getHeight(), Sizeable.UNITS_PIXELS);
+        final Image embedded = new Image(null, imageResource);
+        embedded.setWidth(scaledImageSize.getWidth(), Unit.PIXELS);
+        embedded.setHeight(scaledImageSize.getHeight(), Unit.PIXELS);
         embedded.addStyleName("image");
 
         return embedded;

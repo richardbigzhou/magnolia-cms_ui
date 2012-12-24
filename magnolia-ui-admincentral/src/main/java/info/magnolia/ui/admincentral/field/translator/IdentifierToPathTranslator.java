@@ -35,61 +35,71 @@ package info.magnolia.ui.admincentral.field.translator;
 
 import info.magnolia.context.MgnlContext;
 
+import java.util.Locale;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.addon.propertytranslator.PropertyTranslator;
+
+import com.vaadin.data.util.converter.Converter;
 
 /**
  * {@link PropertyTranslator} used to convert a UUID to a Path and Path to UUID.
  * In general, if the translation is not possible, return null.
  */
-@SuppressWarnings("unchecked")
-public class IdentifierToPathTranslator extends PropertyTranslator {
+public class IdentifierToPathTranslator implements Converter<String, String> {
+    
     private static final Logger log = LoggerFactory.getLogger(IdentifierToPathTranslator.class);
+    
     private final String workspace;
 
     public IdentifierToPathTranslator(String workspace) {
         this.workspace = workspace;
     }
 
-
-    /**
-     * Transform the UUID to Path.
-     */
     @Override
-    public Object translateFromDatasource(Object uuid) {
-        String res = StringUtils.EMPTY;
-        if(StringUtils.isBlank((String)uuid)) {
+    public String convertToModel(String path, Locale locale) throws Converter.ConversionException {
+        String res  = StringUtils.EMPTY;
+        if(StringUtils.isBlank(path)) {
             return res;
         }
         try {
             Session session = MgnlContext.getJCRSession(workspace);
-            res = session.getNodeByIdentifier(uuid.toString()).getPath();
+            res = session.getNode(path).getIdentifier();
+        } catch (RepositoryException e) {
+            log.error("Unable to convert Path to UUID",e);
+        }
+        return res;
+    }
+
+
+    @Override
+    public String convertToPresentation(String uuid, Locale locale) throws Converter.ConversionException {
+        String res = StringUtils.EMPTY;
+        if(StringUtils.isBlank(uuid)) {
+            return res;
+        }
+        try {
+            Session session = MgnlContext.getJCRSession(workspace);
+            res = session.getNodeByIdentifier(uuid).getPath();
         } catch (RepositoryException e) {
             log.error("Unable to convert UUID to Path",e);
         }
         return res;
     }
-    /**
-     * Transform the Path to UUID.
-     */
+
+
     @Override
-    public Object translateToDatasource(Object path) throws Exception {
-        String res  = StringUtils.EMPTY;
-        if(StringUtils.isBlank((String)path)) {
-            return res;
-        }
-        try {
-            Session session = MgnlContext.getJCRSession(workspace);
-            res = session.getNode(path.toString()).getIdentifier();
-        } catch (RepositoryException e) {
-            log.error("Unable to convert Path to UUID",e);
-        }
-        return res;
+    public Class<String> getModelType() {
+        return String.class;
+    }
+
+    @Override
+    public Class<String> getPresentationType() {
+        return String.class;
     }
 
 }

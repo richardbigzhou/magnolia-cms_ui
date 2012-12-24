@@ -37,8 +37,10 @@ import info.magnolia.ui.vaadin.applauncher.AppLauncher;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppGroup;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppTile;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.widget.AppLauncherView;
+import info.magnolia.ui.vaadin.gwt.client.applauncher.widget.AppLauncherView.Presenter;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.widget.AppLauncherViewImpl;
 
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -58,7 +60,7 @@ public class AppLauncherConnector extends AbstractComponentConnector {
     private EventBus eventBus = new SimpleEventBus();
     
     public AppLauncherConnector() {
-        addStateChangeHandler(new StateChangeHandler() {
+        addStateChangeHandler("appGroups", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
                 view.clear();
@@ -68,8 +70,29 @@ public class AppLauncherConnector extends AbstractComponentConnector {
                         view.addAppTile(tile, appGroup);
                     }
                 }
+                updateRuningAppTiles();
             }
         });
+
+        addStateChangeHandler("runningApps", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                updateRuningAppTiles();
+            }
+        });
+    }
+    
+    private void updateRuningAppTiles() {
+        for (final AppGroup appGroup : getState().appGroups.values()) {
+            for (final AppTile tile : appGroup.getAppTiles()) {
+                if (getState().runningApps.contains(tile.getName())) {
+                    view.setAppActive(tile.getName(), true);                    
+                } else {
+                    view.setAppActive(tile.getName(), false);
+                }
+
+            }
+        }
     }
     
     @Override
@@ -80,6 +103,12 @@ public class AppLauncherConnector extends AbstractComponentConnector {
     @Override
     protected Widget createWidget() {
         this.view = new AppLauncherViewImpl(eventBus);
+        this.view.setPresenter(new Presenter() {
+            @Override
+            public void activateApp(String appName) {
+                History.newItem("app:" + appName, true);
+            }
+        });
         return view.asWidget();
     }
     

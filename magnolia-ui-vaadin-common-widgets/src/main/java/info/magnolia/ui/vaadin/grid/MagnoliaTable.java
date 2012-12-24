@@ -33,19 +33,16 @@
  */
 package info.magnolia.ui.vaadin.grid;
 
-import info.magnolia.ui.vaadin.gwt.client.grid.VMagnoliaTable;
-
 import java.util.Collection;
 import java.util.Map;
 
-import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.Table;
 
 
 /**
  * MagnoliaTable.
  */
-@ClientWidget(VMagnoliaTable.class)
+//@ClientWidget(VMagnoliaTable.class)
 public class MagnoliaTable extends Table {
 
     public MagnoliaTable() {

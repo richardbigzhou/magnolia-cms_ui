@@ -42,10 +42,10 @@
       <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
+    <!--  <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>easyuploads</artifactId>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.devlib.schmidt</groupId>
       <artifactId>imageinfo</artifactId>

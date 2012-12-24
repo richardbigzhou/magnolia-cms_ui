@@ -135,8 +135,10 @@ public class MagnoliaTabLabel extends SimplePanel {
     }
 
     public void updateNotification(final String text) {
-        notificationBox.getStyle().setDisplay(Display.INLINE_BLOCK);
-        ((Element) notificationBox.getChild(0)).setInnerText(text);
+        if (text != null && !text.isEmpty()) {
+            notificationBox.getStyle().setDisplay(Display.INLINE_BLOCK);
+            notificationBox.setInnerText(text);            
+        }
     }
 
     public void hideNotification() {

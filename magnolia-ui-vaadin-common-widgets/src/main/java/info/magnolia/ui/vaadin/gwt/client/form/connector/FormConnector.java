@@ -74,4 +74,9 @@ public class FormConnector extends EditorLikeComponentConnector<FormView.Present
     public FormState getState() {
         return (FormState)super.getState();
     }
+    
+    @Override
+    protected FormState createState() {
+        return new FormState();
+    }
 }

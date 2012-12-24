@@ -94,10 +94,9 @@ public class AppTileWidget extends Widget {
         root.appendChild(runningIndicator);
         addStyleName("item");
         icon.addClassName("icon");
-        label.addClassName("label");
-
         icon.appendChild(iconContent);
-
+        
+        label.addClassName("label");
         DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
     }
 
@@ -179,7 +178,7 @@ public class AppTileWidget extends Widget {
      * Set the tile colors for the state: active, but not in a click or touch.
      */
     private void setColorsOn() {
-        boolean isTileWhite = getParent().isClientGroup();
+        boolean isTileWhite = !getParent().isClientGroup();
         setColors(isTileWhite);
     }
 

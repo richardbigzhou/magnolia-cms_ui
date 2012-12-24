@@ -46,6 +46,7 @@ import com.vaadin.shared.Connector;
 import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -61,12 +62,12 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
         registerRpc(new MagnoliaTabSheetServerRpc() {
             @Override
             public void setActiveTab(Connector tabConnector) {
-                onActiveTabSet((MagnoliaTab) tabConnector);
+                MagnoliaTabSheet.this.setActiveTab((MagnoliaTab)tabConnector);
             }
 
             @Override
             public void closeTab(Connector tabConnector) {
-                closeTab(tabConnector);
+                removeComponent((Component)tabConnector);
             }
         });
     }
@@ -83,13 +84,13 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
         }
     }
 
-    public ComponentContainer addTab(String string) {
+    public ComponentContainer addTabStub(String string) {
         final VerticalLayout c = new VerticalLayout();
         addTab(string, c);
         return c;
     }
 
-    public MagnoliaTab addTab(final String caption, final ComponentContainer c) {
+    public MagnoliaTab addTab(final String caption, final HasComponents c) {
         final MagnoliaTab tab = new MagnoliaTab(caption, c);
         doAddTab(tab);
         return tab;
@@ -102,7 +103,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
 
     @Override
     protected MagnoliaTabSheetState getState(boolean markDirty) {
-        return (MagnoliaTabSheetState) super.getState();
+        return (MagnoliaTabSheetState) super.getState(markDirty);
     }
 
     public void showAllTab(boolean showAll, String label) {
@@ -130,16 +131,10 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
         if (getState().activeTab == null) {
             setActiveTab(tab);
         }
-        markAsDirty();
     }
 
     public MagnoliaTab getActiveTab() {
         return (MagnoliaTab) getState(false).activeTab;
-    }
-
-    @Deprecated
-    public void onActiveTabSet(MagnoliaTab tab) {
-        setActiveTab(tab);
     }
 
     protected MagnoliaTab getNextTab(final MagnoliaTab tab) {
@@ -152,6 +147,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
             final MagnoliaTab tab = (MagnoliaTab) c;
             super.removeComponent(c);
             tabs.remove(tab);
+            markAsDirty();
         }
     }
 
@@ -182,8 +178,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
 
             @Override
             public Component next() {
-                final MagnoliaTab tab = wrappedIt.next();
-                return tab.getContent();
+                return wrappedIt.next();
             }
 
             @Override

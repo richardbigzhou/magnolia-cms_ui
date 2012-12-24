@@ -54,6 +54,6 @@ public class InstantPreviewApp extends AbstractApp {
 
     @Override
     public void start(Location location) {
-        appContext.openSubApp("main", InstantPreviewAppMainSubApp.class, location, "main");
+        appContext.openSubApp(location);
     }
 }

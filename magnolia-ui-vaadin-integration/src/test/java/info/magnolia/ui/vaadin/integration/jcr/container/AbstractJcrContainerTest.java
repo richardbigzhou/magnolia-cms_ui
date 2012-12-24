@@ -589,5 +589,41 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         public JcrContainerTestImpl(WorkbenchDefinition workbenchDefinition) {
             super(workbenchDefinition);
         }
+
+        /* (non-Javadoc)
+         * @see com.vaadin.data.Container.ItemSetChangeNotifier#addItemSetChangeListener(com.vaadin.data.Container.ItemSetChangeListener)
+         */
+        @Override
+        public void addItemSetChangeListener(ItemSetChangeListener listener) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        /* (non-Javadoc)
+         * @see com.vaadin.data.Container.ItemSetChangeNotifier#removeItemSetChangeListener(com.vaadin.data.Container.ItemSetChangeListener)
+         */
+        @Override
+        public void removeItemSetChangeListener(ItemSetChangeListener listener) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        /* (non-Javadoc)
+         * @see com.vaadin.data.Container.PropertySetChangeNotifier#addPropertySetChangeListener(com.vaadin.data.Container.PropertySetChangeListener)
+         */
+        @Override
+        public void addPropertySetChangeListener(PropertySetChangeListener listener) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        /* (non-Javadoc)
+         * @see com.vaadin.data.Container.PropertySetChangeNotifier#removePropertySetChangeListener(com.vaadin.data.Container.PropertySetChangeListener)
+         */
+        @Override
+        public void removePropertySetChangeListener(PropertySetChangeListener listener) {
+            // TODO Auto-generated method stub
+            
+        }
     }
 }

@@ -75,6 +75,4 @@ public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHan
 
     void showAllTabContents(boolean visible);
 
-    int getTabHeight(MagnoliaTabWidget child);
-
 }

@@ -33,15 +33,16 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.icon.widget.LoadingIconWidget;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.Callbacks;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.AppsTransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.MagnoliaSwipeRecognizer;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
 import java.util.Iterator;
 
@@ -67,7 +68,6 @@ import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeStartEvent;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeStartHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
-
 /**
  * Client side implementation of Apps viewport.
  */
@@ -77,9 +77,9 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
     private static final String CLOSE_CLASSNAME = "v-app-close";
 
-    private final VAppPreloader preloader = new VAppPreloader();
-
     private Element curtain;
+    
+    private final VAppPreloader preloader = new VAppPreloader();
 
     private final TouchDelegate delegate = new TouchDelegate(this);
 
@@ -87,7 +87,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
         @Override
         public void onClick(ClickEvent event) {
-            final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
+            final Element target = event.getNativeEvent().getEventTarget().cast();
             if (target.getClassName().contains(CLOSE_CLASSNAME)) {
                 setClosing(true);
                 getEventBus().fireEvent(new ViewportCloseEvent(ViewportType.APP_VIEWPORT));
@@ -136,7 +136,8 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     }
 
     /**
-     * Default non-transitioning behavior, accessible to transition delegates as a fall back.
+     * Default non-transitioning behavior, accessible to transition delegates as
+     * a fall back.
      */
     public void doSetCurtainVisible(boolean visible) {
         if (visible && getCurtain().getParentElement() != getElement()) {
@@ -206,13 +207,15 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
             @Override
             public void onSwipeEnd(SwipeEndEvent event) {
                 final DIRECTION direction = event.getDirection();
-                final Widget newVisibleWidget = direction == DIRECTION.LEFT_TO_RIGHT ? getPreviousWidget() : getNextWidget();
+                final Widget newVisibleWidget = direction == DIRECTION.LEFT_TO_RIGHT ? getPreviousWidget()
+                        : getNextWidget();
                 if (event.isDistanceReached() && getWidgetCount() > 1) {
                     final JQueryWrapper jq = JQueryWrapper.select(getVisibleApp());
                     jq.animate(450, new AnimationSettings() {
 
                         {
-                            setProperty("left", getOffsetWidth() * (direction == DIRECTION.LEFT_TO_RIGHT ? 1 : -1) - jq.position().left());
+                            setProperty("left", getOffsetWidth() * (direction == DIRECTION.LEFT_TO_RIGHT ? 1 : -1)
+                                    - jq.position().left());
                             setCallbacks(Callbacks.create(new JQueryCallback() {
 
                                 @Override
@@ -246,7 +249,6 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
                     jq.setCssPx("left", jq.position().left());
                     jq.setCss("-webkit-transform", "");
                     jq.animate(500, new AnimationSettings() {
-
                         {
                             setProperty("left", 0);
                         }
@@ -256,7 +258,6 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         });
 
         delegate.addTouchCancelHandler(new TouchCancelHandler() {
-
             @Override
             public void onTouchCanceled(TouchCancelEvent event) {
                 JQueryWrapper.select(getVisibleApp()).setCss("-webkit-transform", "");
@@ -266,7 +267,8 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     }
 
     private void processSwipe(int translationValue) {
-        JQueryWrapper.select(getVisibleApp()).setCss("-webkit-transform", "translate3d(" + translationValue + "px,0,0)");
+        JQueryWrapper.select(getVisibleApp())
+                .setCss("-webkit-transform", "translate3d(" + translationValue + "px,0,0)");
         if (getWidgetCount() > 1) {
             showCandidateApp(translationValue);
         }
@@ -285,14 +287,14 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         }
 
         if (isNext && getWidgetCount() > 2) {
-            JQueryWrapper.select(nextWidget).setCss(
-                "-webkit-transform",
-                "translate3d(" + (translationValue + getVisibleApp().getOffsetWidth()) + "px,0,0)");
+            JQueryWrapper.select(nextWidget).setCss("-webkit-transform",
+                    "translate3d(" + (translationValue + getVisibleApp().getOffsetWidth()) + "px,0,0)");
         }
-        nextWidget.getElement().getStyle().setVisibility(isNext || nextWidget == previousWidget ?
-            Visibility.VISIBLE : Visibility.HIDDEN);
-        previousWidget.getElement().getStyle().setVisibility(!isNext || nextWidget ==
-            previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
+        
+        nextWidget.getElement().getStyle()
+                .setVisibility(isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
+        previousWidget.getElement().getStyle()
+                .setVisibility(!isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
     }
 
     private Widget getNextWidget() {
@@ -329,11 +331,10 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     }
 
     /* APPEND CLOSE BUTTON */
-
     @Override
-    protected void add(Widget child, Element container) {
-        super.add(child, container);
-        child.getElement().appendChild(createCloseButton());
+    public void insert(Widget w, int beforeIndex) {
+        super.insert(w, beforeIndex);
+        w.getElement().appendChild(createCloseButton());
     }
 
     private Element createCloseButton() {
@@ -365,6 +366,10 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
                 callback.onPreloaderShown(appName);
             }
         }.schedule(500);
+    }
+
+    public boolean hasPreloader() {
+        return RootPanel.get().getWidgetIndex(preloader) >= 0;
     }
 
     /**
@@ -399,10 +404,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
             loading.addClassName("v-caption");
             loading.setInnerText("Loading");
 
-            /*
-             * TODO: FIX!
-             * preloader.appendChild(new GwtLoadingIcon().getElement());
-             */
+            preloader.appendChild(new LoadingIconWidget().getElement());
             preloader.appendChild(DOM.createElement("br"));
             preloader.appendChild(loading);
 
@@ -412,6 +414,10 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         public void setCaption(String caption) {
             tabCaption.setInnerHTML(caption);
         }
+    }
+
+    public void removePreloader() {
+        RootPanel.get().remove(preloader);
     }
 
 }

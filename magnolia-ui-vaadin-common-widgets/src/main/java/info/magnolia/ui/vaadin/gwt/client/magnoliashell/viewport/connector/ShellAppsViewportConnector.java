@@ -49,4 +49,9 @@ public class ShellAppsViewportConnector extends ViewportConnector {
     protected ViewportWidget createWidget() {
         return new ShellAppsViewportWidget();
     }
+    
+    @Override
+    public ShellAppViewportState getState() {
+        return (ShellAppViewportState)super.getState();
+    }
 }

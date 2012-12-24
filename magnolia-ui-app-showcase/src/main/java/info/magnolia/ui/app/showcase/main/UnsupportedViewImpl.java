@@ -47,6 +47,7 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -115,7 +116,7 @@ public class UnsupportedViewImpl implements UnsupportedView {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    grid.getApplication().getMainWindow().addWindow(new Window("Normal window"));
+                    UI.getCurrent().addWindow(new Window("Normal window"));
                 }
             });
         grid.addComponent(win);
@@ -236,7 +237,9 @@ public class UnsupportedViewImpl implements UnsupportedView {
     private Layout getPreviewLayout(String caption) {
         Layout grid = new HorizontalLayout();
         grid.setWidth("100%");
-        grid.setMargin(true);
+        /**
+         * TODO: handle margins in CSS stylesheet.
+         */
         grid.setCaption(caption);
         return grid;
     }

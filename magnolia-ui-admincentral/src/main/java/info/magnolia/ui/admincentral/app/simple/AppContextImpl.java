@@ -57,6 +57,8 @@ import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -177,20 +179,20 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     }
 
     @Override
-    public void onActiveTabSet(String tabId) {
-        SubAppContext subAppContext = getSubAppContextForTab(tabId);
+    public void onActiveTabSet(MagnoliaTab tab) {
+        SubAppContext subAppContext = getSubAppContextForTab(tab);
         if (subAppContext != null) {
             locationController.goTo(subAppContext.getLocation());
         }
     }
 
     @Override
-    public void onTabClosed(String tabId) {
-        SubAppContext subAppContext = getSubAppContextForTab(tabId);
+    public void onTabClosed(MagnoliaTab tab) {
+        SubAppContext subAppContext = getSubAppContextForTab(tab);
         if (subAppContext != null) {
             subAppContexts.remove(subAppContext.getSubAppId(), subAppContext);
         }
-        onActiveTabSet(this.appFrameView.getActiveTabId());
+        onActiveTabSet(this.appFrameView.getActiveTab());
     }
 
     @Override
@@ -230,8 +232,8 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
             subAppContext.setLocation(location);
             subAppContext.getSubApp().locationChanged(location);
 
-            if (subAppContext.getTabId() != appFrameView.getActiveTab().getTabId()) {
-                appFrameView.setActiveTabId(subAppContext.getTabId());
+            if (subAppContext.getTab() != appFrameView.getActiveTab()) {
+                appFrameView.setActiveTab((MagnoliaTab)subAppContext.getTab());
             }
             currentSubAppContext = subAppContext;
         }
@@ -269,8 +271,8 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
         subAppContext.setSubAppComponentProvider(subAppComponentProvider);
 
         View view = subApp.start(location);
-        String tabId = appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), subApp.getCaption(), !subAppContexts.isEmpty());
-        subAppContext.setTabId(tabId);
+        MagnoliaTab tab = appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), subApp.getCaption(), !subAppContexts.isEmpty());
+        subAppContext.setTab(tab);
 
         return subAppContext;
     }
@@ -318,12 +320,12 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     }
 
     private SubAppContext getActiveSubAppContext() {
-        return getSubAppContextForTab(appFrameView.getActiveTabId());
+        return getSubAppContextForTab(appFrameView.getActiveTab());
     }
 
-    private SubAppContext getSubAppContextForTab(String tabId) {
+    private SubAppContext getSubAppContextForTab(MagnoliaTab tab) {
         for (SubAppContext subAppContext : subAppContexts.values()) {
-            if (subAppContext.getTabId().equals(tabId)) {
+            if (subAppContext.getTab().equals(tab)) {
                 return subAppContext;
             }
         }

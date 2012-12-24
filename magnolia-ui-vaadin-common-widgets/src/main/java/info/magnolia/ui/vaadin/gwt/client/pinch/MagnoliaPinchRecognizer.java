@@ -44,7 +44,6 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchMoveEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
 import com.googlecode.mgwt.dom.client.recognizer.EventPropagator;
 import com.googlecode.mgwt.dom.client.recognizer.pinch.OffsetProvider;
-import com.vaadin.terminal.gwt.client.VConsole;
 
 /**
  * MagnoliaPinchRecognizer.
@@ -95,16 +94,16 @@ public class MagnoliaPinchRecognizer implements TouchHandler {
     @Override
     public void onTouchStart(TouchStartEvent event) {
         touchCount = event.getTouches().length();
-        VConsole.log("Touch start");
+        GWT.log("Touch start");
         switch (state) {
         case READY:
-            VConsole.log("One finger");
+            //VConsole.log("One finger");
             startX1 = event.getTouches().get(0).getPageX();
             startY1 = event.getTouches().get(0).getPageY();
             state = State.ONE_FINGER;
             break;
         case ONE_FINGER:
-            VConsole.log("Two fingers");
+            GWT.log("Two fingers");
             startX2 = event.getTouches().get(1).getPageX();
             startY2 = event.getTouches().get(1).getPageY();
             distance = (int) Math.sqrt(Math.pow(startX1 - startX2, 2) + Math.pow(startY1 - startY2, 2));

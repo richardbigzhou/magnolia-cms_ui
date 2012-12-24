@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.app.security.dialog.field.validator;
 
-import java.util.Collection;
-
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.Security;
+
+import java.util.Collection;
 
 import com.vaadin.data.validator.AbstractStringValidator;
 
@@ -49,8 +49,9 @@ public class UniqueGroupIdValidator extends AbstractStringValidator {
         super(errorMessage);
     }
 
+
     @Override
-    protected boolean isValidString(String value) {
+    protected boolean isValidValue(String value) {
         // get all existing groups
         Collection<Group> groups = Security.getGroupManager().getAllGroups();
         for (Group g : groups) {

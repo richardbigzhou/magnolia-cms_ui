@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
+import com.vaadin.ui.Component;
+
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubApp;
@@ -47,13 +49,16 @@ import info.magnolia.ui.framework.location.Location;
 public class SubAppContextImpl implements SubAppContext {
 
     private SubApp subApp;
+    
     private Location location;
+    
     private ComponentProvider subAppComponentProvider;
 
     private SubAppDescriptor subAppDescriptor;
 
     private AppContext appContext;
-    private String tabId;
+    
+    private Component tab;
 
     public SubAppContextImpl(SubAppDescriptor subAppDescriptor) {
         this.subAppDescriptor = subAppDescriptor;
@@ -100,17 +105,17 @@ public class SubAppContextImpl implements SubAppContext {
     }
 
     @Override
-    public void setTabId(String tabId) {
-        this.tabId = tabId;
-    }
-
-    @Override
-    public String getTabId() {
-        return tabId;
-    }
-
-    @Override
     public void setSubAppComponentProvider(ComponentProvider subAppComponentProvider) {
         this.subAppComponentProvider = subAppComponentProvider;
+    }
+    
+    @Override
+    public Component getTab() {
+        return tab;
+    }
+    
+    @Override
+    public void setTab(Component tab) {
+        this.tab = tab;
     }
 }

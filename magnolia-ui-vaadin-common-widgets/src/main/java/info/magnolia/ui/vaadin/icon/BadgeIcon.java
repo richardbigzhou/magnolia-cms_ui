@@ -70,5 +70,9 @@ public class BadgeIcon extends AbstractComponent {
     @Override
     protected BadgeIconState getState() {
         return (BadgeIconState)super.getState();
+    }
+
+    public void setValue(int value) {
+        getState().value = value;
     };
 }

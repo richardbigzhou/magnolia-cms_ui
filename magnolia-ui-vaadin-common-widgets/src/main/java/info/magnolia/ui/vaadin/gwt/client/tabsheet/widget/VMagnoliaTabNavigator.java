@@ -64,7 +64,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
 
     private final Element tabContainer = DOM.createElement("ul");
     
-    private final EventBus eventBus;
+    private EventBus eventBus;
 
     private VShellShowAllTabLabel showAllTab;
 
@@ -82,9 +82,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
     }
 
     private void bindHandlers() {
-
         eventBus.addHandler(ActiveTabChangedEvent.TYPE, new ActiveTabChangedEvent.Handler() {
-
             @Override
             public void onActiveTabChanged(final ActiveTabChangedEvent event) {
                 final MagnoliaTabWidget tab = event.getTab();
@@ -100,7 +98,6 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
         });
 
         eventBus.addHandler(TabCloseEvent.TYPE, new TabCloseEventHandler() {
-
             @Override
             public void onTabClosed(TabCloseEvent event) {
                 final MagnoliaTabLabel tabLabel = event.getTab().getLabel();
@@ -136,6 +133,10 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
     public void updateTab(final MagnoliaTabWidget component, final String caption) {
         component.getLabel().updateCaption(caption);
         component.getLabel().setEventBus(eventBus);
+        if (!tabLabels.contains(component.getLabel())) {
+            tabLabels.add(component.getLabel());
+            add(component.getLabel(), getElement());
+        }
     }
 
     public void updateSingleTabStyle() {

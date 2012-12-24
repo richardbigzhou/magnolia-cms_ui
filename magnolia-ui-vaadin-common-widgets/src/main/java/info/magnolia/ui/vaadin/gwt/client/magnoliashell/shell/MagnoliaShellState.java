@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.ShellAppLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -54,6 +54,8 @@ public class MagnoliaShellState extends AbstractLayoutState {
     public List<String> runningAppNames = new ArrayList<String>();
     
     public List<String> registeredAppNames = new ArrayList<String>();
+    
+    public Map<ShellAppType, Connector> shellApps = new EnumMap<ShellAppType, Connector>(ShellAppType.class);
     
     public Map<ShellAppType, Integer> indications = new HashMap<ShellAppType, Integer>();
     

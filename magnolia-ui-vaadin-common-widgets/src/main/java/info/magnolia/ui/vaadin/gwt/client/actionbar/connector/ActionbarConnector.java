@@ -43,7 +43,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.MGWT;
-import com.vaadin.client.Util;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
@@ -86,9 +85,7 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     private final StateChangeHandler collapseChangeHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
-            if (view.isOpen() != getState().isOpen) {
-                view.setOpen(getState().isOpen);
-            }
+            view.setOpen(getState().isOpen);
         }
     };
     
@@ -108,10 +105,10 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     
     @Override
     protected Widget createWidget() {
-        this.view = new ActionbarWidgetViewImpl(eventBus);
-        if (!isDeviceTablet()) {
-            setOpened(true);
-        }
+        this.view = new ActionbarWidgetViewImpl(eventBus, this);
+        //if (!isDeviceTablet()) {
+        //    setOpened(true);
+        //}
         return this.view.asWidget();
     }
     
@@ -136,13 +133,13 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     }
 
     @Override
-    public void forceLayout() {
-        Util.notifyParentOfSizeChange(getWidget(), false);
-    }
-
-    @Override
     public void setOpened(boolean isOpen) {
         rpc.setOpen(isOpen);
+    }
+    
+    @Override
+    public void forceLayout() {
+        getLayoutManager().setNeedsMeasure(this);
     }
     
     /**

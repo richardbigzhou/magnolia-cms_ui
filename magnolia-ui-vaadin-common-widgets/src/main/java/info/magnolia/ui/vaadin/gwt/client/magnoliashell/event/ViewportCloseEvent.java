@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ViewportCloseHandler;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector.ViewportType;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
 import com.google.gwt.event.shared.GwtEvent;
 
