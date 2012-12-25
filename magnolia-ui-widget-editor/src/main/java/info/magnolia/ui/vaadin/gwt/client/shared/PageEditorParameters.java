@@ -33,23 +33,39 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.shared;
 
+import java.io.Serializable;
+
 /**
  * PageEditorParameters.
  */
-public class PageEditorParameters {
+public class PageEditorParameters implements Serializable {
 
-    private final String contextPath;
+    private String contextPath;
 
-    private final String nodePath;
+    private String nodePath;
 
-    private final boolean preview;
+    private boolean preview;
 
+    public PageEditorParameters() {}
+    
     public PageEditorParameters(String contextPath, String nodePath, boolean preview) {
         this.contextPath = contextPath;
         this.nodePath = nodePath;
         this.preview = preview;
     }
 
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
+
+    public void setNodePath(String nodePath) {
+        this.nodePath = nodePath;
+    }
+
+    public void setPreview(boolean preview) {
+        this.preview = preview;
+    }
+    
     public String getContextPath() {
         return contextPath;
     }

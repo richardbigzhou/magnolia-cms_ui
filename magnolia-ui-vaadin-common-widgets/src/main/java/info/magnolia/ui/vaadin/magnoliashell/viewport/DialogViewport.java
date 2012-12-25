@@ -46,7 +46,7 @@ public class DialogViewport extends ShellViewport {
     public DialogViewport(BaseMagnoliaShell shell) {
         super(shell);
         addStyleName("dialog");
-        getState().type = ViewportType.DIALOG_VIEWPORT;
+        getState().type = ViewportType.DIALOG;
     }
 
 }

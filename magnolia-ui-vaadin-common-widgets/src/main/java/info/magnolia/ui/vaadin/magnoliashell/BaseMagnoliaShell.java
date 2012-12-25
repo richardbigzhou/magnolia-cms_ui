@@ -54,8 +54,9 @@ import java.util.List;
 
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.shared.Connector;
-import com.vaadin.ui.AbstractLayout;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.UI;
 
 
@@ -63,15 +64,14 @@ import com.vaadin.ui.UI;
  * Server side implementation of the MagnoliaShell container.
  */
 @JavaScript({"jquery-1.7.2.min.js", "jquery.transition.js"})
-public abstract class BaseMagnoliaShell extends AbstractLayout {
+public abstract class BaseMagnoliaShell extends AbstractComponent implements HasComponents {
 
     private ShellServerRpc rpc = new ShellServerRpc() {
-        
         @Override
         public void removeMessage(String id) {
             BaseMagnoliaShell.this.removeMessage(id);
         }
-
+        
         @Override
         public void closeCurrentShellApp() {
             BaseMagnoliaShell.this.stopCurrentShellApp();
@@ -91,13 +91,7 @@ public abstract class BaseMagnoliaShell extends AbstractLayout {
         public void activateShellApp(Fragment f) {
             BaseMagnoliaShell.this.navigateToShellApp(f);
         }
-        
-        @Override
-        public void startApp(Fragment f) {
-            //setActiveViewport(getAppViewport());
-            //doStartApp(f);
-            activateShellApp(f);
-        }
+       
     };
     
     private final EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
@@ -114,12 +108,12 @@ public abstract class BaseMagnoliaShell extends AbstractLayout {
         final ShellAppsViewport shellAppsViewport = new ShellAppsViewport(BaseMagnoliaShell.this);
         final AppsViewport appsViewport = new AppsViewport(BaseMagnoliaShell.this);
         final DialogViewport dialogViewport = new DialogViewport(BaseMagnoliaShell.this);
-        getState().viewports.put(ViewportType.SHELL_APP_VIEWPORT, shellAppsViewport);
-        getState().viewports.put(ViewportType.APP_VIEWPORT, appsViewport);
-        getState().viewports.put(ViewportType.DIALOG_VIEWPORT, dialogViewport);
-        super.addComponent(shellAppsViewport);
-        super.addComponent(appsViewport);
-        super.addComponent(dialogViewport);
+        getState().viewports.put(ViewportType.SHELL_APP, shellAppsViewport);
+        getState().viewports.put(ViewportType.APP, appsViewport);
+        getState().viewports.put(ViewportType.DIALOG, dialogViewport);
+        shellAppsViewport.setParent(this);
+        appsViewport.setParent(this);
+        dialogViewport.setParent(this);
     }
 
     public void navigateToApp(Fragment fragment) {
@@ -130,7 +124,6 @@ public abstract class BaseMagnoliaShell extends AbstractLayout {
         doNavigateWithinViewport(getShellAppViewport(), fragment);
     }
 
-    // the fragment generation should not be hardcoded. Create a util method in DefaultLocation.
     public void doNavigateWithinViewport(final ShellViewport viewport, Fragment dto) {
         viewport.setCurrentShellFragment(dto.toFragment());
         setActiveViewport(viewport);
@@ -168,7 +161,6 @@ public abstract class BaseMagnoliaShell extends AbstractLayout {
     public void updateShellAppIndication(ShellAppType type, int increment) {
         Integer value = getState().indications.get(type);
         getState().indications.put(type, increment + value);
-        markAsDirty();
         synchronized (UI.getCurrent()) {
             // pusher.push();
         }
@@ -183,11 +175,11 @@ public abstract class BaseMagnoliaShell extends AbstractLayout {
     }
 
     public void removeDialog(Component dialog) {
-        ((ShellViewport)getState().viewports.get(ViewportType.DIALOG_VIEWPORT)).removeComponent(dialog);
+        ((ShellViewport)getState().viewports.get(ViewportType.DIALOG)).removeComponent(dialog);
     }
 
     public void addDialog(Component dialog) {
-        ((ShellViewport)getState().viewports.get(ViewportType.DIALOG_VIEWPORT)).addComponent(dialog);
+        ((ShellViewport)getState().viewports.get(ViewportType.DIALOG)).addComponent(dialog);
     }
 
     public abstract void stopCurrentShellApp();
@@ -206,15 +198,15 @@ public abstract class BaseMagnoliaShell extends AbstractLayout {
     }
 
     public ShellViewport getAppViewport() {
-        return (ShellViewport)getState(false).viewports.get(ViewportType.APP_VIEWPORT);
+        return (ShellViewport)getState(false).viewports.get(ViewportType.APP);
     }
 
     public ShellViewport getShellAppViewport() {
-        return (ShellViewport)getState(false).viewports.get(ViewportType.SHELL_APP_VIEWPORT);
+        return (ShellViewport)getState(false).viewports.get(ViewportType.SHELL_APP);
     }
 
     public ShellViewport getDialogViewport() {
-        return (ShellViewport)getState(false).viewports.get(ViewportType.DIALOG_VIEWPORT);
+        return (ShellViewport)getState(false).viewports.get(ViewportType.DIALOG);
     }
 
     public ShellViewport getActiveViewport() {
@@ -259,26 +251,6 @@ public abstract class BaseMagnoliaShell extends AbstractLayout {
 
     protected void onAppStopped(String appName) {
         getState().runningAppNames.remove(appName);
-    }
-
-    @Override
-    public void addComponent(Component c) {
-        throw new UnsupportedOperationException("BaseMagnoliaShell doesn't support manipulating components.");
-    }
-
-    @Override
-    public void removeComponent(Component c) {
-        throw new UnsupportedOperationException("BaseMagnoliaShell doesn't support manipulating components.");
-    }
-
-    @Override
-    public void replaceComponent(Component oldComponent, Component newComponent) {
-        throw new UnsupportedOperationException("BaseMagnoliaShell doesn't support manipulating components.");
-    }
-
-    @Override
-    public int getComponentCount() {
-        return getState(false).viewports.size();
     }
     
     public void registerShellApp(ShellAppType type, Component component) {

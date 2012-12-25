@@ -98,8 +98,13 @@ public abstract class EditorLikeComponentConnector
 
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {
-        if (getContent() != null) {
-            this.view.setContent(getContent().getWidget());
+        updateContent();
+    }
+
+    protected void updateContent() {
+        final ComponentConnector content = getContent();
+        if (content != null) {
+            this.view.setContent(content.getWidget());
         }
     }
 
@@ -115,4 +120,11 @@ public abstract class EditorLikeComponentConnector
     
     protected abstract U createPresenter();
     
+    protected T getView() {
+        return view;
+    }
+    
+    protected U getPresenter() {
+        return presenter;
+    }
 }

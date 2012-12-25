@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.formsection.connector;
 
+import info.magnolia.ui.vaadin.form.FormSection;
 import info.magnolia.ui.vaadin.gwt.client.form.formsection.widget.FormSectionWidget;
+import info.magnolia.ui.vaadin.gwt.client.form.tab.connector.FormTabConnector;
 
 import java.util.List;
 
@@ -42,10 +44,12 @@ import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractLayoutConnector;
+import com.vaadin.shared.ui.Connect;
 
 /**
  * FormSectionConnector.
  */
+@Connect(FormSection.class)
 public class FormSectionConnector extends AbstractLayoutConnector {
 
     private final StateChangeHandler errorHandler = new StateChangeHandler() {
@@ -75,11 +79,12 @@ public class FormSectionConnector extends AbstractLayoutConnector {
             updateChildError(cc);
             getWidget().setFieldDescription(cc.getWidget(), getState().helpDescriptions.get(cc));
         }
-        
-        /**
-         * TODO - move to formtab
-         */
-        //getParent().setHasError(!problematicSections.isEmpty());
+        getParent().setHasErrors(getWidget().getErrorAmount() > 0);
+    }
+    
+    @Override
+    public FormTabConnector getParent() {
+        return (FormTabConnector)super.getParent();
     }
     
     @Override
@@ -100,7 +105,6 @@ public class FormSectionConnector extends AbstractLayoutConnector {
         oldChildren.removeAll(newChildren);
         for (final ComponentConnector cc : oldChildren) {
             getWidget().remove(cc.getWidget());
-            cc.removeStateChangeHandler(errorHandler);
         }
         
         int index = 0;
@@ -126,7 +130,6 @@ public class FormSectionConnector extends AbstractLayoutConnector {
         return (FormSectionWidget)super.getWidget();
     }
     
-
     @Override
     public void onUnregister() {
         super.onUnregister();

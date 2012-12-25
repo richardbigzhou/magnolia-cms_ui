@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell;
 
 /**
- * Type of the "shell app" to be loaded.
+ * Possible types of shell apps.
  */
 public enum ShellAppType {
     APPLAUNCHER {
@@ -63,7 +63,7 @@ public enum ShellAppType {
     public static String getTypeByFragmentId(final String id) {
         for (final ShellAppType type : ShellAppType.values()) {
             if (type.name().equalsIgnoreCase(id)) {
-                return type.name();
+                return type.name().toLowerCase();
             }
         }
         return ShellAppType.APPLAUNCHER.name();

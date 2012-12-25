@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.formsection.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.form.formsection.connector.FormSectionConnector;
 import info.magnolia.ui.vaadin.gwt.client.form.tab.widget.FormTabWidget;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormFieldWrapper;
 
@@ -81,7 +82,7 @@ public class FormSectionWidget extends FlowPanel {
         FormFieldWrapper fieldSection = (w instanceof FormFieldWrapper) ? (FormFieldWrapper)w : sections.get(w);
         if (w != null) {
             sections.remove(w);
-            remove(fieldSection);
+            super.remove(fieldSection);
         }
         return false;
     }
@@ -109,7 +110,7 @@ public class FormSectionWidget extends FlowPanel {
             return null;
         }
         if (!(super.getParent() instanceof FormTabWidget)) {
-            throw new RuntimeException("Parent of VFormSection must be of type VFormTab, you have used: " + super.getParent().getClass());
+            return null;
         }
         return (FormTabWidget)super.getParent();
     }
@@ -125,13 +126,16 @@ public class FormSectionWidget extends FlowPanel {
     }
 
     public List<FormFieldWrapper> getProblematicFields() {
+        FormSectionConnector selfConnector = (FormSectionConnector)Util.findConnectorFor(this);
         List<FormFieldWrapper> result = new ArrayList<FormFieldWrapper>();
-        for (final Widget w : sections.keySet()) {
-            final ComponentConnector cc = Util.findConnectorFor(w);
-            if (cc != null) {
-                String errMsg = cc.getState().errorMessage; 
-                if (errMsg != null && !errMsg.isEmpty()) {
-                    result.add(sections.get(w));
+        if (selfConnector.getState().isValidationVisible) {
+            for (final Widget w : sections.keySet()) {
+                final ComponentConnector cc = Util.findConnectorFor(w);
+                if (cc != null) {
+                    String errMsg = cc.getState().errorMessage; 
+                    if (errMsg != null && !errMsg.isEmpty()) {
+                        result.add(sections.get(w));
+                    }
                 }
             }
         }

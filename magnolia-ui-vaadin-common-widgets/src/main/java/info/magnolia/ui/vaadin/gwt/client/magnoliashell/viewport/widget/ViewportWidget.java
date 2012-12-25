@@ -75,7 +75,7 @@ public class ViewportWidget extends FlowPanel {
             public void onTouchEnd(TouchEndEvent event) {
                 final Element target = event.getNativeEvent().getEventTarget().cast();
                 if (target == getElement()) {
-                    eventBus.fireEvent(new ViewportCloseEvent(ViewportType.SHELL_APP_VIEWPORT));
+                    eventBus.fireEvent(new ViewportCloseEvent(ViewportType.SHELL_APP));
                 }
             }
         });

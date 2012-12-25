@@ -36,12 +36,12 @@ package info.magnolia.ui.vaadin.gwt.client.editorlike.connector;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.vaadin.shared.AbstractComponentState;
+import com.vaadin.shared.ui.AbstractLayoutState;
 
 /**
  * EditorLikeComponentState.
  */
-public class EditorLikeComponentState extends AbstractComponentState {
+public class EditorLikeComponentState extends AbstractLayoutState {
 
     public String componentDescription = "";
 

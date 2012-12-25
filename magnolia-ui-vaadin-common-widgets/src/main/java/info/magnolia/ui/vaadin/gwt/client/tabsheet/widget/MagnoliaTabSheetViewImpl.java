@@ -159,21 +159,6 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         }
     }
 
-    /**
-     * TODO: Restore full screen stuff.
-     * @Override
-    public void setHeight(String height) {
-        super.setHeight(height);
-        if (!isActiveTabFullscreen && !height.isEmpty()) {
-            int heightPx = JQueryWrapper.parseInt(height);
-            int scrollerHeight = Math.max(heightPx - tabContainer.getOffsetHeight(), 0);
-            scroller.setHeight(scrollerHeight + "px");
-        } else {
-            scroller.setHeight(RootPanel.get().getOffsetHeight() + "px");
-        }
-        Util.runWebkitOverflowAutoFix(scroller.getElement());
-    }*/
-
     @Override
     protected void onLoad() {
         super.onLoad();
@@ -204,8 +189,8 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
             scroller.setHeight(RootPanel.get().getOffsetHeight() + "px");
         } else {
             RootPanel.get().removeStyleName("fullscreen");
-            int scrollerHeight = getOffsetHeight() - tabContainer.getOffsetHeight();
-            scroller.setHeight(scrollerHeight + "px");
+            //int scrollerHeight = getOffsetHeight() - tabContainer.getOffsetHeight();
+            //scroller.setHeight(scrollerHeight + "px");
         }
     }
 

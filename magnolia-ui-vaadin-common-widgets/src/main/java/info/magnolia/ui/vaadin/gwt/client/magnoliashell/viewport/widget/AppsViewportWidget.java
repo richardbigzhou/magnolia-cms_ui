@@ -90,7 +90,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
             final Element target = event.getNativeEvent().getEventTarget().cast();
             if (target.getClassName().contains(CLOSE_CLASSNAME)) {
                 setClosing(true);
-                getEventBus().fireEvent(new ViewportCloseEvent(ViewportType.APP_VIEWPORT));
+                getEventBus().fireEvent(new ViewportCloseEvent(ViewportType.APP));
             }
         }
     };

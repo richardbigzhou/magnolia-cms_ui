@@ -121,7 +121,6 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
         });
         
         eventBus.addHandler(FrameLoadedEvent.TYPE, new FrameLoadedEvent.Handler() {
-
             @Override
             public void handle(FrameLoadedEvent event) {
                 model.reset();
@@ -135,7 +134,6 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                     focusModel.init();
                 }
             }
-
         });
         
         eventBus.addHandler(SelectElementEvent.TYPE, new SelectElementEventHandler() {

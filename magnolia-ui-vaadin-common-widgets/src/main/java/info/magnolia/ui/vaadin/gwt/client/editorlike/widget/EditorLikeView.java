@@ -51,10 +51,6 @@ public interface EditorLikeView <T extends EditorLikeView.Presenter> extends IsW
 
     void setCaption(String caption);
 
-    int getContentWidth();
-
-    int getContentHeight();
-
     void setContent(Widget contentWidget);
 
     void setPresenter(T presenter);

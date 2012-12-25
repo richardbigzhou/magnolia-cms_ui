@@ -64,12 +64,14 @@ import com.vaadin.client.Util;
 
 /**
  * Actual client side implementation of the form view.
- * Provides the methods for the client side presenter {@link VForm}.
+ * Provides the methods for the client side presenter {@link com.vaadin.client.ui.form.FormConnector}.
  */
 public class FormViewImpl extends FlowPanel implements FormView {
 
     private static final String CLASSNAME = "form-panel";
 
+    private static final String CLASSNAME_CONTENT = "form-content";
+    
     private static final String CLASSNAME_FOOTER = "form-footer";
 
     private static final String CLASSNAME_BUTTON = "btn-form";
@@ -116,7 +118,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
         }
     };
 
-    private final VFormHeader formHeader = new VFormHeader(new VFormHeader.VFormHeaderCallback() {
+    private final FormHeaderWidget formHeader = new FormHeaderWidget(new FormHeaderWidget.FormHeaderCallback() {
 
         @Override
         public void onDescriptionVisibilityChanged(boolean isVisible) {
@@ -161,6 +163,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
         super();
         setStylePrimaryName(CLASSNAME);
         footer.addClassName(CLASSNAME_FOOTER);
+        contentEl.addClassName(CLASSNAME_CONTENT);
         add(formHeader);
         getElement().appendChild(contentEl);
         getElement().appendChild(footer);
@@ -251,16 +254,6 @@ public class FormViewImpl extends FlowPanel implements FormView {
         }
     }
 
-
-    @Override
-    public void setHeight(String height) {
-        super.setHeight(height);
-        Integer heightPx = JQueryWrapper.parseInt(height); 
-        if (tabSheet != null && heightPx != null) {
-            tabSheet.asWidget().setHeight((heightPx - formHeader.getOffsetHeight() - footer.getOffsetHeight()) + "px");            
-        }
-    }
-
     private void scrollTo(final FormFieldWrapper field) {
         final int top = JQueryWrapper.select(field).position().top();
         JQueryWrapper.select(tabSheet.asWidget()).children(".v-shell-tabsheet-scroller").animate(500, new AnimationSettings() {
@@ -300,18 +293,12 @@ public class FormViewImpl extends FlowPanel implements FormView {
     }
 
     @Override
-    public int getContentWidth() {
-        return getOffsetWidth();
+    public Element getHeaderElement() {
+        return formHeader.getElement();
     }
 
     @Override
-    public int getContentHeight() {
-        if (getParent() != null) {
-            int baseHeight = getParent().getOffsetHeight();
-            int headerHeight = formHeader.getOffsetHeight();
-            int footerHeight = footer.getOffsetHeight();
-            return baseHeight - headerHeight - footerHeight;
-        }
-        return 0;
+    public Element getContentElement() {
+        return contentEl;
     }
 }

@@ -33,17 +33,22 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.tab.connector;
 
+import info.magnolia.ui.vaadin.form.tab.MagnoliaFormTab;
 import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.form.tab.rpc.FormTabServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.form.tab.widget.FormTabWidget;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.connector.MagnoliaTabConnector;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
 
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
+import com.vaadin.shared.ui.Connect;
 
 /**
  * FormTabConnector.
  */
+@Connect(MagnoliaFormTab.class)
 public class FormTabConnector extends MagnoliaTabConnector {
 
     private final FormTabServerRpc rpc = RpcProxy.create(FormTabServerRpc.class, this);
@@ -54,7 +59,7 @@ public class FormTabConnector extends MagnoliaTabConnector {
         addStateChangeHandler("hasError", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                fireEvent(new ValidationChangedEvent());
+                getWidget().fireEvent(new ValidationChangedEvent());
             }
         });
     }
@@ -63,4 +68,8 @@ public class FormTabConnector extends MagnoliaTabConnector {
         rpc.setHasErrors(hasErrors);
     }
     
+    @Override
+    protected MagnoliaTabWidget createWidget() {
+        return new FormTabWidget();
+    }
 }

@@ -40,7 +40,10 @@ import info.magnolia.ui.vaadin.gwt.client.form.widget.FormView;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormView.Presenter;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormViewImpl;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.vaadin.client.communication.RpcProxy;
+import com.vaadin.client.ui.layout.ElementResizeEvent;
+import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -52,8 +55,20 @@ public class FormConnector extends EditorLikeComponentConnector<FormView.Present
     private final ActionFiringServerRpc rpc = RpcProxy.create(ActionFiringServerRpc.class, this);
     
     @Override
+    protected void init() {
+        super.init();
+        getLayoutManager().addElementResizeListener(getView().getHeaderElement(), new ElementResizeListener() {
+            @Override
+            public void onElementResize(ElementResizeEvent e) {
+                getView().getContentElement().getStyle().setTop(e.getLayoutManager().getOuterHeight(e.getElement()), Unit.PX);
+            }
+        });
+    }
+    
+    @Override
     protected FormView createView() {
-        return new FormViewImpl();
+        final FormView view = new FormViewImpl();
+        return view;
     }
 
     @Override
@@ -66,7 +81,9 @@ public class FormConnector extends EditorLikeComponentConnector<FormView.Present
             }
             
             @Override
-            public void runLayout() {}
+            public void runLayout() {
+                getLayoutManager().setNeedsMeasure(FormConnector.this);
+            }
         };
     }
     

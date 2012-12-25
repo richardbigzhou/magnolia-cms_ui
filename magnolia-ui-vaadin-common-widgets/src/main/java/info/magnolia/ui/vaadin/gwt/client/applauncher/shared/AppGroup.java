@@ -64,6 +64,10 @@ public class AppGroup implements Serializable {
         this.clientGroup = clientGroup;
     }
 
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+    
     public void addAppTile(final AppTile tile) {
         appTiles.add(tile);
     }

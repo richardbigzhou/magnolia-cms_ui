@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Label;
 /**
  * VFormHeader.
  */
-public class VFormHeader extends FlowPanel {
+public class FormHeaderWidget extends FlowPanel {
 
     private static final String ClASSNAME_ERROR = "form-error";
     private static final String CLASSNAME_HEADER = "form-header";
@@ -55,7 +55,7 @@ public class VFormHeader extends FlowPanel {
     private static final String CLASSNAME_HELPBUTTON = "btn-form-help";
 
     
-    protected final VFormHeaderCallback callback;
+    protected final FormHeaderCallback callback;
     
     private FlowPanel errorPanel = new FlowPanel();
     
@@ -77,7 +77,7 @@ public class VFormHeader extends FlowPanel {
     });
 
     
-    public VFormHeader(final VFormHeaderCallback callback) {
+    public FormHeaderWidget(final FormHeaderCallback callback) {
         this.callback = callback;
         callback.onDescriptionVisibilityChanged(false);
         construct();
@@ -114,7 +114,7 @@ public class VFormHeader extends FlowPanel {
     /**
      * Callback interface for the Form header.
      */
-    public interface VFormHeaderCallback {
+    public interface FormHeaderCallback {
 
         void onDescriptionVisibilityChanged(boolean isVisible);
 

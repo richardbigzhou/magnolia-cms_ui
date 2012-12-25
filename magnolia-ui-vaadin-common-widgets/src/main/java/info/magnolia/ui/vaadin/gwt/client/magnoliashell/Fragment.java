@@ -33,15 +33,17 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell;
 
+import java.io.Serializable;
+
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
 /**
  * Helper class for holding the parsed info from the fragment.
  */
-public class Fragment {
+public class Fragment implements Serializable {
     
-    private ViewportType appViewportType = ViewportType.SHELL_APP_VIEWPORT;
+    private ViewportType appViewportType = ViewportType.SHELL_APP;
 
     private String appId = "";
 
@@ -49,18 +51,18 @@ public class Fragment {
 
     private String parameter = "";
 
-    protected Fragment() {}
+    public Fragment() {}
 
     public static Fragment fromFragment(final String fragment) {
         Fragment dto = new Fragment();
         String type = extractAppType(fragment);
         if (type.equals("shell")) {
-            dto.appViewportType = ViewportType.SHELL_APP_VIEWPORT;
+            dto.appViewportType = ViewportType.SHELL_APP;
             dto.appId = ShellAppType.getTypeByFragmentId(extractAppId(fragment));
             dto.subAppId = extractSubAppId(fragment);
             dto.parameter = extractSubAppId(fragment);
         } else if (type.equals("app")) {
-            dto.appViewportType = ViewportType.APP_VIEWPORT;
+            dto.appViewportType = ViewportType.APP;
             dto.appId = extractAppId(fragment);
             dto.subAppId = extractSubAppId(fragment);
             dto.parameter = extractParameter(fragment);

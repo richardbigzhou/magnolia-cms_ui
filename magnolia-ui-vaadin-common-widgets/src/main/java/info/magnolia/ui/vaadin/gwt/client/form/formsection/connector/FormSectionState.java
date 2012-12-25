@@ -44,9 +44,9 @@ import com.vaadin.shared.ui.AbstractLayoutState;
  */
 public class FormSectionState extends AbstractLayoutState {
     
-    public boolean isValidationVisible;
+    public boolean isValidationVisible = false;
     
-    public boolean isDescriptionVisible;
+    public boolean isDescriptionVisible = false;
     
     public Map<Connector, String> helpDescriptions = new HashMap<Connector, String>();
 

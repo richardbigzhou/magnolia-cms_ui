@@ -37,9 +37,9 @@ package info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell;
  * Enumeration of possible viewport types.
  */
 public enum ViewportType {
-    SHELL_APP_VIEWPORT("shell:"), 
-    APP_VIEWPORT("app:"), 
-    DIALOG_VIEWPORT("");
+    SHELL_APP("shell:"), 
+    APP("app:"), 
+    DIALOG("");
 
     private String fragmentPrefix;
 

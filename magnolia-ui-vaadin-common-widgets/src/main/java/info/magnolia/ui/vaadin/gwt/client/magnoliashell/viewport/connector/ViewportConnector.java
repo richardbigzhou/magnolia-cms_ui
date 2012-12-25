@@ -75,15 +75,15 @@ public class ViewportConnector extends AbstractLayoutConnector {
             @Override
             public void onStateChanged(StateChangeEvent event) {
                 final ComponentConnector candidate = (ComponentConnector)getState().activeComponent; 
-                if (getWidget().getVisibleApp() != candidate) {
-                    getWidget().setVisibleApp(candidate.getWidget() != null ? candidate.getWidget() : null);
+                if (candidate != null && getWidget().getVisibleApp() != candidate) {
+                    getWidget().setVisibleApp(candidate != null ? candidate.getWidget() : null);
                 }
             }
         });
     };
     
     protected void alignContent(Element e, LayoutManager layoutManager) {
-        int width = layoutManager.getOuterWidth(e);
+        int width = layoutManager.getInnerWidth(e);
         final Style style = e.getStyle();
         style.setLeft(50, Unit.PCT);
         style.setMarginLeft(-width / 2, Unit.PX);
@@ -114,41 +114,6 @@ public class ViewportConnector extends AbstractLayoutConnector {
             }
             ++index;
         }
-        /*
-        if (!client.updateComponent(this, uidl, true)) {
-            if (uidl.getChildCount() > 0) {
-                Widget app = null;
-                for (int i = 0; i < uidl.getChildCount(); i++) {
-                    final UIDL childUIdl = uidl.getChildUIDL(i);
-                    final Paintable paintable = client.getPaintable(childUIdl);
-                    oldWidgets.remove(paintable);
-                    final Widget w = (Widget) paintable;
-                    if (i == 0) {
-                        app = w;
-                    }
-                    if (w.getParent() != this) {
-                        add(w, getElement());
-                    }
-                    // make sure handling of visibility is left to viewport
-                    boolean visible = w.isVisible();
-                    paintable.updateFromUIDL(childUIdl, client);
-                    if (forceContentAlign) {
-                        alignChild(w);
-                    }
-                    w.setVisible(visible);
-                }
-                if (app != null) {
-                    setVisibleApp(app);
-                }
-            } else {
-                visibleApp = null;
-            }
-            for (Widget w : oldWidgets) {
-                removeWidget(w);
-            }
-        }
-        loadingPane.hide();
-        */
     }
     
     @Override

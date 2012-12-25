@@ -60,6 +60,11 @@ public class FormSection extends AbstractLayout {
         return (FormSectionState)super.getState();
     }
     
+    @Override
+    protected FormSectionState getState(boolean markAsDirty) {
+        return (FormSectionState)super.getState(markAsDirty);
+    }
+    
     public void setComponentHelpDescription(Component c, String description) {
         if (components.contains(c)) {
             getState().helpDescriptions.put(c, description);
@@ -98,6 +103,9 @@ public class FormSection extends AbstractLayout {
 
     @Override
     public ErrorMessage getErrorMessage() {
+        if (!getState(false).isValidationVisible) {
+            return null;
+        }
         final Iterator<Component> it = getComponentIterator();
         while (it.hasNext()) {
             final Component c = it.next();
@@ -112,7 +120,7 @@ public class FormSection extends AbstractLayout {
     }
 
     public boolean hasError() {
-        return getErrorMessage() != null && getState().isValidationVisible;
+        return getErrorMessage() != null && getState(false).isValidationVisible;
     }
 
     @Override

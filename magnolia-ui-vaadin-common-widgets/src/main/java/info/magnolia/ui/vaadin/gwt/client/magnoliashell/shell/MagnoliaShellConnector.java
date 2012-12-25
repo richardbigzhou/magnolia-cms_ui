@@ -156,19 +156,14 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     public MagnoliaShellState getState() {
         return (MagnoliaShellState) super.getState();
     }
-
+    
     @Override
-    public Widget getWidget() {
-        return super.getWidget();
-    }
-
-    @Override
-    public void activateRunningApp(Fragment fragment) {
+    public void activateApp(Fragment fragment) {
         rpc.activateRunningApp(fragment);
     }
 
     @Override
-    public void loadShellApp(Fragment f) {
+    public void activateShellApp(Fragment f) {
         rpc.activateShellApp(f);
     }
 
@@ -203,30 +198,25 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     }
 
     @Override
-    public void startApp(Fragment dto) {
-        rpc.startApp(dto);
-    }
-
-    @Override
-    public void handleHistoryChange(String fragment) {
-        final Fragment dto = Fragment.fromFragment(fragment);
-        if (dto.getAppViewportType() == ViewportType.SHELL_APP_VIEWPORT) {
-            eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.resolveType(dto.getAppId()), dto.getParameter()));
+    public void handleHistoryChange(String fragmentStr) {
+        final Fragment f = Fragment.fromFragment(fragmentStr);
+        if (f.getAppViewportType() == ViewportType.SHELL_APP) {
+            eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.resolveType(f.getAppId()), f.getParameter()));
         } else {
-            final String appId = dto.getAppId();
+            final String appId = f.getAppId();
             if (isAppRegistered(appId)) {
                 if (!isAppRunning(appId)) {
                     view.showAppPreloader(appId, new PreloaderCallback() {
                         @Override
                         public void onPreloaderShown(String appName) {
-                            startApp(dto);
+                            activateApp(f);
                         }
                     });
                 } else {
-                    activateRunningApp(dto);
+                    activateApp(f);
                 }
             } else {
-                goToAppLauncher(dto.getParameter());
+                goToAppLauncher(f.getParameter());
             }
         }
     }

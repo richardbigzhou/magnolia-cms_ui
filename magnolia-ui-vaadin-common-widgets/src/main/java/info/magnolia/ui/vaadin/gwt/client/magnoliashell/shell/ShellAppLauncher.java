@@ -118,7 +118,7 @@ public class ShellAppLauncher extends FlowPanel {
                     // Has user clicked on the active shell app?
                     if (type == getActiveShellType()) {
                         // if open then close it.
-                        eventBus.fireEvent(new ViewportCloseEvent(ViewportType.SHELL_APP_VIEWPORT));
+                        eventBus.fireEvent(new ViewportCloseEvent(ViewportType.SHELL_APP));
                     } else {
                         log("Going to " + type);
                         // If closed, then open it.

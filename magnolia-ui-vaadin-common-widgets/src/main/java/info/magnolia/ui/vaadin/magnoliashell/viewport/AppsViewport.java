@@ -46,7 +46,7 @@ public class AppsViewport extends ShellViewport {
     public AppsViewport(BaseMagnoliaShell shell) {
         super(shell);
         addStyleName("apps");
-        getState().type = ViewportType.APP_VIEWPORT;
+        getState().type = ViewportType.APP;
     }
 
 }

@@ -170,7 +170,7 @@ public class AppTileWidget extends Widget {
      * Set the tile colors for the click state, whether active or not.
      */
     private void setColorsClick() {
-        boolean isTileWhite = !getParent().isClientGroup();
+        boolean isTileWhite = getParent().isClientGroup();
         setColors(isTileWhite);
     }
 

@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.form;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.vaadin.form.tab.MagnoliaFormTab;
+import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.ActionFiringServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.form.connector.FormState;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
@@ -82,9 +83,25 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
     public Form() {
         setStyleName("v-magnolia-form");
         setImmediate(true);
-        tabSheet.setParent(this);
+        tabSheet.setSizeFull();
         tabSheet.showAllTab(true, SHOW_ALL);
-        tabSheet.setHeight("100%");
+        setContent(tabSheet);
+        
+        registerRpc(new ActionFiringServerRpc() {
+            @Override
+            public void fireAction(String actionId) {
+                final Iterator<FormActionListener> it = actionCallbackMap.get(actionId).iterator();
+                while (it.hasNext()) {
+                    it.next().onActionExecuted(actionId);
+                }
+            }
+
+            @Override
+            public void closeSelf() {
+                
+            }
+            
+        });
     }
 
     @Override

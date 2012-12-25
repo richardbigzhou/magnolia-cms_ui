@@ -113,15 +113,15 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     }
 
     protected AppsViewportWidget getAppViewport() {
-        return (AppsViewportWidget) viewports.get(ViewportType.APP_VIEWPORT);
+        return (AppsViewportWidget) viewports.get(ViewportType.APP);
     }
 
     protected ShellAppsViewportWidget getShellAppViewport() {
-        return (ShellAppsViewportWidget) viewports.get(ViewportType.SHELL_APP_VIEWPORT);
+        return (ShellAppsViewportWidget) viewports.get(ViewportType.SHELL_APP);
     }
 
     protected DialogViewportWidget getDialogViewport() {
-        return (DialogViewportWidget) viewports.get(ViewportType.DIALOG_VIEWPORT);
+        return (DialogViewportWidget) viewports.get(ViewportType.DIALOG);
     }
 
     @Override
@@ -246,7 +246,7 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
             } else {
                 viewport.setRefreshEvent(null);
                 getShellAppViewport().showLoadingPane();
-                presenter.loadShellApp(Fragment.fromFragment("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken()));
+                presenter.activateShellApp(Fragment.fromFragment("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken()));
             }
         }
 
@@ -255,10 +255,10 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     @Override
     public void onViewportClose(ViewportCloseEvent event) {
         final ViewportType viewportType = event.getViewportType();
-        if (viewportType == ViewportType.SHELL_APP_VIEWPORT) {
+        if (viewportType == ViewportType.SHELL_APP) {
             getShellAppViewport().setClosing(true);
             presenter.closeCurrentShellApp();
-        } else if (viewportType == ViewportType.APP_VIEWPORT) {
+        } else if (viewportType == ViewportType.APP) {
             presenter.closeCurrentApp();
         }
     }
@@ -312,7 +312,7 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
     @Override
     public void navigateToMessageDetails(String id) {
-        presenter.loadShellApp(Fragment.fromFragment("shell:pulse:messages/" + id));
+        presenter.activateShellApp(Fragment.fromFragment("shell:pulse:messages/" + id));
     }
 
     private void doUpdateViewport(ViewportWidget viewport, ViewportType type) {

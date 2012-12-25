@@ -122,16 +122,6 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
     public void setCaption(String caption) {
         header.setDialogCaption(caption);
     }
-    
-    @Override
-    public int getContentWidth() {
-        return getOffsetWidth();
-    }
-
-    @Override
-    public int getContentHeight() {
-        return getOffsetHeight() - header.getOffsetHeight() - footerEl.getOffsetHeight();
-    }
 
     @Override
     public void setContent(Widget contentWidget) {
