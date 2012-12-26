@@ -158,15 +158,16 @@ public class ViewportWidget extends FlowPanel {
         w.setVisible(true);
     }
 
-
-    protected void removeWidget(Widget w) {
-        doRemoveWidget(w);
+    public void removeWidget(Widget w) {
+        removeWidgetWithoutTransition(w);
+    }
+    
+    void removeWidgetWithoutTransition(Widget w) {
+        remove(w);
     }
 
-    /**
-     * Default non-transitioning behavior, accessible to transition delegates as a fall back.
-     */
-    void doRemoveWidget(Widget w) {
-        remove(w);
+    @Override
+    public boolean remove(Widget w) {
+        return super.remove(w);
     }
 }

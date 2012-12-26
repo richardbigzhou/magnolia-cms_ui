@@ -48,6 +48,7 @@ import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
 import java.util.List;
 
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -166,7 +167,7 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
     @Override
     public void updateLayoutOfActiveTab() {
         if (getState().activeTab != null) {
-            getLayoutManager().setNeedsMeasure((ComponentConnector)getState().activeTab);   
+            ((ComponentConnector)getState().activeTab).getLayoutManager().layoutNow();
         }
     }
 
@@ -175,4 +176,13 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
         getLayoutManager().setNeedsMeasure(this);
     }
    
+    @Override
+    public void onUnregister() {
+        new Timer() {
+            @Override
+            public void run() {
+                MagnoliaTabSheetConnector.super.onUnregister();
+            }
+        }.schedule(1000);
+    }
 }

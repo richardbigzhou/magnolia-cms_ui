@@ -48,17 +48,15 @@ import com.vaadin.shared.ui.Connect;
  */
 @Connect(AppsViewport.class)
 public class AppsViewportConnector extends ViewportConnector {
-
-    private Object lock = new Object();
     
     @Override
     public void onConnectorHierarchyChange(final ConnectorHierarchyChangeEvent event) {
         if (getWidget().hasPreloader()) {
-            getConnection().suspendReponseHandling(lock);
+            //getConnection().suspendReponseHandling(lock);
             new Timer() {
                 @Override
                 public void run() {
-                    getConnection().resumeResponseHandling(lock);
+                    //getConnection().resumeResponseHandling(lock);
                     getWidget().removePreloader();
                 }
             }.schedule(500);

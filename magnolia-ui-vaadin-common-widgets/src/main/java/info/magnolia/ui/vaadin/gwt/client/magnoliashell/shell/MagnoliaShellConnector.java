@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.Fragment;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigationEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppActivatedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellMessage.MessageType;
@@ -49,11 +49,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
+import com.vaadin.client.Util;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
@@ -77,6 +79,8 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
 
     private EventBus eventBus = new SimpleEventBus();
 
+    boolean historyInitialized = false;
+    
     @Override
     protected void init() {
         super.init();
@@ -100,11 +104,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         registerRpc(ShellClientRpc.class, new ShellClientRpc() {
 
             @Override
-            public void navigate(String appId, String subAppId, String param) {
-                view.navigate(appId, subAppId, param);
-            }
-
-            @Override
             public void activeViewportChanged(Connector viewport) {
                 view.setActiveViewport(((ViewportConnector)viewport).getWidget());
             }
@@ -117,6 +116,11 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             @Override
             public void hideAllMessages() {
                 view.hideAllMessages();
+            }
+
+            @Override
+            public void setFragmentFromServer(Fragment fragment) {
+                view.navigate(fragment);
             }
         });
         
@@ -137,6 +141,10 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         for (ComponentConnector connector : children) {
             final ViewportConnector vc = (ViewportConnector)connector;
             view.updateViewport(vc.getWidget(), vc.getType());
+        }
+        
+        if (!historyInitialized) {
+            History.fireCurrentHistoryState();
         }
     }
 
@@ -169,7 +177,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
 
     @Override
     public void updateViewportLayout(ViewportWidget activeViewport) {
-        // client.runDescendentsLayout(viewport);
+        getLayoutManager().setNeedsMeasure(Util.findConnectorFor(activeViewport));
     }
 
     @Override
@@ -201,7 +209,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     public void handleHistoryChange(String fragmentStr) {
         final Fragment f = Fragment.fromFragment(fragmentStr);
         if (f.getAppViewportType() == ViewportType.SHELL_APP) {
-            eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.resolveType(f.getAppId()), f.getParameter()));
+            eventBus.fireEvent(new ShellAppActivatedEvent(ShellAppType.resolveType(f.getAppId()), f.getParameter()));
         } else {
             final String appId = f.getAppId();
             if (isAppRegistered(appId)) {
@@ -228,6 +236,12 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     }
     
     private void goToAppLauncher(String parameter) {
-        eventBus.fireEvent(new ShellAppNavigationEvent(ShellAppType.APPLAUNCHER, parameter));
+        eventBus.fireEvent(new ShellAppActivatedEvent(ShellAppType.APPLAUNCHER, parameter));
+    }
+
+    @Override
+    public String getActiveViewportFragment() {
+        ViewportConnector cc = (ViewportConnector)getState().activeViewport;
+        return cc == null ? "" : cc.getState().currentFragment;
     }
 }

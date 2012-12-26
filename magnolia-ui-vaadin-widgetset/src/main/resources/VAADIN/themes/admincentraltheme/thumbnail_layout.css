@@ -1,0 +1,9 @@
+.thumbnail-view-base-panel {
+	position: relative;
+}
+
+.thumbnail-scroller {
+	position: absolute;
+	top: 30px;
+	bottom: 0;
+}

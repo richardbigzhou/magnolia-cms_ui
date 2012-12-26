@@ -91,7 +91,6 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Has
         public void activateShellApp(Fragment f) {
             BaseMagnoliaShell.this.navigateToShellApp(f);
         }
-       
     };
     
     private final EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
@@ -108,9 +107,15 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Has
         final ShellAppsViewport shellAppsViewport = new ShellAppsViewport(BaseMagnoliaShell.this);
         final AppsViewport appsViewport = new AppsViewport(BaseMagnoliaShell.this);
         final DialogViewport dialogViewport = new DialogViewport(BaseMagnoliaShell.this);
+        
         getState().viewports.put(ViewportType.SHELL_APP, shellAppsViewport);
         getState().viewports.put(ViewportType.APP, appsViewport);
         getState().viewports.put(ViewportType.DIALOG, dialogViewport);
+        
+        getState().indications.put(ShellAppType.APPLAUNCHER, 0);
+        getState().indications.put(ShellAppType.PULSE, 0);
+        getState().indications.put(ShellAppType.FAVORITE, 0);
+        
         shellAppsViewport.setParent(this);
         appsViewport.setParent(this);
         dialogViewport.setParent(this);
@@ -124,10 +129,10 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Has
         doNavigateWithinViewport(getShellAppViewport(), fragment);
     }
 
-    public void doNavigateWithinViewport(final ShellViewport viewport, Fragment dto) {
-        viewport.setCurrentShellFragment(dto.toFragment());
+    public void doNavigateWithinViewport(final ShellViewport viewport, Fragment fragment) {
+        viewport.setCurrentShellFragment(fragment.toFragment());
         setActiveViewport(viewport);
-        notifyOnFragmentChanged(dto.getAppViewportType().getFragmentPrefix() + dto.toFragment());
+        notifyOnFragmentChanged(fragment.toFragment());
     }
 
     public void showInfo(Message message) {
@@ -168,7 +173,6 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Has
 
     public void setIndication(ShellAppType type, int indication) {
         getState().indications.put(type, indication);
-        markAsDirty();
         synchronized (UI.getCurrent()) {
             // pusher.push();
         }
@@ -279,4 +283,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Has
         };
     }
 
+    public void propagateFragmentToClient(Fragment fragment) {
+        getRpcProxy(ShellClientRpc.class).setFragmentFromServer(fragment);
+    }
 }

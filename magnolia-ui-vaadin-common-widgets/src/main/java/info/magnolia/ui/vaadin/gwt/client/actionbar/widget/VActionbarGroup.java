@@ -53,7 +53,7 @@ public class VActionbarGroup extends ComplexPanel {
     
     private final Element list = DOM.createElement("ul");
 
-    private final List<VActionbarItem> actions = new ArrayList<VActionbarItem>();
+    private final List<ActionbarItemWidget> actions = new ArrayList<ActionbarItemWidget>();
 
     private final String name;
 
@@ -93,7 +93,7 @@ public class VActionbarGroup extends ComplexPanel {
         add(w, getElement());
     }
 
-    public List<VActionbarItem> getActions() {
+    public List<ActionbarItemWidget> getActions() {
         return actions;
     }
 
@@ -101,7 +101,7 @@ public class VActionbarGroup extends ComplexPanel {
         return actions.size() ;
     }
 
-    public void addAction(VActionbarItem action) {
+    public void addAction(ActionbarItemWidget action) {
         actions.add(action);
         add(action);
     }

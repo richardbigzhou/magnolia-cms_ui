@@ -43,7 +43,6 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.HandlerRegistration;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
@@ -67,16 +66,12 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Admin shell.
  */
 @Singleton
 public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEventHandler {
-
-    private static final Logger log = LoggerFactory.getLogger(MagnoliaShell.class);
 
     private final EventBus admincentralEventBus;
 
@@ -87,13 +82,13 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     private final MessagesManager messagesManager;
 
     @Inject
-    public MagnoliaShell(@Named("admincentral") EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider, AppController appController, MessagesManager messagesManager, final Provider<LocationController> locationControllerProvider) {
+    public MagnoliaShell(@Named("admincentral") EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider, 
+            AppController appController, MessagesManager messagesManager) {
         super();
         this.messagesManager = messagesManager;
         this.admincentralEventBus = admincentralEventBus;
         this.appController = appController;
         this.shellAppControllerProvider = shellAppControllerProvider;
-        //this.locationControllerProvider = locationControllerProvider;
         this.admincentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
             @Override
@@ -152,6 +147,11 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
     @Override
     public String getFragment() {
+        //final ShellViewport activeViewport = getActiveViewport();
+        return getActiveViewport().getCurrentShellFragment();
+    }
+
+    private String getActiveViewportName() {
         final ShellViewport activeViewport = getActiveViewport();
         String viewPortName = "";
         if (activeViewport == getShellAppViewport()) {
@@ -161,28 +161,25 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
         } else if (activeViewport == getDialogViewport()) {
             viewPortName = "dialog";
         }
-        return viewPortName + ":" + (activeViewport == null ? "" : activeViewport.getCurrentShellFragment());
+        return viewPortName;
     }
 
     @Override
     public void setFragment(String fragment) {
-
         String appId = DefaultLocation.extractAppId(fragment);
         String subAppId = DefaultLocation.extractSubAppId(fragment);
         String parameter = DefaultLocation.extractParameter(fragment);
-
-        final ShellViewport activeViewport = getActiveViewport();
-        activeViewport.setCurrentShellFragment(appId + ":" + subAppId + ";" + parameter);
-
-        //super.navigateToApp(appId, subAppId, parameter);
-
+        
+        String actualFragment = getActiveViewportName() + ":" + appId + ":" + subAppId + ";" + parameter;
+        
+        getActiveViewport().setCurrentShellFragment(actualFragment);
+        propagateFragmentToClient(Fragment.fromFragment(actualFragment));
     }
 
     @Override
     public HandlerRegistration addFragmentChangedHandler(final FragmentChangedHandler handler) {
         super.addFragmentChangedHanlder(handler);
         return new HandlerRegistration() {
-
             @Override
             public void removeHandler() {
                 removeFragmentChangedHanlder(handler);

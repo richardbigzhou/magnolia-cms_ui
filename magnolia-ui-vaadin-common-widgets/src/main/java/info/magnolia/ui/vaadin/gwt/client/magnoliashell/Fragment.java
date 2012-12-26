@@ -110,7 +110,7 @@ public class Fragment implements Serializable {
     
     @Override
     public String toString() {
-        return appId + ":" + subAppId + ";" + parameter;
+        return appViewportType.getFragmentPrefix() + appId + ":" + subAppId + ";" + parameter;
     }
     
     public static String extractAppType(String fragment) {

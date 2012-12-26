@@ -177,7 +177,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
             }
 
             this.tabSheet = (MagnoliaTabSheetView)contentWidget;
-            tabSheet.addTabSetChangedHandlers(new TabSetChangedEvent.Handler() {
+            tabSheet.addTabSetChangedHandler(new TabSetChangedEvent.Handler() {
                 @Override
                 public void onTabSetChanged(TabSetChangedEvent event) {
                     final List<MagnoliaTabWidget> tabs = event.getTabSheet().getTabs();

@@ -33,8 +33,10 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector;
 
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.DialogViewportWidget;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.DialogViewport;
 
+import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.shared.ui.Connect;
 
 
@@ -43,5 +45,16 @@ import com.vaadin.shared.ui.Connect;
  */
 @Connect(DialogViewport.class)
 public class DialogViewportConnector extends ViewportConnector {
-
+    
+    @Override
+    public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent event) {
+        super.onConnectorHierarchyChange(event);
+        getWidget().setActive(!getChildren().isEmpty());
+    }
+    
+    @Override
+    public DialogViewportWidget getWidget() {
+        return (DialogViewportWidget)super.getWidget();
+    }
+    
 }

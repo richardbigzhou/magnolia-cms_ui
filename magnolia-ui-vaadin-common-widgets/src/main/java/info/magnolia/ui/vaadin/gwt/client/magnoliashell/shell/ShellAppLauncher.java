@@ -33,13 +33,14 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
+import info.magnolia.ui.vaadin.gwt.client.icon.widget.BadgeIconWidget;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppActivatedEvent;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigationEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppActivatedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ShellNavigationAdapter;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ShellNavigationHandler;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.AppNavigationHandler;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
@@ -75,7 +76,7 @@ public class ShellAppLauncher extends FlowPanel {
 
     private final static String ID = "main-launcher";
 
-    private final ShellNavigationHandler navigationHandler = new ShellNavigationAdapter() {
+    private final AppNavigationHandler navigationHandler = new ShellNavigationAdapter() {
 
         @Override
         public void onAppActivated(AppActivatedEvent event) {
@@ -87,10 +88,7 @@ public class ShellAppLauncher extends FlowPanel {
 
     private class NavigatorButton extends FlowPanel {
 
-        /**
-         * TODO - HANDLE ICONS.
-         */
-        //private final GwtBadgeIcon indicator = new GwtBadgeIcon();
+        private final BadgeIconWidget indicator = new BadgeIconWidget();
 
         private final TouchDelegate delegate = new TouchDelegate(this);
 
@@ -100,21 +98,17 @@ public class ShellAppLauncher extends FlowPanel {
             Element root = getElement();
             root.setId("btn-" + type.getCssClass());
             root.addClassName("icon-" + type.getCssClass());
-
-            /**
-             * TODO:
-             * indicator.updateFillColor("#fff");
-             * indicator.updateStrokeColor("#689600");
-             * indicator.updateOutline(true);
-             * root.appendChild(indicator.getElement()); 
-             */
             
+            indicator.setFillColor("#fff");
+            indicator.setStrokeColor("#689600");
+            indicator.setOutline(true);
+            root.appendChild(indicator.getElement()); 
             
 
             DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
-            delegate.addTouchEndHandler(new com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler() {
+            delegate.addTouchEndHandler(new TouchEndHandler() {
                 @Override
-                public void onTouchEnd(com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent event) {
+                public void onTouchEnd(TouchEndEvent event) {
                     // Has user clicked on the active shell app?
                     if (type == getActiveShellType()) {
                         // if open then close it.
@@ -129,7 +123,7 @@ public class ShellAppLauncher extends FlowPanel {
         }
 
         public void setIndication(int indication) {
-            //indicator.updateValue(indication);
+            indicator.updateValue(indication);
         }
     };
 
@@ -161,7 +155,7 @@ public class ShellAppLauncher extends FlowPanel {
     }
 
     private void navigateToShellApp(final ShellAppType type) {
-        eventBus.fireEvent(new ShellAppNavigationEvent(type, ""));
+        eventBus.fireEvent(new ShellAppActivatedEvent(type, ""));
     }
 
     private void construct() {
@@ -270,10 +264,6 @@ public class ShellAppLauncher extends FlowPanel {
         for (final ShellAppType appType : ShellAppType.values()) {
             controlsMap.get(appType).removeStyleName("active");
         }
-    }
-
-    public int getExpandedHeight() {
-        return expandedHeight;
     }
 
     public ShellAppType getNextShellAppType() {

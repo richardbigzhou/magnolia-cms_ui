@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ShellNavigationHandler;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.Fragment;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.AppNavigationHandler;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -41,20 +43,20 @@ import com.google.gwt.event.shared.GwtEvent;
 /**
  * Shell app loaded event.
  */
-public class AppActivatedEvent extends GwtEvent<ShellNavigationHandler>{
+public class AppActivatedEvent extends GwtEvent<AppNavigationHandler>{
 
-    public static final Type<ShellNavigationHandler> TYPE = new Type<ShellNavigationHandler>();
+    public static final Type<AppNavigationHandler> TYPE = new Type<AppNavigationHandler>();
     
     private final boolean isShellApp;
     private final String appId;
     private String subAppId;
     private final String parameter;
 
-    public AppActivatedEvent(boolean shellApp, String appId, String subAppId, String parameter) {
-        isShellApp = shellApp;
-        this.appId = appId;
-        this.subAppId = subAppId;
-        this.parameter = parameter;
+    public AppActivatedEvent(Fragment fragment) {
+        this.isShellApp = fragment.getAppViewportType() == ViewportType.SHELL_APP;
+        this.appId = fragment.getAppId();
+        this.subAppId = fragment.getSubAppId();
+        this.parameter = fragment.getParameter();
     }
 
     public boolean isShellApp() {
@@ -74,12 +76,12 @@ public class AppActivatedEvent extends GwtEvent<ShellNavigationHandler>{
     }
 
     @Override
-    public Type<ShellNavigationHandler> getAssociatedType() {
+    public Type<AppNavigationHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(ShellNavigationHandler handler) {
+    protected void dispatch(AppNavigationHandler handler) {
         handler.onAppActivated(this);
     }
 

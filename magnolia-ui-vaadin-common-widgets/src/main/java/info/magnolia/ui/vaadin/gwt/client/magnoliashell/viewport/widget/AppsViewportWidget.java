@@ -76,13 +76,11 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     private static final int SWIPE_OUT_THRESHOLD = 300;
 
     private static final String CLOSE_CLASSNAME = "v-app-close";
-
-    private Element curtain;
     
     private final VAppPreloader preloader = new VAppPreloader();
 
     private final TouchDelegate delegate = new TouchDelegate(this);
-
+    
     private final ClickHandler closeHandler = new ClickHandler() {
 
         @Override
@@ -94,10 +92,9 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
             }
         }
     };
+    
+    private Element curtain;
 
-    /**
-     * Instantiates a new apps viewport.
-     */
     public AppsViewportWidget() {
         super();
         addDomHandler(closeHandler, ClickEvent.getType());
@@ -106,7 +103,6 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     }
 
     /* CURTAIN INTEGRATION */
-
     @Override
     public void doSetActive(boolean active) {
         if (active) {
@@ -140,9 +136,10 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
      * a fall back.
      */
     public void doSetCurtainVisible(boolean visible) {
-        if (visible && getCurtain().getParentElement() != getElement()) {
+        boolean curtainAttached = getCurtain().getParentElement() == getElement();
+        if (visible && !curtainAttached) {
             getElement().appendChild(getCurtain());
-        } else if (!visible && getCurtain().getParentElement() == getElement()) {
+        } else if (!visible && curtainAttached) {
             getElement().removeChild(getCurtain());
         }
     }
@@ -166,22 +163,21 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     }
 
     @Override
-    protected void removeWidget(final Widget w) {
+    public void removeWidget(final Widget w) {
         if (getTransitionDelegate() != null) {
             ((AppsTransitionDelegate) getTransitionDelegate()).removeWidget(this, w);
         } else {
-            doRemoveWidget(w);
+            removeWidgetWithoutTransition(w);
         }
     }
 
     @Override
-    public void doRemoveWidget(Widget w) {
-        super.doRemoveWidget(w);
+    public void removeWidgetWithoutTransition(Widget w) {
+        super.removeWidgetWithoutTransition(w);
         setClosing(false);
     }
 
     /* SWIPE GESTURES */
-
     private void bindTouchHandlers() {
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
         delegate.addTouchHandler(new MagnoliaSwipeRecognizer(delegate, SWIPE_OUT_THRESHOLD));

@@ -41,6 +41,8 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDeleg
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
@@ -66,16 +68,20 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         // zoom-in if switching to a different running app, from appslauncher only
         // closing an app doesn't zoom-in the next app
         // running apps are all hidden explicitly except current one
-        if (!viewport.isClosing() && Visibility.HIDDEN.getCssName().equals(app.getElement().getStyle().getVisibility())) {
+        if (!viewport.isClosing() && isWidgetVisibilityHidden(app)) {
             viewport.doSetVisibleApp(app);
-            app.addStyleName("zoom-in");
-            
-            new Timer() {
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                 @Override
-                public void run() {
-                    app.removeStyleName("zoom-in");
+                public void execute() {
+                    app.addStyleName("zoom-in");
+                    new Timer() {
+                        @Override
+                        public void run() {
+                            app.removeStyleName("zoom-in");
+                        }
+                    }.schedule(500);
                 }
-            }.schedule(500);
+            });
         } else {
             viewport.doSetVisibleApp(app);
         }
@@ -84,7 +90,6 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
     public void setCurtainVisible(final AppsViewportWidget viewport, boolean visible) {
         final Element curtain = viewport.getCurtain();
         final Callbacks callbacks = Callbacks.create();
-
         if (visible) {
             // show curtain immediately
             viewport.doSetCurtainVisible(visible);
@@ -92,11 +97,9 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         } else {
             // fade out after 200ms then remove curtain
             new Timer() {
-
                 @Override
                 public void run() {
                     callbacks.add(new JQueryCallback() {
-
                         @Override
                         public void execute(JQueryWrapper jq) {
                             viewport.doSetCurtainVisible(false);
@@ -108,42 +111,39 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         }
     }
 
+    Object lock = new Object();
     public void removeWidget(final AppsViewportWidget viewport, final Widget w) {
         w.addStyleName("zoom-out");
         new Timer() {
-
             @Override
             public void run() {
-                viewport.doRemoveWidget(w);
-                viewport.setClosing(false);
+                viewport.removeWidgetWithoutTransition(w);
             }
         }.schedule(500);
     }
+    
+    private boolean isWidgetVisibilityHidden(final Widget app) {
+        return Visibility.HIDDEN.getCssName().equals(app.getElement().getStyle().getVisibility());
+    }
 
-    /**
-     * FADE IN TRANSITION.
-     * 
-     * @param el the curtain element
-     * @param callbacks the callbacks
-     */
-    private void fadeIn(final Element el, final Callbacks callbacks) {
-        JQueryWrapper jq = JQueryWrapper.select(el);
+    private final JQueryCallback opacityClearCallback = new JQueryCallback() {
+        @Override
+        public void execute(JQueryWrapper query) {
+            query.get(0).getStyle().clearOpacity();
+        }
+    };
+    
+    private void fadeIn(final Element curtainEl, final Callbacks callbacks) {
+        JQueryWrapper jq = JQueryWrapper.select(curtainEl);
 
         // init
         if (jq.is(":animated")) {
             jq.stop();
         } else {
-            el.getStyle().setOpacity(0);
+            curtainEl.getStyle().setOpacity(0);
         }
 
-        // callback
-        callbacks.add(new JQueryCallback() {
-            @Override
-            public void execute(JQueryWrapper query) {
-                el.getStyle().clearOpacity();
-            }
-        });
-
+        callbacks.add(opacityClearCallback);
         // animate
         jq.animate(CURTAIN_FADE_IN_DURATION, new AnimationSettings() {
             {
@@ -153,14 +153,8 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         });
     }
 
-    /**
-     * FADE OUT TRANSITION.
-     * 
-     * @param el the curtain element
-     * @param callbacks the callbacks
-     */
-    private void fadeOut(final Element el, final Callbacks callbacks) {
-        JQueryWrapper jq = JQueryWrapper.select(el);
+    private void fadeOut(final Element curtainEl, final Callbacks callbacks) {
+        JQueryWrapper jq = JQueryWrapper.select(curtainEl);
 
         // init
         if (jq.is(":animated")) {

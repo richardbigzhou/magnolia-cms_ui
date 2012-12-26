@@ -38,7 +38,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
  * The GwtBadgeIcon widget.
  */
@@ -59,11 +58,7 @@ public class BadgeIconWidget extends Widget {
 
     public void updateValue(int value) {
         String s = String.valueOf(value);
-        if (value == 0) {
-            setVisible(false);
-        } else {
-            setVisible(true);
-        }
+        setVisible(value != 0);
         if (value > 99) {
             s = "99+";
         }

@@ -62,7 +62,7 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
     void hideAllMessages();
 
-    void navigate(String appId, String subAppId, String parameter);
+    void navigate(Fragment fragment);
 
     void shiftViewportsVertically(int shiftPx, boolean animated);
 
@@ -106,6 +106,8 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
         boolean isAppRunning(String appName);
 
         void handleHistoryChange(String fragment);
+
+        String getActiveViewportFragment();
         
     }
 }

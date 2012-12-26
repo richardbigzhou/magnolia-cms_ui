@@ -47,7 +47,7 @@ import com.vaadin.client.ui.Icon;
 /**
  * The Class VActionbarItemTablet, which displays a single tablet action.
  */
-public class VActionbarItemTablet extends VActionbarItem {
+public class VActionbarItemTablet extends ActionbarItemWidget {
 
     private boolean holdingTouch;
 

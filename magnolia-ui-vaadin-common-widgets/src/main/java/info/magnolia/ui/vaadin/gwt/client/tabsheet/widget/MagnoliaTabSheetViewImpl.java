@@ -52,15 +52,13 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * VShellTabSheetViewImpl.
- *
- * Contains the tabs at the top (VMagnoliaTabNavigator), and the tabs themselves. The tabs are all contained in a ScrollPanel,
- * this enables a single showing tab to be scrolled - or the contents of all the tabs to be scrolled together when they are stacked in the
- * 'ShowAllTabs' mode.
+ * Contains the tabs at the top and the tabs themselves. The tabs are all
+ * contained in a ScrollPanel, this enables a single showing tab to be scrolled
+ * - or the contents of all the tabs to be scrolled together when they are
+ * stacked in the 'ShowAllTabs' mode.
  */
 public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSheetView {
 
@@ -74,19 +72,15 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     private final Presenter presenter;
 
-    private boolean isActiveTabFullscreen = false;
-
     private final List<MagnoliaTabWidget> tabs = new LinkedList<MagnoliaTabWidget>();
 
     private final LoadingPane loadingPane = new LoadingPane();
 
-    private final EventBus eventBus;
     
     public MagnoliaTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
         this.presenter = presenter;
         this.tabContainer =  new VMagnoliaTabNavigator(eventBus);
-        this.eventBus = eventBus;
         
         addStyleName("v-shell-tabsheet");
         scroller.addStyleName("v-shell-tabsheet-scroller");
@@ -118,11 +112,11 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     @Override
     public void setActiveTab(final MagnoliaTabWidget tab) {
+        this.activeTab = tab;
         loadingPane.show();
         // Hide all tabs
         showAllTabContents(false);
         tab.getElement().getStyle().setDisplay(Display.BLOCK);
-        activeTab = tab;
         // updateLayout in a 10ms Timer so that the browser has a chance to show the indicator before the processing begins.
         new Timer() {
             @Override
@@ -160,14 +154,14 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     }
 
     @Override
-    protected void onLoad() {
-        super.onLoad();
-        fireEvent(new TabSetChangedEvent(this));
+    public void removeFromParent() {
+        super.removeFromParent();
     }
     
     @Override
-    public HandlerRegistration addScrollHandler(ScrollHandler handler) {
-        return scroller.addScrollHandler(handler);
+    protected void onLoad() {
+        super.onLoad();
+        fireEvent(new TabSetChangedEvent(this));
     }
 
     @Override
@@ -176,37 +170,21 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     }
 
     @Override
-    public Widget getScroller() {
-        return scroller;
-    }
-
-    @Override
     public void setShowActiveTabFullscreen(boolean isFullscreen) {
-        this.isActiveTabFullscreen = isFullscreen;
-        // apply fullscreen style to top of dom tree so that all elements can react to it. ie main-launcher.
         if (isFullscreen) {
             RootPanel.get().addStyleName("fullscreen");
-            scroller.setHeight(RootPanel.get().getOffsetHeight() + "px");
         } else {
             RootPanel.get().removeStyleName("fullscreen");
-            //int scrollerHeight = getOffsetHeight() - tabContainer.getOffsetHeight();
-            //scroller.setHeight(scrollerHeight + "px");
         }
     }
-
-    /**
-     * TODO: V7 review fullscreen.
-     * @Override
-    public int getTabHeight(MagnoliaTabWidget tab) {
-        if (!isActiveTabFullscreen || tab != getActiveTab()) {
-            return getOffsetHeight() - tabContainer.getOffsetHeight();
-        } else {
-            return RootPanel.get().getOffsetHeight();
-        }
-    }*/
     
     @Override
-    public HandlerRegistration addTabSetChangedHandlers(Handler handler) {
+    public HandlerRegistration addScrollHandler(ScrollHandler handler) {
+        return scroller.addScrollHandler(handler);
+    }
+    
+    @Override
+    public HandlerRegistration addTabSetChangedHandler(Handler handler) {
         return addHandler(handler, TabSetChangedEvent.TYPE);
     }
 

@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The client-side widget for a section of the action bar.
  */
-public class VActionbarSection extends FlowPanel {
+public class ActionbarSectionWidget extends FlowPanel {
 
     public static final String CLASSNAME = "v-actionbar-section";
 
@@ -68,7 +68,7 @@ public class VActionbarSection extends FlowPanel {
      *
      * @param data the data
      */
-    public VActionbarSection(ActionbarSection data) {
+    public ActionbarSectionWidget(ActionbarSection data) {
         this.data = data;
         setStyleName(CLASSNAME);
         getElement().appendChild(header);

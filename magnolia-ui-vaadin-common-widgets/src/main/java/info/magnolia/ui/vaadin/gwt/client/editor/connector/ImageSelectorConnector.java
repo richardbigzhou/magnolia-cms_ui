@@ -36,10 +36,13 @@ package info.magnolia.ui.vaadin.gwt.client.editor.connector;
 import info.magnolia.ui.vaadin.editor.ImageEditor;
 import info.magnolia.ui.vaadin.gwt.client.editor.rpc.ImageSelectorClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.editor.rpc.ImageSelectorServerRpc;
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.VImageEditor;
+import info.magnolia.ui.vaadin.gwt.client.editor.widget.VImageSelector;
 
 import com.vaadin.client.communication.RpcProxy;
+import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.AbstractComponentConnector;
+import com.vaadin.client.ui.layout.ElementResizeEvent;
+import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -54,17 +57,35 @@ public class ImageSelectorConnector extends AbstractComponentConnector {
     protected void init() {
         super.init();
         registerRpc(ImageSelectorClientRpc.class, new ImageSelectorClientRpc() {
-            
             @Override
             public void fetchSelectedArea() {
                 rpc.onSelectedAreaReady(getWidget().getSelectionArea());
             }
         });
+        
+        getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() {
+            @Override
+            public void onElementResize(ElementResizeEvent e) {
+                getWidget().adjustWidth(e.getLayoutManager().getOuterWidth(e.getElement()));
+                getWidget().adjustHeight(e.getLayoutManager().getOuterHeight(e.getElement()));
+            }
+        });
     }
     
     @Override
-    public VImageEditor getWidget() {
-        return (VImageEditor)super.getWidget();
+    public void onStateChanged(StateChangeEvent stateChangeEvent) {
+        super.onStateChanged(stateChangeEvent);
+        if (getResourceUrl("source") != null) {
+            getWidget().setSource(getResourceUrl("source"));
+        }
+        
+        getWidget().setIsCropping(getState().isCropping);
+    }
+    
+    
+    @Override
+    public VImageSelector getWidget() {
+        return (VImageSelector)super.getWidget();
     }
     
     @Override

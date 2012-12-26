@@ -54,6 +54,8 @@ import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractComponentConnector;
+import com.vaadin.client.ui.layout.ElementResizeEvent;
+import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -119,6 +121,13 @@ public class ThumbnailLayoutConnector extends AbstractComponentConnector {
                     urls.put(id, getResourceUrl(id));
                 }
                 getWidget().addImages(urls);
+            }
+        });
+        
+        getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() {
+            @Override
+            public void onElementResize(ElementResizeEvent e) {
+                getWidget().generateStubs();
             }
         });
     }

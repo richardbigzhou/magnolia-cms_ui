@@ -55,7 +55,7 @@ import com.vaadin.client.ui.Icon;
 /**
  * The Class VAction, which displays a single action with label and icon within an action group.
  */
-public class VActionbarItem extends Widget {
+public class ActionbarItemWidget extends Widget {
 
     private static final String CLASSNAME = "v-action";
 
@@ -89,7 +89,7 @@ public class VActionbarItem extends Widget {
      * Use {@link #VActionbarItem(VActionbarItemJSO, VActionbarGroup, EventBus)} instead.
      */
     @Deprecated
-    public VActionbarItem(ActionbarItem data, VActionbarGroup group, EventBus eventBus, Icon icon) {
+    public ActionbarItemWidget(ActionbarItem data, VActionbarGroup group, EventBus eventBus, Icon icon) {
         super();
         this.data = data;
         this.group = group;
@@ -108,7 +108,7 @@ public class VActionbarItem extends Widget {
      * @param group the group
      * @param eventBus the event bus
      */
-    public VActionbarItem(ActionbarItem data, VActionbarGroup group, EventBus eventBus) {
+    public ActionbarItemWidget(ActionbarItem data, VActionbarGroup group, EventBus eventBus) {
         super();
         this.data = data;
         this.group = group;
@@ -160,7 +160,7 @@ public class VActionbarItem extends Widget {
             @Override
             public void onMouseUp(MouseUpEvent event) {
                 removeStyleName("mousedown");
-                eventBus.fireEvent(new ActionTriggerEvent(data.getName(), VActionbarItem.this));
+                eventBus.fireEvent(new ActionTriggerEvent(data.getName(), ActionbarItemWidget.this));
             }
         }, MouseUpEvent.getType());
     }
@@ -181,11 +181,11 @@ public class VActionbarItem extends Widget {
     public void update() {
         text.setInnerText(data.getLabel());
 
-        if (data.getIcon() != null) {
+        if (data.getIconFontId() != null) {
             icon.setClassName("v-icon");
-            icon.addClassName(String.valueOf(data.getIcon()));
+            icon.addClassName(data.getIconFontId());
         } else if (iconImage != null) {
-            iconImage.setUri(String.valueOf(data.getIcon()));
+            iconImage.setUri(data.getResourceUrl());
         }
 
         if (isEnabled() && root.getClassName().contains(ApplicationConnection.DISABLED_CLASSNAME)) {

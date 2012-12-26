@@ -31,20 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppActivatedEvent;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigationEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.AppNavigationHandler;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Event handler for the header controls events. 
+ * Navigation event fired when the controls in the headers are triggered.
  */
-public interface ShellNavigationHandler extends EventHandler {
+public class ShellAppActivatedEvent extends GwtEvent<AppNavigationHandler> {
+    
+    public static Type<AppNavigationHandler> TYPE = new Type<AppNavigationHandler>();
 
-    void onShellAppNavigation(final ShellAppNavigationEvent event);
+    private ShellAppType type;
     
-    void onAppActivated(final AppActivatedEvent event);
+    private String token;
     
+    public ShellAppActivatedEvent(final ShellAppType type, final String token) {
+        this.token = token;
+        this.type = type;
+    }
+    
+    @Override
+    protected void dispatch(AppNavigationHandler handler) {
+        handler.onShellAppActivated(this);
+    }
+
+    @Override
+    public GwtEvent.Type<AppNavigationHandler> getAssociatedType() {
+        return TYPE;
+    }
+    
+    public ShellAppType getType() {
+        return type;
+    }
+    
+    public String getToken() {
+        return token;
+    }
+    
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("[Shell App Navigation]");
+        sb.append("type: ").append(type).append(" token: ").append(token);
+        return sb.toString();
+    }
 }

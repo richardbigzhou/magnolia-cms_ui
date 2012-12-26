@@ -129,7 +129,6 @@ public class VLazyThumbnailLayout extends Composite {
 
         basePanel.addStyleName("thumbnail-view-base-panel");
         scroller.addStyleName("thumbnail-scroller");
-
         bindHandlers();
         reset();
     }
@@ -272,23 +271,11 @@ public class VLazyThumbnailLayout extends Composite {
         return Math.max(totalThumbnailsPossible - thumbnailStubs.size() - thumbnails.size(), 0);
     }
 
-    @Override
-    public void setWidth(String width) {
-        super.setWidth(width);
+    public void generateStubs() {
         addStubs(calculateThumbnailsNeeded());
         queryTimer.schedule(QUERY_TIMER_DELAY);
     }
 
-    @Override
-    public void setHeight(String height) {
-        super.setHeight(height);
-        final Integer heightPx = ComputedStyle.parseInt(height);
-        if (heightPx != null) {
-            scroller.setHeight((heightPx - thumbnailSizeSlider.getOffsetHeight()) + "px");
-            addStubs(calculateThumbnailsNeeded());
-            queryTimer.schedule(QUERY_TIMER_DELAY);
-        }
-    }
 
     public static native JsArray<VThumbnailData> parseStringArray(String json) /*-{
         return eval('(' + json + ')');

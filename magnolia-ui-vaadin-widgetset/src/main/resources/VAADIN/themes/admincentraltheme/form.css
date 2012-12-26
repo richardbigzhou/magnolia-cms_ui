@@ -16,7 +16,7 @@
 
 .form-content {
 	top: 40px;
-	bottom: 30px;
+	bottom: 52px;
 	width: 100%;
 	position: absolute;
 }
@@ -44,6 +44,7 @@
 .v-form-layout {
     background-color: #F2F2F2;
     margin-top: 25px;
+    width: 100%;
 }
 
 .v-form-field-section, .v-form-field-label, select,
@@ -202,6 +203,11 @@ textarea.v-form-field {
     margin-bottom: 10px;
     padding-top: 5px;
     position: relative;
+}
+
+/*vaadin delivers error message in html form - here we make sure it is at least inlined*/
+.validation-message-inline span > div {
+	display: inline-block;
 }
 
 .validation-message,.help-message {

@@ -52,7 +52,7 @@ public class TabSetChangedEvent extends GwtEvent<TabSetChangedEvent.Handler> {
      *  HasTabSetChangedHandlers.
      */
     public interface HasTabSetChangedHandlers {
-        HandlerRegistration addTabSetChangedHandlers(Handler handler);
+        HandlerRegistration addTabSetChangedHandler(Handler handler);
     }
     
     /**

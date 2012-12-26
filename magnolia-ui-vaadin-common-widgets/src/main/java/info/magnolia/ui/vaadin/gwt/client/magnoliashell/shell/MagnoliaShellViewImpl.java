@@ -38,9 +38,9 @@ import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppActivatedEvent;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigationEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppActivatedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ShellNavigationHandler;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.AppNavigationHandler;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ViewportCloseHandler;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VInfoMessage;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellErrorMessage;
@@ -101,13 +101,15 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
     private void bindEventHandlers() {
         eventBus.addHandler(ViewportCloseEvent.TYPE, this);
-        eventBus.addHandler(ShellAppNavigationEvent.TYPE, navigationHandler);
+        eventBus.addHandler(ShellAppActivatedEvent.TYPE, navigationHandler);
         eventBus.addHandler(AppActivatedEvent.TYPE, navigationHandler);
-
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
-                presenter.handleHistoryChange(event.getValue());
+                String newFragment = event.getValue();
+                if (newFragment.isEmpty() || !newFragment.equals(presenter.getActiveViewportFragment())) {
+                    presenter.handleHistoryChange(event.getValue());   
+                }
             }
         });
     }
@@ -201,11 +203,11 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         if (hiPriorityMessage != null && getWidgetIndex(hiPriorityMessage) != -1) {
             hiPriorityMessage.hideWithoutTransition();
         }
-        hiPriorityMessage = null;
-
         if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
             lowPriorityMessage.hideWithoutTransition();
         }
+        
+        hiPriorityMessage = null;
         lowPriorityMessage = null;
     }
 
@@ -214,19 +216,19 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         doUpdateViewport(viewport, type);
     }
 
-    private final ShellNavigationHandler navigationHandler = new ShellNavigationHandler() {
+    private final AppNavigationHandler navigationHandler = new AppNavigationHandler() {
         @Override
         public void onAppActivated(AppActivatedEvent event) {
             String prefix = activeViewport == getAppViewport() ? "app" : "shell";
-            String fragment = prefix + event.getAppId() + ":" + event.getSubAppId() + ";" + event.getParameter();
-            History.newItem(fragment, false);
+            String fragment = prefix + ":" + event.getAppId() + ":" + event.getSubAppId() + ";" + event.getParameter();
+            History.newItem(fragment, true);
         }
 
         @Override
-        public void onShellAppNavigation(final ShellAppNavigationEvent event) {
+        public void onShellAppActivated(final ShellAppActivatedEvent event) {
             Widget shellApp = presenter.getShellAppWidget(event.getType());
             ShellAppsViewportWidget viewport = getShellAppViewport();
-            ShellAppNavigationEvent refreshEvent = viewport.getRefreshEvent();
+            ShellAppActivatedEvent refreshEvent = viewport.getRefreshEvent();
 
             // if interrupting to another shell app before refresh event comes
             if (!event.equals(refreshEvent)) {
@@ -264,11 +266,6 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     }
 
     @Override
-    public void navigate(String appId, String subAppId, String parameter) {
-        eventBus.fireEvent(new AppActivatedEvent(activeViewport == getShellAppViewport(), appId, subAppId, parameter));
-    }
-
-    @Override
     public Collection<ViewportWidget> getViewports() {
         return Collections.unmodifiableCollection(viewports.values());
     }
@@ -285,7 +282,6 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
             settings.setProperty("top", "+=" + shiftPx);
             settings.setProperty("height", "+=" + -shiftPx);
             settings.addCallback(new JQueryCallback() {
-
                 @Override
                 public void execute(JQueryWrapper query) {
                     getPresenter().updateViewportLayout(viewport);
@@ -333,5 +329,10 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     @Override
     public void updateShellDivet() {
         mainAppLauncher.updateDivet();
+    }
+
+    @Override
+    public void navigate(Fragment fragment) {
+        eventBus.fireEvent(new AppActivatedEvent(fragment));
     }
 }

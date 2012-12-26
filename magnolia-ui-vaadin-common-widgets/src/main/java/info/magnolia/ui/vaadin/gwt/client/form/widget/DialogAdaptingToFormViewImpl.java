@@ -64,16 +64,6 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
     }
 
     @Override
-    public int getContentWidth() {
-        return form.getContentWidth();
-    }
-
-    @Override
-    public int getContentHeight() {
-        return form.getContentHeight();
-    }
-
-    @Override
     public void setContent(Widget contentWidget) {
         if (contentWidget instanceof FormView) {
             this.form = ((FormView)contentWidget);

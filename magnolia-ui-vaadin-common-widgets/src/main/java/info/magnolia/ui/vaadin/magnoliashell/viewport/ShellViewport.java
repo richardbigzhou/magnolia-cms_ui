@@ -39,8 +39,6 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.Viewp
 import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.DeckLayout;
 
-import java.util.Iterator;
-
 import com.vaadin.ui.Component;
 
 
@@ -49,8 +47,6 @@ import com.vaadin.ui.Component;
  * one - for the regular apps.
  */
 public class ShellViewport extends DeckLayout implements ViewPort {
-
-    private String currentShellFragment = "";
 
     private final BaseMagnoliaShell parentShell;
 
@@ -63,11 +59,11 @@ public class ShellViewport extends DeckLayout implements ViewPort {
     }
 
     public void setCurrentShellFragment(String currentShellFragment) {
-        this.currentShellFragment = currentShellFragment;
+        getState().currentFragment = currentShellFragment;
     }
 
     public String getCurrentShellFragment() {
-        return currentShellFragment;
+        return getState(false).currentFragment;
     }
 
     @Override
@@ -80,6 +76,11 @@ public class ShellViewport extends DeckLayout implements ViewPort {
     }
 
     @Override
+    protected ViewportState getState(boolean markAsDirty) {
+        return (ViewportState)super.getState(markAsDirty);
+    }
+    
+    @Override
     protected ViewportState getState() {
         return (ViewportState)super.getState();
     }
@@ -91,10 +92,5 @@ public class ShellViewport extends DeckLayout implements ViewPort {
     public void display(Component content) {
         super.display(content);
         getState().activeComponent = content;
-        Iterator<Component> iterator = getComponentIterator();
-        while (iterator.hasNext()) {
-            Component childComponent = iterator.next();
-            childComponent.setVisible(childComponent == content);
-        }
     }
 }

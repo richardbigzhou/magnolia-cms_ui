@@ -61,7 +61,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
     private Object lastQueried = null;
 
     private final KeyMapper<Object> mapper = new KeyMapper<Object>();
-
+    
     private final ThumbnailLayoutServerRpc rpcHandler = new ThumbnailLayoutServerRpc() {
         @Override
         public void onThumbnailSelected(String id) {

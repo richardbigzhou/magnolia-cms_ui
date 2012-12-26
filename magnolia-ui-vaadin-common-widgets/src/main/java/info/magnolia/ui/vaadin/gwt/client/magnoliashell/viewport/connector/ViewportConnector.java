@@ -97,13 +97,7 @@ public class ViewportConnector extends AbstractLayoutConnector {
         final ViewportWidget viewport = getWidget();
         final List<ComponentConnector> children = getChildComponents();
         final List<ComponentConnector> oldChildren = event.getOldChildren();
-        
-        if (oldChildren.removeAll(children)) {
-            for (final ComponentConnector cc : oldChildren) {
-                cc.getLayoutManager().removeElementResizeListener(cc.getWidget().getElement(), childCenterer);
-                viewport.remove(cc.getWidget());
-            }
-        }
+       
         
         int index = 0;
         for (final ComponentConnector cc : children) {
@@ -113,6 +107,12 @@ public class ViewportConnector extends AbstractLayoutConnector {
                 getLayoutManager().addElementResizeListener(w.getElement(), childCenterer);
             }
             ++index;
+        }
+        
+        oldChildren.removeAll(children);
+        for (final ComponentConnector cc : oldChildren) {
+            cc.getLayoutManager().removeElementResizeListener(cc.getWidget().getElement(), childCenterer);
+            getWidget().removeWidget(cc.getWidget());
         }
     }
     

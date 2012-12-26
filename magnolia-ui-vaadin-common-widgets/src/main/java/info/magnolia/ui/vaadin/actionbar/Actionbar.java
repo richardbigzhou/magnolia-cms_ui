@@ -35,9 +35,7 @@ package info.magnolia.ui.vaadin.actionbar;
 
 import info.magnolia.ui.vaadin.gwt.client.actionbar.connector.ActionbarState;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.rpc.ActionbarServerRpc;
-import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarFontItem;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
-import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarResourceItem;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
 
 import java.util.Collection;
@@ -129,13 +127,14 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
 
     @Override
     public void addAction(String actionName, String label, Resource icon, String groupName, String sectionName) {
-        final ActionbarItem action = new ActionbarResourceItem(actionName, label, /*icon,*/ groupName);
+        setResource("actionName", icon);
+        final ActionbarItem action = new ActionbarItem(actionName, label, null, groupName);
         addAction(action, sectionName);
     }
 
     @Override
     public void addAction(String actionName, String label, String icon, String groupName, String sectionName) {
-        final ActionbarItem action = new ActionbarFontItem(actionName, label, icon, groupName);
+        final ActionbarItem action = new ActionbarItem(actionName, label, icon, groupName);
         addAction(action, sectionName);
     }
 
@@ -151,6 +150,7 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
     @Override
     public void setPreview(Resource previewResource, String sectionName) {
         setResource(sectionName, previewResource);
+        setSectionVisible(sectionName, true);
     }
 
     public Map<String, ActionbarSection> getSections() {

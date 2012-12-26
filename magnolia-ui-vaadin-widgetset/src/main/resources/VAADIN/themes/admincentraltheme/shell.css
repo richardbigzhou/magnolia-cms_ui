@@ -102,7 +102,7 @@ button.action-close {
 
 .v-viewport-shellapps {z-index:200;}
 .v-viewport-apps {z-index:100;}
-.v-viewport-dialog {z-index:500; top:0; padding-top:60px;display:none;}
+.v-viewport-dialog {z-index:500; top:0; padding-top:60px;}
 
 .v-viewport-apps > .app,
 .v-viewport-shellapps > div {

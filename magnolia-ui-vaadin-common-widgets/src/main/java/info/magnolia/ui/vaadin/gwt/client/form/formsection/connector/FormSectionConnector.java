@@ -130,12 +130,4 @@ public class FormSectionConnector extends AbstractLayoutConnector {
         return (FormSectionWidget)super.getWidget();
     }
     
-    @Override
-    public void onUnregister() {
-        super.onUnregister();
-        for (final ComponentConnector cc : getChildComponents()) {
-            cc.removeStateChangeHandler(errorHandler);
-        }
-    }
-    
 }

@@ -68,6 +68,18 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
         }
     };
     
+    private final StateChangeHandler previewChangeHandler = new StateChangeHandler() {
+        @Override
+        public void onStateChanged(StateChangeEvent stateChangeEvent) {
+            for (String sectionName : getState().sections.keySet()) {
+                String previewUrl = getResourceUrl(sectionName);
+                if (previewUrl != null) {
+                    view.setSectionPreview(sectionName, previewUrl);   
+                }
+            }
+        }
+    };
+    
     private final StateChangeHandler visibleSectionSetChangeHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
@@ -92,6 +104,7 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     @Override
     protected void init() {
         super.init();
+        addStateChangeHandler("resources", previewChangeHandler);
         addStateChangeHandler("sections", sectionRearrangementHandler);
         addStateChangeHandler("visibleSections", visibleSectionSetChangeHandler);
         addStateChangeHandler("enabledActions", enabledActionSetChangeHandler);
@@ -140,6 +153,11 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     @Override
     public void forceLayout() {
         getLayoutManager().setNeedsMeasure(this);
+    }
+
+    @Override
+    public String getIconResourceURL(String actionName) {
+        return getResourceUrl(actionName);
     }
     
     /**

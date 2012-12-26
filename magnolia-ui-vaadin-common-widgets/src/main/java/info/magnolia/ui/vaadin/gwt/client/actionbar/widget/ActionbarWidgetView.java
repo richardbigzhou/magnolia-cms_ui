@@ -53,7 +53,7 @@ public interface ActionbarWidgetView extends HasWidgets, IsWidget {
      *
      * @return the sections
      */
-    Map<String, VActionbarSection> getSections();
+    Map<String, ActionbarSectionWidget> getSections();
 
     /**
      * Sets the presenter.
@@ -68,6 +68,8 @@ public interface ActionbarWidgetView extends HasWidgets, IsWidget {
     
     void setEnabledActions(Collection<ActionbarItem> enabledActions);
 
+    void setSectionPreview(String sectionName, String previewUrl);
+    
     /**
      * Update the classes on the actions so that they are positioned correctly.
      * Necessary to handle when sections are dynamically changed like in the page editor.
@@ -90,6 +92,7 @@ public interface ActionbarWidgetView extends HasWidgets, IsWidget {
         void forceLayout();
 
         void setOpened(boolean opened);
-    }
 
+        String getIconResourceURL(String actionName);
+    }
 }

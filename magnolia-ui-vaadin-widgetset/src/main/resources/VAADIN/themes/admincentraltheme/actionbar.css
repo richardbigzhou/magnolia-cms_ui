@@ -4,6 +4,7 @@
 	margin-top: 5px;
 	background: #666;
 	color: #fff;
+	overflow: hidden;
 }
 
 .v-actionbar.v-actionbar-open {

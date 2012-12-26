@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigationEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppActivatedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ShellAppsViewportWidget extends ViewportWidget {
 
-    private ShellAppNavigationEvent refreshEvent;
+    private ShellAppActivatedEvent refreshEvent;
 
     public ShellAppsViewportWidget() {
         super();
@@ -53,11 +53,11 @@ public class ShellAppsViewportWidget extends ViewportWidget {
 
     /* SERVER REFRESH AFTER CLIENT TRANSITIONS */
 
-    public ShellAppNavigationEvent getRefreshEvent() {
+    public ShellAppActivatedEvent getRefreshEvent() {
         return refreshEvent;
     }
 
-    public void setRefreshEvent(ShellAppNavigationEvent event) {
+    public void setRefreshEvent(ShellAppActivatedEvent event) {
         this.refreshEvent = event;
     }
 

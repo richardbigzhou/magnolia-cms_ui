@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.actionbar.shared;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler;
+
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppActivatedEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppActivatedEvent;
+
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Legacy class for compatibility of GSON serialization of Resources, in
- * case the item uses an image icon.
+ * Event handler for the header controls events. 
  */
-public class ActionbarResourceItem extends ActionbarItem {
+public interface AppNavigationHandler extends EventHandler {
 
-    /**
-     * TODO - resolve this situation with those bloody icon-fonts!!!
-     */
-    //private final Resource icon;
-
-    public ActionbarResourceItem() {
-        // TODO Auto-generated constructor stub
-    }
+    void onShellAppActivated(final ShellAppActivatedEvent event);
     
-    /**
-     * Use {@link ActionbarItem#ActionbarItem(String, String, String)}
-     * instead.
-     */
-    @Deprecated
-    public ActionbarResourceItem(String name, String label, /*Resource icon,*/ String groupName) {
-        super(name, label, groupName);
-        //this.icon = icon;
-    }
-
-    /*@Override
-    public Resource getIcon() {
-        return icon;
-    }*/
+    void onAppActivated(final AppActivatedEvent event);
+    
 }

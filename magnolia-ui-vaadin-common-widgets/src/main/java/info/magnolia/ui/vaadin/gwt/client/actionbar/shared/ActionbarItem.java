@@ -46,11 +46,16 @@ public class ActionbarItem implements Serializable {
 
     private String label;
 
+    private String iconFontId = null;
+            
+    private String resourceUrl = null;
+    
     public ActionbarItem() {}
     
-    public ActionbarItem(String name, String label, String groupName) {
+    public ActionbarItem(String name, String label, String iconFontId, String groupName) {
         this.name = name;
         this.label = label;
+        this.iconFontId = iconFontId;
         this.groupName = groupName;
     }
 
@@ -64,14 +69,6 @@ public class ActionbarItem implements Serializable {
 
     public String getLabel() {
         return label;
-    }
-
-    public Object getIcon() {
-        return null;
-    }
-    
-    public void setIcon() {
-        
     }
     
     public void setLabel(String label) {
@@ -123,4 +120,19 @@ public class ActionbarItem implements Serializable {
         return true;
     }
 
+    public String getResourceUrl() {
+        return resourceUrl;
+    }
+    
+    public void setResourceUrl(String resourceUrl) {
+        this.resourceUrl = resourceUrl;
+    }
+    
+    public String getIconFontId() {
+        return iconFontId;
+    }
+
+    public void setIconFontId(String iconFontId) {
+        this.iconFontId = iconFontId;
+    }
 }

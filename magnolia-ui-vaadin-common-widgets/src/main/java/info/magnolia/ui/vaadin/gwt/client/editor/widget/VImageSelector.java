@@ -41,14 +41,13 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.vaadin.client.ComputedStyle;
 
 
 
 /**
- * Client side implementtaion for ImageEditor widget.
+ * Client side implementation for ImageEditor widget.
  */
-public class VImageEditor extends VerticalPanel {
+public class VImageSelector extends VerticalPanel {
 
 public static final String CLASSNAME = "v-image-editor";
     
@@ -63,6 +62,8 @@ public static final String CLASSNAME = "v-image-editor";
     private int explicitHeight = 0;
 
     private double scaleRatio = 1d;
+    
+    private boolean isCropping = false;
     
     private Image img = null;
 
@@ -81,9 +82,12 @@ public static final String CLASSNAME = "v-image-editor";
     }
     
     public void setSource(String sourceUrl) {
-        if (img != null) {
-            System.out.println("Remving old img " + img);
-            remove(img);
+        if (img != null ) {
+            if (img.getUrl().equals(sourceUrl)) {
+                return;
+            } else {
+                remove(img);    
+            }
         }
         img = new Image(sourceUrl);
         img.addLoadHandler(new LoadHandler() {
@@ -125,7 +129,7 @@ public static final String CLASSNAME = "v-image-editor";
         }
     }
     
-    public VImageEditor() {
+    public VImageSelector() {
         setStyleName(CLASSNAME);
         getElement().getStyle().setBackgroundColor("rgba(51,51,51,1)");
         setHorizontalAlignment(ALIGN_CENTER);
@@ -144,28 +148,6 @@ public static final String CLASSNAME = "v-image-editor";
         add(details);
         add(scaleLabel);
     }
-
-    @Override
-    public void setWidth(String width) {
-        super.setWidth(width);
-        if (width != null && !width.isEmpty()) {
-            explicitWidth = ComputedStyle.parseInt(width);
-        }
-        if (selector.isAttached()) {
-            selector.setWidth(img.getWidth() + "px");
-        }
-    }
-
-    @Override
-    public void setHeight(String height) {
-        super.setHeight(height);
-        if (height != null && !height.isEmpty()) {
-            explicitHeight = ComputedStyle.parseInt(height);
-        }
-        if (selector.isAttached()) {
-            selector.setHeight(img.getHeight() + "px");
-        }
-    }
     
     public void scale(double ratio) {
         if (selector.isAttached()) {
@@ -174,16 +156,17 @@ public static final String CLASSNAME = "v-image-editor";
     }
 
     public void setIsCropping(boolean isCropping) {
-        if (isCropping) {
-            remove(img);
-            selector.cropImage(img);
-            insert(selector, 1);
-        } else {
-            remove(selector);
-            img.setStyleName("");
-            insert(img, 1);
+        if (isCropping != this.isCropping) {
+            if (isCropping) {
+                remove(img);
+                selector.cropImage(img);
+                insert(selector, 1);
+            } else {
+                remove(selector);
+                img.setStyleName("");
+                insert(img, 1);
+            }            
         }
-
     }
     
     private void updateImage() {
@@ -199,6 +182,20 @@ public static final String CLASSNAME = "v-image-editor";
             img.setHeight((int)(nativeImageHeight * scaleRatio) + "px");   
             
             scaleLabel.setText("Showing " + (int)(width * 1d / nativeImageWidth * 100) + "% of original size");
+        }
+    }
+    
+    public void adjustWidth(int outerWidth) {
+        this.explicitWidth = outerWidth;
+        if (selector.isAttached()) {
+            selector.setWidth(img.getWidth() + "px");
+        }
+    }
+
+    public void adjustHeight(int outerHeight) {
+        this.explicitHeight = outerHeight;
+        if (selector.isAttached()) {
+            selector.setHeight(img.getHeight() + "px");
         }
     }
 }

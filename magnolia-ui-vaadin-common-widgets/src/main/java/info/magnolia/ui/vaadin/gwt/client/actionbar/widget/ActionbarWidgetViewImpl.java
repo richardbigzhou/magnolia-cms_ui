@@ -47,6 +47,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
@@ -92,7 +93,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
 
     private final TouchDelegate delegate = new TouchDelegate(toggleButton);
 
-    private final Map<String, VActionbarSection> sections = new LinkedHashMap<String, VActionbarSection>();
+    private final Map<String, ActionbarSectionWidget> sections = new LinkedHashMap<String, ActionbarSectionWidget>();
 
     public ActionbarWidgetViewImpl(final EventBus eventBus, Presenter presenter) {
         setElement(root);
@@ -152,7 +153,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         tabletRow = -1; // Used to assign rows and columns to each action item
         tabletColumn = 0;
 
-        for (final VActionbarSection section : sections.values()) {
+        for (final ActionbarSectionWidget section : sections.values()) {
 
             // if section is visible - then update rows & cols
             if (section.isVisible()) {
@@ -162,7 +163,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
                     tabletColumn = 0;
                     tabletRow++;
 
-                    for (VActionbarItem action : group.getActions()) {
+                    for (ActionbarItemWidget action : group.getActions()) {
                         // Add a flyout indicator if this is the first action and there are other
                         // actions
                         if (group.getNumActions() > 1) {
@@ -223,7 +224,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
             toggleButtonIcon.removeClassName("open");// NOTE:CLZ:With icon fonts this class name will change.
         }
         if (isDeviceTablet) {
-            for (final VActionbarSection section : sections.values()) {
+            for (final ActionbarSectionWidget section : sections.values()) {
                 for (final VActionbarGroup group : section.getGroups().values()) {
                     group.setOpenHorizontally(isOpen);
                 }
@@ -232,7 +233,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
     }
 
     @Override
-    public Map<String, VActionbarSection> getSections() {
+    public Map<String, ActionbarSectionWidget> getSections() {
         return sections;
     }
 
@@ -242,13 +243,13 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
     }
 
     public void addSection(ActionbarSection sectionParams) {
-        VActionbarSection section = new VActionbarSection(sectionParams);
+        ActionbarSectionWidget section = new ActionbarSectionWidget(sectionParams);
         sections.put(sectionParams.getName(), section);
         add(section, root);
     }
 
     public void addAction(ActionbarItem actionParams, String sectionName) {
-        VActionbarSection section = sections.get(sectionName);
+        ActionbarSectionWidget section = sections.get(sectionName);
         if (section != null) {
             VActionbarGroup group = section.getGroups().get(actionParams.getGroupName());
             if (group == null) {
@@ -260,14 +261,14 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
                 setToggleAndFullScreenButtonHeights(tabletRow);
             }
 
-            VActionbarItem action;
+            ActionbarItemWidget action;
             if (isDeviceTablet) {
                 action = new VActionbarItemTablet(actionParams, group, eventBus);
                 ((VActionbarItemTablet) action).setRow(tabletRow);
                 ((VActionbarItemTablet) action).setColumn(tabletColumn);
                 tabletColumn++;
             } else {
-                action = new VActionbarItem(actionParams, group, eventBus);
+                action = new ActionbarItemWidget(actionParams, group, eventBus);
             }
             group.addAction(action);
         }
@@ -285,20 +286,23 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
 
     @Override
     public void onActionTriggered(ActionTriggerEvent event) {
-        VActionbarItem action = event.getSource();
-        VActionbarSection section = (VActionbarSection)action.getParent().getParent();
+        ActionbarItemWidget action = event.getSource();
+        ActionbarSectionWidget section = (ActionbarSectionWidget)action.getParent().getParent();
         presenter.triggerAction(section.getName() + ":" + action.getName());
     }
     
     @Override
     public void setSections(Collection<ActionbarSection> newSections) {
-        for (final VActionbarSection section : this.sections.values()) {
+        for (final ActionbarSectionWidget section : this.sections.values()) {
             remove(section);
         }
         sections.clear();
         for (final ActionbarSection section : newSections) {
             addSection(section);
             for (final ActionbarItem action : section.getActions().values()) {
+                if (action.getIconFontId() == null) {
+                    action.setResourceUrl(presenter.getIconResourceURL(action.getName()));
+                }
                 addAction(action, section.getName());
             }
         }
@@ -307,7 +311,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
 
     @Override
     public void setVisibleSections(Collection<ActionbarSection> visibleSections) {
-        for (final VActionbarSection section : sections.values()) {
+        for (final ActionbarSectionWidget section : sections.values()) {
             section.setVisible(visibleSections.contains(section.getData()));
         }
         refreshActionsPositionsTablet();
@@ -315,9 +319,9 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
 
     @Override
     public void setEnabledActions(Collection<ActionbarItem> enabledActions) {
-        for (final VActionbarSection section : sections.values()) {
+        for (final ActionbarSectionWidget section : sections.values()) {
             for (final VActionbarGroup group : section.getGroups().values()) {
-                for (final VActionbarItem action : group.getActions()) {
+                for (final ActionbarItemWidget action : group.getActions()) {
                     action.setEnabled(enabledActions.contains(action.getData()));
                 }
             }
@@ -333,6 +337,14 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
     public void setOpen(boolean isOpen) {
         actualizeToggleState(isToggledOpen);
         presenter.forceLayout();        
+    }
+
+    @Override
+    public void setSectionPreview(String sectionName, String previewUrl) {
+        ActionbarSectionWidget sectionWidget = sections.get(sectionName);
+        if (sectionWidget != null) {
+            sectionWidget.setPreview(new Image(previewUrl));
+        }
     }
    
 }

@@ -58,6 +58,11 @@ public class MagnoliaFormTab extends MagnoliaTab {
         });
     }
 
+    @Override
+    public FormSection getContent() {
+        return content;
+    }
+    
     public void setValidationVisible(boolean isVisible) {
         content.setValidationVisible(isVisible);
     }
