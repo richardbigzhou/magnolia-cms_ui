@@ -124,7 +124,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String DESCENDING_KEYWORD = " desc";
 
-    protected static final String JCR_NAME_FUNCTION = "name(" + SELECTOR_NAME + ")";
+    protected static final String JCR_NAME_FUNCTION = "lower(name(" + SELECTOR_NAME + "))";
 
     public AbstractJcrContainer(WorkbenchDefinition workbenchDefinition) {
         this.workbenchDefinition = workbenchDefinition;
