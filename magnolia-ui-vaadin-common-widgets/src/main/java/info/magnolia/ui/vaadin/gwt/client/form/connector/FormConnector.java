@@ -88,6 +88,18 @@ public class FormConnector extends EditorLikeComponentConnector<FormView.Present
     }
     
     @Override
+    protected void updateActionsFromState() {
+        /**
+         * Quite an ugly hack caused by rather complex (a bit crazy) mutual integration of 
+         * FormDialog and Form (action arrangement instructions tend to overlap and we end up with
+         * no actions at all - so we suppress them for the form). 
+         */
+        if (!getState().actionsSuppressed) {
+            super.updateActionsFromState();            
+        }
+    }
+    
+    @Override
     public FormState getState() {
         return (FormState)super.getState();
     }

@@ -45,7 +45,10 @@ public class ViewportState extends AbstractLayoutState {
 
     public ViewportType type;
     
+    public Connector formerActive = null;
+    
     public Connector activeComponent = null;
     
     public String currentFragment = "";
+
 }

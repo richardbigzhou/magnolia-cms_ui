@@ -38,7 +38,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.terminal.IconFontResource;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -48,7 +47,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.Resource;
 
 /**
  * Superclass for all thumbnail providers.
@@ -117,8 +115,8 @@ public class DefaultImageProvider implements ImageProvider {
     }
 
     @Override
-    public Resource getThumbnailResourceByPath(String workspace, String path, String generator) {
-        Resource resource = null;
+    public Object getThumbnailResourceByPath(String workspace, String path, String generator) {
+        Object resource = null;
         Node node = SessionUtil.getNode(workspace, path);
         if (node != null) {
             resource = getThumbnailResource(node, workspace, generator);
@@ -127,8 +125,8 @@ public class DefaultImageProvider implements ImageProvider {
     }
 
     @Override
-    public Resource getThumbnailResourceById(String workspace, String identifier, String generator) {
-        Resource resource = null;
+    public Object getThumbnailResourceById(String workspace, String identifier, String generator) {
+        Object resource = null;
         Node node = SessionUtil.getNodeByIdentifier(workspace, identifier);
         if (node != null) {
             resource = getThumbnailResource(node, workspace, generator);
@@ -136,9 +134,8 @@ public class DefaultImageProvider implements ImageProvider {
         return resource;
     }
 
-    private Resource getThumbnailResource(Node node, String workspace, String generator) {
-        Resource resource = null;
-
+    private Object getThumbnailResource(Node node, String workspace, String generator) {
+        Object resource = null;
         try {
             Node imageNode = node.getNode(definition.getOriginalImageNodeName());
             String mimeType = imageNode.getProperty(FileProperties.PROPERTY_CONTENTTYPE).getString();
@@ -153,16 +150,14 @@ public class DefaultImageProvider implements ImageProvider {
         } catch (RepositoryException e) {
             log.debug("Could not get name or identifier from imageNode: {}", e.getMessage());
         }
-
         return resource;
     }
 
     /**
      * Create a Icon Resource.
      */
-    private IconFontResource createIconFontResource(String mimeType) {
-        IconFontResource img = new IconFontResource(resolveIconClassName(mimeType));
-        return img;
+    private String createIconFontResource(String mimeType) {
+        return resolveIconClassName(mimeType);
     }
 
     /**

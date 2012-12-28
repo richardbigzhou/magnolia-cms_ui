@@ -63,15 +63,15 @@ import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.Util;
 
 /**
- * Actual client side implementation of the form view.
- * Provides the methods for the client side presenter {@link com.vaadin.client.ui.form.FormConnector}.
+ * Actual client side implementation of the form view. Provides the methods for
+ * the client side presenter {@link com.vaadin.client.ui.form.FormConnector}.
  */
 public class FormViewImpl extends FlowPanel implements FormView {
 
     private static final String CLASSNAME = "form-panel";
 
     private static final String CLASSNAME_CONTENT = "form-content";
-    
+
     private static final String CLASSNAME_FOOTER = "form-footer";
 
     private static final String CLASSNAME_BUTTON = "btn-form";
@@ -79,7 +79,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
     private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
 
     private final Map<String, Button> actionMap = new HashMap<String, Button>();
-    
+
     private final List<FormTabWidget> formTabs = new ArrayList<FormTabWidget>();
 
     private final Element contentEl = DOM.createDiv();
@@ -87,11 +87,11 @@ public class FormViewImpl extends FlowPanel implements FormView {
     private final Element footer = DOM.createDiv();
 
     private FormFieldWrapper lastShownProblematicField = null;
-    
+
     private MagnoliaTabSheetView tabSheet;
 
     private Presenter presenter;
-    
+
     private final FocusHandler problematicFieldFocusHandler = new FocusHandler() {
         @Override
         public void onFocus(FocusEvent event) {
@@ -99,7 +99,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
             final FormFieldWrapper field = Util.findWidget(target, FormFieldWrapper.class);
             if (field != null) {
                 lastShownProblematicField = null;
-                final List<FormFieldWrapper> fields = ((FormTabWidget)tabSheet.getActiveTab()).getFields();
+                final List<FormFieldWrapper> fields = ((FormTabWidget) tabSheet.getActiveTab()).getFields();
                 int index = fields.indexOf(field);
                 if (index >= 0) {
                     if (field.hasError()) {
@@ -124,13 +124,13 @@ public class FormViewImpl extends FlowPanel implements FormView {
         public void onDescriptionVisibilityChanged(boolean isVisible) {
             setDescriptionVisible(isVisible);
             if (presenter != null) {
-                presenter.runLayout();   
+                presenter.runLayout();
             }
         }
 
         @Override
         public void jumpToNextError() {
-            FormTabWidget activeTab = (FormTabWidget)tabSheet.getActiveTab();
+            FormTabWidget activeTab = (FormTabWidget) tabSheet.getActiveTab();
             final List<FormFieldWrapper> problematicFields = activeTab.getProblematicFields();
             if (lastShownProblematicField == null && !problematicFields.isEmpty()) {
                 final FormFieldWrapper field = problematicFields.get(0);
@@ -146,9 +146,10 @@ public class FormViewImpl extends FlowPanel implements FormView {
                     final List<MagnoliaTabWidget> tabs = tabSheet.getTabs();
                     int tabIndex = tabs.indexOf(activeTab);
                     for (int i = 0; i < tabs.size() - 1; ++i) {
-                        final FormTabWidget nextTab = (FormTabWidget)tabs.get(++tabIndex % tabs.size());
+                        final FormTabWidget nextTab = (FormTabWidget) tabs.get(++tabIndex % tabs.size());
                         if (nextTab.getProblematicFields().size() > 0) {
-                            //tabSheet.getEventBus().fireEvent(new ActiveTabChangedEvent(nextTab));
+                            // tabSheet.getEventBus().fireEvent(new
+                            // ActiveTabChangedEvent(nextTab));
                             lastShownProblematicField = null;
                             jumpToNextError();
                             break;
@@ -176,7 +177,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
                 remove(tabSheet);
             }
 
-            this.tabSheet = (MagnoliaTabSheetView)contentWidget;
+            this.tabSheet = (MagnoliaTabSheetView) contentWidget;
             tabSheet.addTabSetChangedHandler(new TabSetChangedEvent.Handler() {
                 @Override
                 public void onTabSetChanged(TabSetChangedEvent event) {
@@ -185,7 +186,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
                     for (final MagnoliaTabWidget tab : tabs) {
                         if (tab instanceof FormTabWidget) {
                             formTabs.add((FormTabWidget) tab);
-                            ((FormTabWidget)tab).addValidationChangeHandler(FormViewImpl.this);
+                            ((FormTabWidget) tab).addValidationChangeHandler(FormViewImpl.this);
                             final List<FormFieldWrapper> fields = ((FormTabWidget) tab).getFields();
                             for (final FormFieldWrapper field : fields) {
                                 field.addFocusHandler(problematicFieldFocusHandler);
@@ -229,20 +230,20 @@ public class FormViewImpl extends FlowPanel implements FormView {
         final Iterator<Entry<String, String>> it = actions.entrySet().iterator();
         while (it.hasNext()) {
             final Entry<String, String> entry = it.next();
-                final Button button =  new Button(entry.getValue());
-                button.setStyleName(CLASSNAME_BUTTON);
-                button.addStyleDependentName(entry.getKey());
-                button.addClickHandler(new ClickHandler() {
-                    @Override
-                    public void onClick(final ClickEvent event) {
-                        getPresenter().fireAction(entry.getKey());
-                    }
-                });
-                actionMap.put(entry.getKey(), button);
-                add(button, footer);
+            final Button button = new Button(entry.getValue());
+            button.setStyleName(CLASSNAME_BUTTON);
+            button.addStyleDependentName(entry.getKey());
+            button.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(final ClickEvent event) {
+                    getPresenter().fireAction(entry.getKey());
+                }
+            });
+            actionMap.put(entry.getKey(), button);
+            add(button, footer);
         }
     }
-    
+
     @Override
     public void setDescription(final String description) {
         formHeader.setDescription(description);
@@ -256,22 +257,23 @@ public class FormViewImpl extends FlowPanel implements FormView {
 
     private void scrollTo(final FormFieldWrapper field) {
         final int top = JQueryWrapper.select(field).position().top();
-        JQueryWrapper.select(tabSheet.asWidget()).children(".v-shell-tabsheet-scroller").animate(500, new AnimationSettings() {
-            {
-                setProperty("scrollTop", top - 30);
-                addCallback(new JQueryCallback() {
-                    @Override
-                    public void execute(JQueryWrapper query) {
-                        new Timer() {
+        JQueryWrapper.select(tabSheet.asWidget()).children(".v-shell-tabsheet-scroller")
+                .animate(500, new AnimationSettings() {
+                    {
+                        setProperty("scrollTop", top - 30);
+                        addCallback(new JQueryCallback() {
                             @Override
-                            public void run() {
-                                field.focusField();
-                            };
-                        }.schedule(500);
+                            public void execute(JQueryWrapper query) {
+                                new Timer() {
+                                    @Override
+                                    public void run() {
+                                        field.focusField();
+                                    };
+                                }.schedule(500);
+                            }
+                        });
                     }
                 });
-            }
-        });
     }
 
     @Override

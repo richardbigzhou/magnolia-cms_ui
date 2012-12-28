@@ -33,14 +33,12 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.Fragment;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellMessage.MessageType;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget.MessageType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget.PreloaderCallback;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
-
-import java.util.Collection;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -51,31 +49,25 @@ import com.google.gwt.user.client.ui.Widget;
  * The view interface for MagnoliaShell (implemented by GWT part of MagnoliaShell).
  */
 public interface MagnoliaShellView extends HasWidgets, IsWidget {
-
+    
+    void setPresenter(final Presenter presenter);
+    
     void setActiveViewport(ViewportWidget viewport);
 
     void updateViewport(ViewportWidget viewport, ViewportType type);
-
-    void setPresenter(final Presenter presenter);
-
-    void showMessage(final MessageType type, String text, String message, String id);
-
-    void hideAllMessages();
-
-    void navigate(Fragment fragment);
-
+    
     void shiftViewportsVertically(int shiftPx, boolean animated);
 
     //void setPusher(VICEPush pusher);
 
     void setShellAppIndication(ShellAppType type, int indication);
 
-    Presenter getPresenter();
-
-    Collection<ViewportWidget> getViewports();
-
+    void showMessage(final MessageType type, String text, String message, String id);
+    
+    void hideAllMessages();
+    
     void closeMessageEager(String id);
-
+    
     void navigateToMessageDetails(String id);
 
     void showAppPreloader(String prefix, PreloaderCallback preloaderCallback);
@@ -83,7 +75,7 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
     void updateShellDivet();
     
     /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
+     * Presenter for {@link MagnoliaShellView}.
      */
     interface Presenter {
 

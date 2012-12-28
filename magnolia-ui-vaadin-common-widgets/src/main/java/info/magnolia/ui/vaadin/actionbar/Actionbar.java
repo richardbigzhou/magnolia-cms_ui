@@ -46,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.server.Resource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.AbstractComponent;
 
 /**
@@ -116,30 +117,8 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
     // ACTION BAR API ///////////////////////////
 
     @Override
-    public void addSection(String sectionName, String caption) {
-        getState().sections.put(sectionName, new ActionbarSection(sectionName, caption));
-    }
-
-    @Override
-    public void removeSection(String sectionName) {
-        getState().sections.remove(sectionName);
-    }
-
-    @Override
-    public void addAction(String actionName, String label, Resource icon, String groupName, String sectionName) {
-        setResource("actionName", icon);
-        final ActionbarItem action = new ActionbarItem(actionName, label, null, groupName);
-        addAction(action, sectionName);
-    }
-
-    @Override
-    public void addAction(String actionName, String label, String icon, String groupName, String sectionName) {
-        final ActionbarItem action = new ActionbarItem(actionName, label, icon, groupName);
-        addAction(action, sectionName);
-    }
-
     public void addAction(ActionbarItem action, String sectionName) {
-        ActionbarSection section =getState().sections.get(sectionName);
+        ActionbarSection section = getState().sections.get(sectionName);
         if (section != null) {
             section.addAction(action);
         } else {
@@ -148,7 +127,18 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
     }
     
     @Override
-    public void setPreview(Resource previewResource, String sectionName) {
+    public void addSection(String sectionName, String caption) {
+        getState().sections.put(sectionName, new ActionbarSection(sectionName, caption));
+        setSectionVisible(sectionName, true);
+    }
+
+    @Override
+    public void removeSection(String sectionName) {
+        getState().sections.remove(sectionName);
+    }
+    
+    @Override
+    public void setSectionPreview(Resource previewResource, String sectionName) {
         setResource(sectionName, previewResource);
         setSectionVisible(sectionName, true);
     }
@@ -156,38 +146,14 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
     public Map<String, ActionbarSection> getSections() {
         return getState(false).sections;
     }
-
-    @Override
-    public void setActionEnabled(String actionName, boolean isEnabled) {
-        final Collection<ActionbarSection> sections = getState().sections.values();
-        for (ActionbarSection section : sections) {
-            setActionEnabled(section, actionName, isEnabled);
-        }
-    }
-
-    @Override
-    public void setActionEnabled(String sectionName, String actionName, boolean isEnabled) {
-        setActionEnabled(getState().sections.get(sectionName), actionName, isEnabled);
-    }
-   
-    
-    @Override
-    public void setGroupEnabled(String groupName, boolean isEnabled) {
-        for (ActionbarSection section : getState().sections.values()) {
-            setGroupEnabled(section, groupName, isEnabled);
-        }   
-    }
-
-    @Override
-    public void setGroupEnabled(String groupName, String sectionName, boolean isEnabled) {
-        setGroupEnabled(getState().sections.get(sectionName), groupName, isEnabled);
-    }
-
+  
     @Override
     public void setSectionVisible(String sectionName, boolean isVisible) {
         ActionbarSection section = getState().sections.get(sectionName);
         if (isVisible && section != null) {
-            getState().visibleSections.add(section);
+            if (!getState().visibleSections.contains(section)) {
+                getState().visibleSections.add(section);                
+            }
         } else {
             getState().visibleSections.remove(section);
         }
@@ -202,25 +168,52 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
         }
         return result;
     }
+  
+    @Override
+    public void setGroupEnabled(String groupName, boolean isEnabled) {
+        for (ActionbarSection section : getState().sections.values()) {
+            doSetGroupEnabled(section, groupName, isEnabled);
+        }   
+    }
+
+    @Override
+    public void setGroupEnabled(String groupName, String sectionName, boolean isEnabled) {
+        doSetGroupEnabled(getState().sections.get(sectionName), groupName, isEnabled);
+    }
     
-    public void setGroupEnabled(ActionbarSection section, String groupName, boolean isEnabled) {
+    private void doSetGroupEnabled(ActionbarSection section, String groupName, boolean isEnabled) {
         for (ActionbarItem action : section.getActions().values()) {
             if (groupName.equals(action.getGroupName())) {
-                if (isEnabled && !getState().enabledActions.contains(action)) {
-                    getState().enabledActions.add(action);
-                } else {
-                    getState().enabledActions.remove(action);
-                }
+                setActionEnabled(isEnabled, action);
             }
         }        
     }
     
-    public void setActionEnabled(ActionbarSection section, String actionName, boolean isEnabled) {
-        ActionbarItem action = section.getActions().get(actionName);
-        if (action != null && !getState().enabledActions.contains(action)) {
+    @Override
+    public void setActionEnabled(String actionName, boolean isEnabled) {
+        final Collection<ActionbarSection> sections = getState().sections.values();
+        for (ActionbarSection section : sections) {
+            setActionEnabled(section.getName(), actionName, isEnabled);
+        }
+    }
+
+    @Override
+    public void setActionEnabled(String sectionName, String actionName, boolean isEnabled) {
+        ActionbarItem action = getState().sections.get(sectionName).getActions().get(actionName);
+        if (action != null) {
+            setActionEnabled(isEnabled, action);
+        } 
+    }
+
+    private void setActionEnabled(boolean isEnabled, ActionbarItem action) {
+        if (isEnabled && !getState().enabledActions.contains(action)) {
             getState().enabledActions.add(action);
-        } else {
+        } else if (!isEnabled) {
             getState().enabledActions.remove(action);
-        }        
+        }
+    }
+
+    public void registerActionIconResource(String actionName, ThemeResource iconResource) {
+        setResource(actionName, iconResource);
     }
 }

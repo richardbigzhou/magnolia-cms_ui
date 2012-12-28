@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,33 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.widget;
+package info.magnolia.ui.vaadin.common;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import java.util.Iterator;
+
+import com.vaadin.shared.Connector;
+import com.vaadin.ui.Component;
 
 /**
- * Client side DTO for the thumbnail.
- *
+ * ComponentIterator.
+ * @param <T> type of connector.
  */
-public class VThumbnailData extends JavaScriptObject {
+public class ComponentIterator <T extends Connector> implements Iterator<Component> {
 
-    protected VThumbnailData() {
-
+    private Iterator<T> wrappedIterator;
+    
+    public ComponentIterator(Iterator<T> wrappedIterator) {
+        this.wrappedIterator = wrappedIterator;
+    }
+    
+    @Override
+    public boolean hasNext() {
+        return wrappedIterator.hasNext();
     }
 
-    public static final native VThumbnailData parse(String json)
-    /*-{
-        return eval('(' + json + ')');
-    }-*/;
+    @Override
+    public Component next() {
+        final T next = wrappedIterator.next();
+        if (Component.class.isAssignableFrom(next.getClass())) {
+            return Component.class.cast(next);
+        }
+        throw new IllegalArgumentException("Type " + next.getClass().getName() + " cannot be casted to Component.");
+    }
 
-    public final native String getId()
-    /*-{
-        return this.id;
-    }-*/;
-
-    public final native String getSrc()
-    /*-{
-      return this.resource;
-    }-*/;
+    @Override
+    public void remove() {
+        wrappedIterator.remove();
+    }
 
 }

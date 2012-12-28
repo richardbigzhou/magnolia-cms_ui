@@ -88,7 +88,6 @@ public class ActionbarItem implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((groupName == null) ? 0 : groupName.hashCode());
-        result = prime * result + ((label == null) ? 0 : label.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
@@ -106,11 +105,6 @@ public class ActionbarItem implements Serializable {
             if (other.groupName != null)
                 return false;
         } else if (!groupName.equals(other.groupName))
-            return false;
-        if (label == null) {
-            if (other.label != null)
-                return false;
-        } else if (!label.equals(other.label))
             return false;
         if (name == null) {
             if (other.name != null)

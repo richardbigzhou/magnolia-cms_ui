@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.actionbar;
 
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
 import com.vaadin.server.Resource;
 
@@ -49,16 +50,10 @@ public interface ActionbarView extends View {
 
     void removeSection(String sectionName);
 
-    /**
-     * Use {@link #addAction(String, String, String, String, String)} instead.
-     */
-    @Deprecated
-    void addAction(String actionName, String label, Resource icon, String groupName, String sectionName);
+    void setSectionPreview(Resource previewResource, String sectionName);
 
-    void addAction(String actionName, String label, String icon, String groupName, String sectionName);
-
-    void setPreview(Resource previewResource, String sectionName);
-
+    void addAction(ActionbarItem action, String sectionName);
+    
     // ENABLE / DISABLE
     void setActionEnabled(String actionName, boolean isEnabled);
 

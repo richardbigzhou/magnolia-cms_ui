@@ -87,8 +87,6 @@ public class ActionbarSection implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((actions == null) ? 0 : actions.hashCode());
-        result = prime * result + ((caption == null) ? 0 : caption.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
@@ -102,16 +100,6 @@ public class ActionbarSection implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         ActionbarSection other = (ActionbarSection) obj;
-        if (actions == null) {
-            if (other.actions != null)
-                return false;
-        } else if (!actions.equals(other.actions))
-            return false;
-        if (caption == null) {
-            if (other.caption != null)
-                return false;
-        } else if (!caption.equals(other.caption))
-            return false;
         if (name == null) {
             if (other.name != null)
                 return false;

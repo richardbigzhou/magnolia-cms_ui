@@ -41,6 +41,7 @@ import java.util.List;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
@@ -83,10 +84,12 @@ public class ViewportConnector extends AbstractLayoutConnector {
     };
     
     protected void alignContent(Element e, LayoutManager layoutManager) {
-        int width = layoutManager.getInnerWidth(e);
-        final Style style = e.getStyle();
-        style.setLeft(50, Unit.PCT);
-        style.setMarginLeft(-width / 2, Unit.PX);
+        if (getWidget().isVisible() && !Display.NONE.getCssName().equals(e.getStyle().getDisplay())) {
+            int width = layoutManager.getInnerWidth(e);
+            final Style style = e.getStyle();
+            style.setLeft(50, Unit.PCT);
+            style.setMarginLeft(-width / 2, Unit.PX);            
+        }
     }
 
     @Override
@@ -97,7 +100,6 @@ public class ViewportConnector extends AbstractLayoutConnector {
         final ViewportWidget viewport = getWidget();
         final List<ComponentConnector> children = getChildComponents();
         final List<ComponentConnector> oldChildren = event.getOldChildren();
-       
         
         int index = 0;
         for (final ComponentConnector cc : children) {

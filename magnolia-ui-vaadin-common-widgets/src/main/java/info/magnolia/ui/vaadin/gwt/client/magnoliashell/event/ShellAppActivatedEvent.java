@@ -33,17 +33,26 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.AppNavigationHandler;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * Navigation event fired when the controls in the headers are triggered.
  */
-public class ShellAppActivatedEvent extends GwtEvent<AppNavigationHandler> {
+public class ShellAppActivatedEvent extends GwtEvent<ShellAppActivatedEvent.Handler> {
     
-    public static Type<AppNavigationHandler> TYPE = new Type<AppNavigationHandler>();
+    /**
+     * Event handler for the header controls events. 
+     */
+    public interface Handler extends EventHandler {
+
+        void onShellAppActivated(final ShellAppActivatedEvent event);
+
+    }
+    
+    public static Type<Handler> TYPE = new Type<Handler>();
 
     private ShellAppType type;
     
@@ -55,12 +64,12 @@ public class ShellAppActivatedEvent extends GwtEvent<AppNavigationHandler> {
     }
     
     @Override
-    protected void dispatch(AppNavigationHandler handler) {
+    protected void dispatch(Handler handler) {
         handler.onShellAppActivated(this);
     }
 
     @Override
-    public GwtEvent.Type<AppNavigationHandler> getAssociatedType() {
+    public GwtEvent.Type<Handler> getAssociatedType() {
         return TYPE;
     }
     

@@ -35,14 +35,13 @@ package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.connector;
 
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc.ThumbnailLayoutClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc.ThumbnailLayoutServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.shared.ThumbnailData;
+import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.widget.LazyThumbnailLayoutWidget;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.widget.ThumbnailWidget;
-import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.widget.VLazyThumbnailLayout;
 import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchStartEvent;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -52,7 +51,6 @@ import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapHandler;
 import com.vaadin.client.Util;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
-import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractComponentConnector;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
@@ -62,21 +60,13 @@ import com.vaadin.shared.ui.Connect;
  * ThumbnailLayoutConnector.
  */
 @Connect(LazyThumbnailLayout.class)
-public class ThumbnailLayoutConnector extends AbstractComponentConnector {
+public class LazyThumbnailLayoutConnector extends AbstractComponentConnector {
 
     private final ThumbnailLayoutServerRpc rpc = RpcProxy.create(ThumbnailLayoutServerRpc.class, this);
-    
-    private final StateChangeHandler sizeChangeHandler = new StateChangeHandler() {
-        @Override
-        public void onStateChanged(StateChangeEvent stateChangeEvent) {
-            getWidget().setThumbnailSize(getState().size.width, getState().size.height);
-        }
-    };
     
     @Override
     protected void init() {
         super.init();
-        addStateChangeHandler("thumbnailSize", sizeChangeHandler);
         getWidget().addDomHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -104,23 +94,15 @@ public class ThumbnailLayoutConnector extends AbstractComponentConnector {
             @Override
             public void onPinchStart(MagnoliaPinchStartEvent event) {
                 getWidget().clear();
-                rpc.clear();
+                rpc.clearThumbnails();
             }
         }, MagnoliaPinchStartEvent.TYPE);
         
         registerRpc(ThumbnailLayoutClientRpc.class, new ThumbnailLayoutClientRpc() {
-            @Override
-            public void clear() {
-                getWidget().reset();
-            }
 
             @Override
-            public void addThumbnails(List<String> ids) {
-                final Map<String, String> urls = new HashMap<String, String>();
-                for (final String id : ids) {
-                    urls.put(id, getResourceUrl(id));
-                }
-                getWidget().addImages(urls);
+            public void addThumbnails(List<ThumbnailData> thumbnails) {
+                getWidget().addImages(thumbnails, LazyThumbnailLayoutConnector.this);
             }
         });
         
@@ -133,8 +115,18 @@ public class ThumbnailLayoutConnector extends AbstractComponentConnector {
     }
     
     @Override
-    public VLazyThumbnailLayout getWidget() {
-        return (VLazyThumbnailLayout)super.getWidget();
+    public void onStateChanged(StateChangeEvent stateChangeEvent) {
+        super.onStateChanged(stateChangeEvent);
+        if (getState().lastQueried == null) {
+            getWidget().reset();
+        }
+        getWidget().setThumbnailSize(getState().size.width, getState().size.height);
+        getWidget().setThumbnailAmount(getState().thumbnailAmount);
+    }
+    
+    @Override
+    public LazyThumbnailLayoutWidget getWidget() {
+        return (LazyThumbnailLayoutWidget)super.getWidget();
     }
     
     @Override
@@ -143,8 +135,8 @@ public class ThumbnailLayoutConnector extends AbstractComponentConnector {
     }
     
     @Override
-    protected VLazyThumbnailLayout createWidget() {
-        final VLazyThumbnailLayout layout = new VLazyThumbnailLayout();
+    protected LazyThumbnailLayoutWidget createWidget() {
+        final LazyThumbnailLayoutWidget layout = new LazyThumbnailLayoutWidget();
         layout.setThumbnailService(new ThumbnailService() {
             @Override
             public void loadThumbnails(int amount) {

@@ -76,17 +76,15 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
             viewport.setClosing(false);
             viewportReady = false;
             callbacks.add(new JQueryCallback() {
-
                 @Override
                 public void execute(JQueryWrapper query) {
                     viewportReady = true;
-                    refreshShellApp((ShellAppsViewportWidget) viewport);
+                    refreshShellApp((ShellAppsViewportWidget)viewport);
                 }
             });
             slideDown(viewport, callbacks);
             //viewport.iLayout();
         } else {
-
             // slide up only if closing shell app
             if (viewport.isClosing()) {
                 callbacks.add(new JQueryCallback() {
@@ -128,9 +126,6 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
                 }
             });
             fadeIn(app, callbacks);
-            /**
-             * FIXME - verify it is not needed anymore.
-             */
             //viewport.iLayout();
         }
     }
@@ -141,12 +136,6 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
         }
     }
 
-    /**
-     * SLIDE DOWN TRANSITION.
-     * 
-     * @param viewport the viewport widget
-     * @param callbacks the callbacks
-     */
     private void slideDown(final ViewportWidget viewport, final Callbacks callbacks) {
         JQueryWrapper jq = JQueryWrapper.select(viewport);
 
@@ -182,12 +171,6 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
         });
     }
 
-    /**
-     * SLIDE UP TRANSITION.
-     * 
-     * @param viewport the viewport widget
-     * @param callbacks the callbacks
-     */
     private void slideUp(final ViewportWidget viewport, final Callbacks callbacks) {
         JQueryWrapper jq = JQueryWrapper.select(viewport);
 
@@ -219,12 +202,6 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
         });
     }
 
-    /**
-     * FADE IN TRANSITION.
-     * 
-     * @param w the app widget
-     * @param callbacks the callbacks
-     */
     private void fadeIn(final Widget w, final Callbacks callbacks) {
 
         JQueryWrapper jq = JQueryWrapper.select(w);
@@ -235,7 +212,6 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
             jq.stop();
             GWT.log(debugId + ": stopping animation");
         } else {
-            // if (!jq.is(":visible")) {
             w.getElement().getStyle().setOpacity(ALPHA_MIN);
             w.setVisible(true);
         }
@@ -282,7 +258,6 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
 
         // callback
         callbacks.add(new JQueryCallback() {
-
             @Override
             public void execute(JQueryWrapper jq) {
                 w.setVisible(false);
@@ -293,7 +268,6 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
 
         // animate
         jq.animate(FADE_DURATION, new AnimationSettings() {
-
             {
                 setProperty("opacity", ALPHA_MIN);
                 setCallbacks(callbacks);

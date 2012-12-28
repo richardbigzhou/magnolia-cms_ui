@@ -31,21 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler;
+package info.magnolia.ui.vaadin.magnoliashell.rpc;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppActivatedEvent;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppActivatedEvent;
-
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
+import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 
 /**
- * Helper class in case somebody doesn't want to implement all the methods of the interface.
+ * MagnoliaShellRpcDelegate.
  */
-public class ShellNavigationAdapter implements AppNavigationHandler {
+public class MagnoliaShellRpcDelegate implements ShellServerRpc {
+
+    private MagnoliaShellBase shell;
+    
+    public MagnoliaShellRpcDelegate(MagnoliaShellBase shell) {
+        this.shell = shell;
+    }
+    
+    @Override
+    public void removeMessage(String id) {
+        shell.removeMessage(id);
+    }
 
     @Override
-    public void onShellAppActivated(ShellAppActivatedEvent event) {}
+    public void stopCurrentShellApp() {
+        shell.stopCurrentShellApp();
+    }
 
     @Override
-    public void onAppActivated(AppActivatedEvent event) {}
+    public void stopCurrentApp() {
+        shell.stopCurrentApp();
+    }
+
+    @Override
+    public void activateApp(Fragment f) {
+        shell.goToApp(f);
+    }
+
+    @Override
+    public void activateShellApp(Fragment f) {
+        shell.goToShellApp(f);
+    }
 
 }

@@ -68,6 +68,16 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
         if (contentWidget instanceof FormView) {
             this.form = ((FormView)contentWidget);
             setWidget(contentWidget);
+            this.form.setPresenter(new FormView.Presenter() {
+                @Override
+                public void fireAction(String action) {
+                    presenter.fireAction(action);
+                }
+                
+                @Override
+                public void runLayout() {
+                }
+            });
         }
     }
 

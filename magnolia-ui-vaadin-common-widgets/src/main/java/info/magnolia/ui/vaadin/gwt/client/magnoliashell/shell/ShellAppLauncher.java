@@ -36,11 +36,9 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 import info.magnolia.ui.vaadin.gwt.client.icon.widget.BadgeIconWidget;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppActivatedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppActivatedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ShellNavigationAdapter;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.AppNavigationHandler;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
@@ -53,9 +51,12 @@ import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -75,16 +76,6 @@ public class ShellAppLauncher extends FlowPanel {
     private final static int DIVET_ANIMATION_SPEED = 200;
 
     private final static String ID = "main-launcher";
-
-    private final AppNavigationHandler navigationHandler = new ShellNavigationAdapter() {
-
-        @Override
-        public void onAppActivated(AppActivatedEvent event) {
-            if (event.isShellApp()) {
-                activateControl(ShellAppType.valueOf(event.getAppId().toUpperCase()));
-            }
-        }
-    };
 
     private class NavigatorButton extends FlowPanel {
 
@@ -112,9 +103,8 @@ public class ShellAppLauncher extends FlowPanel {
                     // Has user clicked on the active shell app?
                     if (type == getActiveShellType()) {
                         // if open then close it.
-                        eventBus.fireEvent(new ViewportCloseEvent(ViewportType.SHELL_APP));
+                        closeShellAppViewport();
                     } else {
-                        log("Going to " + type);
                         // If closed, then open it.
                         navigateToShellApp(type);
                     }
@@ -126,12 +116,6 @@ public class ShellAppLauncher extends FlowPanel {
             indicator.updateValue(indication);
         }
     };
-
-    private final native void log(String msg) /*-{
-        $wnd.console.log(msg);
-    }-*/;
-
-    private int expandedHeight = 0;
 
     private final Element divetWrapper = DOM.createDiv();
 
@@ -151,13 +135,83 @@ public class ShellAppLauncher extends FlowPanel {
         getElement().setId(ID);
         construct();
         bindHandlers();
-
     }
 
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        getElement().getStyle().setTop(-60, Unit.PX);
+        JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {{
+                setProperty("top", 0);
+        }});
+        
+        History.addValueChangeHandler(new ValueChangeHandler<String>() { 
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                Fragment f = Fragment.fromString(event.getValue());
+                if (f.getAppViewportType() == ViewportType.SHELL_APP) {
+                    activateControl(ShellAppType.valueOf(f.getAppId().toUpperCase()));
+                }
+            }
+        });
+    }
+
+    public final void updateDivet() {
+        final ShellAppType type = getActiveShellType();
+        if (type != null) {
+            doUpdateDivetPosition(type, false);
+        }
+    }
+
+    public ShellAppType getActiveShellType() {
+        final Iterator<Entry<ShellAppType, NavigatorButton>> it = controlsMap.entrySet().iterator();
+        while (it.hasNext()) {
+            final Entry<ShellAppType, NavigatorButton> entry = it.next();
+            if (entry.getValue().getStyleName().contains("active")) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    public void deactivateControls() {
+        divet.setVisible(false);
+        for (final ShellAppType appType : ShellAppType.values()) {
+            controlsMap.get(appType).removeStyleName("active");
+        }
+    }
+
+    public ShellAppType getNextShellAppType() {
+        final ShellAppType cur = getActiveShellType();
+        if (cur != null) {
+            final List<ShellAppType> values = Arrays.asList(ShellAppType.values());
+            return values.get((values.indexOf(cur) + 1) % values.size());
+        }
+        return ShellAppType.APPLAUNCHER;
+    }
+
+    public void setIndication(ShellAppType type, int indication) {
+        controlsMap.get(type).setIndication(indication);
+    }
+    
+    protected void activateControl(final ShellAppType type) {
+        final ShellAppType currentActive = getActiveShellType();
+        if (currentActive != null) {
+            controlsMap.get(currentActive).removeStyleName("active");
+        }
+        doUpdateDivetPosition(type, currentActive != null);
+        final Widget w = controlsMap.get(type);
+        w.addStyleName("active");
+    }
+    
     private void navigateToShellApp(final ShellAppType type) {
         eventBus.fireEvent(new ShellAppActivatedEvent(type, ""));
     }
 
+    private void closeShellAppViewport() {
+        eventBus.fireEvent(new ViewportCloseEvent(ViewportType.SHELL_APP));
+    }
+    
     private void construct() {
         divetWrapper.setId("divet");
         logoImg.setId("logo");
@@ -187,56 +241,7 @@ public class ShellAppLauncher extends FlowPanel {
         });
 
     }
-
-    /**
-     * Restart the application by appending the &restartApplication querystring to the URL. This is
-     * handy as the application is not totally stable yet. TODO: Christopher Zimmermann CLZ
-     * Developer Preview feature.
-     */
-    private void emergencyRestartApplication() {
-        String newHref = Window.Location.getPath() + "?restartApplication";
-        Window.Location.assign(newHref);
-    }
-
-    @Override
-    protected void onLoad() {
-        super.onLoad();
-        expandedHeight = getOffsetHeight();
-        getElement().getStyle().setTop(-60, Unit.PX);
-        JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {{
-                setProperty("top", 0);
-        }});
-        eventBus.addHandler(AppActivatedEvent.TYPE, navigationHandler);
-    }
-
-    public final void updateDivet() {
-        final ShellAppType type = getActiveShellType();
-        if (type != null) {
-            doUpdateDivetPosition(type, false);
-        }
-    }
-
-    public ShellAppType getActiveShellType() {
-        final Iterator<Entry<ShellAppType, NavigatorButton>> it = controlsMap.entrySet().iterator();
-        while (it.hasNext()) {
-            final Entry<ShellAppType, NavigatorButton> entry = it.next();
-            if (entry.getValue().getStyleName().contains("active")) {
-                return entry.getKey();
-            }
-        }
-        return null;
-    }
-
-    protected void activateControl(final ShellAppType type) {
-        final ShellAppType currentActive = getActiveShellType();
-        if (currentActive != null) {
-            controlsMap.get(currentActive).removeStyleName("active");
-        }
-        doUpdateDivetPosition(type, currentActive != null);
-        final Widget w = controlsMap.get(type);
-        w.addStyleName("active");
-    }
-
+    
     private void doUpdateDivetPosition(final ShellAppType type, boolean animated) {
         final Widget w = controlsMap.get(type);
         int divetPos = w.getAbsoluteLeft() + (w.getOffsetWidth() / 2) - divetWrapper.getOffsetWidth() / 2;
@@ -258,24 +263,14 @@ public class ShellAppLauncher extends FlowPanel {
         }
 
     }
-
-    public void deactivateControls() {
-        divet.setVisible(false);
-        for (final ShellAppType appType : ShellAppType.values()) {
-            controlsMap.get(appType).removeStyleName("active");
-        }
-    }
-
-    public ShellAppType getNextShellAppType() {
-        final ShellAppType cur = getActiveShellType();
-        if (cur != null) {
-            final List<ShellAppType> values = Arrays.asList(ShellAppType.values());
-            return values.get((values.indexOf(cur) + 1) % values.size());
-        }
-        return ShellAppType.APPLAUNCHER;
-    }
-
-    public void setIndication(ShellAppType type, int indication) {
-        controlsMap.get(type).setIndication(indication);
+    
+    /**
+     * Restart the application by appending the &restartApplication querystring to the URL. This is
+     * handy as the application is not totally stable yet. TODO: Christopher Zimmermann CLZ
+     * Developer Preview feature.
+     */
+    private void emergencyRestartApplication() {
+        String newHref = Window.Location.getPath() + "?restartApplication";
+        Window.Location.assign(newHref);
     }
 }

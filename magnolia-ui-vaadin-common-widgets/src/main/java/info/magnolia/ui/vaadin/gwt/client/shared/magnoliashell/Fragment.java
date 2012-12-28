@@ -31,12 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell;
+package info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell;
 
 import java.io.Serializable;
 
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
 /**
  * Helper class for holding the parsed info from the fragment.
@@ -53,7 +51,7 @@ public class Fragment implements Serializable {
 
     public Fragment() {}
 
-    public static Fragment fromFragment(final String fragment) {
+    public static Fragment fromString(final String fragment) {
         Fragment dto = new Fragment();
         String type = extractAppType(fragment);
         if (type.equals("shell")) {

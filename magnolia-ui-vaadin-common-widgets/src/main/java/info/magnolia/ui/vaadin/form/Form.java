@@ -184,8 +184,13 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
     }
     
     @Override
-    public Component asVaadinComponent() {
+    public Form asVaadinComponent() {
         return this;
+    }
+
+    @Override
+    public void suppressOwnActions() {
+        getState().actionsSuppressed = true;
     }
 
 }

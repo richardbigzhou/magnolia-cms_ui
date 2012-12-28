@@ -41,7 +41,7 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellView;
 /**
  * Shell message that displays the details. 
  */
-public abstract class VDetailedShellMessage extends VShellMessage {
+public abstract class VDetailedShellMessage extends ShellMessageWidget {
 
     private Element detailsEl = DOM.createDiv();
     

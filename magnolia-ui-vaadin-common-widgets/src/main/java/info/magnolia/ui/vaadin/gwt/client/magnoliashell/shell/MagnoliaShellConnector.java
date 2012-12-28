@@ -33,17 +33,17 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppActivatedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellServerRpc;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellMessage.MessageType;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget.MessageType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ViewportConnector;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget.PreloaderCallback;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
-import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
+import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 
 import java.util.Iterator;
 import java.util.List;
@@ -70,7 +70,7 @@ import com.vaadin.shared.ui.Connect;
 /**
  * MagnoliaShellConnector.
  */
-@Connect(BaseMagnoliaShell.class)
+@Connect(MagnoliaShellBase.class)
 public class MagnoliaShellConnector extends AbstractLayoutConnector implements MagnoliaShellView.Presenter {
 
     private ShellServerRpc rpc = RpcProxy.create(ShellServerRpc.class, this);
@@ -120,7 +120,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
 
             @Override
             public void setFragmentFromServer(Fragment fragment) {
-                view.navigate(fragment);
+                History.newItem(fragment.toFragment(), true);
             }
         });
         
@@ -167,7 +167,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     
     @Override
     public void activateApp(Fragment fragment) {
-        rpc.activateRunningApp(fragment);
+        rpc.activateApp(fragment);
     }
 
     @Override
@@ -182,12 +182,12 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
 
     @Override
     public void closeCurrentApp() {
-        rpc.closeCurrentApp();
+        rpc.stopCurrentApp();
     }
 
     @Override
     public void closeCurrentShellApp() {
-        rpc.closeCurrentShellApp();
+        rpc.stopCurrentShellApp();
     }
 
     @Override
@@ -207,7 +207,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
 
     @Override
     public void handleHistoryChange(String fragmentStr) {
-        final Fragment f = Fragment.fromFragment(fragmentStr);
+        final Fragment f = Fragment.fromString(fragmentStr);
         if (f.getAppViewportType() == ViewportType.SHELL_APP) {
             eventBus.fireEvent(new ShellAppActivatedEvent(ShellAppType.resolveType(f.getAppId()), f.getParameter()));
         } else {

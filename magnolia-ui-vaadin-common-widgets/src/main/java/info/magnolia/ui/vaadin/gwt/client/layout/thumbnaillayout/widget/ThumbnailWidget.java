@@ -33,9 +33,13 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.icon.widget.IconWidget;
+import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.shared.ThumbnailData;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.vaadin.client.ServerConnector;
 
 /**
  * Thumbnail widget.
@@ -45,7 +49,7 @@ public class ThumbnailWidget extends Composite {
 
     private final SimplePanel panel = new SimplePanel();
 
-    private String id;
+    private ThumbnailData data;
 
     private boolean isSelected = false;
 
@@ -56,35 +60,25 @@ public class ThumbnailWidget extends Composite {
     }
 
     public String getId() {
-        return id;
+        return data.getThumbnailId();
     }
 
-    public void setData(String id, String src) {
-        this.id = id;
-
-        if (src != null) {
-            /**
-             * TODO: refactor so this works again. The best approach would be to create an appropriate resource type for the
-             * icon-fonts.
-             */
-            /*if (src.startsWith(ResourceSerializer.RESOURCE_URI_SCHEME_ICONFONT)) {
-                // iconFont
-                GwtIcon fileIcon = new GwtIcon();
-                String iconFontClass = data.getSrc()
-                        .substring(ResourceSerializer.RESOURCE_URI_SCHEME_ICONFONT.length());
-                fileIcon.updateIconName(iconFontClass);
-                panel.setWidget(fileIcon);
-
-            } else {*/
-                // image
-                Image image = new Image(LazyThumbnailLayoutImageBundle.INSTANCE.getStubImage().getSafeUri());
-                // Add cachebuster so that browser definitely displays updated
-                // thumbnails after edits.
-                String cacheBuster = "?cb=" + System.currentTimeMillis();
-                image.setUrl(src + cacheBuster);
-                image.setStyleName("thumbnail-image");
-                panel.setWidget(image);
-            //}
+    public void setData(ThumbnailData data, ServerConnector connector) {
+        this.data = data;
+        if (data.isRealResource()) {
+            Image image = new Image(LazyThumbnailLayoutImageBundle.INSTANCE.getStubImage().getSafeUri());
+            // Add cachebuster so that browser definitely displays updated
+            // thumbnails after edits.
+            String cacheBuster = "?cb=" + System.currentTimeMillis();
+            image.setUrl(connector.getState().resources.get(data.getThumbnailId()).getURL() + cacheBuster);
+            image.setStyleName("thumbnail-image");
+            panel.setWidget(image);            
+        } else {
+            // iconFont
+            IconWidget fileIcon = new IconWidget();
+            String iconFontClass = data.getIconFontId();
+            fileIcon.setIconName(iconFontClass);
+            panel.setWidget(fileIcon);            
         }
     }
 

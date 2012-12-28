@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.model.imageprovider.definition;
 
-import com.vaadin.server.Resource;
 
 
 /**
@@ -42,6 +41,7 @@ import com.vaadin.server.Resource;
 public interface ImageProvider {
 
     static final String PORTRAIT_GENERATOR = "portrait";
+    
     static final String THUMBNAIL_GENERATOR = "thumbnail";
 
     String getPortraitPath(String workspace, String path);
@@ -57,9 +57,9 @@ public interface ImageProvider {
      * Get a Preview Resource.
      * This preview is an image or an icon representing the Document type.
      */
-    Resource getThumbnailResourceByPath(String workspace, String path, String generator);
+    Object getThumbnailResourceByPath(String workspace, String path, String generator);
 
-    Resource getThumbnailResourceById(String workspace, String identifier, String generator);
+    Object getThumbnailResourceById(String workspace, String identifier, String generator);
 
 
 }

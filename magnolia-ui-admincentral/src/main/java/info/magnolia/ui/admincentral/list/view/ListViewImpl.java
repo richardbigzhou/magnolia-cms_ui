@@ -68,7 +68,7 @@ public class ListViewImpl implements ListView {
 
     private final Table table;
 
-    private final CssLayout margin = new CssLayout();
+    private final CssLayout layout = new CssLayout();
 
     private final AbstractJcrContainer container;
 
@@ -122,8 +122,8 @@ public class ListViewImpl implements ListView {
         this.container = container;
         buildColumns(workbenchDefinition, componentProvider);
 
-        margin.setStyleName("mgnl-content-view");
-        margin.addComponent(table);
+        layout.setStyleName("mgnl-content-view");
+        layout.addComponent(table);
     }
 
     @Override
@@ -140,7 +140,7 @@ public class ListViewImpl implements ListView {
 
     @Override
     public Component asVaadinComponent() {
-        return margin;
+        return layout;
     }
 
     @Override

@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.layout;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.connector.ThumbnailLayoutState;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc.ThumbnailLayoutClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc.ThumbnailLayoutServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.shared.ThumbnailData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +58,6 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
     private final List<ThumbnailDblClickListener> dblClickListeners = new ArrayList<LazyThumbnailLayout.ThumbnailDblClickListener>();
 
     private Ordered container;
-
-    private Object lastQueried = null;
 
     private final KeyMapper<Object> mapper = new KeyMapper<Object>();
     
@@ -85,7 +84,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         }
 
         @Override
-        public void clear() {
+        public void clearThumbnails() {
             LazyThumbnailLayout.this.clear();
         }
     };
@@ -107,21 +106,26 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         }
     }
 
-    private List<String> fetchThumbnails(int amount) {
-        List<String> thumbnails = new ArrayList<String>();
-        Object id = lastQueried;
+    private List<ThumbnailData> fetchThumbnails(int amount) {
+        List<ThumbnailData> thumbnails = new ArrayList<ThumbnailData>();
+        Object id = mapper.get(getState().lastQueried);
         if (id == null) {
             id = container.firstItemId();
         }
         int i = 0;
         while (id != null && i < amount) {
-            Resource resource = (Resource) container.getContainerProperty(id, "thumbnail").getValue();
-            setResource(mapper.key(id), resource);
-            thumbnails.add(mapper.key(id));
+            Object resource = container.getContainerProperty(id, "thumbnail").getValue();
+            boolean isRealResource = resource instanceof Resource;
+            String thumbnailId = mapper.key(id);
+            String iconFontId = isRealResource ? null : String.valueOf(resource);
+            if (isRealResource) {
+                setResource(thumbnailId, (Resource)resource);                
+            }
+            thumbnails.add(new ThumbnailData(thumbnailId, iconFontId, isRealResource));
             id = container.nextItemId(id);
             ++i;
         }
-        lastQueried = id;
+        getState().lastQueried = mapper.key(id);
         return thumbnails;
     }
 
@@ -143,21 +147,18 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
     }
 
     public void clear() {
-        getRpcProxy(ThumbnailLayoutClientRpc.class).clear();
-        for (final String key : getState().resources.keySet()) {
-            setResource(key, null);
-        }
-        lastQueried = null;
+        getState().resources.clear();
+        getState().lastQueried = null;
         mapper.removeAll();
-
     }
 
-
     public void refresh() {
-        clear();
+        if (getState(false).thumbnailAmount > 0) {
+            clear();
+        }
         if (container != null) {
             setThumbnailAmount(container.size());
-        }
+        }            
     }
 
     public void addThumbnailSelectionListener(final ThumbnailSelectionListener listener) {
@@ -173,7 +174,6 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         if (newDataSource instanceof Ordered) {
             this.container = (Ordered) newDataSource;
             refresh();
-            markAsDirty();
         } else {
             throw new IllegalArgumentException("Container must be ordered.");
         }

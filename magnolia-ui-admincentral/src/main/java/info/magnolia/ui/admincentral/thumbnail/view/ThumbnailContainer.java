@@ -58,12 +58,11 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.AbstractInMemoryContainer;
 import com.vaadin.data.util.AbstractProperty;
-import com.vaadin.server.Resource;
 
 /**
  * Container that provides thumbnails lazily.
  */
-public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resource, ThumbnailItem> implements Container.Ordered {
+public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object, ThumbnailItem> implements Container.Ordered {
 
     private static final Logger log = LoggerFactory.getLogger(ThumbnailContainer.class);
 
@@ -102,7 +101,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
     @Override
     public Class<?> getType(Object propertyId) {
         if (THUMBNAIL_PROPERTY_ID.equals(propertyId)) {
-            return Resource.class;
+            return Object.class;
         }
         return null;
     }
@@ -223,11 +222,12 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
     }
 
     /**
-     * ThumbnailContainer property.
+     * ThumbnailContainer property. Can have a Resource or a String as value. 
      */
-    public class ThumbnailContainerProperty extends AbstractProperty {
+    public class ThumbnailContainerProperty extends AbstractProperty<Object> {
 
         private String resourcePath;
+        
         private final ImageProvider imageProvider;
 
         public ThumbnailContainerProperty(final String resourcePath, ImageProvider imageProvider) {
@@ -236,11 +236,10 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
         }
 
         @Override
-        public Resource getValue() {
+        public Object getValue() {
             if (imageProvider == null){
                 return null;
             }
-
             return imageProvider.getThumbnailResourceById(getWorkspaceName(), resourcePath, ImageProvider.THUMBNAIL_GENERATOR);
         }
 
@@ -250,8 +249,8 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
         }
 
         @Override
-        public Class<Resource> getType() {
-            return Resource.class;
+        public Class<Object> getType() {
+            return Object.class;
         }
     }
 
@@ -267,7 +266,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
         }
 
         @Override
-        public Property getItemProperty(Object id) {
+        public Property<?> getItemProperty(Object id) {
             if (THUMBNAIL_PROPERTY_ID.equals(id)) {
                 return new ThumbnailContainerProperty(this.id, imageProvider);
             }
@@ -280,7 +279,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
         }
 
         @Override
-        public boolean addItemProperty(Object id, Property property) throws UnsupportedOperationException {
+        public boolean addItemProperty(Object id, @SuppressWarnings("rawtypes") Property property) throws UnsupportedOperationException {
             throw new UnsupportedOperationException();
         }
 

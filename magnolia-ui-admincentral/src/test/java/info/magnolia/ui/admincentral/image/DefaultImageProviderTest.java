@@ -54,7 +54,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.Resource;
 
 /**
  * Tests.
@@ -160,7 +159,7 @@ public class DefaultImageProviderTest {
         final String imageNodeUuid = contactNode.getNode(IMAGE_NODE_NAME).getIdentifier();
 
         // WHEN
-        Resource resource = imageProvider.getThumbnailResourceById(workspaceName, contactNode.getIdentifier(), ImageProvider.PORTRAIT_GENERATOR);
+        Object resource = imageProvider.getThumbnailResourceById(workspaceName, contactNode.getIdentifier(), ImageProvider.PORTRAIT_GENERATOR);
 
         // THEN
         assertNotNull(resource);
@@ -175,7 +174,7 @@ public class DefaultImageProviderTest {
         contactNode.getNode(IMAGE_NODE_NAME).getProperty("jcr:mimeType").setValue("application/x-excel");
 
         // WHEN
-        Resource resource = imageProvider.getThumbnailResourceById(workspaceName, contactNode.getIdentifier(), ImageProvider.PORTRAIT_GENERATOR);
+        Object resource = imageProvider.getThumbnailResourceById(workspaceName, contactNode.getIdentifier(), ImageProvider.PORTRAIT_GENERATOR);
 
         // THEN
         assertNotNull(resource);
@@ -190,7 +189,7 @@ public class DefaultImageProviderTest {
         final String imageNodeUuid = contactNode.getNode(IMAGE_NODE_NAME).getIdentifier();
 
         // WHEN
-        Resource resource = imageProvider.getThumbnailResourceByPath(workspaceName, contactNode.getPath(), ImageProvider.THUMBNAIL_GENERATOR);
+        Object resource = imageProvider.getThumbnailResourceByPath(workspaceName, contactNode.getPath(), ImageProvider.THUMBNAIL_GENERATOR);
 
         // THEN
         assertNotNull(resource);
@@ -205,7 +204,7 @@ public class DefaultImageProviderTest {
         contactNode.getNode(IMAGE_NODE_NAME).getProperty("jcr:mimeType").setValue("application/msword");
 
         // WHEN
-        Resource resource = imageProvider.getThumbnailResourceByPath(workspaceName, contactNode.getPath(), ImageProvider.THUMBNAIL_GENERATOR);
+        Object resource = imageProvider.getThumbnailResourceByPath(workspaceName, contactNode.getPath(), ImageProvider.THUMBNAIL_GENERATOR);
 
         // THEN
         assertNotNull(resource);

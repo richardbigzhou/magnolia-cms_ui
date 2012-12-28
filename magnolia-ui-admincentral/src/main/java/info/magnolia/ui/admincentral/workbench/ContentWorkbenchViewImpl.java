@@ -94,20 +94,14 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
     public ContentWorkbenchViewImpl() {
         super();
         setSizeFull();
-
-        setSizeFull();
         setStyleName("workbench");
         addComponent(contentViewContainer);
         setExpandRatio(contentViewContainer, 1);
         setSpacing(true);
-        setMargin(false);
+        setMargin(true);
 
         CssLayout viewModes = new CssLayout();
         viewModes.setStyleName("view-modes");
-        /**
-         * TODO VAADIN 7 MARGINS.
-         */
-        //viewModes.setMargin(false);
 
         treeButton = buildButton(ViewType.TREE, "icon-view-tree", true);
         listButton = buildButton(ViewType.LIST, "icon-view-list", false);
@@ -158,8 +152,6 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
                 }                
             }
         });
-       
-
         return searchbox;
     }
 
@@ -173,7 +165,6 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
 
     private Button buildButton(final ViewType viewType, final String icon, final boolean active) {
         NativeButton button = new NativeButton(null, new Button.ClickListener() {
-
             @Override
             public void buttonClick(ClickEvent event) {
                 setViewType(viewType);
@@ -200,20 +191,20 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
 
     @Override
     public void setViewType(final ViewType type) {
-
         if (type != ViewType.SEARCH) {
             previousViewType = currentViewType;
         }
-
+        
+        Component c = contentViews.get(type).asVaadinComponent();
         contentViewContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
-        final Component c = contentViews.get(type).asVaadinComponent();
-
-        c.setSizeFull();
         contentViewContainer.addComponent(c);
-
-        this.currentViewType = type;
+        c.setSizeUndefined();
+        
+        this.currentViewType = type;currentViewType = type;
+        
         setViewTypeStyling(currentViewType);
         refresh();
+        
         this.contentWorkbenchViewListener.onViewTypeChanged(currentViewType);
     }
 

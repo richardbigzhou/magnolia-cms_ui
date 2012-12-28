@@ -31,17 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.util;
+package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.shared;
 
-import com.google.gwt.core.client.JsArrayString;
+import java.io.Serializable;
 
 /**
- * JSON conversion utils.
- *
+ * ThumbnailData.
  */
-public class JSONUtil {
+public class ThumbnailData implements Serializable {
+
+    private String thumbnailId = null;
     
-    public static native JsArrayString parseStringArray(String json) /*-{
-        return eval('(' + json + ')');
-    }-*/;
+    private String iconFontId = null;
+    
+    private boolean isRealResource = true;
+    
+    public ThumbnailData() {}
+    
+    public ThumbnailData(String thumbnailId, String iconFontId, boolean isRealResource) {
+        this.iconFontId = iconFontId;
+        this.isRealResource = isRealResource;
+        this.thumbnailId = thumbnailId;
+    }
+
+    public boolean isRealResource() {
+        return isRealResource;
+    }
+
+    public void setRealResource(boolean isRealResource) {
+        this.isRealResource = isRealResource;
+    }
+
+    public void setIconFontId(String iconFontId) {
+        this.iconFontId = iconFontId;
+    }
+    
+    public String getIconFontId() {
+        return iconFontId;
+    }
+    
+    public String getThumbnailId() {
+        return thumbnailId;
+    }
+    
+    public void setThumbnailId(String id) {
+        this.thumbnailId = id;
+    }
 }

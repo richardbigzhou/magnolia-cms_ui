@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc;
 
+import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.shared.ThumbnailData;
+
 import java.util.List;
 
 import com.vaadin.shared.communication.ClientRpc;
@@ -42,7 +44,5 @@ import com.vaadin.shared.communication.ClientRpc;
  */
 public interface ThumbnailLayoutClientRpc extends ClientRpc {
 
-    void clear();
-
-    void addThumbnails(final List<String> ids);
+    void addThumbnails(final List<ThumbnailData> ids);
 }

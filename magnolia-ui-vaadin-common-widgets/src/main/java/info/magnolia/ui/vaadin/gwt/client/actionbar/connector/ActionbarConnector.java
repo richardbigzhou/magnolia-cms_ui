@@ -38,6 +38,8 @@ import info.magnolia.ui.vaadin.gwt.client.actionbar.rpc.ActionbarServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.widget.ActionbarWidgetView;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.widget.ActionbarWidgetViewImpl;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
@@ -71,26 +73,41 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     private final StateChangeHandler previewChangeHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
-            for (String sectionName : getState().sections.keySet()) {
-                String previewUrl = getResourceUrl(sectionName);
-                if (previewUrl != null) {
-                    view.setSectionPreview(sectionName, previewUrl);   
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                @Override
+                public void execute() {
+                    for (String sectionName : getState().sections.keySet()) {
+                        String previewUrl = getResourceUrl(sectionName);
+                        if (previewUrl != null) {
+                            view.setSectionPreview(sectionName, previewUrl);   
+                        }
+                    }
                 }
-            }
+            });
         }
     };
     
     private final StateChangeHandler visibleSectionSetChangeHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
-            view.setVisibleSections(getState().visibleSections);
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                @Override
+                public void execute() {
+                    view.setVisibleSections(getState().visibleSections);
+                }
+            });
         }
     };
     
     private final StateChangeHandler enabledActionSetChangeHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
-            view.setEnabledActions(getState().enabledActions);
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                @Override
+                public void execute() {
+                    view.setEnabledActions(getState().enabledActions);
+                }
+            });
         }
     };
     
@@ -128,11 +145,6 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     @Override
     public ActionbarState getState() {
         return (ActionbarState)super.getState();
-    }
-    
-    @Override
-    protected ActionbarState createState() {
-        return new ActionbarState();
     }
     
     @Override

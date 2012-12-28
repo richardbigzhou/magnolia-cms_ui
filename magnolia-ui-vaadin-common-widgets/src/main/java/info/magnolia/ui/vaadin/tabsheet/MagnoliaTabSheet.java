@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.tabsheet;
 
+import info.magnolia.ui.vaadin.common.ComponentIterator;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.connector.MagnoliaTabSheetState;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.rpc.MagnoliaTabSheetClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.rpc.MagnoliaTabSheetServerRpc;
@@ -167,24 +168,6 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
 
     @Override
     public Iterator<Component> iterator() {
-        return new Iterator<Component>() {
-
-            private final Iterator<MagnoliaTab> wrappedIt = tabs.iterator();
-
-            @Override
-            public boolean hasNext() {
-                return wrappedIt.hasNext();
-            }
-
-            @Override
-            public Component next() {
-                return wrappedIt.next();
-            }
-
-            @Override
-            public void remove() {
-                wrappedIt.remove();
-            }
-        };
+        return new ComponentIterator<MagnoliaTab>(tabs.iterator());
     }
 }

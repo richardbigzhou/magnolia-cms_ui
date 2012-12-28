@@ -41,7 +41,7 @@ import com.google.gwt.user.client.Element;
 /**
  * Error message.
  */
-public class VShellErrorMessage extends VShellMessage {
+public class VShellErrorMessage extends ShellMessageWidget {
 
     private Element detailsLinkEl = DOM.createElement("b");
     

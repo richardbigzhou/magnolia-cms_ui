@@ -36,14 +36,14 @@ package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.connector;
 import java.io.Serializable;
 
 import com.vaadin.shared.AbstractComponentState;
-import com.vaadin.shared.annotations.DelegateToWidget;
 
 /**
  * ThumbnailLayoutState.
  */
 public class ThumbnailLayoutState extends AbstractComponentState {
 
-    @DelegateToWidget
+    public String lastQueried = null;
+    
     public int thumbnailAmount = 0;
 
     public ThumbnailSize size = new ThumbnailSize();

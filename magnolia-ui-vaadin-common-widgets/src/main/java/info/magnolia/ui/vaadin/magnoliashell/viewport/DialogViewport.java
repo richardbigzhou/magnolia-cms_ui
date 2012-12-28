@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
-import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
+import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 
 
 /**
@@ -43,7 +43,7 @@ import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
  */
 public class DialogViewport extends ShellViewport {
 
-    public DialogViewport(BaseMagnoliaShell shell) {
+    public DialogViewport(MagnoliaShellBase shell) {
         super(shell);
         addStyleName("dialog");
         getState().type = ViewportType.DIALOG;

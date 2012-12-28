@@ -61,19 +61,15 @@ public class ItemWorkbenchViewImpl extends HorizontalLayout implements ItemWorkb
 
     private ItemWorkbenchView.Listener contentWorkbenchViewListener;
 
-
     public ItemWorkbenchViewImpl() {
         super();
         setSizeFull();
-
-        setSizeFull();
         setStyleName("workbench");
-        
+        setMargin(true);
+        setSpacing(true);
         itemViewContainer.setSizeFull();
         addComponent(itemViewContainer);
         setExpandRatio(itemViewContainer, 1);
-        setSpacing(true);
-        setMargin(false);
     }
 
     @Override

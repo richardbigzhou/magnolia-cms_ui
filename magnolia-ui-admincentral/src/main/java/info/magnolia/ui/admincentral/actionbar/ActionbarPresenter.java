@@ -105,7 +105,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
             if (!((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
                 actionbar.addSection(PREVIEW_SECTION_NAME, "Preview");
             }
-            actionbar.setPreview(previewResource, PREVIEW_SECTION_NAME);
+            actionbar.setSectionPreview(previewResource, PREVIEW_SECTION_NAME);
         } else {
             if (((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
                 actionbar.removeSection(PREVIEW_SECTION_NAME);

@@ -46,5 +46,5 @@ public interface ThumbnailLayoutServerRpc extends ServerRpc {
     
     void loadThumbnails(int amount);
     
-    void clear();
+    void clearThumbnails();
 }

@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.HTML;
 /**
  * Simple notification object that pops up when warnings/errors occur.
  */
-public abstract class VShellMessage extends HTML {
+public abstract class ShellMessageWidget extends HTML {
 
     /**
      * Enumeration of possible message types.
@@ -79,7 +79,7 @@ public abstract class VShellMessage extends HTML {
 
     private final String topic;
 
-    public VShellMessage(MagnoliaShellView shell, String topic, String message, String id) {
+    public ShellMessageWidget(MagnoliaShellView shell, String topic, String message, String id) {
         super();
         this.topic = topic;
         this.shell = shell;

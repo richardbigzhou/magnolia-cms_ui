@@ -76,7 +76,7 @@ public abstract class EditorLikeComponentConnector
         addStateChangeHandler("actions", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                view.setActions(getState().actions);
+                updateActionsFromState();
             }
         });
     }
@@ -99,6 +99,10 @@ public abstract class EditorLikeComponentConnector
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {
         updateContent();
+    }
+    
+    protected void updateActionsFromState() {
+        view.setActions(getState().actions);
     }
 
     protected void updateContent() {

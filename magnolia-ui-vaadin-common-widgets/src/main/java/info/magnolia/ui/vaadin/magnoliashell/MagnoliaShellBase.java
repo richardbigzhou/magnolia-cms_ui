@@ -37,13 +37,14 @@ import info.magnolia.ui.framework.event.EventHandlerCollection;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.Fragment;
+import info.magnolia.ui.vaadin.common.ComponentIterator;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellState;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellServerRpc;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellMessage.MessageType;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget.MessageType;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
+import info.magnolia.ui.vaadin.magnoliashell.rpc.MagnoliaShellRpcDelegate;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.AppsViewport;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.DialogViewport;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellAppsViewport;
@@ -64,49 +65,28 @@ import com.vaadin.ui.UI;
  * Server side implementation of the MagnoliaShell container.
  */
 @JavaScript({"jquery-1.7.2.min.js", "jquery.transition.js"})
-public abstract class BaseMagnoliaShell extends AbstractComponent implements HasComponents {
-
-    private ShellServerRpc rpc = new ShellServerRpc() {
-        @Override
-        public void removeMessage(String id) {
-            BaseMagnoliaShell.this.removeMessage(id);
-        }
-        
-        @Override
-        public void closeCurrentShellApp() {
-            BaseMagnoliaShell.this.stopCurrentShellApp();
-        }
-
-        @Override
-        public void closeCurrentApp() {
-            BaseMagnoliaShell.this.closeCurrentApp();
-        }
-
-        @Override
-        public void activateRunningApp(Fragment f) {
-            BaseMagnoliaShell.this.navigateToApp(f);
-        }
-
-        @Override
-        public void activateShellApp(Fragment f) {
-            BaseMagnoliaShell.this.navigateToShellApp(f);
-        }
-    };
+public abstract class MagnoliaShellBase extends AbstractComponent implements HasComponents {
     
     private final EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
 
     //private final ICEPush pusher = new ICEPush();
 
-    public BaseMagnoliaShell() {
+    public MagnoliaShellBase() {
         setImmediate(true);
-        registerRpc(rpc);
+        registerRpc(new MagnoliaShellRpcDelegate(this));
         initializeViewports();
     }
 
+    public abstract void stopCurrentShellApp();
+
+    public abstract void stopCurrentApp();
+    
+    public abstract void removeMessage(String messageId);
+    
     private void initializeViewports() {
-        final ShellAppsViewport shellAppsViewport = new ShellAppsViewport(BaseMagnoliaShell.this);
-        final AppsViewport appsViewport = new AppsViewport(BaseMagnoliaShell.this);
-        final DialogViewport dialogViewport = new DialogViewport(BaseMagnoliaShell.this);
+        final ShellAppsViewport shellAppsViewport = new ShellAppsViewport(MagnoliaShellBase.this);
+        final AppsViewport appsViewport = new AppsViewport(MagnoliaShellBase.this);
+        final DialogViewport dialogViewport = new DialogViewport(MagnoliaShellBase.this);
         
         getState().viewports.put(ViewportType.SHELL_APP, shellAppsViewport);
         getState().viewports.put(ViewportType.APP, appsViewport);
@@ -121,15 +101,19 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Has
         dialogViewport.setParent(this);
     }
 
-    public void navigateToApp(Fragment fragment) {
-        doNavigateWithinViewport(getAppViewport(), fragment);
+    public void propagateFragmentToClient(Fragment fragment) {
+        getRpcProxy(ShellClientRpc.class).setFragmentFromServer(fragment);
+    }
+    
+    public void goToApp(Fragment fragment) {
+        doNavigate(getState(false).appViewport(), fragment);
     }
 
-    public void navigateToShellApp(Fragment fragment) {
-        doNavigateWithinViewport(getShellAppViewport(), fragment);
+    public void goToShellApp(Fragment fragment) {
+        doNavigate(getState(false).shellAppViewport(), fragment);
     }
 
-    public void doNavigateWithinViewport(final ShellViewport viewport, Fragment fragment) {
+    public void doNavigate(final ShellViewport viewport, Fragment fragment) {
         viewport.setCurrentShellFragment(fragment.toFragment());
         setActiveViewport(viewport);
         notifyOnFragmentChanged(fragment.toFragment());
@@ -186,31 +170,11 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Has
         ((ShellViewport)getState().viewports.get(ViewportType.DIALOG)).addComponent(dialog);
     }
 
-    public abstract void stopCurrentShellApp();
-
-    public abstract void removeMessage(String messageId);
-
-    public void closeCurrentApp() {
-        getAppViewport().pop();
-    }
-
     public void setActiveViewport(ShellViewport viewport) {
         final Connector currentActive = getState().activeViewport;
         if (currentActive != viewport) {
             getState().activeViewport = viewport;
         }
-    }
-
-    public ShellViewport getAppViewport() {
-        return (ShellViewport)getState(false).viewports.get(ViewportType.APP);
-    }
-
-    public ShellViewport getShellAppViewport() {
-        return (ShellViewport)getState(false).viewports.get(ViewportType.SHELL_APP);
-    }
-
-    public ShellViewport getDialogViewport() {
-        return (ShellViewport)getState(false).viewports.get(ViewportType.DIALOG);
     }
 
     public ShellViewport getActiveViewport() {
@@ -263,27 +227,6 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Has
     
     @Override
     public Iterator<Component> iterator() {
-        return new Iterator<Component>() {
-            private Iterator<Connector> wrappedIt = getState(false).viewports.values().iterator();
-            
-            @Override
-            public boolean hasNext() {
-                return wrappedIt.hasNext();
-            }
-
-            @Override
-            public Component next() {
-                return (Component)wrappedIt.next();
-            }
-
-            @Override
-            public void remove() {
-                wrappedIt.remove();
-            }
-        };
-    }
-
-    public void propagateFragmentToClient(Fragment fragment) {
-        getRpcProxy(ShellClientRpc.class).setFragmentFromServer(fragment);
+        return new ComponentIterator<Connector>(getState(false).viewports.values().iterator());
     }
 }

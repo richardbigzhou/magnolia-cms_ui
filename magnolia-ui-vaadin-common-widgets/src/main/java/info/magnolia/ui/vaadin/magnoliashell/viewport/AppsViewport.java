@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
-import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
+import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 
 
 /**
@@ -43,7 +43,7 @@ import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
  */
 public class AppsViewport extends ShellViewport {
 
-    public AppsViewport(BaseMagnoliaShell shell) {
+    public AppsViewport(MagnoliaShellBase shell) {
         super(shell);
         addStyleName("apps");
         getState().type = ViewportType.APP;

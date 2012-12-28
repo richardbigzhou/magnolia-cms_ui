@@ -35,7 +35,8 @@ package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.icon.widget.IconWidget;
 import info.magnolia.ui.vaadin.gwt.client.layout.CssRule;
-import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.connector.ThumbnailLayoutConnector.ThumbnailService;
+import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.connector.LazyThumbnailLayoutConnector.ThumbnailService;
+import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.shared.ThumbnailData;
 import info.magnolia.ui.vaadin.gwt.client.mgwt.SliderClientBundle;
 import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchMoveEvent;
 import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchRecognizer;
@@ -43,11 +44,9 @@ import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchRecognizer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
@@ -56,7 +55,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.googlecode.mgwt.dom.client.recognizer.pinch.UIObjectToOffsetProvider;
@@ -64,17 +62,19 @@ import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapRecognizer;
 import com.googlecode.mgwt.ui.client.widget.MSlider;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.client.ComputedStyle;
+import com.vaadin.client.ServerConnector;
 import com.vaadin.client.VConsole;
 
 /**
  * Client side impl of lazy asset thumbnails layout.
  * 
  */
-public class VLazyThumbnailLayout extends Composite {
+public class LazyThumbnailLayoutWidget extends FlowPanel {
 
     private static final int QUERY_TIMER_DELAY = 250;
 
     private static final int MIN_WIDTH = 50;
+    
     private static final int MAX_WIDTH = 230;
 
     private int thumbnailWidth = 0;
@@ -90,21 +90,23 @@ public class VLazyThumbnailLayout extends Composite {
     private final List<ThumbnailWidget> thumbnailStubs = new ArrayList<ThumbnailWidget>();
 
     private final ScrollPanel scroller = new ScrollPanel();
-    private final FlowPanel basePanel = new FlowPanel();
 
     private final SliderClientBundle thumbnailBundle = GWT.create(SliderClientBundle.class);
+    
     private final MSlider thumbnailSizeSlider = new MSlider(thumbnailBundle.css());
 
     private final CssRule thumbnailImageStyle = CssRule.create(".thumbnail-image");
+    
     private final CssRule thumbnailStyle = CssRule.create(".thumbnail");
 
     private final FlowPanel imageContainer = new FlowPanel();
-    
+
     private ThumbnailService thumbnailService;
 
-    public VLazyThumbnailLayout() {
+    public LazyThumbnailLayoutWidget() {
 
-        // Prepare thumbnail size slider.
+        addStyleName("thumbnail-layout");
+       
         thumbnailSizeSlider.setWidth("125px");
         IconWidget iconSizeSmall = new IconWidget();
         iconSizeSmall.setIconName("slider-min");
@@ -115,20 +117,18 @@ public class VLazyThumbnailLayout extends Composite {
         iconSizeLarge.setIconName("slider-max");
         iconSizeLarge.setSize(30);
         iconSizeLarge.setColor("#aaaaaa");
-
-        basePanel.add(iconSizeSmall);
-        basePanel.add(thumbnailSizeSlider);
-        basePanel.add(iconSizeLarge);
-
-        scroller.setWidget(imageContainer);
-        basePanel.add(scroller);
-
-        initWidget(basePanel);
-
+        
         thumbnailStyle.setProperty("margin", "3px");
-
-        basePanel.addStyleName("thumbnail-view-base-panel");
+        
+        scroller.setWidget(imageContainer);
         scroller.addStyleName("thumbnail-scroller");
+        scroller.getElement().getStyle().setPosition(Position.ABSOLUTE);
+
+        add(iconSizeSmall);
+        add(thumbnailSizeSlider);
+        add(iconSizeLarge);
+        add(scroller);
+        
         bindHandlers();
         reset();
     }
@@ -143,8 +143,7 @@ public class VLazyThumbnailLayout extends Composite {
         });
 
         final TouchDelegate touchDelegate = new TouchDelegate(this);
-        touchDelegate
-                .addTouchHandler(new MagnoliaPinchRecognizer(touchDelegate, new UIObjectToOffsetProvider(scroller)));
+        touchDelegate.addTouchHandler(new MagnoliaPinchRecognizer(touchDelegate, new UIObjectToOffsetProvider(scroller)));
         MultiTapRecognizer multitapRecognizer = new MultiTapRecognizer(touchDelegate, 1, 2);
         touchDelegate.addTouchHandler(multitapRecognizer);
 
@@ -154,14 +153,13 @@ public class VLazyThumbnailLayout extends Composite {
                 double scaleFactor = 1 / event.getScaleFactor();
                 int width = Math.max((int) (ComputedStyle.parseInt(thumbnailStyle.getProperty("width")) * scaleFactor),
                         25);
-                int height = Math.max((int) (ComputedStyle.parseInt(thumbnailStyle.getProperty("height")) * scaleFactor),
-                        25);
+                int height = Math.max(
+                        (int) (ComputedStyle.parseInt(thumbnailStyle.getProperty("height")) * scaleFactor), 25);
                 scroller.setVerticalScrollPosition((int) (scroller.getVerticalScrollPosition() * scaleFactor));
                 setThumbnailSize(width, height);
 
             }
-        },
-                MagnoliaPinchMoveEvent.TYPE);
+        }, MagnoliaPinchMoveEvent.TYPE);
 
         thumbnailSizeSlider.addValueChangeHandler(new ValueChangeHandler<Integer>() {
             @Override
@@ -197,20 +195,22 @@ public class VLazyThumbnailLayout extends Composite {
 
     public void setThumbnailSize(int width, int height) {
         VConsole.log("Thumbnails: setThumbnailSize: " + width + " h:" + height);
+        if (this.thumbnailHeight != height || this.thumbnailWidth != width) {
+            this.thumbnailHeight = height;
+            this.thumbnailWidth = width;
+            
+            // Scale the thumbnail divs.
+            thumbnailStyle.setProperty("width", width + "px");
+            thumbnailStyle.setProperty("height", width + "px");
+            String fontSize = String.valueOf((int)(width * 0.75));
+            thumbnailStyle.setProperty("fontSize", fontSize + "px");
 
-        this.thumbnailHeight = height;
-        this.thumbnailWidth = width;
-        // Scale the thumbnail divs.
-        thumbnailStyle.setProperty("width", width + "px");
-        thumbnailStyle.setProperty("height", width + "px");
-        String fontSize = Integer.toString((int) (width * 0.75));
-        thumbnailStyle.setProperty("fontSize", fontSize + "px");
+            // Scale the size of the image in the thumbnails.
+            thumbnailImageStyle.setProperty("maxWidth", width + "px");
+            thumbnailImageStyle.setProperty("maxHeight", width + "px");
 
-        // Scale the size of the image in the thumbnails.
-        thumbnailImageStyle.setProperty("maxWidth", width + "px");
-        thumbnailImageStyle.setProperty("maxHeight", width + "px");
-
-        createStubsAndQueryThumbnails();
+            createStubsAndQueryThumbnails();            
+        }
     }
 
     private final Timer queryTimer = new Timer() {
@@ -220,28 +220,28 @@ public class VLazyThumbnailLayout extends Composite {
         };
     };
 
-
-    public void addImages(Map<String, String> urls) {
-        final Iterator<Entry<String, String>> it = urls.entrySet().iterator();
+    public void addImages(List<ThumbnailData> thumbnailsData, ServerConnector connector) {
+        final Iterator<ThumbnailData> it = thumbnailsData.iterator();
         while (it.hasNext() && !thumbnailStubs.isEmpty()) {
-            final Entry<String, String> entry = it.next();
             final ThumbnailWidget thumbnail = thumbnailStubs.remove(0);
-            thumbnail.setData(entry.getKey(), entry.getValue());
+            thumbnail.setData(it.next(), connector);
             thumbnails.add(thumbnail);
         }
     }
 
     public void setThumbnailAmount(int thumbnailAmount) {
-        this.thumbnailAmount = thumbnailAmount;
-        int width = getOffsetWidth();
-        int totalThumbnailWidth = (thumbnailWidth + getHorizontalMargin());
-        if (totalThumbnailWidth != 0) {
-            int thumbnailsInRow = (int) (width / totalThumbnailWidth * 1d);
-            if (thumbnailsInRow != 0) {
-                int rows = (int) (thumbnailAmount / thumbnailsInRow * 1d) * (thumbnailHeight + getVerticalMargin());
-                imageContainer.getElement().getStyle().setHeight(rows, Unit.PX);
-                createStubsAndQueryThumbnails();
-            }
+        if (this.thumbnailAmount != thumbnailAmount) {
+            this.thumbnailAmount = thumbnailAmount;
+            int width = getOffsetWidth();
+            int totalThumbnailWidth = (thumbnailWidth + getHorizontalMargin());
+            if (totalThumbnailWidth != 0) {
+                int thumbnailsInRow = (int) (width / totalThumbnailWidth * 1d);
+                if (thumbnailsInRow != 0) {
+                    int pixelHeight = (int)Math.ceil(thumbnailAmount / thumbnailsInRow * 1d) * (thumbnailHeight + getVerticalMargin());
+                    imageContainer.getElement().getStyle().setHeight(pixelHeight, Unit.PX);
+                    createStubsAndQueryThumbnails();
+                }
+            }            
         }
     }
 
@@ -276,11 +276,6 @@ public class VLazyThumbnailLayout extends Composite {
         queryTimer.schedule(QUERY_TIMER_DELAY);
     }
 
-
-    public static native JsArray<VThumbnailData> parseStringArray(String json) /*-{
-        return eval('(' + json + ')');
-    }-*/;
-
     private int getHorizontalMargin() {
         return ComputedStyle.parseInt(thumbnailStyle.getProperty("marginTop")) * 2;
     }
@@ -297,6 +292,7 @@ public class VLazyThumbnailLayout extends Composite {
         selectedThumbnail = thumbnail;
     }
 
+    @Override
     public void clear() {
         thumbnailStubs.addAll(thumbnails);
         thumbnails.clear();
