@@ -121,6 +121,7 @@ public class ContentPresenter implements ContentView.Listener {
                 + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
         }
 
+        selectedItemPath = StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");;
         parentView.setViewType(ViewType.TREE);
     }
 
@@ -128,7 +129,7 @@ public class ContentPresenter implements ContentView.Listener {
     public void onItemSelection(Item item) {
         if (item == null) {
             log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
-            selectedItemPath = null;
+            selectedItemPath = workbenchDefinition.getPath();
             subAppEventBus.fireEvent(new ItemSelectedEvent(workspaceName, null));
             return;
         }

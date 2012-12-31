@@ -300,7 +300,7 @@
       <sv:value>a97ed3e2-23f4-4950-8aab-ecff805a4884</sv:value>
     </sv:property>
     <sv:property sv:name="city" sv:type="String">
-      <sv:value>Leipizig</sv:value>
+      <sv:value>Leipzig</sv:value>
     </sv:property>
     <sv:property sv:name="country" sv:type="String">
       <sv:value>Germany</sv:value>

@@ -1,0 +1,118 @@
+diff -wur k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VTreeTable.java k2/src/main/java/com/vaadin/terminal/gwt/client/ui/VTreeTable.java
+--- k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VTreeTable.java	2012-12-18 09:18:46.000000000 +0200
++++ k2/src/main/java/com/vaadin/terminal/gwt/client/ui/VTreeTable.java	2012-12-31 12:49:45.000000000 +0200
+@@ -21,6 +21,8 @@
+ import java.util.LinkedList;
+ import java.util.List;
+ 
++import info.magnolia.ui.vaadin.gwt.client.grid.VMagnoliaTable;
++
+ import com.google.gwt.animation.client.Animation;
+ import com.google.gwt.core.client.Scheduler;
+ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+@@ -42,10 +44,10 @@
+ import com.vaadin.terminal.gwt.client.RenderSpace;
+ import com.vaadin.terminal.gwt.client.UIDL;
+ import com.vaadin.terminal.gwt.client.Util;
+-import com.vaadin.terminal.gwt.client.ui.VScrollTable.VScrollTableBody.VScrollTableRow;
+-import com.vaadin.terminal.gwt.client.ui.VTreeTable.VTreeTableScrollBody.VTreeTableRow;
++import com.vaadin.terminal.gwt.client.ui.VScrollTablePatched.VScrollTableBody.VScrollTableRow;
++import com.vaadin.terminal.gwt.client.ui.VTreeTablePatched.VTreeTableScrollBody.VTreeTableRow;
+ 
+-public class VTreeTable extends VScrollTable {
++public class VTreeTablePatched extends VMagnoliaTable {
+ 
+     private static class PendingNavigationEvent {
+         private final int keycode;
+@@ -76,9 +78,9 @@
+     private boolean selectionPending;
+     private int colIndexOfHierarchy;
+     private String collapsedRowKey;
+-    private VTreeTableScrollBody scrollBody;
++    protected VTreeTableScrollBody scrollBody;
+     private boolean animationsEnabled;
+-    private LinkedList<PendingNavigationEvent> pendingNavigationEvents = new LinkedList<VTreeTable.PendingNavigationEvent>();
++    private LinkedList<PendingNavigationEvent> pendingNavigationEvents = new LinkedList<VTreeTablePatched.PendingNavigationEvent>();
+     private boolean focusParentResponsePending;
+ 
+     @Override
+@@ -184,10 +186,10 @@
+         return !(bi.isIE6() || bi.isIE7() || bi.isSafari4());
+     }
+ 
+-    class VTreeTableScrollBody extends VScrollTable.VScrollTableBody {
++    public class VTreeTableScrollBody extends VMagnoliaTable.MagnoliaTableBody {
+         private int indentWidth = -1;
+ 
+-        VTreeTableScrollBody() {
++        protected VTreeTableScrollBody() {
+             super();
+         }
+ 
+@@ -200,14 +202,14 @@
+             return new VTreeTableRow(uidl, aligns2);
+         }
+ 
+-        class VTreeTableRow extends
+-                VScrollTable.VScrollTableBody.VScrollTableRow {
++        public class VTreeTableRow extends
++            VMagnoliaTable.MagnoliaTableBody.MagnoliaTableRow {
+ 
+-            private boolean isTreeCellAdded = false;
+-            private SpanElement treeSpacer;
+-            private boolean open;
+-            private int depth;
+-            private boolean canHaveChildren;
++            protected boolean isTreeCellAdded = false;
++            protected com.google.gwt.dom.client.Element treeSpacer;
++            protected boolean open;
++            protected int depth;
++            protected boolean canHaveChildren;
+             protected Widget widgetInHierarchyColumn;
+ 
+             public VTreeTableRow(UIDL uidl, char[] aligns2) {
+@@ -260,7 +262,7 @@
+                 return false;
+             }
+ 
+-            private boolean cellShowsTreeHierarchy(int curColIndex) {
++            protected boolean cellShowsTreeHierarchy(int curColIndex) {
+                 if (isTreeCellAdded) {
+                     return false;
+                 }
+@@ -289,7 +291,7 @@
+ 
+             }
+ 
+-            private void setIndent() {
++            protected void setIndent() {
+                 if (getIndentWidth() > 0) {
+                     treeSpacer.getParentElement().getStyle()
+                             .setPaddingLeft(getIndent(), Unit.PX);
+@@ -372,7 +374,7 @@
+                 return colIndexOfHierarchy + (showRowHeaders ? 1 : 0);
+             }
+ 
+-            private int getIndent() {
++            protected int getIndent() {
+                 return (depth + 1) * getIndentWidth();
+             }
+         }
+@@ -501,7 +503,7 @@
+             }
+         }
+ 
+-        private int getIndentWidth() {
++        public int getIndentWidth() {
+             return indentWidth;
+         }
+ 
+@@ -919,7 +921,7 @@
+         return super.handleNavigation(keycode, ctrl, shift);
+     }
+ 
+-    private void sendToggleCollapsedUpdate(String rowKey) {
++    public void sendToggleCollapsedUpdate(String rowKey) {
+         collapsedRowKey = rowKey;
+         collapseRequest = true;
+         client.updateVariable(paintableId, "toggleCollapsed", rowKey, true);
