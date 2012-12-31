@@ -33,13 +33,9 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr.container;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
@@ -574,16 +570,16 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     public void testSortShouldIgnoreCase() throws Exception {
         // GIVEN
         // Capital Q comes before lowercase f in UTF-8 character set, yet we expect 'foo' to precede 'QUX' in our ascending sorting
-        Node node1 = createNode(rootNode, "foo", NodeTypes.Content.NAME, "name", "foo");
+        Node fooNode = createNode(rootNode, "foo", NodeTypes.Content.NAME, "name", "foo");
         createNode(rootNode, "QUX", NodeTypes.Content.NAME, "name", "qux");
-        node1.getSession().save();
-        String containerItemId1 = node1.getPath();
+        fooNode.getSession().save();
+        String fooItemId = fooNode.getPath();
         boolean[] ascending = { true };
         // WHEN
         jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
 
         // THEN
-        assertEquals(containerItemId1, jcrContainer.firstItemId());
+        assertEquals(fooItemId, jcrContainer.firstItemId());
     }
 
     /**
