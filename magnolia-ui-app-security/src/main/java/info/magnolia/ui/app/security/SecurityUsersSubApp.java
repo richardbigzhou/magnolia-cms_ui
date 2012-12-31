@@ -53,14 +53,9 @@ public class SecurityUsersSubApp extends AbstractContentSubApp {
 
     private static final Logger log = LoggerFactory.getLogger(SecurityUsersSubApp.class);
 
-    private boolean isSystemUserSubApp = false;
-
     @Inject
     public SecurityUsersSubApp(final SubAppContext subAppContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
         super(subAppContext, view, workbench, subAppEventBus);
-        if ("systemUsers".equals(subAppContext.getSubAppDescriptor().getName())) {
-            isSystemUserSubApp = true;
-        }
     }
 
     @Override
