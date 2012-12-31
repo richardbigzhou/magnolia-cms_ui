@@ -33,9 +33,7 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -50,7 +48,7 @@ import com.vaadin.data.Property;
 
 public class JcrNewNodeAdapterTest {
 
-    private String worksapceName = "workspace";
+    private final String worksapceName = "workspace";
     private MockSession session;
 
     @Before
@@ -70,7 +68,7 @@ public class JcrNewNodeAdapterTest {
 
 
     @Test
-    public void testGetItemProperty_Modified() throws Exception {
+    public void testGetItemPropertyReturnsModified() throws Exception {
         // GIVEN
         //Create a NewNodeAdapter
         String nodeName = "rootNode";
@@ -95,7 +93,7 @@ public class JcrNewNodeAdapterTest {
     }
 
     @Test
-    public void testGetNode() throws Exception {
+    public void testGetNodeUpdatesNode() throws Exception {
         // GIVEN
         //Create a NewNodeAdapter
         String nodeName = "rootNode";
@@ -125,17 +123,17 @@ public class JcrNewNodeAdapterTest {
         // THEN
         assertNotNull(res);
         assertSame(res, parentNode.getNode(res.getName()));
-        assertEquals(true, res.hasProperty("notModify"));
-        assertEquals(false, res.hasProperty("notModifyRemoved"));
-        assertEquals(true, res.hasProperty("modify"));
+        assertTrue(res.hasProperty("notModify"));
+        assertFalse(res.hasProperty("notModifyRemoved"));
+        assertTrue(res.hasProperty("modify"));
         assertEquals("newModify", res.getProperty("modify").getString());
-        assertEquals(false, res.hasProperty("modifyRemoved"));
+        assertFalse(res.hasProperty("modifyRemoved"));
         assertEquals(nodeType, res.getPrimaryNodeType().getName());
     }
 
 
     @Test
-    public void testGetNode_Twice() throws Exception {
+    public void testGetNodeTwice() throws Exception {
         // GIVEN
         //Create a NewNodeAdapter
         String nodeName = "rootNode";

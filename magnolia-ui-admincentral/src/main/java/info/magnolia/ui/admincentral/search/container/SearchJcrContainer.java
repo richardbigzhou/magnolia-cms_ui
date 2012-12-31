@@ -47,7 +47,7 @@ public class SearchJcrContainer extends FlatJcrContainer{
 
     private static final Logger log = LoggerFactory.getLogger(SearchJcrContainer.class);
 
-    protected static final String WHERE_TEMPLATE_FOR_SEARCH =  " (localname() = '%s' or contains(" + SELECTOR_NAME + ".*, '%s'))";
+    protected static final String WHERE_TEMPLATE_FOR_SEARCH = " (localname() LIKE '%s%%' or contains(" + SELECTOR_NAME + ".*, '%s'))";
 
     private String fullTextExpression;
 

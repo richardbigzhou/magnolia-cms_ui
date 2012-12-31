@@ -128,7 +128,7 @@ public class JcrPropertyAdapterTest {
     }
 
     @Test
-    public void testUpdateProperty_JcrName() throws Exception {
+    public void testUpdatePropertyName() throws Exception {
         // GIVEN
         Node node = session.getRootNode();
         node.setProperty(propertyName, propertyValue);
@@ -145,7 +145,7 @@ public class JcrPropertyAdapterTest {
     }
 
     @Test
-    public void testUpdateProperty_JcrName_Same() throws Exception {
+    public void testUpdatePropertyNameToSameName() throws Exception {
         // GIVEN
         Node node = session.getRootNode();
         node.setProperty(propertyName, propertyValue);
@@ -161,7 +161,7 @@ public class JcrPropertyAdapterTest {
     }
 
     @Test
-    public void testUpdateProperty_JcrName_Existing() throws Exception {
+    public void testUpdatePropertyNameWhenAlreadyExisting() throws Exception {
         // GIVEN
         String existingName = "existingName";
         Node node = session.getRootNode();
@@ -180,7 +180,7 @@ public class JcrPropertyAdapterTest {
     }
 
     @Test
-    public void testUpdateProperty_Value() throws Exception {
+    public void testUpdatePropertyValue() throws Exception {
         // GIVEN
         Node node = session.getRootNode();
         node.setProperty(propertyName, propertyValue);
@@ -197,7 +197,7 @@ public class JcrPropertyAdapterTest {
     }
 
     @Test
-    public void testUpdateProperty_Value_KeepsPropertyType() throws Exception {
+    public void testUpdatePropertyValueKeepsPropertyType() throws Exception {
         // GIVEN
         Node node = session.getRootNode();
         node.setProperty(numericPropertyName, intValue);
@@ -227,7 +227,7 @@ public class JcrPropertyAdapterTest {
     }
 
     @Test
-    public void testUpdateProperty_Type() throws Exception {
+    public void testUpdatePropertyType() throws Exception {
         // GIVEN
         Node node = session.getRootNode();
         node.setProperty(propertyName, propertyValue);
