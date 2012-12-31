@@ -165,7 +165,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
     }
 
     public void setHelpEnabled(boolean isHelpEnabled) {
-        helpButton.setVisible(isHelpEnabled && helpDescription != null);
+        helpButton.setVisible(isHelpEnabled && helpDescription != null && !"".equals(helpDescription));
         if (!isHelpEnabled && helpSection != null) {
             hideHelp();
         }
