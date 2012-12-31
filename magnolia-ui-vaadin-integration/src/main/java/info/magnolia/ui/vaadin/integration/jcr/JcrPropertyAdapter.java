@@ -153,7 +153,7 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
         } else if (VALUE_PROPERTY.equals(propertyId)) {
             if (property.getValue() != null) {
                 try {
-                    String valueString = (String) property.getValue();
+                    String valueString = property.getValue().toString();
                     int valueType = jcrProperty.getType();
                     ValueFactory valueFactory = jcrProperty.getSession().getValueFactory();
 

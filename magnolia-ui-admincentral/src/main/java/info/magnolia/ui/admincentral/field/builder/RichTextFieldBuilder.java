@@ -37,6 +37,8 @@ import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
+
+import info.magnolia.ui.admincentral.AdminCentralApplication;
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
@@ -52,7 +54,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class RichTextFieldBuilder extends
 
     private static final String PLUGIN_NAME_MAGNOLIALINK = "magnolialink";
 
-    private static final String PLUGIN_PATH_MAGNOLIALINK = "../../../js/magnolialink/";
+    private static final String PLUGIN_PATH_MAGNOLIALINK = "/VAADIN/js/magnolialink/";
 
     /**
      * Event is emit from server to client when link has been selected.
@@ -85,7 +86,7 @@ public class RichTextFieldBuilder extends
     public static final String EVENT_GET_MAGNOLIA_LINK = "mgnlGetLink";
     
     private final AppController appController;
-    private MagnoliaRichTextField richtexteditor;
+    private MagnoliaRichTextField richTextEditor;
     private static final Logger log = LoggerFactory
             .getLogger(LinkFieldBuilder.class);
 
@@ -99,7 +100,7 @@ public class RichTextFieldBuilder extends
     @Override
     protected Field buildField() {
         // RichTextFieldDefinition editDefinition = definition;
-        MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
+        final MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
 
         List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
         toolbars.add(new ToolbarGroup("basictyles", new String[] { "Bold",
@@ -116,76 +117,85 @@ public class RichTextFieldBuilder extends
                 new String[] { "Undo", "Redo" }));
         config.addToolbarLine(toolbars);
         config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
-        config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, PLUGIN_PATH_MAGNOLIALINK);
         config.setResizeEnabled(false);
-        
-        richtexteditor = new MagnoliaRichTextField(config);
-        richtexteditor.addListener(new MagnoliaRichTextField.PluginListener() {
+
+        richTextEditor = new MagnoliaRichTextField(config) {
+            @Override
+            public void attach() {
+                super.attach();
+                
+                if (getApplication() instanceof AdminCentralApplication) {
+                    AdminCentralApplication admincentral = (AdminCentralApplication)getApplication();
+                    String path = admincentral.getAdminCentralPath();
+                    config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path+PLUGIN_PATH_MAGNOLIALINK);
+                }
+            }
+        };
+
+        richTextEditor.addListener(new MagnoliaRichTextField.PluginListener() {
 
             @Override
             public void onPluginEvent(String eventName, String value) {
                 if (eventName.equals(EVENT_GET_MAGNOLIA_LINK)) {
-                    openLinkDialog(value);
+                    try {
+                        openLinkDialog(value);
+                    } catch (Exception e) {
+                        log.error("openLinkDialog failed", e);
+                        richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, "Could not open target App");
+                    }
                 }
             }
         });
 
-        return richtexteditor;
+        return richTextEditor;
     }
 
     private void openLinkDialog(String path) {
         // Get the property name to propagate.
         App targetApp = appController.getAppWithoutStarting("pages");
         if (targetApp != null && targetApp instanceof AbstractContentApp) {
-            ChooseDialogPresenter<Item> chooseDialogPresenter = ((AbstractContentApp) targetApp)
-                    .openChooseDialog(path);
+            ChooseDialogPresenter<Item> chooseDialogPresenter = ((AbstractContentApp) targetApp).openChooseDialog(path);
             chooseDialogPresenter.getView().setCaption("Select a page");
-            chooseDialogPresenter
-                    .addValueChosenListener(new ValueChosenListener<Item>() {
-                        @Override
-                        public void onValueChosen(Item chosenValue) {
-                            if (!(chosenValue instanceof JcrItemAdapter)) {
-                                return;
-                            }
-
-                            javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue)
-                                    .getJcrItem();
-
-                            if (!jcrItem.isNode()) {
-                                return;
-                            }
-
-                            final Node selected = (Node) jcrItem;
-                            try {
-                                Gson gson = new Gson();
-                                MagnoliaLink mlink = new MagnoliaLink();
-                                mlink.identifier = selected.getIdentifier();
-                                mlink.repository = selected.getSession().getWorkspace().getName();
-                                mlink.path = selected.getPath();
-                                if (selected.hasProperty("title")) {
-                                    mlink.caption = selected.getProperty("title").getString();
-                                } else {
-                                    mlink.caption = selected.getName();
-                                }
-
-                                richtexteditor.firePluginEvent(
-                                        EVENT_SEND_MAGNOLIA_LINK,
-                                        gson.toJson(mlink)
-                                );
-                            } catch (RepositoryException e) {
-                                String error = "Not able to access the configured property. Value will not be set.";
-                                log.error(error, e);
-
-                                richtexteditor.firePluginEvent(EVENT_CANCEL_LINK, error);
-                            }
-
+            chooseDialogPresenter.addValueChosenListener(new ValueChosenListener<Item>() {
+                @Override
+                public void onValueChosen(Item chosenValue) {
+                    if (!(chosenValue instanceof JcrItemAdapter)) {
+                        return;
+                    }
+                    
+                    try {                                    
+                    
+                        javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
+                        
+                        if (!jcrItem.isNode()) {
+                            return;
                         }
-
-                        @Override
-                        public void selectionCanceled() {
-                            richtexteditor.firePluginEvent(EVENT_CANCEL_LINK);
+    
+                        final Node selected = (Node) jcrItem;
+                        Gson gson = new Gson();
+                        MagnoliaLink mlink = new MagnoliaLink();
+                        mlink.identifier = selected.getIdentifier();
+                        mlink.repository = selected.getSession().getWorkspace().getName();
+                        mlink.path = selected.getPath();
+                        if (selected.hasProperty("title")) {
+                            mlink.caption = selected.getProperty("title").getString();
+                        } else {
+                            mlink.caption = selected.getName();
                         }
-                    });
+                                                            
+                        richTextEditor.firePluginEvent(EVENT_SEND_MAGNOLIA_LINK, gson.toJson(mlink));
+                    } catch (Exception e) {
+                        String error = "Not able to access the selected item. Value will not be set.";
+                        log.error(error, e);
+                        richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, error);
+                    }                            
+                }
+    
+                @Override
+                public void selectionCanceled() {
+                    richTextEditor.firePluginEvent(EVENT_CANCEL_LINK);
+                }
+            });
         }
     }
     

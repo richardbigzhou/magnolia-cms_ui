@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.model.dialog.registry;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.ModuleConfigurationObservingManager;
 import info.magnolia.jcr.predicate.NodeTypePredicate;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.NodeVisitor;
 import info.magnolia.module.ModuleRegistry;
@@ -85,7 +85,7 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
 
                 @Override
                 public void visit(Node current) throws RepositoryException {
-                    for (Node dialogNode : NodeUtil.getNodes(current, MgnlNodeType.NT_CONTENTNODE)) {
+                    for (Node dialogNode : NodeUtil.getNodes(current, NodeTypes.ContentNode.NAME)) {
                         if(isDialog(dialogNode)) {
                             // Handle as dialog only if it has sub nodes indicating that it is actually representing a dialog.
                             // This will filter the fields in dialogs used by the extends mechanism.
@@ -98,7 +98,7 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
                         }
                     }
                 }
-            }, new NodeTypePredicate(MgnlNodeType.NT_CONTENT));
+            }, new NodeTypePredicate(NodeTypes.Content.NAME));
         }
 
         this.registeredIds = dialogDefinitionRegistry.unregisterAndRegister(registeredIds, providers);
