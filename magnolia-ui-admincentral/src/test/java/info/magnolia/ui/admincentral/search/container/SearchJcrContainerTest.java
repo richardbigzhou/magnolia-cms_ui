@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.search.container;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.model.action.Action;
@@ -135,7 +135,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         //THEN
-        assertEquals(" where ( (localname() LIKE 'foo%' or contains(t.*, 'foo')))", stmt);
+        assertEquals(" where ( (localname() LIKE 'foo%' or contains(t.*, '*foo*')))", stmt);
     }
 
     @Test
@@ -147,7 +147,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         //THEN
-        assertEquals(" where ( (localname() LIKE 'foo OR ''baz bar''%' or contains(t.*, 'foo OR ''baz bar''')))", stmt);
+        assertEquals(" where ( (localname() LIKE 'foo OR ''baz bar''%' or contains(t.*, '*foo OR ''baz bar''*')))", stmt);
     }
 
     @Test
@@ -160,7 +160,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         //THEN
-        assertEquals(" where ( ISDESCENDANTNODE('/qux') and  (localname() LIKE 'foo%' or contains(t.*, 'foo')))", stmt);
+        assertEquals(" where ( ISDESCENDANTNODE('/qux') and  (localname() LIKE 'foo%' or contains(t.*, '*foo*')))", stmt);
     }
 
 }

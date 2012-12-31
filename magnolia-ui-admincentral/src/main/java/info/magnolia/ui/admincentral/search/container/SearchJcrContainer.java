@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.admincentral.search.container;
 
+import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
+import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import info.magnolia.ui.admincentral.list.container.FlatJcrContainer;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 
 /**
  * The jcr container backing the search view. It provides the subset of items returned by the current search. By default it will perform a full-text search OR a search on the jcr name
@@ -47,7 +47,7 @@ public class SearchJcrContainer extends FlatJcrContainer{
 
     private static final Logger log = LoggerFactory.getLogger(SearchJcrContainer.class);
 
-    protected static final String WHERE_TEMPLATE_FOR_SEARCH = " (localname() LIKE '%s%%' or contains(" + SELECTOR_NAME + ".*, '%s'))";
+    protected static final String WHERE_TEMPLATE_FOR_SEARCH = " (localname() LIKE '%s%%' or contains(" + SELECTOR_NAME + ".*, '*%s*'))";
 
     private String fullTextExpression;
 
@@ -57,11 +57,9 @@ public class SearchJcrContainer extends FlatJcrContainer{
 
     @Override
     protected String getQueryWhereClause() {
-        String whereClause = "";
         final String clauseWorkspacePath = getQueryWhereClauseWorkspacePath();
-        final String clauseSearch = getQueryWhereClauseSearch();
+        String whereClause = getQueryWhereClauseSearch();
 
-        whereClause = clauseSearch;
         if (!"".equals(clauseWorkspacePath)){
             if (!"".equals(whereClause)){
                  whereClause = clauseWorkspacePath + " and " + whereClause;
