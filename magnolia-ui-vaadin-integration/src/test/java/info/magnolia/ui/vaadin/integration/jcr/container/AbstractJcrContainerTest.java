@@ -561,13 +561,29 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     public void testConstructJCRQueryReturnDefaultSelectStatement() {
         // GIVEN
         //default mainItemType used by constructJCRQuery() is mgnl:content
-        final String expected = String.format(AbstractJcrContainer.SELECT_TEMPLATE, "mgnl:content");
+        final String expected = String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME);
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(false);
 
         // THEN
         assertTrue(result.contains(expected));
+    }
+
+    @Test
+    public void testSortShouldIgnoreCase() throws Exception {
+        // GIVEN
+        // Capital Q comes before lowercase f in UTF-8 character set, yet we expect 'foo' to precede 'QUX' in our ascending sorting
+        Node node1 = createNode(rootNode, "foo", NodeTypes.Content.NAME, "name", "foo");
+        createNode(rootNode, "QUX", NodeTypes.Content.NAME, "name", "qux");
+        node1.getSession().save();
+        String containerItemId1 = node1.getPath();
+        boolean[] ascending = { true };
+        // WHEN
+        jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
+
+        // THEN
+        assertEquals(containerItemId1, jcrContainer.firstItemId());
     }
 
     /**

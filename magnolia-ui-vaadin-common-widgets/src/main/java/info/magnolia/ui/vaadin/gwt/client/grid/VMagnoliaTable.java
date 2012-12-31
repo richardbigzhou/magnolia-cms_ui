@@ -65,6 +65,8 @@ public class VMagnoliaTable extends VScrollTablePatched {
 
     public VMagnoliaTable() {
         super();
+        MagnoliaTableHead head = (MagnoliaTableHead)tHead;
+        head.addToDom();
     }
 
     @Override
@@ -128,9 +130,6 @@ public class VMagnoliaTable extends VScrollTablePatched {
         public MagnoliaTableHead() {
             super();
             selectAll = new CheckBox();
-            div.appendChild(selectAll.getElement());
-            getChildren().add(selectAll);
-            adopt(selectAll);
             selectAll.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 
                 @Override
@@ -139,6 +138,12 @@ public class VMagnoliaTable extends VScrollTablePatched {
                 }
             });
             selectAll.addStyleName("v-select-all");
+        }
+        
+        public void addToDom() {
+            div.appendChild(selectAll.getElement());
+            getChildren().add(selectAll);
+            adopt(selectAll);
         }
 
         public CheckBox getSelectAllCB() {

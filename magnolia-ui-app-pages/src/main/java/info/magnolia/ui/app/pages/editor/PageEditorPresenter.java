@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.MetaDataUtil;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
@@ -153,7 +153,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
             Node parentNode = session.getNode(path);
 
-            final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, MgnlNodeType.NT_COMPONENT);
+            final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, NodeTypes.Component.NAME);
             DefaultProperty property = new DefaultProperty(ModelConstants.JCR_NAME, "0");
             item.addItemProperty(ModelConstants.JCR_NAME, property);
 
