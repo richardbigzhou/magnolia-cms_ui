@@ -141,10 +141,11 @@ public class VMagnoliaTreeTable extends VTreeTablePatched {
             }
             
             @Override
-            public void setIndent() {
-                if (getIndentWidth() > 0 && depth != 0) {
-                    treeSpacer.getStyle().setWidth(
-                            (depth + 1) * getIndentWidth(), Unit.PX);
+            protected void setIndent() {
+                if (getIndentWidth() > 0) {
+                    treeSpacer.getParentElement().getStyle()
+                            .setPaddingRight(getIndent(), Unit.PX);
+                    treeSpacer.getStyle().setWidth(getIndent(), Unit.PX);
                 }
             }
         }

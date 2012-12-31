@@ -1,6 +1,6 @@
 diff -wur k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VTreeTable.java k2/src/main/java/com/vaadin/terminal/gwt/client/ui/VTreeTable.java
 --- k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VTreeTable.java	2012-12-18 09:18:46.000000000 +0200
-+++ k2/src/main/java/com/vaadin/terminal/gwt/client/ui/VTreeTable.java	2012-12-18 14:33:43.000000000 +0200
++++ k2/src/main/java/com/vaadin/terminal/gwt/client/ui/VTreeTable.java	2012-12-31 12:49:45.000000000 +0200
 @@ -21,6 +21,8 @@
  import java.util.LinkedList;
  import java.util.List;
@@ -89,6 +89,15 @@ diff -wur k1/src/main/java/com/vaadin/terminal/gwt/client/ui/VTreeTable.java k2/
                  if (getIndentWidth() > 0) {
                      treeSpacer.getParentElement().getStyle()
                              .setPaddingLeft(getIndent(), Unit.PX);
+@@ -372,7 +374,7 @@
+                 return colIndexOfHierarchy + (showRowHeaders ? 1 : 0);
+             }
+ 
+-            private int getIndent() {
++            protected int getIndent() {
+                 return (depth + 1) * getIndentWidth();
+             }
+         }
 @@ -501,7 +503,7 @@
              }
          }
