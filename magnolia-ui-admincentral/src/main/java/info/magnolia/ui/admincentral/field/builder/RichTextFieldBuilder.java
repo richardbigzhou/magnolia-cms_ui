@@ -122,6 +122,8 @@ public class RichTextFieldBuilder extends
         richTextEditor = new MagnoliaRichTextField(config) {
             @Override
             public void attach() {
+                super.attach();
+                
                 if (getApplication() instanceof AdminCentralApplication) {
                     AdminCentralApplication admincentral = (AdminCentralApplication)getApplication();
                     String path = admincentral.getAdminCentralPath();
@@ -130,7 +132,6 @@ public class RichTextFieldBuilder extends
             }
         };
 
-        richTextEditor = new MagnoliaRichTextField(config);
         richTextEditor.addListener(new MagnoliaRichTextField.PluginListener() {
 
             @Override
