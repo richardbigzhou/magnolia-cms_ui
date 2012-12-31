@@ -61,6 +61,8 @@ public class VDialogHeader extends FlowPanel {
 
     private boolean isDescriptionVisible = false;
 
+    private boolean hasDescription = false;
+
     private final Button closeButton = new Button("", new ClickHandler() {
         @Override
         public void onClick(ClickEvent event) {
@@ -73,7 +75,9 @@ public class VDialogHeader extends FlowPanel {
         @Override
         public void onClick(ClickEvent event) {
             isDescriptionVisible = !isDescriptionVisible;
-            descriptionPanel.setVisible(isDescriptionVisible);
+            if (hasDescription){
+                descriptionPanel.setVisible(isDescriptionVisible);
+            }
             callback.onDescriptionVisibilityChanged(isDescriptionVisible);
         }
     });
@@ -106,9 +110,16 @@ public class VDialogHeader extends FlowPanel {
     }
 
     public void setDescription(String description) {
-        final Label content = new Label();
-        content.setText(description);
-        descriptionPanel.insert(content, 0);}
+
+        if ("".equals(description)) {
+            hasDescription = false;
+        } else {
+            hasDescription = true;
+            final Label content = new Label();
+            content.setText(description);
+            descriptionPanel.insert(content, 0);
+        }
+    }
 
     public void setDialogCaption(String caption) {
         this.caption.setInnerText(caption);

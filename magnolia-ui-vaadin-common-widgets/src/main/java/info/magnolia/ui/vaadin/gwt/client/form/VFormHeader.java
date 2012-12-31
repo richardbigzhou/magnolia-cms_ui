@@ -54,29 +54,33 @@ public class VFormHeader extends FlowPanel {
     private static final String ClASSNAME_DESCRIPTION = "form-description";
     private static final String CLASSNAME_HELPBUTTON = "btn-form-help";
 
-    
+
     protected final VFormHeaderCallback callback;
-    
+
     private FlowPanel errorPanel = new FlowPanel();
-    
+
     private FlowPanel descriptionPanel = new FlowPanel();
-    
+
     protected Element captionContainer = DOM.createDiv();
-    
+
     private Element caption = DOM.createSpan();
-    
+
     private boolean isDescriptionVisible = false;
-    
+
+    private boolean hasDescription = false;
+
     private final Button helpButton = new Button("", new ClickHandler() {
         @Override
         public void onClick(ClickEvent event) {
             isDescriptionVisible = !isDescriptionVisible;
-            descriptionPanel.setVisible(isDescriptionVisible);
+            if (hasDescription) {
+                descriptionPanel.setVisible(isDescriptionVisible);
+            }
             callback.onDescriptionVisibilityChanged(isDescriptionVisible);
         }
     });
 
-    
+
     public VFormHeader(final VFormHeaderCallback callback) {
         this.callback = callback;
         callback.onDescriptionVisibilityChanged(false);
@@ -87,30 +91,36 @@ public class VFormHeader extends FlowPanel {
     public void construct() {
         captionContainer.addClassName(CLASSNAME_HEADER);
         errorPanel.addStyleName(ClASSNAME_ERROR);
-        descriptionPanel.addStyleName(ClASSNAME_DESCRIPTION);    
+        descriptionPanel.addStyleName(ClASSNAME_DESCRIPTION);
         helpButton.setStyleName(CLASSNAME_HELPBUTTON);
 
-        
+
         getElement().appendChild(captionContainer);
         captionContainer.appendChild(caption);
-        
+
         descriptionPanel.setVisible(false);
         add(helpButton, captionContainer);
         add(descriptionPanel);
         add(errorPanel);
     }
-    
+
     public void setFormCaption(final String caption) {
         this.caption.setInnerText(caption);
     }
-    
+
     public void setDescription(final String dialogDescription) {
-        final Label content = new Label();
-        content.setText(dialogDescription);
-        descriptionPanel.insert(content, 0);
+
+        if ("".equals(dialogDescription)) {
+            hasDescription = false;
+        } else {
+            hasDescription = true;
+            final Label content = new Label();
+            content.setText(dialogDescription);
+            descriptionPanel.insert(content, 0);
+        }
     }
-    
-    
+
+
     /**
      * Callback interface for the Form header.
      */
@@ -125,10 +135,10 @@ public class VFormHeader extends FlowPanel {
     public void setErrorAmount(int totalProblematicFields) {
         errorPanel.setVisible(totalProblematicFields > 0);
         if (totalProblematicFields > 0) {
-            errorPanel.getElement().setInnerHTML("<span>Please correct the <b>" + totalProblematicFields + 
+            errorPanel.getElement().setInnerHTML("<span>Please correct the <b>" + totalProblematicFields +
                     " errors </b> in this form </span>");
 
-            
+
             final HTML errorButton = new HTML("[Jump to next error]");
             errorButton.setStyleName("action-jump-to-next-error");
             DOM.sinkEvents(errorButton.getElement(), Event.MOUSEEVENTS);
@@ -141,5 +151,5 @@ public class VFormHeader extends FlowPanel {
             errorPanel.add(errorButton);
         }
     }
-    
+
 }
