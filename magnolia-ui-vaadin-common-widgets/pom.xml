@@ -190,7 +190,7 @@
                 <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
               </artifactItem>
             </artifactItems>
-            <includes>**\/*VScrollTable.java</includes>
+            <includes>**\/*VScrollTable.java, **\/*VTreeTable.java</includes>
           </configuration>
         </execution>
       </executions>
@@ -201,6 +201,7 @@
       <configuration>
         <patches>
           <patch>vscrolltable.txt</patch>
+          <patch>vtreetable.txt</patch>
         </patches>
       <strip>4</strip>
       </configuration>
@@ -222,16 +223,21 @@
           <goals>
             <goal>execute</goal>
           </goals>
-          <!-- Rename patched VScrollTable.java -->
+          <!-- Rename patched classes -->
           <configuration>
             <source>
               import java.io.File
    
               def path = "${project.build.sourceDirectory}/com/vaadin/terminal/gwt/client/ui/"
-              def originalFile = new File(path + "VScrollTable.java")
-              def renamedFile = new File(path + "VScrollTablePatched.java")
-              println "Renaming ${originalFile.name} to ${renamedFile.name}..."
-              originalFile.renameTo(renamedFile)
+              
+              def renameMap = [(new File(path + "VScrollTable.java")):(new File(path + "VScrollTablePatched.java")),
+                (new File(path + "VTreeTable.java")):(new File(path + "VTreeTablePatched.java"))];
+              
+              for (v in renameMap) {
+                println "Renaming ${v.key.name} to ${v.value.name}..."
+                v.key.renameTo(v.value)                
+              }
+
             </source>
           </configuration>
         </execution>

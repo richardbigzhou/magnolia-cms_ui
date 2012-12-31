@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
@@ -83,7 +84,7 @@ import com.vaadin.terminal.Resource;
  * <li>a configurable action bar on the right hand side, showing the available operations for the given workspace and
  * the selected item.
  * </ul>
- * 
+ *
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR workspace to
  * connect to, the columns/properties to display, the available actions and so on.
@@ -291,6 +292,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             // Saving JCR Node, getting updated node first
             Node node = ((JcrItemNodeAdapter) item).getNode();
             try {
+                LastModified.update(node);
                 node.getSession().save();
             } catch (RepositoryException e) {
                 log.error("Could not save changes to node.", e);
@@ -303,6 +305,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
                 Property property = ((JcrPropertyAdapter) item).getProperty();
                 Node parent = property.getParent();
                 ((JcrPropertyAdapter) item).updateProperties();
+                LastModified.update(parent);
                 parent.getSession().save();
             } catch (RepositoryException e) {
                 log.error("Could not save changes to node.", e);

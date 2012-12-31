@@ -119,7 +119,7 @@ public class AppControllerImplTest {
     }
 
     @Test
-    public void testStartIfNotAlreadyRunning_Basic() {
+    public void testStartIfNotAlreadyRunningBasic() {
         // GIVEN
         String appName = appName_1 + "_name";
 
@@ -145,7 +145,7 @@ public class AppControllerImplTest {
     }
 
     @Test
-    public void testStartIfNotAlreadyRunningThenFocus_Basic() {
+    public void testStartIfNotAlreadyRunningThenFocusBasic() {
         // GIVEN
         String appName = appName_1 + "_name";
 
@@ -171,7 +171,7 @@ public class AppControllerImplTest {
     }
 
     @Test
-    public void testStopApp_oneApp() {
+    public void testStopAppOneApp() {
         // GIVEN
         String appName = appName_1 + "_name";
         appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(Location.LOCATION_TYPE_APP, appName, "", ""));
@@ -197,7 +197,7 @@ public class AppControllerImplTest {
     }
 
     @Test
-    public void testStopApp_twoApp_OneFocused() {
+    public void testStopAppTwoAppsWithOneFocused() {
         // GIVEN
         //Start first App
         String appName1 = appName_1 + "_name";
@@ -234,7 +234,7 @@ public class AppControllerImplTest {
     }
 
     @Test
-    public void testStopApp_twoApp_BothFocused() {
+    public void testStopAppTwoAppsWithBothFocused() {
         // GIVEN
         //Start first App
         String appName1 = appName_1 + "_name";

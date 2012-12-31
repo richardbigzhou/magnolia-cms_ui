@@ -38,6 +38,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import com.google.inject.util.Providers;
+
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.mock.MockWebContext;
 import org.junit.After;
 import org.junit.Before;
@@ -54,7 +56,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
@@ -135,7 +136,7 @@ public class MessagesManagerImplTest {
         assertTrue(session.nodeExists("/bob/0"));
         assertFalse(session.nodeExists("/charlie"));
 
-        assertTrue(session.getNode("/alice").getPrimaryNodeType().getName().equals(MgnlNodeType.NT_CONTENT));
+        assertTrue(session.getNode("/alice").getPrimaryNodeType().getName().equals(NodeTypes.Content.NAME));
         assertTrue(session.getNode("/alice/0").getPrimaryNodeType().getName().equals(MessageStore.MESSAGE_NODE_TYPE));
 
         assertEquals(1, messagesManager.getMessagesForUser("alice").size());
@@ -171,7 +172,7 @@ public class MessagesManagerImplTest {
         assertTrue(session.nodeExists("/bob/0"));
         assertFalse(session.nodeExists("/charlie"));
 
-        assertTrue(session.getNode("/bob").getPrimaryNodeType().getName().equals(MgnlNodeType.NT_CONTENT));
+        assertTrue(session.getNode("/bob").getPrimaryNodeType().getName().equals(NodeTypes.Content.NAME));
         assertTrue(session.getNode("/bob/0").getPrimaryNodeType().getName().equals(MessageStore.MESSAGE_NODE_TYPE));
     }
 

@@ -259,7 +259,7 @@ public class VMagnoliaShell extends Composite implements HasWidgets, Container, 
     }
 
     private void updatePusher(final UIDL uidl) {
-        // currently disabling push for the ipad to avoid page editor sluggishness.
+        // currently disabling push for the ipad to avoid page editor sluggishness. See ticket MGNLUI-449
         if (!BrowserInfo.get().isTouchDevice()) {
 
             final UIDL pusherUidl = uidl.getChildByTagName("pusher");

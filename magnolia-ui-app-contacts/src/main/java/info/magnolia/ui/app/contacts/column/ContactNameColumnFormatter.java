@@ -41,7 +41,7 @@ import com.vaadin.ui.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.column.AbstractColumnFormatter;
 
@@ -65,7 +65,7 @@ public class ContactNameColumnFormatter extends AbstractColumnFormatter<ContactN
             Node node = (Node) jcrItem;
 
             try {
-                if (NodeUtil.isNodeType(node, MgnlNodeType.NT_FOLDER)) {
+                if (NodeUtil.isNodeType(node, NodeTypes.Folder.NAME)) {
                     return node.getName();
                 }
             } catch (RepositoryException e) {
