@@ -103,16 +103,16 @@ public class ReadyStateWatch {
 
     private static native void addNativeReadyStateWatch(ReadyStateWatch self, IFrameElement e) /*-{
 
-                                                                                               var element = e;
-                                                                                               var handleStateChange = function(){
-                                                                                               self.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.ReadyStateWatch::fireReadyStateChange()();
-                                                                                               };
-                                                                                               if (element.addEventListener) {
-                                                                                               element.addEventListener("onreadystatechange", handleStateChange, false);
-                                                                                               }else if (element.attachEvent) {
-                                                                                               element.attachEvent("onreadystatechange",handleStateChange);
-                                                                                               }else{
-                                                                                               element.onreadystatechange=handleStateChange;
-                                                                                               }
-                                                                                               }-*/;
+        var element = e;
+        var handleStateChange = function(){
+            self.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.ReadyStateWatch::fireReadyStateChange()();
+        };
+        if (element.addEventListener) {
+            element.addEventListener("onreadystatechange", handleStateChange, false);
+        }else if (element.attachEvent) {
+            element.attachEvent("onreadystatechange",handleStateChange);
+        }else{
+            element.onreadystatechange=handleStateChange;
+        }
+    }-*/;
 }
