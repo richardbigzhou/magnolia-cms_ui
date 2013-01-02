@@ -37,11 +37,11 @@ import com.google.gwt.core.client.JsArrayString;
 
 /**
  * JSON conversion utils.
- * 
+ *
  */
 public class JSONUtil {
-
+    
     public static native JsArrayString parseStringArray(String json) /*-{
-                                                                     return eval('(' + json + ')');
-                                                                     }-*/;
+        return eval('(' + json + ')');
+    }-*/;
 }

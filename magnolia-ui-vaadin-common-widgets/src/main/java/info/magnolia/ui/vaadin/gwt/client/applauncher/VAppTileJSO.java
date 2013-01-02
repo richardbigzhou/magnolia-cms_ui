@@ -37,28 +37,27 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * App tile data object received from server.
- * 
+ *
  * @see info.magnolia.ui.vaadin.applauncher.AppLauncher.AppTile
  */
 public class VAppTileJSO extends JavaScriptObject {
 
-    protected VAppTileJSO() {
-    }
+    protected VAppTileJSO() {}
 
     public native static VAppTileJSO parse(String json) /*-{
-                                                        return eval('(' + json + ')');
-                                                        }-*/;
+        return eval('(' + json + ')');
+    }-*/;
 
-    public native final String getName() /*-{
-                                         return this.name;
-                                         }-*/;
+    public native final String  getName() /*-{
+        return this.name;
+    }-*/;
 
-    public native final String getCaption() /*-{
-                                            return this.caption;
-                                            }-*/;
+    public native final String  getCaption() /*-{
+        return this.caption;
+    }-*/;
 
-    public native final String getIcon() /*-{
-                                         return this.icon;
-                                         }-*/;
+    public native final String  getIcon() /*-{
+        return this.icon;
+    }-*/;
 
 }

@@ -40,26 +40,25 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public final class VActionbarSectionJSO extends JavaScriptObject {
 
-    protected VActionbarSectionJSO() {
-    }
+    protected VActionbarSectionJSO() {}
 
     public static native VActionbarSectionJSO parse(String json) /*-{
-                                                                 try {
-                                                                 return eval('(' + json + ')');
-                                                                 } catch(e) {
-                                                                 return null;
-                                                                 }
-                                                                 }-*/;
+       try {
+         return eval('(' + json + ')');
+       } catch(e) {
+           return null;
+       }
+    }-*/;
 
     public final native String getName() /*-{
-                                         return this.name;
-                                         }-*/;
+        return this.name;
+}-*/;
 
     public final native String getCaption() /*-{
-                                            return this.caption;
-                                            }-*/;
+        return this.caption;
+    }-*/;
 
     public final native boolean isVisible() /*-{
-                                            return this.visible;
-                                            }-*/;
+        return this.visible;
+    }-*/;
 }

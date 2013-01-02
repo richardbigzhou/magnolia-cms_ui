@@ -37,39 +37,38 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Client side of App group description class.
- * 
+ *
  * @see info.magnolia.ui.vaadin.applauncher.AppLauncher.AppGroup
  */
 public final class VAppGroupJSO extends JavaScriptObject {
 
-    protected VAppGroupJSO() {
-    }
+    protected VAppGroupJSO() {}
 
     public static native VAppGroupJSO parse(String json) /*-{
-                                                         try {
-                                                         return eval('(' + json + ')');
-                                                         } catch(e) {
-                                                         return null;
-                                                         }
-                                                         }-*/;
+       try {
+         return eval('(' + json + ')');
+       } catch(e) {
+           return null;
+       }
+    }-*/;
 
-    public native final String getName() /*-{
-                                         return this.name;
-                                         }-*/;
+    public native final String  getName() /*-{
+        return this.name;
+    }-*/;
 
     public final native String getCaption() /*-{
-                                            return this.caption;
-                                            }-*/;
+        return this.caption;
+    }-*/;
 
     public final native String getBackgroundColor() /*-{
-                                                    return this.backgroundColor;
-                                                    }-*/;
+        return this.backgroundColor;
+    }-*/;
 
     public final native boolean isPermanent() /*-{
-                                              return this.isPermanent;
-                                              }-*/;
+        return this.isPermanent;
+    }-*/;
 
     public final native boolean isClientGroup() /*-{
-                                                return this.clientGroup;
-                                                }-*/;
+        return this.clientGroup;
+    }-*/;
 }
