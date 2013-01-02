@@ -52,7 +52,7 @@
       <artifactId>magnolia-ui-widget-editor</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <!-- explicit dep on gwt-user is needed else we get lots of skipped invalid 
+    <!-- explicit dep on gwt-user is needed else we get lots of skipped invalid
       unit errors during gwt compilation -->
   </dependencies>
 
@@ -71,12 +71,11 @@
 
   <build>
     <plugins>
-      <!-- Compile custom GWT components or widget dependencies with the 
+      <!-- Compile custom GWT components or widget dependencies with the
         GWT compiler -->
       <plugin>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-maven-plugin</artifactId>
-        <version>7.0.0.beta10</version>
         <configuration>
           <!-- put the created resources on the classpath -->
           <webappDirectory>${project.build.outputDirectory}/VAADIN/widgetsets</webappDirectory>

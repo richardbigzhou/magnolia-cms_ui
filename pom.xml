@@ -208,6 +208,11 @@
           <artifactId>groovy-maven-plugin</artifactId>
           <version>1.4</version>
         </plugin>
+        <plugin>
+          <groupId>com.vaadin</groupId>
+          <artifactId>vaadin-maven-plugin</artifactId>
+          <version>7.0.0.beta10</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
