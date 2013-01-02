@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.vaadin.terminal.gwt.client.BrowserInfo;
+import com.vaadin.client.BrowserInfo;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).

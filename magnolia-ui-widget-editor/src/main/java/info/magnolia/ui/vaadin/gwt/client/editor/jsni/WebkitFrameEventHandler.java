@@ -45,7 +45,7 @@ import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Frame;
-import com.vaadin.terminal.gwt.client.BrowserInfo;
+import com.vaadin.client.BrowserInfo;
 
 /**
  * WebkitFrameEventHandler. Provides separated implementations to overcome different bugs in the
