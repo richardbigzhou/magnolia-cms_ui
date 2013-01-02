@@ -37,7 +37,6 @@ import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventHandler;
 import info.magnolia.ui.model.action.ActionDefinition;
 
-
 /**
  * This event is fired when an item in the action bar is clicked.
  */

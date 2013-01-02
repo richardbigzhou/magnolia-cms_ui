@@ -33,32 +33,32 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.button;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ListBox;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
-
 /**
- * Locale selector widget. It will output a select box with all locales passed in. Changing selection will trigger page reloading by default. You can change this behavior, by overriding
- * {@link #onChangeCallback(ChangeEvent)}.
+ * Locale selector widget. It will output a select box with all locales passed in. Changing selection will trigger page reloading by default. You can change this behavior, by overriding {@link #onChangeCallback(ChangeEvent)}.
  */
 public class LocaleSelector extends ListBox {
     /**
-     * @param availableLocales a map whose key is the locale string in a human readable form (i.e. English, Deutsch) and whose value is a string representing
-     * the URI associated to that locale.
-     * @param currentURI a string used to select the current locale in the selector.
+     * @param availableLocales
+     *            a map whose key is the locale string in a human readable form (i.e. English, Deutsch) and whose value is a string representing
+     *            the URI associated to that locale.
+     * @param currentURI
+     *            a string used to select the current locale in the selector.
      */
     public LocaleSelector(final Map<String, String> availableLocales, final String currentURI) {
-        if(availableLocales != null && !availableLocales.isEmpty()) {
+        if (availableLocales != null && !availableLocales.isEmpty()) {
             int index = 0;
 
-            for(Entry<String, String> locale : availableLocales.entrySet()) {
+            for (Entry<String, String> locale : availableLocales.entrySet()) {
                 this.addItem(locale.getKey(), locale.getValue());
-                if(locale.getValue().equals(currentURI)) {
+                if (locale.getValue().equals(currentURI)) {
                     this.setSelectedIndex(index);
                 }
                 index++;
@@ -68,14 +68,14 @@ public class LocaleSelector extends ListBox {
 
                 @Override
                 public void onChange(ChangeEvent event) {
-                   onChangeCallback(event);
+                    onChangeCallback(event);
                 }
             });
         }
     }
 
     protected void onChangeCallback(ChangeEvent event) {
-        ListBox languageSelector = (ListBox)event.getSource();
+        ListBox languageSelector = (ListBox) event.getSource();
         Window.Location.replace(languageSelector.getValue(languageSelector.getSelectedIndex()));
     }
 }

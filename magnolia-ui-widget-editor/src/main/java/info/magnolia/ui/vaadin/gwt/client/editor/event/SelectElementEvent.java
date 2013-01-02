@@ -38,7 +38,6 @@ import java.util.Map;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.web.bindery.event.shared.Event;
 
-
 /**
  * SelectElementEvent.
  */

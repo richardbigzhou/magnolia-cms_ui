@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.model;
 
-import com.google.gwt.dom.client.Element;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 
 import java.util.List;
+
+import com.google.gwt.dom.client.Element;
 
 /**
  * Interface for the model storing all elements used across application.
@@ -48,7 +48,7 @@ public interface Model {
     String CMS_PAGE = "cms:page";
     String CMS_AREA = "cms:area";
     String CMS_COMPONENT = "cms:component";
-    String[] INHERITED_ATTRIBUTES = {"editable"};
+    String[] INHERITED_ATTRIBUTES = { "editable" };
 
     void addElement(MgnlElement mgnlElement, Element element);
 

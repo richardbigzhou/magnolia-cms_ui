@@ -45,7 +45,6 @@ import com.vaadin.shared.ui.combobox.FilteringMode;
  */
 public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 
-
     public static final String OPTION_VALUE_PROPERTY_NAME = "value";
     public static final String OPTION_NAME_PROPERTY_NAME = "name";
     public static final String OPTION_SELECTED_PROPERTY_NAME = "selected";
@@ -63,7 +62,6 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
     private String labelProperty = OPTION_LABEL_PROPERTY_NAME;
 
     private int filteringMode = 0;
-
 
     private List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
 
@@ -113,15 +111,14 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 
     public FilteringMode getFilteringMode() {
         switch (filteringMode) {
-            case 1 :
-                return FilteringMode.CONTAINS;
-            case 2 :
-                return FilteringMode.STARTSWITH;
-            default :
-                return FilteringMode.OFF;
+        case 1:
+            return FilteringMode.CONTAINS;
+        case 2:
+            return FilteringMode.STARTSWITH;
+        default:
+            return FilteringMode.OFF;
         }
     }
-
 
     public void setFilteringMode(int filteringMode) {
         this.filteringMode = filteringMode;

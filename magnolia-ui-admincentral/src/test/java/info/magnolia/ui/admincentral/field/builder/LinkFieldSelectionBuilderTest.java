@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+
 import info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.field.TextAndContentViewField;
@@ -70,7 +71,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
 
         // THEN
         assertEquals(true, field instanceof TextAndContentViewField);
-        assertEquals(true, ((TextAndContentViewField)field).getTextField().isVisible());
+        assertEquals(true, ((TextAndContentViewField) field).getTextField().isVisible());
     }
 
     @Test
@@ -83,7 +84,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         builder.setI18nContentSupport(i18nContentSupport);
         Field field = builder.getField();
         // WHEN
-        eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), (JcrItemAdapter)baseItem));
+        eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), (JcrItemAdapter) baseItem));
 
         // THEN
         // as No columnName defined return the Item path as Value property
@@ -103,7 +104,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         Field field = builder.getField();
 
         // WHEN
-        eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), (JcrItemAdapter)baseItem));
+        eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), (JcrItemAdapter) baseItem));
 
         // THEN
         assertEquals("initial", field.getValue());
@@ -112,7 +113,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
     @Override
     protected void createConfiguredFieldDefinition() {
         LinkFieldSelectionDefinition fieldDefinition = new LinkFieldSelectionDefinition();
-        fieldDefinition = (LinkFieldSelectionDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+        fieldDefinition = (LinkFieldSelectionDefinition) AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
         this.definition = fieldDefinition;
     }
 

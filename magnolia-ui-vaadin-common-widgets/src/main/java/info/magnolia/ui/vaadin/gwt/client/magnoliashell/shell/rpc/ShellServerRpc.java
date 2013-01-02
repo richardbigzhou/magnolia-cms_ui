@@ -37,19 +37,18 @@ import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 
 import com.vaadin.shared.communication.ServerRpc;
 
-
 /**
  * ShellServerRpc.
  */
 public interface ShellServerRpc extends ServerRpc {
-    
+
     void removeMessage(String id);
-    
+
     void stopCurrentShellApp();
-    
+
     void stopCurrentApp();
-    
+
     void activateApp(Fragment f);
-    
+
     void activateShellApp(Fragment f);
 }

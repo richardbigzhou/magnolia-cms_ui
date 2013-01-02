@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.model.field.validation.definition;
 
-
 /**
  * Default implementation of {@link FieldValidatorDefinition}.
  */
@@ -53,15 +52,12 @@ public class ConfiguredFieldValidatorDefinition implements FieldValidatorDefinit
         return i18nBasename;
     }
 
-
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 
-
     public void setI18nBasename(String i18nBasename) {
         this.i18nBasename = i18nBasename;
     }
-
 
 }

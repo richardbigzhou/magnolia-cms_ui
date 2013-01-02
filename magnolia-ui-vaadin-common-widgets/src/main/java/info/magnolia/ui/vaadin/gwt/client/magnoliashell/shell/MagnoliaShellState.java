@@ -46,33 +46,32 @@ import java.util.Map;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.AbstractLayoutState;
 
-
 /**
  * MagnoliaShellState.
  */
 public class MagnoliaShellState extends AbstractLayoutState {
 
     public List<String> runningAppNames = new ArrayList<String>();
-    
+
     public List<String> registeredAppNames = new ArrayList<String>();
-    
+
     public Map<ShellAppType, Connector> shellApps = new EnumMap<ShellAppType, Connector>(ShellAppType.class);
-    
+
     public Map<ShellAppType, Integer> indications = new HashMap<ShellAppType, Integer>();
-    
+
     public Map<ViewportType, Connector> viewports = new EnumMap<ViewportType, Connector>(ViewportType.class);
-    
+
     public Connector activeViewport = null;
-    
+
     public ShellViewport appViewport() {
-        return (ShellViewport)viewports.get(ViewportType.APP);
+        return (ShellViewport) viewports.get(ViewportType.APP);
     }
 
     public ShellViewport shellAppViewport() {
-        return (ShellViewport)viewports.get(ViewportType.SHELL_APP);
+        return (ShellViewport) viewports.get(ViewportType.SHELL_APP);
     }
 
     public ShellViewport dialogViewport() {
-        return (ShellViewport)viewports.get(ViewportType.DIALOG);
+        return (ShellViewport) viewports.get(ViewportType.DIALOG);
     }
 }

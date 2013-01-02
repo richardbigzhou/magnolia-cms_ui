@@ -44,18 +44,17 @@ import com.vaadin.client.ui.AbstractSingleComponentContainerConnector;
 
 /**
  * EditorLikeComponentConnector.
- * @param <U> 
- * @param <T> 
+ * 
+ * @param <U>
+ * @param <T>
  */
-public abstract class EditorLikeComponentConnector
-    <U extends EditorLikeView.Presenter, 
-     T extends EditorLikeView<U>>
-    extends AbstractSingleComponentContainerConnector {
+public abstract class EditorLikeComponentConnector<U extends EditorLikeView.Presenter, T extends EditorLikeView<U>>
+        extends AbstractSingleComponentContainerConnector {
 
     private T view;
-    
+
     private U presenter;
-    
+
     @Override
     protected void init() {
         super.init();
@@ -65,14 +64,14 @@ public abstract class EditorLikeComponentConnector
                 view.setCaption(getState().caption);
             }
         });
-        
+
         addStateChangeHandler("dialogDescription", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
                 view.setCaption(getState().componentDescription);
             }
         });
-        
+
         addStateChangeHandler("actions", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
@@ -80,17 +79,17 @@ public abstract class EditorLikeComponentConnector
             }
         });
     }
-    
+
     @Override
     protected EditorLikeComponentState createState() {
         return new EditorLikeComponentState();
     }
-    
+
     @Override
     public EditorLikeComponentState getState() {
-        return (EditorLikeComponentState)super.getState();
+        return (EditorLikeComponentState) super.getState();
     }
-    
+
     @Override
     public void updateCaption(ComponentConnector connector) {
         view.setCaption(connector.getState().caption);
@@ -100,7 +99,7 @@ public abstract class EditorLikeComponentConnector
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {
         updateContent();
     }
-    
+
     protected void updateActionsFromState() {
         view.setActions(getState().actions);
     }
@@ -119,15 +118,15 @@ public abstract class EditorLikeComponentConnector
         this.view.setPresenter(presenter);
         return view.asWidget();
     }
-    
+
     protected abstract T createView();
-    
+
     protected abstract U createPresenter();
-    
+
     protected T getView() {
         return view;
     }
-    
+
     protected U getPresenter() {
         return presenter;
     }

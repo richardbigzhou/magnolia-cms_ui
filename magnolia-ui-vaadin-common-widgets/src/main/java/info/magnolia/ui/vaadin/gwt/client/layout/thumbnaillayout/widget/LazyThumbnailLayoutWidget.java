@@ -74,7 +74,7 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
     private static final int QUERY_TIMER_DELAY = 250;
 
     private static final int MIN_WIDTH = 50;
-    
+
     private static final int MAX_WIDTH = 230;
 
     private int thumbnailWidth = 0;
@@ -92,11 +92,11 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
     private final ScrollPanel scroller = new ScrollPanel();
 
     private final SliderClientBundle thumbnailBundle = GWT.create(SliderClientBundle.class);
-    
+
     private final MSlider thumbnailSizeSlider = new MSlider(thumbnailBundle.css());
 
     private final CssRule thumbnailImageStyle = CssRule.create(".thumbnail-image");
-    
+
     private final CssRule thumbnailStyle = CssRule.create(".thumbnail");
 
     private final FlowPanel imageContainer = new FlowPanel();
@@ -106,7 +106,7 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
     public LazyThumbnailLayoutWidget() {
 
         addStyleName("thumbnail-layout");
-       
+
         thumbnailSizeSlider.setWidth("125px");
         IconWidget iconSizeSmall = new IconWidget();
         iconSizeSmall.setIconName("slider-min");
@@ -117,9 +117,9 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
         iconSizeLarge.setIconName("slider-max");
         iconSizeLarge.setSize(30);
         iconSizeLarge.setColor("#aaaaaa");
-        
+
         thumbnailStyle.setProperty("margin", "3px");
-        
+
         scroller.setWidget(imageContainer);
         scroller.addStyleName("thumbnail-scroller");
         scroller.getElement().getStyle().setPosition(Position.ABSOLUTE);
@@ -128,7 +128,7 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
         add(thumbnailSizeSlider);
         add(iconSizeLarge);
         add(scroller);
-        
+
         bindHandlers();
         reset();
     }
@@ -198,18 +198,18 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
         if (this.thumbnailHeight != height || this.thumbnailWidth != width) {
             this.thumbnailHeight = height;
             this.thumbnailWidth = width;
-            
+
             // Scale the thumbnail divs.
             thumbnailStyle.setProperty("width", width + "px");
             thumbnailStyle.setProperty("height", width + "px");
-            String fontSize = String.valueOf((int)(width * 0.75));
+            String fontSize = String.valueOf((int) (width * 0.75));
             thumbnailStyle.setProperty("fontSize", fontSize + "px");
 
             // Scale the size of the image in the thumbnails.
             thumbnailImageStyle.setProperty("maxWidth", width + "px");
             thumbnailImageStyle.setProperty("maxHeight", width + "px");
 
-            createStubsAndQueryThumbnails();            
+            createStubsAndQueryThumbnails();
         }
     }
 
@@ -237,11 +237,11 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
             if (totalThumbnailWidth != 0) {
                 int thumbnailsInRow = (int) (width / totalThumbnailWidth * 1d);
                 if (thumbnailsInRow != 0) {
-                    int pixelHeight = (int)Math.ceil(thumbnailAmount / thumbnailsInRow * 1d) * (thumbnailHeight + getVerticalMargin());
+                    int pixelHeight = (int) Math.ceil(thumbnailAmount / thumbnailsInRow * 1d) * (thumbnailHeight + getVerticalMargin());
                     imageContainer.getElement().getStyle().setHeight(pixelHeight, Unit.PX);
                     createStubsAndQueryThumbnails();
                 }
-            }            
+            }
         }
     }
 

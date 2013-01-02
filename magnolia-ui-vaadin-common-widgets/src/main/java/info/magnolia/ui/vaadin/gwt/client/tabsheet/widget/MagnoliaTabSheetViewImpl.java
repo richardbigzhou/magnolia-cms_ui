@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.tabsheet.widget;
 
-
 import info.magnolia.ui.vaadin.gwt.client.loading.LoadingPane;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent;
@@ -76,12 +75,11 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     private final LoadingPane loadingPane = new LoadingPane();
 
-    
     public MagnoliaTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
         this.presenter = presenter;
-        this.tabContainer =  new VMagnoliaTabNavigator(eventBus);
-        
+        this.tabContainer = new VMagnoliaTabNavigator(eventBus);
+
         addStyleName("v-shell-tabsheet");
         scroller.addStyleName("v-shell-tabsheet-scroller");
         tabPanel.addStyleName("v-shell-tabsheet-tab-wrapper");
@@ -89,8 +87,8 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         add(scroller);
         scroller.setWidget(tabPanel);
         scroller.getElement().getStyle().setPosition(Position.ABSOLUTE);
-        //loadingPane.appendTo(tabPanel);
-        //loadingPane.hide();
+        // loadingPane.appendTo(tabPanel);
+        // loadingPane.hide();
     }
 
     @Override
@@ -157,7 +155,7 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     public void removeFromParent() {
         super.removeFromParent();
     }
-    
+
     @Override
     protected void onLoad() {
         super.onLoad();
@@ -177,12 +175,12 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
             RootPanel.get().removeStyleName("fullscreen");
         }
     }
-    
+
     @Override
     public HandlerRegistration addScrollHandler(ScrollHandler handler) {
         return scroller.addScrollHandler(handler);
     }
-    
+
     @Override
     public HandlerRegistration addTabSetChangedHandler(Handler handler) {
         return addHandler(handler, TabSetChangedEvent.TYPE);

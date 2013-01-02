@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.assertEquals;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
@@ -49,7 +50,6 @@ import org.junit.Test;
 
 import com.vaadin.data.Property;
 
-
 /**
  * Test {@link JcrNodeAdapter} function who needs deeper Jcr functionality (like move).
  */
@@ -60,15 +60,14 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
 
     @Override
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         super.setUp();
         // Init parent Node
         String nodeProperties =
-            "/parent.@type=mgnl:content\n" +
-            "/parent.propertyString=hello\n" +
-            "/parent/child.@type=mgnl:content\n" +
-            "/parent/child.propertyString=chield1\n";
-
+                "/parent.@type=mgnl:content\n" +
+                        "/parent.propertyString=hello\n" +
+                        "/parent/child.@type=mgnl:content\n" +
+                        "/parent/child.propertyString=chield1\n";
 
         Session session = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
         new PropertiesImportExport().createNodes(session.getRootNode(), IOUtils.toInputStream(nodeProperties));
@@ -87,7 +86,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         // Get the node name as property
         Property property = adapter.getItemProperty(id);
         assertEquals(nodeName, property.getValue().toString());
-        //Change the property node name
+        // Change the property node name
         property.setValue(value);
 
         // WHEN
@@ -111,7 +110,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         // Get the node name as property
         Property property = adapter.getItemProperty(id);
         assertEquals(nodeName, property.getValue().toString());
-        //Change the property node name
+        // Change the property node name
         property.setValue(value);
 
         // WHEN

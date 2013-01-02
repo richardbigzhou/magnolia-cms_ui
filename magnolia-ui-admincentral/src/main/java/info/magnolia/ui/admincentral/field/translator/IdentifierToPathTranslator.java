@@ -51,9 +51,9 @@ import com.vaadin.data.util.converter.Converter;
  * In general, if the translation is not possible, return null.
  */
 public class IdentifierToPathTranslator implements Converter<String, String> {
-    
+
     private static final Logger log = LoggerFactory.getLogger(IdentifierToPathTranslator.class);
-    
+
     private final String workspace;
 
     public IdentifierToPathTranslator(String workspace) {
@@ -62,35 +62,33 @@ public class IdentifierToPathTranslator implements Converter<String, String> {
 
     @Override
     public String convertToModel(String path, Locale locale) throws Converter.ConversionException {
-        String res  = StringUtils.EMPTY;
-        if(StringUtils.isBlank(path)) {
+        String res = StringUtils.EMPTY;
+        if (StringUtils.isBlank(path)) {
             return res;
         }
         try {
             Session session = MgnlContext.getJCRSession(workspace);
             res = session.getNode(path).getIdentifier();
         } catch (RepositoryException e) {
-            log.error("Unable to convert Path to UUID",e);
+            log.error("Unable to convert Path to UUID", e);
         }
         return res;
     }
 
-
     @Override
     public String convertToPresentation(String uuid, Locale locale) throws Converter.ConversionException {
         String res = StringUtils.EMPTY;
-        if(StringUtils.isBlank(uuid)) {
+        if (StringUtils.isBlank(uuid)) {
             return res;
         }
         try {
             Session session = MgnlContext.getJCRSession(workspace);
             res = session.getNodeByIdentifier(uuid).getPath();
         } catch (RepositoryException e) {
-            log.error("Unable to convert UUID to Path",e);
+            log.error("Unable to convert UUID to Path", e);
         }
         return res;
     }
-
 
     @Override
     public Class<String> getModelType() {

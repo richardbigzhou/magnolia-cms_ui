@@ -43,7 +43,6 @@ import com.vaadin.client.ui.AbstractComponentConnector;
 import com.vaadin.shared.communication.SharedState;
 import com.vaadin.shared.ui.Connect;
 
-
 /**
  * IconConnector.
  */
@@ -56,12 +55,11 @@ public class IconConnector extends AbstractComponentConnector {
         addStateChangeHandler(new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                ((IconWidget)getWidget()).updateBaseStyles();
+                ((IconWidget) getWidget()).updateBaseStyles();
             }
         });
     }
 
-    
     @Override
     protected Widget createWidget() {
         return new IconWidget();

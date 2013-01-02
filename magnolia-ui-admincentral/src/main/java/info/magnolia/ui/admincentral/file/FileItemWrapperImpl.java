@@ -89,7 +89,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
                 fileSize = Long.parseLong(jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).getValue().toString());
                 mimeType = (String) jcrItem.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue();
                 if (isImage()) {
-                    imageSize = new ImageSize(Long.parseLong( jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue().toString()), Long.parseLong(jcrItem
+                    imageSize = new ImageSize(Long.parseLong(jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue().toString()), Long.parseLong(jcrItem
                             .getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue().toString()));
                     width = imageSize.getWidth();
                     height = imageSize.getHeight();
@@ -189,14 +189,14 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      */
     private Component createImagePreview() {
         ImageSize scaledImageSize = imageSize.scaleToFitIfLarger(150, 150);
-        
+
         final StreamSource source = new StreamResource.StreamSource() {
             @Override
             public InputStream getStream() {
                 return new ByteArrayInputStream(getBinaryData());
             }
         };
-        
+
         final Resource imageResource = new StreamResource(source, "") {
             @Override
             public String getMIMEType() {

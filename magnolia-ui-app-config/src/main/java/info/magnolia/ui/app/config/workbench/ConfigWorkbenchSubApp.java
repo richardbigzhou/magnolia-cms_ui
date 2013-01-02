@@ -51,7 +51,6 @@ import javax.jcr.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * The Configuration Workbench SubApp.
  */
@@ -77,16 +76,16 @@ public class ConfigWorkbenchSubApp extends AbstractContentSubApp {
                 final Session session = MgnlContext.getJCRSession("config");
                 final boolean isProperty = session.propertyExists(selectedItemId);
 
-                if(isProperty) {
+                if (isProperty) {
                     actionbar.disable("addFolder", "addNode", "addProperty");
                     return;
                 }
                 final Node node = session.getNode(selectedItemId);
-                if(NodeUtil.isNodeType(node, NodeTypes.ContentNode.NAME)) {
+                if (NodeUtil.isNodeType(node, NodeTypes.ContentNode.NAME)) {
                     actionbar.disable("addFolder");
                 }
 
-            }  catch (RepositoryException e) {
+            } catch (RepositoryException e) {
                 log.warn("An error occurred while trying to determine the node type for item [{}]", selectedItemId, e);
             }
         }

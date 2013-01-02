@@ -39,7 +39,7 @@ import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 
 /**
  * Dialog tab.
- *
+ * 
  */
 public class MagnoliaFormTab extends MagnoliaTab {
 
@@ -48,9 +48,9 @@ public class MagnoliaFormTab extends MagnoliaTab {
     public MagnoliaFormTab(String caption, FormSection content) {
         super(caption, content);
         this.content = content;
-        //DialogLayout needs this info to display it when show all tab is active
+        // DialogLayout needs this info to display it when show all tab is active
         this.content.setCaption(caption);
-        registerRpc(new FormTabServerRpc() { 
+        registerRpc(new FormTabServerRpc() {
             @Override
             public void setHasErrors(boolean errorOccured) {
                 setHasError(errorOccured);
@@ -62,11 +62,11 @@ public class MagnoliaFormTab extends MagnoliaTab {
     public FormSection getContent() {
         return content;
     }
-    
+
     public void setValidationVisible(boolean isVisible) {
         content.setValidationVisible(isVisible);
     }
-    
+
     @Override
     public void beforeClientResponse(boolean initial) {
         super.beforeClientResponse(initial);

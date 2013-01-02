@@ -37,7 +37,6 @@ import info.magnolia.ui.vaadin.gwt.client.icon.connector.IconState;
 
 import com.vaadin.ui.AbstractComponent;
 
-
 /**
  * The Icon is a lightweight component that outputs a simple scalable icon. The client-side
  * implementation is based on the icon font technique, which means it only allows for monochromatic
@@ -56,7 +55,7 @@ public class Icon extends AbstractComponent {
     public transient static final String COLOR_HELP = "#4b8e9e";
 
     public transient static final int SIZE_DEFAULT = 24;
-    
+
     public Icon(String iconName) {
         this(iconName, SIZE_DEFAULT);
     }
@@ -77,14 +76,14 @@ public class Icon extends AbstractComponent {
 
     @Override
     protected IconState getState(boolean markDirty) {
-        return (IconState)super.getState(markDirty);
+        return (IconState) super.getState(markDirty);
     }
-    
+
     @Override
     protected IconState getState() {
-        return (IconState)super.getState();
+        return (IconState) super.getState();
     }
-    
+
     public String getIconName() {
         return getState(false).iconName;
     }

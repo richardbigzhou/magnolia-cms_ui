@@ -63,7 +63,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
     private final List<MagnoliaTabLabel> tabLabels = new LinkedList<MagnoliaTabLabel>();
 
     private final Element tabContainer = DOM.createElement("ul");
-    
+
     private EventBus eventBus;
 
     private VShellShowAllTabLabel showAllTab;

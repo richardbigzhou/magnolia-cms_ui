@@ -39,8 +39,6 @@ import info.magnolia.ui.framework.app.AppContext;
 
 import javax.inject.Inject;
 
-
-
 /**
  * Pages app.
  */

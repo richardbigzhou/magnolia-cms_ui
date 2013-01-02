@@ -47,28 +47,27 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
-
 /**
  * An overlay that displays the open app in the shell on top of each other.
  */
 public class ViewportWidget extends FlowPanel {
 
-    //private LoadingPane loadingPane = new LoadingPane();
+    // private LoadingPane loadingPane = new LoadingPane();
 
     private Widget visibleApp;
 
     private EventBus eventBus;
-    
+
     private TransitionDelegate transitionDelegate;
 
     private boolean active;
 
     private boolean closing;
-    
+
     public ViewportWidget() {
         super();
         addStyleName("v-viewport");
-        //loadingPane.appendTo(this);
+        // loadingPane.appendTo(this);
         DOM.sinkEvents(this.getElement(), Event.TOUCHEVENTS);
         new TouchDelegate(this).addTouchEndHandler(new TouchEndHandler() {
             @Override
@@ -82,7 +81,7 @@ public class ViewportWidget extends FlowPanel {
     }
 
     public void showLoadingPane() {
-        //loadingPane.show();
+        // loadingPane.show();
     }
 
     public EventBus getEventBus() {
@@ -161,7 +160,7 @@ public class ViewportWidget extends FlowPanel {
     public void removeWidget(Widget w) {
         removeWidgetWithoutTransition(w);
     }
-    
+
     void removeWidgetWithoutTransition(Widget w) {
         remove(w);
     }

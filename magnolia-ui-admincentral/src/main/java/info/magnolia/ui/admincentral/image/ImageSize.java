@@ -43,7 +43,7 @@ import org.devlib.schmidt.imageinfo.ImageInfo;
 
 /**
  * Represents the size of an image. This class is immutable.
- *
+ * 
  * @version $Id$
  */
 public final class ImageSize {

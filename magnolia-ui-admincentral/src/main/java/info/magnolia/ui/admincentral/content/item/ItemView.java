@@ -33,11 +33,13 @@
  */
 package info.magnolia.ui.admincentral.content.item;
 
-import com.vaadin.ui.Component;
 import info.magnolia.ui.framework.view.View;
+
+import com.vaadin.ui.Component;
 
 /**
  * ItemView.
+ * 
  * @see ItemViewImpl
  */
 public interface ItemView extends View {
@@ -96,7 +98,6 @@ public interface ItemView extends View {
      * Listener for the ContentView.
      */
     public interface Listener {
-
 
     }
 }

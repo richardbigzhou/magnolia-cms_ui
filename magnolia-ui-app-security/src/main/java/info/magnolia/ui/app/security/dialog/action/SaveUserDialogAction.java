@@ -33,12 +33,9 @@
  */
 package info.magnolia.ui.app.security.dialog.action;
 
-import static info.magnolia.cms.security.MgnlUserManager.PROPERTY_EMAIL;
-import static info.magnolia.cms.security.MgnlUserManager.PROPERTY_ENABLED;
-import static info.magnolia.cms.security.MgnlUserManager.PROPERTY_PASSWORD;
-import static info.magnolia.cms.security.MgnlUserManager.PROPERTY_TITLE;
-import static info.magnolia.cms.security.SecurityConstants.NODE_GROUPS;
-import static info.magnolia.cms.security.SecurityConstants.NODE_ROLES;
+import static info.magnolia.cms.security.MgnlUserManager.*;
+import static info.magnolia.cms.security.SecurityConstants.*;
+
 import info.magnolia.cms.security.Security;
 import info.magnolia.cms.security.User;
 import info.magnolia.jcr.util.NodeTypes;
@@ -80,7 +77,7 @@ public class SaveUserDialogAction extends SaveDialogAction {
             getPresenter().getCallback().onSuccess(getDefinition().getName());
 
         } else {
-            //validation errors are displayed in the UI.
+            // validation errors are displayed in the UI.
         }
     }
 
@@ -89,27 +86,27 @@ public class SaveUserDialogAction extends SaveDialogAction {
             final Node userNode = userItem.getNode();
             final String parentPath = userNode.getParent() != null ? userNode.getParent().getPath() : "/";
 
-            if("/".equals(parentPath)) {
-                throw new ActionExecutionException("Users cannot be created directly under root. Path to new user was [" + userNode.getPath() +"]");
+            if ("/".equals(parentPath)) {
+                throw new ActionExecutionException("Users cannot be created directly under root. Path to new user was [" + userNode.getPath() + "]");
             }
 
             final String userName = userNode.getName();
             log.debug("User name is [{}]", userName);
 
-            //on user creation or when a user changes it this will be in clear, on all other cases this will be encoded
+            // on user creation or when a user changes it this will be in clear, on all other cases this will be encoded
             final String passwordFromForm = userItem.getItemProperty(PROPERTY_PASSWORD).getValue().toString();
             final String encodedPassword = encodePassword(passwordFromForm);
 
-            if(userNode.isNew()) {
+            if (userNode.isNew()) {
                 log.debug("User is new, setting his/her password...");
                 PropertyUtil.setProperty(userNode, PROPERTY_PASSWORD, encodedPassword);
             } else {
                 final User user = Security.getUserManager().getUser(userName);
                 final String existingEncodedPassword = user.getPassword();
-                //if user exists compare the existing password with the one coming from the form
-                //if they're not equal change password
+                // if user exists compare the existing password with the one coming from the form
+                // if they're not equal change password
                 boolean passwordChanged = !existingEncodedPassword.equals(passwordFromForm);
-                if(passwordChanged) {
+                if (passwordChanged) {
                     log.debug("Updating password for existing user [{}]", userName);
                     PropertyUtil.setProperty(userNode, PROPERTY_PASSWORD, encodedPassword);
                 }
@@ -153,7 +150,7 @@ public class SaveUserDialogAction extends SaveDialogAction {
         try {
             node.getProperty(name).remove();
         } catch (RepositoryException ex) {
-            log.warn("Cannot remove ["+name+"] property of the user ["+node.getName()+"]: "+ex.getMessage());
+            log.warn("Cannot remove [" + name + "] property of the user [" + node.getName() + "]: " + ex.getMessage());
         }
         try {
             // create subnode (or get it, if it already exists)
@@ -169,12 +166,12 @@ public class SaveUserDialogAction extends SaveDialogAction {
             // add new groups
             int i = 0;
             for (String id : ids) {
-                PropertyUtil.setProperty(subnode, ""+i, id.trim());
+                PropertyUtil.setProperty(subnode, "" + i, id.trim());
                 i++;
             }
         } catch (RepositoryException ex) {
-            log.error("Error saving assigned "+name+" of the ["+node.getName()+"] user.",ex);
-            throw new RepositoryException("Error saving assigned "+name+" of the ["+node.getName()+"] user.",ex);
+            log.error("Error saving assigned " + name + " of the [" + node.getName() + "] user.", ex);
+            throw new RepositoryException("Error saving assigned " + name + " of the [" + node.getName() + "] user.", ex);
         }
     }
 

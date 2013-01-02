@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.dnd;
 
-
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar;
 
 import com.google.gwt.core.client.GWT;
@@ -46,7 +45,7 @@ public abstract class DragAndDrop {
 
     private static final DragAndDropImpl dndImpl = GWT.create(DragAndDropImpl.class);
 
-    public static void dragAndDrop (EventBus eventBus, final ComponentBar abstractBar) {
+    public static void dragAndDrop(EventBus eventBus, final ComponentBar abstractBar) {
         dndImpl.dragAndDrop(eventBus, abstractBar);
     }
 }

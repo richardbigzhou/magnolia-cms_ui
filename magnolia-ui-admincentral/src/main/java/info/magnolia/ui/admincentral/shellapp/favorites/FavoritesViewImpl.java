@@ -39,20 +39,18 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 
-
 /**
  * Default view implementation for favorites.
  */
 
 public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
 
-    //private final SplitFeed splitPanel = new SplitFeed();
+    // private final SplitFeed splitPanel = new SplitFeed();
 
     @Override
-    public String getId(){
+    public String getId() {
         return "favorite";
     }
-
 
     public FavoritesViewImpl() {
         super();
@@ -94,6 +92,7 @@ public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
     public Component asVaadinComponent() {
         return this;
     }
+
     /**
      * Favorite entry.
      */
@@ -125,6 +124,7 @@ public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
             iconElement.setValue("<span class=\"" + icon + "\"></span>");
         }
     }
+
     /**
      * Favorite section.
      */

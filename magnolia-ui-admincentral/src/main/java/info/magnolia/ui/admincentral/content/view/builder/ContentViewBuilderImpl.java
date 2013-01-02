@@ -52,7 +52,6 @@ import java.io.Serializable;
 
 import javax.inject.Inject;
 
-
 /**
  * ContentView Factory.
  */
@@ -69,25 +68,25 @@ public class ContentViewBuilderImpl implements ContentViewBuilder, Serializable 
     public ContentView build(final WorkbenchDefinition workbenchDefinition, final ViewType type) {
         switch (type) {
 
-            case TREE :
-                final HierarchicalJcrContainer hierarchicalContainer = new HierarchicalJcrContainer(workbenchDefinition);
-                return componentProvider.newInstance(TreeViewImpl.class, workbenchDefinition, hierarchicalContainer);
-            case LIST :
-                final FlatJcrContainer flatContainer = new FlatJcrContainer(workbenchDefinition);
-                return componentProvider.newInstance(ListViewImpl.class, workbenchDefinition, flatContainer);
-            case SEARCH :
-                final SearchJcrContainer searchContainer = new SearchJcrContainer(workbenchDefinition);
-                return componentProvider.newInstance(SearchViewImpl.class, workbenchDefinition, searchContainer);
-            case THUMBNAIL :
-                ImageProviderDefinition imageProviderDef = workbenchDefinition.getImageProvider();
-                ImageProvider imageProvider = null;
-                if (imageProviderDef != null) {
-                    imageProvider = componentProvider.newInstance(imageProviderDef.getImageProviderClass(), imageProviderDef);
-                }
-                final ThumbnailContainer thumbnailContainer = new ThumbnailContainer(workbenchDefinition, imageProvider);
-                return componentProvider.newInstance(LazyThumbnailViewImpl.class, workbenchDefinition, thumbnailContainer);
-            default :
-                throw new RuntimeException("The provided view type [" + type + "] is not valid.");
+        case TREE:
+            final HierarchicalJcrContainer hierarchicalContainer = new HierarchicalJcrContainer(workbenchDefinition);
+            return componentProvider.newInstance(TreeViewImpl.class, workbenchDefinition, hierarchicalContainer);
+        case LIST:
+            final FlatJcrContainer flatContainer = new FlatJcrContainer(workbenchDefinition);
+            return componentProvider.newInstance(ListViewImpl.class, workbenchDefinition, flatContainer);
+        case SEARCH:
+            final SearchJcrContainer searchContainer = new SearchJcrContainer(workbenchDefinition);
+            return componentProvider.newInstance(SearchViewImpl.class, workbenchDefinition, searchContainer);
+        case THUMBNAIL:
+            ImageProviderDefinition imageProviderDef = workbenchDefinition.getImageProvider();
+            ImageProvider imageProvider = null;
+            if (imageProviderDef != null) {
+                imageProvider = componentProvider.newInstance(imageProviderDef.getImageProviderClass(), imageProviderDef);
+            }
+            final ThumbnailContainer thumbnailContainer = new ThumbnailContainer(workbenchDefinition, imageProvider);
+            return componentProvider.newInstance(LazyThumbnailViewImpl.class, workbenchDefinition, thumbnailContainer);
+        default:
+            throw new RuntimeException("The provided view type [" + type + "] is not valid.");
         }
     }
 }

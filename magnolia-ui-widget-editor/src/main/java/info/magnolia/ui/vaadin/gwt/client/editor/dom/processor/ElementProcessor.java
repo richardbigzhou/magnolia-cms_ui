@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
+
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 
 /**
  * Processor for DOM elements.
@@ -47,7 +48,6 @@ public class ElementProcessor {
     static final String NAVIGATION_ROLE = "navigation";
 
     public static boolean process(Model model, Node node, MgnlElement mgnlElement) {
-
 
         Element element = node.cast();
 
@@ -91,15 +91,15 @@ public class ElementProcessor {
 
     }
 
-    public static void removeHover (Element element) {
+    public static void removeHover(Element element) {
         element.addClassName("disabled");
     }
 
     public native static void disableLink(Element element) /*-{
-        if (element.onclick == null) {
-            element.onclick = function() {
-              return false;
-            };
-        }
-    }-*/;
+                                                           if (element.onclick == null) {
+                                                           element.onclick = function() {
+                                                           return false;
+                                                           };
+                                                           }
+                                                           }-*/;
 }

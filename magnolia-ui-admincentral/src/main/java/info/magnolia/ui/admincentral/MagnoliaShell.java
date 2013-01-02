@@ -79,11 +79,11 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
     private final AppController appController;
 
     private final Provider<ShellAppController> shellAppControllerProvider;
-    
+
     private final MessagesManager messagesManager;
 
     @Inject
-    public MagnoliaShell(@Named("admincentral") EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider, 
+    public MagnoliaShell(@Named("admincentral") EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider,
             AppController appController, MessagesManager messagesManager) {
         super();
         this.messagesManager = messagesManager;
@@ -119,9 +119,10 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
             goToShellApp(Fragment.fromString("shell:applauncher"));
         }
     }
-    
+
     @Override
-    public void askForConfirmation(String message, ConfirmationHandler listener) {}
+    public void askForConfirmation(String message, ConfirmationHandler listener) {
+    }
 
     @Override
     public void showNotification(String messageText) {
@@ -139,7 +140,6 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
         message.setType(type);
         messagesManager.sendLocalMessage(message);
     }
-
 
     @Override
     public String getFragment() {
@@ -164,9 +164,9 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
         String appId = DefaultLocation.extractAppId(fragment);
         String subAppId = DefaultLocation.extractSubAppId(fragment);
         String parameter = DefaultLocation.extractParameter(fragment);
-        
+
         String actualFragment = getActiveViewportName() + ":" + appId + ":" + subAppId + ";" + parameter;
-        
+
         getActiveViewport().setCurrentShellFragment(actualFragment);
         propagateFragmentToClient(Fragment.fromString(actualFragment));
     }
@@ -206,21 +206,22 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
     public void messageSent(MessageEvent event) {
         final Message message = event.getMessage();
         switch (message.getType()) {
-            case WARNING:
-                showWarning(message);
-                break;
-            case ERROR:
-                showError(message);
-                break;
-            case INFO:
-                showInfo(message);
-            default:
-                break;
+        case WARNING:
+            showWarning(message);
+            break;
+        case ERROR:
+            showError(message);
+            break;
+        case INFO:
+            showInfo(message);
+        default:
+            break;
         }
     }
 
     @Override
-    public void messageCleared(MessageEvent event) {}
+    public void messageCleared(MessageEvent event) {
+    }
 
     @Override
     public void registerApps(List<String> appNames) {
@@ -238,7 +239,7 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
         restoreShellAppParameter(f);
         super.goToShellApp(f);
     }
-    
+
     @Override
     public void stopCurrentShellApp() {
         ShellViewport appViewport = getState(false).appViewport();
@@ -248,27 +249,27 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
             appController.focusCurrentApp();
         } else {
             // No apps are open.
-            String appLauncherNameLower = ShellAppType.APPLAUNCHER.name().toLowerCase() ;
-            //Only navigate if the requested location is not the applauncher
+            String appLauncherNameLower = ShellAppType.APPLAUNCHER.name().toLowerCase();
+            // Only navigate if the requested location is not the applauncher
             if (getActiveViewport() != null) {
                 String fragmentCurrent = getActiveViewport().getCurrentShellFragment();
-                if (fragmentCurrent != null && !fragmentCurrent.startsWith(appLauncherNameLower)){
+                if (fragmentCurrent != null && !fragmentCurrent.startsWith(appLauncherNameLower)) {
                     goToShellApp(Fragment.fromString("shell:applauncher"));
-                }   
+                }
             }
         }
     }
 
     @Override
     public void pushToClient() {
-        //synchronized (getApplication()) {
-        //    getPusher().push();
-        //}
+        // synchronized (getApplication()) {
+        // getPusher().push();
+        // }
     }
-    
+
     /**
      * Shell's client side doesn't remeber the parameter of an app,
-     * so we need to restore it from the framework internals. 
+     * so we need to restore it from the framework internals.
      */
     private void restoreAppParameter(Fragment f) {
         String actualParam = f.getParameter();
@@ -279,7 +280,7 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
             }
         }
     }
-    
+
     private void restoreShellAppParameter(Fragment f) {
         String actualParam = f.getParameter();
         if (StringUtils.isEmpty(actualParam)) {

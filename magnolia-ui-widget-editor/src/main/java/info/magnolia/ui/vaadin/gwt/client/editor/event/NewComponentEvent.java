@@ -44,7 +44,6 @@ public class NewComponentEvent extends GwtEvent<NewComponentEventHandler> {
     private String path;
     private String availableComponents;
 
-
     public NewComponentEvent(String workspace, String path, String availableComponents) {
         this.workspace = workspace;
         this.path = path;

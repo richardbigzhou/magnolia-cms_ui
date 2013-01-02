@@ -33,25 +33,25 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
-import com.google.gwt.user.client.Element;
-
 import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView;
 import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent;
+
+import com.google.gwt.user.client.Element;
 
 /**
  * Interface of {@link FormViewImpl}.
  */
 public interface FormView extends EditorLikeView<FormView.Presenter>, ValidationChangedEvent.Handler {
-    
+
     Element getHeaderElement();
-    
+
     Element getContentElement();
-    
+
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
      */
     public interface Presenter extends EditorLikeView.Presenter {
-        
+
         @Deprecated
         void runLayout();
 

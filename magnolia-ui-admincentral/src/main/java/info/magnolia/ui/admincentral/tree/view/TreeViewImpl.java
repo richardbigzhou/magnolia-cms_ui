@@ -61,7 +61,6 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TreeTable;
 
-
 /**
  * Vaadin UI component that displays a tree.
  */
@@ -77,14 +76,17 @@ public class TreeViewImpl implements TreeView {
 
     private ContentView.Listener listener;
 
-    private Set< ? > defaultValue = null;
+    private Set<?> defaultValue = null;
 
     /**
      * Instantiates a new content tree view.
      * 
-     * @param workbench the workbench definition
-     * @param componentProvider the component provider
-     * @param container the container data source
+     * @param workbench
+     *            the workbench definition
+     * @param componentProvider
+     *            the component provider
+     * @param container
+     *            the container data source
      */
     public TreeViewImpl(WorkbenchDefinition workbench, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
         this.container = container;
@@ -118,13 +120,13 @@ public class TreeViewImpl implements TreeView {
             @Override
             public void valueChange(ValueChangeEvent event) {
                 if (defaultValue == null && event.getProperty().getValue() instanceof Set) {
-                    defaultValue = (Set< ? >) event.getProperty().getValue();
+                    defaultValue = (Set<?>) event.getProperty().getValue();
                 }
                 final Object value = event.getProperty().getValue();
                 if (value instanceof String) {
                     presenterOnItemSelection(String.valueOf(value));
                 } else if (value instanceof Set) {
-                    final Set< ? > set = new HashSet<Object>((Set< ? >) value);
+                    final Set<?> set = new HashSet<Object>((Set<?>) value);
                     set.removeAll(defaultValue);
                     if (set.size() == 1) {
                         presenterOnItemSelection(String.valueOf(set.iterator().next()));
@@ -165,7 +167,7 @@ public class TreeViewImpl implements TreeView {
                 }
             });
         }
-            
+
         treeTable.setCellStyleGenerator(new Table.CellStyleGenerator() {
             @Override
             public String getStyle(Table source, Object itemId, Object propertyId) {
@@ -179,10 +181,14 @@ public class TreeViewImpl implements TreeView {
     /**
      * Sets the columns for the vaadin TreeTable, based on workbench columns configuration.
      * 
-     * @param treeTable the TreeTable vaadin component
-     * @param container the container data source
-     * @param columns the list of ColumnDefinitions
-     * @param componentProvider the component provider
+     * @param treeTable
+     *            the TreeTable vaadin component
+     * @param container
+     *            the container data source
+     * @param columns
+     *            the list of ColumnDefinitions
+     * @param componentProvider
+     *            the component provider
      */
     protected void buildColumns(TreeTable treeTable, Container container, List<ColumnDefinition> columns, ComponentProvider componentProvider) {
         final Iterator<ColumnDefinition> iterator = columns.iterator();
@@ -206,7 +212,7 @@ public class TreeViewImpl implements TreeView {
             }
 
             // Generated columns
-            Class< ? extends ColumnFormatter> formatterClass = column.getFormatterClass();
+            Class<? extends ColumnFormatter> formatterClass = column.getFormatterClass();
             if (formatterClass != null) {
                 ColumnFormatter formatter = componentProvider.newInstance(formatterClass, column);
                 treeTable.addGeneratedColumn(columnProperty, formatter);
@@ -289,10 +295,10 @@ public class TreeViewImpl implements TreeView {
 
     private String presenterGetIcon(Object itemId, Object propertyId) {
         Container container = treeTable.getContainerDataSource();
-        if(listener != null && propertyId == null) {
-            return listener.getItemIcon(container.getItem(itemId));                    
+        if (listener != null && propertyId == null) {
+            return listener.getItemIcon(container.getItem(itemId));
         }
-        
+
         return null;
     }
 

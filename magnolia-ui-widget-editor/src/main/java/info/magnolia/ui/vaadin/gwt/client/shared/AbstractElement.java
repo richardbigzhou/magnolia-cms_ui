@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.shared;
 
 import java.io.Serializable;
 
-
 /**
  * AbstractElement.
  */

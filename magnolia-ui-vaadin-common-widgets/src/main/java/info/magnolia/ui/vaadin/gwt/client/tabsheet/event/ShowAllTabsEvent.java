@@ -47,7 +47,6 @@ public class ShowAllTabsEvent extends GwtEvent<ShowAllTabsHandler> {
         return TYPE;
     }
 
-
     @Override
     protected void dispatch(ShowAllTabsHandler handler) {
         handler.onShowAllTabs(this);

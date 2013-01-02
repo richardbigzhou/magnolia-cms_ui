@@ -39,7 +39,6 @@ import java.util.LinkedList;
 import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.Component;
 
-
 /**
  * Component container showing only the most recently added component and keeping previously shown components in a stack
  * for easy switching to the previously shown.
@@ -86,15 +85,14 @@ public class DeckLayout extends AbstractComponentContainer {
         removeComponent(oldComponent);
         addComponent(newComponent);
     }
-   
-    
+
     public void pop() {
         if (!children.isEmpty()) {
             removeComponent(children.removeFirst());
             markAsDirty();
-        } 
+        }
     }
-    
+
     public boolean isEmpty() {
         return children.isEmpty();
     }

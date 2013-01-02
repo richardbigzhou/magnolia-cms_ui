@@ -33,11 +33,10 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.applauncher.widget;
 
-import com.google.gwt.dom.client.Style;
-
 import info.magnolia.ui.vaadin.gwt.client.applauncher.event.AppActivationEvent;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppTile;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -55,7 +54,7 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * The tile of one single app in AppLauncher.
- *
+ * 
  */
 public class AppTileWidget extends Widget {
 
@@ -95,7 +94,7 @@ public class AppTileWidget extends Widget {
         addStyleName("item");
         icon.addClassName("icon");
         icon.appendChild(iconContent);
-        
+
         label.addClassName("label");
         DOM.sinkEvents(getElement(), Event.MOUSEEVENTS);
     }
@@ -184,7 +183,7 @@ public class AppTileWidget extends Widget {
 
     /**
      * Set colors with the group coloring.
-     *
+     * 
      * @param isActive
      */
     private void setColors(boolean isTileWhite) {

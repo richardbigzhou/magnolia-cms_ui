@@ -33,10 +33,6 @@
  */
 package info.magnolia.ui.admincentral.legacy;
 
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
-
 import info.magnolia.cms.core.Content;
 import info.magnolia.cms.core.ItemType;
 import info.magnolia.cms.core.MetaData;
@@ -49,6 +45,10 @@ import info.magnolia.context.Context;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.admininterface.commands.BaseRepositoryCommand;
 
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
+
 /**
  * Command that marks a node as deleted.
  */
@@ -59,10 +59,12 @@ public class MarkNodeAsDeletedCommand extends BaseRepositoryCommand {
     /**
      * @deprecated since 5.0 - directly use {@link NodeTypes.Deleted#DELETED_BY}
      */
+    @Deprecated
     public static final String DELETED_NODE_DELETED_BY = NodeTypes.Deleted.DELETED_BY;
     /**
      * @deprecated since 5.0 - directly use {@link NodeTypes.Deleted#DELETED}
      */
+    @Deprecated
     public static final String DELETED_NODE_DELETED_ON = NodeTypes.Deleted.DELETED;
 
     private static final String DELETED_NODE_PROP_NAME = "deleteNode";
@@ -99,7 +101,7 @@ public class MarkNodeAsDeletedCommand extends BaseRepositoryCommand {
         storeDeletionInfo(node, context);
         // save changes before progressing on sub node - means we can't roll back, but session doesn't grow out of limits
         node.save();
-        for(Content childPage : node.getChildren(ItemType.CONTENT)) {
+        for (Content childPage : node.getChildren(ItemType.CONTENT)) {
             preDeleteNode(childPage, context);
         }
     }

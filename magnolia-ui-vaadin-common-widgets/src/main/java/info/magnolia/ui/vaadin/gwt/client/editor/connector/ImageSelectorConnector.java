@@ -52,7 +52,7 @@ import com.vaadin.shared.ui.Connect;
 public class ImageSelectorConnector extends AbstractComponentConnector {
 
     private final ImageSelectorServerRpc rpc = RpcProxy.create(ImageSelectorServerRpc.class, this);
-    
+
     @Override
     protected void init() {
         super.init();
@@ -62,7 +62,7 @@ public class ImageSelectorConnector extends AbstractComponentConnector {
                 rpc.onSelectedAreaReady(getWidget().getSelectionArea());
             }
         });
-        
+
         getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() {
             @Override
             public void onElementResize(ElementResizeEvent e) {
@@ -71,26 +71,25 @@ public class ImageSelectorConnector extends AbstractComponentConnector {
             }
         });
     }
-    
+
     @Override
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
         if (getResourceUrl("source") != null) {
             getWidget().setSource(getResourceUrl("source"));
         }
-        
+
         getWidget().setIsCropping(getState().isCropping);
     }
-    
-    
+
     @Override
     public VImageSelector getWidget() {
-        return (VImageSelector)super.getWidget();
+        return (VImageSelector) super.getWidget();
     }
-    
+
     @Override
     public ImageSelectorState getState() {
-        return (ImageSelectorState)super.getState();
+        return (ImageSelectorState) super.getState();
     }
-    
+
 }

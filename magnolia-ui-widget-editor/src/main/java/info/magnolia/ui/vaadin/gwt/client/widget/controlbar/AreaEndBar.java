@@ -33,11 +33,9 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
-
-import com.google.gwt.user.client.ui.FlowPanel;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * Area bar.
@@ -57,7 +55,6 @@ public class AreaEndBar extends FlowPanel {
         this.addStyleName("end");
 
         setVisible(false);
-
 
     }
 

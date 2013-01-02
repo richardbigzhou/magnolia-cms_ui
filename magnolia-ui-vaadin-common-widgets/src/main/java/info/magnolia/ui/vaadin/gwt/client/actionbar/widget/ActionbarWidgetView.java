@@ -42,7 +42,6 @@ import java.util.Map;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 
-
 /**
  * View interface of client-side action bar.
  */
@@ -50,36 +49,38 @@ public interface ActionbarWidgetView extends HasWidgets, IsWidget {
 
     /**
      * Gets the section widgets inside this action bar view.
-     *
+     * 
      * @return the sections
      */
     Map<String, ActionbarSectionWidget> getSections();
 
     /**
      * Sets the presenter.
-     *
-     * @param presenter the new presenter
+     * 
+     * @param presenter
+     *            the new presenter
      */
     void setPresenter(Presenter presenter);
 
     void setSections(Collection<ActionbarSection> sections);
 
     void setVisibleSections(Collection<ActionbarSection> visibleSections);
-    
+
     void setEnabledActions(Collection<ActionbarItem> enabledActions);
 
     void setSectionPreview(String sectionName, String previewUrl);
-    
+
     /**
      * Update the classes on the actions so that they are positioned correctly.
      * Necessary to handle when sections are dynamically changed like in the page editor.
-     *
+     * 
      */
     void refreshActionsPositionsTablet();
 
     boolean isOpen();
-    
+
     void setOpen(boolean isOpen);
+
     /**
      * Presenter for the Actionbar view.
      */

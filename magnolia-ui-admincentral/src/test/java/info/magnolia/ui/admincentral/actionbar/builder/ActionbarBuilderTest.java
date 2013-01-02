@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.actionbar.builder;
 
 import static org.junit.Assert.*;
+
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
@@ -53,7 +54,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
-
 public class ActionbarBuilderTest {
 
     private static final String SECTION_A = "sectionA";
@@ -68,21 +68,21 @@ public class ActionbarBuilderTest {
 
         // common group
         ActionbarGroupDefinition previewGroup = buildGroup("0",
-            buildItem("0.0"));
+                buildItem("0.0"));
 
         // sections
         ActionbarSectionDefinition aSection = buildSection(SECTION_A,
-            previewGroup,
-            buildGroup("1",
-                buildItem("1.0"),
-                buildItem("1.1")));
+                previewGroup,
+                buildGroup("1",
+                        buildItem("1.0"),
+                        buildItem("1.1")));
         ActionbarSectionDefinition bSection = buildSection(SECTION_B,
-            previewGroup,
-            buildGroup("1",
-                buildItem("1.0"),
-                buildItem("1.1")),
-            buildGroup("2",
-                buildItem("2.0")));
+                previewGroup,
+                buildGroup("1",
+                        buildItem("1.0"),
+                        buildItem("1.1")),
+                buildGroup("2",
+                        buildItem("2.0")));
 
         def.addSection(aSection);
         def.addSection(bSection);
@@ -117,10 +117,10 @@ public class ActionbarBuilderTest {
         // GIVEN
         ConfiguredActionbarDefinition def = new ConfiguredActionbarDefinition();
         ActionbarSectionDefinition sectionDef = buildSection(SECTION_A,
-            buildGroup("0"),
-            buildGroup("1",
-                buildItem("1.0"),
-                buildItem("1.1")));
+                buildGroup("0"),
+                buildGroup("1",
+                        buildItem("1.0"),
+                        buildItem("1.1")));
         def.addSection(sectionDef);
         int actionCount = getActionsCount(sectionDef);
 
@@ -140,18 +140,18 @@ public class ActionbarBuilderTest {
         // GIVEN
         ConfiguredActionbarDefinition def = new ConfiguredActionbarDefinition();
         ActionbarSectionDefinition aSection = buildSection(SECTION_A,
-            buildGroup("0",
-                buildItem("0.0"),
-                buildItem("0.1"),
-                buildItem("0.1"),
-                buildItem("0.2"),
-                buildItem("0.3")),
-            buildGroup("1",
-                buildItem("1.0"),
-                buildItem("0.2")));
+                buildGroup("0",
+                        buildItem("0.0"),
+                        buildItem("0.1"),
+                        buildItem("0.1"),
+                        buildItem("0.2"),
+                        buildItem("0.3")),
+                buildGroup("1",
+                        buildItem("1.0"),
+                        buildItem("0.2")));
         ActionbarSectionDefinition bSection = buildSection(SECTION_B,
-            buildGroup("0",
-                buildItem("0.3")));
+                buildGroup("0",
+                        buildItem("0.3")));
         def.addSection(aSection);
         def.addSection(bSection);
 

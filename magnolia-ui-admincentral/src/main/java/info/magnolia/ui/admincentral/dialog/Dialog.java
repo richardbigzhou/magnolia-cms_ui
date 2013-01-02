@@ -38,7 +38,7 @@ import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 
 /**
  * Represents a dialog.
- *
+ * 
  * @see info.magnolia.ui.admincentral.form.FormTab
  * @see info.magnolia.ui.admincentral.field.FieldBuilder
  */

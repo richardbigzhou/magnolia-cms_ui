@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.admincentral.module;
 
-import javax.inject.Inject;
-
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
@@ -42,10 +40,11 @@ import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayou
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager;
 import info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager;
 
+import javax.inject.Inject;
 
 /**
  * Registers the observed managers: {@link ConfiguredAppDescriptorManager}.
- *
+ * 
  */
 public class AdminCentralModule implements ModuleLifecycle {
 

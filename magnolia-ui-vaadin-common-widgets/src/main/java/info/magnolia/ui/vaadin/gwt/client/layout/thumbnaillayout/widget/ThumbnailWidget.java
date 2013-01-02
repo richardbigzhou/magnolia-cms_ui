@@ -72,13 +72,13 @@ public class ThumbnailWidget extends Composite {
             String cacheBuster = "?cb=" + System.currentTimeMillis();
             image.setUrl(connector.getState().resources.get(data.getThumbnailId()).getURL() + cacheBuster);
             image.setStyleName("thumbnail-image");
-            panel.setWidget(image);            
+            panel.setWidget(image);
         } else {
             // iconFont
             IconWidget fileIcon = new IconWidget();
             String iconFontClass = data.getIconFontId();
             fileIcon.setIconName(iconFontClass);
-            panel.setWidget(fileIcon);            
+            panel.setWidget(fileIcon);
         }
     }
 

@@ -39,10 +39,9 @@ import com.google.gwt.resources.client.ImageResource;
 
 /**
  * ImageBundle for the lazy thumbnail layout.
- *
+ * 
  */
 public interface LazyThumbnailLayoutImageBundle extends ClientBundle {
-
 
     final static String imgPath = "info/magnolia/ui/vaadin/gwt/public/img/";
 

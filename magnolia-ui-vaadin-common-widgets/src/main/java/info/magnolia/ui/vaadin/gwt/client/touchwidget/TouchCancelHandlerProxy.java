@@ -40,15 +40,15 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchCancelHandler;
  * Proxy handler that delegates events to {@link TouchCancelHandler}.
  */
 public class TouchCancelHandlerProxy implements com.google.gwt.event.dom.client.TouchCancelHandler {
-    
+
     private TouchCancelHandler delegateHandler;
-    
+
     public TouchCancelHandlerProxy(TouchCancelHandler delegateHandler) {
         this.delegateHandler = delegateHandler;
     }
-    
+
     @Override
     public void onTouchCancel(com.google.gwt.event.dom.client.TouchCancelEvent event) {
-        delegateHandler.onTouchCanceled(GwtTouchEventConverter.<TouchCancelEvent>convertGWTEvent(event));
+        delegateHandler.onTouchCanceled(GwtTouchEventConverter.<TouchCancelEvent> convertGWTEvent(event));
     }
 }

@@ -40,7 +40,6 @@ import java.util.List;
 import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.Component;
 
-
 /**
  * The CompositeIcon allows for layered icons, such as a warning sign, with optional outer shape
  * outline. It mostly serves as the base class for preset composite icons such as InfoIcon,
@@ -49,9 +48,9 @@ import com.vaadin.ui.Component;
 public class CompositeIcon extends AbstractComponentContainer {
 
     private final List<Component> icons;
-    
+
     protected CompositeIcon(Icon... icons) {
-        this.icons = Arrays.<Component>asList(icons);
+        this.icons = Arrays.<Component> asList(icons);
         addComponents(icons);
     }
 

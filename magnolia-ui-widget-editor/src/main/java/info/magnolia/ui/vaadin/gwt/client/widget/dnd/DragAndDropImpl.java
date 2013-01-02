@@ -55,7 +55,7 @@ import com.google.web.bindery.event.shared.EventBus;
  */
 public class DragAndDropImpl {
 
-    public void dragAndDrop (final EventBus eventBus, final ComponentBar bar) {
+    public void dragAndDrop(final EventBus eventBus, final ComponentBar bar) {
         bar.setDraggable(true);
         bar.addDomHandler(new DragStartHandler() {
             @Override
@@ -80,7 +80,7 @@ public class DragAndDropImpl {
 
                 int x = bar.getAbsoluteLeft();
                 int y = bar.getAbsoluteTop();
-                event.setData("text", bar.getNodeName() + "," + x +","+y);
+                event.setData("text", bar.getNodeName() + "," + x + "," + y);
                 event.getDataTransfer().setDragImage(bar.getElement(), 10, 10);
 
             }
@@ -116,7 +116,7 @@ public class DragAndDropImpl {
                 String[] tokens = data.split(",");
                 String idSource = tokens[0];
 
-                if (!bar.getNodeName().equals(idSource)){
+                if (!bar.getNodeName().equals(idSource)) {
                     bar.setStyleName("moveOver", true);
                 }
                 event.stopPropagation();
@@ -152,14 +152,14 @@ public class DragAndDropImpl {
 
                     String order = null;
 
-                    if(isDragUp || isDragLeft) {
+                    if (isDragUp || isDragLeft) {
                         order = "before";
-                    } else if(isDragDown || isDragRight) {
+                    } else if (isDragDown || isDragRight) {
                         order = "after";
                     }
                     String parentPath = bar.getPath().substring(0, bar.getPath().lastIndexOf("/"));
                     eventBus.fireEvent(new SortComponentEvent(bar.getWorkspace(), parentPath, idSource, bar.getNodeName(), order));
-                    //moveComponent(bar.getNodeName(), idSource, parentPath, order);
+                    // moveComponent(bar.getNodeName(), idSource, parentPath, order);
                 }
 
                 event.preventDefault();

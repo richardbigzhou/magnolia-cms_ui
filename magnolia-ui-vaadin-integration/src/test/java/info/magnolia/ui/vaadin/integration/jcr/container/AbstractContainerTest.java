@@ -33,15 +33,15 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr.container;
 
-
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 
 /**
  * Tests.
@@ -51,7 +51,7 @@ public class AbstractContainerTest {
     private ContainerTestImpl container;
 
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         container = new ContainerTestImpl();
     }
 
@@ -93,7 +93,6 @@ public class AbstractContainerTest {
         // THEN
         assertEquals(String.class, container.getType(id));
     }
-
 
     public class ContainerTestImpl extends AbstractContainer {
         @Override

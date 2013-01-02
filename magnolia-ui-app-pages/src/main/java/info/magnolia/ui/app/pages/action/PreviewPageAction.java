@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import com.google.inject.Inject;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
@@ -41,15 +40,17 @@ import info.magnolia.ui.admincentral.content.item.ItemView;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
 
 /**
- *  Opens a preview of the selected page.
+ * Opens a preview of the selected page.
  */
 public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
@@ -61,9 +62,11 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
     /**
      * Instantiates a new preview page action.
-     *
-     * @param definition the definition
-     * @param nodeToPreview the node to preview
+     * 
+     * @param definition
+     *            the definition
+     * @param nodeToPreview
+     *            the node to preview
      */
     @Inject
     public PreviewPageAction(PreviewPageActionDefinition definition, LocationController locationController, Node nodeToPreview) {

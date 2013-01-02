@@ -41,7 +41,6 @@ import java.util.List;
 
 import com.vaadin.data.Item;
 
-
 /**
  * Define a Component selector field.
  * The values displayed in the field are initialized based on the
@@ -58,7 +57,7 @@ public class ComponentSelectorField extends SelectFieldBuilder<ComponentSelector
      * Get the available templates based on the current Node.
      */
     @Override
-    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition(){
+    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
         return definition.getOptions();
     }
 

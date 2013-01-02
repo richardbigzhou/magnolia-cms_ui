@@ -33,21 +33,22 @@
  */
 package info.magnolia.ui.app.contacts.column;
 
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import com.vaadin.ui.Table;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.column.AbstractColumnFormatter;
 
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.ui.Table;
+
 /**
  * Column formatter that displays either the name of a contact or a folder.
- *
+ * 
  * @see ContactNameColumnDefinition
  */
 public class ContactNameColumnFormatter extends AbstractColumnFormatter<ContactNameColumnDefinition> {
@@ -57,7 +58,7 @@ public class ContactNameColumnFormatter extends AbstractColumnFormatter<ContactN
     public ContactNameColumnFormatter(ContactNameColumnDefinition definition) {
         super(definition);
     }
-    
+
     @Override
     public Object generateCell(Table source, Object itemId, Object columnId) {
         final Item jcrItem = getJcrItem(source, itemId);

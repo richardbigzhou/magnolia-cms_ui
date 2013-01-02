@@ -36,7 +36,6 @@ package info.magnolia.ui.vaadin.gwt.client.touchwidget;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
 
-
 /**
  * Proxy handler of {@link TouchStartHandler} that triggers mgwt TouchSartHandler.
  */
@@ -47,9 +46,9 @@ public class TouchStartHandlerProxy implements com.google.gwt.event.dom.client.T
     public TouchStartHandlerProxy(TouchStartHandler delegateHandler) {
         this.delegateHandler = delegateHandler;
     }
-    
+
     @Override
     public void onTouchStart(com.google.gwt.event.dom.client.TouchStartEvent event) {
-        delegateHandler.onTouchStart(GwtTouchEventConverter.<TouchStartEvent>convertGWTEvent(event));   
-    } 
+        delegateHandler.onTouchStart(GwtTouchEventConverter.<TouchStartEvent> convertGWTEvent(event));
+    }
 }

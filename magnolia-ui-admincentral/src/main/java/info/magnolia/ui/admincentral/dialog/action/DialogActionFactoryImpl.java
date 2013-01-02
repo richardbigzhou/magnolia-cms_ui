@@ -46,13 +46,12 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
- * Creates an action based on an
- * {@link info.magnolia.ui.model.action.ActionDefinition}.
+ * Creates an action based on an {@link info.magnolia.ui.model.action.ActionDefinition}.
  */
 @Singleton
 public class DialogActionFactoryImpl extends FactoryBase<ActionDefinition, Action> implements DialogActionFactory {
     private final EventBus eventBus;
-    
+
     @Inject
     public DialogActionFactoryImpl(ComponentProvider componentProvider, DialogActionRegistry dialogActionRegistry,
             @Named("admincentral") EventBus eventBus) {

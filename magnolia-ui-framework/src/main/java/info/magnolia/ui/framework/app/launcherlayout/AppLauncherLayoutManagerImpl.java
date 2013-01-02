@@ -54,7 +54,6 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Default {@link AppLauncherLayoutManager} implementation.
  */
@@ -75,8 +74,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
         this.systemEventBus = systemEventBus;
 
         /**
-         * Propagate events from
-         * {@link info.magnolia.ui.framework.app.registry.AppDescriptorRegistry} to notify listeners
+         * Propagate events from {@link info.magnolia.ui.framework.app.registry.AppDescriptorRegistry} to notify listeners
          * that the layout has changed.
          */
         systemEventBus.addHandler(AppRegistryEvent.class, new AppRegistryEventHandler() {

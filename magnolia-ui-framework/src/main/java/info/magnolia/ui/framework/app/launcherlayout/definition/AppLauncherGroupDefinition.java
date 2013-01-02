@@ -35,7 +35,6 @@ package info.magnolia.ui.framework.app.launcherlayout.definition;
 
 import java.util.List;
 
-
 /**
  * Defines a a group in the layout of apps in the app launcher.
  * 

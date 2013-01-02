@@ -38,7 +38,6 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDeleg
 
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
  * Shell apps viewport client side.
  */

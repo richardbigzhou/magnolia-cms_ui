@@ -39,5 +39,5 @@ import info.magnolia.ui.model.field.definition.LinkFieldDefinition;
  * .
  */
 public class ContactLinkFieldDefinition extends LinkFieldDefinition {
-    //Nothing specific for the moment.
+    // Nothing specific for the moment.
 }

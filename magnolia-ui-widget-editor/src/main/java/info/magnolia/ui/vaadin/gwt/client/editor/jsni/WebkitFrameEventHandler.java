@@ -45,7 +45,7 @@ import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Frame;
-import com.vaadin.client.BrowserInfo;
+import com.vaadin.terminal.gwt.client.BrowserInfo;
 
 /**
  * WebkitFrameEventHandler. Provides separated implementations to overcome different bugs in the
@@ -74,7 +74,6 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
             });
         }
     }
-
 
     @Override
     public void onFrameReady() {
@@ -117,72 +116,72 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
      * Doesn't work, that's why browsing inside the iframe is broken for webkit.
      */
     public native void registerUnloadHandler(Element element, Timer timer) /*-{
-        var that = timer;
-        var poll = function(){
-            that.@com.google.gwt.user.client.Timer::scheduleRepeating(I)(100);
-        };
+                                                                           var that = timer;
+                                                                           var poll = function(){
+                                                                           that.@com.google.gwt.user.client.Timer::scheduleRepeating(I)(100);
+                                                                           };
 
-        element.contentWindow.addEventListener('unload', poll, false);
+                                                                           element.contentWindow.addEventListener('unload', poll, false);
 
-    }-*/;
+                                                                           }-*/;
 
     /**
      * Javascript hack for handling scrolling in iframes on iPad.
      * This needs to be initialized after the iframe has been loaded, otherwise the document will be null.
      * The touchscrolling boolean is used to circumvent a selection being triggered while scrolling.
+     * 
      * @param doc
      * @param cont
      */
     private final native void addIframeTouchMoveListener(Document doc, Element cont) /*-{
-        var content = cont;
-        var that = this;
-        var X = 0;
-        var Y = 0;
-        var lastY = 0;
-        doc.body.addEventListener('touchmove',
-                function(event) {
-                    that.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::touchScrolling = true;
-                    event.preventDefault();
-                    var newX = event.targetTouches[0].pageX;
-                    var newY = event.targetTouches[0].pageY;
-                    var deltaY = newY - Y;
-                    var deltaX = newX - X;
-                    cont.scrollLeft -= deltaX;
-                    cont.scrollTop -= deltaY;
+                                                                                     var content = cont;
+                                                                                     var that = this;
+                                                                                     var X = 0;
+                                                                                     var Y = 0;
+                                                                                     var lastY = 0;
+                                                                                     doc.body.addEventListener('touchmove',
+                                                                                     function(event) {
+                                                                                     that.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::touchScrolling = true;
+                                                                                     event.preventDefault();
+                                                                                     var newX = event.targetTouches[0].pageX;
+                                                                                     var newY = event.targetTouches[0].pageY;
+                                                                                     var deltaY = newY - Y;
+                                                                                     var deltaX = newX - X;
+                                                                                     cont.scrollLeft -= deltaX;
+                                                                                     cont.scrollTop -= deltaY;
 
-                    that.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::lastY = cont.scrollTop;
+                                                                                     that.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::lastY = cont.scrollTop;
 
-                    X = newX - deltaX;
-                    Y = newY - deltaY;
-                });
+                                                                                     X = newX - deltaX;
+                                                                                     Y = newY - deltaY;
+                                                                                     });
 
-        doc.body.addEventListener('touchstart',
-                function (event) {
-                    that.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::touchScrolling = false;
-                    parent.window.scrollTo(0, 1);
-                    X = event.targetTouches[0].pageX;
-                    Y = event.targetTouches[0].pageY;
-                });
-    }-*/;
-
+                                                                                     doc.body.addEventListener('touchstart',
+                                                                                     function (event) {
+                                                                                     that.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::touchScrolling = false;
+                                                                                     parent.window.scrollTo(0, 1);
+                                                                                     X = event.targetTouches[0].pageX;
+                                                                                     Y = event.targetTouches[0].pageY;
+                                                                                     });
+                                                                                     }-*/;
 
     /**
      * Custom implementation for iPads of the touchend handling. Surpresses the selection, when scrolling.
      */
     @Override
     public native void initNativeTouchSelectionListener(Element element, PageEditorView.Listener listener) /*-{
-        if (element != 'undefined') {
-            var ref = this;
-            var that = listener;
-            element.contentDocument.ontouchend = function(event) {
-                var isTouchScrolling = ref.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::isTouchScrolling()();
-                if (!isTouchScrolling) {
-                    that.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView.Listener::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
-                    ref.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::resetScrollTop()();
-                }
-            }
-        }
-    }-*/;
+                                                                                                           if (element != 'undefined') {
+                                                                                                           var ref = this;
+                                                                                                           var that = listener;
+                                                                                                           element.contentDocument.ontouchend = function(event) {
+                                                                                                           var isTouchScrolling = ref.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::isTouchScrolling()();
+                                                                                                           if (!isTouchScrolling) {
+                                                                                                           that.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView.Listener::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
+                                                                                                           ref.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::resetScrollTop()();
+                                                                                                           }
+                                                                                                           }
+                                                                                                           }
+                                                                                                           }-*/;
 
     public boolean isTouchScrolling() {
         return touchScrolling;
@@ -193,7 +192,7 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
      */
     public void resetScrollTop() {
 
-        Timer timer = new Timer(){
+        Timer timer = new Timer() {
             @Override
             public void run() {
                 getView().getContent().getElement().setScrollTop(lastY);
@@ -201,7 +200,7 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
         };
         timer.schedule(1);
 
-        Timer timer2 = new Timer(){
+        Timer timer2 = new Timer() {
             @Override
             public void run() {
                 getView().getContent().getElement().setScrollTop(lastY);
@@ -232,18 +231,16 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
             }
         }
 
-
         public void setIframe(Frame iframe) {
             this.iframe = iframe;
         }
 
         public final native String getReadyState(Element element) /*-{
-            if (element.contentWindow != null) {
-                return element.contentWindow.document.readyState;
-            }
-            return '';
-        }-*/;
-
+                                                                  if (element.contentWindow != null) {
+                                                                  return element.contentWindow.document.readyState;
+                                                                  }
+                                                                  return '';
+                                                                  }-*/;
 
     }
 }

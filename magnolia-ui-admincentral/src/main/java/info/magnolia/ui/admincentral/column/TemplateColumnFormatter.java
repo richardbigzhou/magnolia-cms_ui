@@ -71,7 +71,7 @@ public class TemplateColumnFormatter extends AbstractColumnFormatter<TemplateCol
     @Override
     public Object generateCell(Table source, Object itemId, Object columnId) {
         final Item jcrItem = getJcrItem(source, itemId);
-        if(jcrItem != null && jcrItem.isNode()) {
+        if (jcrItem != null && jcrItem.isNode()) {
             Node node = (Node) jcrItem;
             // Get template id
             String templateId;
@@ -84,8 +84,7 @@ public class TemplateColumnFormatter extends AbstractColumnFormatter<TemplateCol
             TemplateDefinition template = null;
             try {
                 template = templateRegistry.getTemplateDefinition(templateId);
-            }
-            catch (RegistrationException e) {
+            } catch (RegistrationException e) {
                 log.warn("Template with id {} doesn't exist.", templateId);
             }
 

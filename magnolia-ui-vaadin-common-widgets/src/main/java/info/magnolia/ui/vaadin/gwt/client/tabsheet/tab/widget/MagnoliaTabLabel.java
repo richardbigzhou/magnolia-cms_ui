@@ -137,7 +137,7 @@ public class MagnoliaTabLabel extends SimplePanel {
     public void updateNotification(final String text) {
         if (text != null && !text.isEmpty()) {
             notificationBox.getStyle().setDisplay(Display.INLINE_BLOCK);
-            notificationBox.setInnerText(text);            
+            notificationBox.setInnerText(text);
         }
     }
 
@@ -153,6 +153,6 @@ public class MagnoliaTabLabel extends SimplePanel {
      * @param eventBus
      */
     public void setEventBus(EventBus eventBus) {
-        this.eventBus= eventBus;
+        this.eventBus = eventBus;
     }
 }

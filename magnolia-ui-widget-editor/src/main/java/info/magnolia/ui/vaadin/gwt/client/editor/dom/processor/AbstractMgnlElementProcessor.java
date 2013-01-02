@@ -66,7 +66,6 @@ public abstract class AbstractMgnlElementProcessor {
         addToModel();
     }
 
-
     public void attach() {
         // if there is a marker for the controlBar insert here
         if (getMgnlElement().getEditElement() != null) {
@@ -87,9 +86,9 @@ public abstract class AbstractMgnlElementProcessor {
     public void attach(MgnlElement mgnlElement) {
         Element element = mgnlElement.getFirstElement();
         if (element != null) {
-            if(element.hasTagName("DIV")){
+            if (element.hasTagName("DIV")) {
                 element.insertFirst(getEditBar().getElement());
-            }else{
+            } else {
                 final Node parentNode = element.getParentNode();
                 parentNode.insertBefore(getEditBar().getElement(), element);
             }

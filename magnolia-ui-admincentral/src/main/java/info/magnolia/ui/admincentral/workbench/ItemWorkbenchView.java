@@ -33,17 +33,19 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import com.vaadin.ui.ComponentContainer;
 import info.magnolia.ui.admincentral.content.item.ItemView;
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
+import com.vaadin.ui.ComponentContainer;
+
 /**
  * ItemWorkbenchView.
+ * 
  * @see ItemWorkbenchViewImpl
  */
-public interface ItemWorkbenchView  extends ComponentContainer, View {
+public interface ItemWorkbenchView extends ComponentContainer, View {
 
     void setItemView(View itemView);
 
@@ -59,7 +61,6 @@ public interface ItemWorkbenchView  extends ComponentContainer, View {
     void setListener(Listener listener);
 
     void setViewType(ItemView.ViewType type);
-
 
     /**
      * Refreshes the current view.

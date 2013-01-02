@@ -61,7 +61,6 @@ import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.BaseTheme;
 
-
 /**
  * Implementation of {@link ContentWorkbenchView}.
  * TODO: consider restoring CustomComponent implementation here.
@@ -112,7 +111,7 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
         viewModes.addComponent(treeButton);
         viewModes.addComponent(listButton);
         viewModes.addComponent(thumbsButton);
-        
+
         contentViewContainer.addStyleName("v-workbench-content");
         contentViewContainer.setSizeFull();
         contentViewContainer.addComponent(viewModes);
@@ -143,13 +142,13 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
                 searchbox.setInputPrompt(inputPrompt);
             }
         });
-        
+
         searchbox.addFocusListener(new FocusListener() {
             @Override
             public void focus(FocusEvent event) {
                 if (currentViewType != ViewType.SEARCH) {
                     setViewType(ViewType.SEARCH);
-                }                
+                }
             }
         });
         return searchbox;
@@ -194,17 +193,18 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
         if (type != ViewType.SEARCH) {
             previousViewType = currentViewType;
         }
-        
+
         Component c = contentViews.get(type).asVaadinComponent();
         contentViewContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
         contentViewContainer.addComponent(c);
         c.setSizeUndefined();
-        
-        this.currentViewType = type;currentViewType = type;
-        
+
+        this.currentViewType = type;
+        currentViewType = type;
+
         setViewTypeStyling(currentViewType);
         refresh();
-        
+
         this.contentWorkbenchViewListener.onViewTypeChanged(currentViewType);
     }
 
@@ -261,22 +261,22 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
         viewTypeArrow.removeStyleName("search");
 
         switch (viewType) {
-            case TREE :
-                treeButton.addStyleName("active");
-                viewTypeArrow.addStyleName("tree");
-                break;
-            case LIST :
-                listButton.addStyleName("active");
-                viewTypeArrow.addStyleName("list");
-                break;
-            case THUMBNAIL :
-                thumbsButton.addStyleName("active");
-                viewTypeArrow.addStyleName("thumbs");
-                break;
-            case SEARCH :
-                viewTypeArrow.addStyleName("search");
-                break;
-            default :
+        case TREE:
+            treeButton.addStyleName("active");
+            viewTypeArrow.addStyleName("tree");
+            break;
+        case LIST:
+            listButton.addStyleName("active");
+            viewTypeArrow.addStyleName("list");
+            break;
+        case THUMBNAIL:
+            thumbsButton.addStyleName("active");
+            viewTypeArrow.addStyleName("thumbs");
+            break;
+        case SEARCH:
+            viewTypeArrow.addStyleName("search");
+            break;
+        default:
         }
     }
 

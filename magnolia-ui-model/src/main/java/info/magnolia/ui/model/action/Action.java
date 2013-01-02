@@ -41,8 +41,9 @@ public interface Action {
 
     /**
      * Executes the action.
-     *
-     * @throws ActionExecutionException if an error occurs performing the action
+     * 
+     * @throws ActionExecutionException
+     *             if an error occurs performing the action
      */
     void execute() throws ActionExecutionException;
 }

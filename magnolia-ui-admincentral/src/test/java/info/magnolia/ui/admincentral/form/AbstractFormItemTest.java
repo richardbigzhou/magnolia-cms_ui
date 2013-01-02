@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.form;
 
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
@@ -54,7 +54,6 @@ import java.util.Locale;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 
 public class AbstractFormItemTest {
 
@@ -79,8 +78,8 @@ public class AbstractFormItemTest {
 
     @Test
     public void testEnsureMessagesContainsKeysDefinedByUIModules() throws Exception {
-         //GIVEN
-         AbstractFormItem dummyDialogItem = new AbstractFormItem() {
+        // GIVEN
+        AbstractFormItem dummyDialogItem = new AbstractFormItem() {
 
             @Override
             protected String getI18nBasename() {
@@ -88,10 +87,10 @@ public class AbstractFormItemTest {
             }
         };
 
-        //WHEN validation.message.required is a key defined by the ui-model module
+        // WHEN validation.message.required is a key defined by the ui-model module
         String message = dummyDialogItem.getMessages().get("validation.message.required");
 
-        //THEN
+        // THEN
         assertFalse(message.startsWith("???"));
     }
 }

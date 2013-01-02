@@ -33,12 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.Comment;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
@@ -46,11 +40,16 @@ import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
+
 /**
  * Processor for comment elements.
  */
 public class CommentProcessor {
-
 
     public MgnlElement process(Model model, Node node, MgnlElement currentElement) throws IllegalArgumentException {
 
@@ -82,7 +81,6 @@ public class CommentProcessor {
                 GWT.log("Not MgnlElement, skipping: " + e.toString());
             }
 
-
         }
         // the cms:page tag should span throughout the page, but doesn't: kind of a hack.
         else if (currentElement != null && !currentElement.isPage()) {
@@ -109,7 +107,7 @@ public class CommentProcessor {
         int delimiter = comment.indexOf(" ");
         String attributeString = "";
 
-        if (delimiter < 0){
+        if (delimiter < 0) {
             tagName = comment;
         }
         else {
@@ -122,7 +120,6 @@ public class CommentProcessor {
             tagName = tagName.substring(1);
         }
 
-
         if (tagName.startsWith(Model.CMS_TAG)) {
             cmsComment.setTagName(tagName);
             cmsComment.setAttribute(attributeString);
@@ -134,7 +131,6 @@ public class CommentProcessor {
             throw new IllegalArgumentException("Tagname must start with +'" + Model.CMS_TAG + "'.");
         }
         return cmsComment;
-
 
     }
 
@@ -165,8 +161,7 @@ public class CommentProcessor {
         return attributes;
     }
 
-
-    private  MgnlElement createMgnlElement(CMSComment comment, MgnlElement parent) throws IllegalArgumentException {
+    private MgnlElement createMgnlElement(CMSComment comment, MgnlElement parent) throws IllegalArgumentException {
         String tagName = comment.getTagName();
         MgnlElement mgnlElement;
         if (Model.CMS_PAGE.equals(tagName)) {
@@ -195,7 +190,6 @@ public class CommentProcessor {
      * CmsComment.
      */
     private class CMSComment {
-
 
         private String tagName;
         private String attributes;

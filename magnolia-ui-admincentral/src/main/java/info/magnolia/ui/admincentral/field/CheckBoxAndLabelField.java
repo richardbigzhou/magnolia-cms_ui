@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.field;
 
-
 import com.vaadin.data.Property;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CheckBox;
@@ -65,7 +64,7 @@ public class CheckBoxAndLabelField extends CustomField<Boolean> {
         layout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
         return layout;
     }
-    
+
     public CheckBox getCheckBox() {
         return checkBox;
     }
@@ -86,7 +85,7 @@ public class CheckBoxAndLabelField extends CustomField<Boolean> {
 
     @Override
     public void setPropertyDataSource(Property newDataSource) {
-       checkBox.setPropertyDataSource(newDataSource);
+        checkBox.setPropertyDataSource(newDataSource);
     }
 
     @Override

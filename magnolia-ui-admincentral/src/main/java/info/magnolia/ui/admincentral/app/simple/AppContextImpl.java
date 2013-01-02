@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import com.google.common.collect.HashMultimap;
-import com.vaadin.ui.ComponentContainer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -59,16 +57,19 @@ import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.HashMultimap;
+import com.vaadin.ui.ComponentContainer;
+
 /**
  * Implementation of {@link AppContext}.
- *
+ * 
  * See MGNLUI-379.
  */
 public class AppContextImpl implements AppContext, AppFrameView.Listener {
@@ -127,7 +128,7 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     }
 
     @Override
-    public SubAppDescriptor getDefaultSubAppDescriptor()  {
+    public SubAppDescriptor getDefaultSubAppDescriptor() {
         Map<String, SubAppDescriptor> subAppDescriptors = getAppDescriptor().getSubApps();
 
         SubAppDescriptor defaultSubAppDescriptor = null;
@@ -144,7 +145,6 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
         Map<String, SubAppDescriptor> subAppDescriptors = getAppDescriptor().getSubApps();
         return subAppDescriptors.get(subAppId);
     }
-
 
     @Override
     public View getView() {
@@ -167,8 +167,6 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
 
         app.start(location);
     }
-
-
 
     /**
      * Called when a location change occurs and the app is already running.
@@ -216,11 +214,12 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
 
     @Override
     public Location getDefaultLocation() {
-        SubAppDescriptor subAppDescriptor= getDefaultSubAppDescriptor();
+        SubAppDescriptor subAppDescriptor = getDefaultSubAppDescriptor();
         if (subAppDescriptor != null) {
             return new DefaultLocation(Location.LOCATION_TYPE_APP, appDescriptor.getName(), subAppDescriptor.getName(), "");
+        } else {
+            return null;
         }
-        else return null;
     }
 
     @Override
@@ -233,7 +232,7 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
             subAppContext.getSubApp().locationChanged(location);
 
             if (subAppContext.getTab() != appFrameView.getActiveTab()) {
-                appFrameView.setActiveTab((MagnoliaTab)subAppContext.getTab());
+                appFrameView.setActiveTab((MagnoliaTab) subAppContext.getTab());
             }
             currentSubAppContext = subAppContext;
         }
@@ -246,7 +245,6 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
             currentSubAppContext = subAppContext;
         }
 
-
     }
 
     private SubAppContext startSubApp(Location location) {
@@ -258,12 +256,9 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
         }
         SubAppContext subAppContext = new SubAppContextImpl(subAppDescriptor);
 
-
         ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppContext.getSubAppId(), subAppContext, appComponentProvider);
 
         SubApp subApp = subAppComponentProvider.newInstance(subAppDescriptor.getSubAppClass());
-
-
 
         subAppContext.setAppContext(this);
         subAppContext.setLocation(location);
@@ -311,7 +306,7 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     @Override
     public void enterFullScreenMode() {
         appFrameView.asVaadinComponent().setFullscreen(true);
-        //shell.showFullscreen(view);
+        // shell.showFullscreen(view);
     }
 
     @Override
@@ -335,8 +330,9 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     // Same instance?!
     private SubAppContext getSubAppContextForSubApp(SubApp subApp) {
         for (SubAppContext subAppContext : getSubAppContexts(subApp.getSubAppId())) {
-            if (subAppContext.getSubApp() == subApp)
+            if (subAppContext.getSubApp() == subApp) {
                 return subAppContext;
+            }
         }
         return null;
     }
@@ -420,4 +416,3 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     }
 
 }
-

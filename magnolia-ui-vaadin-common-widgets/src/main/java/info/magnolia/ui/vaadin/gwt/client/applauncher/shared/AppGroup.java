@@ -54,8 +54,9 @@ public class AppGroup implements Serializable {
 
     private boolean clientGroup;
 
-    public AppGroup() {}
-    
+    public AppGroup() {
+    }
+
     public AppGroup(String name, String caption, String backgroundColor, boolean isPermanent, boolean clientGroup) {
         this.name = name;
         this.caption = caption;
@@ -67,7 +68,7 @@ public class AppGroup implements Serializable {
     public void setBackgroundColor(String backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
-    
+
     public void addAppTile(final AppTile tile) {
         appTiles.add(tile);
     }
@@ -75,7 +76,7 @@ public class AppGroup implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -95,7 +96,7 @@ public class AppGroup implements Serializable {
     public void setAppTiles(List<AppTile> appTiles) {
         this.appTiles = appTiles;
     }
-    
+
     public boolean isPermanent() {
         return isPermanent;
     }
@@ -103,15 +104,15 @@ public class AppGroup implements Serializable {
     public boolean isClientGroup() {
         return clientGroup;
     }
-    
+
     public void setPermanent(boolean isPermanent) {
         this.isPermanent = isPermanent;
     }
-    
+
     public void setClientGroup(boolean clientGroup) {
         this.clientGroup = clientGroup;
     }
-    
+
     public void setCaption(String caption) {
         this.caption = caption;
     }

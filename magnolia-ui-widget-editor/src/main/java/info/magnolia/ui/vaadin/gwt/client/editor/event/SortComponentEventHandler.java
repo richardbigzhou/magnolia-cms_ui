@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.editor.event;
 
 import com.google.gwt.event.shared.EventHandler;
 
-
 /**
  * SortComponentEventHandler.
  */

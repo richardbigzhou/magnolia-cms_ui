@@ -32,160 +32,161 @@
  *
  */
 package info.magnolia.ui.admincentral.app.applauncher;
+
 /*
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import info.magnolia.ui.admincentral.app.AppTestUtility;
-import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherShellApp;
-import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherViewImpl;
-import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.app.AppControllerImpl;
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppEventType;
-import info.magnolia.ui.framework.app.AppLifecycleEvent;
-import info.magnolia.ui.framework.app.layout.AppCategory;
-import info.magnolia.ui.framework.app.layout.AppLayout;
-import info.magnolia.ui.framework.app.layout.AppLayoutImpl;
-import info.magnolia.ui.framework.app.layout.AppLayoutManager;
-import info.magnolia.ui.framework.app.layout.AppLayoutManagerImpl;
-import info.magnolia.ui.framework.app.layout.event.LayoutEvent;
-import info.magnolia.ui.framework.app.layout.event.LayoutEventType;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.SimpleEventBus;
-import info.magnolia.ui.framework.event.SimpleSystemEventBus;
-import info.magnolia.ui.framework.event.SystemEventBus;
-import info.magnolia.ui.vaadin.integration.widget.AppButton;
+ import static org.junit.Assert.assertEquals;
+ import static org.junit.Assert.assertNotSame;
+ import static org.mockito.Mockito.mock;
+ import static org.mockito.Mockito.when;
+ import info.magnolia.ui.admincentral.app.AppTestUtility;
+ import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherShellApp;
+ import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherViewImpl;
+ import info.magnolia.ui.framework.app.AppController;
+ import info.magnolia.ui.framework.app.AppControllerImpl;
+ import info.magnolia.ui.framework.app.AppDescriptor;
+ import info.magnolia.ui.framework.app.AppEventType;
+ import info.magnolia.ui.framework.app.AppLifecycleEvent;
+ import info.magnolia.ui.framework.app.layout.AppCategory;
+ import info.magnolia.ui.framework.app.layout.AppLayout;
+ import info.magnolia.ui.framework.app.layout.AppLayoutImpl;
+ import info.magnolia.ui.framework.app.layout.AppLayoutManager;
+ import info.magnolia.ui.framework.app.layout.AppLayoutManagerImpl;
+ import info.magnolia.ui.framework.app.layout.event.LayoutEvent;
+ import info.magnolia.ui.framework.app.layout.event.LayoutEventType;
+ import info.magnolia.ui.framework.event.EventBus;
+ import info.magnolia.ui.framework.event.SimpleEventBus;
+ import info.magnolia.ui.framework.event.SimpleSystemEventBus;
+ import info.magnolia.ui.framework.event.SystemEventBus;
+ import info.magnolia.ui.vaadin.integration.widget.AppButton;
 
-import java.util.HashMap;
-import java.util.Map;
+ import java.util.HashMap;
+ import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+ import org.junit.Before;
+ import org.junit.Test;
 
-import com.vaadin.ui.CssLayout;
-*/
+ import com.vaadin.ui.CssLayout;
+ */
 
 /**
  * Main test class for {AppLauncherShellApp}.
  */
 public class AppLauncherShellAppTest {
-/*
-    private EventBus eventBus;
-    private SystemEventBus systemEventBus;
-    private AppLauncherViewImpl view;
-    private AppController appController;
-    private AppLayoutManager appLauncherLayoutManager;
-    private AppLayout layout;
-    private AppCategory appCategory1;
-    private AppCategory appCategory2;
-    private AppDescriptor appDescriptor1;
-    private AppDescriptor appDescriptor2;
-    private AppDescriptor appDescriptor3;
-
-    @Before
-    public void setUp() {
-        eventBus = new SimpleEventBus();
-        systemEventBus = new SimpleSystemEventBus();
-        view = new AppLauncherViewImpl();
-        layout = createLayout();
-        appLauncherLayoutManager = mock(AppLayoutManagerImpl.class);
-        when(appLauncherLayoutManager.getLayout()).thenReturn(layout);
-        when(appLauncherLayoutManager.isAppDescriptionRegistered("appDescriptor1")).thenReturn(true);
-        when(appLauncherLayoutManager.isAppDescriptionRegistered("appDescriptor2")).thenReturn(true);
-        when(appLauncherLayoutManager.isAppDescriptionRegistered("appDescriptor3")).thenReturn(true);
-
-        appController = mock(AppControllerImpl.class);
-    }
-
-
-    private AppLayout createLayout() {
-        appDescriptor1 = AppTestUtility.createAppDescriptor("appDescriptor1", null);
-        appDescriptor2 = AppTestUtility.createAppDescriptor("appDescriptor2", null);
-        appDescriptor3 = AppTestUtility.createAppDescriptor("appDescriptor3", null);
-        appCategory1 =  AppTestUtility.createAppCategory("appCategory1", appDescriptor1, appDescriptor2);
-        appCategory2 =  AppTestUtility.createAppCategory("appCategory2", appDescriptor3);
-        Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
-        categories.put("appCategory1", appCategory1);
-        categories.put("appCategory2", appCategory2);
-        return new AppLayoutImpl(categories);
-    }
-
-    @Test
-    public void testLayoutEvent() {
-        // GIVEN
-        new AppLauncherShellApp(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
-        CssLayout component =  (CssLayout)view.asVaadinComponent();
-        assertEquals(AppLauncherViewImplTest.appLauncherStyleName,component.getStyleName());
-        AppButton appButtonBeforeReload = AppLauncherViewImplTest.getComponent( AppButton.class,  "appDescriptor1_label", null, component);
-        assertEquals(appButtonBeforeReload.isActive(),false);
-
-        // WHEN
-        systemEventBus.fireEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, "appDescriptor1"));
-
-        // THEN
-        // Shoud have a new Button id
-        AppButton appButtonAfterReload = AppLauncherViewImplTest.getComponent( AppButton.class,  "appDescriptor1_label", null, component);
-        assertEquals(appButtonBeforeReload.getStyleName(),appButtonAfterReload.getStyleName());
-        assertNotSame(appButtonBeforeReload,appButtonAfterReload);
-        assertEquals(appButtonAfterReload.isActive(),false);
-    }
-
-    @Test
-    public void testLayoutEvent_ActiveButton() {
-        // GIVEN
-        new AppLauncherShellApp(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
-        CssLayout component =  (CssLayout)view.asVaadinComponent();
-        assertEquals(AppLauncherViewImplTest.appLauncherStyleName,component.getStyleName());
-        AppButton appButtonBeforeReload = AppLauncherViewImplTest.getComponent( AppButton.class,  "appDescriptor1_label", null, component);
-        assertEquals(appButtonBeforeReload.isActive(),false);
-
-        when(appController.isAppStarted(appDescriptor1.getName())).thenReturn(true);
-
-        // WHEN
-        systemEventBus.fireEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, "appDescriptor1"));
-
-        // THEN
-        // Shoud have a new Button id
-        AppButton appButtonAfterReload = AppLauncherViewImplTest.getComponent( AppButton.class,  "appDescriptor1_label", null, component);
-        assertEquals(appButtonBeforeReload.getStyleName(),appButtonAfterReload.getStyleName());
-        assertNotSame(appButtonBeforeReload,appButtonAfterReload);
-        assertEquals(appButtonAfterReload.isActive(),true);
-    }
-
-    @Test
-    public void testAppEvent_Start() {
-        // GIVEN
-        new AppLauncherShellApp(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
-        CssLayout component =  (CssLayout)view.asVaadinComponent();
-        assertEquals(AppLauncherViewImplTest.appLauncherStyleName,component.getStyleName());
-        AppButton appButton = AppLauncherViewImplTest.getComponent( AppButton.class,  "appDescriptor1_label", null, component);
-        assertEquals(appButton.isActive(),false);
-
-        // WHEN
-        eventBus.fireEvent(new AppLifecycleEvent(appDescriptor1, AppEventType.STARTED));
-
-        // THEN
-        assertEquals(appButton.isActive(),true);
-    }
-
-    @Test
-    public void testAppEvent_Stop() {
-        // GIVEN
-        when(appController.isAppStarted(appDescriptor1.getName())).thenReturn(true);
-        new AppLauncherShellApp(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
-        eventBus.fireEvent(new AppLifecycleEvent(appDescriptor1, AppEventType.STARTED));
-        CssLayout component =  (CssLayout)view.asVaadinComponent();
-        assertEquals(AppLauncherViewImplTest.appLauncherStyleName,component.getStyleName());
-        AppButton appButton = AppLauncherViewImplTest.getComponent( AppButton.class,  "appDescriptor1_label", null, component);
-        assertEquals(appButton.isActive(),true);
-
-        // WHEN
-        eventBus.fireEvent(new AppLifecycleEvent(appDescriptor1, AppEventType.STOPPED));
-
-        // THEN
-        assertEquals(appButton.isActive(),false);
-    }
-*/
+    /*
+     * private EventBus eventBus;
+     * private SystemEventBus systemEventBus;
+     * private AppLauncherViewImpl view;
+     * private AppController appController;
+     * private AppLayoutManager appLauncherLayoutManager;
+     * private AppLayout layout;
+     * private AppCategory appCategory1;
+     * private AppCategory appCategory2;
+     * private AppDescriptor appDescriptor1;
+     * private AppDescriptor appDescriptor2;
+     * private AppDescriptor appDescriptor3;
+     * 
+     * @Before
+     * public void setUp() {
+     * eventBus = new SimpleEventBus();
+     * systemEventBus = new SimpleSystemEventBus();
+     * view = new AppLauncherViewImpl();
+     * layout = createLayout();
+     * appLauncherLayoutManager = mock(AppLayoutManagerImpl.class);
+     * when(appLauncherLayoutManager.getLayout()).thenReturn(layout);
+     * when(appLauncherLayoutManager.isAppDescriptionRegistered("appDescriptor1")).thenReturn(true);
+     * when(appLauncherLayoutManager.isAppDescriptionRegistered("appDescriptor2")).thenReturn(true);
+     * when(appLauncherLayoutManager.isAppDescriptionRegistered("appDescriptor3")).thenReturn(true);
+     * 
+     * appController = mock(AppControllerImpl.class);
+     * }
+     * 
+     * 
+     * private AppLayout createLayout() {
+     * appDescriptor1 = AppTestUtility.createAppDescriptor("appDescriptor1", null);
+     * appDescriptor2 = AppTestUtility.createAppDescriptor("appDescriptor2", null);
+     * appDescriptor3 = AppTestUtility.createAppDescriptor("appDescriptor3", null);
+     * appCategory1 = AppTestUtility.createAppCategory("appCategory1", appDescriptor1, appDescriptor2);
+     * appCategory2 = AppTestUtility.createAppCategory("appCategory2", appDescriptor3);
+     * Map<String, AppCategory> categories = new HashMap<String, AppCategory>();
+     * categories.put("appCategory1", appCategory1);
+     * categories.put("appCategory2", appCategory2);
+     * return new AppLayoutImpl(categories);
+     * }
+     * 
+     * @Test
+     * public void testLayoutEvent() {
+     * // GIVEN
+     * new AppLauncherShellApp(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
+     * CssLayout component = (CssLayout)view.asVaadinComponent();
+     * assertEquals(AppLauncherViewImplTest.appLauncherStyleName,component.getStyleName());
+     * AppButton appButtonBeforeReload = AppLauncherViewImplTest.getComponent( AppButton.class, "appDescriptor1_label", null, component);
+     * assertEquals(appButtonBeforeReload.isActive(),false);
+     * 
+     * // WHEN
+     * systemEventBus.fireEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, "appDescriptor1"));
+     * 
+     * // THEN
+     * // Shoud have a new Button id
+     * AppButton appButtonAfterReload = AppLauncherViewImplTest.getComponent( AppButton.class, "appDescriptor1_label", null, component);
+     * assertEquals(appButtonBeforeReload.getStyleName(),appButtonAfterReload.getStyleName());
+     * assertNotSame(appButtonBeforeReload,appButtonAfterReload);
+     * assertEquals(appButtonAfterReload.isActive(),false);
+     * }
+     * 
+     * @Test
+     * public void testLayoutEvent_ActiveButton() {
+     * // GIVEN
+     * new AppLauncherShellApp(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
+     * CssLayout component = (CssLayout)view.asVaadinComponent();
+     * assertEquals(AppLauncherViewImplTest.appLauncherStyleName,component.getStyleName());
+     * AppButton appButtonBeforeReload = AppLauncherViewImplTest.getComponent( AppButton.class, "appDescriptor1_label", null, component);
+     * assertEquals(appButtonBeforeReload.isActive(),false);
+     * 
+     * when(appController.isAppStarted(appDescriptor1.getName())).thenReturn(true);
+     * 
+     * // WHEN
+     * systemEventBus.fireEvent(new LayoutEvent(LayoutEventType.RELOAD_APP, "appDescriptor1"));
+     * 
+     * // THEN
+     * // Shoud have a new Button id
+     * AppButton appButtonAfterReload = AppLauncherViewImplTest.getComponent( AppButton.class, "appDescriptor1_label", null, component);
+     * assertEquals(appButtonBeforeReload.getStyleName(),appButtonAfterReload.getStyleName());
+     * assertNotSame(appButtonBeforeReload,appButtonAfterReload);
+     * assertEquals(appButtonAfterReload.isActive(),true);
+     * }
+     * 
+     * @Test
+     * public void testAppEvent_Start() {
+     * // GIVEN
+     * new AppLauncherShellApp(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
+     * CssLayout component = (CssLayout)view.asVaadinComponent();
+     * assertEquals(AppLauncherViewImplTest.appLauncherStyleName,component.getStyleName());
+     * AppButton appButton = AppLauncherViewImplTest.getComponent( AppButton.class, "appDescriptor1_label", null, component);
+     * assertEquals(appButton.isActive(),false);
+     * 
+     * // WHEN
+     * eventBus.fireEvent(new AppLifecycleEvent(appDescriptor1, AppEventType.STARTED));
+     * 
+     * // THEN
+     * assertEquals(appButton.isActive(),true);
+     * }
+     * 
+     * @Test
+     * public void testAppEvent_Stop() {
+     * // GIVEN
+     * when(appController.isAppStarted(appDescriptor1.getName())).thenReturn(true);
+     * new AppLauncherShellApp(view, appController, appLauncherLayoutManager, eventBus, systemEventBus);
+     * eventBus.fireEvent(new AppLifecycleEvent(appDescriptor1, AppEventType.STARTED));
+     * CssLayout component = (CssLayout)view.asVaadinComponent();
+     * assertEquals(AppLauncherViewImplTest.appLauncherStyleName,component.getStyleName());
+     * AppButton appButton = AppLauncherViewImplTest.getComponent( AppButton.class, "appDescriptor1_label", null, component);
+     * assertEquals(appButton.isActive(),true);
+     * 
+     * // WHEN
+     * eventBus.fireEvent(new AppLifecycleEvent(appDescriptor1, AppEventType.STOPPED));
+     * 
+     * // THEN
+     * assertEquals(appButton.isActive(),false);
+     * }
+     */
 }

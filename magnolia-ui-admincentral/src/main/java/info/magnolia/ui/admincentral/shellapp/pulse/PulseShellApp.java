@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.ShellApp;
 import info.magnolia.ui.framework.app.ShellAppContext;
@@ -66,10 +65,11 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
         /**
          * TODO - remove commented code if caused by V7 migration.
          */
-    /*    shell.setIndication(
-                VMainLauncher.ShellAppType.PULSE,
-                messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
-   */
+        /*
+         * shell.setIndication(
+         * VMainLauncher.ShellAppType.PULSE,
+         * messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
+         */
     }
 
     @Override
@@ -77,8 +77,8 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
         this.context = context;
         pulseView.setPresenter(this);
 
-        //Causes a Guice error - probably the messagesManager is not ready yet or something.
-        //shell.setIndicationOnPulseToNumberOfUnclearedMessagesForCurrentUser();
+        // Causes a Guice error - probably the messagesManager is not ready yet or something.
+        // shell.setIndicationOnPulseToNumberOfUnclearedMessagesForCurrentUser();
 
         return pulseView;
     }

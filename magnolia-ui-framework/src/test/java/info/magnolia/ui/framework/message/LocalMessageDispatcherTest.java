@@ -33,14 +33,15 @@
  */
 package info.magnolia.ui.framework.message;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SimpleEventBus;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
 
 /**
  * Test case for {@link LocalMessageDispatcher}.

@@ -42,12 +42,10 @@ import java.util.List;
  */
 public class ContentViewBuilderProviderImpl implements ContentViewBuilderProvider {
 
-
-    //private UISettings uiSettings;
+    // private UISettings uiSettings;
 
     // content2bean
     private List<ContentViewBuilder> contentViewBuilders = new ArrayList<ContentViewBuilder>();
-
 
     /**
      * Is needed so that we can make a proxy (reloading configuration).
@@ -56,11 +54,13 @@ public class ContentViewBuilderProviderImpl implements ContentViewBuilderProvide
     public ContentViewBuilderProviderImpl() {
     }
 
-    /*@Inject
-    public ContentViewBuilderProviderImpl(User user, UISettings uiSettings) {
-        this.user = user;
-        this.uiSettings = uiSettings;
-    }*/
+    /*
+     * @Inject
+     * public ContentViewBuilderProviderImpl(User user, UISettings uiSettings) {
+     * this.user = user;
+     * this.uiSettings = uiSettings;
+     * }
+     */
 
     @Override
     public ContentViewBuilder getBuilder() {

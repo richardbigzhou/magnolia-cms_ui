@@ -33,10 +33,9 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
-import com.google.gwt.user.client.ui.Label;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * Page bar. The HTML output by this widget contains an empty <code>span</code> element with an id
@@ -51,17 +50,15 @@ import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
  * ')
  * }
  * <p>
- * The placeholder is styled to be automatically centered in the main bar. See this module's
- * editor.css file (id selector #mgnlEditorMainbarPlaceholder).
- *
+ * The placeholder is styled to be automatically centered in the main bar. See this module's editor.css file (id selector #mgnlEditorMainbarPlaceholder).
+ * 
  * Note: This class is no longer used. Functionality provided by actionbar etc.
- *
- *
+ * 
+ * 
  */
 public class PageBar extends AbstractBar {
 
     private final String dialog;
-
 
     public PageBar(MgnlElement mgnlElement) {
         super(null, null);

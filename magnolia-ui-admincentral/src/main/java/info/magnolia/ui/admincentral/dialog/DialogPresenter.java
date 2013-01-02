@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.Action;
@@ -55,15 +54,15 @@ public interface DialogPresenter {
     DialogView getView();
 
     EventBus getEventBus();
-    
+
     void closeDialog();
-    
+
     void addDialogCloseHandler(final DialogCloseEvent.Handler listener);
-    
+
     void addAction(String actionName, String actionLabel, DialogActionListener callback);
-    
+
     void addActionCallback(String actionName, DialogActionListener callback);
-    
+
     /**
      * Callback interface for DialogView.Presenter.
      */
@@ -72,30 +71,32 @@ public interface DialogPresenter {
         void onCancel();
 
         void onSuccess(String actionName);
-        
+
         /**
          * Dummy adapter class that allows to skip overriding e.g. onCancel method in actual
          * implementors.
          */
         public static class Adapter implements Callback {
-            
+
             @Override
-            public void onSuccess(String actionName) {}
-            
+            public void onSuccess(String actionName) {
+            }
+
             @Override
-            public void onCancel() {}
-            
+            public void onCancel() {
+            }
+
         }
-        
+
     }
-   
+
     /**
      * A Helper class for operations with {@link DialogPresenter}.
      */
     public class DialogPresenterUtil {
-        
+
         public static void addActionFromDefinition(final DialogPresenter presenter, final DialogActionDefinition definition, final DialogActionFactory factory) {
-            presenter.addAction(definition.getName(), definition.getLabel(), new DialogActionListener() {    
+            presenter.addAction(definition.getName(), definition.getLabel(), new DialogActionListener() {
                 @Override
                 public void onActionExecuted(final String actionName) {
                     final ActionDefinition actionDefinition = definition.getActionDefinition();

@@ -41,7 +41,7 @@ import com.vaadin.shared.AbstractComponentState;
  * PageEditorState.
  */
 public class PageEditorState extends AbstractComponentState {
-    
+
     public PageEditorParameters parameters;
-    
+
 }

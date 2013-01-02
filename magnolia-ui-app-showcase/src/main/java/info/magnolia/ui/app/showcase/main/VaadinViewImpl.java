@@ -82,14 +82,13 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.themes.BaseTheme;
 
-
 /**
  * Implementation for Vaadin component showcase view.
  */
 public class VaadinViewImpl implements VaadinView {
 
     private final VerticalLayout layout;
-   
+
     public VaadinViewImpl() {
         layout = new VerticalLayout();
         layout.setSpacing(true);
@@ -97,13 +96,13 @@ public class VaadinViewImpl implements VaadinView {
         /**
          * TODO: handle margins in CSS style sheet.
          */
-        //layout.setMargin(true, true, false, true);
+        // layout.setMargin(true, true, false, true);
         layout.addComponent(new Label(
-            "The UI elements available in the Vaadin framework that " +
-                "are recommended for use with Magnolia. These fields " +
-                "can be easily added to your app and support Vaadin " +
-                "interaction. Many of these elements are also available " +
-                "within Magnolia Forms/Dialogs."));
+                "The UI elements available in the Vaadin framework that " +
+                        "are recommended for use with Magnolia. These fields " +
+                        "can be easily added to your app and support Vaadin " +
+                        "interaction. Many of these elements are also available " +
+                        "within Magnolia Forms/Dialogs."));
         layout.addComponent(getLabelPreviews());
         layout.addComponent(getIconsPreview());
         layout.addComponent(getProgressIndicatorPreviews());
@@ -251,8 +250,8 @@ public class VaadinViewImpl implements VaadinView {
             setWidth("230px");
             setHeight("120px");
             setContent(new Label(
-                "<h4>Panel content</h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada volutpat vestibulum. Quisque elementum quam sed sem ultrices lobortis. Pellentesque non ligula ac dolor posuere tincidunt sed eu mi. Integer mattis fringilla nulla, ut cursus mauris scelerisque eu. Etiam bibendum placerat euismod. Nam egestas adipiscing orci sed tristique. Sed vitae enim nisi. Sed ac vehicula ipsum. Nulla quis quam nisi. Proin interdum lacus ipsum, at tristique nibh. Curabitur at ipsum sem. Donec venenatis aliquet neque, sit amet cursus lectus condimentum et. In mattis egestas erat, non cursus metus consectetur ac. Pellentesque eget nisl tellus.",
-                ContentMode.HTML));
+                    "<h4>Panel content</h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada volutpat vestibulum. Quisque elementum quam sed sem ultrices lobortis. Pellentesque non ligula ac dolor posuere tincidunt sed eu mi. Integer mattis fringilla nulla, ut cursus mauris scelerisque eu. Etiam bibendum placerat euismod. Nam egestas adipiscing orci sed tristique. Sed vitae enim nisi. Sed ac vehicula ipsum. Nulla quis quam nisi. Proin interdum lacus ipsum, at tristique nibh. Curabitur at ipsum sem. Donec venenatis aliquet neque, sit amet cursus lectus condimentum et. In mattis egestas erat, non cursus metus consectetur ac. Pellentesque eget nisl tellus.",
+                    ContentMode.HTML));
         }
     }
 
@@ -304,7 +303,7 @@ public class VaadinViewImpl implements VaadinView {
             addCaptionedItem("Team A", id);
             addCaptionedItem("Team B", id);
             tree.setItemIcon(id, new ThemeResource(
-                "../runo/icons/16/folder.png"));
+                    "../runo/icons/16/folder.png"));
         }
         grid.addComponent(tree);
         return grid;
@@ -407,7 +406,7 @@ public class VaadinViewImpl implements VaadinView {
         Layout grid = getPreviewLayout("Static text");
 
         Label label = new Label(
-            "Plain text, lorem ipsum dolor sit amet consectetur amit.");
+                "Plain text, lorem ipsum dolor sit amet consectetur amit.");
 
         grid.addComponent(label);
 
@@ -445,7 +444,6 @@ public class VaadinViewImpl implements VaadinView {
         Button button = new Button("Button");
         grid.addComponent(button);
 
-
         button = new Button("Button with link style");
         button.setStyleName(BaseTheme.BUTTON_LINK);
         grid.addComponent(button);
@@ -455,7 +453,7 @@ public class VaadinViewImpl implements VaadinView {
         grid.addComponent(button);
 
         Link l = new Link("Link: magnolia-cms.com", new ExternalResource(
-            "http://www.magnolia-cms.com"));
+                "http://www.magnolia-cms.com"));
         grid.addComponent(l);
 
         return grid;

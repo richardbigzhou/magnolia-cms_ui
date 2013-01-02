@@ -37,7 +37,6 @@ import info.magnolia.ui.vaadin.gwt.client.icon.connector.LoadingIconState;
 
 import com.vaadin.ui.AbstractComponent;
 
-
 /**
  * The LoadingIcon is a lightweight component that outputs the magnolia 5 loading icon as a simple
  * scalable widget. The client-side implementation is based on the icon font technique and CSS3
@@ -52,9 +51,8 @@ public class LoadingIcon extends AbstractComponent {
         getState().size = size;
     }
 
-
     @Override
     protected LoadingIconState getState() {
-        return (LoadingIconState)super.getState();
+        return (LoadingIconState) super.getState();
     };
 }

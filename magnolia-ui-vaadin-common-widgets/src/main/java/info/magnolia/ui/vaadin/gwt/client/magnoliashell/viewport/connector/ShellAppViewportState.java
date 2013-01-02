@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector;
 
-
 /**
  * ShellAppViewportState.
  */
-public class ShellAppViewportState extends ViewportState {}
+public class ShellAppViewportState extends ViewportState {
+}

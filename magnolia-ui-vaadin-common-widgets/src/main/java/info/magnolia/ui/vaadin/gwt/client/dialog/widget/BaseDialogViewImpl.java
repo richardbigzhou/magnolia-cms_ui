@@ -58,19 +58,19 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
     private static final String CLASSNAME_FOOTER = "dialog-footer";
 
     private static final String CLASSNAME_BUTTON = "btn-dialog";
-    
+
     private final DialogHeaderWidget header = createHeader();
-    
+
     private final Element contentEl = DOM.createDiv();
-    
+
     private final Element footerEl = DOM.createDiv();
-    
+
     private final Map<String, Button> actionMap = new HashMap<String, Button>();
-    
+
     private Presenter presenter;
-    
+
     private Widget content;
-    
+
     public BaseDialogViewImpl() {
         final Element root = DOM.createDiv();
         root.addClassName("dialog-root");
@@ -82,11 +82,11 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
         contentEl.addClassName(CLASSNAME_CONTENT);
         footerEl.addClassName(CLASSNAME_FOOTER);
     }
-    
+
     protected DialogHeaderWidget createHeader() {
         return new DialogHeaderWidget(createHeaderCallback());
     }
-    
+
     @Override
     public void setPresenter(final Presenter presenter) {
         this.presenter = presenter;
@@ -96,19 +96,20 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
     public Presenter getPresenter() {
         return presenter;
     }
-    
+
     protected DialogHeaderWidget.VDialogHeaderCallback createHeaderCallback() {
         return new DialogHeaderWidget.VDialogHeaderCallback() {
             @Override
-            public void onDescriptionVisibilityChanged(boolean isVisible) {}
-            
+            public void onDescriptionVisibilityChanged(boolean isVisible) {
+            }
+
             @Override
             public void onCloseFired() {
                 presenter.closeDialog();
             }
         };
     }
-    
+
     protected DialogHeaderWidget getHeader() {
         return header;
     }
@@ -131,11 +132,11 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
         this.content = contentWidget;
         add(contentWidget, contentEl);
     }
-    
+
     public Element getContentEl() {
         return contentEl;
     }
-    
+
     @Override
     public void setActions(Map<String, String> actions) {
         for (final Button actionButton : this.actionMap.values()) {
@@ -145,17 +146,17 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
         final Iterator<Entry<String, String>> it = actions.entrySet().iterator();
         while (it.hasNext()) {
             final Entry<String, String> entry = it.next();
-                final Button button =  new Button(entry.getValue());
-                button.setStyleName(CLASSNAME_BUTTON);
-                button.addStyleDependentName(entry.getKey());
-                button.addClickHandler(new ClickHandler() {
-                    @Override
-                    public void onClick(final ClickEvent event) {
-                        getPresenter().fireAction(entry.getKey());
-                    }
-                });
-                actionMap.put(entry.getKey(), button);
-                add(button, footerEl);
+            final Button button = new Button(entry.getValue());
+            button.setStyleName(CLASSNAME_BUTTON);
+            button.addStyleDependentName(entry.getKey());
+            button.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(final ClickEvent event) {
+                    getPresenter().fireAction(entry.getKey());
+                }
+            });
+            actionMap.put(entry.getKey(), button);
+            add(button, footerEl);
         }
     }
 }

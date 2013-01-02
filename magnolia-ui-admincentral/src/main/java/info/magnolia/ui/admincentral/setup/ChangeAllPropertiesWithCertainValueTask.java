@@ -33,6 +33,11 @@
  */
 package info.magnolia.ui.admincentral.setup;
 
+import info.magnolia.cms.util.QueryUtil;
+import info.magnolia.module.InstallContext;
+import info.magnolia.module.delta.AbstractRepositoryTask;
+import info.magnolia.module.delta.TaskExecutionException;
+
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
@@ -41,21 +46,16 @@ import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 
-import info.magnolia.cms.util.QueryUtil;
-import info.magnolia.module.InstallContext;
-import info.magnolia.module.delta.AbstractRepositoryTask;
-import info.magnolia.module.delta.TaskExecutionException;
-
 /**
  * Changes all properties in an entire workspace that are of type {@link PropertyType#STRING} and has a certain value.
- *
+ * 
  * Note that this uses the query functionality and JCR and therefore usable only if <code>currentValue</code> is a
  * valid <code>fullTextSearchExpression</code> as defined in JCR2 6.7.19. More specifically it is not guaranteed to
  * find all properties intended to be changed if <code>currentValue</code> either:
  * <ul>
- *     <li>starts with a dash</li>
- *     <li>contains the word <code>OR</code></li>
- *     <li>contains characters that conflict with the query syntax such as quote, double quote, minus and backslash</li>
+ * <li>starts with a dash</li>
+ * <li>contains the word <code>OR</code></li>
+ * <li>contains characters that conflict with the query syntax such as quote, double quote, minus and backslash</li>
  * </ul>
  */
 public class ChangeAllPropertiesWithCertainValueTask extends AbstractRepositoryTask {

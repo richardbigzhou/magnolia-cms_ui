@@ -52,10 +52,14 @@ public class MobileSafariVView extends VUI {
     private HandlerManager handlerManager;
 
     static {
-        new TouchStartEvent(){};
-        new TouchEndEvent(){};
-        new TouchMoveEvent(){};
-        new TouchCancelEvent(){};
+        new TouchStartEvent() {
+        };
+        new TouchEndEvent() {
+        };
+        new TouchMoveEvent() {
+        };
+        new TouchCancelEvent() {
+        };
     }
 
     public MobileSafariVView() {
@@ -73,7 +77,7 @@ public class MobileSafariVView extends VUI {
         });
 
         if (handlerManager != null &&
-            handlerManager.getHandlerCount(com.google.gwt.event.dom.client.TouchStartEvent.getType()) > 0) {
+                handlerManager.getHandlerCount(com.google.gwt.event.dom.client.TouchStartEvent.getType()) > 0) {
             com.google.gwt.event.dom.client.TouchStartHandler eh =
                     handlerManager.getHandler(com.google.gwt.event.dom.client.TouchStartEvent.getType(), 0);
             handlerManager.removeHandler(com.google.gwt.event.dom.client.TouchStartEvent.getType(), eh);

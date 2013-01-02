@@ -84,7 +84,7 @@ public class ThumbnailField extends CustomField<String> {
         layout.addComponent(label);
         return layout;
     }
-    
+
     @Override
     public Class<String> getType() {
         return String.class;
@@ -101,7 +101,7 @@ public class ThumbnailField extends CustomField<String> {
                     Node parentNode = MgnlContext.getJCRSession(workspace).getNode(event.getProperty().getValue().toString());
                     String uuid = parentNode.getIdentifier();
 
-                    if(!currentIdentifier.equals(uuid)) {
+                    if (!currentIdentifier.equals(uuid)) {
                         // Set Text info
                         label.setValue(createFieldDetail(parentNode));
                         // Set Thumbnail
@@ -120,7 +120,7 @@ public class ThumbnailField extends CustomField<String> {
     /**
      * Create a field detail displayed after the thumbnail.
      */
-    public String createFieldDetail(Node parentNode) throws RepositoryException{
+    public String createFieldDetail(Node parentNode) throws RepositoryException {
         return "";
     }
 }

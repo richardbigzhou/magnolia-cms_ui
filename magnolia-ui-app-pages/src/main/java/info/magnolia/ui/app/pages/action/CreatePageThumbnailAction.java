@@ -45,18 +45,19 @@ import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 
-import org.apache.jackrabbit.JcrConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+
+import org.apache.jackrabbit.JcrConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * CreatePageThumbnailAction.
@@ -100,7 +101,9 @@ public class CreatePageThumbnailAction extends ActionBase<CreatePageThumbnailAct
 
     /**
      * Save the image to jcr.
-     * @param inputStream containing the image. Caution: it'll not be closed in here.
+     * 
+     * @param inputStream
+     *            containing the image. Caution: it'll not be closed in here.
      */
     private void saveImage(Node node, InputStream inputStream, String contentType, String extension) throws RepositoryException, IOException {
 

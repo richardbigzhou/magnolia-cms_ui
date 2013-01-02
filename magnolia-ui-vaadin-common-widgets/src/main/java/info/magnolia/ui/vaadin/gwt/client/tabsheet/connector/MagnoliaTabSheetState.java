@@ -36,15 +36,14 @@ package info.magnolia.ui.vaadin.gwt.client.tabsheet.connector;
 import com.vaadin.shared.AbstractComponentState;
 import com.vaadin.shared.Connector;
 
-
 /**
  * MagnoliaTabSheetState.
  */
 public class MagnoliaTabSheetState extends AbstractComponentState {
 
     public Connector activeTab;
- 
+
     public String showAllLabel;
-    
+
     public boolean showAllEnabled;
 }

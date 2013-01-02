@@ -50,11 +50,9 @@ public class IconFontResource implements Resource, Serializable {
      */
     private String cssClassName = null;
 
-
-
     /**
      * Creates an IconFont resource.
-     *
+     * 
      * @param cssClassName
      *            the ccs class name in the iconfont.
      */
@@ -68,14 +66,16 @@ public class IconFontResource implements Resource, Serializable {
 
     /**
      * Gets the cssClassName of the icon in the iconFont.
-     *
+     * 
      * @return the cssClassName of the iconfont resource.
      */
     public String getCssClassName() {
         return cssClassName;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.vaadin.terminal.Resource#getMIMEType()
      */
     @Override

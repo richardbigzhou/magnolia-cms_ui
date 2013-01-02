@@ -34,9 +34,7 @@
 package info.magnolia.ui.admincentral.content.view;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
@@ -51,7 +49,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-
 
 /**
  * Tests for ContentPresenter.

@@ -37,31 +37,29 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-
 /**
  * ValidationChangedEvent. Sent when the field validation happened.
- *
+ * 
  */
 public class ValidationChangedEvent extends GwtEvent<ValidationChangedEvent.Handler> {
-    
-    
+
     /**
      * Handler.
      */
     public interface Handler extends EventHandler {
         void onValidationChanged(ValidationChangedEvent event);
     }
-    
+
     /**
      * {@link HasValidationChangeHanlders}.
      */
     public interface HasValidationChangeHanlders {
-        
+
         HandlerRegistration addValidationChangeHandler(Handler handler);
     }
-    
+
     public static final Type<ValidationChangedEvent.Handler> TYPE = new Type<ValidationChangedEvent.Handler>();
-    
+
     @Override
     public Type<Handler> getAssociatedType() {
         return TYPE;
@@ -71,6 +69,5 @@ public class ValidationChangedEvent extends GwtEvent<ValidationChangedEvent.Hand
     protected void dispatch(Handler handler) {
         handler.onValidationChanged(this);
     }
-    
 
 }

@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-
 /**
  * Factory interface for creating choose dialogs.
  */

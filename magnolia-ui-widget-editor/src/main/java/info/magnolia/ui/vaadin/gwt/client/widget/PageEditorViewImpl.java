@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget;
 
-
 import info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler;
 
 import com.google.gwt.core.client.GWT;
@@ -44,24 +43,24 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.vaadin.client.BrowserInfo;
+import com.vaadin.terminal.gwt.client.BrowserInfo;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
- *
+ * 
  */
 public class PageEditorViewImpl extends Composite implements PageEditorView {
 
     private Listener listener;
 
     private Frame iframe = new Frame();
-    
+
     private String url;
 
     private SimplePanel content;
 
     private AbstractFrameEventHandler handler;
-    
+
     public PageEditorViewImpl(EventBus eventBus) {
         super();
         this.handler = GWT.create(AbstractFrameEventHandler.class);

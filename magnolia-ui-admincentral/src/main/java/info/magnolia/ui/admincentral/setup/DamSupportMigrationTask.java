@@ -39,9 +39,9 @@ import info.magnolia.module.delta.TaskExecutionException;
 
 /**
  * Migrate DAM support for version >= 5.0.
- *
+ * 
  */
-public class DamSupportMigrationTask  extends AbstractTask {
+public class DamSupportMigrationTask extends AbstractTask {
 
     public DamSupportMigrationTask(String taskName, String taskDescription) {
         super(taskName, taskDescription);
@@ -52,22 +52,25 @@ public class DamSupportMigrationTask  extends AbstractTask {
      */
     @Override
     public void execute(InstallContext installContext) throws TaskExecutionException {
-        /*try {
-            Node dialog = installContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/" + moduleName + "/dialogs");
-            // Copy to Dialog50
-            copyInSession(dialog, dialog.getPath()+"50");
-            NodeUtil.visit(dialog, new NodeVisitor() {
-                @Override
-                public void visit(Node current) throws RepositoryException {
-                    for (Node dialogNode : NodeUtil.getNodes(current, MgnlNodeType.NT_CONTENTNODE)) {
-                        performDialogMigration(dialogNode);
-                    }
-                }
-            }, new NodeTypePredicate(MgnlNodeType.NT_CONTENT));
-            // Try to resolve references for extends.
-            postProcessForExtendsAndReference();
-        } catch (Exception e) {
-            installContext.warn("Could not Migrate Dialod for the following module " + moduleName);
-        }*/
+        /*
+         * try {
+         * Node dialog = installContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/" + moduleName + "/dialogs");
+         * // Copy to Dialog50
+         * copyInSession(dialog, dialog.getPath()+"50");
+         * NodeUtil.visit(dialog, new NodeVisitor() {
+         * 
+         * @Override
+         * public void visit(Node current) throws RepositoryException {
+         * for (Node dialogNode : NodeUtil.getNodes(current, MgnlNodeType.NT_CONTENTNODE)) {
+         * performDialogMigration(dialogNode);
+         * }
+         * }
+         * }, new NodeTypePredicate(MgnlNodeType.NT_CONTENT));
+         * // Try to resolve references for extends.
+         * postProcessForExtendsAndReference();
+         * } catch (Exception e) {
+         * installContext.warn("Could not Migrate Dialod for the following module " + moduleName);
+         * }
+         */
     }
 }

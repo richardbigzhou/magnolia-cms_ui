@@ -54,9 +54,9 @@ public interface FormView extends View, Item.Editor {
 
     @Override
     public Form asVaadinComponent();
-    
+
     void addAction(String actionName, String actionLabel, FormActionListener callback);
-    
+
     void setFormDescription(String description);
 
     void setCaption(String caption);
@@ -68,7 +68,7 @@ public interface FormView extends View, Item.Editor {
     void setShowAllEnabled(boolean enabled);
 
     void suppressOwnActions();
-    
+
     boolean isValid();
 
     Collection<Field<?>> getFields();

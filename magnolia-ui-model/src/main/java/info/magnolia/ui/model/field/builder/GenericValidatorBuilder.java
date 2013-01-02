@@ -37,7 +37,7 @@ import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidat
 
 /**
  * Builder for creating a validator using only the standard properties.
- *
+ * 
  * @see ValidatorConfig#custom(info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition)
  */
 public class GenericValidatorBuilder {

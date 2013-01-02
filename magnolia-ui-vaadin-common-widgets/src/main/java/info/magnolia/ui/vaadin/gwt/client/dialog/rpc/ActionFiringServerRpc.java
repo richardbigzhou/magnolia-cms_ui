@@ -41,6 +41,6 @@ import com.vaadin.shared.communication.ServerRpc;
 public interface ActionFiringServerRpc extends ServerRpc {
 
     void fireAction(String actionId);
-    
+
     void closeSelf();
 }

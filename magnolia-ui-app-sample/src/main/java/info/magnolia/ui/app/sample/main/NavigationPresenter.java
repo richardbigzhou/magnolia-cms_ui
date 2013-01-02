@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.app.sample.main;
 
+import info.magnolia.ui.framework.event.EventBus;
+
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import info.magnolia.ui.framework.event.EventBus;
 
 /**
  * Presenter for the navigation.

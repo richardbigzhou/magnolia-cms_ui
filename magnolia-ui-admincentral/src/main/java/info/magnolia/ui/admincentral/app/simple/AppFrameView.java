@@ -39,7 +39,6 @@ import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
 import com.vaadin.ui.ComponentContainer;
 
-
 /**
  * View used to give all apps a uniform look-and-feel.
  */
@@ -101,7 +100,7 @@ public class AppFrameView implements View {
     public MagnoliaTab getActiveTab() {
         return tabsheet.getActiveTab();
     }
-    
+
     public void setActiveTab(MagnoliaTab tab) {
         tabsheet.setActiveTab(tab);
     }

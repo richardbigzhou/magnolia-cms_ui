@@ -86,14 +86,14 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
                 @Override
                 public void visit(Node current) throws RepositoryException {
                     for (Node dialogNode : NodeUtil.getNodes(current, MgnlNodeType.NT_CONTENTNODE)) {
-                        if(isDialog(dialogNode)) {
+                        if (isDialog(dialogNode)) {
                             // Handle as dialog only if it has sub nodes indicating that it is actually representing a dialog.
                             // This will filter the fields in dialogs used by the extends mechanism.
                             DialogDefinitionProvider provider = createProvider(dialogNode);
                             if (provider != null) {
                                 providers.add(provider);
                             }
-                        }else {
+                        } else {
                             log.warn("node " + dialogNode.getName() + " will not be handled as Dialog.");
                         }
                     }
@@ -109,8 +109,8 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
      */
     private boolean isDialog(Node dialogNode) throws RepositoryException {
         return dialogNode.hasNode(ConfiguredDialogDefinition.FORM_NODE_NAME)
-            || dialogNode.hasNode(ConfiguredDialogDefinition.ACTIONS_NODE_NAME)
-            || dialogNode.hasProperty(ConfiguredDialogDefinition.EXTEND_PROPERTY_NAME);
+                || dialogNode.hasNode(ConfiguredDialogDefinition.ACTIONS_NODE_NAME)
+                || dialogNode.hasProperty(ConfiguredDialogDefinition.EXTEND_PROPERTY_NAME);
     }
 
     protected DialogDefinitionProvider createProvider(Node dialogNode) throws RepositoryException {

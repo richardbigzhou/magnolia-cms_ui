@@ -54,10 +54,8 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 
-
 /**
- * Abstract implementation of an {@link com.vaadin.data.Item} wrapping/representing a
- * {@link javax.jcr.Node}. Implements {Property.ValueChangeListener} in order to inform/change JCR
+ * Abstract implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Node}. Implements {Property.ValueChangeListener} in order to inform/change JCR
  * property when a Vaadin property has changed. Access JCR repository for all read Jcr Property.
  */
 public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implements JcrItemNodeAdapter {
@@ -86,7 +84,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         Node node = (Node) jcrItem;
         try {
             nodeIdentifier = node.getIdentifier();
-            if(StringUtils.isBlank(primaryNodeType)) {
+            if (StringUtils.isBlank(primaryNodeType)) {
                 primaryNodeType = node.getPrimaryNodeType().getName();
             }
         } catch (RepositoryException e) {
@@ -149,7 +147,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
 
     /**
      * @return the property if it already exist on the JCR Item a new property if this property
-     * refer to the JCR Node name null if the property doesn't exist yet.
+     *         refer to the JCR Node name null if the property doesn't exist yet.
      */
     @Override
     public Property getItemProperty(Object id) {
@@ -207,8 +205,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
     }
 
     /**
-     * Updates and removes children based on the {@link #children} and {@link #removedChildren}
-     * maps.
+     * Updates and removes children based on the {@link #children} and {@link #removedChildren} maps.
      */
     private void updateChildren(Node node) throws RepositoryException {
         if (!children.isEmpty()) {

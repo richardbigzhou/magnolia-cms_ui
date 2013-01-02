@@ -88,7 +88,6 @@ public class FocusModelImpl implements FocusModel {
 
         select(mgnlElement);
 
-
     }
 
     @Override
@@ -114,7 +113,9 @@ public class FocusModelImpl implements FocusModel {
     /**
      * Takes care of the selection of components. keeps track of last selected element and toggles
      * the focus. If a null-value is passed it will reset the currently selected component.
-     * @param component the MgnlElement component, can be null.
+     * 
+     * @param component
+     *            the MgnlElement component, can be null.
      */
     private void setComponentSelection(MgnlElement component) {
         MgnlElement currentComponent = model.getSelectedMgnlComponentElement();
@@ -135,7 +136,9 @@ public class FocusModelImpl implements FocusModel {
 
     /**
      * This method takes care of selecting and deselecting areas.
-     * @param area selected area, can be null.
+     * 
+     * @param area
+     *            selected area, can be null.
      */
     private void setAreaSelection(MgnlElement area) {
         MgnlElement selectedArea = model.getSelectedMgnlAreaElement();
@@ -200,16 +203,20 @@ public class FocusModelImpl implements FocusModel {
 
         if (!area.isRelated(model.getSelectedMgnlAreaElement())) {
 
-/*            if (model.getAreaPlaceHolder(area) != null) {
-                model.getAreaPlaceHolder(area).setActive(visible);
-            }*/
+            /*
+             * if (model.getAreaPlaceHolder(area) != null) {
+             * model.getAreaPlaceHolder(area).setActive(visible);
+             * }
+             */
 
             // toggle all direct child-areas placeholders visibility
             for (CmsNode childArea : area.getAreas()) {
 
-/*                if (model.getAreaPlaceHolder(childArea) != null) {
-                    model.getAreaPlaceHolder(childArea).setVisible(visible);
-                }*/
+                /*
+                 * if (model.getAreaPlaceHolder(childArea) != null) {
+                 * model.getAreaPlaceHolder(childArea).setVisible(visible);
+                 * }
+                 */
                 if (childArea.asMgnlElement().getControlBar() != null) {
                     childArea.asMgnlElement().getControlBar().setVisible(visible);
                 }
@@ -234,9 +241,11 @@ public class FocusModelImpl implements FocusModel {
             // toggle all child-components-area placeholder visibility
             for (CmsNode childArea : component.getAreas()) {
 
-/*                if (model.getAreaPlaceHolder(childArea) != null) {
-                    model.getAreaPlaceHolder(childArea).setVisible(visible);
-                }*/
+                /*
+                 * if (model.getAreaPlaceHolder(childArea) != null) {
+                 * model.getAreaPlaceHolder(childArea).setVisible(visible);
+                 * }
+                 */
                 if (childArea.asMgnlElement().getControlBar() != null) {
                     childArea.asMgnlElement().getControlBar().setVisible(visible);
                 }

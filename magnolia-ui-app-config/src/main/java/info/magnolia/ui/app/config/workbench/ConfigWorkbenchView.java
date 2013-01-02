@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.app.config.workbench;
 
-
 import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 
 /**

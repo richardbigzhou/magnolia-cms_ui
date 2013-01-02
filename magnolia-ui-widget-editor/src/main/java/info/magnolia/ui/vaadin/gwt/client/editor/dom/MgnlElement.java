@@ -43,9 +43,9 @@ import java.util.Map;
 import com.google.gwt.dom.client.Element;
 
 /**
-* MgnlElement Constructor.
-*
-*/
+ * MgnlElement Constructor.
+ * 
+ */
 public class MgnlElement extends CmsNode {
 
     private Map<String, String> attributes;
@@ -65,14 +65,12 @@ public class MgnlElement extends CmsNode {
     ComponentPlaceHolder componentPlaceHolder;
     AreaEndBar areaEndBar;
 
-
     /**
      * MgnlElement. Represents a node in the tree built on cms-tags.
      */
     public MgnlElement(MgnlElement parent) {
         super(parent);
     }
-
 
     public void setAttributes(Map<String, String> attributes) {
         this.attributes = attributes;
@@ -89,6 +87,7 @@ public class MgnlElement extends CmsNode {
     public void setControlBar(AbstractBar controlBar) {
         this.controlBar = controlBar;
     }
+
     public ComponentPlaceHolder getComponentPlaceHolder() {
         return componentPlaceHolder;
     }
@@ -164,6 +163,7 @@ public class MgnlElement extends CmsNode {
     public void setStartComment(Element element) {
         this.startComment = element;
     }
+
     public void setEndComment(Element element) {
         this.endComment = element;
     }

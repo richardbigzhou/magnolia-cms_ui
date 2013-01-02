@@ -38,16 +38,16 @@ package info.magnolia.ui.vaadin.magnoliashell;
  */
 public enum MessageType {
     UNKNOWN(""),
-    ERROR("Error"), 
-    WARNING("Warning"), 
+    ERROR("Error"),
+    WARNING("Warning"),
     INFO("Info");
-    
+
     private String caption;
-    
+
     private MessageType(final String caption) {
         this.caption = caption;
     }
-    
+
     @Override
     public String toString() {
         return caption;
@@ -55,7 +55,8 @@ public enum MessageType {
 
     public boolean isSignificant() {
         switch (this) {
-        case INFO: case UNKNOWN:
+        case INFO:
+        case UNKNOWN:
             return false;
         default:
             return true;

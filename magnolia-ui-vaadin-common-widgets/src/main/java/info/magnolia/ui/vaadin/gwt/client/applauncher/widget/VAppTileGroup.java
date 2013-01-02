@@ -33,13 +33,11 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.applauncher.widget;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.ComplexPanel;
-
 
 /**
  * The container that groups semantically similar apps.

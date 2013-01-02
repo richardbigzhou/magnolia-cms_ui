@@ -46,7 +46,6 @@ import javax.inject.Inject;
  */
 public class MessagesMainSubApp extends AbstractSubApp implements MessagesView.Listener {
 
-
     @Inject
     public MessagesMainSubApp(SubAppContext subAppContext, MessagesView view) {
         super(subAppContext, view);

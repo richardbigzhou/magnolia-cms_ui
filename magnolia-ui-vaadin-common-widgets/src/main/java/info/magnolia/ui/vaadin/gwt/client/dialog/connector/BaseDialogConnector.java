@@ -48,9 +48,9 @@ import com.vaadin.shared.ui.Connect;
  */
 @Connect(BaseDialog.class)
 public class BaseDialogConnector extends EditorLikeComponentConnector<BaseDialogView.Presenter, BaseDialogView> {
-    
+
     private final ActionFiringServerRpc rpc = RpcProxy.create(ActionFiringServerRpc.class, this);
-    
+
     @Override
     protected BaseDialogView createView() {
         return new BaseDialogViewImpl();
@@ -63,7 +63,7 @@ public class BaseDialogConnector extends EditorLikeComponentConnector<BaseDialog
             public void fireAction(String action) {
                 rpc.fireAction(action);
             }
-            
+
             @Override
             public void closeDialog() {
                 rpc.closeSelf();

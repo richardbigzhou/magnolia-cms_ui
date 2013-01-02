@@ -36,7 +36,6 @@ package info.magnolia.ui.framework.app.launcherlayout.definition;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Default implementation of {@link AppLauncherGroupDefinition} used for configuration in the
  * repository.

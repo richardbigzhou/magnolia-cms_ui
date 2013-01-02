@@ -39,22 +39,21 @@ import info.magnolia.ui.vaadin.magnoliashell.viewport.DialogViewport;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.shared.ui.Connect;
 
-
 /**
  * DialogViewportConnector.
  */
 @Connect(DialogViewport.class)
 public class DialogViewportConnector extends ViewportConnector {
-    
+
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent event) {
         super.onConnectorHierarchyChange(event);
         getWidget().setActive(!getChildren().isEmpty());
     }
-    
+
     @Override
     public DialogViewportWidget getWidget() {
-        return (DialogViewportWidget)super.getWidget();
+        return (DialogViewportWidget) super.getWidget();
     }
-    
+
 }

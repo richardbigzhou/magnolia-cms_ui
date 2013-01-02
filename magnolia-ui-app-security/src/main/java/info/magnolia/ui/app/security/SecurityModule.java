@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.app.security;
 
-import javax.inject.Inject;
-
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
@@ -46,6 +44,7 @@ import info.magnolia.ui.admincentral.column.StatusColumnFormatter;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
+import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.security.column.UserNameColumnDefinition;
 import info.magnolia.ui.app.security.column.UserNameColumnFormatter;
@@ -64,13 +63,14 @@ import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.builder.UiConfig;
 import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
 import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
-import info.magnolia.ui.model.form.builder.AbstractFieldBuilder;
 import info.magnolia.ui.model.dialog.builder.Dialog;
 import info.magnolia.ui.model.dialog.builder.DialogBuilder;
+import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
+import info.magnolia.ui.model.form.builder.AbstractFieldBuilder;
 import info.magnolia.ui.model.form.builder.OptionBuilder;
 import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
-import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
-import info.magnolia.ui.admincentral.image.DefaultImageProvider;
+
+import javax.inject.Inject;
 
 /**
  * Module class for the Security App. It creates the app and sub-apps, as well as the dialogs.
@@ -111,59 +111,59 @@ public class SecurityModule implements ModuleLifecycle {
         cipd.setImageProviderClass(DefaultImageProvider.class);
 
         app.label("Security").icon("icon-security-app").appClass(SecurityApp.class) // .categoryName("MANAGE")
-            .subApps(
-                    userSubApp(app, cfg, "users", "/admin").defaultSubApp().label("Users"),
-                    userSubApp(app, cfg, "systemUsers", "/system").label("System users"),
-                    app.subApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
-                    .workbench(cfg.workbenches.workbench().workspace("usergroups").root("/").defaultOrder(ModelConstants.JCR_NAME)
-                            .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder"))
-                            .mainItemType(cfg.workbenches.itemType(NodeTypes.Group.NAME).icon("icon-user-group"))
-                            .imageProvider(cipd)
-                            .columns(
-                                    cfg.columns.property(ModelConstants.JCR_NAME, "Group name").sortable(true).expandRatio(2),
-                                    cfg.columns.property("title", "Full group name").sortable(true).displayInDialog(false).expandRatio(2),
-                                    cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
-                                    cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
-                            )
-                            .actionbar(cfg.actionbars.actionbar().defaultAction("edit")
-                                    .sections(
-                                            cfg.actionbars.section("groupActions").label("Groups")
-                                                    .groups(
-                                                            cfg.actionbars.group("addActions").items(
-                                                                    cfg.actionbars.item("addGroup").label("New group").icon("icon-add-item").action(addGroupAction)),
-                                                            cfg.actionbars.group("editActions").items(
-                                                                    cfg.actionbars.item("edit").label("Edit group").icon("icon-edit").action(editGroupAction),
-                                                                    cfg.actionbars.item("delete").label("Delete group").icon("icon-delete").action(new DeleteItemActionDefinition()))
-                                            )
-                                    )
-                            )
-                    ),
-                    app.subApp("roles").subAppClass(SecurityRolesSubApp.class).label("Roles")
-                    .workbench(cfg.workbenches.workbench().workspace("userroles").root("/").defaultOrder(ModelConstants.JCR_NAME)
-                            .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder"))
-                            .mainItemType(cfg.workbenches.itemType(NodeTypes.Role.NAME).icon("icon-user-role"))
-                            .imageProvider(cipd)
-                            .columns(
-                                    cfg.columns.property(ModelConstants.JCR_NAME, "Role name").sortable(true).expandRatio(2),
-                                    cfg.columns.property("title", "Full role name").sortable(true).displayInDialog(false).expandRatio(2),
-                                    cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
-                                    cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
-                            )
-                            .actionbar(cfg.actionbars.actionbar().defaultAction("edit")
-                                    .sections(
-                                            cfg.actionbars.section("roleActions").label("Roles")
-                                                    .groups(
-                                                            cfg.actionbars.group("addActions").items(
-                                                                    cfg.actionbars.item("addRole").label("New role").icon("icon-add-item").action(addRoleAction)),
-                                                            cfg.actionbars.group("editActions").items(
-                                                                    cfg.actionbars.item("edit").label("Edit role").icon("icon-edit").action(editRoleAction),
-                                                                    cfg.actionbars.item("delete").label("Delete role").icon("icon-delete").action(new DeleteItemActionDefinition()))
-                                                    )
-                                    )
-                            )
-                    )
+                .subApps(
+                        userSubApp(app, cfg, "users", "/admin").defaultSubApp().label("Users"),
+                        userSubApp(app, cfg, "systemUsers", "/system").label("System users"),
+                        app.subApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
+                                .workbench(cfg.workbenches.workbench().workspace("usergroups").root("/").defaultOrder(ModelConstants.JCR_NAME)
+                                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder"))
+                                        .mainItemType(cfg.workbenches.itemType(NodeTypes.Group.NAME).icon("icon-user-group"))
+                                        .imageProvider(cipd)
+                                        .columns(
+                                                cfg.columns.property(ModelConstants.JCR_NAME, "Group name").sortable(true).expandRatio(2),
+                                                cfg.columns.property("title", "Full group name").sortable(true).displayInDialog(false).expandRatio(2),
+                                                cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
+                                                cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
+                                        )
+                                        .actionbar(cfg.actionbars.actionbar().defaultAction("edit")
+                                                .sections(
+                                                        cfg.actionbars.section("groupActions").label("Groups")
+                                                                .groups(
+                                                                        cfg.actionbars.group("addActions").items(
+                                                                                cfg.actionbars.item("addGroup").label("New group").icon("icon-add-item").action(addGroupAction)),
+                                                                        cfg.actionbars.group("editActions").items(
+                                                                                cfg.actionbars.item("edit").label("Edit group").icon("icon-edit").action(editGroupAction),
+                                                                                cfg.actionbars.item("delete").label("Delete group").icon("icon-delete").action(new DeleteItemActionDefinition()))
+                                                                )
+                                                )
+                                        )
+                                ),
+                        app.subApp("roles").subAppClass(SecurityRolesSubApp.class).label("Roles")
+                                .workbench(cfg.workbenches.workbench().workspace("userroles").root("/").defaultOrder(ModelConstants.JCR_NAME)
+                                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder"))
+                                        .mainItemType(cfg.workbenches.itemType(NodeTypes.Role.NAME).icon("icon-user-role"))
+                                        .imageProvider(cipd)
+                                        .columns(
+                                                cfg.columns.property(ModelConstants.JCR_NAME, "Role name").sortable(true).expandRatio(2),
+                                                cfg.columns.property("title", "Full role name").sortable(true).displayInDialog(false).expandRatio(2),
+                                                cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
+                                                cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
+                                        )
+                                        .actionbar(cfg.actionbars.actionbar().defaultAction("edit")
+                                                .sections(
+                                                        cfg.actionbars.section("roleActions").label("Roles")
+                                                                .groups(
+                                                                        cfg.actionbars.group("addActions").items(
+                                                                                cfg.actionbars.item("addRole").label("New role").icon("icon-add-item").action(addRoleAction)),
+                                                                        cfg.actionbars.group("editActions").items(
+                                                                                cfg.actionbars.item("edit").label("Edit role").icon("icon-edit").action(editRoleAction),
+                                                                                cfg.actionbars.item("delete").label("Delete role").icon("icon-delete").action(new DeleteItemActionDefinition()))
+                                                                )
+                                                )
+                                        )
+                                )
 
-            );
+                );
     }
 
     protected ContentSubAppBuilder userSubApp(ContentAppBuilder app, UiConfig cfg, String name, String root) {
@@ -182,7 +182,7 @@ public class SecurityModule implements ModuleLifecycle {
 
         return app.subApp(name).subAppClass(SecurityUsersSubApp.class)
                 .workbench(cfg.workbenches.workbench().workspace("users").root(root).defaultOrder(ModelConstants.JCR_NAME)
-                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder"))  // see MGNLPUR-77
+                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder")) // see MGNLPUR-77
                         .mainItemType(cfg.workbenches.itemType(NodeTypes.User.NAME).icon("icon-user-magnolia"))
                         .imageProvider(cipd)
                         .columns(
@@ -201,7 +201,7 @@ public class SecurityModule implements ModuleLifecycle {
                                                         cfg.actionbars.group("editActions").items(
                                                                 cfg.actionbars.item("edit").label("Edit user").icon("icon-edit").action(editUserAction),
                                                                 cfg.actionbars.item("delete").label("Delete user").icon("icon-delete").action(new DeleteItemActionDefinition()))
-                                        )
+                                                )
                                 )
                         )
                 );
@@ -221,10 +221,10 @@ public class SecurityModule implements ModuleLifecycle {
     public void userDialog(DialogBuilder dialog, UiConfig cfg, boolean editMode) {
 
         AbstractFieldBuilder username = cfg.fields.text(ModelConstants.JCR_NAME)
-                                           .label("User name")
-                                           .description("Define user name")
-                                           .required(!editMode)
-                                           .readOnly(editMode);
+                .label("User name")
+                .description("Define user name")
+                .required(!editMode)
+                .readOnly(editMode);
         if (!editMode) {
             username.validator(cfg.validators.custom(new UniqueUserIdValidatorDefinition()).errorMessage("User name already exists."));
         }
@@ -244,7 +244,7 @@ public class SecurityModule implements ModuleLifecycle {
                         cfg.forms.tab("User").label("User info")
                                 .fields(
                                         username,
-                                        cfg.fields.password("pswd").label("Password").verification().encode(false), //we handle encoding in the save action
+                                        cfg.fields.password("pswd").label("Password").verification().encode(false), // we handle encoding in the save action
                                         (new EnabledFieldBuilder("enabled")).label("Enabled"),
                                         cfg.fields.text("title").label("Full name"),
                                         cfg.fields.text("email").label("E-mail").description("Please enter user's e-mail address."),
@@ -265,7 +265,7 @@ public class SecurityModule implements ModuleLifecycle {
                                         roles
                                 )
                 )
-        )
+                )
                 .actions(
                         cfg.dialogs.action("commit").label("save changes").action(new SaveUserDialogActionDefinition()),
                         cfg.dialogs.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
@@ -285,10 +285,10 @@ public class SecurityModule implements ModuleLifecycle {
     public void groupDialog(DialogBuilder dialog, UiConfig cfg, boolean editMode) {
 
         AbstractFieldBuilder groupName = cfg.fields.text(ModelConstants.JCR_NAME)
-                                            .label("Group name")
-                                            .description("Define group name")
-                                            .required(!editMode)
-                                            .readOnly(editMode);
+                .label("Group name")
+                .description("Define group name")
+                .required(!editMode)
+                .readOnly(editMode);
         if (!editMode) {
             groupName.validator(cfg.validators.custom(new UniqueGroupIdValidatorDefinition()).errorMessage("Group name already exists."));
         }
@@ -304,22 +304,22 @@ public class SecurityModule implements ModuleLifecycle {
         roles.rightColumnCaption("Granted roles");
 
         dialog.form(cfg.forms.form().description("Define the group information")
-                        .tabs(
-                                cfg.forms.tab("Group").label("Group info")
-                                        .fields(
-                                                groupName,
-                                                cfg.fields.text("title").label("Full name").description("Full name of the group"),
-                                                cfg.fields.text("description").label("Description").description("Detail description of the group")
-                                        ),
-                                cfg.forms.tab("Groups").label("Groups")
-                                        .fields(
-                                                groups
-                                        ),
-                                cfg.forms.tab("Roles").label("Roles")
-                                        .fields(
-                                                roles
-                                        )
-                        )
+                .tabs(
+                        cfg.forms.tab("Group").label("Group info")
+                                .fields(
+                                        groupName,
+                                        cfg.fields.text("title").label("Full name").description("Full name of the group"),
+                                        cfg.fields.text("description").label("Description").description("Detail description of the group")
+                                ),
+                        cfg.forms.tab("Groups").label("Groups")
+                                .fields(
+                                        groups
+                                ),
+                        cfg.forms.tab("Roles").label("Roles")
+                                .fields(
+                                        roles
+                                )
+                )
                 )
                 .actions(
                         cfg.dialogs.action("commit").label("save changes").action(new SaveGroupDialogActionDefinition()),
@@ -332,7 +332,6 @@ public class SecurityModule implements ModuleLifecycle {
         roleDialog(dialog, cfg, true);
     }
 
-
     @Dialog("ui-security-app:roleAdd")
     public void roleAddDialog(DialogBuilder dialog, UiConfig cfg) {
         roleDialog(dialog, cfg, false);
@@ -341,27 +340,27 @@ public class SecurityModule implements ModuleLifecycle {
     public void roleDialog(DialogBuilder dialog, UiConfig cfg, boolean editMode) {
 
         AbstractFieldBuilder roleName = cfg.fields.text(ModelConstants.JCR_NAME)
-                                           .label("Role name")
-                                           .description("Define unique role name")
-                                           .required(!editMode)
-                                           .readOnly(editMode);
+                .label("Role name")
+                .description("Define unique role name")
+                .required(!editMode)
+                .readOnly(editMode);
         if (!editMode) {
             roleName.validator(cfg.validators.custom(new UniqueRoleIdValidatorDefinition()).errorMessage("Role name already exists."));
         }
 
         dialog.form(cfg.forms.form().description("Define the role information")
-                        .tabs(
-                                cfg.forms.tab("Role").label("Role info")
-                                        .fields(
-                                                roleName,
-                                                cfg.fields.text("title").label("Full name").description("Full name of the role"),
-                                                cfg.fields.text("description").label("Role Description").description("Description of the role")
-                                        ),
-                                cfg.forms.tab("ACLs").label("Access control lists")
-                                        .fields(
-                                                cfg.fields.staticField("placeholder").label("Placeholder for ACL control")
-                                        )
-                        )
+                .tabs(
+                        cfg.forms.tab("Role").label("Role info")
+                                .fields(
+                                        roleName,
+                                        cfg.fields.text("title").label("Full name").description("Full name of the role"),
+                                        cfg.fields.text("description").label("Role Description").description("Description of the role")
+                                ),
+                        cfg.forms.tab("ACLs").label("Access control lists")
+                                .fields(
+                                        cfg.fields.staticField("placeholder").label("Placeholder for ACL control")
+                                )
+                )
                 )
                 .actions(
                         cfg.dialogs.action("commit").label("save changes").action(new SaveRoleDialogActionDefinition()),

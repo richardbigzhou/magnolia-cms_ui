@@ -36,8 +36,8 @@ package info.magnolia.ui.model.field.definition;
 /**
  * Configuration definition for a LinkFieldSelection field Display.
  * This Definition allows to configure:
- *   - Display the Input Text Field.
- *   - Position of the Input Text Field (before or after the ContentWorkbenchView)
+ * - Display the Input Text Field.
+ * - Position of the Input Text Field (before or after the ContentWorkbenchView)
  */
 public class LinkFieldSelectionDefinition extends ConfiguredFieldDefinition {
 

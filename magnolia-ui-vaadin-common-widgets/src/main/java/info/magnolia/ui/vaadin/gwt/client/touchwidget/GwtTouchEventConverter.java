@@ -48,18 +48,24 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
  * Class that converts the GWT touch event to its correspondent from mgwt.
  */
 public class GwtTouchEventConverter implements Serializable {
-    
-    private static final Map<Class<? extends DomEvent<?>>, ? extends TouchEvent<?>> map = new HashMap<Class<? extends DomEvent<?>>, TouchEvent<?>>() {{
-       put(com.google.gwt.event.dom.client.TouchEndEvent.class, new TouchEndEvent(){});
-       put(com.google.gwt.event.dom.client.TouchStartEvent.class, new TouchStartEvent(){});
-       put(com.google.gwt.event.dom.client.TouchCancelEvent.class, new TouchCancelEvent(){});
-       put(com.google.gwt.event.dom.client.TouchMoveEvent.class, new TouchMoveEvent(){});
-    }};
-    
+
+    private static final Map<Class<? extends DomEvent<?>>, ? extends TouchEvent<?>> map = new HashMap<Class<? extends DomEvent<?>>, TouchEvent<?>>() {
+        {
+            put(com.google.gwt.event.dom.client.TouchEndEvent.class, new TouchEndEvent() {
+            });
+            put(com.google.gwt.event.dom.client.TouchStartEvent.class, new TouchStartEvent() {
+            });
+            put(com.google.gwt.event.dom.client.TouchCancelEvent.class, new TouchCancelEvent() {
+            });
+            put(com.google.gwt.event.dom.client.TouchMoveEvent.class, new TouchMoveEvent() {
+            });
+        }
+    };
+
     @SuppressWarnings("unchecked")
     public static <T extends TouchEvent<?>> T convertGWTEvent(DomEvent<?> gwtEvent) {
         if (map.containsKey(gwtEvent.getClass())) {
-            final T result = (T)map.get(gwtEvent.getClass());
+            final T result = (T) map.get(gwtEvent.getClass());
             result.setNativeEvent(gwtEvent.getNativeEvent());
             result.setRelativeElement(gwtEvent.getRelativeElement());
             return result;

@@ -38,7 +38,6 @@ import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
 import com.vaadin.server.Resource;
 
-
 /**
  * Base interface for an action bar view.
  */
@@ -53,7 +52,7 @@ public interface ActionbarView extends View {
     void setSectionPreview(Resource previewResource, String sectionName);
 
     void addAction(ActionbarItem action, String sectionName);
-    
+
     // ENABLE / DISABLE
     void setActionEnabled(String actionName, boolean isEnabled);
 
@@ -62,7 +61,6 @@ public interface ActionbarView extends View {
     void setGroupEnabled(String groupName, boolean isEnabled);
 
     void setGroupEnabled(String groupName, String sectionName, boolean isEnabled);
-
 
     // SHOW / HIDE SECTIONS
     void setSectionVisible(String sectionName, boolean isVisible);
@@ -76,15 +74,17 @@ public interface ActionbarView extends View {
 
         /**
          * Event handler invoked on clicking an item in the action bar.
-         *
-         * @param actionToken the action token
+         * 
+         * @param actionToken
+         *            the action token
          */
         void onActionbarItemClicked(String actionToken);
 
         /**
          * Event handler invoked on clicking full screen button on actionbar.
-         *
-         * @param isFullScreen whether to activate or deactivate full screen mode
+         * 
+         * @param isFullScreen
+         *            whether to activate or deactivate full screen mode
          */
         void onChangeFullScreen(boolean isFullScreen);
 

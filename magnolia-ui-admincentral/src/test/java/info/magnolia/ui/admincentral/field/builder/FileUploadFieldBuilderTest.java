@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
+
 import info.magnolia.ui.admincentral.field.upload.AbstractUploadFileField.DefaultComponent;
 import info.magnolia.ui.admincentral.field.upload.UploadFileFieldImpl;
 import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
@@ -52,7 +53,7 @@ public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFi
     private FileUploadFieldBuilder fileUploadBuilder;
 
     @Test
-    public void simpleFileUploadFieldBuilderTest() throws Exception{
+    public void simpleFileUploadFieldBuilderTest() throws Exception {
         // GIVEN
         fileUploadBuilder = new FileUploadFieldBuilder(definition, baseItem, null);
         fileUploadBuilder.setI18nContentSupport(i18nContentSupport);
@@ -61,15 +62,15 @@ public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFi
 
         // THEN
         assertEquals(true, field instanceof UploadFileFieldImpl);
-        assertEquals(0, ((AbstractJcrNodeAdapter)baseItem).getChildren().size());
+        assertEquals(0, ((AbstractJcrNodeAdapter) baseItem).getChildren().size());
     }
 
     @Test
-    public void buildDefaultUploadLayoutTest() throws Exception{
+    public void buildDefaultUploadLayoutTest() throws Exception {
         // GIVEN
         fileUploadBuilder = new FileUploadFieldBuilder(definition, baseItem, null);
         fileUploadBuilder.setI18nContentSupport(i18nContentSupport);
-        UploadFileFieldImpl field = (UploadFileFieldImpl)fileUploadBuilder.getField();
+        UploadFileFieldImpl field = (UploadFileFieldImpl) fileUploadBuilder.getField();
 
         // WHEN
         field.buildUploadStartedLayout();
@@ -78,7 +79,6 @@ public class FileUploadFieldBuilderTest extends AbstractBuilderTest<FileUploadFi
         assertEquals(true, field.getDefaultComponent(DefaultComponent.UPLOAD).isVisible());
         assertEquals(true, (field.getRootLayout() instanceof DragAndDropWrapper));
     }
-
 
     @Override
     protected void createConfiguredFieldDefinition() {

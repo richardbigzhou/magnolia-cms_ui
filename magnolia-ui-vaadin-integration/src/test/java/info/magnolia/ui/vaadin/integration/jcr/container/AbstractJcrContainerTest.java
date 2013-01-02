@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.integration.jcr.container;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
@@ -424,7 +425,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testConstructJCRQuerySortBySortableColumn() {
         // GIVEN
-        jcrContainer.sort(new String[] {ModelConstants.JCR_NAME}, new boolean[] { true });
+        jcrContainer.sort(new String[] { ModelConstants.JCR_NAME }, new boolean[] { true });
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(true);
@@ -555,7 +556,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testConstructJCRQueryReturnDefaultSelectStatement() {
         // GIVEN
-        //default mainItemType used by constructJCRQuery() is mgnl:content
+        // default mainItemType used by constructJCRQuery() is mgnl:content
         final String expected = String.format(AbstractJcrContainer.SELECT_TEMPLATE, "mgnl:content");
 
         // WHEN
@@ -582,7 +583,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
     /**
      * Dummy Implementation of the {AbstractJcrContainer}.
-     *
+     * 
      */
     public class JcrContainerTestImpl extends AbstractJcrContainer {
 
@@ -590,40 +591,48 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
             super(workbenchDefinition);
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see com.vaadin.data.Container.ItemSetChangeNotifier#addItemSetChangeListener(com.vaadin.data.Container.ItemSetChangeListener)
          */
         @Override
         public void addItemSetChangeListener(ItemSetChangeListener listener) {
             // TODO Auto-generated method stub
-            
+
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see com.vaadin.data.Container.ItemSetChangeNotifier#removeItemSetChangeListener(com.vaadin.data.Container.ItemSetChangeListener)
          */
         @Override
         public void removeItemSetChangeListener(ItemSetChangeListener listener) {
             // TODO Auto-generated method stub
-            
+
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see com.vaadin.data.Container.PropertySetChangeNotifier#addPropertySetChangeListener(com.vaadin.data.Container.PropertySetChangeListener)
          */
         @Override
         public void addPropertySetChangeListener(PropertySetChangeListener listener) {
             // TODO Auto-generated method stub
-            
+
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see com.vaadin.data.Container.PropertySetChangeNotifier#removePropertySetChangeListener(com.vaadin.data.Container.PropertySetChangeListener)
          */
         @Override
         public void removePropertySetChangeListener(PropertySetChangeListener listener) {
             // TODO Auto-generated method stub
-            
+
         }
     }
 }

@@ -47,12 +47,12 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class LoadingPane {
 
-   private final LoadingIconWidget loadingIcon = new LoadingIconWidget();
-   private final Element iconPanel = DOM.createDiv();
-   private final Element loadingIconPositioner = DOM.createDiv();
-   private final Element loadingModalityCurtain = DOM.createDiv();
+    private final LoadingIconWidget loadingIcon = new LoadingIconWidget();
+    private final Element iconPanel = DOM.createDiv();
+    private final Element loadingIconPositioner = DOM.createDiv();
+    private final Element loadingModalityCurtain = DOM.createDiv();
 
-    public LoadingPane(){
+    public LoadingPane() {
         loadingModalityCurtain.setClassName("loading-modality-curtain");
         loadingIconPositioner.setClassName("loading-icon-positioner");
         iconPanel.setClassName("loading-icon-panel");
@@ -61,17 +61,17 @@ public class LoadingPane {
         loadingIconPositioner.appendChild(iconPanel);
     }
 
-    public void appendTo(Widget parent){
+    public void appendTo(Widget parent) {
         parent.getElement().appendChild(loadingModalityCurtain);
         parent.getElement().appendChild(loadingIconPositioner);
     }
 
-    public void hide(){
+    public void hide() {
         loadingModalityCurtain.getStyle().setVisibility(Visibility.HIDDEN);
         loadingIconPositioner.getStyle().setVisibility(Visibility.HIDDEN);
     }
 
-    public void show(){
+    public void show() {
         loadingModalityCurtain.getStyle().setVisibility(Visibility.VISIBLE);
         loadingIconPositioner.getStyle().setVisibility(Visibility.VISIBLE);
     }

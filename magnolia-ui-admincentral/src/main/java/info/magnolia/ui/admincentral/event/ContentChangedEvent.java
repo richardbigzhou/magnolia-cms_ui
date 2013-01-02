@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.event;
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventHandler;
 
-
 /**
  * Global event fired if content was changed, deleted, added.
  * FIXME introduce more granular events

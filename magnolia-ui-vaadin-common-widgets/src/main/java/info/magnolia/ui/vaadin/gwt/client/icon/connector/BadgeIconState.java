@@ -56,5 +56,5 @@ public class BadgeIconState extends AbstractComponentState {
 
     @DelegateToWidget
     public int value;
-    
+
 }

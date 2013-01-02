@@ -49,7 +49,7 @@ public class CompositeIconConnector extends AbstractLayoutConnector {
 
     @Override
     public IconWidget getWidget() {
-        return (IconWidget)super.getWidget();
+        return (IconWidget) super.getWidget();
     }
 
     @Override
@@ -63,7 +63,8 @@ public class CompositeIconConnector extends AbstractLayoutConnector {
     }
 
     @Override
-    public void updateCaption(ComponentConnector connector) {}
+    public void updateCaption(ComponentConnector connector) {
+    }
 
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent event) {

@@ -78,34 +78,20 @@ import com.vaadin.ui.Upload.StartedListener;
  * features of {@link org.vaadin.easyuploads.UploadField} and associated
  * classes.
  * <p>
- * This class handles Upload features (Open file chooser/drag and drop) and
- * components (progress bar, cancel/delete button...), and expose functions that
- * allows to customize the 3 main upload states:
+ * This class handles Upload features (Open file chooser/drag and drop) and components (progress bar, cancel/delete button...), and expose functions that allows to customize the 3 main upload states:
  * <ul>
- * <li>on {@link StartedEvent}: buildStartUploadLayout() is called and allows to
- * initialize the upload progress view.
- * <li>on {@link FinishedEvent}: buildFinishUploadLayout() is used to initialize
- * the success Upload view (preview image, File summary..)
- * <li>on Initialization, implement abstract buildDefaultUploadLayout() to
- * initialize the initial Upload view (Upload Button...)
+ * <li>on {@link StartedEvent}: buildStartUploadLayout() is called and allows to initialize the upload progress view.
+ * <li>on {@link FinishedEvent}: buildFinishUploadLayout() is used to initialize the success Upload view (preview image, File summary..)
+ * <li>on Initialization, implement abstract buildDefaultUploadLayout() to initialize the initial Upload view (Upload Button...)
  * </ul>
- * In addition, this class create basic components defined by
- * {@link DefaultComponent}. From your code: calling createCancelButton(), will
- * add the button to the defaultComponent Map, and later to access this button,
- * just perform a getDefaultComponent(DefaultComponent defaultComponent).
+ * In addition, this class create basic components defined by {@link DefaultComponent}. From your code: calling createCancelButton(), will add the button to the defaultComponent Map, and later to access this button, just perform a getDefaultComponent(DefaultComponent defaultComponent).
  * <p>
- * {@link org.vaadin.easyuploads.FileFactory} is defined based on the
- * UploadFileDirectory set. If this directory is null,
- * {@link org.vaadin.easyuploads.TempFileFactory} is used. Else
- * {@link org.vaadin.easyuploads.DirectoryFileFactory} is used.
+ * {@link org.vaadin.easyuploads.FileFactory} is defined based on the UploadFileDirectory set. If this directory is null, {@link org.vaadin.easyuploads.TempFileFactory} is used. Else {@link org.vaadin.easyuploads.DirectoryFileFactory} is used.
  * <p>
- * <b>Restriction:</b> Unlike {@link org.vaadin.easyuploads.UploadField} we only
- * support
+ * <b>Restriction:</b> Unlike {@link org.vaadin.easyuploads.UploadField} we only support
  * <ul>
- * <li>file storage mode:
- * {@link org.vaadin.easyuploads.UploadField.StorageMode#FILE}
- * <li>byte[] property (
- * {@link org.vaadin.easyuploads.UploadField.FieldType#BYTE_ARRAY})
+ * <li>file storage mode: {@link org.vaadin.easyuploads.UploadField.StorageMode#FILE}
+ * <li>byte[] property ( {@link org.vaadin.easyuploads.UploadField.FieldType#BYTE_ARRAY})
  * </ul>
  * 
  * @param <D>
@@ -117,46 +103,46 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     private static final Logger log = LoggerFactory.getLogger(AbstractUploadFileField.class);
 
     protected boolean preview = true;
-    
+
     protected boolean info = true;
-    
+
     protected boolean progressInfo = true;
-    
+
     protected boolean fileDeletion = true;
-    
+
     protected boolean dragAndDrop = true;
 
     // Define global variable used by UploadFileField
     private File directory;
-    
+
     private long maxUploadSize = Long.MAX_VALUE;
-    
+
     private final String deleteFileCaption;
 
     // Define global variable used by this implementation
     protected D fileItem;
 
     private FileBuffer receiver;
-    
+
     private FileFactory fileFactory;
-    
+
     private final Map<DefaultComponent, Component> defaultComponent = new HashMap<DefaultComponent, Component>();
 
     // Define default component
     private Upload upload;
-    
+
     private ProgressIndicatorComponent progress;
-    
+
     private Label fileDetail;
-    
+
     private Component previewComponent;
-    
+
     private Button deleteButton;
-    
+
     private Button cancelButton;
-    
+
     private HasComponents root;
-    
+
     private DragAndDropWrapper dropZone;
 
     // Used to force the refresh of the Uploading view in case of Drag and Drop.
@@ -176,7 +162,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
         setStorageMode();
         createUpload();
     }
-        
+
     /**
      * On Detach, clean Item, and interrupt upload.
      */
@@ -254,7 +240,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
         }
         for (final Html5File html5File : files) {
             html5File.setStreamVariable(new StreamVariable() {
-                
+
                 private String name;
                 private String mime;
 

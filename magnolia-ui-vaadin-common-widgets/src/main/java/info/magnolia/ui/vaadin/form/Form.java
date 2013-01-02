@@ -62,7 +62,7 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
     private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");
 
     private final FieldGroup fieldGroup = new FieldGroup();
-    
+
     private final MagnoliaTabSheet tabSheet = new MagnoliaTabSheet() {
         @Override
         public MagnoliaFormTab addTab(final String caption, final HasComponents c) {
@@ -86,7 +86,7 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
         tabSheet.setSizeFull();
         tabSheet.showAllTab(true, SHOW_ALL);
         setContent(tabSheet);
-        
+
         registerRpc(new ActionFiringServerRpc() {
             @Override
             public void fireAction(String actionId) {
@@ -98,9 +98,9 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
 
             @Override
             public void closeSelf() {
-                
+
             }
-            
+
         });
     }
 
@@ -175,14 +175,14 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
 
     @Override
     protected FormState getState() {
-        return (FormState)super.getState();
+        return (FormState) super.getState();
     }
-    
+
     @Override
     protected FormState getState(boolean markAsDirty) {
-        return (FormState)super.getState(markAsDirty);
+        return (FormState) super.getState(markAsDirty);
     }
-    
+
     @Override
     public Form asVaadinComponent() {
         return this;

@@ -49,7 +49,7 @@ import com.vaadin.ui.AbstractComponent;
 
 /**
  * Lazy layout of asset thumbnails.
- *
+ * 
  */
 public class LazyThumbnailLayout extends AbstractComponent implements Container.Viewer {
 
@@ -60,16 +60,16 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
     private Ordered container;
 
     private final KeyMapper<Object> mapper = new KeyMapper<Object>();
-    
+
     private final ThumbnailLayoutServerRpc rpcHandler = new ThumbnailLayoutServerRpc() {
         @Override
         public void onThumbnailSelected(String id) {
             final Object itemId = mapper.get(id);
             if (itemId != null) {
                 select(itemId);
-            }   
+            }
         }
-        
+
         @Override
         public void onThumbnailDoubleClicked(String id) {
             final Object itemId = mapper.get(id);
@@ -77,7 +77,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
                 LazyThumbnailLayout.this.onThumbnailDoubleClicked(itemId);
             }
         }
-        
+
         @Override
         public void loadThumbnails(int amount) {
             getRpcProxy(ThumbnailLayoutClientRpc.class).addThumbnails(fetchThumbnails(amount));
@@ -88,7 +88,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
             LazyThumbnailLayout.this.clear();
         }
     };
-    
+
     public LazyThumbnailLayout() {
         setImmediate(true);
         registerRpc(rpcHandler);
@@ -119,7 +119,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
             String thumbnailId = mapper.key(id);
             String iconFontId = isRealResource ? null : String.valueOf(resource);
             if (isRealResource) {
-                setResource(thumbnailId, (Resource)resource);                
+                setResource(thumbnailId, (Resource) resource);
             }
             thumbnails.add(new ThumbnailData(thumbnailId, iconFontId, isRealResource));
             id = container.nextItemId(id);
@@ -158,7 +158,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         }
         if (container != null) {
             setThumbnailAmount(container.size());
-        }            
+        }
     }
 
     public void addThumbnailSelectionListener(final ThumbnailSelectionListener listener) {
@@ -184,17 +184,16 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         return container;
     }
 
-
     @Override
     protected ThumbnailLayoutState getState() {
-        return (ThumbnailLayoutState)super.getState();
+        return (ThumbnailLayoutState) super.getState();
     }
-    
+
     @Override
     protected ThumbnailLayoutState getState(boolean markAsDirty) {
-        return (ThumbnailLayoutState)super.getState(markAsDirty);
+        return (ThumbnailLayoutState) super.getState(markAsDirty);
     }
-    
+
     /**
      * Listener interface for thumbnail selection.
      */

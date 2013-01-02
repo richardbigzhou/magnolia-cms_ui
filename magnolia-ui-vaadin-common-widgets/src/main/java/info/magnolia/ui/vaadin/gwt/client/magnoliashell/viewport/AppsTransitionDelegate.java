@@ -48,7 +48,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
  * The AppsTransitionDelegate provides custom transition logic when launching, closing an app, or
  * switching between apps.
@@ -112,6 +111,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
     }
 
     Object lock = new Object();
+
     public void removeWidget(final AppsViewportWidget viewport, final Widget w) {
         w.addStyleName("zoom-out");
         new Timer() {
@@ -121,7 +121,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
             }
         }.schedule(500);
     }
-    
+
     private boolean isWidgetVisibilityHidden(final Widget app) {
         return Visibility.HIDDEN.getCssName().equals(app.getElement().getStyle().getVisibility());
     }
@@ -132,7 +132,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
             query.get(0).getStyle().clearOpacity();
         }
     };
-    
+
     private void fadeIn(final Element curtainEl, final Callbacks callbacks) {
         JQueryWrapper jq = JQueryWrapper.select(curtainEl);
 

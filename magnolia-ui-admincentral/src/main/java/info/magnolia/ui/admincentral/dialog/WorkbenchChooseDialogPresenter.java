@@ -46,9 +46,9 @@ import com.vaadin.data.Item;
 public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implements ChooseDialogPresenter<Item> {
 
     private Item currentValue = null;
-    
+
     private final ChooseDialogView chooseDialogView;
-    
+
     public WorkbenchChooseDialogPresenter(DialogActionFactory actionFactory, ChooseDialogView view, EventBus workbenchEventBus) {
         super(view, workbenchEventBus);
         this.chooseDialogView = view;
@@ -58,28 +58,28 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
                 currentValue = event.getItem();
             }
         });
-        
+
         addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new DialogActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 closeDialog();
             }
         });
-        
+
         addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 closeDialog();
             }
         });
-        
+
     }
 
     @Override
     public ChooseDialogView getView() {
         return chooseDialogView;
     }
-    
+
     @Override
     public void addValueChosenListener(final ValueChosenListener<Item> listener) {
         addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogActionListener() {
@@ -88,7 +88,7 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
                 listener.onValueChosen(currentValue);
             }
         });
-        
+
         addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new DialogActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
@@ -99,14 +99,12 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
 
     @Override
     public void removeValueChosenListener(ValueChosenListener<Item> listener) {
-        //FIXME implement or remove forever!
+        // FIXME implement or remove forever!
     }
 
     @Override
     public Item getValue() {
         return currentValue;
     }
-    
-
 
 }

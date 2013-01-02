@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.placeholder;
 
-
 import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
+
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.NewComponentEvent;
@@ -70,7 +70,6 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
     private String label;
     private String labelString;
 
-
     public ComponentPlaceHolder(EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
 
         super(eventBus, mgnlElement);
@@ -89,7 +88,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         controlBar.add(buttonWrapper);
         labelString = getI18nMessage("buttons.component.new.js");
         if (this.label != null && !this.label.isEmpty()) {
-            labelString = getI18nMessage("buttons.new.js") + " " + label + " " +getI18nMessage("buttons.component.js");
+            labelString = getI18nMessage("buttons.new.js") + " " + label + " " + getI18nMessage("buttons.component.js");
         }
 
         Label labelName = new Label(labelString);
@@ -114,13 +113,13 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         FlowPanel elementWrapper = new FlowPanel();
         elementWrapper.setStyleName("mgnlEditorPlaceholderElements");
 
-        if (this.showAddButton){
+        if (this.showAddButton) {
             elementWrapper.getElement().getStyle().setCursor(Cursor.POINTER);
             elementWrapper.addDomHandler(new MouseDownHandler() {
 
                 @Override
                 public void onMouseDown(MouseDownEvent event) {
-                    if(event.getNativeButton() == NativeEvent.BUTTON_RIGHT)  {
+                    if (event.getNativeButton() == NativeEvent.BUTTON_RIGHT) {
                         return;
                     }
                     getEventBus().fireEvent(new NewComponentEvent(areaWorkspace, areaPath, availableComponents));
@@ -133,7 +132,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
 
     private void createButtons() {
 
-        if (this.showAddButton){
+        if (this.showAddButton) {
             PushButton button = new PushButton();
             button.setTitle(getI18nMessage("buttons.add.js") + " " + labelString);
             button.setStylePrimaryName("mgnlEditorPushButton");
@@ -151,7 +150,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
 
     private void createControls() {
 
-        if (this.showAddButton){
+        if (this.showAddButton) {
             final Label add = new Label();
             add.setStyleName(ICON_CLASSNAME);
             add.addStyleName(ADD_CLASSNAME);
@@ -175,7 +174,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
 
         this.label = getMgnlElement().getAttribute("label");
 
-        if(AreaDefinition.TYPE_NO_COMPONENT.equals(this.type)) {
+        if (AreaDefinition.TYPE_NO_COMPONENT.equals(this.type)) {
             this.availableComponents = "";
         }
         else {

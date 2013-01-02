@@ -33,15 +33,15 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
+import static org.mockito.Mockito.*;
+
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
-import org.junit.Before;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Before;
 
 /**
  * AbstractContentSubAppTest.
@@ -71,7 +71,7 @@ public class AbstractContentSubAppTest {
         when(workbench.getActionbarPresenter()).thenReturn(actionbar);
 
         subAppEventBus = mock(EventBus.class);
-        this.subApp = new DummyContentSubApp(subAppContext,view, workbench, subAppEventBus);
+        this.subApp = new DummyContentSubApp(subAppContext, view, workbench, subAppEventBus);
     }
 
     private class DummyContentSubApp extends AbstractContentSubApp {
@@ -96,6 +96,5 @@ public class AbstractContentSubAppTest {
             foo++;
         }
     }
-
 
 }

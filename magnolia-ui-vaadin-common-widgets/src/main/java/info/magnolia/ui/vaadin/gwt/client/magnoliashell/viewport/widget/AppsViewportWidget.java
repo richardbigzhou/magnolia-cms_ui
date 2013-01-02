@@ -76,11 +76,11 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     private static final int SWIPE_OUT_THRESHOLD = 300;
 
     private static final String CLOSE_CLASSNAME = "v-app-close";
-    
+
     private final VAppPreloader preloader = new VAppPreloader();
 
     private final TouchDelegate delegate = new TouchDelegate(this);
-    
+
     private final ClickHandler closeHandler = new ClickHandler() {
 
         @Override
@@ -92,7 +92,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
             }
         }
     };
-    
+
     private Element curtain;
 
     public AppsViewportWidget() {
@@ -286,7 +286,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
             JQueryWrapper.select(nextWidget).setCss("-webkit-transform",
                     "translate3d(" + (translationValue + getVisibleApp().getOffsetWidth()) + "px,0,0)");
         }
-        
+
         nextWidget.getElement().getStyle()
                 .setVisibility(isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
         previousWidget.getElement().getStyle()

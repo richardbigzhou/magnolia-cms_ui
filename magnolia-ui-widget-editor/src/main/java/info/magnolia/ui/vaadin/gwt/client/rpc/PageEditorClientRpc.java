@@ -41,5 +41,5 @@ import com.vaadin.shared.communication.ClientRpc;
 public interface PageEditorClientRpc extends ClientRpc {
 
     void refresh();
-    
+
 }

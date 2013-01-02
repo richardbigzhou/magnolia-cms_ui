@@ -54,7 +54,7 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
     // Define if we should store the Identifier of the selected Item
     private boolean identifier = false;
     // Name of the list property to populate.
-    // If empty, and identifier is false,  populate the Node path
+    // If empty, and identifier is false, populate the Node path
     // otherwise, populate the Identifier.
     private String propertyName;
 

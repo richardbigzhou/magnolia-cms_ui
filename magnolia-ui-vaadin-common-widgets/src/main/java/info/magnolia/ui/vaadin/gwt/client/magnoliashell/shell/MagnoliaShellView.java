@@ -44,45 +44,44 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
  * The view interface for MagnoliaShell (implemented by GWT part of MagnoliaShell).
  */
 public interface MagnoliaShellView extends HasWidgets, IsWidget {
-    
+
     void setPresenter(final Presenter presenter);
-    
+
     void setActiveViewport(ViewportWidget viewport);
 
     void updateViewport(ViewportWidget viewport, ViewportType type);
-    
+
     void shiftViewportsVertically(int shiftPx, boolean animated);
 
-    //void setPusher(VICEPush pusher);
+    // void setPusher(VICEPush pusher);
 
     void setShellAppIndication(ShellAppType type, int indication);
 
     void showMessage(final MessageType type, String text, String message, String id);
-    
+
     void hideAllMessages();
-    
+
     void closeMessageEager(String id);
-    
+
     void navigateToMessageDetails(String id);
 
     void showAppPreloader(String prefix, PreloaderCallback preloaderCallback);
 
     void updateShellDivet();
-    
+
     /**
      * Presenter for {@link MagnoliaShellView}.
      */
     interface Presenter {
 
         Widget getShellAppWidget(ShellAppType type);
-        
+
         void activateApp(Fragment dto);
-        
+
         void activateShellApp(Fragment f);
 
         void updateViewportLayout(ViewportWidget activeViewport);
@@ -100,6 +99,6 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
         void handleHistoryChange(String fragment);
 
         String getActiveViewportFragment();
-        
+
     }
 }

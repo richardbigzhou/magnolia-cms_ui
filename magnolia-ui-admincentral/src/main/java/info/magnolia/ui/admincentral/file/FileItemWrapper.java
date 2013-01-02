@@ -47,18 +47,22 @@ public interface FileItemWrapper {
      * Populate the jcrItem with the bean informations.
      */
     public void populateJcrItemProperty();
+
     /**
      * Update properties based on the informations contained in the receiver.
      */
     public void updateProperties(FilePropertiesAdapter receiver);
+
     /**
      * Clear all properties.
      */
     public void clearProperties();
+
     /**
      * Create a preview Component object.
      */
     public Component createPreview();
+
     /**
      * Return the related JcrItem.
      */

@@ -51,8 +51,8 @@ public class ActionbarState extends AbstractComponentState {
     public Map<String, ActionbarSection> sections = new LinkedHashMap<String, ActionbarSection>();
 
     public List<ActionbarSection> visibleSections = new ArrayList<ActionbarSection>();
-    
+
     public List<ActionbarItem> enabledActions = new ArrayList<ActionbarItem>();
-    
+
     public boolean isOpen;
 }

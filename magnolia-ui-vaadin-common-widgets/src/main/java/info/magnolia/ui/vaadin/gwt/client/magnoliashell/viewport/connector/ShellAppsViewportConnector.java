@@ -44,14 +44,14 @@ import com.vaadin.shared.ui.Connect;
  */
 @Connect(ShellAppsViewport.class)
 public class ShellAppsViewportConnector extends ViewportConnector {
-    
+
     @Override
     protected ViewportWidget createWidget() {
         return new ShellAppsViewportWidget();
     }
-    
+
     @Override
     public ShellAppViewportState getState() {
-        return (ShellAppViewportState)super.getState();
+        return (ShellAppViewportState) super.getState();
     }
 }

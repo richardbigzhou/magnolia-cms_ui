@@ -35,7 +35,6 @@ package info.magnolia.ui.model.actionbar.definition;
 
 import info.magnolia.ui.model.action.ActionDefinition;
 
-
 /**
  * Simple implementation for {@link ActionbarItemDefinition}.
  */

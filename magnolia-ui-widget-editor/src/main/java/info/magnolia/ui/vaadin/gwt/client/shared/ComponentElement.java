@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.shared;
 
-
 /**
  * Class for GSON serialization of area elements.
  */

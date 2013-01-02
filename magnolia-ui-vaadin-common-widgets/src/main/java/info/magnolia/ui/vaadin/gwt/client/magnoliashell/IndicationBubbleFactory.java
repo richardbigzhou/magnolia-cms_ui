@@ -37,8 +37,7 @@ import org.vaadin.gwtgraphics.client.DrawingArea;
 import org.vaadin.gwtgraphics.client.shape.Ellipse;
 
 /**
- * Factory for generating the pads for the indicators in the
- * {@link MainLauncher}.
+ * Factory for generating the pads for the indicators in the {@link MainLauncher}.
  */
 public class IndicationBubbleFactory {
 
@@ -50,10 +49,10 @@ public class IndicationBubbleFactory {
 
     public static void createBubbleForValue(int value, final DrawingArea canvas) {
         canvas.clear();
-        canvas.setWidth(BASE_WIDTH + (digitCount(value) - 1)* WIDTH_INCREMENT);
+        canvas.setWidth(BASE_WIDTH + (digitCount(value) - 1) * WIDTH_INCREMENT);
         canvas.setHeight(BASE_HEIGHT);
-        int vRadius = (int)(canvas.getHeight() / 2d);
-        int hRadius = (int)(canvas.getWidth() / 2d);
+        int vRadius = (int) (canvas.getHeight() / 2d);
+        int hRadius = (int) (canvas.getWidth() / 2d);
         final Ellipse ellipse = new Ellipse(hRadius, vRadius, hRadius, vRadius);
         ellipse.setStrokeOpacity(0);
         canvas.add(ellipse);

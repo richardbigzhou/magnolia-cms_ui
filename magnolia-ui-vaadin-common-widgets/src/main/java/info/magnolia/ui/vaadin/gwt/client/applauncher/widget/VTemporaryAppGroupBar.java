@@ -39,7 +39,6 @@ import java.util.Map.Entry;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 
-
 /**
  * The holder of the temporary app group tiles - the ones that expand to show the temporary app group.
  * 
@@ -56,9 +55,7 @@ public class VTemporaryAppGroupBar extends FlowPanel {
         addStyleName("sections");
     }
 
-
-
-    protected void handleTileClick(VTemporaryAppTileGroup group, VTemporaryAppGroupBarTile groupTile){
+    protected void handleTileClick(VTemporaryAppTileGroup group, VTemporaryAppGroupBarTile groupTile) {
         closeCurrentOpenExpander();
         if (group != null) {
             if (currentOpenGroup != group) {
@@ -87,7 +84,7 @@ public class VTemporaryAppGroupBar extends FlowPanel {
     }
 
     public void addGroup(String caption, VAppTileGroup group) {
-        VTemporaryAppGroupBarTile groupTile  = new VTemporaryAppGroupBarTile(caption, group, this);
+        VTemporaryAppGroupBarTile groupTile = new VTemporaryAppGroupBarTile(caption, group, this);
         groupMap.put(groupTile, (VTemporaryAppTileGroup) group);
         add(groupTile);
     }

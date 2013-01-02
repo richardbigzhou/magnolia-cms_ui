@@ -38,11 +38,10 @@ import java.util.Map;
 
 import com.vaadin.ui.Table;
 
-
 /**
  * MagnoliaTable.
  */
-//@ClientWidget(VMagnoliaTable.class)
+// @ClientWidget(VMagnoliaTable.class)
 public class MagnoliaTable extends Table {
 
     public MagnoliaTable() {
@@ -60,7 +59,7 @@ public class MagnoliaTable extends Table {
         if (variables.containsKey("selectAll")) {
             boolean selectAll = (Boolean) variables.get("selectAll");
             if (selectAll) {
-                Collection< ? > ids = getItemIds();
+                Collection<?> ids = getItemIds();
                 for (final Object id : ids) {
                     select(id);
                 }
@@ -80,12 +79,12 @@ public class MagnoliaTable extends Table {
             }
         }
     }
-    
+
     @Override
     public void sort() {
         super.sort();
     }
-    
+
     @Override
     public void sort(Object[] propertyId, boolean[] ascending) throws UnsupportedOperationException {
         super.sort(propertyId, ascending);

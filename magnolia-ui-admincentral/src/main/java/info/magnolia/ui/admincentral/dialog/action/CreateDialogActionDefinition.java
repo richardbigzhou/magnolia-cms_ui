@@ -44,7 +44,7 @@ public class CreateDialogActionDefinition implements ActionDefinition {
 
     /**
      * The node type to use when saving the dialog results in adding a new node.
-     *
+     * 
      * @see info.magnolia.cms.core.MgnlNodeType
      */
     private String nodeType;

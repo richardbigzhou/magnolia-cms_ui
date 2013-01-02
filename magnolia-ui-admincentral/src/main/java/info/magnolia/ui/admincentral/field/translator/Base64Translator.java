@@ -51,10 +51,10 @@ public class Base64Translator implements Converter<String, String> {
      */
     @Override
     public String convertToModel(String decoded, Locale locale) throws Converter.ConversionException {
-        if(StringUtils.isBlank(decoded)) {
+        if (StringUtils.isBlank(decoded)) {
             return StringUtils.EMPTY;
         }
-        return  new String(Base64.encodeBase64(decoded.getBytes()));
+        return new String(Base64.encodeBase64(decoded.getBytes()));
     }
 
     /**
@@ -62,7 +62,7 @@ public class Base64Translator implements Converter<String, String> {
      */
     @Override
     public String convertToPresentation(String encoded, Locale locale) throws Converter.ConversionException {
-        if(StringUtils.isBlank(encoded)) {
+        if (StringUtils.isBlank(encoded)) {
             return StringUtils.EMPTY;
         }
         return new String(Base64.decodeBase64(encoded.getBytes()));

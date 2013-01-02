@@ -42,7 +42,6 @@ import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import com.vaadin.ui.Component;
 
-
 /**
  * Default view implementation for the app launcher. It handles the following AppLifecycleEvent:
  * <ul>
@@ -51,15 +50,14 @@ import com.vaadin.ui.Component;
  * <li>RegisterApp: Create a new App and Group Icon/Section
  * <li>UnregisterApp: Remove the App and Group Icon/Section
  * </ul>
- *
+ * 
  */
-public class AppLauncherViewImpl  implements AppLauncherView {
-
+public class AppLauncherViewImpl implements AppLauncherView {
 
     private String id = ShellAppType.APPLAUNCHER.getCssClass();
 
     @Override
-    public String getId(){
+    public String getId() {
         return id;
     }
 

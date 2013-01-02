@@ -45,7 +45,6 @@ import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 
-
 /**
  * Abstract base app class for content apps.
  */
@@ -55,7 +54,7 @@ public abstract class AbstractContentApp extends AbstractApp {
 
     @Inject
     private Shell shell;
-    
+
     @Inject
     public AbstractContentApp(AppContext appContext, ChooseDialogFactory chooseDialogFactory) {
         super(appContext);
@@ -65,10 +64,10 @@ public abstract class AbstractContentApp extends AbstractApp {
     public ChooseDialogPresenter<Item> openChooseDialog() {
         return openChooseDialog(null);
     }
-    
+
     public ChooseDialogPresenter<Item> openChooseDialog(String defaultPath) {
         final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogFactory.createWorkbenchChooseDialog(defaultPath);
-        ((MagnoliaShell)shell).openDialog(workbenchChooseDialogPresenter);
+        ((MagnoliaShell) shell).openDialog(workbenchChooseDialogPresenter);
         return workbenchChooseDialogPresenter;
     }
 

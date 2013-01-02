@@ -62,7 +62,7 @@ public class PagesLocation extends DefaultLocation {
 
     private String extractMode(String parameter) {
         int i = parameter.indexOf(':');
-        return i != -1 ? parameter.substring(i+1) : parameter;
+        return i != -1 ? parameter.substring(i + 1) : parameter;
     }
 
     public String getNodePath() {

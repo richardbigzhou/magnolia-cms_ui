@@ -45,7 +45,7 @@ public interface Shell {
     void askForConfirmation(String message, ConfirmationHandler listener);
 
     void showNotification(String message);
-    
+
     void showError(String message, Exception e);
 
     String getFragment();
@@ -53,9 +53,9 @@ public interface Shell {
     void setFragment(String fragment);
 
     HandlerRegistration addFragmentChangedHandler(FragmentChangedHandler handler);
-    
+
     void registerApps(List<String> appNames);
-    
+
     void pushToClient();
-    
+
 }

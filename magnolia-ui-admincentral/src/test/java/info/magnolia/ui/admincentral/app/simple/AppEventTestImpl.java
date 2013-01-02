@@ -47,16 +47,17 @@ import com.google.inject.Inject;
 public class AppEventTestImpl extends AppTestImpl {
 
     public EventBus eventBus;
-    //public InvocationCountingTestEventHandler handler;
+
+    // public InvocationCountingTestEventHandler handler;
 
     @Inject
     public AppEventTestImpl(AppContext ctx, @Named("app") EventBus eventBus) {
         super(ctx);
         this.eventBus = eventBus;
 
-        //Register
-        //handler = new InvocationCountingTestEventHandler();
-        //eventBus.addHandler(TestEvent.class, handler);
+        // Register
+        // handler = new InvocationCountingTestEventHandler();
+        // eventBus.addHandler(TestEvent.class, handler);
     }
 
 }

@@ -44,9 +44,9 @@ public class HelpIcon extends CompositeIcon {
 
     public HelpIcon(int size) {
         super(
-            new Icon("shape-circle-plus", size, "#fff"),
-            new Icon("shape-circle", size, Icon.COLOR_HELP),
-            new Icon("help-mark", size, "#fff"));
+                new Icon("shape-circle-plus", size, "#fff"),
+                new Icon("shape-circle", size, Icon.COLOR_HELP),
+                new Icon("help-mark", size, "#fff"));
     }
 
 }

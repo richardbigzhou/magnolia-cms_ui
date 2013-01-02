@@ -42,7 +42,7 @@ import com.vaadin.ui.HasComponents;
  * A tab in the shell tabsheet.
  */
 public class MagnoliaTab extends AbstractSingleComponentContainer {
-    
+
     public MagnoliaTab(final String caption, final HasComponents c) {
         setSizeFull();
         setImmediate(true);
@@ -53,17 +53,17 @@ public class MagnoliaTab extends AbstractSingleComponentContainer {
     public boolean isClosable() {
         return getState(false).isClosable;
     }
-    
+
     @Override
     protected MagnoliaTabState getState(boolean markAsDirty) {
-        return (MagnoliaTabState)super.getState(markAsDirty);
+        return (MagnoliaTabState) super.getState(markAsDirty);
     }
-    
+
     @Override
     protected MagnoliaTabState getState() {
-        return (MagnoliaTabState)super.getState();
+        return (MagnoliaTabState) super.getState();
     }
-    
+
     public void setClosable(boolean isClosable) {
         getState().isClosable = isClosable;
     }
@@ -75,21 +75,21 @@ public class MagnoliaTab extends AbstractSingleComponentContainer {
     public void setHasError(boolean hasError) {
         getState().hasError = hasError;
     }
-    
+
     public void hideNotification() {
         getState().isNotificationHidden = true;
     }
-    
+
     public String getNotification() {
         return getState(false).notification;
     }
-    
+
     public boolean hasNotification() {
         return getNotification() != null;
     }
 
     public boolean hasError() {
         return getState(false).hasError;
-    }  
+    }
 
 }

@@ -42,7 +42,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 /**
  * Event fired when the active tab in the tabsheet is changed.
  */
-public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedEvent.Handler>{
+public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedEvent.Handler> {
 
     public final static Type<ActiveTabChangedEvent.Handler> TYPE = new Type<ActiveTabChangedEvent.Handler>();
 
@@ -59,13 +59,13 @@ public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedEvent.Handle
     public interface HasActiveTabChangeHandlers {
         HandlerRegistration addActiveTabChangedHandler(Handler handler);
     }
-    
+
     private final MagnoliaTabWidget tab;
 
     private boolean isShowingAllTabs = false;
-    
+
     private boolean notifyServer = true;
-    
+
     public ActiveTabChangedEvent(final MagnoliaTabWidget tab) {
         this.tab = tab;
     }
@@ -74,21 +74,21 @@ public class ActiveTabChangedEvent extends GwtEvent<ActiveTabChangedEvent.Handle
         this.tab = tab;
         this.notifyServer = notifyServer;
     }
-    
+
     public ActiveTabChangedEvent(boolean isShowingAll, boolean notifyServer) {
         this.tab = null;
         this.isShowingAllTabs = isShowingAll;
         this.notifyServer = notifyServer;
     }
-    
+
     public boolean isShowingAllTabs() {
         return isShowingAllTabs;
     }
-    
+
     public boolean isNotifyServer() {
         return notifyServer;
     }
-    
+
     public MagnoliaTabWidget getTab() {
         return tab;
     }

@@ -38,18 +38,18 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchMoveHandler;
 
 /**
  * Proxy handler that delegates event to {@link TouchMoveHandler}.
- *
+ * 
  */
-public class TouchMoveHandlerProxy implements com.google.gwt.event.dom.client.TouchMoveHandler{
+public class TouchMoveHandlerProxy implements com.google.gwt.event.dom.client.TouchMoveHandler {
 
     private TouchMoveHandler delegateHandler;
-    
+
     public TouchMoveHandlerProxy(final TouchMoveHandler delegateHandler) {
         this.delegateHandler = delegateHandler;
     }
-    
+
     @Override
     public void onTouchMove(com.google.gwt.event.dom.client.TouchMoveEvent event) {
-        delegateHandler.onTouchMove(GwtTouchEventConverter.<TouchMoveEvent>convertGWTEvent(event));
+        delegateHandler.onTouchMove(GwtTouchEventConverter.<TouchMoveEvent> convertGWTEvent(event));
     };
 }

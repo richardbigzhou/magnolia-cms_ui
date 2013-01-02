@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.admincentral.setup;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
@@ -43,6 +40,9 @@ import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.legacy.MarkNodeAsDeletedCommand;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * VersionHandler for the Admin Central module.
@@ -62,7 +62,7 @@ public class AdminCentralModuleVersionHandler extends DefaultModuleVersionHandle
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
         List<Task> list = new ArrayList<Task>();
 
-        //TODO fgrilli this is a workaround as long as we have old adminInterface around. See MAGNOLIA-4659
+        // TODO fgrilli this is a workaround as long as we have old adminInterface around. See MAGNOLIA-4659
         list.add(new CheckAndModifyPropertyValueTask(
                 "",
                 "",

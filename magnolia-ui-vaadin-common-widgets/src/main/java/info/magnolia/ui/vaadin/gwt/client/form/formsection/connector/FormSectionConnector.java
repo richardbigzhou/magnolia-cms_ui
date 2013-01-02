@@ -55,10 +55,10 @@ public class FormSectionConnector extends AbstractLayoutConnector {
     private final StateChangeHandler errorHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent event) {
-            updateChildError((ComponentConnector)event.getConnector());
+            updateChildError((ComponentConnector) event.getConnector());
         }
-    }; 
-    
+    };
+
     private void updateChildError(ComponentConnector connector) {
         final String errorMsg = connector.getState().errorMessage;
         boolean errorOccured = errorMsg != null && !errorMsg.isEmpty();
@@ -68,8 +68,7 @@ public class FormSectionConnector extends AbstractLayoutConnector {
             getWidget().clearError(connector.getWidget());
         }
     }
-   
-    
+
     @Override
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
@@ -81,17 +80,17 @@ public class FormSectionConnector extends AbstractLayoutConnector {
         }
         getParent().setHasErrors(getWidget().getErrorAmount() > 0);
     }
-    
+
     @Override
     public FormTabConnector getParent() {
-        return (FormTabConnector)super.getParent();
+        return (FormTabConnector) super.getParent();
     }
-    
+
     @Override
     public boolean delegateCaptionHandling() {
         return false;
     }
-    
+
     @Override
     public void updateCaption(ComponentConnector connector) {
         getWidget().setFieldCaption(connector.getWidget(), connector.getState().caption);
@@ -101,33 +100,32 @@ public class FormSectionConnector extends AbstractLayoutConnector {
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent e) {
         final List<ComponentConnector> oldChildren = e.getOldChildren();
         final List<ComponentConnector> newChildren = getChildComponents();
-        
+
         oldChildren.removeAll(newChildren);
         for (final ComponentConnector cc : oldChildren) {
             getWidget().remove(cc.getWidget());
         }
-        
+
         int index = 0;
         for (final ComponentConnector cc : newChildren) {
             getWidget().insert(cc.getWidget(), index++);
             cc.addStateChangeHandler("errorMessage", errorHandler);
         }
     }
-    
+
     @Override
     protected FormSectionState createState() {
         return new FormSectionState();
     }
-    
+
     @Override
     public FormSectionState getState() {
-        return (FormSectionState)super.getState();
+        return (FormSectionState) super.getState();
     }
-    
-    
+
     @Override
     public FormSectionWidget getWidget() {
-        return (FormSectionWidget)super.getWidget();
+        return (FormSectionWidget) super.getWidget();
     }
-    
+
 }

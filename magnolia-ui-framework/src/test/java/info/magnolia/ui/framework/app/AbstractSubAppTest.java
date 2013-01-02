@@ -34,8 +34,8 @@
 package info.magnolia.ui.framework.app;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.ui.framework.view.View;
 
 import org.junit.Before;
@@ -54,7 +54,7 @@ public class AbstractSubAppTest {
 
     @Before
     public void setUp() throws Exception {
-        //INIT
+        // INIT
         appDescriptor = mock(AppDescriptor.class);
         when(appDescriptor.getLabel()).thenReturn(APP_LABEL);
         when(appDescriptor.getName()).thenReturn("App1");
@@ -76,51 +76,51 @@ public class AbstractSubAppTest {
 
     @Test
     public void testGetCaptionReturnsConfiguredSubAppLabelValue() throws Exception {
-        //GIVEN
+        // GIVEN
         when(subAppDescriptor.getLabel()).thenReturn(SUBAPP_LABEL);
 
-        //WHEN
+        // WHEN
         String caption = subApp.getCaption();
 
-        //THEN
+        // THEN
         assertEquals(SUBAPP_LABEL, caption);
     }
 
     @Test
     public void testGetCaptionFallsBackToConfiguredAppLabelValue() throws Exception {
-        //GIVEN
+        // GIVEN
         when(subAppDescriptor.getLabel()).thenReturn("");
 
-        //WHEN
+        // WHEN
         String caption = subApp.getCaption();
 
-        //THEN
+        // THEN
         assertEquals(APP_LABEL, caption);
     }
 
     @Test
     public void testGetCaptionReturnsEmptyStringIfNoConfiguredLabelValueIsFound() throws Exception {
-        //GIVEN
+        // GIVEN
         when(subAppDescriptor.getLabel()).thenReturn("");
         when(appDescriptor.getLabel()).thenReturn("");
 
-        //WHEN
+        // WHEN
         String caption = subApp.getCaption();
 
-        //THEN
+        // THEN
         assertEquals("", caption);
     }
 
     @Test
     public void testGetCaptionReturnsEmptyStringIfConfiguredLabelIsNull() throws Exception {
-        //GIVEN
+        // GIVEN
         when(subAppDescriptor.getLabel()).thenReturn(null);
         when(appDescriptor.getLabel()).thenReturn(null);
 
-        //WHEN
+        // WHEN
         String caption = subApp.getCaption();
 
-        //THEN
+        // THEN
         assertEquals("", caption);
     }
 

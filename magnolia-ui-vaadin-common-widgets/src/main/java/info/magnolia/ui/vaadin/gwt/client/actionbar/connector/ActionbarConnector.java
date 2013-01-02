@@ -52,24 +52,24 @@ import com.vaadin.client.ui.AbstractComponentConnector;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * {@link ActionbarConnector}. 
+ * {@link ActionbarConnector}.
  */
 @Connect(Actionbar.class)
 public class ActionbarConnector extends AbstractComponentConnector implements ActionbarWidgetView.Presenter {
-    
+
     private ActionbarWidgetView view;
-    
+
     private final EventBus eventBus = new SimpleEventBus();
-    
+
     private final ActionbarServerRpc rpc = RpcProxy.create(ActionbarServerRpc.class, this);
-    
+
     private final StateChangeHandler sectionRearrangementHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
             view.setSections(getState().sections.values());
         }
     };
-    
+
     private final StateChangeHandler previewChangeHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
@@ -79,14 +79,14 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
                     for (String sectionName : getState().sections.keySet()) {
                         String previewUrl = getResourceUrl(sectionName);
                         if (previewUrl != null) {
-                            view.setSectionPreview(sectionName, previewUrl);   
+                            view.setSectionPreview(sectionName, previewUrl);
                         }
                     }
                 }
             });
         }
     };
-    
+
     private final StateChangeHandler visibleSectionSetChangeHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
@@ -98,7 +98,7 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
             });
         }
     };
-    
+
     private final StateChangeHandler enabledActionSetChangeHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
@@ -110,14 +110,14 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
             });
         }
     };
-    
+
     private final StateChangeHandler collapseChangeHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
             view.setOpen(getState().isOpen);
         }
     };
-    
+
     @Override
     protected void init() {
         super.init();
@@ -132,21 +132,21 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     public Widget getWidget() {
         return super.getWidget();
     }
-    
+
     @Override
     protected Widget createWidget() {
         this.view = new ActionbarWidgetViewImpl(eventBus, this);
-        //if (!isDeviceTablet()) {
-        //    setOpened(true);
-        //}
+        // if (!isDeviceTablet()) {
+        // setOpened(true);
+        // }
         return this.view.asWidget();
     }
-    
+
     @Override
     public ActionbarState getState() {
-        return (ActionbarState)super.getState();
+        return (ActionbarState) super.getState();
     }
-    
+
     @Override
     public void triggerAction(String actionToken) {
         rpc.onActionTriggered(actionToken);
@@ -161,7 +161,7 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     public void setOpened(boolean isOpen) {
         rpc.setOpen(isOpen);
     }
-    
+
     @Override
     public void forceLayout() {
         getLayoutManager().setNeedsMeasure(this);
@@ -171,11 +171,12 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     public String getIconResourceURL(String actionName) {
         return getResourceUrl(actionName);
     }
-    
+
     /**
      * Determine if device is tablet. Allows option to add a querystring parameter of tablet=true
      * for testing.
      * TODO: Christopher Zimmermann - there should be only one instance of this code in the project.
+     * 
      * @return Whether device is tablet.
      */
     private boolean isDeviceTablet() {

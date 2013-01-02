@@ -65,12 +65,11 @@ public class ItemLocation extends DefaultLocation {
         return nodePath;
     }
 
-
     /**
      * If the node path is empty, assume root path.
      */
     private void setNodePath(String nodePath) {
-        this.nodePath = (nodePath == null || nodePath.isEmpty()) ?  "/" : nodePath;
+        this.nodePath = (nodePath == null || nodePath.isEmpty()) ? "/" : nodePath;
     }
 
     public ItemView.ViewType getViewType() {

@@ -86,7 +86,6 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
             // set all child parents to parent
             getMgnlElement().delete();
 
-
             // remove it from the Model
             getModel().removeMgnlElement(getMgnlElement());
         }
@@ -106,9 +105,8 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
 
         String type = attributes.get("type");
 
-
         String availableComponents = "";
-        if(AreaDefinition.TYPE_NO_COMPONENT.equals(type)) {
+        if (AreaDefinition.TYPE_NO_COMPONENT.equals(type)) {
             availableComponents = "";
         }
         else {
@@ -183,7 +181,7 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
             Node parentNode = element.getParentNode();
             parentNode.insertBefore(controlBar.getElement(), element);
 
-            //attach(getMgnlElement().getEndComment());
+            // attach(getMgnlElement().getEndComment());
         }
         controlBar.onAttach();
     }

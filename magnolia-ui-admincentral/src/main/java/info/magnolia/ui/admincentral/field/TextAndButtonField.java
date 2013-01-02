@@ -46,7 +46,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
 
-
 /**
  * A base custom field comprising a text field and a button placed to its immediate right.
  * A {@link PropertyTranslator} can be set in order to have a different display and property stored.
@@ -55,25 +54,25 @@ import com.vaadin.ui.TextField;
 public class TextAndButtonField extends CustomField<String> {
 
     private final Button selectButton;
-    
+
     private final TextField textField;
-    
+
     private final Converter<String, ?> converter;
-    
+
     private final String buttonCaptionNew;
-    
+
     private final String buttonCaptionOther;
 
     public TextAndButtonField(Converter<String, ?> converter, String buttonCaptionNew, String buttonCaptionOther) {
         this.converter = converter;
         this.buttonCaptionNew = buttonCaptionNew;
         this.buttonCaptionOther = buttonCaptionOther;
-        
+
         textField = new TextField();
         textField.setSizeUndefined();
         textField.addStyleName("small-textfield");
         textField.setImmediate(true);
-        
+
         selectButton = new NativeButton();
         selectButton.addStyleName("btn-form btn-form-select");
     }
@@ -87,7 +86,7 @@ public class TextAndButtonField extends CustomField<String> {
         layout.setComponentAlignment(selectButton, Alignment.MIDDLE_CENTER);
         return layout;
     }
-    
+
     public TextField getTextField() {
         return this.textField;
     }
@@ -95,7 +94,6 @@ public class TextAndButtonField extends CustomField<String> {
     public Button getSelectButton() {
         return this.selectButton;
     }
-
 
     @Override
     public String getValue() {
@@ -115,7 +113,7 @@ public class TextAndButtonField extends CustomField<String> {
     @Override
     @SuppressWarnings("rawtypes")
     public void setPropertyDataSource(Property newDataSource) {
-        if(converter!=null) {
+        if (converter != null) {
             textField.setConverter(converter);
         }
         textField.setPropertyDataSource(newDataSource);
@@ -134,10 +132,10 @@ public class TextAndButtonField extends CustomField<String> {
     }
 
     private void setButtonCaption(String value) {
-        if(StringUtils.isNotBlank(value)) {
+        if (StringUtils.isNotBlank(value)) {
             selectButton.setCaption(buttonCaptionOther);
             selectButton.setDescription(buttonCaptionOther);
-        }else {
+        } else {
             selectButton.setCaption(buttonCaptionNew);
             selectButton.setDescription(buttonCaptionNew);
         }

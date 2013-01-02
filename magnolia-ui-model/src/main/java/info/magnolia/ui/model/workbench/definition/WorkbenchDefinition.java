@@ -42,7 +42,6 @@ import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import java.io.Serializable;
 import java.util.List;
 
-
 /**
  * Contains all elements which define a workbench configuration.
  */

@@ -43,7 +43,6 @@ import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractSingleComponentContainerConnector;
 import com.vaadin.shared.ui.Connect;
 
-
 /**
  * MagnoliaTabConnector.
  */
@@ -53,66 +52,66 @@ public class MagnoliaTabConnector extends AbstractSingleComponentContainerConnec
     @Override
     protected void init() {
         super.init();
-        addStateChangeHandler("isClosable", new StateChangeHandler() { 
+        addStateChangeHandler("isClosable", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
                 getWidget().getLabel().setClosable(getState().isClosable);
             }
         });
-        
-        addStateChangeHandler("hasError", new StateChangeHandler() { 
+
+        addStateChangeHandler("hasError", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
                 getWidget().getLabel().setHasError(getState().hasError);
             }
         });
-        
-        addStateChangeHandler("isNotificationHidden", new StateChangeHandler() { 
+
+        addStateChangeHandler("isNotificationHidden", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
                 getWidget().getLabel().hideNotification();
             }
         });
-        
-        addStateChangeHandler("notification", new StateChangeHandler() { 
+
+        addStateChangeHandler("notification", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
                 getWidget().getLabel().updateNotification(getState().notification);
             }
         });
     }
-    
+
     @Override
     public void updateCaption(ComponentConnector connector) {
     }
-    
+
     @Override
     public MagnoliaTabWidget getWidget() {
-        return (MagnoliaTabWidget)super.getWidget();
+        return (MagnoliaTabWidget) super.getWidget();
     }
-    
+
     @Override
     protected MagnoliaTabWidget createWidget() {
         return new MagnoliaTabWidget();
     }
-    
+
     @Override
     public MagnoliaTabState getState() {
-        return (MagnoliaTabState)super.getState();
+        return (MagnoliaTabState) super.getState();
     }
 
     @Override
     protected MagnoliaTabState createState() {
         return new MagnoliaTabState();
     }
-    
+
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent e) {
         if (!e.getOldChildren().isEmpty()) {
             final ComponentConnector oldContent = e.getOldChildren().get(0);
             getWidget().remove(oldContent.getWidget());
         }
-        
+
         if (getContent() != null) {
             getWidget().setWidget(getContent().getWidget());
         }

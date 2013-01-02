@@ -49,9 +49,9 @@ import org.slf4j.LoggerFactory;
  * ConfiguredAppDescriptorProvider that instantiates an AppDescriptor from a configuration node.
  * Equal is override in order to define the uniqueness of a ConfiguredAppDescriptorProvider.
  * In Our case, ConfiguredAppDescriptorProvider are equal if:
- *  AppDescriptor.getName(), getCategoryName(), isEnabled(), getIcon() and getAppClass() are equal.
+ * AppDescriptor.getName(), getCategoryName(), isEnabled(), getIcon() and getAppClass() are equal.
  */
-public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider{
+public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -79,19 +79,18 @@ public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider{
 
     @Override
     public boolean equals(Object o) {
-        if(o instanceof AppDescriptorProvider) {
+        if (o instanceof AppDescriptorProvider) {
             AppDescriptorProvider other = (AppDescriptorProvider) o;
             String thisCompareToString = "";
             String otherCompareToString = "";
             try {
                 thisCompareToString = getAppDescriptorProviderUniqueIdentifier(this.getAppDescriptor());
                 otherCompareToString = getAppDescriptorProviderUniqueIdentifier(other.getAppDescriptor());
-            }
-            catch (RegistrationException e) {
-                log.error("",e);
+            } catch (RegistrationException e) {
+                log.error("", e);
             }
             return thisCompareToString.equals(otherCompareToString);
-        }else {
+        } else {
             return false;
         }
     }
@@ -100,19 +99,17 @@ public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider{
     public int hashCode() {
         try {
             return getAppDescriptorProviderUniqueIdentifier(this.getAppDescriptor()).hashCode();
-        }
-        catch (RegistrationException e) {
-            log.error("",e);
+        } catch (RegistrationException e) {
+            log.error("", e);
             return 0;
         }
     }
-
 
     /**
      * Used to define if an App was Change in config, and also if the changes made in config
      * needs a reload.
      */
     private String getAppDescriptorProviderUniqueIdentifier(AppDescriptor app) {
-        return app.getName()+app.isEnabled()+app.getIcon()+app.getAppClass();
+        return app.getName() + app.isEnabled() + app.getIcon() + app.getAppClass();
     }
 }

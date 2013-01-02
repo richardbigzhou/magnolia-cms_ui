@@ -33,12 +33,13 @@
  */
 package info.magnolia.ui.model.field.builder;
 
-import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 import info.magnolia.ui.model.field.validation.definition.EmailValidatorDefinition;
 import info.magnolia.ui.model.field.validation.definition.RegexpValidatorDefinition;
+
+import org.junit.Test;
 
 /**
  * Tests for {@link ValidatorConfig}.

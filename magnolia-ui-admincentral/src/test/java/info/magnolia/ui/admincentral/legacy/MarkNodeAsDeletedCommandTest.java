@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.legacy;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+
 import info.magnolia.cms.core.MetaData;
 import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.exchange.ActivationManager;
@@ -91,7 +92,7 @@ public class MarkNodeAsDeletedCommandTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testUpdateAuthorIdAndModificationDateWhenMarkNodeAsDelete() throws  Exception{
+    public void testUpdateAuthorIdAndModificationDateWhenMarkNodeAsDelete() throws Exception {
         // GIVEN
         MetaData md = new MetaData(node);
         Calendar timeBeforeDelete = new GregorianCalendar(TimeZone.getDefault());
@@ -105,7 +106,7 @@ public class MarkNodeAsDeletedCommandTest extends RepositoryTestCase {
         node.getSession().save();
 
         MockContext context = (MockContext) MgnlContext.getInstance();
-        context.setUser(new MgnlUser("user-after-delete","admin",Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.EMPTY_MAP, null, null));
+        context.setUser(new MgnlUser("user-after-delete", "admin", Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.EMPTY_MAP, null, null));
         MgnlContext.setInstance(context);
 
         // WHEN

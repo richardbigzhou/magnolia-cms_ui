@@ -63,6 +63,7 @@ public class ValidatorFieldRegistry implements Serializable {
     public void setDefinitionToImplementationMappings(List<DefinitionToImplementationMapping<FieldValidatorDefinition, FieldValidatorBuilder>> definitionToImplementationMappings) {
         this.definitionToImplementationMappings = definitionToImplementationMappings;
     }
+
     public void addDefinitionToImplementationMapping(DefinitionToImplementationMapping<FieldValidatorDefinition, FieldValidatorBuilder> mapping) {
         this.definitionToImplementationMappings.add(mapping);
     }

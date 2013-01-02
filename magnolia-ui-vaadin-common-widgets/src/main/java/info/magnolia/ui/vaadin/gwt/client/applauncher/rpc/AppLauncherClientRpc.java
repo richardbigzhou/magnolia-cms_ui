@@ -40,5 +40,4 @@ import com.vaadin.shared.communication.ClientRpc;
  */
 public interface AppLauncherClientRpc extends ClientRpc {
 
-    
 }

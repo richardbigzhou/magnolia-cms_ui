@@ -51,7 +51,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
 
-
 /**
  * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Property}.
  */
@@ -116,13 +115,12 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
     }
 
     @Override
-    public Collection< ? > getItemPropertyIds() {
+    public Collection<?> getItemPropertyIds() {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * JcrPropertyAdapter custom logic to update one single vaadin property. If updated propertyId is
-     * {@link info.magnolia.ui.model.ModelConstants#JCR_NAME}, then rename JCR Property. If propertyId
+     * JcrPropertyAdapter custom logic to update one single vaadin property. If updated propertyId is {@link info.magnolia.ui.model.ModelConstants#JCR_NAME}, then rename JCR Property. If propertyId
      * is {@link #VALUE_PROPERTY}, set new property value. If propertyId is {@link #TYPE_PROPERTY}, set new property
      * type. Otherwise, do nothing.
      */

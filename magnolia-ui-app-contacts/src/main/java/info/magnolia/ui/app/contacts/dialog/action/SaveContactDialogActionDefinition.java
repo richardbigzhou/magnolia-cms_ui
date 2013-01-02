@@ -34,6 +34,7 @@
 package info.magnolia.ui.app.contacts.dialog.action;
 
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
+
 /**
  * Definition for our custom contact save action.
  */

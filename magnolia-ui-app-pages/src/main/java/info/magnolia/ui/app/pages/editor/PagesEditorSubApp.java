@@ -68,7 +68,6 @@ import javax.jcr.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * PagesEditorSubApp.
  */
@@ -77,7 +76,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
     private final PagesEditorSubAppView view;
-    
+
     private final EventBus eventBus;
 
     private final PageEditorPresenter pageEditorPresenter;
@@ -93,7 +92,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
 
     @Inject
     public PagesEditorSubApp(final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named("subapp") EventBus eventBus,
-        final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
+            final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
         super(subAppContext, view);
 
         this.view = view;
@@ -140,6 +139,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
 
     /**
      * Wraps the current DefaultLocation in a ContentLocation. Providing getter and setters for used parameters.
+     * 
      * @return
      */
     @Override
@@ -160,13 +160,13 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
         if (isLocationChanged(location)) {
             setPageEditorParameters(location);
             switch (location.getViewType()) {
-                case VIEW:
-                    showPreview();
-                    break;
-                case EDIT:
-                default:
-                    showEditor();
-                    break;
+            case VIEW:
+                showPreview();
+                break;
+            case EDIT:
+            default:
+                showEditor();
+                break;
             }
         }
     }
@@ -228,28 +228,28 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
                     if (actionDefinition instanceof EditElementActionDefinition) {
                         pageEditorPresenter.editComponent(
                                 ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
-                            pageEditorPresenter.getSelectedElement().getPath(),
-                            pageEditorPresenter.getSelectedElement().getDialog());
+                                pageEditorPresenter.getSelectedElement().getPath(),
+                                pageEditorPresenter.getSelectedElement().getDialog());
                     } else if (actionDefinition instanceof AddComponentActionDefinition) {
                         // casting to AreaElement, because this action is only defined for areas
                         pageEditorPresenter.newComponent(
                                 ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
-                            pageEditorPresenter.getSelectedElement().getPath(),
-                            ((AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
+                                pageEditorPresenter.getSelectedElement().getPath(),
+                                ((AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
                     } else if (actionDefinition instanceof DeleteItemActionDefinition) {
                         pageEditorPresenter.deleteComponent(((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(), pageEditorPresenter
-                            .getSelectedElement()
-                            .getPath());
+                                .getSelectedElement()
+                                .getPath());
                     } else if (actionDefinition instanceof PreviewPageActionDefinition || actionDefinition instanceof EditPageActionDefinition) {
                         actionbarPresenter.createAndExecuteAction(
-                            actionDefinition,
+                                actionDefinition,
                                 ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
-                            parameters.getNodePath());
+                                parameters.getNodePath());
                     } else {
                         actionbarPresenter.createAndExecuteAction(
-                            actionDefinition,
+                                actionDefinition,
                                 ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
-                            pageEditorPresenter.getSelectedElement().getPath());
+                                pageEditorPresenter.getSelectedElement().getPath());
                     }
 
                 } catch (ActionExecutionException e) {

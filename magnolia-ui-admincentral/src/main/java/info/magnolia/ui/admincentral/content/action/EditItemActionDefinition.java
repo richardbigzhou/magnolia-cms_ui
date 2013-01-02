@@ -42,7 +42,6 @@ import info.magnolia.ui.model.action.ActionDefinition;
  */
 public class EditItemActionDefinition implements ActionDefinition {
 
-
     private String appId;
 
     private String subAppId;

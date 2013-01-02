@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.tree.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -45,7 +46,6 @@ import javax.jcr.Node;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 
 /**
  * Tests covering execution of the {@link AddPropertyAction}.

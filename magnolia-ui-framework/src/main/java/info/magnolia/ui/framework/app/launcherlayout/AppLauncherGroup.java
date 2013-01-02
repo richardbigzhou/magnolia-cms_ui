@@ -36,7 +36,6 @@ package info.magnolia.ui.framework.app.launcherlayout;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Defines a group of apps displayed in the app launcher including display properties of the group.
  * 

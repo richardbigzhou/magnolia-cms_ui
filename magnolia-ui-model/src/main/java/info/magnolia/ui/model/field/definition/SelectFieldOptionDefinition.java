@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.model.field.definition;
 
-
 /**
  * Simple pojo used to define options used in selection.
  */
@@ -51,8 +50,6 @@ public class SelectFieldOptionDefinition {
     // Value is a path to the image.
     private String iconSrc;
 
-
-
     public String getValue() {
         return value;
     }
@@ -69,11 +66,9 @@ public class SelectFieldOptionDefinition {
         this.name = name;
     }
 
-
     public boolean isSelected() {
         return selected;
     }
-
 
     public void setSelected(boolean selected) {
         this.selected = selected;

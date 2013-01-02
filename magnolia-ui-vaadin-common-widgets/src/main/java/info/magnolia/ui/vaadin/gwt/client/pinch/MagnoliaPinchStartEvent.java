@@ -33,20 +33,19 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.pinch;
 
-
 import com.google.gwt.event.shared.EventHandler;
 
 /**
  * MagnoliaPinchStartEvent.
  */
 public class MagnoliaPinchStartEvent extends MagnoliaPinchEvent<MagnoliaPinchStartEvent.Handler> {
- 
+
     public static Type<Handler> TYPE = new Type<Handler>();
-    
+
     public MagnoliaPinchStartEvent(int x, int y, double scaleFactor) {
         super(x, y, scaleFactor);
     }
-    
+
     /**
      * Event handler.
      */

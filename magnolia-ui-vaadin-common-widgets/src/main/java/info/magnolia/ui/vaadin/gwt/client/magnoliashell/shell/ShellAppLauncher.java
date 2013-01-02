@@ -67,7 +67,6 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 
-
 /**
  * Navigation bar.
  */
@@ -89,12 +88,11 @@ public class ShellAppLauncher extends FlowPanel {
             Element root = getElement();
             root.setId("btn-" + type.getCssClass());
             root.addClassName("icon-" + type.getCssClass());
-            
+
             indicator.setFillColor("#fff");
             indicator.setStrokeColor("#689600");
             indicator.setOutline(true);
-            root.appendChild(indicator.getElement()); 
-            
+            root.appendChild(indicator.getElement());
 
             DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
             delegate.addTouchEndHandler(new TouchEndHandler() {
@@ -141,11 +139,13 @@ public class ShellAppLauncher extends FlowPanel {
     protected void onLoad() {
         super.onLoad();
         getElement().getStyle().setTop(-60, Unit.PX);
-        JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {{
+        JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {
+            {
                 setProperty("top", 0);
-        }});
-        
-        History.addValueChangeHandler(new ValueChangeHandler<String>() { 
+            }
+        });
+
+        History.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 Fragment f = Fragment.fromString(event.getValue());
@@ -193,7 +193,7 @@ public class ShellAppLauncher extends FlowPanel {
     public void setIndication(ShellAppType type, int indication) {
         controlsMap.get(type).setIndication(indication);
     }
-    
+
     protected void activateControl(final ShellAppType type) {
         final ShellAppType currentActive = getActiveShellType();
         if (currentActive != null) {
@@ -203,7 +203,7 @@ public class ShellAppLauncher extends FlowPanel {
         final Widget w = controlsMap.get(type);
         w.addStyleName("active");
     }
-    
+
     private void navigateToShellApp(final ShellAppType type) {
         eventBus.fireEvent(new ShellAppActivatedEvent(type, ""));
     }
@@ -211,7 +211,7 @@ public class ShellAppLauncher extends FlowPanel {
     private void closeShellAppViewport() {
         eventBus.fireEvent(new ViewportCloseEvent(ViewportType.SHELL_APP));
     }
-    
+
     private void construct() {
         divetWrapper.setId("divet");
         logoImg.setId("logo");
@@ -241,18 +241,18 @@ public class ShellAppLauncher extends FlowPanel {
         });
 
     }
-    
+
     private void doUpdateDivetPosition(final ShellAppType type, boolean animated) {
         final Widget w = controlsMap.get(type);
         int divetPos = w.getAbsoluteLeft() + (w.getOffsetWidth() / 2) - divetWrapper.getOffsetWidth() / 2;
         divet.setVisible(true);
         switch (type) {
-            case APPLAUNCHER :
-                divet.setResource(VShellImageBundle.BUNDLE.getDivetGreen());
-                break;
-            default :
-                divet.setResource(VShellImageBundle.BUNDLE.getDivetWhite());
-                break;
+        case APPLAUNCHER:
+            divet.setResource(VShellImageBundle.BUNDLE.getDivetGreen());
+            break;
+        default:
+            divet.setResource(VShellImageBundle.BUNDLE.getDivetWhite());
+            break;
         }
         if (animated) {
             final AnimationSettings settings = new AnimationSettings();
@@ -263,7 +263,7 @@ public class ShellAppLauncher extends FlowPanel {
         }
 
     }
-    
+
     /**
      * Restart the application by appending the &restartApplication querystring to the URL. This is
      * handy as the application is not totally stable yet. TODO: Christopher Zimmermann CLZ

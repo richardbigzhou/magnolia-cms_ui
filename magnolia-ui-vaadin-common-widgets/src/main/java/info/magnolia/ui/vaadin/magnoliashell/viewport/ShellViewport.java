@@ -36,11 +36,10 @@ package info.magnolia.ui.vaadin.magnoliashell.viewport;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ViewportState;
-import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 import info.magnolia.ui.vaadin.magnoliashell.DeckLayout;
+import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 
 import com.vaadin.ui.Component;
-
 
 /**
  * The server side implementation of the shell viewport. MagnoliaShell is capable of holding of such for the shell apps,
@@ -74,21 +73,21 @@ public class ShellViewport extends DeckLayout implements ViewPort {
             parentShell.setActiveViewport(this);
         }
     }
-    
+
     @Override
     public void display(Component content) {
         getState().formerActive = getState().activeComponent;
         getState().activeComponent = content;
         super.display(content);
     }
-    
+
     @Override
     protected ViewportState getState(boolean markAsDirty) {
-        return (ViewportState)super.getState(markAsDirty);
+        return (ViewportState) super.getState(markAsDirty);
     }
-    
+
     @Override
     protected ViewportState getState() {
-        return (ViewportState)super.getState();
+        return (ViewportState) super.getState();
     }
 }

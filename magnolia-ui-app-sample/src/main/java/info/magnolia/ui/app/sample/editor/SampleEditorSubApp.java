@@ -72,12 +72,14 @@ public class SampleEditorSubApp extends AbstractSubApp implements SampleEditorVi
     /**
      * Overwrite supportsLocation to implement custom handling of subApp opening.
      * Will take care of the location change in case the current view name equals the new view name.
-     * @param location the new location
+     * 
+     * @param location
+     *            the new location
      * @return true if current SubApp should handle the location update
      */
     @Override
     public boolean supportsLocation(Location location) {
         EditorLocation newLocation = EditorLocation.wrap(location);
-        return  view.getName().equals(newLocation.getViewName());
+        return view.getName().equals(newLocation.getViewName());
     }
 }

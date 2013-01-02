@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -47,7 +47,6 @@ import javax.jcr.RepositoryException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 
 /**
  * Test class {@link JcrNodeAdapter} for the Child Item handling.
@@ -81,8 +80,8 @@ public class JcrNodeAdapterChildItemTest {
         // Create a child node
         Node child = baseNode.addNode("child");
         JcrNodeAdapter childItem = new JcrNodeAdapter(child);
-        item.addChild( childItem);
-        //Create one new child Item
+        item.addChild(childItem);
+        // Create one new child Item
         JcrNewNodeAdapter newChild = new JcrNewNodeAdapter(baseNode, "mgnl:content");
         item.addChild(newChild);
 
@@ -106,7 +105,7 @@ public class JcrNodeAdapterChildItemTest {
         Node child = baseNode.addNode("child");
         JcrNodeAdapter childItem = new JcrNodeAdapter(child);
         item.addChild(childItem);
-        //Create one new child Item
+        // Create one new child Item
         JcrNewNodeAdapter newChild = new JcrNewNodeAdapter(baseNode, "mgnl:content");
         item.addChild(newChild);
 
@@ -129,13 +128,13 @@ public class JcrNodeAdapterChildItemTest {
     public void testAddNewChildAndStore() throws Exception {
         // GIVEN
         JcrNodeAdapter item = new JcrNodeAdapter(baseNode);
-        //Add property to the  Item
+        // Add property to the Item
         DefaultProperty property = new DefaultProperty("propertyName", "propertyValue");
         item.addItemProperty("propertyName", property);
-        //Create one new child Item
+        // Create one new child Item
         JcrNewNodeAdapter newChild = new JcrNewNodeAdapter(baseNode, "mgnl:content", "childNode");
         item.addChild(newChild);
-        //Add property to the child Item
+        // Add property to the child Item
         DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
         newChild.addItemProperty("childPropertyName", childProperty);
 
@@ -156,14 +155,14 @@ public class JcrNodeAdapterChildItemTest {
     public void testAddExistingChildAndStore() throws Exception {
         // GIVEN
         JcrNodeAdapter item = new JcrNodeAdapter(baseNode);
-        //Add property to the  Item
+        // Add property to the Item
         DefaultProperty property = new DefaultProperty("propertyName", "propertyValue");
         item.addItemProperty("propertyName", property);
         // Create a child node
         Node child = baseNode.addNode("childNode");
         JcrNodeAdapter childItem = new JcrNodeAdapter(child);
         item.addChild(childItem);
-        //Add property to the child Item
+        // Add property to the child Item
         DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
         childItem.addItemProperty("childPropertyName", childProperty);
 
@@ -184,20 +183,20 @@ public class JcrNodeAdapterChildItemTest {
     public void testAddMixedChildAndStore() throws Exception {
         // GIVEN
         JcrNodeAdapter item = new JcrNodeAdapter(baseNode);
-        //Add property to the  Item
+        // Add property to the Item
         DefaultProperty property = new DefaultProperty("propertyName", "propertyValue");
         item.addItemProperty("propertyName", property);
         // Create a child node
         Node child = baseNode.addNode("childNode");
         JcrNodeAdapter childItem = new JcrNodeAdapter(child);
         item.addChild(childItem);
-        //Add property to the child Item
+        // Add property to the child Item
         DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
         childItem.addItemProperty("childPropertyName", childProperty);
-        //Create one new child Item
+        // Create one new child Item
         JcrNewNodeAdapter newChild = new JcrNewNodeAdapter(baseNode, "mgnl:content", "newChild");
         item.addChild(newChild);
-        //Add property to the child Item
+        // Add property to the child Item
         DefaultProperty childPropertyNew = new DefaultProperty("childNewPropertyName", "childNewPropertyValue");
         newChild.addItemProperty("childNewPropertyName", childPropertyNew);
 
@@ -221,13 +220,13 @@ public class JcrNodeAdapterChildItemTest {
     public void testAddRemoveNewChildAndStore() throws Exception {
         // GIVEN
         JcrNodeAdapter item = new JcrNodeAdapter(baseNode);
-        //Add property to the  Item
+        // Add property to the Item
         DefaultProperty property = new DefaultProperty("propertyName", "propertyValue");
         item.addItemProperty("propertyName", property);
-        //Create one new child Item
+        // Create one new child Item
         JcrNewNodeAdapter newChild = new JcrNewNodeAdapter(baseNode, "mgnl:content", "childNode");
-        item.addChild( newChild);
-        //Add property to the child Item
+        item.addChild(newChild);
+        // Add property to the child Item
         DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
         newChild.addItemProperty("childPropertyName", childProperty);
 
@@ -248,16 +247,16 @@ public class JcrNodeAdapterChildItemTest {
     public void testAddRemoveExistingChildAndStore() throws Exception {
         // GIVEN
         JcrNodeAdapter item = new JcrNodeAdapter(baseNode);
-        //Add property to the  Item
+        // Add property to the Item
         DefaultProperty property = new DefaultProperty("propertyName", "propertyValue");
         item.addItemProperty("propertyName", property);
-        //Create one new child Item
+        // Create one new child Item
         // Create a child node
         Node child = baseNode.addNode("childNode");
         JcrNodeAdapter childItem = new JcrNodeAdapter(child);
-        item.addChild( childItem);
+        item.addChild(childItem);
         assertEquals(true, baseNode.hasNode("childNode"));
-        //Add property to the child Item
+        // Add property to the child Item
         DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
         childItem.addItemProperty("childPropertyName", childProperty);
 
@@ -278,22 +277,22 @@ public class JcrNodeAdapterChildItemTest {
     public void testAddRemoveAddChildAndStore() throws Exception {
         // GIVEN
         JcrNodeAdapter item = new JcrNodeAdapter(baseNode);
-        //Add property to the  Item
+        // Add property to the Item
         DefaultProperty property = new DefaultProperty("propertyName", "propertyValue");
         item.addItemProperty("propertyName", property);
-        //Create one new child Item
+        // Create one new child Item
         // Create a child node
         Node child = baseNode.addNode("childNode");
         JcrNodeAdapter childItem = new JcrNodeAdapter(child);
         assertEquals(true, baseNode.hasNode("childNode"));
-        //Add property to the child Item
+        // Add property to the child Item
         DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
         childItem.addItemProperty("childPropertyName", childProperty);
 
         // WHEN
         item.addChild(childItem);
         item.removeChild(childItem);
-        item.addChild( childItem);
+        item.addChild(childItem);
 
         // THEN
         // Get node
@@ -309,4 +308,3 @@ public class JcrNodeAdapterChildItemTest {
         assertEquals(0, item.getRemovedChildren().size());
     }
 }
-

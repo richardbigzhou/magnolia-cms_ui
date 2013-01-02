@@ -36,8 +36,8 @@ package info.magnolia.ui.model.workbench.builder;
 import info.magnolia.ui.model.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.model.column.builder.ColumnBuilder;
 import info.magnolia.ui.model.form.builder.FormBuilder;
-import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 
 /**
  * Builder for building a workbench definition.

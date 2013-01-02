@@ -42,21 +42,23 @@ import com.vaadin.ui.Component;
 public class ItemViewImpl implements ItemView {
 
     private Component itemView;
-    
+
     private ViewType viewType;
 
     @Override
     public void setItemView(Component newView, ViewType viewType) {
-        this.itemView = newView; 
+        this.itemView = newView;
         this.itemView = newView;
         this.viewType = viewType;
     }
 
     @Override
-    public void setListener(Listener listener) {}
+    public void setListener(Listener listener) {
+    }
 
     @Override
-    public void refresh() {}
+    public void refresh() {
+    }
 
     @Override
     public ViewType getViewType() {

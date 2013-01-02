@@ -33,12 +33,14 @@
  */
 package info.magnolia.ui.admincentral.column;
 
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
+
 import java.util.Date;
 import java.util.Locale;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
 import javax.inject.Inject;
+
 import org.apache.commons.lang.time.FastDateFormat;
 
 import com.vaadin.data.Item;

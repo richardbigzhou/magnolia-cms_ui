@@ -40,7 +40,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 /**
  * CallbackFormAction.
  */
-public class CallbackFormAction  extends ActionBase<CallbackFormActionDefinition> {
+public class CallbackFormAction extends ActionBase<CallbackFormActionDefinition> {
 
     private FormPresenter presenter;
 
@@ -51,7 +51,7 @@ public class CallbackFormAction  extends ActionBase<CallbackFormActionDefinition
 
     @Override
     public void execute() throws ActionExecutionException {
-        if(getDefinition().isCallSuccess()) {
+        if (getDefinition().isCallSuccess()) {
             presenter.getCallback().onSuccess(getDefinition().getSuccessActionName());
         } else {
             presenter.getCallback().onCancel();

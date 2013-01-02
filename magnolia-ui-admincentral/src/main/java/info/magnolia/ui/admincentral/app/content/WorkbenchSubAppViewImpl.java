@@ -33,8 +33,9 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
-import com.vaadin.ui.Component;
 import info.magnolia.ui.framework.view.View;
+
+import com.vaadin.ui.Component;
 
 /**
  * View for Workbench subApps. Used for implementers of {@link AbstractContentSubApp} and {@link AbstractItemSubApp}.

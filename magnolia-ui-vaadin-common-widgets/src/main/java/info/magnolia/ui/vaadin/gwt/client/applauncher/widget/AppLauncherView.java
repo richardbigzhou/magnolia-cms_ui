@@ -54,9 +54,9 @@ public interface AppLauncherView extends HasWidgets, IsWidget {
     }
 
     void setPresenter(Presenter presenter);
-    
+
     void setAppActive(String appName, boolean isActive);
-    
+
     void addAppGroup(AppGroup group);
 
     void addAppTile(AppTile appTile, AppGroup groupName);

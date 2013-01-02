@@ -41,10 +41,10 @@ import com.vaadin.shared.communication.ServerRpc;
 public interface ThumbnailLayoutServerRpc extends ServerRpc {
 
     void onThumbnailSelected(String id);
-    
+
     void onThumbnailDoubleClicked(String id);
-    
+
     void loadThumbnails(int amount);
-    
+
     void clearThumbnails();
 }

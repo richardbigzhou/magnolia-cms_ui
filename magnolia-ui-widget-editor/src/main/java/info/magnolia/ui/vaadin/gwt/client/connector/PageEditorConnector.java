@@ -76,10 +76,6 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
-import com.vaadin.client.communication.RpcProxy;
-import com.vaadin.client.communication.StateChangeEvent;
-import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
-import com.vaadin.client.ui.AbstractComponentConnector;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -89,37 +85,37 @@ import com.vaadin.shared.ui.Connect;
 public class PageEditorConnector extends AbstractComponentConnector implements PageEditorView.Listener {
 
     private static final String PAGE_EDITOR_CSS = "/VAADIN/themes/admincentraltheme/pageeditor.css";
-    
+
     private PageEditorServerRpc rpc = RpcProxy.create(PageEditorServerRpc.class, this);
-    
+
     private EventBus eventBus = new SimpleEventBus();
-    
+
     private PageEditorView view;
-    
+
     private Model model;
-    
+
     private FocusModel focusModel;
-    
+
     @Override
     protected void init() {
         super.init();
         this.model = new ModelImpl();
         this.focusModel = new FocusModelImpl(eventBus, model);
-        addStateChangeHandler(new StateChangeHandler() { 
+        addStateChangeHandler(new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
                 PageEditorParameters params = getState().parameters;
-                view.setUrl(params.getContextPath() + params.getNodePath());        
+                view.setUrl(params.getContextPath() + params.getNodePath());
             }
         });
-        
+
         registerRpc(PageEditorClientRpc.class, new PageEditorClientRpc() {
             @Override
             public void refresh() {
                 view.reload();
             }
         });
-        
+
         eventBus.addHandler(FrameLoadedEvent.TYPE, new FrameLoadedEvent.Handler() {
             @Override
             public void handle(FrameLoadedEvent event) {
@@ -129,13 +125,13 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                     Document document = event.getFrameDocument();
                     process(event.getFrameDocument());
                     if (model.getRootPage().getControlBar() != null) {
-                        ((PageBar)model.getRootPage().getControlBar()).setPageTitle(document.getTitle());
+                        ((PageBar) model.getRootPage().getControlBar()).setPageTitle(document.getTitle());
                     }
                     focusModel.init();
                 }
             }
         });
-        
+
         eventBus.addHandler(SelectElementEvent.TYPE, new SelectElementEventHandler() {
             @Override
             public void onSelectElement(SelectElementEvent selectElementEvent) {
@@ -177,24 +173,24 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             }
         });
     }
-    
+
     @Override
     protected Widget createWidget() {
         this.view = new PageEditorViewImpl(eventBus);
         this.view.setListener(this);
         return view.asWidget();
     }
-    
+
     @Override
     public PageEditorState getState() {
-        return (PageEditorState)super.getState();
+        return (PageEditorState) super.getState();
     }
 
     @Override
     public void selectElement(Element element) {
         focusModel.selectElement(element);
     }
-    
+
     private void injectEditorStyles(final Document document) {
         HeadElement head = HeadElement.as(document.getElementsByTagName("head").getItem(0));
         LinkElement cssLink = document.createLinkElement();
@@ -251,5 +247,5 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             }
         }
     }
-    
+
 }

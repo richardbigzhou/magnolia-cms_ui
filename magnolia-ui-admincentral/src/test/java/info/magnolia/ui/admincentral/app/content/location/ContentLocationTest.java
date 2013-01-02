@@ -33,14 +33,12 @@
  */
 package info.magnolia.ui.admincentral.app.content.location;
 
+import static org.junit.Assert.*;
+
 import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.framework.location.DefaultLocation;
+
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 
 /**
  * Test case for {@link info.magnolia.ui.admincentral.app.content.location.ContentLocation}.
@@ -96,7 +94,7 @@ public class ContentLocationTest {
     }
 
     @Test
-         public void testGetViewType() {
+    public void testGetViewType() {
         // GIVEN
         ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:search:found*");
 
@@ -121,7 +119,7 @@ public class ContentLocationTest {
         ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:search:found*");
 
         // TEST
-        assertEquals("found*" ,contentLocation.getQuery());
+        assertEquals("found*", contentLocation.getQuery());
 
     }
 
@@ -134,7 +132,7 @@ public class ContentLocationTest {
         contentLocation.updateNodePath("/node/has/changes/01");
 
         // TEST
-        assertEquals("/node/has/changes/01" ,contentLocation.getNodePath());
+        assertEquals("/node/has/changes/01", contentLocation.getNodePath());
 
     }
 

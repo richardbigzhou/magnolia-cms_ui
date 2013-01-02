@@ -33,13 +33,11 @@
  */
 package info.magnolia.ui.model.builder;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+
 import info.magnolia.test.mock.MockSimpleComponentProvider;
 
 import org.junit.Test;
-
 
 public class FactoryBaseTest {
 

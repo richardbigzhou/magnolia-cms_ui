@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.icon.connector;
 
-
 /**
  * {@link CompositeIconState}.
  */
-public class CompositeIconState extends IconState {}
+public class CompositeIconState extends IconState {
+}

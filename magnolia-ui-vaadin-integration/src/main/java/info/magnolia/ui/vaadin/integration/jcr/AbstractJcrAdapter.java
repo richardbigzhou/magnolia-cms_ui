@@ -48,7 +48,6 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 
-
 /**
  * Common base for {@link JcrItemAdapter} implementation.
  */
@@ -143,16 +142,14 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     }
 
     /**
-     * Updates and removes properties on the JCR Item represented by this adapter, based on the
-     * {@link #changedProperties} and {@link #removedProperties} maps. Read-only properties will not be updated.
+     * Updates and removes properties on the JCR Item represented by this adapter, based on the {@link #changedProperties} and {@link #removedProperties} maps. Read-only properties will not be updated.
      */
     public void updateProperties() throws RepositoryException {
         updateProperties(getJcrItem());
     }
 
     /**
-     * Updates and removes properties on given item, based on the {@link #changedProperties} and
-     * {@link #removedProperties} maps. Read-only properties will not be updated.
+     * Updates and removes properties on given item, based on the {@link #changedProperties} and {@link #removedProperties} maps. Read-only properties will not be updated.
      */
     public void updateProperties(Item item) throws RepositoryException {
         for (Entry<String, Property> entry : changedProperties.entrySet()) {

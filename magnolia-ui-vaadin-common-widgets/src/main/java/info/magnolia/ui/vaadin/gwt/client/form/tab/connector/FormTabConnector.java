@@ -52,7 +52,7 @@ import com.vaadin.shared.ui.Connect;
 public class FormTabConnector extends MagnoliaTabConnector {
 
     private final FormTabServerRpc rpc = RpcProxy.create(FormTabServerRpc.class, this);
-    
+
     @Override
     protected void init() {
         super.init();
@@ -63,11 +63,11 @@ public class FormTabConnector extends MagnoliaTabConnector {
             }
         });
     }
-    
+
     public void setHasErrors(boolean hasErrors) {
         rpc.setHasErrors(hasErrors);
     }
-    
+
     @Override
     protected MagnoliaTabWidget createWidget() {
         return new FormTabWidget();

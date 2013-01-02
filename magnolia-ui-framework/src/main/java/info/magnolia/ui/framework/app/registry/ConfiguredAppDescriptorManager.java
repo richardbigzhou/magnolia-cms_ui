@@ -33,10 +33,18 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
+import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.cms.util.ModuleConfigurationObservingManager;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.NodeVisitor;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.registry.RegistrationException;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.jcr.Node;
@@ -45,13 +53,6 @@ import javax.jcr.RepositoryException;
 import org.apache.jackrabbit.commons.predicate.NodeTypePredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import info.magnolia.cms.core.MgnlNodeType;
-import info.magnolia.cms.util.ModuleConfigurationObservingManager;
-import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.NodeVisitor;
-import info.magnolia.module.ModuleRegistry;
-import info.magnolia.registry.RegistrationException;
 
 /**
  * ObservedManager for {@link info.magnolia.ui.framework.app.AppDescriptor} configured in repository.

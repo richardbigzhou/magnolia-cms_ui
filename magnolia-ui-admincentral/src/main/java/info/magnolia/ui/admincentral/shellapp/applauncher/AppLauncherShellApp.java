@@ -81,7 +81,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
         this.shell = shell;
         this.appController = appController;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
-        ((MagnoliaShell)shell).registerShellApp(ShellAppType.APPLAUNCHER, view.asVaadinComponent());
+        ((MagnoliaShell) shell).registerShellApp(ShellAppType.APPLAUNCHER, view.asVaadinComponent());
         // Init view
         initView(appLauncherLayoutManager.getLayoutForCurrentUser());
         /**

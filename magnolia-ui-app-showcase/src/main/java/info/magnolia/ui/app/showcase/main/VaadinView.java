@@ -44,6 +44,6 @@ public interface VaadinView extends View {
      * View listener interface.
      */
     public interface Listener {
-        
+
     }
 }

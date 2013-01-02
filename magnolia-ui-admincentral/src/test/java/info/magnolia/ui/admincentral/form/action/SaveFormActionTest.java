@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.admincentral.form.action;
 
-import com.vaadin.data.Item;
+import static org.junit.Assert.assertEquals;
+
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
@@ -42,15 +43,17 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.junit.Before;
-import org.junit.Test;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.junit.Assert.assertEquals;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import com.vaadin.data.Item;
 
 /**
  * SaveFormActionTest.
@@ -63,14 +66,13 @@ public class SaveFormActionTest extends RepositoryTestCase {
     private Item item;
     private SaveFormAction formAction;
 
-
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         this.formActionDefinition = new SaveFormActionDefinition();
         this.presenter = new CallbackFormActionTest.FormPresenterTest();
-        //Init Node
+        // Init Node
         session = new MockSession("config");
         MockContext ctx = new MockContext();
         ctx.setUser(new MgnlUser("userName", "realm", new ArrayList<String>(), new ArrayList<String>(), new HashMap<String, String>()));
@@ -115,7 +117,6 @@ public class SaveFormActionTest extends RepositoryTestCase {
         assertEquals("changed", node.getProperty("property").getString());
     }
 
-
     @Test
     public void executeSaveCreatePropertyTest() throws RepositoryException, ActionExecutionException {
         // GIVEN
@@ -155,7 +156,6 @@ public class SaveFormActionTest extends RepositoryTestCase {
         assertEquals(false, node.hasProperty("property"));
 
     }
-
 
     /**
      * Init the Definition.

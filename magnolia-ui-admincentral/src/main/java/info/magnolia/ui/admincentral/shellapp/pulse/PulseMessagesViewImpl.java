@@ -313,7 +313,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             String messageId = params.get(0);
             values.add(messageId);
             /**
-             * This is a multi-select table, calling select would just add this 
+             * This is a multi-select table, calling select would just add this
              * message to the current set of selected rows so setting the value
              * explicitly this way makes only this one selected.
              */

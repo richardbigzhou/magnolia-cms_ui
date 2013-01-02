@@ -47,8 +47,9 @@ public class SelectionArea implements Serializable {
 
     private int height;
 
-    public SelectionArea() {}
-    
+    public SelectionArea() {
+    }
+
     public SelectionArea(int left, int top, int width, int height) {
         this.top = top;
         this.left = left;
@@ -59,19 +60,19 @@ public class SelectionArea implements Serializable {
     public void setTop(int top) {
         this.top = top;
     }
-    
+
     public void setHeight(int height) {
         this.height = height;
     }
-    
+
     public void setLeft(int left) {
         this.left = left;
     }
-    
+
     public void setWidth(int width) {
         this.width = width;
     }
-    
+
     public int getTop() {
         return top;
     }

@@ -39,5 +39,5 @@ import com.google.gwt.event.shared.EventHandler;
  * NewAreaEventHandler.
  */
 public interface NewAreaEventHandler extends EventHandler {
-        void onNewArea(NewAreaEvent newAreaEvent);
+    void onNewArea(NewAreaEvent newAreaEvent);
 }

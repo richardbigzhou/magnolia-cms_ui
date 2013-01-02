@@ -33,18 +33,20 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
+import static org.junit.Assert.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+
+import javax.jcr.Node;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.jcr.Node;
-
-import static org.junit.Assert.*;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 
 /**
  * Main test class for {@link JcrNodeAdapter}.
@@ -57,7 +59,6 @@ public class JcrNodeAdapterTest {
     private final String propertyValue = "value";
     private final String modified = "_modified";
     private MockSession session;
-
 
     @Before
     public void setUp() {
@@ -86,7 +87,6 @@ public class JcrNodeAdapterTest {
         assertEquals(true, b);
         assertEquals(property.getValue().toString(), item.getItemProperty(propertyName).getValue().toString());
     }
-
 
     @Test
     public void testGetItemProperty_New() throws Exception {
@@ -137,7 +137,7 @@ public class JcrNodeAdapterTest {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
-        //Get and modify property
+        // Get and modify property
         Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(propertyName, null, propertyValue);
         adapter.addItemProperty(propertyName, propertyInitial);
 
@@ -156,12 +156,12 @@ public class JcrNodeAdapterTest {
         Node node = session.getRootNode().addNode(nodeName);
         node.setProperty(propertyName, propertyValue);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
-        //Get property: add listener
+        // Get property: add listener
         DefaultProperty propertyInitial = (DefaultProperty) adapter.getItemProperty(propertyName);
-        //Modify property -->  add listener
+        // Modify property --> add listener
         propertyInitial.setValue(propertyValue);
 
-        // WHEN Modify property -->  add listener
+        // WHEN Modify property --> add listener
         propertyInitial.setValue(propertyValue);
 
         // THEN
@@ -174,13 +174,13 @@ public class JcrNodeAdapterTest {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
-        //Get property: add listener
+        // Get property: add listener
         DefaultProperty propertyInitial = DefaultPropertyUtil.newDefaultProperty(propertyName, null, propertyValue);
         adapter.addItemProperty(propertyName, propertyInitial);
-        //Modify property -->  add listener
+        // Modify property --> add listener
         propertyInitial.setValue(propertyValue);
 
-        // WHEN Modify property -->  add listener
+        // WHEN Modify property --> add listener
         propertyInitial.setValue(propertyValue);
 
         // THEN
@@ -409,7 +409,6 @@ public class JcrNodeAdapterTest {
         assertEquals(value_2, res.getProperty(id_2).getString());
     }
 
-
     @Test
     public void testGetNode_ExistingPropertyRemoved() throws Exception {
         // GIVEN
@@ -423,7 +422,7 @@ public class JcrNodeAdapterTest {
         node.setProperty(id_2, value_2);
         node.setProperty(id_3, value_3);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
-        // Modify two JCR  property.
+        // Modify two JCR property.
         adapter.getItemProperty(propertyName).setValue(propertyValue + modified);
         adapter.getItemProperty(id_2).setValue(value_2 + modified);
 
@@ -451,7 +450,7 @@ public class JcrNodeAdapterTest {
         node.setProperty("id_2", "value_2");
         node.setProperty("id_3", "value_3");
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
-        // Modify two JCR  property.
+        // Modify two JCR property.
         adapter.getItemProperty("id_1").setValue("value_1_Modify");
         adapter.getItemProperty("id_2").setValue("value_2_Modify");
         // Create two 2 Vaadin property
@@ -495,7 +494,6 @@ public class JcrNodeAdapterTest {
         Property newProperty_2 = DefaultPropertyUtil.newDefaultProperty("id_5", null, "");
         adapter.addItemProperty("id_5", newProperty_2);
 
-
         adapter.getItemProperty("id_6");
         // Modify two Vaadin property.
         newProperty_1.setValue("value_4");
@@ -515,4 +513,3 @@ public class JcrNodeAdapterTest {
         assertEquals("value_4", res.getProperty("id_4").getString());
     }
 }
-

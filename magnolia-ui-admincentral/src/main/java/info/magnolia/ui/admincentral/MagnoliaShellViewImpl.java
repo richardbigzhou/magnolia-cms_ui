@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral;
 
 import javax.inject.Inject;
 
-
 /**
  * Implementation of MagnoliaShellView.
  */

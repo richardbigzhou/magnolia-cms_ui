@@ -72,17 +72,19 @@ public class ResourceSerializer implements JsonSerializer<Resource> {
         } else if (src instanceof IconFontResource) {
             return new JsonPrimitive(RESOURCE_URI_SCHEME_ICONFONT + ((IconFontResource) src).getCssClassName());
 
-        }/* else if (src instanceof ApplicationResource) {
-            final ApplicationResource r = (ApplicationResource) src;
-            final Application a = r.getApplication();
-            if (a == null) {
-                throw new SerializationException("Application not specified for resource " + src.getClass().getName());
-            }
-            return new JsonPrimitive(a.getRelativeLocation(r));
-
-        } else if (src instanceof ThemeResource) {
-            return new JsonPrimitive(RESOURCE_URI_SCHEME_THEME + ((ThemeResource) src).getResourceId());
-        }*/
+        }/*
+          * else if (src instanceof ApplicationResource) {
+          * final ApplicationResource r = (ApplicationResource) src;
+          * final Application a = r.getApplication();
+          * if (a == null) {
+          * throw new SerializationException("Application not specified for resource " + src.getClass().getName());
+          * }
+          * return new JsonPrimitive(a.getRelativeLocation(r));
+          * 
+          * } else if (src instanceof ThemeResource) {
+          * return new JsonPrimitive(RESOURCE_URI_SCHEME_THEME + ((ThemeResource) src).getResourceId());
+          * }
+          */
 
         return new JsonPrimitive(src.toString());
     }

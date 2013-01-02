@@ -40,7 +40,6 @@ import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-
 /**
  * Action for creating a new property.
  */

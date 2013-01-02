@@ -33,20 +33,22 @@
  */
 package info.magnolia.ui.framework.message;
 
+import info.magnolia.cms.security.SecuritySupport;
+import info.magnolia.cms.security.User;
+import info.magnolia.context.MgnlContext;
+
 import java.util.Collection;
 import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
-import info.magnolia.context.MgnlContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import info.magnolia.cms.security.SecuritySupport;
-import info.magnolia.cms.security.User;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 /**
  * Implementation of {@link MessagesManager}.

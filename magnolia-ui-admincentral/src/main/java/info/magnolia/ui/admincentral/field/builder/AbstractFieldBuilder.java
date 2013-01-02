@@ -34,10 +34,10 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.ui.admincentral.form.AbstractFormItem;
 import info.magnolia.ui.admincentral.field.FieldBuilder;
 import info.magnolia.ui.admincentral.field.validator.FieldValidatorBuilder;
 import info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory;
+import info.magnolia.ui.admincentral.form.AbstractFormItem;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
@@ -60,8 +60,9 @@ import com.vaadin.ui.Field;
 /**
  * Abstract FieldBuilder implementations. This class handle all common attributes defined in {@link FieldDefinition} and binds Vaadin {@link Field} instances created
  * by subclasses to the {@link Property} they will be reading and writing to.
- *
- * @param <D> definition type
+ * 
+ * @param <D>
+ *            definition type
  */
 public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends AbstractFormItem implements FieldBuilder {
     private static final Logger log = LoggerFactory.getLogger(AbstractFieldBuilder.class);
@@ -98,13 +99,13 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
             Property property = getOrCreateProperty();
             setPropertyDataSource(property);
 
-            //TODO fgrilli review: do we really want to provide users with the possibility
-            //of defining their custom styles risking that they screw up AdminCentral look&feel?
-            if(StringUtils.isNotBlank(definition.getStyleName())) {
+            // TODO fgrilli review: do we really want to provide users with the possibility
+            // of defining their custom styles risking that they screw up AdminCentral look&feel?
+            if (StringUtils.isNotBlank(definition.getStyleName())) {
                 this.field.addStyleName(definition.getStyleName());
             }
 
-            //Set label and required marker
+            // Set label and required marker
             this.field.setCaption(getMessage(getFieldDefinition().getLabel()) + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : ""));
 
             setConstraints();
@@ -133,7 +134,8 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
     /**
      * Get a property from the current Item.
      * If the property already exists, return this property.
-     * <p>If the property does not exist, create a new property based on the defined type, default value, and saveInfo.
+     * <p>
+     * If the property does not exist, create a new property based on the defined type, default value, and saveInfo.
      */
     protected Property getOrCreateProperty() {
         String propertyName = getPropertyName();
@@ -181,28 +183,28 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
 
     /**
      * Set all constraints linked to the field:
-     *   Build Validation rules.
-     *   Set Required field.
-     *   Set Read Only.
+     * Build Validation rules.
+     * Set Required field.
+     * Set Read Only.
      */
     private void setConstraints() {
         // Set Validation
-        for (ConfiguredFieldValidatorDefinition validatorDefinition: definition.getValidators()) {
+        for (ConfiguredFieldValidatorDefinition validatorDefinition : definition.getValidators()) {
             FieldValidatorBuilder validatorBuilder = this.validatorFieldFactory.create(validatorDefinition);
-            if(validatorBuilder != null) {
+            if (validatorBuilder != null) {
                 this.field.addValidator(validatorBuilder.buildValidator());
-            }else {
-                log.warn("Not able to create Validation for the following definition {}" , definition.toString());
+            } else {
+                log.warn("Not able to create Validation for the following definition {}", definition.toString());
             }
         }
         // Set Required
-        if(definition.isRequired()) {
+        if (definition.isRequired()) {
             field.setRequired(true);
             field.setRequiredError(getMessage(definition.getRequiredErrorMessage()));
         }
 
-        //Set ReadOnly (field property has to be updated)
-        if(field.getPropertyDataSource()!=null) {
+        // Set ReadOnly (field property has to be updated)
+        if (field.getPropertyDataSource() != null) {
             field.getPropertyDataSource().setReadOnly(definition.isReadOnly());
         }
     }
@@ -213,11 +215,11 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
      * (fr_, de_) if the current language is not the default one.
      */
     protected String getPropertyName() {
-        if(definition.isI18n()) {
+        if (definition.isI18n()) {
             Locale locale = getMessages().getLocale();
             boolean isFallbackLanguage = i18nContentSupport.getFallbackLocale().equals(locale);
             String newName = definition.getName();
-            if(!isFallbackLanguage){
+            if (!isFallbackLanguage) {
                 newName = newName + "_" + locale.toString();
             }
             return newName;

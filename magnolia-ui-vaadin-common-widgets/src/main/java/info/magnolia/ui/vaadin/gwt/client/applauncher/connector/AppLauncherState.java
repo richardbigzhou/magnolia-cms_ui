@@ -46,9 +46,9 @@ import com.vaadin.shared.AbstractComponentState;
  * {@link AppLauncherState}.
  */
 public class AppLauncherState extends AbstractComponentState {
-    
+
     public List<String> runningApps = new ArrayList<String>();
-    
+
     public Map<String, AppGroup> appGroups = new LinkedHashMap<String, AppGroup>();
-   
+
 }

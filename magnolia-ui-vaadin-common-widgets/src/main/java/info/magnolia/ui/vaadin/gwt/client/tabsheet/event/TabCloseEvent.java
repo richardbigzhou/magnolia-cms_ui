@@ -40,25 +40,25 @@ import com.google.gwt.event.shared.GwtEvent;
 /**
  * Event that is fired when the tab is closed.
  */
-public class TabCloseEvent extends GwtEvent<TabCloseEventHandler>{
+public class TabCloseEvent extends GwtEvent<TabCloseEventHandler> {
 
     public static Type<TabCloseEventHandler> TYPE = new Type<TabCloseEventHandler>();
-    
+
     private MagnoliaTabWidget tab;
-    
+
     public TabCloseEvent(final MagnoliaTabWidget tab) {
         this.tab = tab;
     }
-    
+
     public MagnoliaTabWidget getTab() {
         return tab;
     }
-    
+
     @Override
     protected void dispatch(TabCloseEventHandler handler) {
         handler.onTabClosed(this);
     }
-    
+
     @Override
     public GwtEvent.Type<TabCloseEventHandler> getAssociatedType() {
         return TYPE;

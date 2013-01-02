@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.tree.container;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
@@ -60,7 +61,6 @@ import javax.jcr.Session;
 
 import org.junit.Before;
 import org.junit.Test;
-
 
 /**
  * Tests for HierarchicalJcrContainer.
@@ -91,7 +91,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench.setPath("/");
 
         WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
-        when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition,Action>>());
+        when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>());
 
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);

@@ -35,7 +35,7 @@ package info.magnolia.ui.framework.app.launcherlayout.definition;
 
 /**
  * Defines the appearance of an app in the app launcher.
- *
+ * 
  * @see AppLauncherLayoutDefinition
  * @see AppLauncherGroupDefinition
  */

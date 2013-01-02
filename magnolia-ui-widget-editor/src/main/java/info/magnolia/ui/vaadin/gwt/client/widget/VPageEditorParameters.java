@@ -38,29 +38,29 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * VPageEditorParameters.
  */
-public class VPageEditorParameters  extends JavaScriptObject {
+public class VPageEditorParameters extends JavaScriptObject {
 
-    protected VPageEditorParameters() {}
+    protected VPageEditorParameters() {
+    }
 
     public static native VPageEditorParameters parse(String json) /*-{
-        try {
-            return eval('(' + json + ')');
-        } catch(e) {
-            return null;
-        }
-    }-*/;
+                                                                  try {
+                                                                  return eval('(' + json + ')');
+                                                                  } catch(e) {
+                                                                  return null;
+                                                                  }
+                                                                  }-*/;
 
     public final native String getContextPath() /*-{
-        return this.contextPath;
-    }-*/;
+                                                return this.contextPath;
+                                                }-*/;
 
     public final native String getNodePath() /*-{
-        return this.nodePath;
-    }-*/;
+                                             return this.nodePath;
+                                             }-*/;
 
     public final native boolean isPreview() /*-{
-        return this.preview;
-    }-*/;
+                                            return this.preview;
+                                            }-*/;
 
 }
-

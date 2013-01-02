@@ -41,7 +41,6 @@ import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-
 /**
  * Base implementation of {@link DialogPresenter}.
  */

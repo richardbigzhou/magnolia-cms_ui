@@ -46,8 +46,9 @@ public class AppTile implements Serializable {
 
     private String icon;
 
-    public AppTile() {}
-    
+    public AppTile() {
+    }
+
     public AppTile(String name, String caption, String icon) {
         this.name = name;
         this.caption = caption;
@@ -57,15 +58,15 @@ public class AppTile implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public void setCaption(String caption) {
         this.caption = caption;
     }
-    
+
     public void setIcon(String icon) {
         this.icon = icon;
     }
-    
+
     public String getName() {
         return name;
     }

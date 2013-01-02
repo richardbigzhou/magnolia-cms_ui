@@ -34,8 +34,7 @@
 package info.magnolia.ui.framework.shell;
 
 /**
- * Called after the user has answered a confirmation dialog issued by
- * {@link Shell#askForConfirmation(String, ConfirmationHandler)}.
+ * Called after the user has answered a confirmation dialog issued by {@link Shell#askForConfirmation(String, ConfirmationHandler)}.
  */
 public interface ConfirmationHandler {
 

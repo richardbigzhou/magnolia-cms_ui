@@ -43,15 +43,15 @@ import com.vaadin.shared.communication.ServerRpc;
 public interface PageEditorServerRpc extends ServerRpc {
 
     void selectElement(String type, Map<String, String> attributes);
-    
+
     void newArea(String workspace, String eventType, String path);
-   
+
     void newComponent(String workspace, String eventType, String availableComponents);
 
     void editComponent(String workspace, String eventType, String dialog);
-    
+
     void deleteComponent(String workspace, String path);
-    
+
     void sortComponent(String workspace, String parentPath, String sourcePath, String targetPath, String order);
-   
+
 }

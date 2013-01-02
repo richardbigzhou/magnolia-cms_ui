@@ -37,7 +37,6 @@ import info.magnolia.ui.vaadin.gwt.client.actionbar.widget.ActionbarItemWidget;
 
 import com.google.web.bindery.event.shared.Event;
 
-
 /**
  * Event for triggering actions based on action name.
  */

@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.search.container;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.model.action.Action;
@@ -66,32 +66,32 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
 
     @Override
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         super.setUp();
-        //Init
+        // Init
         configuredWorkbench = new ConfiguredWorkbenchDefinition();
         configuredWorkbench.setWorkspace(workspace);
         configuredWorkbench.setPath("/");
-        //Init workBench
+        // Init workBench
         WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
-        when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition,Action>>());
+        when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>());
         WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl(null, workbenchActionRegistry);
-        //Init col
+        // Init col
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);
         colDef1.setName(colName1);
-        colDef1.setLabel("Label_"+colName1);
+        colDef1.setLabel("Label_" + colName1);
         PropertyTypeColumnDefinition colDef2 = new PropertyTypeColumnDefinition();
         colDef2.setSortable(false);
         colDef2.setName(colName2);
-        colDef2.setLabel("Label_"+colName2);
+        colDef2.setLabel("Label_" + colName2);
 
         configuredWorkbench.addColumn(colDef1);
         configuredWorkbench.addColumn(colDef2);
 
         jcrContainer = new SearchJcrContainer(configuredWorkbench);
 
-        //Init session
+        // Init session
         session = MgnlContext.getJCRSession(workspace);
     }
 
@@ -104,62 +104,62 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
 
     @Test
     public void testGetQueryWhereClauseReturnsEmptyStringWhenFullTextExpressionIsBlank() throws Exception {
-        //GIVEN
+        // GIVEN
         jcrContainer.setFullTextExpression("");
 
-        //WHEN
+        // WHEN
         String stmt = jcrContainer.getQueryWhereClause();
 
-        //THEN
+        // THEN
         assertEquals("", stmt);
     }
 
     @Test
     public void testGetQueryWhereClauseReturnsEmptyStringWhenFullTextExpressionIsNull() throws Exception {
-        //GIVEN
+        // GIVEN
         jcrContainer.setFullTextExpression(null);
 
-        //WHEN
+        // WHEN
         String stmt = jcrContainer.getQueryWhereClause();
 
-        //THEN
+        // THEN
         assertEquals("", stmt);
     }
 
     @Test
     public void testGetQueryWhereClauseReturnsFullTextSearchExpressionORedWithLocalname() throws Exception {
-        //GIVEN
+        // GIVEN
         jcrContainer.setFullTextExpression("foo");
 
-        //WHEN
+        // WHEN
         String stmt = jcrContainer.getQueryWhereClause();
 
-        //THEN
+        // THEN
         assertEquals(" where ( (localname() = 'foo' or contains(t.*, 'foo')))", stmt);
     }
 
     @Test
     public void testGetQueryWhereClauseEscapesQuotesInFullTextSearchExpression() throws Exception {
-        //GIVEN
+        // GIVEN
         jcrContainer.setFullTextExpression("foo OR 'baz bar'   ");
 
-        //WHEN
+        // WHEN
         String stmt = jcrContainer.getQueryWhereClause();
 
-        //THEN
+        // THEN
         assertEquals(" where ( (localname() = 'foo OR ''baz bar''' or contains(t.*, 'foo OR ''baz bar''')))", stmt);
     }
 
     @Test
     public void testGetQueryWhereClauseWhenWorkspacePathIsNotRoot() throws Exception {
-        //GIVEN
+        // GIVEN
         jcrContainer.setFullTextExpression("foo");
         configuredWorkbench.setPath("/qux");
 
-        //WHEN
+        // WHEN
         String stmt = jcrContainer.getQueryWhereClause();
 
-        //THEN
+        // THEN
         assertEquals(" where ( ISDESCENDANTNODE('/qux') and  (localname() = 'foo' or contains(t.*, 'foo')))", stmt);
     }
 

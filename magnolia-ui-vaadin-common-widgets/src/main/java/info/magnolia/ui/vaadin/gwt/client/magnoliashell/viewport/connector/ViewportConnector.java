@@ -62,45 +62,46 @@ import com.vaadin.shared.ui.Connect;
 public class ViewportConnector extends AbstractLayoutConnector {
 
     private EventBus eventBus;
-    
+
     protected ElementResizeListener childCenterer = new ElementResizeListener() {
         @Override
         public void onElementResize(ElementResizeEvent e) {
             alignContent(e.getElement(), e.getLayoutManager());
         }
     };
-    
+
     @Override
     protected void init() {
         addStateChangeHandler("activeComponent", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent event) {
-                final ComponentConnector candidate = (ComponentConnector)getState().activeComponent; 
+                final ComponentConnector candidate = (ComponentConnector) getState().activeComponent;
                 if (candidate != null && getWidget().getVisibleApp() != candidate) {
                     getWidget().setVisibleApp(candidate != null ? candidate.getWidget() : null);
                 }
             }
         });
     };
-    
+
     protected void alignContent(Element e, LayoutManager layoutManager) {
         if (getWidget().isVisible() && !Display.NONE.getCssName().equals(e.getStyle().getDisplay())) {
             int width = layoutManager.getInnerWidth(e);
             final Style style = e.getStyle();
             style.setLeft(50, Unit.PCT);
-            style.setMarginLeft(-width / 2, Unit.PX);            
+            style.setMarginLeft(-width / 2, Unit.PX);
         }
     }
 
     @Override
-    public void updateCaption(ComponentConnector connector) {}
+    public void updateCaption(ComponentConnector connector) {
+    }
 
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent event) {
         final ViewportWidget viewport = getWidget();
         final List<ComponentConnector> children = getChildComponents();
         final List<ComponentConnector> oldChildren = event.getOldChildren();
-        
+
         int index = 0;
         for (final ComponentConnector cc : children) {
             final Widget w = cc.getWidget();
@@ -110,32 +111,32 @@ public class ViewportConnector extends AbstractLayoutConnector {
             }
             ++index;
         }
-        
+
         oldChildren.removeAll(children);
         for (final ComponentConnector cc : oldChildren) {
             cc.getLayoutManager().removeElementResizeListener(cc.getWidget().getElement(), childCenterer);
             getWidget().removeWidget(cc.getWidget());
         }
     }
-    
+
     @Override
     public ViewportWidget getWidget() {
-        return (ViewportWidget)super.getWidget();
+        return (ViewportWidget) super.getWidget();
     }
-    
+
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
     }
-    
+
     public EventBus getEventBus() {
         return eventBus;
     }
 
     @Override
     public ViewportState getState() {
-        return (ViewportState)super.getState();
+        return (ViewportState) super.getState();
     }
-    
+
     public ViewportType getType() {
         return getState().type;
     }

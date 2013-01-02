@@ -50,7 +50,6 @@ import info.magnolia.ui.framework.view.View;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-
 /**
  * Presenter meant to bootstrap the MagnoliaShell.
  */
@@ -70,7 +69,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
         DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLauncherLayoutManager);
         LocationHistoryHandler locationHistoryHandler = new LocationHistoryHandler(locationHistoryMapper, shell);
         locationHistoryHandler
-            .register(locationController, eventBus, new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, "applauncher", "", ""));
+                .register(locationController, eventBus, new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, "applauncher", "", ""));
         messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), messageDispatcher);
     }
 

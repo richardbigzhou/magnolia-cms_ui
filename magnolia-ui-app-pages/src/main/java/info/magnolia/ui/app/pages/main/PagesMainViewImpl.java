@@ -38,7 +38,6 @@ import info.magnolia.ui.framework.view.View;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 
-
 /**
  * View implementation for the Pages main app.
  */

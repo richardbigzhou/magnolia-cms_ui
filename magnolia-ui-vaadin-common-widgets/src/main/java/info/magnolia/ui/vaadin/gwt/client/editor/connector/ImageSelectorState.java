@@ -44,21 +44,20 @@ public class ImageSelectorState extends AbstractComponentState {
     private static final int DEFAULT_MIN_DIMENSION = 200;
 
     public boolean isCropping = false;
-    
+
     @DelegateToWidget
     public int minDimension = DEFAULT_MIN_DIMENSION;
 
     @DelegateToWidget
     public int marginsPx = 20;
-    
+
     @DelegateToWidget
     public boolean isCropAspectRatioLocked = false;
-    
+
     @DelegateToWidget
     public String fileName = "";
-    
+
     @DelegateToWidget
     public String mimeType = "";
-    
-    
+
 }

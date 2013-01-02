@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import com.vaadin.data.Item;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
@@ -45,6 +44,8 @@ import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
+
+import com.vaadin.data.Item;
 
 /**
  * Presenter for forms opened inside dialogs.
@@ -64,17 +65,17 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private Callback callback;
 
-    private final  DialogActionFactory dialogActionFactory;
+    private final DialogActionFactory dialogActionFactory;
     private FormPresenter formPresenter;
 
     public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final FormPresenterFactory formPresenterFactory,
-                                   final DialogDefinition dialogDefinition, final Shell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
+            final DialogDefinition dialogDefinition, final Shell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
         super(view, eventBus);
         this.view = view;
         this.dialogBuilder = dialogBuilder;
         this.formPresenterFactory = formPresenterFactory;
         this.dialogDefinition = dialogDefinition;
-        this.shell = (MagnoliaShell)shell;
+        this.shell = (MagnoliaShell) shell;
         this.dialogActionFactory = actionFactory;
         initActions(dialogDefinition);
     }
@@ -82,12 +83,15 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     /**
      * Returns a {@link DialogView} containing {@link info.magnolia.ui.vaadin.form.FormView} as content.
      * <ul>
-     *  <li>Delegates the building of the {@link FormPresenter} to the {@link FormPresenterFactory}.</li>
-     *  <li>Delegates the building of the {@link FormDialogPresenter} to the {@link FormDialogPresenterFactory}.</li>
-     *  <li>Sets the created {@link info.magnolia.ui.vaadin.form.FormView} as content of the created {@link DialogView}.</li>
+     * <li>Delegates the building of the {@link FormPresenter} to the {@link FormPresenterFactory}.</li>
+     * <li>Delegates the building of the {@link FormDialogPresenter} to the {@link FormDialogPresenterFactory}.</li>
+     * <li>Sets the created {@link info.magnolia.ui.vaadin.form.FormView} as content of the created {@link DialogView}.</li>
      * </ul>
-     * @param item passed on to{@link FormDialogPresenter}
-     * @param callback registers callback functions created by caller
+     * 
+     * @param item
+     *            passed on to{@link FormDialogPresenter}
+     * @param callback
+     *            registers callback functions created by caller
      */
     @Override
     public DialogView start(final Item item, final Callback callback) {
@@ -98,7 +102,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         // This is needed to acces properties from the parent. Currently only the i18basename.
         Dialog dialog = new Dialog(dialogDefinition);
         view.setFormView(formPresenter.start(item, dialog));
-
 
         shell.openDialog(this);
         return view;

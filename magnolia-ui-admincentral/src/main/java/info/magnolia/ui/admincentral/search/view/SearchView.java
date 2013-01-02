@@ -37,10 +37,10 @@ import info.magnolia.ui.admincentral.list.view.ListView;
 
 /**
  * The search view interface.
- *
+ * 
  */
 public interface SearchView extends ListView {
-    
+
     void search(String queryTerms);
 
     void clear();

@@ -49,14 +49,14 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Upload.StartedEvent;
 
-
 /**
  * Implementation of the Abstract {@link AbstractUploadFileField}.
- * <p>Define the Layout for
+ * <p>
+ * Define the Layout for
  * <ul>
- *  <li>Initial Display (no File are yet uploaded)
- *  <li>Progress Display (ProgressBar / Cancel Button...)
- *  <li>Upload done Display (File Detail / Preview ...)
+ * <li>Initial Display (no File are yet uploaded)
+ * <li>Progress Display (ProgressBar / Cancel Button...)
+ * <li>Upload done Display (File Detail / Preview ...)
  * </ul>
  * Create the Preview Component.
  */
@@ -70,14 +70,13 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
     private String fileNameCaption;
     private String fileSizeCaption;
     private String mimeTypeRegExp;
-    
-    private final CssLayout layout;
 
+    private final CssLayout layout;
 
     /**
      * Initialize basic components.
      */
-    public UploadFileFieldImpl(FileItemWrapper fileItem,  Shell shell) {
+    public UploadFileFieldImpl(FileItemWrapper fileItem, Shell shell) {
         super(fileItem, shell);
 
         initMessages();
@@ -95,7 +94,7 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         createDeleteButton();
         createFileDetail();
     }
-    
+
     @Override
     protected Component initContent() {
         return getRootLayout();
@@ -104,8 +103,8 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
     /**
      * Initialize the root component.
      * Build the initial layout:
-     *  - Default Layout if the incoming Item is empty.
-     *  - Upload done Layout with the Item Information if this Item is not empty.
+     * - Default Layout if the incoming Item is empty.
+     * - Upload done Layout with the Item Information if this Item is not empty.
      */
     @Override
     public void attach() {
@@ -119,7 +118,7 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
      */
     @Override
     public boolean isValidFile(StartedEvent event) {
-        log.debug("evaluate following regExp: "+mimeTypeRegExp+" agains "+event.getMIMEType());
+        log.debug("evaluate following regExp: " + mimeTypeRegExp + " agains " + event.getMIMEType());
         return event.getMIMEType().matches(mimeTypeRegExp);
     }
 
@@ -142,9 +141,8 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         super.refreshOnProgressUploadLayout(readBytes, contentLength);
         try {
             Thread.sleep(5);
-        }
-        catch (InterruptedException e) {
-            log.error("",e);
+        } catch (InterruptedException e) {
+            log.error("", e);
         }
     }
 
@@ -153,7 +151,7 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         layout.removeAllComponents();
 
         if (info) {
-            Label detail = (Label)getDefaultComponent(DefaultComponent.FILE_DETAIL);
+            Label detail = (Label) getDefaultComponent(DefaultComponent.FILE_DETAIL);
             detail.setValue(getDisplayDetails());
             layout.addComponent(detail);
         }
@@ -162,17 +160,17 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         actionLayout.setSizeUndefined();
         actionLayout.addStyleName("buttons");
 
-        //Change the Label of the Upload Button
+        // Change the Label of the Upload Button
         setUploadButtonCaption(chooseNewCaption);
         actionLayout.addComponent(getDefaultComponent(DefaultComponent.UPLOAD));
         // if an Image was already uploaded, give the ability to remove it.
-        if(fileItem.getJcrItem().getParent() != null && fileDeletion) {
+        if (fileItem.getJcrItem().getParent() != null && fileDeletion) {
             actionLayout.addComponent(getDefaultComponent(DefaultComponent.DELETE_BUTTON));
         }
         layout.addComponent(actionLayout);
 
-        //Create preview Image
-        if(preview && !fileItem.isEmpty()) {
+        // Create preview Image
+        if (preview && !fileItem.isEmpty()) {
             Component preview = fileItem.createPreview();
             layout.addComponent(preview);
         }
@@ -187,7 +185,7 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         super.buildUploadStartedLayout();
         layout.removeAllComponents();
 
-        if(progressInfo) {
+        if (progressInfo) {
             layout.addComponent(getDefaultComponent(DefaultComponent.PROGRESS_BAR));
         }
         layout.addComponent(getDefaultComponent(DefaultComponent.CANCEL_BUTTON));
@@ -197,7 +195,6 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         getRootLayout().addStyleName("initial");
         getRootLayout().addStyleName("in-progress");
     }
-
 
     @Override
     public Component createPreviewComponent() {
@@ -221,7 +218,7 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         sb.append(fileSizeCaption);
         sb.append("</span>");
         sb.append("<span class=\"value\">");
-        if(this.fileItem.isImage()) {
+        if (this.fileItem.isImage()) {
             ImageSize imageSize = this.fileItem.getImageSize();
             sb.append(imageSize.getWidth() + " x " + imageSize.getHeight() + ", ");
         }
@@ -230,7 +227,6 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
 
         return sb.toString();
     }
-
 
     private void initMessages() {
         selectImageCaption = MessagesUtil.get("field.upload.select.image");

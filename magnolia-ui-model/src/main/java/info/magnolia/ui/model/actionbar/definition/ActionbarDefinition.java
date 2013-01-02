@@ -35,7 +35,6 @@ package info.magnolia.ui.model.actionbar.definition;
 
 import java.util.List;
 
-
 /**
  * The definition for an action bar, made of sections and groups of actions.
  */

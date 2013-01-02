@@ -35,7 +35,7 @@ package info.magnolia.ui.framework.app;
 
 /**
  * Enumeration of events fired to signal changes to an apps lifecycle.
- *
+ * 
  * @see AppLifecycleEvent
  * @see AppLifecycleEventHandler
  */

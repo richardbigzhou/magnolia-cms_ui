@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.widget.dnd;
 
 import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.moveComponent;
+
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar;
 import info.magnolia.ui.vaadin.gwt.client.widget.placeholder.ComponentPlaceHolder;
@@ -51,28 +52,28 @@ public class LegacyDragAndDrop {
     public static void moveComponentStart(ComponentBar bar) {
         toggleStyles(bar, true);
 
-            // reset native drag and drop
-            bar.setDraggable(false);
-            CmsNode area = bar.getCmsNode().getParentArea();
-            if (area != null) {
-                for (CmsNode component : area.getComponents()) {
-                    ComponentBar componentBar = (ComponentBar) component.asMgnlElement().getControlBar();
-                    if (componentBar != null && componentBar != bar) {
-                        componentBar.setDraggable(false);
-                    }
+        // reset native drag and drop
+        bar.setDraggable(false);
+        CmsNode area = bar.getCmsNode().getParentArea();
+        if (area != null) {
+            for (CmsNode component : area.getComponents()) {
+                ComponentBar componentBar = (ComponentBar) component.asMgnlElement().getControlBar();
+                if (componentBar != null && componentBar != bar) {
+                    componentBar.setDraggable(false);
                 }
             }
-            sourceBar = bar;
-            int height =bar.getOffsetHeight();
-            int width = bar.getOffsetWidth();
-            moveDiv = new MoveWidget(height, width);
+        }
+        sourceBar = bar;
+        int height = bar.getOffsetHeight();
+        int width = bar.getOffsetWidth();
+        moveDiv = new MoveWidget(height, width);
     }
 
     public static void moveComponentOver(ComponentBar bar) {
         if (isMoving()) {
             String idSource = sourceBar.getNodeName();
 
-            if (!bar.getNodeName().equals(idSource)){
+            if (!bar.getNodeName().equals(idSource)) {
                 bar.setStyleName("moveOver", true);
             }
         }
@@ -82,7 +83,7 @@ public class LegacyDragAndDrop {
         if (isMoving()) {
             String idSource = sourceBar.getNodeName();
 
-            if (!bar.getNodeName().equals(idSource)){
+            if (!bar.getNodeName().equals(idSource)) {
                 bar.setStyleName("moveOver", false);
             }
         }
@@ -106,9 +107,9 @@ public class LegacyDragAndDrop {
 
                 String order = null;
 
-                if(isDragUp || isDragLeft) {
+                if (isDragUp || isDragLeft) {
                     order = "before";
-                } else if(isDragDown || isDragRight) {
+                } else if (isDragDown || isDragRight) {
                     order = "after";
                 }
                 String parentPath = bar.getPath().substring(0, bar.getPath().lastIndexOf("/"));
@@ -149,8 +150,8 @@ public class LegacyDragAndDrop {
                 ComponentBar componentBar = (ComponentBar) component.asMgnlElement().getControlBar();
                 if (componentBar != null && componentBar != bar) {
                     componentBar.setStyleName("moveTarget", isMove);
-                    //moveOver style can be removed en bloc
-                    if(!isMove) {
+                    // moveOver style can be removed en bloc
+                    if (!isMove) {
                         componentBar.setStyleName("moveOver", isMove);
                     }
                     componentBar.getElement().setDraggable(Element.DRAGGABLE_TRUE);

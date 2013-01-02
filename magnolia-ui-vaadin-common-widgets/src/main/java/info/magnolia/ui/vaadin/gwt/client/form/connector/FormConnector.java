@@ -51,9 +51,9 @@ import com.vaadin.shared.ui.Connect;
  */
 @Connect(Form.class)
 public class FormConnector extends EditorLikeComponentConnector<FormView.Presenter, FormView> {
-    
+
     private final ActionFiringServerRpc rpc = RpcProxy.create(ActionFiringServerRpc.class, this);
-    
+
     @Override
     protected void init() {
         super.init();
@@ -64,7 +64,7 @@ public class FormConnector extends EditorLikeComponentConnector<FormView.Present
             }
         });
     }
-    
+
     @Override
     protected FormView createView() {
         final FormView view = new FormViewImpl();
@@ -74,36 +74,36 @@ public class FormConnector extends EditorLikeComponentConnector<FormView.Present
     @Override
     protected Presenter createPresenter() {
         return new Presenter() {
-            
+
             @Override
             public void fireAction(String action) {
                 rpc.fireAction(action);
             }
-            
+
             @Override
             public void runLayout() {
                 getLayoutManager().setNeedsMeasure(FormConnector.this);
             }
         };
     }
-    
+
     @Override
     protected void updateActionsFromState() {
         /**
-         * Quite an ugly hack caused by rather complex (a bit crazy) mutual integration of 
+         * Quite an ugly hack caused by rather complex (a bit crazy) mutual integration of
          * FormDialog and Form (action arrangement instructions tend to overlap and we end up with
-         * no actions at all - so we suppress them for the form). 
+         * no actions at all - so we suppress them for the form).
          */
         if (!getState().actionsSuppressed) {
-            super.updateActionsFromState();            
+            super.updateActionsFromState();
         }
     }
-    
+
     @Override
     public FormState getState() {
-        return (FormState)super.getState();
+        return (FormState) super.getState();
     }
-    
+
     @Override
     protected FormState createState() {
         return new FormState();

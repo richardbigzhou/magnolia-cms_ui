@@ -43,7 +43,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
  * The client-side widget for a section of the action bar.
  */
@@ -65,8 +64,9 @@ public class ActionbarSectionWidget extends FlowPanel {
 
     /**
      * Instantiates a new action bar section with given data.
-     *
-     * @param data the data
+     * 
+     * @param data
+     *            the data
      */
     public ActionbarSectionWidget(ActionbarSection data) {
         this.data = data;

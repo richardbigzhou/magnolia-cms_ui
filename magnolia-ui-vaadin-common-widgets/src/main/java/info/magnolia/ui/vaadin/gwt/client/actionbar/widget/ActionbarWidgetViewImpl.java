@@ -55,12 +55,11 @@ import com.googlecode.mgwt.ui.client.MGWT;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 
-
 /**
  * The Class VActionbarViewImpl, GWT implementation for the VActionbarView interface.
  */
 public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWidgetView, ActionTriggerEvent.Handler {
-    
+
     public static final String CLASSNAME = "v-actionbar";
 
     public static final String CLASSNAME_TOGGLE = "v-actionbar-toggle";
@@ -103,7 +102,6 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         this.eventBus = eventBus;
         this.eventBus.addHandler(ActionTriggerEvent.TYPE, this);
 
-
         createToggleControl();
         createFullScreenControl();
 
@@ -115,6 +113,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
      * Determine if device is tablet. Allows option to add a querystring parameter of tablet=true
      * for testing.
      * TODO: Christopher Zimmermann - there should be only one instance of this code ithe project.
+     * 
      * @return Whether device is tablet.
      */
     private boolean isDeviceTablet() {
@@ -186,7 +185,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
     private void createFullScreenControl() {
         DOM.sinkEvents(fullScreenButton.getElement(), Event.TOUCHEVENTS);
         add(fullScreenButton, root);
-        
+
         fullScreenButton.addStyleName(CLASSNAME_FULLSCREEN);
         fullScreenButtonIcon.addClassName("v-actionbar-fullscreen-icon");
         fullScreenButtonIcon.addClassName("icon-open-fullscreen");
@@ -276,6 +275,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
 
     /**
      * For tablet mode, position these buttons at the bottom of the button stack.
+     * 
      * @return
      */
     private void setToggleAndFullScreenButtonHeights(int tabletRow) {
@@ -287,10 +287,10 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
     @Override
     public void onActionTriggered(ActionTriggerEvent event) {
         ActionbarItemWidget action = event.getSource();
-        ActionbarSectionWidget section = (ActionbarSectionWidget)action.getParent().getParent();
+        ActionbarSectionWidget section = (ActionbarSectionWidget) action.getParent().getParent();
         presenter.triggerAction(section.getName() + ":" + action.getName());
     }
-    
+
     @Override
     public void setSections(Collection<ActionbarSection> newSections) {
         for (final ActionbarSectionWidget section : this.sections.values()) {
@@ -336,7 +336,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
     @Override
     public void setOpen(boolean isOpen) {
         actualizeToggleState(isToggledOpen);
-        presenter.forceLayout();        
+        presenter.forceLayout();
     }
 
     @Override
@@ -346,5 +346,5 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
             sectionWidget.setPreview(new Image(previewUrl));
         }
     }
-   
+
 }

@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.icon.connector;
 
 import com.vaadin.shared.AbstractComponentState;
 
-
 /**
  * LoadingIconState.
  */

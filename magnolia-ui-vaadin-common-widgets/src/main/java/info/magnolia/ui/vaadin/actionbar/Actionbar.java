@@ -68,10 +68,12 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
             public void onFullScreenModeToggle(boolean isFullScreen) {
                 listener.onChangeFullScreen(isFullScreen);
             }
+
             @Override
             public void onActionTriggered(String actionToken) {
                 listener.onActionbarItemClicked(actionToken);
             }
+
             @Override
             public void setOpen(boolean isOpen) {
                 getState().isOpen = isOpen;
@@ -105,15 +107,14 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
 
     @Override
     protected ActionbarState getState() {
-        return (ActionbarState)super.getState();
+        return (ActionbarState) super.getState();
     }
-    
+
     @Override
     protected ActionbarState getState(boolean markAsDirty) {
-        return (ActionbarState)super.getState(markAsDirty);
+        return (ActionbarState) super.getState(markAsDirty);
     }
-    
-    
+
     // ACTION BAR API ///////////////////////////
 
     @Override
@@ -123,9 +124,9 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
             section.addAction(action);
         } else {
             log.warn("Action was not added: no section found with name '" + sectionName + "'.");
-        }        
+        }
     }
-    
+
     @Override
     public void addSection(String sectionName, String caption) {
         getState().sections.put(sectionName, new ActionbarSection(sectionName, caption));
@@ -136,7 +137,7 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
     public void removeSection(String sectionName) {
         getState().sections.remove(sectionName);
     }
-    
+
     @Override
     public void setSectionPreview(Resource previewResource, String sectionName) {
         setResource(sectionName, previewResource);
@@ -146,13 +147,13 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
     public Map<String, ActionbarSection> getSections() {
         return getState(false).sections;
     }
-  
+
     @Override
     public void setSectionVisible(String sectionName, boolean isVisible) {
         ActionbarSection section = getState().sections.get(sectionName);
         if (isVisible && section != null) {
             if (!getState().visibleSections.contains(section)) {
-                getState().visibleSections.add(section);                
+                getState().visibleSections.add(section);
             }
         } else {
             getState().visibleSections.remove(section);
@@ -168,27 +169,27 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
         }
         return result;
     }
-  
+
     @Override
     public void setGroupEnabled(String groupName, boolean isEnabled) {
         for (ActionbarSection section : getState().sections.values()) {
             doSetGroupEnabled(section, groupName, isEnabled);
-        }   
+        }
     }
 
     @Override
     public void setGroupEnabled(String groupName, String sectionName, boolean isEnabled) {
         doSetGroupEnabled(getState().sections.get(sectionName), groupName, isEnabled);
     }
-    
+
     private void doSetGroupEnabled(ActionbarSection section, String groupName, boolean isEnabled) {
         for (ActionbarItem action : section.getActions().values()) {
             if (groupName.equals(action.getGroupName())) {
                 setActionEnabled(isEnabled, action);
             }
-        }        
+        }
     }
-    
+
     @Override
     public void setActionEnabled(String actionName, boolean isEnabled) {
         final Collection<ActionbarSection> sections = getState().sections.values();
@@ -202,7 +203,7 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
         ActionbarItem action = getState().sections.get(sectionName).getActions().get(actionName);
         if (action != null) {
             setActionEnabled(isEnabled, action);
-        } 
+        }
     }
 
     private void setActionEnabled(boolean isEnabled, ActionbarItem action) {

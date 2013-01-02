@@ -69,5 +69,4 @@ public class PageProcessor extends AbstractMgnlElementProcessor {
         getEditBar().onAttach();
     }
 
-
 }

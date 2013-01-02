@@ -46,9 +46,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDialogView {
 
     private FormView form;
-    
+
     private Presenter presenter;
-    
+
     public DialogAdaptingToFormViewImpl() {
         setStyleName("dialog-panel");
     }
@@ -66,14 +66,14 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
     @Override
     public void setContent(Widget contentWidget) {
         if (contentWidget instanceof FormView) {
-            this.form = ((FormView)contentWidget);
+            this.form = ((FormView) contentWidget);
             setWidget(contentWidget);
             this.form.setPresenter(new FormView.Presenter() {
                 @Override
                 public void fireAction(String action) {
                     presenter.fireAction(action);
                 }
-                
+
                 @Override
                 public void runLayout() {
                 }
@@ -90,14 +90,13 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
                 public void fireAction(String action) {
                     presenter.fireAction(action);
                 }
-                
+
                 @Override
                 public void runLayout() {
                 }
-            });            
+            });
         }
     }
-
 
     @Override
     public Presenter getPresenter() {

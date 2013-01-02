@@ -33,15 +33,13 @@
  */
 package info.magnolia.ui.model.imageprovider.definition;
 
-
-
 /**
  * Defines a provider for Thumbnail images.
  */
 public interface ImageProvider {
 
     static final String PORTRAIT_GENERATOR = "portrait";
-    
+
     static final String THUMBNAIL_GENERATOR = "thumbnail";
 
     String getPortraitPath(String workspace, String path);
@@ -52,7 +50,6 @@ public interface ImageProvider {
 
     String getThumbnailPathByIdentifier(String workspace, String uuid);
 
-
     /**
      * Get a Preview Resource.
      * This preview is an image or an icon representing the Document type.
@@ -60,6 +57,5 @@ public interface ImageProvider {
     Object getThumbnailResourceByPath(String workspace, String path, String generator);
 
     Object getThumbnailResourceById(String workspace, String identifier, String generator);
-
 
 }

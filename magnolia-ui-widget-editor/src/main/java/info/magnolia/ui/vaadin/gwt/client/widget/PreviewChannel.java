@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget;
 
+import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -44,8 +45,6 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.PopupPanel;
-
-import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
 
 /**
  * PreviewChannelWidget.
@@ -71,7 +70,7 @@ public class PreviewChannel extends PopupPanel implements ClickHandler, HasClick
         this.currentOrientation = orientation;
 
         setStylePrimaryName("mobilePreview");
-        //TODO have a look at GWT add dependent style mechanism instead of doing it yourself.
+        // TODO have a look at GWT add dependent style mechanism instead of doing it yourself.
         addStyleName(orientation == Orientation.LANDSCAPE ? channelName + landscapeCssStyleSuffix : channelName + portraitCssStyleSuffix);
 
         setAnimationEnabled(true);
@@ -87,15 +86,15 @@ public class PreviewChannel extends PopupPanel implements ClickHandler, HasClick
         final Frame iframe = new Frame(url);
         iframe.setStylePrimaryName("mobilePreviewIframe");
         /*
-        iframe.addLoadHandler(new LoadHandler() {
-
-            @Override
-            public void onLoad(LoadEvent event) {
-               //TODO nice animation before displaying the page preview?
-                //Window.alert("iframe onload");
-            }
-        });
-        */
+         * iframe.addLoadHandler(new LoadHandler() {
+         * 
+         * @Override
+         * public void onLoad(LoadEvent event) {
+         * //TODO nice animation before displaying the page preview?
+         * //Window.alert("iframe onload");
+         * }
+         * });
+         */
         add(iframe);
     }
 
@@ -117,10 +116,10 @@ public class PreviewChannel extends PopupPanel implements ClickHandler, HasClick
 
     @Override
     public void onClick(ClickEvent event) {
-        //change orientation
-        GWT.log("currentOrientation is "+currentOrientation.toString());
+        // change orientation
+        GWT.log("currentOrientation is " + currentOrientation.toString());
 
-        if(currentOrientation == Orientation.LANDSCAPE) {
+        if (currentOrientation == Orientation.LANDSCAPE) {
             currentOrientation = Orientation.PORTRAIT;
             removeStyleName(getChannelName() + landscapeCssStyleSuffix);
             addStyleName(getChannelName() + portraitCssStyleSuffix);
@@ -138,7 +137,7 @@ public class PreviewChannel extends PopupPanel implements ClickHandler, HasClick
     }
 
     @Override
-    //key press or key down handlers have issues, that's why we had to resort to this. See also http://code.google.com/p/google-web-toolkit/issues/detail?id=5558.
+    // key press or key down handlers have issues, that's why we had to resort to this. See also http://code.google.com/p/google-web-toolkit/issues/detail?id=5558.
     protected void onPreviewNativeEvent(NativePreviewEvent event) {
         super.onPreviewNativeEvent(event);
         if (event.getTypeInt() == Event.ONKEYDOWN && event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {

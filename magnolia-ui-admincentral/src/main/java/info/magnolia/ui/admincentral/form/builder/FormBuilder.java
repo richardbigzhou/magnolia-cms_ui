@@ -86,15 +86,15 @@ public class FormBuilder {
                     formField.setParent(tab);
                     final Field<?> field = formField.getField();
                     if (field instanceof AbstractComponent) {
-                        ((AbstractComponent)field).setImmediate(true);
+                        ((AbstractComponent) field).setImmediate(true);
                     }
                     tab.addField(field);
-                    if(StringUtils.isNotBlank(fieldDefinition.getDescription())) {
+                    if (StringUtils.isNotBlank(fieldDefinition.getDescription())) {
                         tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
                     }
                 }
             }
-            
+
             view.addFormSection(tab.getMessage(tabDefinition.getLabel()), tab.getContainer());
         }
         view.setShowAllEnabled(formDefinition.getTabs().size() > 1);

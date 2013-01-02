@@ -51,7 +51,6 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.ui.Icon;
 
-
 /**
  * The Class VAction, which displays a single action with label and icon within an action group.
  */
@@ -78,15 +77,18 @@ public class ActionbarItemWidget extends Widget {
     protected TouchDelegate delegate = new TouchDelegate(this);
 
     protected boolean isEnabled = true;
-    
+
     /**
      * Instantiates a new action in action bar.
      * 
-     * @param data the data json object
-     * @param eventBus the event bus
-     * @param icon the icon
+     * @param data
+     *            the data json object
+     * @param eventBus
+     *            the event bus
+     * @param icon
+     *            the icon
      * 
-     * Use {@link #VActionbarItem(VActionbarItemJSO, VActionbarGroup, EventBus)} instead.
+     *            Use {@link #VActionbarItem(VActionbarItemJSO, VActionbarGroup, EventBus)} instead.
      */
     @Deprecated
     public ActionbarItemWidget(ActionbarItem data, VActionbarGroup group, EventBus eventBus, Icon icon) {
@@ -104,9 +106,12 @@ public class ActionbarItemWidget extends Widget {
     /**
      * Instantiates a new action in action bar.
      * 
-     * @param data the data json object
-     * @param group the group
-     * @param eventBus the event bus
+     * @param data
+     *            the data json object
+     * @param group
+     *            the group
+     * @param eventBus
+     *            the event bus
      */
     public ActionbarItemWidget(ActionbarItem data, VActionbarGroup group, EventBus eventBus) {
         super();
@@ -133,9 +138,11 @@ public class ActionbarItemWidget extends Widget {
         }
         root.appendChild(text);
 
-        /*flyoutIndicator.addClassName("v-flyout-indicator");
-        flyoutIndicator.setInnerText("v"); //TODO: CLZ - add flyout icon. (currently implemented as background style.) Toggle it based on row state.
-        root.appendChild(flyoutIndicator);     */
+        /*
+         * flyoutIndicator.addClassName("v-flyout-indicator");
+         * flyoutIndicator.setInnerText("v"); //TODO: CLZ - add flyout icon. (currently implemented as background style.) Toggle it based on row state.
+         * root.appendChild(flyoutIndicator);
+         */
     }
 
     protected void bindHandlers() {
@@ -177,7 +184,7 @@ public class ActionbarItemWidget extends Widget {
     public boolean isEnabled() {
         return isEnabled;
     }
-    
+
     public void update() {
         text.setInnerText(data.getLabel());
 
@@ -195,9 +202,9 @@ public class ActionbarItemWidget extends Widget {
             root.addClassName(ApplicationConnection.DISABLED_CLASSNAME);
         }
     }
-    
+
     public ActionbarItem getData() {
         return data;
     }
-   
+
 }

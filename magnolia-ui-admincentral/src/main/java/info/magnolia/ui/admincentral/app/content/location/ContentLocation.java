@@ -37,12 +37,10 @@ import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
-
 /**
  * ContentLocation used in ContentSubApps. Extends the Default Location by adding fields for the nodePath, viewType and query.
  */
 public class ContentLocation extends DefaultLocation {
-
 
     private String nodePath;
     private ContentView.ViewType viewType;
@@ -56,7 +54,6 @@ public class ContentLocation extends DefaultLocation {
         setQuery(extractQuery(parameter));
     }
 
-
     public String getNodePath() {
         return nodePath;
     }
@@ -65,7 +62,7 @@ public class ContentLocation extends DefaultLocation {
      * If the node path is empty, assume root path.
      */
     private void setNodePath(String nodePath) {
-        this.nodePath = (nodePath == null || nodePath.isEmpty()) ?  "/" : nodePath;
+        this.nodePath = (nodePath == null || nodePath.isEmpty()) ? "/" : nodePath;
     }
 
     public ContentView.ViewType getViewType() {

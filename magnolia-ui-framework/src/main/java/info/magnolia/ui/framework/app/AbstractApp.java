@@ -35,7 +35,6 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
 
-
 /**
  * Abstract implementation with default behavior suitable for most apps.
  * 

@@ -45,14 +45,13 @@ import org.apache.commons.collections.bidimap.DualHashBidiMap;
 
 import com.vaadin.ui.Component;
 
-
 /**
  * Default view implementation for Pulse.
  */
 public class PulseViewImpl implements PulseView {
 
     @Override
-    public String getId(){
+    public String getId() {
         return "pulse";
     }
 
@@ -62,8 +61,8 @@ public class PulseViewImpl implements PulseView {
         public void setActiveTab(MagnoliaTab tab) {
             super.setActiveTab(tab);
             if (presenter != null) {
-                presenter.onPulseTabChanged(m.getKey(tab).toString().toLowerCase());   
-            }            
+                presenter.onPulseTabChanged(m.getKey(tab).toString().toLowerCase());
+            }
         };
     };
 
@@ -118,11 +117,11 @@ public class PulseViewImpl implements PulseView {
         }
 
         switch (type) {
-            case MESSAGES :
-                messagesView.update(params);
-                break;
-            default :
-                break;
+        case MESSAGES:
+            messagesView.update(params);
+            break;
+        default:
+            break;
         }
         return finalDisplayedTabId;
     }

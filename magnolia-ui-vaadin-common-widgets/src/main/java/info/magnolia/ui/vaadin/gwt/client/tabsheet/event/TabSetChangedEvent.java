@@ -45,16 +45,16 @@ import com.google.gwt.event.shared.HandlerRegistration;
 public class TabSetChangedEvent extends GwtEvent<TabSetChangedEvent.Handler> {
 
     public static final Type<TabSetChangedEvent.Handler> TYPE = new Type<TabSetChangedEvent.Handler>();
-    
+
     private final MagnoliaTabSheetView tabSheet;
-    
+
     /**
-     *  HasTabSetChangedHandlers.
+     * HasTabSetChangedHandlers.
      */
     public interface HasTabSetChangedHandlers {
         HandlerRegistration addTabSetChangedHandler(Handler handler);
     }
-    
+
     /**
      * Handler.
      */
@@ -65,11 +65,11 @@ public class TabSetChangedEvent extends GwtEvent<TabSetChangedEvent.Handler> {
     public TabSetChangedEvent(final MagnoliaTabSheetView tabSheet) {
         this.tabSheet = tabSheet;
     }
-    
+
     public MagnoliaTabSheetView getTabSheet() {
         return tabSheet;
     }
-    
+
     @Override
     public Type<Handler> getAssociatedType() {
         return TYPE;

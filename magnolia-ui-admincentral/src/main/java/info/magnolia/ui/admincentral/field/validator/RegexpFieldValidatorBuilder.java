@@ -41,7 +41,7 @@ import com.vaadin.data.validator.RegexpValidator;
 /**
  * Build a {@link RegexpValidator}.
  */
-public class RegexpFieldValidatorBuilder  extends AbstractFieldValidatorBuilder<RegexpValidatorDefinition>{
+public class RegexpFieldValidatorBuilder extends AbstractFieldValidatorBuilder<RegexpValidatorDefinition> {
 
     public RegexpFieldValidatorBuilder(RegexpValidatorDefinition definition) {
         super(definition);
@@ -49,7 +49,7 @@ public class RegexpFieldValidatorBuilder  extends AbstractFieldValidatorBuilder<
 
     @Override
     public Validator buildValidator() {
-        return  new RegexpValidator(definition.getPattern(), getI18nErrorMessage());
+        return new RegexpValidator(definition.getPattern(), getI18nErrorMessage());
     }
 
 }

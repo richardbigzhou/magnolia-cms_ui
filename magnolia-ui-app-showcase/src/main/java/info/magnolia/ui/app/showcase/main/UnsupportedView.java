@@ -44,6 +44,6 @@ public interface UnsupportedView extends View {
      * Listener interface for this view.
      */
     public interface Listener {
-        
+
     }
 }

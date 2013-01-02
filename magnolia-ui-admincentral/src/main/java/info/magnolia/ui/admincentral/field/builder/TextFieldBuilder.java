@@ -68,10 +68,8 @@ public class TextFieldBuilder extends AbstractFieldBuilder<TextFieldDefinition> 
         return field;
     }
 
-
     @Override
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
         return String.class;
     }
 }
-

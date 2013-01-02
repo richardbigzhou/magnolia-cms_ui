@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.app.tools;
 
 import info.magnolia.ui.framework.view.View;
 
-
 /**
  * Marker interface for the page App's view.
  */

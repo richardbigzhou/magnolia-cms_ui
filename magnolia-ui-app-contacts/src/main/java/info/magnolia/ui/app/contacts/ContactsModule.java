@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.app.contacts;
 
-import javax.inject.Inject;
-
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
@@ -70,8 +68,10 @@ import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.form.definition.ConfiguredFormDefinition;
-import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.model.form.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
+
+import javax.inject.Inject;
 
 /**
  * Module class for the contacts module.
@@ -256,7 +256,7 @@ public class ContactsModule implements ModuleLifecycle {
                                         cfg.fields.text("website").label("Website").description("Please enter the Website")
                                 )
                 )
-        )
+                )
                 .actions(
                         cfg.dialogs.action("commit").label("save changes").action(new SaveContactDialogActionDefinition()),
                         cfg.dialogs.action("cancel").label("cancel").action(new CancelDialogActionDefinition())

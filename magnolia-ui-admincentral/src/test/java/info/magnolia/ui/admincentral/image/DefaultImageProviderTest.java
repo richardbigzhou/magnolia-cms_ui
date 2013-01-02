@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.image;
 
 import static org.junit.Assert.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.objectfactory.Components;

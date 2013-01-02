@@ -33,6 +33,10 @@
  */
 package info.magnolia.ui.app.security.column;
 
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.admincentral.column.AbstractColumnFormatter;
+
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -41,10 +45,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Table;
-
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.admincentral.column.AbstractColumnFormatter;
 
 /**
  * Column formatter for the user name column. Used in the Users sub-app.

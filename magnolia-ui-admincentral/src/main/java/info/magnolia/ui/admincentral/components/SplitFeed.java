@@ -42,7 +42,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.themes.BaseTheme;
 
-
 /**
  * Split panel that displays two column feed.
  */
@@ -64,8 +63,8 @@ public class SplitFeed extends HorizontalSplitPanel {
     private void construct() {
         leftContainer.setSizeFull();
         rightContainer.setSizeFull();
-        //leftContainer.setMargin(true);
-        //rightContainer.setMargin(true);
+        // leftContainer.setMargin(true);
+        // rightContainer.setMargin(true);
         setFirstComponent(leftContainer);
         setSecondComponent(rightContainer);
     }

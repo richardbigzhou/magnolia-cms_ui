@@ -39,7 +39,6 @@ import info.magnolia.ui.model.action.ActionFactory;
 
 import javax.jcr.Item;
 
-
 /**
  * Creates an action based on an {@link ActionDefinition}.
  */

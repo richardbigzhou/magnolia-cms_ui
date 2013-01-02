@@ -43,18 +43,17 @@ import com.google.web.bindery.event.shared.EventBus;
  * 
  */
 public class VAppLauncher extends Composite implements AppLauncherView.Presenter {
-    
+
     private final AppLauncherView view;
 
     private final EventBus internalEventBus = new SimpleEventBus();
-    
+
     public VAppLauncher() {
         super();
         this.view = new AppLauncherViewImpl(internalEventBus);
         this.view.setPresenter(this);
         initWidget(view.asWidget());
     }
-
 
     @Override
     public void activateApp(String appName) {

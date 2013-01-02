@@ -41,12 +41,11 @@ import java.util.List;
 
 import com.vaadin.ui.AbstractComponent;
 
-
 /**
  * Server side of AppLauncher.
  */
 public class AppLauncher extends AbstractComponent {
-    
+
     public AppLauncher() {
         super();
         setImmediate(true);
@@ -59,7 +58,7 @@ public class AppLauncher extends AbstractComponent {
 
     @Override
     protected AppLauncherState getState() {
-        return (AppLauncherState)super.getState();
+        return (AppLauncherState) super.getState();
     }
 
     public void addAppTile(String name, String caption, String icon, String groupName) {

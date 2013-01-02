@@ -33,15 +33,15 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import org.junit.Test;
-
-import javax.jcr.PropertyType;
+import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
+import javax.jcr.PropertyType;
+
+import org.junit.Test;
 
 public class DefaultPropertyUtilTest {
 
@@ -68,10 +68,10 @@ public class DefaultPropertyUtilTest {
 
         // THEN
         Calendar today = Calendar.getInstance();
-        
+
         Calendar resultsCalendar = Calendar.getInstance();
         resultsCalendar.setTime(result);
-        
+
         assertEquals(today.get(Calendar.YEAR), resultsCalendar.get(Calendar.YEAR));
         assertEquals(today.get(Calendar.MONTH), resultsCalendar.get(Calendar.MONTH));
         assertEquals(today.get(Calendar.DAY_OF_MONTH), resultsCalendar.get(Calendar.DAY_OF_MONTH));

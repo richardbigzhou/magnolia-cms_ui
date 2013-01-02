@@ -40,7 +40,7 @@ import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * Client side implementation of the dialog that delegates most of the logic/UI to the embedded form. 
+ * Client side implementation of the dialog that delegates most of the logic/UI to the embedded form.
  */
 @Connect(FormDialog.class)
 public class FormDialogConnector extends BaseDialogConnector {

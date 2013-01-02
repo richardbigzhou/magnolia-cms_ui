@@ -33,8 +33,9 @@
  */
 package info.magnolia.ui.framework.location;
 
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 /**
  * Test case for {@link DefaultLocation}.

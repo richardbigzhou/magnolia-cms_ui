@@ -38,7 +38,6 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.view.View;
 
-
 /**
  * Provides functionality used by an app to interact with the Magnolia shell.
  */

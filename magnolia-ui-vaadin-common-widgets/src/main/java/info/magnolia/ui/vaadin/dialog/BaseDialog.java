@@ -65,7 +65,7 @@ public class BaseDialog extends AbstractSingleComponentContainer implements Dial
                     it.next().onActionExecuted(actionId);
                 }
             }
-            
+
             @Override
             public void closeSelf() {
                 closeSelf();
@@ -82,11 +82,11 @@ public class BaseDialog extends AbstractSingleComponentContainer implements Dial
     public void closeSelf() {
         fireEvent(new DialogCloseEvent(this, this));
     }
-    
+
     public void addAction(String actionName, String actionLabel) {
         getState().actions.put(actionName, actionLabel);
     }
-   
+
     @Deprecated
     public void setActionLabel(String actionName, String actionLabel) {
         addAction(actionName, actionLabel);
@@ -99,9 +99,9 @@ public class BaseDialog extends AbstractSingleComponentContainer implements Dial
 
     @Override
     protected BaseDialogState getState() {
-        return (BaseDialogState)super.getState();
+        return (BaseDialogState) super.getState();
     }
-    
+
     @Override
     public void setCaption(String caption) {
         super.setCaption(caption);
@@ -129,27 +129,27 @@ public class BaseDialog extends AbstractSingleComponentContainer implements Dial
     public void addDialogCloseHandler(Handler handler) {
         addListener("dialogCloseEvent", DialogCloseEvent.class, handler, DialogCloseEvent.ON_DIALOG_CLOSE);
     }
-    
+
     public void removeDialogCloseHandler(Handler handler) {
         removeListener("dialogCloseEvent", DialogCloseEvent.class, handler);
     }
-    
+
     /**
-     * DialogCloseEvent. 
+     * DialogCloseEvent.
      */
     public static class DialogCloseEvent extends com.vaadin.ui.Component.Event {
-        
+
         /**
          * Handler.
          */
         public interface Handler {
             void onClose(DialogCloseEvent event);
         }
-        
+
         public static final java.lang.reflect.Method ON_DIALOG_CLOSE;
 
         public DialogView view;
-        
+
         static {
             try {
                 ON_DIALOG_CLOSE = DialogCloseEvent.Handler.class.getDeclaredMethod(

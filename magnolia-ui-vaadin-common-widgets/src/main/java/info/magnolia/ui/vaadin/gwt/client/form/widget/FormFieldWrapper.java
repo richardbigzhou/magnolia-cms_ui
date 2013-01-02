@@ -205,6 +205,4 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         }
     }
 
-
-
 }

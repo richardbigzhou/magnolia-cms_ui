@@ -61,7 +61,6 @@ import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractComponentContainerConnector;
 import com.vaadin.shared.ui.Connect;
 
-
 /**
  * MagnoliaTabSheetConnector.
  */
@@ -70,14 +69,14 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
         MagnoliaTabSheetView.Presenter {
 
     private final MagnoliaTabSheetServerRpc rpc = RpcProxy.create(MagnoliaTabSheetServerRpc.class, this);
-    
+
     private MagnoliaTabSheetView view;
 
     private final EventBus eventBus = new SimpleEventBus();
 
     @Override
     public MagnoliaTabSheetState getState() {
-        return (MagnoliaTabSheetState)super.getState();
+        return (MagnoliaTabSheetState) super.getState();
     }
 
     @Override
@@ -89,25 +88,25 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
     @Override
     protected void init() {
         super.init();
-        
+
         addStateChangeHandler("activeTab", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent event) {
-                final MagnoliaTabConnector tabConnector = (MagnoliaTabConnector)getState().activeTab;
+                final MagnoliaTabConnector tabConnector = (MagnoliaTabConnector) getState().activeTab;
                 if (tabConnector != null) {
                     view.setActiveTab(tabConnector.getWidget());
-                    eventBus.fireEvent(new ActiveTabChangedEvent(tabConnector.getWidget(), false));   
+                    eventBus.fireEvent(new ActiveTabChangedEvent(tabConnector.getWidget(), false));
                 }
             }
         });
-        
+
         addStateChangeHandler(new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent event) {
                 view.getTabContainer().addShowAllTab(getState().showAllEnabled, getState().showAllLabel);
             }
         });
-        
+
         registerRpc(MagnoliaTabSheetClientRpc.class, new MagnoliaTabSheetClientRpc() {
             @Override
             public void toggleFullScreenMode(boolean isFullScreen) {
@@ -115,7 +114,7 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
                 getLayoutManager().setNeedsMeasure(MagnoliaTabSheetConnector.this);
             }
         });
-        
+
         eventBus.addHandler(TabCloseEvent.TYPE, new TabCloseEventHandler() {
             @Override
             public void onTabClosed(TabCloseEvent event) {
@@ -127,7 +126,7 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
             @Override
             public void onActiveTabChanged(ActiveTabChangedEvent event) {
                 if (event.isNotifyServer()) {
-                      rpc.setActiveTab(Util.findConnectorFor(event.getTab()));
+                    rpc.setActiveTab(Util.findConnectorFor(event.getTab()));
                 }
             }
         });
@@ -142,11 +141,11 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
 
         });
     }
-    
+
     @Override
     public void updateCaption(ComponentConnector connector) {
         final String caption = connector.getState().caption;
-        view.getTabContainer().updateTab((MagnoliaTabWidget)connector.getWidget(), caption);
+        view.getTabContainer().updateTab((MagnoliaTabWidget) connector.getWidget(), caption);
     }
 
     @Override
@@ -156,18 +155,18 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
 
         oldChildren.removeAll(childConnectors);
         for (final ComponentConnector cc : oldChildren) {
-            view.removeTab((MagnoliaTabWidget)cc.getWidget());
+            view.removeTab((MagnoliaTabWidget) cc.getWidget());
         }
-        
+
         for (final ComponentConnector cc : childConnectors) {
-            view.updateTab((MagnoliaTabWidget)cc.getWidget());
+            view.updateTab((MagnoliaTabWidget) cc.getWidget());
         }
     }
 
     @Override
     public void updateLayoutOfActiveTab() {
         if (getState().activeTab != null) {
-            ((ComponentConnector)getState().activeTab).getLayoutManager().layoutNow();
+            ((ComponentConnector) getState().activeTab).getLayoutManager().layoutNow();
         }
     }
 
@@ -175,7 +174,7 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
     public void updateLayout() {
         getLayoutManager().setNeedsMeasure(this);
     }
-   
+
     @Override
     public void onUnregister() {
         new Timer() {

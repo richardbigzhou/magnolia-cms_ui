@@ -56,16 +56,13 @@ public class DateFieldDefinition extends ConfiguredFieldDefinition {
         return dateFormat;
     }
 
-
     public void setDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
     }
 
-
     public String getTimeFormat() {
         return timeFormat;
     }
-
 
     public void setTimeFormat(String timeFormat) {
         this.timeFormat = timeFormat;

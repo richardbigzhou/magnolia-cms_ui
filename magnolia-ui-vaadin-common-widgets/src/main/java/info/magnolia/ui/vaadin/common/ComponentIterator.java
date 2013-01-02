@@ -40,16 +40,18 @@ import com.vaadin.ui.Component;
 
 /**
  * ComponentIterator.
- * @param <T> type of connector.
+ * 
+ * @param <T>
+ *            type of connector.
  */
-public class ComponentIterator <T extends Connector> implements Iterator<Component> {
+public class ComponentIterator<T extends Connector> implements Iterator<Component> {
 
     private Iterator<T> wrappedIterator;
-    
+
     public ComponentIterator(Iterator<T> wrappedIterator) {
         this.wrappedIterator = wrappedIterator;
     }
-    
+
     @Override
     public boolean hasNext() {
         return wrappedIterator.hasNext();

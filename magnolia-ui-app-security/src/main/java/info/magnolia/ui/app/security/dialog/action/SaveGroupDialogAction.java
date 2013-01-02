@@ -40,13 +40,14 @@ import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Save group dialog action.
@@ -73,15 +74,15 @@ public class SaveGroupDialogAction extends SaveDialogAction {
                 try {
                     replacePropertyWithSubnode(node, "groups", itemPropertyToArray(itemChanged, "groups"));
                 } catch (RepositoryException ex) {
-                    log.error(ex.getMessage(),ex);
-                    throw new ActionExecutionException(ex.getMessage(),ex);
+                    log.error(ex.getMessage(), ex);
+                    throw new ActionExecutionException(ex.getMessage(), ex);
                 }
                 // ROLES
                 try {
                     replacePropertyWithSubnode(node, "roles", itemPropertyToArray(itemChanged, "roles"));
                 } catch (RepositoryException ex) {
-                    log.error(ex.getMessage(),ex);
-                    throw new ActionExecutionException(ex.getMessage(),ex);
+                    log.error(ex.getMessage(), ex);
+                    throw new ActionExecutionException(ex.getMessage(), ex);
                 }
                 // THE REST
                 NodeTypes.LastModified.update(node);
@@ -92,7 +93,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
             getPresenter().getCallback().onSuccess(getDefinition().getName());
 
         } else {
-            //validation errors are displayed in the UI.
+            // validation errors are displayed in the UI.
         }
     }
 
@@ -107,7 +108,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
         try {
             node.getProperty(name).remove();
         } catch (RepositoryException ex) {
-            log.warn("Cannot remove ["+name+"] property of the group ["+node.getName()+"]: "+ex.getMessage());
+            log.warn("Cannot remove [" + name + "] property of the group [" + node.getName() + "]: " + ex.getMessage());
         }
         try {
             // create subnode (or get it, if it already exists)
@@ -123,12 +124,12 @@ public class SaveGroupDialogAction extends SaveDialogAction {
             // add new groups
             int i = 0;
             for (String id : ids) {
-                PropertyUtil.setProperty(subnode, ""+i, id.trim());
+                PropertyUtil.setProperty(subnode, "" + i, id.trim());
                 i++;
             }
         } catch (RepositoryException ex) {
-            log.error("Error saving assigned "+name+" of the ["+node.getName()+"] group.",ex);
-            throw new RepositoryException("Error saving assigned "+name+" of the ["+node.getName()+"] group.",ex);
+            log.error("Error saving assigned " + name + " of the [" + node.getName() + "] group.", ex);
+            throw new RepositoryException("Error saving assigned " + name + " of the [" + node.getName() + "] group.", ex);
         }
     }
 

@@ -38,7 +38,7 @@ import com.vaadin.data.util.converter.Converter.ConversionException;
 
 /**
  * Basic implementation of {@link com.vaadin.data.Property}.
- *
+ * 
  * TODO dlipp - this impl is not depending on jcr, so it could/should be located in a different package.
  */
 public class DefaultProperty extends AbstractProperty {

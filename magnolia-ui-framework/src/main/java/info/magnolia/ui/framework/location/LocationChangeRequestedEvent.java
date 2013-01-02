@@ -37,15 +37,14 @@ import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * Event fired when a location change is about to happen usually in response to user interaction. Handlers can call
- * {@link #setWarning(String)} to request that the user be prompted to confirm the change.
+ * Event fired when a location change is about to happen usually in response to user interaction. Handlers can call {@link #setWarning(String)} to request that the user be prompted to confirm the change.
  */
 public class LocationChangeRequestedEvent implements Event<LocationChangeRequestedEvent.Handler> {
 
     /**
      * Handler interface for {@link LocationChangeRequestedEvent}.
      */
-    public interface Handler extends EventHandler{
+    public interface Handler extends EventHandler {
 
         void onLocationChangeRequested(LocationChangeRequestedEvent event);
     }
@@ -78,11 +77,9 @@ public class LocationChangeRequestedEvent implements Event<LocationChangeRequest
      * location, i.e. due to unsaved changes. If the user clicks okay to that message, navigation will
      * proceed to the requested location.
      * <p>
-     * Calling with a null warning is the same as not calling the method at all -- the user will not
-     * be prompted.
+     * Calling with a null warning is the same as not calling the method at all -- the user will not be prompted.
      * <p>
-     * Only the first non-null call to setWarning has any effect. That is, once the warning message
-     * has been set it cannot be cleared.
+     * Only the first non-null call to setWarning has any effect. That is, once the warning message has been set it cannot be cleared.
      */
     public void setWarning(String warning) {
         if (this.warning == null) {

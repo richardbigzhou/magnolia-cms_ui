@@ -102,7 +102,7 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
             public void onValueChange(ValueChangeEvent<String> event) {
                 String newFragment = event.getValue();
                 if (newFragment.isEmpty() || !newFragment.equals(presenter.getActiveViewportFragment())) {
-                    presenter.handleHistoryChange(event.getValue());   
+                    presenter.handleHistoryChange(event.getValue());
                 }
             }
         });
@@ -200,7 +200,7 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
             lowPriorityMessage.hideWithoutTransition();
         }
-        
+
         hiPriorityMessage = null;
         lowPriorityMessage = null;
     }
@@ -209,8 +209,6 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     public void updateViewport(ViewportWidget viewport, ViewportType type) {
         doUpdateViewport(viewport, type);
     }
-
-
 
     @Override
     public void onViewportClose(ViewportCloseEvent event) {
@@ -271,7 +269,7 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     public void updateShellDivet() {
         mainAppLauncher.updateDivet();
     }
-    
+
     private void doUpdateViewport(ViewportWidget viewport, ViewportType type) {
         final ViewportWidget oldViewport = viewports.get(type);
         if (oldViewport != viewport) {
@@ -280,7 +278,7 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
             viewports.put(type, viewport);
         }
     }
-    
+
     private final ShellAppActivatedEvent.Handler navigationHandler = new ShellAppActivatedEvent.Handler() {
         @Override
         public void onShellAppActivated(final ShellAppActivatedEvent event) {

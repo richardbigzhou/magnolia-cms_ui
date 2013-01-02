@@ -48,11 +48,11 @@ import com.vaadin.ui.VerticalLayout;
 public class NavigationViewImpl implements NavigationView {
 
     private Listener listener;
-    
+
     private VerticalLayout layout;
 
     private final AppController appController;
-    
+
     @Inject
     public NavigationViewImpl(AppController appController) {
         this.appController = appController;

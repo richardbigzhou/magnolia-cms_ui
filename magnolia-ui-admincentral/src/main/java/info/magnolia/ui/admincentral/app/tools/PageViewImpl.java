@@ -44,7 +44,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Image;
 
-
 /**
  * View implementation for a page app.
  */

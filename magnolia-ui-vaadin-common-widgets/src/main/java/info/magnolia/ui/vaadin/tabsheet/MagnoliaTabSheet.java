@@ -63,12 +63,12 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
         registerRpc(new MagnoliaTabSheetServerRpc() {
             @Override
             public void setActiveTab(Connector tabConnector) {
-                MagnoliaTabSheet.this.setActiveTab((MagnoliaTab)tabConnector);
+                MagnoliaTabSheet.this.setActiveTab((MagnoliaTab) tabConnector);
             }
 
             @Override
             public void closeTab(Connector tabConnector) {
-                removeComponent((Component)tabConnector);
+                removeComponent((Component) tabConnector);
             }
         });
     }

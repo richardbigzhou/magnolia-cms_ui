@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
-
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 

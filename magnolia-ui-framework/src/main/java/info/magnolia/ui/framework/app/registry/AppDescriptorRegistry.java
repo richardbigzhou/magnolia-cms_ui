@@ -33,10 +33,16 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.registry.RegistryMap;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.event.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -44,11 +50,6 @@ import javax.inject.Singleton;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import info.magnolia.registry.RegistrationException;
-import info.magnolia.registry.RegistryMap;
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.event.EventBus;
 
 /**
  * The central registry of all {@link AppDescriptor}s.

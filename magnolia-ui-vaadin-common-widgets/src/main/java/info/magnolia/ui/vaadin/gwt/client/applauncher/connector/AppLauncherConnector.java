@@ -56,9 +56,9 @@ import com.vaadin.shared.ui.Connect;
 public class AppLauncherConnector extends AbstractComponentConnector {
 
     private AppLauncherView view;
-    
+
     private EventBus eventBus = new SimpleEventBus();
-    
+
     public AppLauncherConnector() {
         addStateChangeHandler("appGroups", new StateChangeHandler() {
             @Override
@@ -81,12 +81,12 @@ public class AppLauncherConnector extends AbstractComponentConnector {
             }
         });
     }
-    
+
     private void updateRuningAppTiles() {
         for (final AppGroup appGroup : getState().appGroups.values()) {
             for (final AppTile tile : appGroup.getAppTiles()) {
                 if (getState().runningApps.contains(tile.getName())) {
-                    view.setAppActive(tile.getName(), true);                    
+                    view.setAppActive(tile.getName(), true);
                 } else {
                     view.setAppActive(tile.getName(), false);
                 }
@@ -94,12 +94,12 @@ public class AppLauncherConnector extends AbstractComponentConnector {
             }
         }
     }
-    
+
     @Override
     public Widget getWidget() {
         return super.getWidget();
     }
-    
+
     @Override
     protected Widget createWidget() {
         this.view = new AppLauncherViewImpl(eventBus);
@@ -111,12 +111,12 @@ public class AppLauncherConnector extends AbstractComponentConnector {
         });
         return view.asWidget();
     }
-    
+
     @Override
     public AppLauncherState getState() {
-        return (AppLauncherState)super.getState();
+        return (AppLauncherState) super.getState();
     }
-    
+
     @Override
     protected AppLauncherState createState() {
         return new AppLauncherState();

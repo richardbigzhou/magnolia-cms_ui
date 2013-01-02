@@ -66,7 +66,6 @@ import com.vaadin.shared.Connector;
 import com.vaadin.shared.communication.SharedState;
 import com.vaadin.shared.ui.Connect;
 
-
 /**
  * MagnoliaShellConnector.
  */
@@ -80,7 +79,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     private EventBus eventBus = new SimpleEventBus();
 
     boolean historyInitialized = false;
-    
+
     @Override
     protected void init() {
         super.init();
@@ -95,9 +94,9 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 }
                 final Connector active = state.activeViewport;
                 if (active != null) {
-                    view.setActiveViewport(((ViewportConnector)active).getWidget());    
+                    view.setActiveViewport(((ViewportConnector) active).getWidget());
                 }
-                
+
             }
         });
 
@@ -105,7 +104,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
 
             @Override
             public void activeViewportChanged(Connector viewport) {
-                view.setActiveViewport(((ViewportConnector)viewport).getWidget());
+                view.setActiveViewport(((ViewportConnector) viewport).getWidget());
             }
 
             @Override
@@ -123,26 +122,27 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 History.newItem(fragment.toFragment(), true);
             }
         });
-        
-        getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() { 
+
+        getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() {
             @Override
             public void onElementResize(ElementResizeEvent e) {
                 view.updateShellDivet();
             }
         });
     }
-    
+
     @Override
-    public void updateCaption(ComponentConnector connector) {}
+    public void updateCaption(ComponentConnector connector) {
+    }
 
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {
         List<ComponentConnector> children = getChildComponents();
         for (ComponentConnector connector : children) {
-            final ViewportConnector vc = (ViewportConnector)connector;
+            final ViewportConnector vc = (ViewportConnector) connector;
             view.updateViewport(vc.getWidget(), vc.getType());
         }
-        
+
         if (!historyInitialized) {
             History.fireCurrentHistoryState();
         }
@@ -164,7 +164,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     public MagnoliaShellState getState() {
         return (MagnoliaShellState) super.getState();
     }
-    
+
     @Override
     public void activateApp(Fragment fragment) {
         rpc.activateApp(fragment);
@@ -232,16 +232,16 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     @Override
     public Widget getShellAppWidget(ShellAppType type) {
         final Connector c = getState().shellApps.get(type);
-        return c != null ? ((ComponentConnector)c).getWidget() : null; 
+        return c != null ? ((ComponentConnector) c).getWidget() : null;
     }
-    
+
     private void goToAppLauncher(String parameter) {
         eventBus.fireEvent(new ShellAppActivatedEvent(ShellAppType.APPLAUNCHER, parameter));
     }
 
     @Override
     public String getActiveViewportFragment() {
-        ViewportConnector cc = (ViewportConnector)getState().activeViewport;
+        ViewportConnector cc = (ViewportConnector) getState().activeViewport;
         return cc == null ? "" : cc.getState().currentFragment;
     }
 }

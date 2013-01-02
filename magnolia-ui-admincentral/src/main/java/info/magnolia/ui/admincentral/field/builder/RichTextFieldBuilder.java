@@ -68,20 +68,20 @@ public class RichTextFieldBuilder extends
      * Event is emit from server to client when link has been selected.
      */
     public static final String EVENT_SEND_MAGNOLIA_LINK = "mgnlLinkSelected";
-    
+
     /**
      * Event is emit from server to client when link dialog has been
      * canceled or exception has occurred. In case of exception
      * the event will carry error message.
      */
     public static final String EVENT_CANCEL_LINK = "mgnlLinkCancel";
-    
+
     /**
      * Event is emit from client to server when user requests a link dialog.
      * Event carries optional link that should be treated as default link value.
      */
     public static final String EVENT_GET_MAGNOLIA_LINK = "mgnlGetLink";
-    
+
     private final AppController appController;
     private MagnoliaRichTextField richtexteditor;
     private static final Logger log = LoggerFactory
@@ -101,30 +101,34 @@ public class RichTextFieldBuilder extends
         /**
          * TODO FIX CKEDITOR FUNC!!!
          */
-        /*List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
-        toolbars.add(new ToolbarGroup("basictyles", new String[] { "Bold",
-                "Italic", "Underline", "SpecialChar" }));
-        toolbars.add(new ToolbarGroup("paragraph", new String[] {
-                "NumberedList", "BulletedList" }));
-        toolbars.add(new ToolbarGroup("insert", new String[] { "Link", 
-                "InternalLink", "Unlink" }));
-        toolbars.add(new ToolbarGroup("clipboard", new String[] { "Cut",
-                "Copy", "Paste", "PasteText", "PasteFromWord" }));
-        toolbars.add(new ToolbarGroup("objects", new String[] { "Image",
-                "Table" }));
-        toolbars.add(new ToolbarGroup("special",
-                new String[] { "Undo", "Redo" }));*/
-        
+        /*
+         * List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
+         * toolbars.add(new ToolbarGroup("basictyles", new String[] { "Bold",
+         * "Italic", "Underline", "SpecialChar" }));
+         * toolbars.add(new ToolbarGroup("paragraph", new String[] {
+         * "NumberedList", "BulletedList" }));
+         * toolbars.add(new ToolbarGroup("insert", new String[] { "Link",
+         * "InternalLink", "Unlink" }));
+         * toolbars.add(new ToolbarGroup("clipboard", new String[] { "Cut",
+         * "Copy", "Paste", "PasteText", "PasteFromWord" }));
+         * toolbars.add(new ToolbarGroup("objects", new String[] { "Image",
+         * "Table" }));
+         * toolbars.add(new ToolbarGroup("special",
+         * new String[] { "Undo", "Redo" }));
+         */
+
         /**
          * TODO - fix the CKEDITOR STUFF.
          */
-        /*MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
-        config.addToolbarLine(toolbars);
-        config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
-        config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, PLUGIN_PATH_MAGNOLIALINK);
-        config.setResizeEnabled(false);*/
-        
-        richtexteditor = new MagnoliaRichTextField(/*config*/);
+        /*
+         * MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
+         * config.addToolbarLine(toolbars);
+         * config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
+         * config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, PLUGIN_PATH_MAGNOLIALINK);
+         * config.setResizeEnabled(false);
+         */
+
+        richtexteditor = new MagnoliaRichTextField(/* config */);
         richtexteditor.addListener(new MagnoliaRichTextField.PluginListener() {
 
             @Override
@@ -176,7 +180,7 @@ public class RichTextFieldBuilder extends
                                 richtexteditor.firePluginEvent(
                                         EVENT_SEND_MAGNOLIA_LINK,
                                         gson.toJson(mlink)
-                                );
+                                        );
                             } catch (RepositoryException e) {
                                 String error = "Not able to access the configured property. Value will not be set.";
                                 log.error(error, e);
@@ -193,7 +197,7 @@ public class RichTextFieldBuilder extends
                     });
         }
     }
-    
+
     private static class MagnoliaLink {
         @SuppressWarnings("unused")
         public String identifier;

@@ -33,13 +33,12 @@
  */
 package info.magnolia.ui.admincentral.app.content.location;
 
+import static org.junit.Assert.*;
+
 import info.magnolia.ui.admincentral.content.item.ItemView;
 import info.magnolia.ui.framework.location.DefaultLocation;
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  * ItemLocationTest.
@@ -119,7 +118,7 @@ public class ItemLocationTest {
         itemLocation.updateNodePath("/node/has/changes/01");
 
         // TEST
-        assertEquals("/node/has/changes/01" ,itemLocation.getNodePath());
+        assertEquals("/node/has/changes/01", itemLocation.getNodePath());
 
     }
 

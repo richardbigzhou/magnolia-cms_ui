@@ -66,7 +66,7 @@ public class FormSectionWidget extends FlowPanel {
     public FormSectionWidget() {
         super();
         getElement().appendChild(fieldSet);
-        //both only display when show all tab is active
+        // both only display when show all tab is active
         horizontalRule.getStyle().setDisplay(Display.NONE);
         legend.getStyle().setDisplay(Display.NONE);
         fieldSet.appendChild(horizontalRule);
@@ -76,17 +76,17 @@ public class FormSectionWidget extends FlowPanel {
     public void add(Widget child) {
         throw new UnsupportedOperationException();
     }
-    
+
     @Override
     public boolean remove(Widget w) {
-        FormFieldWrapper fieldSection = (w instanceof FormFieldWrapper) ? (FormFieldWrapper)w : sections.get(w);
+        FormFieldWrapper fieldSection = (w instanceof FormFieldWrapper) ? (FormFieldWrapper) w : sections.get(w);
         if (w != null) {
             sections.remove(w);
             super.remove(fieldSection);
         }
         return false;
     }
-    
+
     @Override
     public void insert(Widget w, int beforeIndex) {
         FormFieldWrapper fieldSection;
@@ -96,11 +96,10 @@ public class FormSectionWidget extends FlowPanel {
             fieldSection.setField(w);
             add(fieldSection, fieldSet);
         } else {
-            fieldSection = (FormFieldWrapper)w;
+            fieldSection = (FormFieldWrapper) w;
         }
         super.insert(fieldSection, beforeIndex);
-        
-        
+
     }
 
     @Override
@@ -112,7 +111,7 @@ public class FormSectionWidget extends FlowPanel {
         if (!(super.getParent() instanceof FormTabWidget)) {
             return null;
         }
-        return (FormTabWidget)super.getParent();
+        return (FormTabWidget) super.getParent();
     }
 
     public void setDescriptionVisible(boolean isAccessible) {
@@ -126,13 +125,13 @@ public class FormSectionWidget extends FlowPanel {
     }
 
     public List<FormFieldWrapper> getProblematicFields() {
-        FormSectionConnector selfConnector = (FormSectionConnector)Util.findConnectorFor(this);
+        FormSectionConnector selfConnector = (FormSectionConnector) Util.findConnectorFor(this);
         List<FormFieldWrapper> result = new ArrayList<FormFieldWrapper>();
         if (selfConnector.getState().isValidationVisible) {
             for (final Widget w : sections.keySet()) {
                 final ComponentConnector cc = Util.findConnectorFor(w);
                 if (cc != null) {
-                    String errMsg = cc.getState().errorMessage; 
+                    String errMsg = cc.getState().errorMessage;
                     if (errMsg != null && !errMsg.isEmpty()) {
                         result.add(sections.get(w));
                     }

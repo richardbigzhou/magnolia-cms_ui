@@ -37,7 +37,6 @@ import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 
-
 /**
  * PagesEditorSubAppView.
  */

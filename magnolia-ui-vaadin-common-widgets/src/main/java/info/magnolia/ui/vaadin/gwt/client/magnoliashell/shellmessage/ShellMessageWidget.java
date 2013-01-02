@@ -199,6 +199,4 @@ public abstract class ShellMessageWidget extends HTML {
         return topic;
     }
 
-
 }
-

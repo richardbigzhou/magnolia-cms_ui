@@ -35,24 +35,23 @@ package info.magnolia.ui.vaadin.dialog;
 
 import info.magnolia.ui.framework.view.View;
 
-
 /**
  * Interface for {@link BaseDialog}.
  */
 public interface DialogView extends View {
-    
+
     /**
      * Action execution callback.
      */
     interface DialogActionListener {
-        
+
         void onActionExecuted(final String actionName);
     }
-    
+
     void setDialogDescription(String description);
-    
+
     void setCaption(String caption);
-    
+
     @Override
     public BaseDialog asVaadinComponent();
 }

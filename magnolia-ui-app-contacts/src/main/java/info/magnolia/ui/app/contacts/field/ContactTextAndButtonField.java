@@ -43,7 +43,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 
-
 /**
  * Specific Contact TextAndButtonField field that add a Thumbnail before the select action and field
  * see basic implementation {@link TextAndButtonField}.
@@ -53,7 +52,7 @@ public class ContactTextAndButtonField extends CustomField<String> {
     private TextAndButtonField textAndButtonField;
 
     private ContactThumbnailField thumbnail;
-    
+
     public ContactTextAndButtonField(TextAndButtonField textAndButtonField, ImageProvider imageThumbnailProvider, String workspace) {
         this.textAndButtonField = textAndButtonField;
         this.thumbnail = new ContactThumbnailField(imageThumbnailProvider, workspace);
@@ -72,7 +71,7 @@ public class ContactTextAndButtonField extends CustomField<String> {
 
         return layout;
     }
-    
+
     @Override
     public Class<String> getType() {
         return String.class;
@@ -87,14 +86,15 @@ public class ContactTextAndButtonField extends CustomField<String> {
     public void setValue(String newValue) throws ReadOnlyException, ConversionException {
         textAndButtonField.setValue(newValue);
     }
+
     @Override
-    @SuppressWarnings("rawtypes") 
+    @SuppressWarnings("rawtypes")
     public void setPropertyDataSource(Property newDataSource) {
         textAndButtonField.setPropertyDataSource(newDataSource);
     }
 
     @Override
-    @SuppressWarnings("rawtypes") 
+    @SuppressWarnings("rawtypes")
     public Property getPropertyDataSource() {
         return textAndButtonField.getPropertyDataSource();
     }

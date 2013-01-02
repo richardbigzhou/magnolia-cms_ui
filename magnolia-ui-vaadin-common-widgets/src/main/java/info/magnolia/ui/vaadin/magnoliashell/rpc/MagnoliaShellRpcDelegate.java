@@ -43,11 +43,11 @@ import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 public class MagnoliaShellRpcDelegate implements ShellServerRpc {
 
     private MagnoliaShellBase shell;
-    
+
     public MagnoliaShellRpcDelegate(MagnoliaShellBase shell) {
         this.shell = shell;
     }
-    
+
     @Override
     public void removeMessage(String id) {
         shell.removeMessage(id);

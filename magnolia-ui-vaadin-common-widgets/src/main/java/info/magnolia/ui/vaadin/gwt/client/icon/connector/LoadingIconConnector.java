@@ -41,7 +41,6 @@ import com.vaadin.client.ui.AbstractComponentConnector;
 import com.vaadin.shared.communication.SharedState;
 import com.vaadin.shared.ui.Connect;
 
-
 /**
  * LoadingIconConnector.
  */
@@ -52,7 +51,7 @@ public class LoadingIconConnector extends AbstractComponentConnector {
     protected Widget createWidget() {
         return new LoadingIconWidget();
     }
-    
+
     @Override
     protected SharedState createState() {
         return new LoadingIconState();

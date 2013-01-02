@@ -60,7 +60,6 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.vaadin.server.Resource;
 
-
 /**
  * Default presenter for an action bar.
  */
@@ -117,7 +116,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     public void enable(String... actionNames) {
         if (actionbar != null) {
-            for (String action: actionNames) {
+            for (String action : actionNames) {
                 actionbar.setActionEnabled(action, true);
             }
         }
@@ -125,7 +124,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     public void disable(String... actionNames) {
         if (actionbar != null) {
-            for (String action: actionNames) {
+            for (String action : actionNames) {
                 actionbar.setActionEnabled(action, false);
             }
         }
@@ -157,7 +156,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     public void showSection(String... sectionNames) {
         if (actionbar != null) {
-            for (String section: sectionNames) {
+            for (String section : sectionNames) {
                 actionbar.setSectionVisible(section, true);
             }
         }
@@ -165,7 +164,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     public void hideSection(String... sectionNames) {
         if (actionbar != null) {
-            for (String section: sectionNames) {
+            for (String section : sectionNames) {
                 actionbar.setSectionVisible(section, false);
             }
         }
@@ -194,9 +193,9 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         final String[] chunks = actionToken.split(":");
         if (chunks.length != 2) {
             log
-                .warn(
-                    "Invalid actionToken [{}]: it is expected to be in the form sectionName:actionName. ActionDefintion cannot be retrieved. Please check actionbar definition.",
-                    actionToken);
+                    .warn(
+                            "Invalid actionToken [{}]: it is expected to be in the form sectionName:actionName. ActionDefintion cannot be retrieved. Please check actionbar definition.",
+                            actionToken);
             return null;
         }
         final String sectionName = chunks[0];
@@ -210,8 +209,8 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                             final ActionDefinition actionDefinition = action.getActionDefinition();
                             if (actionDefinition == null) {
                                 log.warn(
-                                    "No action definition found for actionToken [{}]. Please check actionbar definition.",
-                                    actionToken);
+                                        "No action definition found for actionToken [{}]. Please check actionbar definition.",
+                                        actionToken);
                             }
                             return actionDefinition;
                         }
@@ -250,8 +249,8 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                                     final ActionDefinition actionDefinition = action.getActionDefinition();
                                     if (actionDefinition == null) {
                                         log.warn(
-                                            "No action definition found for default action [{}]. Please check actionbar definition.",
-                                            defaultAction);
+                                                "No action definition found for default action [{}]. Please check actionbar definition.",
+                                                defaultAction);
                                     }
                                     return actionDefinition;
                                 }

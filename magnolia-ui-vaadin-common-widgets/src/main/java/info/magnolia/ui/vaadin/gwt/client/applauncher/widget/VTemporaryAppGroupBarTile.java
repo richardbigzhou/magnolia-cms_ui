@@ -47,7 +47,7 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * A tile representing a Temporary App Group - displayed in the Temporary App Group Bar.
- *
+ * 
  */
 public class VTemporaryAppGroupBarTile extends FlowPanel {
 
@@ -56,7 +56,7 @@ public class VTemporaryAppGroupBarTile extends FlowPanel {
     private VAppTileGroup group;
     private VTemporaryAppGroupBarTile that;
 
-    public VTemporaryAppGroupBarTile(String caption, VAppTileGroup groupParam, VTemporaryAppGroupBar groupBarParam){
+    public VTemporaryAppGroupBarTile(String caption, VAppTileGroup groupParam, VTemporaryAppGroupBar groupBarParam) {
         super();
         groupBar = groupBarParam;
         group = groupParam;
@@ -68,18 +68,19 @@ public class VTemporaryAppGroupBarTile extends FlowPanel {
         }
     }
 
-
-    private void constructDOM(String caption){
+    private void constructDOM(String caption) {
 
         element = this.getElement();
         element.addClassName("item");
         element.addClassName("section");
         element.addClassName("closed");
 
-        /*if (group.isClientGroup()) {
-            element.addClassName("client-group");
-        } else {
-        }*/
+        /*
+         * if (group.isClientGroup()) {
+         * element.addClassName("client-group");
+         * } else {
+         * }
+         */
 
         final Element label = DOM.createSpan();
         label.addClassName("label");
@@ -88,7 +89,6 @@ public class VTemporaryAppGroupBarTile extends FlowPanel {
         element.appendChild(label);
 
     }
-
 
     private void bindHandlers() {
 
@@ -107,20 +107,17 @@ public class VTemporaryAppGroupBarTile extends FlowPanel {
             }
         }, MouseOutEvent.getType());
 
-
         final TouchDelegate touchDelegate = new TouchDelegate(this);
 
         touchDelegate.addTouchEndHandler(new TouchEndHandler() {
 
             @Override
             public void onTouchEnd(TouchEndEvent event) {
-                groupBar.handleTileClick((VTemporaryAppTileGroup)group, that);
+                groupBar.handleTileClick((VTemporaryAppTileGroup) group, that);
             }
         });
 
     }
-
-
 
     public void openExpander() {
 
@@ -129,21 +126,20 @@ public class VTemporaryAppGroupBarTile extends FlowPanel {
         element.removeClassName("closed");
         element.addClassName("open");
 
-        if (group.isClientGroup()){
+        if (group.isClientGroup()) {
             element.getStyle().setColor(group.getColor());
             element.getStyle().setBackgroundColor("white");
-        }else{
+        } else {
             element.getStyle().setColor("white");
             element.getStyle().setBackgroundColor(group.getColor());
         }
     }
 
-    public void closeExpander(){
+    public void closeExpander() {
         element.addClassName("closed");
         element.removeClassName("open");
         element.getStyle().clearBackgroundColor();
         element.getStyle().clearColor();
     }
-
 
 }

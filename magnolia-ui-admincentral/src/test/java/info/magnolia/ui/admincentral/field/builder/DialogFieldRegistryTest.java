@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.objectfactory.ObservedComponentFactory;
@@ -60,10 +60,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.vaadin.data.Item;
+
 /**
  * Main test class for {@link DialogFieldRegistry}
  */
-public class DialogFieldRegistryTest  extends RepositoryTestCase  {
+public class DialogFieldRegistryTest extends RepositoryTestCase {
 
     private Session session;
 
@@ -73,9 +74,9 @@ public class DialogFieldRegistryTest  extends RepositoryTestCase  {
         super.setUp();
         ComponentsTestUtil.setImplementation(DefinitionToImplementationMapping.class, DefinitionToImplementationMapping.class);
         String dummyDialog =
-            "/modules/ui-admincentral/dialogFieldRegistry.class="+DialogFieldRegistry.class.getName()+"\n" +
-            "/modules/ui-admincentral/dialogFieldRegistry/definitionToImplementationMappings/textField.definition="+DefinitionOne.class.getName()+"\n" +
-            "/modules/ui-admincentral/dialogFieldRegistry/definitionToImplementationMappings/textField.implementation="+BuilderOne.class.getName()+"\n" ;
+                "/modules/ui-admincentral/dialogFieldRegistry.class=" + DialogFieldRegistry.class.getName() + "\n" +
+                        "/modules/ui-admincentral/dialogFieldRegistry/definitionToImplementationMappings/textField.definition=" + DefinitionOne.class.getName() + "\n" +
+                        "/modules/ui-admincentral/dialogFieldRegistry/definitionToImplementationMappings/textField.implementation=" + BuilderOne.class.getName() + "\n";
         session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         new PropertiesImportExport().createNodes(session.getRootNode(), IOUtils.toInputStream(dummyDialog));
         session.save();
@@ -89,8 +90,7 @@ public class DialogFieldRegistryTest  extends RepositoryTestCase  {
         MgnlContext.setInstance(null);
     }
 
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void testAppDescriptorOnStart() {
         // GIVEN
@@ -104,10 +104,10 @@ public class DialogFieldRegistryTest  extends RepositoryTestCase  {
         assertEquals(1, definitionToImplementationMappings.size());
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Ignore
     @Test
-    public void testAppDescriptorReloadsOnChange() throws RepositoryException{
+    public void testAppDescriptorReloadsOnChange() throws RepositoryException {
         // GIVEN
         ObservedComponentFactory<DialogFieldRegistry> observer = new ObservedComponentFactory(RepositoryConstants.CONFIG, "/modules/ui-admincentral/dialogFieldRegistry", DialogFieldRegistry.class);
         Node newDefinition = session.getRootNode().addNode("/modules/ui-admincentral/dialogFieldRegistry/definitionToImplementationMappings/imageField");
@@ -122,14 +122,13 @@ public class DialogFieldRegistryTest  extends RepositoryTestCase  {
         assertEquals(2, definitionToImplementationMappings.size());
     }
 
-
-    public static class DefinitionOne extends CheckboxFieldDefinition{
+    public static class DefinitionOne extends CheckboxFieldDefinition {
         public DefinitionOne() {
             super();
         }
     }
 
-    public static class BuilderOne extends CheckBoxFieldBuilder{
+    public static class BuilderOne extends CheckBoxFieldBuilder {
 
         public BuilderOne(CheckboxFieldDefinition definition, Item relatedFieldItem) {
             super(definition, relatedFieldItem);
@@ -137,13 +136,13 @@ public class DialogFieldRegistryTest  extends RepositoryTestCase  {
 
     }
 
-    public static class DefinitionTwo extends DateFieldDefinition{
+    public static class DefinitionTwo extends DateFieldDefinition {
         public DefinitionTwo() {
             super();
         }
     }
 
-    public static class BuilderTwo extends DateFieldBuilder{
+    public static class BuilderTwo extends DateFieldBuilder {
 
         public BuilderTwo(DateFieldDefinition definition, Item relatedFieldItem) {
             super(definition, relatedFieldItem);

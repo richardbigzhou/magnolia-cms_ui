@@ -38,12 +38,10 @@ import info.magnolia.ui.model.field.validation.definition.EmailValidatorDefiniti
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.EmailValidator;
 
-
-
 /**
  * Build a {@link EmailValidator}.
  */
-public class EmailFieldValidatorBuilder extends AbstractFieldValidatorBuilder<EmailValidatorDefinition>{
+public class EmailFieldValidatorBuilder extends AbstractFieldValidatorBuilder<EmailValidatorDefinition> {
 
     public EmailFieldValidatorBuilder(EmailValidatorDefinition definition) {
         super(definition);

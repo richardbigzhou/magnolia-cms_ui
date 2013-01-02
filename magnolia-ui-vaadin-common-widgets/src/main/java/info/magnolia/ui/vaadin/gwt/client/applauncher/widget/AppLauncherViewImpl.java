@@ -46,7 +46,7 @@ import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Implementation of AppLauncher view.
- *
+ * 
  */
 public class AppLauncherViewImpl extends FlowPanel implements AppLauncherView, AppActivationEvent.Handler {
 
@@ -117,14 +117,14 @@ public class AppLauncherViewImpl extends FlowPanel implements AppLauncherView, A
             group.addAppTile(tile);
         }
     }
-    
+
     @Override
     public void clear() {
-        temporarySectionsBar.clear(); 
+        temporarySectionsBar.clear();
         for (final VAppTileGroup group : groups.values()) {
             remove(group);
         }
         groups.clear();
     }
-    
+
 }

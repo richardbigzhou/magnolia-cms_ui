@@ -37,7 +37,6 @@ import info.magnolia.ui.vaadin.gwt.client.icon.connector.BadgeIconState;
 
 import com.vaadin.ui.AbstractComponent;
 
-
 /**
  * The BadgeIcon is a lightweight component that outputs a simple indicator badge icon to display
  * notifications counters for instance. The client-side implementation is scalable and only relies
@@ -55,10 +54,14 @@ public class BadgeIcon extends AbstractComponent {
      * Creates a new badge icon with specific size, fill and stroke css colors, and optional
      * outline.
      * 
-     * @param size the size of the inner badge shape, not including the outline, in pixels
-     * @param fill the fill color, as a css-compliant color code
-     * @param stroke the stroke color used for text and outline, as a css-compliant color code
-     * @param outline whether the outline should be rendered.
+     * @param size
+     *            the size of the inner badge shape, not including the outline, in pixels
+     * @param fill
+     *            the fill color, as a css-compliant color code
+     * @param stroke
+     *            the stroke color used for text and outline, as a css-compliant color code
+     * @param outline
+     *            whether the outline should be rendered.
      */
     public BadgeIcon(int size, String fill, String stroke, boolean outline) {
         getState().size = size;
@@ -69,7 +72,7 @@ public class BadgeIcon extends AbstractComponent {
 
     @Override
     protected BadgeIconState getState() {
-        return (BadgeIconState)super.getState();
+        return (BadgeIconState) super.getState();
     }
 
     public void setValue(int value) {

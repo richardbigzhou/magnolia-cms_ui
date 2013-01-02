@@ -37,7 +37,6 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.Viewport
 
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
  * Viewports might have different ways of displaying the content. This interface helps to define
  * them from outside.

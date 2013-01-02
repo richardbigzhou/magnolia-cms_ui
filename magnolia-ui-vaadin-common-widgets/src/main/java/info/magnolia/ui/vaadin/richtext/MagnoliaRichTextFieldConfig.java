@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.richtext;
 
-
 /**
  * Extends CKEditorConfig by defining more
  * coherent toolbar API and configuring custom plugins.
@@ -96,4 +95,4 @@ package info.magnolia.ui.vaadin.richtext;
 //    Map<String, String> getServerPlugins() {
 //        return Collections.unmodifiableMap(this.serverSidePlugins);
 //    }
-//}
+// }

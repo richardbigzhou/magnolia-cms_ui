@@ -44,7 +44,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-
 /**
  * Base class for horizontal bars with buttons.
  */
@@ -111,8 +110,7 @@ public abstract class AbstractBar extends FlowPanel {
     }
 
     /**
-     * Adds this widget to this bar as a button. The default (primary) style applied is
-     * <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
+     * Adds this widget to this bar as a button. The default (primary) style applied is <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
      */
     protected void addButton(final Widget button, final Float cssFloat) {
         button.setStylePrimaryName("mgnlEditorButton");
@@ -122,8 +120,7 @@ public abstract class AbstractBar extends FlowPanel {
     }
 
     /**
-     * Adds this widget to this bar as a button. The default (primary) style applied is
-     * <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
+     * Adds this widget to this bar as a button. The default (primary) style applied is <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
      */
     protected void addSecondaryButton(final Widget button) {
         if (secondaryButtons == null) {
@@ -135,8 +132,7 @@ public abstract class AbstractBar extends FlowPanel {
     }
 
     /**
-     * Adds this widget to this bar as a button. The default (primary) style applied is
-     * <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
+     * Adds this widget to this bar as a button. The default (primary) style applied is <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
      */
     protected void addPrimaryButton(final Widget button) {
         if (primaryButtons == null) {
@@ -165,19 +161,17 @@ public abstract class AbstractBar extends FlowPanel {
 
     /**
      * Shorthand for <code>getElement().getStyle()</code>.
+     * 
      * @return the element's underlying {@link Style}. You can use this object to manipulate the css
-     * style attribute of this bar widget.
+     *         style attribute of this bar widget.
      */
     protected Style getStyle() {
         return getElement().getStyle();
     }
 
-
-
     public void toggleVisible() {
         setVisible(!isVisible());
     }
-
 
     public void setCmsNode(CmsNode cmsNode) {
         this.cmsNode = cmsNode;

@@ -49,7 +49,6 @@ public class UniqueGroupIdValidator extends AbstractStringValidator {
         super(errorMessage);
     }
 
-
     @Override
     protected boolean isValidValue(String value) {
         // get all existing groups

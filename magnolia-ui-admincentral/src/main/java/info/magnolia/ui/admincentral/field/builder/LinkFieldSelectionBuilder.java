@@ -72,7 +72,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
     private final String propertyName;
 
     private TextAndContentViewField textContent;
-    
+
     @Inject
     public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem,
             ChooseDialogContentPresenter contentPresenter, @Named("choosedialog") final EventBus eventbus) {

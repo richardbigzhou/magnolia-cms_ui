@@ -42,34 +42,34 @@ import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.LayoutManager;
 import com.vaadin.shared.ui.Connect;
 
-
 /**
  * AppsViewportConnector.
  */
 @Connect(AppsViewport.class)
 public class AppsViewportConnector extends ViewportConnector {
-    
+
     @Override
     public void onConnectorHierarchyChange(final ConnectorHierarchyChangeEvent event) {
         if (getWidget().hasPreloader()) {
-            //getConnection().suspendReponseHandling(lock);
+            // getConnection().suspendReponseHandling(lock);
             new Timer() {
                 @Override
                 public void run() {
-                    //getConnection().resumeResponseHandling(lock);
+                    // getConnection().resumeResponseHandling(lock);
                     getWidget().removePreloader();
                 }
             }.schedule(500);
         }
         AppsViewportConnector.super.onConnectorHierarchyChange(event);
     }
-    
+
     @Override
     public AppsViewportWidget getWidget() {
-        return (AppsViewportWidget)super.getWidget();
+        return (AppsViewportWidget) super.getWidget();
     }
-    
+
     @Override
-    protected void alignContent(Element e, LayoutManager layoutManager) {}
-    
+    protected void alignContent(Element e, LayoutManager layoutManager) {
+    }
+
 }

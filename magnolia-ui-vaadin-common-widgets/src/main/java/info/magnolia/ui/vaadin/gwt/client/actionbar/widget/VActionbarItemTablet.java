@@ -43,7 +43,6 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
 import com.vaadin.client.ui.Icon;
 
-
 /**
  * The Class VActionbarItemTablet, which displays a single tablet action.
  */

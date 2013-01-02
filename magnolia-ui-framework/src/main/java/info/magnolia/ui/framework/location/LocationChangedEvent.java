@@ -52,11 +52,11 @@ public class LocationChangedEvent implements Event<LocationChangedEvent.Handler>
     private final Location newLocation;
 
     public LocationChangedEvent(Location newLocation) {
-      this.newLocation = newLocation;
+        this.newLocation = newLocation;
     }
 
     public Location getNewLocation() {
-      return newLocation;
+        return newLocation;
     }
 
     @Override

@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral;
 
 import info.magnolia.ui.framework.view.View;
 
-
 /**
  * Interface of the main MagnoliaShell view.
  */

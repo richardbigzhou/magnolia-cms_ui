@@ -43,19 +43,19 @@ import com.vaadin.shared.AbstractComponentState;
 public class ThumbnailLayoutState extends AbstractComponentState {
 
     public String lastQueried = null;
-    
+
     public int thumbnailAmount = 0;
 
     public ThumbnailSize size = new ThumbnailSize();
-    
+
     /**
      * ThumbnailSize.
      */
     public static class ThumbnailSize implements Serializable {
-        
+
         public int width = 0;
-        
+
         public int height = 0;
     }
-    
+
 }

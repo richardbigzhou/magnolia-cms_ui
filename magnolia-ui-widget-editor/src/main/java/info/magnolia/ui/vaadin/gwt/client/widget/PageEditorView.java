@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget;
 
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.IsWidget;

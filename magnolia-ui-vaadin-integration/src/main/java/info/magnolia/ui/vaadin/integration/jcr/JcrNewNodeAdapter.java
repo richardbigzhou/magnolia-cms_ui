@@ -49,7 +49,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
 
-
 /**
  * Used to create a new Node based on an Vaadin Item. This node adapter uses the parent node to
  * initialize the global properties (workspace, path....). No references is made to an existing JCR
@@ -60,8 +59,10 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
     private static final Logger log = LoggerFactory.getLogger(JcrNewNodeAdapter.class);
 
     /**
-     * @param parentNode Parent of the node to create.
-     * @param nodeType Type node to create.
+     * @param parentNode
+     *            Parent of the node to create.
+     * @param nodeType
+     *            Type node to create.
      */
     public JcrNewNodeAdapter(Node parentNode, String nodeType) {
         super(parentNode);
@@ -70,9 +71,12 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
     }
 
     /**
-     * @param parentNode Parent of the node to create.
-     * @param nodeType Type node to create.
-     * @param nodeName Name of the new node.
+     * @param parentNode
+     *            Parent of the node to create.
+     * @param nodeType
+     *            Type node to create.
+     * @param nodeName
+     *            Name of the new node.
      */
     public JcrNewNodeAdapter(Node parentNode, String nodeType, String nodeName) {
         super(parentNode);

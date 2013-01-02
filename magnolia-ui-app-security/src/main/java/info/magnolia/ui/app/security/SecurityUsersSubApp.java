@@ -66,8 +66,8 @@ public class SecurityUsersSubApp extends AbstractContentSubApp {
     @Override
     public void updateActionbar(ActionbarPresenter actionbar) {
         String selectedItemId = getWorkbench().getSelectedItemId();
-        //TODO fgrilli this is workaround due to MGNLUI-313
-        if(selectedItemId == null || "/".equals(selectedItemId)) {
+        // TODO fgrilli this is workaround due to MGNLUI-313
+        if (selectedItemId == null || "/".equals(selectedItemId)) {
             selectedItemId = isSystemUserSubApp ? "/system" : "/admin";
         }
         // users can be created only under /admin or /system paths in users workspace

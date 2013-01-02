@@ -41,12 +41,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * EditorLikeView.
+ * 
  * @param <T>
  */
-public interface EditorLikeView <T extends EditorLikeView.Presenter> extends IsWidget, HasWidgets {
+public interface EditorLikeView<T extends EditorLikeView.Presenter> extends IsWidget, HasWidgets {
 
     void setActions(Map<String, String> actionMap);
-    
+
     void setDescription(String description);
 
     void setCaption(String caption);
@@ -54,14 +55,14 @@ public interface EditorLikeView <T extends EditorLikeView.Presenter> extends IsW
     void setContent(Widget contentWidget);
 
     void setPresenter(T presenter);
-    
+
     T getPresenter();
-    
+
     /**
      * Presenter.
      */
     public interface Presenter {
-        
+
         void fireAction(String action);
     }
 

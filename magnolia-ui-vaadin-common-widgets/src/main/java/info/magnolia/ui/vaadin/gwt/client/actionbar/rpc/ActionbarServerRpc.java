@@ -36,13 +36,13 @@ package info.magnolia.ui.vaadin.gwt.client.actionbar.rpc;
 import com.vaadin.shared.communication.ServerRpc;
 
 /**
- *  {@link ActionbarServerRpc}.
+ * {@link ActionbarServerRpc}.
  */
 public interface ActionbarServerRpc extends ServerRpc {
 
     void onActionTriggered(String actionToken);
-    
+
     void onFullScreenModeToggle(boolean isFullScreen);
-    
+
     void setOpen(boolean isOpen);
 }

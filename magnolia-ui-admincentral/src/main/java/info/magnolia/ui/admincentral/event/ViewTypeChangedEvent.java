@@ -37,7 +37,6 @@ import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventHandler;
 
-
 /**
  * This event is fired when switching views, i.e. from tree view to list view.
  */

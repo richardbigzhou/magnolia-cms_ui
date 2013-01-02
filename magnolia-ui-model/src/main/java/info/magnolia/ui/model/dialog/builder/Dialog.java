@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.model.dialog.builder;
 
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Annotation used on methods on a module class that provides a dialog definition.

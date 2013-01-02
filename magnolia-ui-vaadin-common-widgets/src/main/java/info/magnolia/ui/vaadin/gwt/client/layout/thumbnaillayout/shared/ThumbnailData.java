@@ -41,13 +41,14 @@ import java.io.Serializable;
 public class ThumbnailData implements Serializable {
 
     private String thumbnailId = null;
-    
+
     private String iconFontId = null;
-    
+
     private boolean isRealResource = true;
-    
-    public ThumbnailData() {}
-    
+
+    public ThumbnailData() {
+    }
+
     public ThumbnailData(String thumbnailId, String iconFontId, boolean isRealResource) {
         this.iconFontId = iconFontId;
         this.isRealResource = isRealResource;
@@ -65,15 +66,15 @@ public class ThumbnailData implements Serializable {
     public void setIconFontId(String iconFontId) {
         this.iconFontId = iconFontId;
     }
-    
+
     public String getIconFontId() {
         return iconFontId;
     }
-    
+
     public String getThumbnailId() {
         return thumbnailId;
     }
-    
+
     public void setThumbnailId(String id) {
         this.thumbnailId = id;
     }

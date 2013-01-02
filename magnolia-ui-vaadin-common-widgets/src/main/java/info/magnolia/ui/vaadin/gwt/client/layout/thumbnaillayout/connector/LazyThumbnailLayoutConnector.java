@@ -63,7 +63,7 @@ import com.vaadin.shared.ui.Connect;
 public class LazyThumbnailLayoutConnector extends AbstractComponentConnector {
 
     private final ThumbnailLayoutServerRpc rpc = RpcProxy.create(ThumbnailLayoutServerRpc.class, this);
-    
+
     @Override
     protected void init() {
         super.init();
@@ -78,18 +78,18 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector {
                 }
             }
         }, ClickEvent.getType());
-        
+
         getWidget().addHandler(new MultiTapHandler() {
             @Override
             public void onMultiTap(MultiTapEvent event) {
                 int x = event.getTouchStarts().get(0).get(0).getPageX();
                 int y = event.getTouchStarts().get(0).get(0).getPageY();
-                final Element element = Util.getElementFromPoint(x,y);
+                final Element element = Util.getElementFromPoint(x, y);
                 final ThumbnailWidget thumbnail = Util.findWidget(element, ThumbnailWidget.class);
                 rpc.onThumbnailDoubleClicked(thumbnail.getId());
             }
         }, MultiTapEvent.getType());
-        
+
         getWidget().addHandler(new MagnoliaPinchStartEvent.Handler() {
             @Override
             public void onPinchStart(MagnoliaPinchStartEvent event) {
@@ -97,7 +97,7 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector {
                 rpc.clearThumbnails();
             }
         }, MagnoliaPinchStartEvent.TYPE);
-        
+
         registerRpc(ThumbnailLayoutClientRpc.class, new ThumbnailLayoutClientRpc() {
 
             @Override
@@ -105,7 +105,7 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector {
                 getWidget().addImages(thumbnails, LazyThumbnailLayoutConnector.this);
             }
         });
-        
+
         getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() {
             @Override
             public void onElementResize(ElementResizeEvent e) {
@@ -113,7 +113,7 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector {
             }
         });
     }
-    
+
     @Override
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
@@ -123,17 +123,17 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector {
         getWidget().setThumbnailSize(getState().size.width, getState().size.height);
         getWidget().setThumbnailAmount(getState().thumbnailAmount);
     }
-    
+
     @Override
     public LazyThumbnailLayoutWidget getWidget() {
-        return (LazyThumbnailLayoutWidget)super.getWidget();
+        return (LazyThumbnailLayoutWidget) super.getWidget();
     }
-    
+
     @Override
     public ThumbnailLayoutState getState() {
-        return (ThumbnailLayoutState)super.getState();
+        return (ThumbnailLayoutState) super.getState();
     }
-    
+
     @Override
     protected LazyThumbnailLayoutWidget createWidget() {
         final LazyThumbnailLayoutWidget layout = new LazyThumbnailLayoutWidget();
@@ -145,7 +145,7 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector {
         });
         return layout;
     }
-    
+
     /**
      * Serves Thumbnails.
      */

@@ -48,7 +48,6 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Label;
 
-
 /**
  * Implementation of {@link PulseDashboardView}.
  */
@@ -101,36 +100,36 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
 
         Calendar cal = Calendar.getInstance();
         entries.add(new DashboardEntry(Icon.ACCEPTED,
-            "Peter Twist has accepted and published your page ",
-            Page.ABOUT,
-            cal.getTime()));
+                "Peter Twist has accepted and published your page ",
+                Page.ABOUT,
+                cal.getTime()));
 
         cal.add(Calendar.MINUTE, -12);
         entries.add(new DashboardEntry(Icon.REJECTED,
-            "Peter Twist has rejected your changes to page ",
-            Page.FITNESS,
-            cal.getTime(),
-            "It needs to be a bit more to the point..."));
+                "Peter Twist has rejected your changes to page ",
+                Page.FITNESS,
+                cal.getTime(),
+                "It needs to be a bit more to the point..."));
 
         cal.add(Calendar.MINUTE, -90);
         entries.add(new DashboardEntry(Icon.WARNING,
-            "An urgent new task has been assigned to you, due today:",
-            Page.FITNESS,
-            cal.getTime(),
-            "Rework Fitness counts ASAP"));
+                "An urgent new task has been assigned to you, due today:",
+                Page.FITNESS,
+                cal.getTime(),
+                "Rework Fitness counts ASAP"));
 
         cal.add(Calendar.HOUR, -21);
         entries.add(new DashboardEntry(Icon.ACCEPTED,
-            "Peter Twist has accepted and published your page ",
-            Page.ABOUT,
-            cal.getTime()));
+                "Peter Twist has accepted and published your page ",
+                Page.ABOUT,
+                cal.getTime()));
 
         cal.add(Calendar.MINUTE, -111);
         entries.add(new DashboardEntry(Icon.REJECTED,
-            "Peter Twist has rejected your changes to page ",
-            Page.MORE,
-            cal.getTime(),
-            "Check the typos :)"));
+                "Peter Twist has rejected your changes to page ",
+                Page.MORE,
+                cal.getTime(),
+                "Check the typos :)"));
 
         return entries;
     }
@@ -143,10 +142,10 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
 
         StringBuilder s = new StringBuilder();
         s.append("<table class=\"recent-pages\"><thead><tr>" +
-            "<th>Page Title</th>" +
-            "<th>Parent Page</th>" +
-            "<th>Status</th>" +
-            "</tr></thead><tbody>");
+                "<th>Page Title</th>" +
+                "<th>Parent Page</th>" +
+                "<th>Status</th>" +
+                "</tr></thead><tbody>");
 
         for (RecentPageEntry entry : entries) {
 
@@ -156,10 +155,10 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
             }
 
             s.append("<tr>" +
-                "<td>" + entry.getPage().getTitle() + "</td>" +
-                "<td>" + entry.getParentPage().getTitle() + "</td>" +
-                "<td><span class=\"status-icon " + statusClass + "\"></span></td>" +
-                "</tr>");
+                    "<td>" + entry.getPage().getTitle() + "</td>" +
+                    "<td>" + entry.getParentPage().getTitle() + "</td>" +
+                    "<td><span class=\"status-icon " + statusClass + "\"></span></td>" +
+                    "</tr>");
         }
 
         s.append("</tbody></table>");
@@ -208,7 +207,7 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
         public DashboardEntry(final Icon icon, final String text, final Page page, final Date date) {
             addStyleName("v-dashboard-entry");
             setWidth("100%");
-            //setMargin(true, false, true, false);
+            // setMargin(true, false, true, false);
             // setSpacing(true);
             iconElement.setContentMode(ContentMode.HTML);
             iconElement.setWidth(null);
@@ -220,8 +219,8 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
             dateElement.setStyleName("date");
             wrapper.addStyleName("content");
             wrapper.setWidth("100%");
-            //TODO: HANDLE MARGINS IN CSS STYLESHEET
-            //wrapper.setMargin(false, false, false, true);
+            // TODO: HANDLE MARGINS IN CSS STYLESHEET
+            // wrapper.setMargin(false, false, false, true);
             wrapper.addComponent(textElement);
             wrapper.addComponent(dateElement);
             addComponent(iconElement);

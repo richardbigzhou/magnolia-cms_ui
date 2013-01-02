@@ -38,4 +38,5 @@ import info.magnolia.ui.vaadin.gwt.client.editorlike.connector.EditorLikeCompone
 /**
  * BaseDialogState.
  */
-public class BaseDialogState extends EditorLikeComponentState {}
+public class BaseDialogState extends EditorLikeComponentState {
+}

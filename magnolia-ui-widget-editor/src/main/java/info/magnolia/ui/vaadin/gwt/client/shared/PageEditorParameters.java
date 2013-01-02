@@ -46,8 +46,9 @@ public class PageEditorParameters implements Serializable {
 
     private boolean preview;
 
-    public PageEditorParameters() {}
-    
+    public PageEditorParameters() {
+    }
+
     public PageEditorParameters(String contextPath, String nodePath, boolean preview) {
         this.contextPath = contextPath;
         this.nodePath = nodePath;
@@ -65,7 +66,7 @@ public class PageEditorParameters implements Serializable {
     public void setPreview(boolean preview) {
         this.preview = preview;
     }
-    
+
     public String getContextPath() {
         return contextPath;
     }

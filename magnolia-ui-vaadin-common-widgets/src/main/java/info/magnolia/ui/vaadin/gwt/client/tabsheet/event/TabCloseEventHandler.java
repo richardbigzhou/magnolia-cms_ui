@@ -39,6 +39,6 @@ import com.google.gwt.event.shared.EventHandler;
  * Handler of the events fired when the tab is closed.
  */
 public interface TabCloseEventHandler extends EventHandler {
-    
+
     void onTabClosed(final TabCloseEvent event);
 }

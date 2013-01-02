@@ -39,7 +39,7 @@ import java.util.List;
 
 /**
  * Defines a form.
- *
+ * 
  * @see TabDefinition
  * @see info.magnolia.ui.model.field.definition.FieldDefinition
  * @see FormActionDefinition

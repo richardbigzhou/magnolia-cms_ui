@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.richtext;
 
-
 /**
  * Magnolia rich text field adds an ability to custom plugins to communicate
  * with the server. This was not possible with the add-on out of the box.
@@ -171,4 +170,4 @@ package info.magnolia.ui.vaadin.gwt.client.richtext;
 //    private String getPaintableId() {
 //        return paintableId;
 //    }
-//}
+// }

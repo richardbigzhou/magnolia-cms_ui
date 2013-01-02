@@ -189,4 +189,4 @@ package info.magnolia.ui.admincentral.app.simple;
 //        appLauncherLayout.addGroup(cat);
 //        when(appLauncherLayoutManager.getLayoutForCurrentUser()).thenReturn(appLauncherLayout);
 //    }
-//}
+// }

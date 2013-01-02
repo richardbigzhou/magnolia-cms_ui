@@ -35,12 +35,11 @@ package info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell;
 
 import java.io.Serializable;
 
-
 /**
  * Helper class for holding the parsed info from the fragment.
  */
 public class Fragment implements Serializable {
-    
+
     private ViewportType appViewportType = ViewportType.SHELL_APP;
 
     private String appId = "";
@@ -49,7 +48,8 @@ public class Fragment implements Serializable {
 
     private String parameter = "";
 
-    public Fragment() {}
+    public Fragment() {
+    }
 
     public static Fragment fromString(final String fragment) {
         Fragment dto = new Fragment();
@@ -71,19 +71,19 @@ public class Fragment implements Serializable {
     public void setParameter(String parameter) {
         this.parameter = parameter;
     }
-    
+
     public void setSubAppId(String subAppId) {
         this.subAppId = subAppId;
     }
-    
+
     public void setAppId(String appId) {
         this.appId = appId;
     }
-    
+
     public void setAppViewportType(ViewportType type) {
         this.appViewportType = type;
     }
-    
+
     public ViewportType getAppViewportType() {
         return appViewportType;
     }
@@ -105,12 +105,12 @@ public class Fragment implements Serializable {
     public String toFragment() {
         return toString();
     }
-    
+
     @Override
     public String toString() {
         return appViewportType.getFragmentPrefix() + appId + ":" + subAppId + ";" + parameter;
     }
-    
+
     public static String extractAppType(String fragment) {
         int i = fragment.indexOf(':');
         return i != -1 ? fragment.substring(0, i) : fragment;

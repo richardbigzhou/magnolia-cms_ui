@@ -68,7 +68,6 @@ public class DialogHeaderWidget extends FlowPanel {
         }
     });
 
-
     private final Button helpButton = new Button("", new ClickHandler() {
         @Override
         public void onClick(ClickEvent event) {
@@ -77,7 +76,6 @@ public class DialogHeaderWidget extends FlowPanel {
             callback.onDescriptionVisibilityChanged(isDescriptionVisible);
         }
     });
-
 
     public void construct() {
         captionContainer.addClassName(CLASSNAME_HEADER);
@@ -89,7 +87,6 @@ public class DialogHeaderWidget extends FlowPanel {
         descriptionPanel.addStyleName(ClASSNAME_DESCRIPTION);
         helpButton.setStyleName(CLASSNAME_HELPBUTTON);
 
-
         getElement().appendChild(captionContainer);
         captionContainer.appendChild(caption);
 
@@ -97,7 +94,6 @@ public class DialogHeaderWidget extends FlowPanel {
         add(helpButton, captionContainer);
         add(descriptionPanel);
     }
-
 
     public DialogHeaderWidget(final VDialogHeaderCallback callback) {
         this.callback = callback;
@@ -108,12 +104,12 @@ public class DialogHeaderWidget extends FlowPanel {
     public void setDescription(String description) {
         final Label content = new Label();
         content.setText(description);
-        descriptionPanel.insert(content, 0);}
+        descriptionPanel.insert(content, 0);
+    }
 
     public void setDialogCaption(String caption) {
         this.caption.setInnerText(caption);
     }
-
 
     /**
      * Callback interface for the Dialog header.
@@ -123,4 +119,5 @@ public class DialogHeaderWidget extends FlowPanel {
         void onCloseFired();
 
         void onDescriptionVisibilityChanged(boolean isVisible);
-    }}
+    }
+}

@@ -77,12 +77,12 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
         return label;
     }
 
-     @Override
+    @Override
     public String getI18nBasename() {
         return i18nBasename;
     }
 
-     @Override
+    @Override
     public String getDescription() {
         return description;
     }
@@ -92,7 +92,7 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
         return type;
     }
 
-       @Override
+    @Override
     public boolean isRequired() {
         return required;
     }
@@ -102,7 +102,7 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
         return requiredErrorMessage;
     }
 
-     @Override
+    @Override
     public List<ConfiguredFieldValidatorDefinition> getValidators() {
         return validators;
     }
@@ -135,11 +135,9 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
         this.i18n = i18n;
     }
 
-
     public void setRequiredErrorMessage(String requiredErrorMessage) {
         this.requiredErrorMessage = requiredErrorMessage;
     }
-
 
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;

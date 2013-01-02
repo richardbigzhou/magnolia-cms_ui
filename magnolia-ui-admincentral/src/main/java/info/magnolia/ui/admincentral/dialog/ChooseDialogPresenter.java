@@ -35,15 +35,16 @@ package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.ui.admincentral.dialog.ValueChosenListener.HasValueChosenListener;
 
-
 /**
  * Base dialog that allows for choosing a value.
- * @param <T> Value type
+ * 
+ * @param <T>
+ *            Value type
  */
 public interface ChooseDialogPresenter<T> extends DialogPresenter, HasValueChosenListener<T> {
-    
+
     public T getValue();
-    
+
     @Override
     public ChooseDialogView getView();
 

@@ -39,10 +39,9 @@ import info.magnolia.ui.framework.app.AppContext;
 
 import javax.inject.Inject;
 
-
 /**
  * The Contacts app, extending base content app.
- *
+ * 
  */
 public class ConfigApp extends AbstractContentApp {
 

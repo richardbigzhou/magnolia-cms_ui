@@ -41,7 +41,7 @@ import com.google.gwt.event.shared.GwtEvent;
 /**
  * Event fired when the viewport is closed.
  */
-public class ViewportCloseEvent extends GwtEvent<ViewportCloseEvent.Handler>{
+public class ViewportCloseEvent extends GwtEvent<ViewportCloseEvent.Handler> {
 
     /**
      * Handler of the {@link ViewportCloseEvent}.
@@ -49,7 +49,7 @@ public class ViewportCloseEvent extends GwtEvent<ViewportCloseEvent.Handler>{
     public interface Handler extends EventHandler {
         void onViewportClose(final ViewportCloseEvent event);
     }
-    
+
     public static final Type<Handler> TYPE = new Type<Handler>();
 
     private final ViewportType viewportType;

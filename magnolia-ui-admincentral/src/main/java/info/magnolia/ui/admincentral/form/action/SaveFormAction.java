@@ -33,20 +33,22 @@
  */
 package info.magnolia.ui.admincentral.form.action;
 
-import com.vaadin.data.Item;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
+
 /**
  * Action for saving Items in Forms.
- *
+ * 
  * @see SaveFormActionDefinition
  */
 public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
@@ -70,7 +72,7 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
                 final Node node = itemChanged.getNode();
-                //MetaDataUtil.updateMetaData(node);
+                // MetaDataUtil.updateMetaData(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);

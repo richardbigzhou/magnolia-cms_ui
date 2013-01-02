@@ -51,7 +51,7 @@ public class BadgeIconConnector extends AbstractComponentConnector {
     protected SharedState createState() {
         return new BadgeIconState();
     }
-    
+
     @Override
     protected Widget createWidget() {
         return new BadgeIconWidget();

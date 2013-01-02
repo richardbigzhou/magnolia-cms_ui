@@ -45,7 +45,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.jcr.Item;
 
-
 /**
  * Creates an action based on an {@link info.magnolia.ui.model.action.ActionDefinition}.
  */

@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
 import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
+
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.DeleteComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
@@ -57,7 +58,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.web.bindery.event.shared.EventBus;
 
-
 /**
  * Edit bar.
  */
@@ -78,13 +78,15 @@ public class ComponentBar extends AbstractBar {
         setFields(mgnlElement.getAttributes());
         addStyleName("component");
 
-/*        if (DragDropEventBase.isSupported()) {
-            createDragAndDropHandlers();
-
-        }*/
+        /*
+         * if (DragDropEventBase.isSupported()) {
+         * createDragAndDropHandlers();
+         * 
+         * }
+         */
         if (!this.isInherited) {
             createControls();
-            //createMouseEventsHandlers();
+            // createMouseEventsHandlers();
         }
 
         setVisible(false);
@@ -207,27 +209,29 @@ public class ComponentBar extends AbstractBar {
 
     private void createControls() {
 
-               final Label remove = new Label();
-                remove.setStyleName(ICON_CLASSNAME);
-                remove.addStyleName(REMOVE_CLASSNAME);
-                remove.addClickHandler(new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getPath()));
-                    }
-                });
-                addSecondaryButton(remove);
-
-
-        /* final Label move = new Label();
-        move.setStyleName("icon icon-trash");
-        move.addClickHandler(new ClickHandler() {
+        final Label remove = new Label();
+        remove.setStyleName(ICON_CLASSNAME);
+        remove.addStyleName(REMOVE_CLASSNAME);
+        remove.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getImagePathByNodePath()));
+                getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getPath()));
             }
         });
-        addSecondaryButton(move);*/
+        addSecondaryButton(remove);
+
+        /*
+         * final Label move = new Label();
+         * move.setStyleName("icon icon-trash");
+         * move.addClickHandler(new ClickHandler() {
+         * 
+         * @Override
+         * public void onClick(ClickEvent event) {
+         * getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getImagePathByNodePath()));
+         * }
+         * });
+         * addSecondaryButton(move);
+         */
 
         final Label edit = new Label();
         edit.setStyleName(ICON_CLASSNAME);

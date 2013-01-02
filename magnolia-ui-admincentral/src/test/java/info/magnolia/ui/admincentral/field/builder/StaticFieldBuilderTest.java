@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
+
 import info.magnolia.ui.admincentral.field.StaticField;
 import info.magnolia.ui.model.field.definition.StaticFieldDefinition;
 
@@ -58,16 +59,13 @@ public class StaticFieldBuilderTest extends AbstractBuilderTest<StaticFieldDefin
 
         // THEN
         assertEquals(true, field instanceof StaticField);
-        assertEquals("value to display", ((StaticField)field).getLabel().getCaption());
+        assertEquals("value to display", ((StaticField) field).getLabel().getCaption());
     }
-
-
-
 
     @Override
     protected void createConfiguredFieldDefinition() {
         StaticFieldDefinition fieldDefinition = new StaticFieldDefinition();
-        fieldDefinition = (StaticFieldDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+        fieldDefinition = (StaticFieldDefinition) AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
 
         fieldDefinition.setValue("value to display");
 

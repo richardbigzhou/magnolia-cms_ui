@@ -56,9 +56,9 @@ public class PageEditor extends AbstractComponent implements PageEditorView {
     private PageEditorView.Listener listener;
 
     private String PAGE_ELEMENT = "cms:page";
-    
+
     private String AREA_ELEMENT = "cms:area";
-    
+
     private String COMPONENT_ELEMENT = "cms:component";
 
     public PageEditor() {
@@ -79,45 +79,45 @@ public class PageEditor extends AbstractComponent implements PageEditorView {
     @Override
     public void init() {
         registerRpc(new PageEditorServerRpc() {
-            
+
             @Override
             public void sortComponent(String workspace, String parentPath, String sourcePath, String targetPath, String order) {
                 listener.sortComponent(workspace, parentPath, sourcePath, targetPath, order);
             }
-            
+
             @Override
             public void selectElement(String type, Map<String, String> attributes) {
                 AbstractElement element = resolveElement(type, attributes);
                 listener.selectElement(element);
             }
-            
+
             @Override
             public void newComponent(String workspace, String eventType, String availableComponents) {
                 listener.newComponent(workspace, eventType, availableComponents);
             }
-            
+
             @Override
             public void newArea(String workspace, String nodeType, String path) {
                 listener.newArea(workspace, nodeType, path);
             }
-            
+
             @Override
             public void editComponent(String workspace, String eventType, String dialog) {
                 listener.editComponent(workspace, eventType, dialog);
             }
-            
+
             @Override
             public void deleteComponent(String workspace, String path) {
                 listener.deleteComponent(workspace, path);
-                
+
             }
         });
 
     }
-    
+
     @Override
     protected PageEditorState getState() {
-        return (PageEditorState)super.getState();
+        return (PageEditorState) super.getState();
     }
 
     private AbstractElement resolveElement(String type, Map<String, String> attributes) {

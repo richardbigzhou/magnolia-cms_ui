@@ -37,7 +37,6 @@ import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 
-
 /**
  * PageEditorView.
  */

@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.model;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 
@@ -44,6 +41,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 
 /**
  * Singleton keeping the model.
@@ -138,7 +137,9 @@ public class ModelImpl implements Model {
 
         // remove all occurrences of the element
         if (mgnlElements.containsValue(mgnlElement)) {
-            while (mgnlElements.values().remove(mgnlElement));
+            while (mgnlElements.values().remove(mgnlElement)) {
+                ;
+            }
         }
         elements.remove(mgnlElement);
 

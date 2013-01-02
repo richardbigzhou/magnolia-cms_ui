@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.framework.instantpreview;
 
-
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
+
 import info.magnolia.ui.framework.instantpreview.InstantPreviewLocationManager.PreviewLocationListener;
 
 import org.junit.After;
@@ -45,14 +45,14 @@ import org.junit.Test;
 /**
  * InstantPreviewLocationManagerTest.
  */
-public class InstantPreviewLocationManagerTest{
+public class InstantPreviewLocationManagerTest {
     private InstantPreviewLocationManagerImpl manager;
 
     @Before
     public void setUp() {
         manager = new InstantPreviewLocationManagerImpl();
 
-        for(int i= 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             manager.registerInstantPreviewHost();
         }
 
@@ -70,12 +70,12 @@ public class InstantPreviewLocationManagerTest{
 
     @Test
     public void registerInstantPreviewHostTest() {
-        //GIVEN see setUp
+        // GIVEN see setUp
 
-        //WHEN
+        // WHEN
         String id = manager.registerInstantPreviewHost();
 
-        //THEN
+        // THEN
         assertNotNull(id);
         assertEquals(4, manager.getHosts().size());
 
@@ -83,15 +83,15 @@ public class InstantPreviewLocationManagerTest{
 
     @Test
     public void ensureRegisterInstantPreviewHostGeneratesUniqueIdTest() {
-        //GIVEN see also setUp
+        // GIVEN see also setUp
         String id1 = manager.getHosts().get(0);
         String id2 = manager.getHosts().get(1);
         String id3 = manager.getHosts().get(2);
 
-        //WHEN
+        // WHEN
         String newId = manager.registerInstantPreviewHost();
 
-        //THEN
+        // THEN
         assertNotSame(newId, id1);
         assertNotSame(newId, id2);
         assertNotSame(newId, id3);
@@ -99,45 +99,45 @@ public class InstantPreviewLocationManagerTest{
 
     @Test
     public void unregisterInstantPreviewHostTest() {
-        //GIVEN see setUp
+        // GIVEN see setUp
 
-        //WHEN
+        // WHEN
         String hostId = manager.getHosts().get(0);
         manager.unregisterInstantPreviewHost(manager.getHosts().get(0));
 
-        //THEN
+        // THEN
         assertEquals(2, manager.getHosts().size());
         assertTrue(manager.getListeners().get(hostId).isEmpty());
     }
 
     @Test
     public void subscribeToTest() {
-        //GIVEN see setUp
+        // GIVEN see setUp
 
-        //WHEN
+        // WHEN
         String hostId = manager.getHosts().get(0);
         manager.subscribeTo(hostId, mock(PreviewLocationListener.class));
 
-        //THEN
+        // THEN
         assertEquals(3, manager.getListeners().get(hostId).size());
     }
 
-    @Test(expected=InstantPreviewHostNotFoundException.class)
+    @Test(expected = InstantPreviewHostNotFoundException.class)
     public void subscribeToNonExistingHostThrowsExceptionTest() {
-        //GIVEN see also setUp
+        // GIVEN see also setUp
         String hostId = manager.getHosts().get(0);
         manager.unregisterInstantPreviewHost(hostId);
         assertEquals(2, manager.getHosts().size());
 
-        //WHEN
+        // WHEN
         manager.subscribeTo(hostId, mock(PreviewLocationListener.class));
 
-        //THEN boooom!
+        // THEN boooom!
     }
 
     @Test
-    public void unsubscribeFromTest(){
-        //GIVEN see also setUp
+    public void unsubscribeFromTest() {
+        // GIVEN see also setUp
         String hostId = manager.getHosts().get(1);
         assertEquals(1, manager.getListeners().get(hostId).size());
 
@@ -145,39 +145,38 @@ public class InstantPreviewLocationManagerTest{
         manager.subscribeTo(hostId, listener);
         assertEquals(2, manager.getListeners().get(hostId).size());
 
-        //WHEN
+        // WHEN
         manager.unsubscribeFrom(hostId, listener);
 
-        //THEN
+        // THEN
         assertEquals(1, manager.getListeners().get(hostId).size());
     }
 
-
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void ensureHostIdIsANineDigitsStringTest() throws Exception {
-        //GIVEN see setUp
+        // GIVEN see setUp
 
-        //WHEN
+        // WHEN
         String hostId = manager.generateNineDigitsRandomNumberAsString(0, 1);
 
-        //THEN
+        // THEN
         assertEquals(9, hostId.length());
 
-        //WHEN
+        // WHEN
         hostId = manager.generateNineDigitsRandomNumberAsString(0, 444);
 
-        //THEN
+        // THEN
         assertEquals(9, hostId.length());
 
-        //WHEN
+        // WHEN
         hostId = manager.generateNineDigitsRandomNumberAsString(0, 999999999);
 
-        //THEN
+        // THEN
         assertEquals(9, hostId.length());
 
-        //WHEN
-        hostId = manager.generateNineDigitsRandomNumberAsString(0, Integer.MAX_VALUE-1);
+        // WHEN
+        hostId = manager.generateNineDigitsRandomNumberAsString(0, Integer.MAX_VALUE - 1);
 
-        //THEN IllegalArgumentException
+        // THEN IllegalArgumentException
     }
 }

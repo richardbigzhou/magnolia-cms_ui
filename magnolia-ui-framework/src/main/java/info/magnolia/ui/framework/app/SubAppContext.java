@@ -46,15 +46,15 @@ public interface SubAppContext {
     String getSubAppId();
 
     SubApp getSubApp();
-    
+
     Location getLocation();
-    
+
     Component getTab();
-    
+
     AppContext getAppContext();
-    
+
     SubAppDescriptor getSubAppDescriptor();
-    
+
     void setAppContext(AppContext appContext);
 
     void setLocation(Location location);
@@ -64,5 +64,5 @@ public interface SubAppContext {
     void setSubAppComponentProvider(ComponentProvider subAppComponentProvider);
 
     void setTab(Component tab);
-    
+
 }

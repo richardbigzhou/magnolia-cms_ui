@@ -35,7 +35,7 @@ package info.magnolia.ui.model.field.validation.definition;
 
 /**
  * Defines a validator.
- *
+ * 
  * @see info.magnolia.ui.model.field.definition.FieldDefinition
  */
 public interface FieldValidatorDefinition {

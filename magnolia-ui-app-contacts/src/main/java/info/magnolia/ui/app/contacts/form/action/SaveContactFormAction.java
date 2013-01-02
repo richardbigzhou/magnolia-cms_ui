@@ -47,8 +47,9 @@ import javax.jcr.RepositoryException;
  * Action for saving contacts.
  * We currently can't rename the node on change.
  * This must be properly solved by passing the node identifier to {@link info.magnolia.ui.admincentral.event.ContentChangedEvent}.
- *
+ * 
  * See MGNLUI-226.
+ * 
  * @see SaveContactFormActionDefinition
  */
 public class SaveContactFormAction extends SaveFormAction {
@@ -67,7 +68,7 @@ public class SaveContactFormAction extends SaveFormAction {
                 final Node node = itemChanged.getNode();
 
                 // Can't use this anymore, breaks when renaming node, ContentChangedEvent is still using the old path
-                //generateUniqueNodeNameForContact(node);
+                // generateUniqueNodeNameForContact(node);
 
                 MetaDataUtil.updateMetaData(node);
                 node.getSession().save();
@@ -82,13 +83,13 @@ public class SaveContactFormAction extends SaveFormAction {
     // we have already utilities in core to generate unique names. Why not reuse them rather then inventing your own code?
     private void generateUniqueNodeNameForContact(final Node node) throws RepositoryException {
         String firstName = node.getProperty("firstName").getString();
-        String lastName =  node.getProperty("lastName").getString();
+        String lastName = node.getProperty("lastName").getString();
         String newNodeName = (firstName.charAt(0) + lastName.replaceAll("\\s+", "")).toLowerCase();
         String parentPath = node.getParent().getPath();
         String newNodeAbsPath = NodeUtil.combinePathAndName(parentPath, newNodeName);
         int i = 1;
 
-        while(node.getSession().itemExists(newNodeAbsPath)) {
+        while (node.getSession().itemExists(newNodeAbsPath)) {
             newNodeAbsPath = NodeUtil.combinePathAndName(parentPath, newNodeName + i);
             i++;
         }

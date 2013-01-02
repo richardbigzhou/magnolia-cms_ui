@@ -33,30 +33,27 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.jsni;
 
-import com.google.gwt.dom.client.Element;
-import com.google.web.bindery.event.shared.EventBus;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.jsni.event.FrameLoadedEvent;
 import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView;
+
+import com.google.gwt.dom.client.Element;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * AbstractFrameEventHandler.
  */
 abstract public class AbstractFrameEventHandler {
 
-
     private EventBus eventBus;
 
     private PageEditorView view;
-
 
     /**
      * Force iframe to be reloaded. for example when content has been updated.
      */
     public native void reloadIFrame(Element iframeElement) /*-{
-        iframeElement.contentWindow.location.reload(true);
-    }-*/;
-
+                                                           iframeElement.contentWindow.location.reload(true);
+                                                           }-*/;
 
     public abstract void notifyUrlChange();
 
@@ -64,13 +61,13 @@ abstract public class AbstractFrameEventHandler {
      * This functionality was added in 4.5. Not triggered at the moment.
      */
     private native void onPageEditorReady() /*-{
-        var callbacks = $wnd.mgnl.PageEditor.onPageEditorReadyCallbacks
-        if(typeof callbacks != 'undefined') {
-            for(var i=0; i < callbacks.length; i++) {
-                callbacks[i].apply();
-            }
-        }
-    }-*/;
+                                            var callbacks = $wnd.mgnl.PageEditor.onPageEditorReadyCallbacks
+                                            if(typeof callbacks != 'undefined') {
+                                            for(var i=0; i < callbacks.length; i++) {
+                                            callbacks[i].apply();
+                                            }
+                                            }
+                                            }-*/;
 
     public EventBus getEventBus() {
         return eventBus;
@@ -99,25 +96,25 @@ abstract public class AbstractFrameEventHandler {
      * Unfortunately the GWT handlers do not work, so using jsni.
      */
     public native void initNativeTouchSelectionListener(Element element, PageEditorView.Listener listener) /*-{
-        if (element != 'undefined') {
-            var ref = this;
-            var that = listener;
-            element.contentDocument.ontouchend = function(event) {
-                that.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView.Listener::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
-            }
-        }
-    }-*/;
+                                                                                                           if (element != 'undefined') {
+                                                                                                           var ref = this;
+                                                                                                           var that = listener;
+                                                                                                           element.contentDocument.ontouchend = function(event) {
+                                                                                                           that.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView.Listener::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
+                                                                                                           }
+                                                                                                           }
+                                                                                                           }-*/;
 
     /**
      * Takes care of the touch end events for selecting elements inside the page editor.
      * Unfortunately the GWT handlers do not work, so using jsni.
      */
     public native void initNativeMouseSelectionListener(Element element, PageEditorView.Listener listener) /*-{
-        if (element != 'undefined') {
-            var that = listener;
-            element.contentDocument.onmouseup = function(event) {
-                that.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView.Listener::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
-            }
-        }
-    }-*/;
+                                                                                                           if (element != 'undefined') {
+                                                                                                           var that = listener;
+                                                                                                           element.contentDocument.onmouseup = function(event) {
+                                                                                                           that.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView.Listener::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
+                                                                                                           }
+                                                                                                           }
+                                                                                                           }-*/;
 }
