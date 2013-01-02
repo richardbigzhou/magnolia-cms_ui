@@ -33,16 +33,18 @@
  */
 package info.magnolia.ui.admincentral.form.action;
 
-import com.vaadin.data.Item;
+import static org.junit.Assert.assertEquals;
+
 import info.magnolia.ui.admincentral.form.FormItem;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.form.FormView;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import com.vaadin.data.Item;
 
 /**
  * CallbackFormActionTest.
@@ -102,12 +104,12 @@ public class CallbackFormActionTest {
      * Init the Definition.
      */
     private void initDefinition(String name, String label, Boolean callSuccess, String successActionName) {
-        this.formActionDefinition.setCallSuccess((callSuccess!=null)?callSuccess:true);
+        this.formActionDefinition.setCallSuccess((callSuccess != null) ? callSuccess : true);
         this.formActionDefinition.setLabel(label);
         this.formActionDefinition.setName(name);
-        this.formActionDefinition.setSuccessActionName(successActionName!=null?successActionName:"success");
+        this.formActionDefinition.setSuccessActionName(successActionName != null ? successActionName : "success");
     }
-    
+
     public static class FormPresenterTest implements FormPresenter {
 
         private Item item;
@@ -128,7 +130,7 @@ public class CallbackFormActionTest {
 
                 @Override
                 public void onSuccess(String actionName) {
-                    callbackActionCalled = "onSuccess("+actionName+")";
+                    callbackActionCalled = "onSuccess(" + actionName + ")";
                 }
 
                 @Override

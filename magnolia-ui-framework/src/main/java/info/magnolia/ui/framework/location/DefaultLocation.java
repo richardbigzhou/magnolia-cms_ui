@@ -33,12 +33,13 @@
  */
 package info.magnolia.ui.framework.location;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
- * Default location implementation.<p>
+ * Default location implementation.
+ * <p>
  * {@code appType:appId:subAppId;some/parameter}
  */
 public class DefaultLocation implements Location {
@@ -193,7 +194,7 @@ public class DefaultLocation implements Location {
         if (i == -1) {
             return "";
         }
-         return fragment.substring(i + 1);
+        return fragment.substring(i + 1);
     }
 
     private static String removeParameter(String fragment) {

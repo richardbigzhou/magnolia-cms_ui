@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-import java.util.List;
-
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
 
+import java.util.List;
+
 /**
  * Defines a dialog.
- *
+ * 
  * @see info.magnolia.ui.model.field.definition.FieldDefinition
  * @see DialogActionDefinition
  */

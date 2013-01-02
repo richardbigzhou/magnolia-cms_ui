@@ -37,7 +37,6 @@ import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
-
 /**
  * This event is fired when an item is selected (ie a row in the data grid within the workbench
  * representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).

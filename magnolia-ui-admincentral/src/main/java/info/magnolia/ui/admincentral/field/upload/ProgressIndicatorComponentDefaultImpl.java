@@ -47,17 +47,16 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Custom Component used to create a custom display for {@link ProgressIndicator}.
  * <p>
- * This view normally contains a progress bar and label indicating the uploaded percentage, filename....
- * Refresh of the view is done by calling refreshOnProgressUploadLayout(..)
- *<p>
+ * This view normally contains a progress bar and label indicating the uploaded percentage, filename.... Refresh of the view is done by calling refreshOnProgressUploadLayout(..)
+ * <p>
  * Layout composition:
  * <ul>
- *  <li>Label.FileName
- *  <li>ProgressBar
- *  <li>Label.percentage
- *  <li>Label.UploadexOfy
- *  </ul>
- *
+ * <li>Label.FileName
+ * <li>ProgressBar
+ * <li>Label.percentage
+ * <li>Label.UploadexOfy
+ * </ul>
+ * 
  */
 public class ProgressIndicatorComponentDefaultImpl extends CustomComponent implements ProgressIndicatorComponent {
 
@@ -68,7 +67,7 @@ public class ProgressIndicatorComponentDefaultImpl extends CustomComponent imple
 
     private VerticalLayout mainLayout;
 
-    public ProgressIndicatorComponentDefaultImpl () {
+    public ProgressIndicatorComponentDefaultImpl() {
 
         uploadFileLocation = new Label("");
         uploadFileLocation.setSizeUndefined();
@@ -112,17 +111,17 @@ public class ProgressIndicatorComponentDefaultImpl extends CustomComponent imple
 
     @Override
     public void refreshOnProgressUploadLayout(long readBytes, long contentLength, String fileName) {
-        //TODO fgrilli for some reason this does not work with Double or Long and needs casting to primitive float. Not
-        //doing so won't update the progress indicator.
-        progressIndicator.setValue(Float.valueOf(readBytes /(float)contentLength));
+        // TODO fgrilli for some reason this does not work with Double or Long and needs casting to primitive float. Not
+        // doing so won't update the progress indicator.
+        progressIndicator.setValue(Float.valueOf(readBytes / (float) contentLength));
 
-        uploadFileLocation.setValue(MessagesUtil.get("field.upload.uploading.file", new String[]{fileName}));
+        uploadFileLocation.setValue(MessagesUtil.get("field.upload.uploading.file", new String[] { fileName }));
 
         uploadFileProgress.setValue(createPercentage(readBytes, contentLength));
 
         String bytesRead = FileUtils.byteCountToDisplaySize(readBytes);
         String totalBytes = FileUtils.byteCountToDisplaySize(contentLength);
-        uploadFileRatio.setValue(MessagesUtil.get("field.upload.uploaded.file", new String[]{bytesRead, totalBytes}));
+        uploadFileRatio.setValue(MessagesUtil.get("field.upload.uploaded.file", new String[] { bytesRead, totalBytes }));
     }
 
     @Override
@@ -139,6 +138,6 @@ public class ProgressIndicatorComponentDefaultImpl extends CustomComponent imple
 
         NumberFormat defaultFormat = NumberFormat.getPercentInstance();
 
-        return defaultFormat.format((read/from));
+        return defaultFormat.format((read / from));
     }
 }

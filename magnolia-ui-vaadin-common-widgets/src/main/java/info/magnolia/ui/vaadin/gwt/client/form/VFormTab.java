@@ -43,7 +43,6 @@ import java.util.List;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
  * VFormTab.
  */

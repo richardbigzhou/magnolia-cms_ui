@@ -38,7 +38,7 @@ import info.magnolia.ui.framework.event.Event;
 
 /**
  * Event fired by {@link AppDescriptorRegistry} when changes are made to the apps it manages.
- *
+ * 
  * @see AppRegistryEventHandler
  * @see AppDescriptorRegistry
  */
@@ -63,15 +63,15 @@ public class AppRegistryEvent implements Event<AppRegistryEventHandler> {
     @Override
     public void dispatch(AppRegistryEventHandler handler) {
         switch (eventType) {
-            case REGISTERED:
-                handler.onAppRegistered(this);
-                break;
-            case REREGISTERED:
-                handler.onAppReregistered(this);
-                break;
-            case UNREGISTERED:
-                handler.onAppUnregistered(this);
-                break;
+        case REGISTERED:
+            handler.onAppRegistered(this);
+            break;
+        case REREGISTERED:
+            handler.onAppReregistered(this);
+            break;
+        case UNREGISTERED:
+            handler.onAppUnregistered(this);
+            break;
         }
     }
 }

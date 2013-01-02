@@ -75,23 +75,23 @@ public class ChooseDialogFactoryImpl implements ChooseDialogFactory {
 
         final ChooseDialogContentPresenter presenter = componentProvider.getComponent(ChooseDialogContentPresenter.class);
         final BaseDialog dialog = (BaseDialog) workbenchChooseDialogPresenter.getView();
-        
+
         ((ContentWorkbenchView) dialog.getContent()).setListener(new Listener() {
-            
+
             @Override
             public void onViewTypeChanged(ViewType viewType) {
-                
+
             }
-            
+
             @Override
             public void onSearch(String searchExpression) {
-                
+
             }
         });
         presenter.initContentView((ContentWorkbenchView) dialog.getContent());
         dialog.setHeight("500px");
-        
-        if(defaultPath != null && !defaultPath.isEmpty()) {
+
+        if (defaultPath != null && !defaultPath.isEmpty()) {
             ((ContentWorkbenchView) dialog.getContent()).selectPath(defaultPath);
         }
         return workbenchChooseDialogPresenter;

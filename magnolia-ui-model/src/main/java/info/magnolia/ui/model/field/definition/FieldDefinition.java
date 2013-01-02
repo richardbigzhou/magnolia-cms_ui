@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.model.field.definition;
 
-import java.util.List;
-
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
+
+import java.util.List;
 
 /**
  * Defines a field within a dialog.
- *
+ * 
  * @see info.magnolia.ui.model.dialog.definition.DialogDefinition
  * @see FieldDefinition
  * @see ConfiguredFieldValidatorDefinition
@@ -52,7 +52,7 @@ public interface FieldDefinition {
     String getName();
 
     /**
-     *  Makes the field mandatory.
+     * Makes the field mandatory.
      */
     boolean isRequired();
 
@@ -63,6 +63,7 @@ public interface FieldDefinition {
 
     /**
      * The type of this field when stored in a JCR repository expressed as a JCR property type name.
+     * 
      * @see javax.jcr.PropertyType
      */
     String getType();
@@ -105,7 +106,6 @@ public interface FieldDefinition {
      * AbstractComponent.addStyleName.
      */
     String getStyleName();
-
 
     List<ConfiguredFieldValidatorDefinition> getValidators();
 

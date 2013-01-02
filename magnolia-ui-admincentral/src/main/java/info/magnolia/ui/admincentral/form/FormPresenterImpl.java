@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.form;
 
-import com.vaadin.data.Item;
 import info.magnolia.ui.admincentral.field.builder.FieldFactory;
 import info.magnolia.ui.admincentral.form.action.FormActionFactory;
 import info.magnolia.ui.admincentral.form.builder.FormBuilder;
@@ -42,11 +41,13 @@ import info.magnolia.ui.model.form.action.FormActionDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
 
+import com.vaadin.data.Item;
+
 /**
  * Implementation of {@link FormPresenter}.
  * Delegates building of {@link FormView}s to the {@link FormBuilder}.
  * Maps the {@link Item} to the form and registers callback function created by the caller.
- * Binds the actions defined in  {@link FormActionDefinition} to the form.
+ * Binds the actions defined in {@link FormActionDefinition} to the form.
  * Provides methods for checking and displaying the validation of forms.
  */
 public class FormPresenterImpl implements FormPresenter {
@@ -61,7 +62,7 @@ public class FormPresenterImpl implements FormPresenter {
     private Callback callback;
 
     public FormPresenterImpl(final FormView view, final FormBuilder formBuilder, final FieldFactory fieldFactory,
-                             final FormDefinition formDefinition, EventBus eventBus, final FormActionFactory actionFactory) {
+            final FormDefinition formDefinition, EventBus eventBus, final FormActionFactory actionFactory) {
 
         this.view = view;
         this.formBuilder = formBuilder;

@@ -33,11 +33,8 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+
 import info.magnolia.jcr.node2bean.Node2BeanException;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
@@ -166,7 +163,7 @@ public class AppDescriptorRegistryTest {
         AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName1, true);
         AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName2, true);
 
-        //Add app1
+        // Add app1
         Set<String> registeredNames = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
         assertEquals(1, registeredNames.size());
         assertTrue(registeredNames.contains(appName1));
@@ -191,13 +188,13 @@ public class AppDescriptorRegistryTest {
         AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName1, true);
         AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName2, true);
 
-        //Add app1
+        // Add app1
         Collection<String> registeredNames = Arrays.asList();
         Collection<AppDescriptorProvider> providers = Arrays.asList(appDescriptorProvider1);
         registeredNames = appDescriptorRegistry.unregisterAndRegister(registeredNames, providers);
         assertEquals(appName1, registeredNames.toArray()[0]);
 
-        //Add app2
+        // Add app2
         providers = Arrays.asList(appDescriptorProvider1, appDescriptorProvider2);
         registeredNames = appDescriptorRegistry.unregisterAndRegister(registeredNames, providers);
 
@@ -224,7 +221,7 @@ public class AppDescriptorRegistryTest {
         AppDescriptorProvider appDescriptorProvider1 = createAppDescriptorProvider(appName, true);
         Set<String> registeredNames = appDescriptorRegistry.unregisterAndRegister(new ArrayList<String>(), Arrays.asList(appDescriptorProvider1));
 
-        //Change content of AppDescriptor info
+        // Change content of AppDescriptor info
         AppDescriptorProvider appDescriptorProvider2 = createAppDescriptorProvider(appName, false);
 
         eventHandler.clear();

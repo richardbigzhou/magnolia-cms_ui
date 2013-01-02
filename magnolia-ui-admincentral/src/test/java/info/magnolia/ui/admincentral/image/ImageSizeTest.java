@@ -76,10 +76,9 @@ public class ImageSizeTest {
 
         // THEN
         assertEquals(true, imageSize != null);
-        assertEquals(500, (long)imageSize.getHeight());
-        assertEquals(331, (long)imageSize.getWidth());
+        assertEquals(500, imageSize.getHeight());
+        assertEquals(331, imageSize.getWidth());
     }
-
 
     private void assertEqualsToImageSize(long expectedWidth, long expectedHeight, ImageSize imageSize) {
         assertEquals(expectedWidth, imageSize.getWidth());

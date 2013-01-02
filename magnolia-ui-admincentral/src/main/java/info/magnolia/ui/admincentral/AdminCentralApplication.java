@@ -54,7 +54,6 @@ import com.vaadin.Application;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.ui.Window;
 
-
 /**
  * The Application's "main" class.
  */
@@ -65,7 +64,7 @@ public class AdminCentralApplication extends Application implements HttpServletR
     private static final Boolean isDeviceOverrideTablet = true;
 
     private Window window;
-    
+
     private String contextPath = "";
 
     public boolean getIsDeviceOverrideTablet() {
@@ -109,7 +108,7 @@ public class AdminCentralApplication extends Application implements HttpServletR
     public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
 
     }
-    
+
     public String getAdminCentralPath() {
         return this.contextPath;
     }

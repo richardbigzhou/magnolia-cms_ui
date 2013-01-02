@@ -56,69 +56,69 @@ import com.vaadin.terminal.gwt.client.VConsole;
 public class VBaseDialog extends Composite implements Container, ClientSideHandler, HasWidgets, VBaseDialogView.Presenter {
 
     private final VBaseDialogView view = createView();
-    
-    private final ClientSideProxy proxy = new ClientSideProxy(this) {{
-        register("addAction", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                final String name = String.valueOf(params[0]);
-                final String label = String.valueOf(params[1]);
-                getView().addAction(name, label);
-            }
-        });
 
-        register("setDescription", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                final String description = String.valueOf(params[0]);
-                getView().setDescription(description);
-            }
-        });
+    private final ClientSideProxy proxy = new ClientSideProxy(this) {
+        {
+            register("addAction", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final String name = String.valueOf(params[0]);
+                    final String label = String.valueOf(params[1]);
+                    getView().addAction(name, label);
+                }
+            });
 
-        register("setCaption", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                final String caption = String.valueOf(params[0]);
-                getView().setCaption(caption);
-            }
-        }); 
-        
-        register("setActionLabel", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                final String actionName = String.valueOf(params[0]);
-                final String label = String.valueOf(params[1]);
-                getView().setActionLabel(actionName, label);
-            }
-        }); 
-    }};
-    
-    
+            register("setDescription", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final String description = String.valueOf(params[0]);
+                    getView().setDescription(description);
+                }
+            });
+
+            register("setCaption", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final String caption = String.valueOf(params[0]);
+                    getView().setCaption(caption);
+                }
+            });
+
+            register("setActionLabel", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final String actionName = String.valueOf(params[0]);
+                    final String label = String.valueOf(params[1]);
+                    getView().setActionLabel(actionName, label);
+                }
+            });
+        }
+    };
 
     public VBaseDialog() {
         initWidget(view.asWidget());
         view.setPresenter(this);
     }
-    
+
     public VBaseDialogView getView() {
         return view;
     }
-    
+
     protected VBaseDialogView createView() {
         return new VBaseDialogViewImpl();
     }
-    
+
     protected ClientSideProxy getProxy() {
         return proxy;
     }
-    
+
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         if (client.updateComponent(this, uidl, true)) {
             return;
         }
         final Paintable contentPaintable = client.getPaintable(uidl.getChildUIDL(0));
-        final Widget contentWidget = (Widget)contentPaintable;
+        final Widget contentWidget = (Widget) contentPaintable;
         view.setContent(contentWidget);
         contentPaintable.updateFromUIDL(uidl.getChildUIDL(0), client);
         proxy.update(this, uidl, client);
@@ -131,7 +131,7 @@ public class VBaseDialog extends Composite implements Container, ClientSideHandl
             view.asWidget().setHeight(height);
         }
     }
-    
+
     @Override
     public void setWidth(String width) {
         super.setWidth(width);
@@ -198,7 +198,7 @@ public class VBaseDialog extends Composite implements Container, ClientSideHandl
     @Override
     public void fireAction(String action) {
         getProxy().call("fireAction", action);
-        
+
     }
 
     @Override

@@ -33,8 +33,13 @@
  */
 package info.magnolia.ui.framework.message;
 
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Singleton;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -43,10 +48,6 @@ import javax.jcr.Session;
 import org.apache.jackrabbit.commons.JcrUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
 
 /**
  * Stores messages on behalf of {@link MessagesManager} in the repository, every user in the system has its own set of
@@ -74,9 +75,11 @@ public class MessageStore {
      * Stores a new message or overwrites an existing one depending on whether there's an id set. That is, the id of the
      * message is respected if present otherwise a new unique one is used. When the method returns the message has been
      * updated with a new id.
-     *
-     * @param userName user to save the message for
-     * @param message message to save
+     * 
+     * @param userName
+     *            user to save the message for
+     * @param message
+     *            message to save
      * @return true if saving was successful or false if it failed
      */
     public boolean saveMessage(final String userName, final Message message) {

@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.model.dialog.definition;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A definition of a configured dialog.

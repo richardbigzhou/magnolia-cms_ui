@@ -33,18 +33,18 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.Comment;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 
 /**
  * Processor for comment elements.

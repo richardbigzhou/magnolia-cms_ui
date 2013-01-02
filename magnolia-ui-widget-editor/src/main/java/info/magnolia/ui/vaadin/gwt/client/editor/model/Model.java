@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.model;
 
-import com.google.gwt.dom.client.Element;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 
 import java.util.List;
+
+import com.google.gwt.dom.client.Element;
 
 /**
  * Interface for the model storing all elements used across application.

@@ -33,6 +33,16 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar;
 
+import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
+
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.DeleteComponentEvent;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
+import info.magnolia.ui.vaadin.gwt.client.editor.widget.dnd.DragAndDrop;
+import info.magnolia.ui.vaadin.gwt.client.editor.widget.dnd.LegacyDragAndDrop;
+
+import java.util.Map;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -47,16 +57,6 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
-
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.DeleteComponentEvent;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.dnd.DragAndDrop;
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.dnd.LegacyDragAndDrop;
-
-import java.util.Map;
-
-import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
 
 
 /**

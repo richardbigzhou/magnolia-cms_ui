@@ -33,17 +33,17 @@
  */
 package info.magnolia.ui.app.security;
 
-import javax.inject.Inject;
-
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
+import javax.inject.Inject;
+
 /**
  * The Security App, extending the base content app.
- *
+ * 
  */
 public class SecurityApp extends AbstractContentApp {
 
@@ -55,10 +55,10 @@ public class SecurityApp extends AbstractContentApp {
     @Override
     public void start(Location location) {
         super.start(location);
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "systemUsers", "/system" ));
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "groups", "" ));
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "roles", "" ));
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "users", "/admin" ));
+        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "systemUsers", "/system"));
+        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "groups", ""));
+        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "roles", ""));
+        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "users", "/admin"));
     }
 
 }

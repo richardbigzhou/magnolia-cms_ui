@@ -47,7 +47,6 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
  * The view interface for MagnoliaShell (implemented by GWT part of MagnoliaShell).
  */

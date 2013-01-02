@@ -59,7 +59,6 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.UIDL;
 
-
 /**
  * A bar that contains the tab labels and controls the switching between tabs.
  */

@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -58,7 +59,6 @@ public class JcrNodeAdapterTest {
     private final String propertyValue = "value";
     private final String modified = "_modified";
     private MockSession session;
-
 
     @Before
     public void setUp() {
@@ -87,7 +87,6 @@ public class JcrNodeAdapterTest {
         assertTrue(b);
         assertEquals(property.getValue().toString(), item.getItemProperty(propertyName).getValue().toString());
     }
-
 
     @Test
     public void testGetItemPropertyWithUnknownProperty() throws Exception {
@@ -138,7 +137,7 @@ public class JcrNodeAdapterTest {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
-        //Get and modify property
+        // Get and modify property
         Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(propertyName, null, propertyValue);
         adapter.addItemProperty(propertyName, propertyInitial);
 
@@ -397,7 +396,6 @@ public class JcrNodeAdapterTest {
         assertEquals(value_2, res.getProperty(id_2).getString());
     }
 
-
     @Test
     public void testGetNodeUpdatesNodeWithPropertyRemoved() throws Exception {
         // GIVEN
@@ -437,7 +435,7 @@ public class JcrNodeAdapterTest {
         node.setProperty("id_2", "value_2");
         node.setProperty("id_3", "value_3");
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
-        // Modify two JCR  property.
+        // Modify two JCR property.
         adapter.getItemProperty("id_1").setValue("value_1_Modify");
         adapter.getItemProperty("id_2").setValue("value_2_Modify");
         // Create two 2 Vaadin property
@@ -479,7 +477,6 @@ public class JcrNodeAdapterTest {
         Property newProperty_2 = DefaultPropertyUtil.newDefaultProperty("id_5", null, "");
         adapter.addItemProperty("id_5", newProperty_2);
 
-
         adapter.getItemProperty("id_6");
         // Modify two Vaadin property.
         newProperty_1.setValue("value_4");
@@ -499,4 +496,3 @@ public class JcrNodeAdapterTest {
         assertEquals("value_4", res.getProperty("id_4").getString());
     }
 }
-

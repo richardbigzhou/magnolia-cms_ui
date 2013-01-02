@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.app.security.dialog.field.validator;
 
-import com.vaadin.data.Validator;
-
 import info.magnolia.ui.admincentral.field.validator.AbstractFieldValidatorBuilder;
+
+import com.vaadin.data.Validator;
 
 /**
  * Builder for the UniqueUserIdValidator.

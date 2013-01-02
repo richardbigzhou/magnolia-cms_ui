@@ -57,28 +57,29 @@ public class VForm extends Composite implements Container, ClientSideHandler, VF
     private final VFormView view = new VFormViewImpl();
 
     private ApplicationConnection client;
-    
-    private final ClientSideProxy proxy = new ClientSideProxy(this) {{
 
+    private final ClientSideProxy proxy = new ClientSideProxy(this) {
+        {
 
-        register("addAction", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                final String name = String.valueOf(params[0]);
-                final String label = String.valueOf(params[1]);
-                view.addAction(name, label);
-            }
-        });
+            register("addAction", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final String name = String.valueOf(params[0]);
+                    final String label = String.valueOf(params[1]);
+                    view.addAction(name, label);
+                }
+            });
 
-        register("setDescription", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                final String description = String.valueOf(params[0]);
-                view.setDescription(description);
-            }
-        });
+            register("setDescription", new Method() {
+                @Override
+                public void invoke(String methodName, Object[] params) {
+                    final String description = String.valueOf(params[0]);
+                    view.setDescription(description);
+                }
+            });
 
-    }};
+        }
+    };
 
     public VForm() {
         initWidget(view.asWidget());
@@ -88,7 +89,7 @@ public class VForm extends Composite implements Container, ClientSideHandler, VF
     public VFormView getView() {
         return view;
     }
-    
+
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
@@ -135,7 +136,7 @@ public class VForm extends Composite implements Container, ClientSideHandler, VF
 
     @Override
     public RenderSpace getAllocatedSpace(Widget child) {
-       return new RenderSpace(view.getFormWidth(), view.getFormHeight());
+        return new RenderSpace(view.getFormWidth(), view.getFormHeight());
     }
 
     @Override
@@ -145,7 +146,7 @@ public class VForm extends Composite implements Container, ClientSideHandler, VF
         }
         this.client = client;
         final Paintable contentPaintable = client.getPaintable(uidl.getChildUIDL(0));
-        final Widget contentWidget = (Widget)contentPaintable;
+        final Widget contentWidget = (Widget) contentPaintable;
         view.setContent(contentWidget);
         contentPaintable.updateFromUIDL(uidl.getChildUIDL(0), client);
         proxy.update(this, uidl, client);
@@ -155,7 +156,7 @@ public class VForm extends Composite implements Container, ClientSideHandler, VF
     public void runLayout() {
         client.runDescendentsLayout(view);
     }
-    
+
     public ApplicationConnection getClient() {
         return client;
     }

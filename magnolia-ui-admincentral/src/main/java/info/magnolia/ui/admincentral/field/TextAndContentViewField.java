@@ -41,23 +41,21 @@ import com.vaadin.data.Property;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-
 /**
  * A base custom field allowing to display a {@link ContentWorkbenchView} and a TextField.
- *  <ul>
- *  <li>Text field can be hidden or placed on top or button.
- *  <li>This field is mainly used to perform some selection in a list and to
- *  put the selected value into the text input field.
- *  </ul>
+ * <ul>
+ * <li>Text field can be hidden or placed on top or button.
+ * <li>This field is mainly used to perform some selection in a list and to put the selected value into the text input field.
+ * </ul>
  */
 public class TextAndContentViewField extends CustomField {
 
     private ContentWorkbenchView contentView;
-    
+
     private VerticalLayout layout;
-    
+
     private TextField textField;
-    
+
     private boolean displayTextFieldOnTop;
 
     public TextAndContentViewField(boolean displayTextField, boolean displayTextFieldOnTop) {
@@ -73,7 +71,7 @@ public class TextAndContentViewField extends CustomField {
      * Set textField visible or not.
      */
     private void addTextFieldToLayout(boolean displayTextField) {
-        if(!displayTextField) {
+        if (!displayTextField) {
             textField.setVisible(false);
             return;
         }
@@ -92,14 +90,14 @@ public class TextAndContentViewField extends CustomField {
      * Set contentView, and Add it to the Layout.
      * Based on displayTextFieldOnTop, put it before or after the TextField.
      */
-    public void setContentView (ContentWorkbenchView contentView) {
-        if(this.contentView != null) {
+    public void setContentView(ContentWorkbenchView contentView) {
+        if (this.contentView != null) {
             layout.removeComponent(this.contentView.asVaadinComponent());
         }
         this.contentView = contentView;
-        if(!displayTextFieldOnTop) {
+        if (!displayTextFieldOnTop) {
             layout.addComponentAsFirst(this.contentView.asVaadinComponent());
-        }else {
+        } else {
             layout.addComponent(this.contentView.asVaadinComponent());
         }
     }

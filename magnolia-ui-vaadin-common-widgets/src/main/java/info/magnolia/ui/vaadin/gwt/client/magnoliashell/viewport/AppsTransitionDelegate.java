@@ -46,7 +46,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
  * The AppsTransitionDelegate provides custom transition logic when launching, closing an app, or
  * switching between apps.
@@ -68,20 +67,21 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
         // running apps are all hidden explicitly except current one
         if (!viewport.isClosing() && Visibility.HIDDEN.getCssName().equals(app.getElement().getStyle().getVisibility())) {
             viewport.doSetVisibleApp(app);
-            
-            /* Starting animation here immediately would cause size calculations to be done to a zero sized layout 
+
+            /*
+             * Starting animation here immediately would cause size calculations to be done to a zero sized layout
              * which would cause corruption. Avoid this by letting layouts resize themselves first and animate after.
-             * Avoid flicking app before animation begins by setting opacity to zero. User would experience a fluent 
+             * Avoid flicking app before animation begins by setting opacity to zero. User would experience a fluent
              * animation from solid background.
              */
             app.addStyleName("beginzoom");
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-                
+
                 @Override
                 public void execute() {
                     app.removeStyleName("beginzoom");
                     app.addStyleName("zoom-in");
-                    
+
                     new Timer() {
                         @Override
                         public void run() {
@@ -138,8 +138,10 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
     /**
      * FADE IN TRANSITION.
      * 
-     * @param el the curtain element
-     * @param callbacks the callbacks
+     * @param el
+     *            the curtain element
+     * @param callbacks
+     *            the callbacks
      */
     private void fadeIn(final Element el, final Callbacks callbacks) {
         JQueryWrapper jq = JQueryWrapper.select(el);
@@ -174,8 +176,10 @@ class AppsTransitionDelegate extends BaseTransitionDelegate {
     /**
      * FADE OUT TRANSITION.
      * 
-     * @param el the curtain element
-     * @param callbacks the callbacks
+     * @param el
+     *            the curtain element
+     * @param callbacks
+     *            the callbacks
      */
     private void fadeOut(final Element el, final Callbacks callbacks) {
         JQueryWrapper jq = JQueryWrapper.select(el);

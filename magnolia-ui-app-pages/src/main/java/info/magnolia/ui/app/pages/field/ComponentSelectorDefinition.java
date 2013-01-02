@@ -38,6 +38,6 @@ import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
 /**
  * ComponentSelectorDefinition.
  */
-public class ComponentSelectorDefinition  extends SelectFieldDefinition {
+public class ComponentSelectorDefinition extends SelectFieldDefinition {
 
 }

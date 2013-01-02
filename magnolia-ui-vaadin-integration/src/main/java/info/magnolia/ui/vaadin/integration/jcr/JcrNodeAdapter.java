@@ -49,31 +49,31 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Node}.
  * Implements {@link com.vaadin.data.Property.ValueChangeListener} in order to inform/change JCR property when a
  * Vaadin property has changed.
- *<p>
+ * <p>
  * Jcr properties are read from Repository as long as they are not modified.
- *<p>
+ * <p>
  * Jcr properties are updated or created if they:
  * <ul>
- *   <li>Previously existed and where modified.
- *   <li>Newly created and set (an empty created property is not stored into Jcr repository)
+ * <li>Previously existed and where modified.
+ * <li>Newly created and set (an empty created property is not stored into Jcr repository)
  * </ul>
  * <p>
  * Create a JcrNodeAdapter:
  * <ul>
- *   <li>Just create a new JcrNodeAdapter with the related Jcr Node as parameter.
+ * <li>Just create a new JcrNodeAdapter with the related Jcr Node as parameter.
  * </ul>
- *<p>
+ * <p>
  * Properties:
  * <ul>
- *   <li>getItemProperty(Object id) will return the current stored JCR property if not yet modified or the modified one.
- *   <li>If the property do not exist null will be returned.
- *   <li>In this case we have to create a new Property and attach this property to the JcrNodeAdapter, i.e.
- *   <p>
- *   <code>property p = DefaultPropertyUtil.newDefaultProperty(...)
+ * <li>getItemProperty(Object id) will return the current stored JCR property if not yet modified or the modified one.
+ * <li>If the property do not exist null will be returned.
+ * <li>In this case we have to create a new Property and attach this property to the JcrNodeAdapter, i.e.
+ * <p>
+ * <code>property p = DefaultPropertyUtil.newDefaultProperty(...)
  *         jcrNodeAdapter.addItemProperty(...)
  *   </code>
  * </ul>
- *
+ * 
  */
 public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
 
@@ -83,9 +83,8 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
         super(jcrNode);
         try {
             setNodeName(jcrNode.getName());
-        }
-        catch (RepositoryException e) {
-            log.error("Could not access the Node name.... Should never happen",e);
+        } catch (RepositoryException e) {
+            log.error("Could not access the Node name.... Should never happen", e);
         }
     }
 
@@ -109,11 +108,11 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
         log.debug("Adding new Property Item named [{}] with value [{}]", id, property.getValue());
 
         // add PropertyChange Listener
-        if(!((DefaultProperty)property).getListeners(ValueChangeEvent.class).contains(this)) {
-            ((DefaultProperty)property).addListener(this);
+        if (!((DefaultProperty) property).getListeners(ValueChangeEvent.class).contains(this)) {
+            ((DefaultProperty) property).addListener(this);
         }
 
-        //Store Property.
+        // Store Property.
         getChangedProperties().put((String) id, property);
 
         return true;
@@ -126,7 +125,7 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
      * Else fill the removedProperties Map with the retrieved property.
      */
     @Override
-    public boolean removeItemProperty(Object id){
+    public boolean removeItemProperty(Object id) {
         boolean res = false;
         if (getChangedProperties().containsKey(id)) {
             getRemovedProperties().put((String) id, getChangedProperties().remove(id));
@@ -141,8 +140,8 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
     @Override
     public void valueChange(ValueChangeEvent event) {
         Property property = event.getProperty();
-        if(property instanceof DefaultProperty) {
-            String name = ((DefaultProperty)property).getPropertyName();
+        if (property instanceof DefaultProperty) {
+            String name = ((DefaultProperty) property).getPropertyName();
             addItemProperty(name, property);
         }
     }
@@ -150,8 +149,7 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
     private boolean jcrItemHasProperty(String propertyName) {
         try {
             return ((Node) getJcrItem()).hasProperty(propertyName);
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             log.error("", e);
             return false;
         }

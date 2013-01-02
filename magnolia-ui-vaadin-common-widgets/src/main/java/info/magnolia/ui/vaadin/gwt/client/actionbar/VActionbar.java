@@ -57,7 +57,6 @@ import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.Util;
 import com.vaadin.terminal.gwt.client.ui.Icon;
 
-
 /**
  * Vaadin implementation of Action bar client side (Presenter).
  */
@@ -176,8 +175,6 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
         initWidget(view.asWidget());
     }
 
-
-
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         this.client = client;
@@ -208,8 +205,8 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
         // TODO: Christopher Zimmermann Check if this is inefficient as updateFromUIDL might be called a fair amount.
         // But we need some way to ensure this is called once the actionbar is built.
         view.refreshActionsPositionsTablet();
-        //GWT.log("actionbar uidl");
-        //VConsole.log("actionbar uidl (vconsole)");
+        // GWT.log("actionbar uidl");
+        // VConsole.log("actionbar uidl (vconsole)");
     }
 
     @Override
@@ -231,10 +228,9 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
     }
 
     @Override
-    public void changeFullScreen(boolean isFullScreen){
-        proxy.call("changeFullScreen",isFullScreen);
+    public void changeFullScreen(boolean isFullScreen) {
+        proxy.call("changeFullScreen", isFullScreen);
     };
-
 
     @Override
     public void updateCaption(Paintable component, UIDL uidl) {
@@ -315,7 +311,7 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
 
     @Override
     public void forceLayout() {
-        Util.notifyParentOfSizeChange(this,false);
+        Util.notifyParentOfSizeChange(this, false);
     }
 
     @Override
@@ -330,6 +326,7 @@ public class VActionbar extends Composite implements Paintable, Container, Clien
      * Determine if device is tablet. Allows option to add a querystring parameter of tablet=true
      * for testing.
      * TODO: Christopher Zimmermann - there should be only one instance of this code in the project.
+     * 
      * @return Whether device is tablet.
      */
     private boolean isDeviceTablet() {

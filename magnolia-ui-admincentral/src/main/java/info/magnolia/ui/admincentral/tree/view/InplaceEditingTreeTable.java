@@ -60,7 +60,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 
-
 /**
  * The Inplace-editing TreeTable, for editing item properties inplace, on double click or via keyboard shortcuts.
  * Additionally, editable columns are configurable
@@ -99,8 +98,10 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
     /**
      * Sets the item and property for inplace editing.
      * 
-     * @param itemId the item id
-     * @param propertyId the property id
+     * @param itemId
+     *            the item id
+     * @param propertyId
+     *            the property id
      */
     public void setEditing(Object itemId, Object propertyId) {
         if (itemId != null && propertyId != null) {
@@ -133,8 +134,8 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
             // add TextField only for selected row/column.
             if (editableColumns.contains(propertyId)
-                && itemId.equals(editingItemId)
-                && propertyId.equals(editingPropertyId)) {
+                    && itemId.equals(editingItemId)
+                    && propertyId.equals(editingPropertyId)) {
 
                 Field field = super.createField(container, itemId, propertyId, uiContext);
 
@@ -197,15 +198,16 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
      * references to its items, the only way to get it back is to ask the property datasource for its listeners and see
      * if the Item is there.
      * 
-     * @param source the vaadin {{Field}} where the editing occured
+     * @param source
+     *            the vaadin {{Field}} where the editing occured
      * @return the vaadin {{Item}} if it could be fetched, null otherwise.
      */
     private Item getItemFromField(Field source) {
         if (source != null) {
             Property property = source.getPropertyDataSource();
             if (property != null && property instanceof AbstractProperty) {
-                Collection< ? > listeners = ((AbstractProperty) property).getListeners(Property.ValueChangeEvent.class);
-                Iterator< ? > iterator = listeners.iterator();
+                Collection<?> listeners = ((AbstractProperty) property).getListeners(Property.ValueChangeEvent.class);
+                Iterator<?> iterator = listeners.iterator();
                 while (iterator.hasNext()) {
                     Object listener = iterator.next();
                     if (listener instanceof Item) {
@@ -242,18 +244,19 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         private final ShortcutAction tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
 
         private final ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB,
-            new int[]{ShortcutAction.ModifierKey.SHIFT});
+                new int[] { ShortcutAction.ModifierKey.SHIFT });
 
         private final ShortcutAction escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
 
         @Override
         public Action[] getActions(Object target, Object sender) {
-            return new Action[]{enter, tabNext, tabPrev, escape};
+            return new Action[] { enter, tabNext, tabPrev, escape };
         }
 
         @Override
         public void handleAction(Action action, Object sender, Object target) {
-            /* In case of enter the Action needs to be casted back to
+            /*
+             * In case of enter the Action needs to be casted back to
              * ShortcutAction because for some reason the object is not same
              * as this.enter object. In that case keycode is used in comparison.
              */
@@ -300,8 +303,8 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                 if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
                     // get first selected itemId, handles multiple selection mode
                     Object firstSelectedId = getValue();
-                    if (firstSelectedId instanceof Set && ((Set< ? >) firstSelectedId).size() > 0) {
-                        firstSelectedId = ((Set< ? >) firstSelectedId).iterator().next();
+                    if (firstSelectedId instanceof Set && ((Set<?>) firstSelectedId).size() > 0) {
+                        firstSelectedId = ((Set<?>) firstSelectedId).iterator().next();
                     }
                     // Edit selected row at first column
                     Object propertyId = getVisibleColumns()[0];

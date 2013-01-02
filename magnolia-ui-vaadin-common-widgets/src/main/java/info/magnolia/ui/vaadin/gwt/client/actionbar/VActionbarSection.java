@@ -41,7 +41,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
  * The client-side widget for a section of the action bar.
  */
@@ -63,8 +62,9 @@ public class VActionbarSection extends FlowPanel {
 
     /**
      * Instantiates a new action bar section with given data.
-     *
-     * @param data the data
+     * 
+     * @param data
+     *            the data
      */
     public VActionbarSection(VActionbarSectionJSO data) {
         this.data = data;
@@ -81,7 +81,6 @@ public class VActionbarSection extends FlowPanel {
     public String getName() {
         return data.getName();
     }
-
 
     public Map<String, VActionbarGroup> getGroups() {
         return groups;

@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.framework.location;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.Shell;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 /**
  * Manages the user's location in the application and controls location changes.

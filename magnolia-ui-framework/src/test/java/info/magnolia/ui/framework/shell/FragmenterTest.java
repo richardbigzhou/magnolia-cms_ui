@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.framework.shell;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 /**
  * Test case for {@link Fragmenter}.

@@ -76,7 +76,7 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
     private final Element footer = DOM.createDiv();
 
     private FormFieldWrapper lastShownProblematicField = null;
-    
+
     private VMagnoliaTabSheet tabSheet;
 
     private final FocusHandler problematicFieldFocusHandler = new FocusHandler() {
@@ -86,7 +86,7 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
             final FormFieldWrapper field = Util.findWidget(target, FormFieldWrapper.class);
             if (field != null) {
                 lastShownProblematicField = null;
-                final List<FormFieldWrapper> fields = ((VFormTab)tabSheet.getActiveTab()).getFields();
+                final List<FormFieldWrapper> fields = ((VFormTab) tabSheet.getActiveTab()).getFields();
                 int index = fields.indexOf(field);
                 if (index >= 0) {
                     if (field.hasError()) {
@@ -111,13 +111,13 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
         public void onDescriptionVisibilityChanged(boolean isVisible) {
             setDescriptionVisible(isVisible);
             if (presenter != null) {
-                presenter.runLayout();   
+                presenter.runLayout();
             }
         }
 
         @Override
         public void jumpToNextError() {
-            VFormTab activeTab = (VFormTab)tabSheet.getActiveTab();
+            VFormTab activeTab = (VFormTab) tabSheet.getActiveTab();
             final List<FormFieldWrapper> problematicFields = activeTab.getProblematicFields();
             if (lastShownProblematicField == null && !problematicFields.isEmpty()) {
                 final FormFieldWrapper field = problematicFields.get(0);
@@ -133,7 +133,7 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
                     final List<VMagnoliaTab> tabs = tabSheet.getTabs();
                     int tabIndex = tabs.indexOf(activeTab);
                     for (int i = 0; i < tabs.size() - 1; ++i) {
-                        final VFormTab nextTab = (VFormTab)tabs.get(++tabIndex % tabs.size());
+                        final VFormTab nextTab = (VFormTab) tabs.get(++tabIndex % tabs.size());
                         if (nextTab.getProblematicFields().size() > 0) {
                             tabSheet.getEventBus().fireEvent(new ActiveTabChangedEvent(nextTab));
                             lastShownProblematicField = null;
@@ -164,7 +164,7 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
                 remove(tabSheet);
             }
 
-            this.tabSheet = (VMagnoliaTabSheet)contentWidget;
+            this.tabSheet = (VMagnoliaTabSheet) contentWidget;
             tabSheet.addTabSetChangedHandlers(new TabSetChangedEvent.Handler() {
                 @Override
                 public void onTabSetChanged(TabSetChangedEvent event) {
@@ -173,7 +173,7 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
                     for (final VMagnoliaTab tab : tabs) {
                         if (tab instanceof VFormTab) {
                             formTabs.add((VFormTab) tab);
-                            ((VFormTab)tab).addValidationChangeHandler(VFormViewImpl.this);
+                            ((VFormTab) tab).addValidationChangeHandler(VFormViewImpl.this);
                             final List<FormFieldWrapper> fields = ((VFormTab) tab).getFields();
                             for (final FormFieldWrapper field : fields) {
                                 field.addFocusHandler(problematicFieldFocusHandler);
@@ -258,9 +258,9 @@ public class VFormViewImpl extends FlowPanel implements VFormView {
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
-        Integer heightPx = JQueryWrapper.parseInt(height); 
+        Integer heightPx = JQueryWrapper.parseInt(height);
         if (tabSheet != null && heightPx != null) {
-            tabSheet.setHeight((heightPx - formHeader.getOffsetHeight() - footer.getOffsetHeight()) + "px");            
+            tabSheet.setHeight((heightPx - formHeader.getOffsetHeight() - footer.getOffsetHeight()) + "px");
         }
     }
 

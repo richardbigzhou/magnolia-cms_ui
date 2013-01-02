@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.framework.event;
 
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
+
 import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
-
-import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
 /**
  * Configures an {@link EventBus} bound to the name <code>app</code>.

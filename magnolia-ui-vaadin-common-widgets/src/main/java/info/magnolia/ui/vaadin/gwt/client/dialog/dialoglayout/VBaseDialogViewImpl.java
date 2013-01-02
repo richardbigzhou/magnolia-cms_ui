@@ -33,6 +33,11 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout;
 
+import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogHeader;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
@@ -40,10 +45,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
-import info.magnolia.ui.vaadin.gwt.client.dialog.VDialogHeader;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * {@link VBaseDialogViewImpl}. Implements {@link VBaseDialogView}.
@@ -59,17 +60,17 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
     private static final String CLASSNAME_BUTTON = "btn-dialog";
 
     private Presenter presenter;
-    
+
     private Widget content;
-    
+
     private final VDialogHeader header = createHeader();
-    
+
     private final Element contentEl = DOM.createDiv();
-    
+
     private final Element footerEl = DOM.createDiv();
-    
+
     private final Map<String, Button> actionMap = new HashMap<String, Button>();
-    
+
     public VBaseDialogViewImpl() {
         final Element root = DOM.createDiv();
         root.addClassName("dialog-root");
@@ -81,14 +82,14 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
         contentEl.addClassName(CLASSNAME_CONTENT);
         footerEl.addClassName(CLASSNAME_FOOTER);
     }
-    
+
     protected VDialogHeader createHeader() {
         return new VDialogHeader(createHeaderCallback());
     }
 
     @Override
     public void addAction(final String name, String label) {
-        final Button control =  actionMap.get(name);
+        final Button control = actionMap.get(name);
         if (control == null) {
             final Button button = new Button(label);
             button.setStyleName(CLASSNAME_BUTTON);
@@ -114,7 +115,7 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
             control.setHTML(label);
         }
     }
-    
+
     @Override
     public void setPresenter(final Presenter presenter) {
         this.presenter = presenter;
@@ -124,22 +125,22 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
     public Presenter getPresenter() {
         return presenter;
     }
-    
+
     protected VDialogHeader.VDialogHeaderCallback createHeaderCallback() {
         return new VDialogHeader.VDialogHeaderCallback() {
-            
+
             @Override
             public void onDescriptionVisibilityChanged(boolean isVisible) {
-                
+
             }
-            
+
             @Override
             public void onCloseFired() {
                 presenter.closeDialog();
             }
         };
     }
-    
+
     protected VDialogHeader getHeader() {
         return header;
     }
@@ -153,7 +154,7 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
     public void setCaption(String caption) {
         header.setDialogCaption(caption);
     }
-    
+
     @Override
     public int getContentWidth() {
         return getOffsetWidth();
@@ -177,8 +178,7 @@ public class VBaseDialogViewImpl extends ComplexPanel implements VBaseDialogView
     public Widget getContent() {
         return content;
     }
-    
-    
+
     public Element getContentEl() {
         return contentEl;
     }

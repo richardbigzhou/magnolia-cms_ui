@@ -50,7 +50,6 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.ThemeResource;
 
-
 /**
  * Basic builder for an action bar widget based on an action bar definition.
  */
@@ -75,7 +74,7 @@ public class ActionbarBuilder {
                     for (ActionbarItemDefinition item : group.getItems()) {
                         if (actionNames.contains(item.getName())) {
                             log.warn("Action was not added: an action with name '" + item.getName()
-                                + "' already exists in section '" + section.getName() + "'.");
+                                    + "' already exists in section '" + section.getName() + "'.");
                             continue;
                         }
 

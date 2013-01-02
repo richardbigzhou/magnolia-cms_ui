@@ -62,7 +62,7 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
     public Object generateCell(Table source, Object itemId, Object columnId) {
 
         final Item jcrItem = getJcrItem(source, itemId);
-        if(jcrItem != null && jcrItem.isNode()) {
+        if (jcrItem != null && jcrItem.isNode()) {
             Node node = (Node) jcrItem;
             Label activationStatus = null;
             Label permissionStatus = null;
@@ -80,15 +80,15 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
                     status = NodeTypes.Activatable.ACTIVATION_STATUS_NOT_ACTIVATED;
                 }
                 switch (status) {
-                    case NodeTypes.Activatable.ACTIVATION_STATUS_MODIFIED:
-                        color = "color-yellow";
-                        break;
-                    case NodeTypes.Activatable.ACTIVATION_STATUS_ACTIVATED:
-                        color = "color-green";
-                        break;
-                    default:
-                        color = "color-red";
-                    }
+                case NodeTypes.Activatable.ACTIVATION_STATUS_MODIFIED:
+                    color = "color-yellow";
+                    break;
+                case NodeTypes.Activatable.ACTIVATION_STATUS_ACTIVATED:
+                    color = "color-green";
+                    break;
+                default:
+                    color = "color-red";
+                }
 
                 activationStatus.addStyleName(color);
             }
@@ -102,8 +102,7 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
                     // if (permissions && !node.isGranted(info.magnolia.cms.security.Permission.WRITE))
                     node.getSession().checkPermission(node.getPath(), Session.ACTION_SET_PROPERTY);
                     permissionStatus.addStyleName("color-blue");
-                }
-                catch (RepositoryException e) {
+                } catch (RepositoryException e) {
                     // does not have permission to set properties - in that case will return two Icons
                     // in a layout for being displayed...
                     permissionStatus.addStyleName("color-red");

@@ -45,7 +45,6 @@ import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 
-
 /**
  * The server side implementation of the shell viewport. MagnoliaShell is capable of holding of such for the shell apps,
  * one - for the regular apps.

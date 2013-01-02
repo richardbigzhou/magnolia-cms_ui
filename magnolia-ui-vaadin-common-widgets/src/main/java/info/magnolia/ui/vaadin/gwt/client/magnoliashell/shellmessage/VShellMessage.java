@@ -199,6 +199,4 @@ public abstract class VShellMessage extends HTML {
         return topic;
     }
 
-
 }
-

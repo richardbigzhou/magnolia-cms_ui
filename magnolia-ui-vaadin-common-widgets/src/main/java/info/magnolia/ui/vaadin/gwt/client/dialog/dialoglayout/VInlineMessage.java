@@ -42,22 +42,22 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Error/Help bubble widget. 
+ * Error/Help bubble widget.
  */
 public abstract class VInlineMessage extends FlowPanel {
-    
+
     protected Widget triangleSVG = createErrorDecoration();
-    
-    protected Element icon = DOM.createElement("i"); 
-    
+
+    protected Element icon = DOM.createElement("i");
+
     protected Element messageWrapper = DOM.createDiv();
-    
+
     protected Element messageEl = DOM.createSpan();
-    
+
     protected VInlineMessage() {
         construct();
     }
-    
+
     private void construct() {
         applyStyles();
         add(triangleSVG);
@@ -80,11 +80,11 @@ public abstract class VInlineMessage extends FlowPanel {
         canvas.getElement().getStyle().setProperty("width", "");
         return canvas;
     }
-    
+
     public void setMessage(final String message) {
         messageEl.setInnerHTML(message);
     }
-    
+
     public static VInlineMessage createErrorMessage() {
         final VInlineMessage result = new VInlineMessage() {
             @Override
@@ -97,7 +97,7 @@ public abstract class VInlineMessage extends FlowPanel {
         };
         return result;
     }
-    
+
     public static VInlineMessage createHelpMessage() {
         final VInlineMessage result = new VInlineMessage() {
             @Override

@@ -33,12 +33,11 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
+import info.magnolia.ui.framework.event.EventBus;
+
 import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.RepositoryException;
-
-import info.magnolia.ui.framework.event.EventBus;
-
 
 /**
  * Deletes a node from the repository.
@@ -53,15 +52,14 @@ public class DeleteItemAction extends RepositoryOperationAction<DeleteItemAction
 
     @Override
     protected void onExecute(Item item) throws RepositoryException {
-        //avoid JCR logging long stacktraces about root not being removable.
-        if("/".equals(item.getPath())) {
+        // avoid JCR logging long stacktraces about root not being removable.
+        if ("/".equals(item.getPath())) {
             path = item.getPath();
             return;
         }
         path = item.getParent().getPath();
         item.remove();
     }
-
 
     @Override
     protected String getItemPath() throws RepositoryException {

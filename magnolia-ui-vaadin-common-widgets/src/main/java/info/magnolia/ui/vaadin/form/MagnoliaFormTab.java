@@ -42,7 +42,7 @@ import com.vaadin.ui.ClientWidget;
 
 /**
  * Dialog tab.
- *
+ * 
  */
 @ClientWidget(VFormTab.class)
 public class MagnoliaFormTab extends MagnoliaTab {
@@ -52,7 +52,7 @@ public class MagnoliaFormTab extends MagnoliaTab {
     public MagnoliaFormTab(String caption, FormSection content) {
         super(caption, content);
         this.content = content;
-        //DialogLayout needs this info to display it when show all tab is active
+        // DialogLayout needs this info to display it when show all tab is active
         this.content.setCaption(caption);
     }
 

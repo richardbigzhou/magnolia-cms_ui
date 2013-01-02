@@ -47,7 +47,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-
 /**
  * Opens a dialog for editing a node. We need to manually take care of nodeName changes. This must be properly solved by
  * passing the node Identifier to {@link ContentChangedEvent}.

@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.layout;
 
-
 import java.util.Iterator;
 
 import com.vaadin.terminal.PaintException;
@@ -41,7 +40,6 @@ import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-
 
 /**
  * The CompositeComponent is a lightened version of vaadin's CustomComponent. It still abstracts
@@ -108,8 +106,7 @@ public class CompositeComponent extends AbstractComponentContainer {
     }
 
     /**
-     * Gets the number of contained components. Consistent with the iterator returned by
-     * {@link #getComponentIterator()}.
+     * Gets the number of contained components. Consistent with the iterator returned by {@link #getComponentIterator()}.
      * 
      * @return the number of contained components (zero or one)
      */

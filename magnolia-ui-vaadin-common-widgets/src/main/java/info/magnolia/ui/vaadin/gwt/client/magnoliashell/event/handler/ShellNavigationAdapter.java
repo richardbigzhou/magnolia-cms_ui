@@ -36,16 +36,17 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppActivatedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigationEvent;
 
-
 /**
  * Helper class in case somebody doesn't want to implement all the methods of the interface.
  */
 public class ShellNavigationAdapter implements ShellNavigationHandler {
 
     @Override
-    public void onShellAppNavigation(ShellAppNavigationEvent event) {}
+    public void onShellAppNavigation(ShellAppNavigationEvent event) {
+    }
 
     @Override
-    public void onAppActivated(AppActivatedEvent event) {}
+    public void onAppActivated(AppActivatedEvent event) {
+    }
 
 }

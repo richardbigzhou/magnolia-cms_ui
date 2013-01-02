@@ -64,9 +64,9 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
     private FormPresenterFactory formPresenterFactory;
     private final FieldFactory fieldFactory;
     private final DialogDefinitionRegistry dialogDefinitionRegistry;
-    
+
     @Inject
-    public FormDialogPresenterFactoryImpl(ComponentProvider componentProvider, 
+    public FormDialogPresenterFactoryImpl(ComponentProvider componentProvider,
             DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, FormPresenterFactory formPresenterFactory,
             FieldFactory fieldFactory, Shell shell,
             @Named("admincentral") EventBus eventBus, final DialogActionFactory actionFactory) {
@@ -105,7 +105,6 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
     public FormDialogPresenter createDialogPresenterByDefinition(DialogDefinition definition) {
         FormDialogView view = componentProvider.getComponent(FormDialogView.class);
         return new FormDialogPresenterImpl(view, dialogBuilder, formPresenterFactory, definition, shell, eventBus, actionFactory);
-
 
     }
 }

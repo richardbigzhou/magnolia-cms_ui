@@ -57,9 +57,9 @@ public class VWarningMessage extends VDetailedShellMessage {
         detailsExpanderEl.setInnerText("[MORE]");
         detailsExpanderEl.setClassName("details-expander");
         getHeader().appendChild(detailsExpanderEl);
-        
+
     }
-    
+
     @Override
     protected void onMessageClicked(Element targetEl) {
         if (detailsExpanderEl == targetEl) {

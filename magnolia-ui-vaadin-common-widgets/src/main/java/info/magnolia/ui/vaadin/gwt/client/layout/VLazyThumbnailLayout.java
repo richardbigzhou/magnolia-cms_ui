@@ -388,13 +388,13 @@ public class VLazyThumbnailLayout extends Composite implements Paintable, Client
         if (heightPx != null) {
             scroller.setHeight((heightPx - thumbnailSizeSlider.getOffsetHeight()) + "px");
             addStubs(calculateThumbnailsNeeded());
-            queryTimer.schedule(QUERY_TIMER_DELAY);   
+            queryTimer.schedule(QUERY_TIMER_DELAY);
         }
     }
 
     public static native JsArray<VThumbnailData> parseStringArray(String json) /*-{
-        return eval('(' + json + ')');
-    }-*/;
+                                                                               return eval('(' + json + ')');
+                                                                               }-*/;
 
     private int getHorizontalMargin() {
         return ComputedStyle.parseInt(thumbnailStyle.getProperty("marginTop")) * 2;

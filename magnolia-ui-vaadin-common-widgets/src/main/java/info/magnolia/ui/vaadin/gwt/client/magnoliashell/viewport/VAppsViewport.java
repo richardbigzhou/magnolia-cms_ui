@@ -67,7 +67,6 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.UIDL;
 
-
 /**
  * Client side implementation of Apps viewport.
  */
@@ -300,13 +299,13 @@ public class VAppsViewport extends VShellViewport implements HasSwipeHandlers {
 
         if (isNext && getWidgetCount() > 2) {
             JQueryWrapper.select(nextWidget).setCss(
-                "-webkit-transform",
-                "translate3d(" + (translationValue + getVisibleApp().getOffsetWidth()) + "px,0,0)");
+                    "-webkit-transform",
+                    "translate3d(" + (translationValue + getVisibleApp().getOffsetWidth()) + "px,0,0)");
         }
         nextWidget.getElement().getStyle().setVisibility(isNext || nextWidget == previousWidget ?
-            Visibility.VISIBLE : Visibility.HIDDEN);
+                Visibility.VISIBLE : Visibility.HIDDEN);
         previousWidget.getElement().getStyle().setVisibility(!isNext || nextWidget ==
-            previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
+                previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
     }
 
     private Widget getNextWidget() {

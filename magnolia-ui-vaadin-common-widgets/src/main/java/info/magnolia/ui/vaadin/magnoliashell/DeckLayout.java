@@ -42,7 +42,6 @@ import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.Component;
 
-
 /**
  * Component container showing only the most recently added component and keeping previously shown components in a stack
  * for easy switching to the previously shown.
@@ -105,20 +104,20 @@ public class DeckLayout extends AbstractComponentContainer {
     public void changeVariables(Object source, Map<String, Object> variables) {
         super.changeVariables(source, variables);
     }
-    
+
     @Override
     public Iterator<Component> getComponentIterator() {
         return children.iterator();
     }
-    
+
     public void pop() {
         if (!children.isEmpty()) {
             final Component currentVisible = children.removeFirst();
             removeComponent(currentVisible);
             requestRepaint();
-        } 
+        }
     }
-    
+
     public boolean isEmpty() {
         return children.isEmpty();
     }

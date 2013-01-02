@@ -41,7 +41,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
  * The Class VActionbarGroup, which displays a group of actions within a section of the action bar.
  */
@@ -57,8 +56,6 @@ public class VActionbarGroup extends ComplexPanel {
 
     private boolean isOpenHorizontal = false;
 
-
-
     /**
      * Instantiates a new action bar group.
      */
@@ -72,21 +69,21 @@ public class VActionbarGroup extends ComplexPanel {
         return name;
     }
 
-    public void toggleHorizontal(){
+    public void toggleHorizontal() {
         isOpenHorizontal = !isOpenHorizontal;
-        if (isOpenHorizontal){
+        if (isOpenHorizontal) {
             addStyleName("open");
-        }else{
+        } else {
             removeStyleName("open");
         }
     }
 
-    public void closeHorizontal(){
+    public void closeHorizontal() {
         isOpenHorizontal = false;
         removeStyleName("open");
     }
 
-    public void openHorizontal(){
+    public void openHorizontal() {
         isOpenHorizontal = true;
         addStyleName("open");
     }
@@ -100,8 +97,8 @@ public class VActionbarGroup extends ComplexPanel {
         return actions;
     }
 
-    public int getNumActions(){
-        return actions.size() ;
+    public int getNumActions() {
+        return actions.size();
     }
 
     public void addAction(VActionbarItem action) {

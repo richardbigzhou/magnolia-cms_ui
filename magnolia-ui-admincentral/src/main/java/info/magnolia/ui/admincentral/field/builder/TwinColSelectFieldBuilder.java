@@ -41,6 +41,7 @@ import com.vaadin.ui.TwinColSelect;
 
 /**
  * Creates and initializes a select field based on a field definition.
+ * 
  * @param <T>
  */
 public class TwinColSelectFieldBuilder<T extends TwinColSelectFieldDefinition> extends SelectFieldBuilder<TwinColSelectFieldDefinition> {
@@ -52,10 +53,10 @@ public class TwinColSelectFieldBuilder<T extends TwinColSelectFieldDefinition> e
     @Override
     protected AbstractSelect buildField() {
         super.buildField();
-        ((TwinColSelect)select).setRows(select.getContainerDataSource().size());
+        ((TwinColSelect) select).setRows(select.getContainerDataSource().size());
         select.setMultiSelect(definition.isMultiselect());
-        ((TwinColSelect)select).setLeftColumnCaption(getMessage(definition.getLeftColumnCaption()));
-        ((TwinColSelect)select).setRightColumnCaption(getMessage(definition.getRightColumnCaption()));
+        ((TwinColSelect) select).setLeftColumnCaption(getMessage(definition.getLeftColumnCaption()));
+        ((TwinColSelect) select).setRightColumnCaption(getMessage(definition.getRightColumnCaption()));
         return select;
     }
 

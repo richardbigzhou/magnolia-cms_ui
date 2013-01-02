@@ -40,7 +40,6 @@ import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import com.vaadin.ui.ComponentContainer;
 
-
 /**
  * Implementations of this interface are responsible for building a workbench and handling the UI
  * actions associated with it.
@@ -50,7 +49,7 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
      * Listener interface for events concerning the workbench.
      */
     interface Listener {
-        
+
         void onSearch(String searchExpression);
 
         void onViewTypeChanged(ViewType viewType);
@@ -59,7 +58,6 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
     void setListener(Listener listener);
 
     void setViewType(ContentView.ViewType type);
-
 
     /**
      * Refreshes the current view.
@@ -77,6 +75,7 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
     void setActionbarView(ActionbarView actionbar);
 
     void selectPath(String path);
+
     /**
      * Synchronize the view status to reflect the information extracted from the Location token,
      * i.e. selected path, view type and optional query (in case of a 'search' view).

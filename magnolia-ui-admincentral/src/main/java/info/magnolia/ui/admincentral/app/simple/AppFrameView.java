@@ -39,7 +39,6 @@ import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
 import com.vaadin.ui.ComponentContainer;
 
-
 /**
  * View used to give all apps a uniform look-and-feel.
  */

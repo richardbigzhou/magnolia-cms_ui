@@ -54,6 +54,7 @@ public interface VMagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHa
      */
     public interface Presenter {
         void updateLayout();
+
         void updateLayoutOfActiveTab();
     }
 

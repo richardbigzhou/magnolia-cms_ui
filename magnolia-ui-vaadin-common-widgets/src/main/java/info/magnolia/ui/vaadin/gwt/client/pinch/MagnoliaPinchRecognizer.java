@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.pinch;
 
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HasHandlers;
 import com.googlecode.mgwt.dom.client.event.touch.Touch;
@@ -64,19 +63,19 @@ public class MagnoliaPinchRecognizer implements TouchHandler {
     private State state;
 
     private int startX1;
-    
+
     private int startY1;
-    
+
     private int startX2;
-    
+
     private int startY2;
 
     private int touchCount;
-    
+
     private double distance;
 
     private final OffsetProvider offsetProvider;
-    
+
     public MagnoliaPinchRecognizer(HasHandlers source, OffsetProvider offsetProvider) {
 
         if (source == null) {
@@ -91,7 +90,7 @@ public class MagnoliaPinchRecognizer implements TouchHandler {
         state = State.READY;
 
     }
-    
+
     @Override
     public void onTouchStart(TouchStartEvent event) {
         touchCount = event.getTouches().length();
@@ -110,7 +109,7 @@ public class MagnoliaPinchRecognizer implements TouchHandler {
             distance = (int) Math.sqrt(Math.pow(startX1 - startX2, 2) + Math.pow(startY1 - startY2, 2));
             state = State.TWO_FINGER;
             event.preventDefault();
-            
+
             int x = (startX1 + startX2) / 2;
             int y = (startY1 + startY2) / 2;
             getEventPropagator().fireEvent(source, new MagnoliaPinchStartEvent(x, y, 1));
@@ -139,7 +138,7 @@ public class MagnoliaPinchRecognizer implements TouchHandler {
             int y2 = touch2.getPageY() - top;
 
             double newDistance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-            
+
             int x = (x1 + x2) / 2;
             int y = (y1 + y2) / 2;
             getEventPropagator().fireEvent(source, new MagnoliaPinchMoveEvent(x, y, distance / newDistance));

@@ -84,7 +84,7 @@ public class CheckBoxAndLabelField extends CustomField {
      */
     @Override
     public void setPropertyDataSource(Property newDataSource) {
-       checkBox.setPropertyDataSource(newDataSource);
+        checkBox.setPropertyDataSource(newDataSource);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class CheckBoxAndLabelField extends CustomField {
     }
 
     @Override
-    public Class< ? > getType() {
+    public Class<?> getType() {
         return Boolean.class;
     }
 

@@ -37,7 +37,6 @@ import info.magnolia.ui.framework.view.View;
 
 import com.vaadin.ui.Component;
 
-
 /**
  * View implementation for the Configuration Workbench SubApp.
  */

@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -47,7 +48,6 @@ import javax.jcr.Property;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 
 public class AbstractJcrAdapterTest {
 
@@ -178,7 +178,7 @@ public class AbstractJcrAdapterTest {
         }
 
         @Override
-        public Collection< ? > getItemPropertyIds() {
+        public Collection<?> getItemPropertyIds() {
             return null;
         }
 

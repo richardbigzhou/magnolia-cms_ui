@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.model.dialog.registry;
 
-import java.util.List;
-import java.util.Set;
-
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+
+import java.util.List;
+import java.util.Set;
 
 import javax.inject.Singleton;
 

@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.integration.jcr;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -54,7 +55,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.vaadin.data.Property;
-
 
 /**
  * Main test class for {@link JcrPropertyAdapter}.

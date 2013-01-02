@@ -33,16 +33,15 @@
  */
 package info.magnolia.ui.framework.app.launcherlayout;
 
+import static org.junit.Assert.*;
+
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+
 import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 
 /**
  * Test class for {@link AppLauncherLayout}.
@@ -58,7 +57,7 @@ public class AppLauncherLayoutTest {
 
     @Before
     public void setUp() throws Exception {
-        //Init
+        // Init
         appDescriptor1 = createAppDescriptor("appDescriptor1");
         appDescriptor2 = createAppDescriptor("appDescriptor2");
         appDescriptor3 = createAppDescriptor("appDescriptor3");

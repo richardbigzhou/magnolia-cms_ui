@@ -34,9 +34,11 @@
 package info.magnolia.ui.admincentral.field.validator.builder;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.field.FieldBuilder;
 import info.magnolia.ui.admincentral.field.validator.FieldValidatorBuilder;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.builder.FactoryBase;
+import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.FieldValidatorDefinition;
 
 import java.io.Serializable;
@@ -44,14 +46,12 @@ import java.io.Serializable;
 import javax.inject.Inject;
 
 /**
- * Factory for creating DialogField instances using an internal set of mappings connecting a {@link FieldValidatorDefinition}
- * class with a {@link FieldValidatorBuilder} class.
- *
+ * Factory for creating DialogField instances using an internal set of mappings connecting a {@link FieldValidatorDefinition} class with a {@link FieldValidatorBuilder} class.
+ * 
  * @see FieldDefinition
  * @see FieldBuilder
  */
 public class ValidatorFieldFactory extends FactoryBase<FieldValidatorDefinition, FieldValidatorBuilder> implements Serializable {
-
 
     @Inject
     public ValidatorFieldFactory(ComponentProvider componentProvider, ValidatorFieldRegistry validatorFieldRegistery) {

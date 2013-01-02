@@ -34,10 +34,10 @@
 package info.magnolia.ui.vaadin.gwt.client.editor.widget.dnd;
 
 
+import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.ComponentBar;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.ComponentBar;
 
 /**
  * DragAndDrop.

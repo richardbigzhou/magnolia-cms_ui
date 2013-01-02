@@ -45,7 +45,6 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 
-
 /**
  * View implementation of the main tab in showcase app.
  */

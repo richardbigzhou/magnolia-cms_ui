@@ -68,5 +68,4 @@ public class DialogActionRegistry implements Serializable {
         this.definitionToImplementationMappings.add(mapping);
     }
 
-
 }

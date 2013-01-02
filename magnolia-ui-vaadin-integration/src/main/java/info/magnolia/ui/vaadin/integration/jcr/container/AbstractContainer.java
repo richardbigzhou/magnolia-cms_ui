@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr.container;
 
-
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -79,7 +77,7 @@ public abstract class AbstractContainer implements Container {
 
         /**
          * Gets the Property where the event occurred.
-         *
+         * 
          * @see com.vaadin.data.Container.ItemSetChangeEvent#getContainer()
          */
         @Override
@@ -95,7 +93,7 @@ public abstract class AbstractContainer implements Container {
 
         /**
          * Gets the Property where the event occurred.
-         *
+         * 
          * @see com.vaadin.data.Container.ItemSetChangeEvent#getContainer()
          */
         @Override
@@ -104,4 +102,3 @@ public abstract class AbstractContainer implements Container {
         }
     }
 }
-

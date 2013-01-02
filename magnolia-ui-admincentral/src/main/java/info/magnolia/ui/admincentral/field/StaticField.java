@@ -38,7 +38,6 @@ import org.vaadin.addon.customfield.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
-
 /**
  * A base custom field displaying a simple text.
  */
@@ -60,7 +59,7 @@ public class StaticField extends CustomField {
     }
 
     @Override
-    public Class< ? > getType() {
+    public Class<?> getType() {
         return getPropertyDataSource().getType();
     }
 

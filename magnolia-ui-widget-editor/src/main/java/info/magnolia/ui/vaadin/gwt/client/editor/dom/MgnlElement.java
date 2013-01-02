@@ -33,16 +33,16 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.AbstractBar;
 import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.AreaEndBar;
 import info.magnolia.ui.vaadin.gwt.client.editor.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.Map;
+
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 
 /**
 * MgnlElement Constructor.

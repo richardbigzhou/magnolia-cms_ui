@@ -33,9 +33,10 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar;
 
-import com.google.gwt.user.client.ui.Label;
-
+import info.magnolia.ui.vaadin.gwt.client.editor.VPageEditor;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
+
+import com.google.gwt.user.client.ui.Label;
 
 
 /**

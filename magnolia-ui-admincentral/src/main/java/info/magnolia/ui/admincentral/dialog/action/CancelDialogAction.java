@@ -39,7 +39,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 
 /**
  * Implements an action for canceling a dialog.
- *
+ * 
  * @see CancelDialogActionDefinition
  */
 public class CancelDialogAction extends ActionBase<CancelDialogActionDefinition> {

@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form;
 
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
@@ -53,7 +52,6 @@ public class VFormHeader extends FlowPanel {
     private static final String CLASSNAME_HEADER = "form-header";
     private static final String ClASSNAME_DESCRIPTION = "form-description";
     private static final String CLASSNAME_HELPBUTTON = "btn-form-help";
-
 
     protected final VFormHeaderCallback callback;
 
@@ -80,20 +78,17 @@ public class VFormHeader extends FlowPanel {
         }
     });
 
-
     public VFormHeader(final VFormHeaderCallback callback) {
         this.callback = callback;
         callback.onDescriptionVisibilityChanged(false);
         construct();
     }
 
-
     public void construct() {
         captionContainer.addClassName(CLASSNAME_HEADER);
         errorPanel.addStyleName(ClASSNAME_ERROR);
         descriptionPanel.addStyleName(ClASSNAME_DESCRIPTION);
         helpButton.setStyleName(CLASSNAME_HELPBUTTON);
-
 
         getElement().appendChild(captionContainer);
         captionContainer.appendChild(caption);
@@ -120,7 +115,6 @@ public class VFormHeader extends FlowPanel {
         }
     }
 
-
     /**
      * Callback interface for the Form header.
      */
@@ -131,13 +125,11 @@ public class VFormHeader extends FlowPanel {
         void jumpToNextError();
     }
 
-
     public void setErrorAmount(int totalProblematicFields) {
         errorPanel.setVisible(totalProblematicFields > 0);
         if (totalProblematicFields > 0) {
             errorPanel.getElement().setInnerHTML("<span>Please correct the <b>" + totalProblematicFields +
                     " errors </b> in this form </span>");
-
 
             final HTML errorButton = new HTML("[Jump to next error]");
             errorButton.setStyleName("action-jump-to-next-error");

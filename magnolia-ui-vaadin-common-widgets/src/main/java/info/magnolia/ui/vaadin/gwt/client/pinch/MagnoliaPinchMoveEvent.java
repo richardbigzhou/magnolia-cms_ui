@@ -41,7 +41,7 @@ import com.google.gwt.event.shared.EventHandler;
 public class MagnoliaPinchMoveEvent extends MagnoliaPinchEvent<MagnoliaPinchMoveEvent.Handler> {
 
     public static Type<Handler> TYPE = new Type<Handler>();
-    
+
     public MagnoliaPinchMoveEvent(int x, int y, double scaleFactor) {
         super(x, y, scaleFactor);
     }

@@ -37,7 +37,7 @@ import java.util.List;
 
 /**
  * Defines the layout of apps in the app launcher. Apps are organized into groups.
- *
+ * 
  * @see AppLauncherGroupDefinition
  * @see AppLauncherGroupEntryDefinition
  */

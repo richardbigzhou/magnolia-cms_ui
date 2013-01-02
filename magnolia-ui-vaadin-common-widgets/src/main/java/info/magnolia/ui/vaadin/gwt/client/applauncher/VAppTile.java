@@ -33,10 +33,9 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.applauncher;
 
-import com.google.gwt.dom.client.Style;
-
 import info.magnolia.ui.vaadin.gwt.client.applauncher.event.AppActivationEvent;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -54,7 +53,7 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * The tile of one single app in AppLauncher.
- *
+ * 
  */
 public class VAppTile extends Widget {
 
@@ -184,7 +183,7 @@ public class VAppTile extends Widget {
 
     /**
      * Set colors with the group coloring.
-     *
+     * 
      * @param isActive
      */
     private void setColors(boolean isTileWhite) {

@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
+
 import info.magnolia.ui.model.field.definition.DateFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -53,7 +54,7 @@ public class DateFieldBuilderTest extends AbstractBuilderTest<DateFieldDefinitio
     private DateFieldBuilder dialogDate;
 
     @Test
-    public void simpleDateFieldTest() throws Exception{
+    public void simpleDateFieldTest() throws Exception {
         // GIVEN
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, 2);
@@ -68,13 +69,13 @@ public class DateFieldBuilderTest extends AbstractBuilderTest<DateFieldDefinitio
 
         // THEN
         assertEquals(true, field instanceof PopupDateField);
-        assertEquals("yyyy-MM-dd", ((PopupDateField)field).getDateFormat());
-        SimpleDateFormat sdf = new SimpleDateFormat(((PopupDateField)field).getDateFormat());
-        assertEquals("2012-03-02",sdf.format(field.getValue()));
+        assertEquals("yyyy-MM-dd", ((PopupDateField) field).getDateFormat());
+        SimpleDateFormat sdf = new SimpleDateFormat(((PopupDateField) field).getDateFormat());
+        assertEquals("2012-03-02", sdf.format(field.getValue()));
     }
 
     @Test
-    public void simpleDateFieldTest_ChangedValue() throws Exception{
+    public void simpleDateFieldTest_ChangedValue() throws Exception {
         // GIVEN
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, 2);
@@ -94,13 +95,13 @@ public class DateFieldBuilderTest extends AbstractBuilderTest<DateFieldDefinitio
 
         // THEN
         assertEquals(true, field instanceof PopupDateField);
-        assertEquals("yyyy-MM-dd", ((PopupDateField)field).getDateFormat());
-        SimpleDateFormat sdf = new SimpleDateFormat(((PopupDateField)field).getDateFormat());
-        assertEquals("2010-03-20",sdf.format(field.getValue()));
+        assertEquals("yyyy-MM-dd", ((PopupDateField) field).getDateFormat());
+        SimpleDateFormat sdf = new SimpleDateFormat(((PopupDateField) field).getDateFormat());
+        assertEquals("2010-03-20", sdf.format(field.getValue()));
     }
 
     @Test
-    public void dateFieldTest_Time() throws Exception{
+    public void dateFieldTest_Time() throws Exception {
         // GIVEN
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, 2);
@@ -119,16 +120,15 @@ public class DateFieldBuilderTest extends AbstractBuilderTest<DateFieldDefinitio
 
         // THEN
         assertEquals(true, field instanceof PopupDateField);
-        assertEquals("yyyy-MM-dd:HH:mm", ((PopupDateField)field).getDateFormat());
-        SimpleDateFormat sdf = new SimpleDateFormat(((PopupDateField)field).getDateFormat());
-        assertEquals("2012-03-02:05:55",sdf.format(field.getValue()));
+        assertEquals("yyyy-MM-dd:HH:mm", ((PopupDateField) field).getDateFormat());
+        SimpleDateFormat sdf = new SimpleDateFormat(((PopupDateField) field).getDateFormat());
+        assertEquals("2012-03-02:05:55", sdf.format(field.getValue()));
     }
-
 
     @Override
     protected void createConfiguredFieldDefinition() {
         DateFieldDefinition fieldDefinition = new DateFieldDefinition();
-        fieldDefinition = (DateFieldDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+        fieldDefinition = (DateFieldDefinition) AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
 
         fieldDefinition.setTime(false);
         fieldDefinition.setDateFormat("yyyy-MM-dd");

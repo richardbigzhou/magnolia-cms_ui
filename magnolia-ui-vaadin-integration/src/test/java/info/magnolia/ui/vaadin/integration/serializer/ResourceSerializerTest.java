@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.integration.serializer;
 
 import static org.junit.Assert.assertEquals;
+
 import info.magnolia.ui.vaadin.integration.terminal.IconFontResource;
 
 import org.junit.Test;

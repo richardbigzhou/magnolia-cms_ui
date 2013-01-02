@@ -146,14 +146,14 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
     public void closeSelf() {
         fireEvent(new DialogCloseEvent(this, this));
     }
-    
+
     public void addAction(String actionName, String actionLabel) {
         actionMap.put(actionName, actionLabel);
         if (isAttached) {
             proxy.call("addAction", actionName, actionLabel);
         }
     }
-    
+
     public void setActionLabel(String actionName, String newLabel) {
         proxy.call("setActionLabel", actionName, newLabel);
     }
@@ -209,27 +209,27 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
     public void addDialogCloseHandler(Handler handler) {
         addListener("dialogCloseEvent", DialogCloseEvent.class, handler, DialogCloseEvent.ON_DIALOG_CLOSE);
     }
-    
+
     public void removeDialogCloseHandler(Handler handler) {
         removeListener("dialogCloseEvent", DialogCloseEvent.class, handler);
     }
-    
+
     /**
-     * DialogCloseEvent. 
+     * DialogCloseEvent.
      */
     public static class DialogCloseEvent extends com.vaadin.ui.Component.Event {
-        
+
         /**
          * Handler.
          */
         public interface Handler {
             void onClose(DialogCloseEvent event);
         }
-        
+
         public static final java.lang.reflect.Method ON_DIALOG_CLOSE;
 
         public DialogView view;
-        
+
         static {
             try {
                 ON_DIALOG_CLOSE = DialogCloseEvent.Handler.class.getDeclaredMethod(

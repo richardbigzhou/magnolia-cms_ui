@@ -38,7 +38,6 @@ package info.magnolia.ui.model.imageprovider.definition;
  */
 public class ConfiguredImageProviderDefinition implements ImageProviderDefinition {
 
-
     private String originalImageNodeName = ORIGINAL_IMAGE_NODE_NAME;
 
     private String imagingServletPath = IMAGING_SERVLET_PATH;
@@ -52,16 +51,14 @@ public class ConfiguredImageProviderDefinition implements ImageProviderDefinitio
         return originalImageNodeName;
     }
 
-
     public void setOriginalImageNodeName(String originalImageNodeName) {
-            this.originalImageNodeName = originalImageNodeName;
+        this.originalImageNodeName = originalImageNodeName;
     }
 
     @Override
     public String getImagingServletPath() {
         return imagingServletPath;
     }
-
 
     public void setImagingServletPath(String imagingServletPath) {
         this.imagingServletPath = imagingServletPath;
@@ -72,19 +69,17 @@ public class ConfiguredImageProviderDefinition implements ImageProviderDefinitio
         return imageExtension;
     }
 
-
     public void setImageExtension(String imageExtension) {
         this.imageExtension = imageExtension;
     }
 
     @Override
-    public Class<? extends ImageProvider> getImageProviderClass(){
+    public Class<? extends ImageProvider> getImageProviderClass() {
         return imageProviderClass;
 
     }
 
-
-    public void setImageProviderClass(Class<? extends ImageProvider> imageProviderClass){
+    public void setImageProviderClass(Class<? extends ImageProvider> imageProviderClass) {
         this.imageProviderClass = imageProviderClass;
 
     }

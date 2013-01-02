@@ -33,16 +33,13 @@
  */
 package info.magnolia.ui.model.action;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.objectfactory.ComponentProvider;
+
+import org.junit.Test;
 
 /**
  * Test case for {@link AbstractActionFactory}.

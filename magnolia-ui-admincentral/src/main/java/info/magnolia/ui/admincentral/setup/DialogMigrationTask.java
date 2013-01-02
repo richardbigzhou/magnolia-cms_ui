@@ -62,19 +62,18 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Dialog migration main task.
  * Migrate dialogs for the specified moduleName.
  */
-public class DialogMigrationTask  extends AbstractTask {
+public class DialogMigrationTask extends AbstractTask {
 
     private static final Logger log = LoggerFactory.getLogger(DialogMigrationTask.class);
     private final String moduleName;
     private final HashSet<Property> extendsAndReferenceProperty = new HashSet<Property>();
 
     public DialogMigrationTask(String moduleName) {
-        super("Dialog Migration for 5.x","Migrate dialog for the following module: "+moduleName);
+        super("Dialog Migration for 5.x", "Migrate dialog for the following module: " + moduleName);
         this.moduleName = moduleName;
     }
 
@@ -84,9 +83,9 @@ public class DialogMigrationTask  extends AbstractTask {
     @Override
     public void execute(InstallContext installContext) throws TaskExecutionException {
         try {
-            Node dialog = installContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/"+moduleName+"/dialogs");
+            Node dialog = installContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/" + moduleName + "/dialogs");
             // Copy to Dialog50
-            copyInSession(dialog, dialog.getPath()+"50");
+            copyInSession(dialog, dialog.getPath() + "50");
             NodeUtil.visit(dialog, new NodeVisitor() {
                 @Override
                 public void visit(Node current) throws RepositoryException {
@@ -98,11 +97,10 @@ public class DialogMigrationTask  extends AbstractTask {
             // Try to resolve references for extends.
             postProcessForExtendsAndReference();
         } catch (Exception e) {
-            log.error("",e);
-            installContext.warn("Could not Migrate Dialod for the following module "+moduleName);
+            log.error("", e);
+            installContext.warn("Could not Migrate Dialod for the following module " + moduleName);
         }
     }
-
 
     /**
      * Handle and Migrate a Dialog node.
@@ -110,20 +108,20 @@ public class DialogMigrationTask  extends AbstractTask {
     private void performDialogMigration(Node dialog) throws RepositoryException {
         // Get child Nodes (should be Tab)
         Iterable<Node> tabNodes = NodeUtil.getNodes(dialog, DIALOG_FILTER);
-        if(tabNodes.iterator().hasNext()) {
-            //Check if it's a tab definition
-            if(dialog.hasProperty("controlType") && dialog.getProperty("controlType").getString().equals("tab")) {
+        if (tabNodes.iterator().hasNext()) {
+            // Check if it's a tab definition
+            if (dialog.hasProperty("controlType") && dialog.getProperty("controlType").getString().equals("tab")) {
                 handleTab(dialog);
-            }else {
-                //Handle action
-                if(!dialog.hasProperty("controlType") &&!dialog.hasProperty("extends") && !dialog.hasProperty("reference")) {
+            } else {
+                // Handle action
+                if (!dialog.hasProperty("controlType") && !dialog.hasProperty("extends") && !dialog.hasProperty("reference")) {
                     handleAction(dialog);
                 }
-                //Handle tab
+                // Handle tab
                 handleTabs(dialog, tabNodes.iterator());
             }
-        }else {
-            //Handle as a field.
+        } else {
+            // Handle as a field.
             handleField(dialog);
         }
         handleExtendsAndReference(dialog);
@@ -144,18 +142,17 @@ public class DialogMigrationTask  extends AbstractTask {
 
     }
 
-
     /**
      * Handle Tabs.
      */
     private void handleTabs(Node dialog, Iterator<Node> tabNodes) throws RepositoryException {
         Node formDefinition = dialog.addNode("formDefinition", NodeTypes.ContentNode.NAME);
         Node dialogTabs = formDefinition.addNode("tabs", NodeTypes.ContentNode.NAME);
-        while(tabNodes.hasNext()){
+        while (tabNodes.hasNext()) {
             Node tab = tabNodes.next();
             // Handle Fields Tab
             handleTab(tab);
-            //Move tab
+            // Move tab
             NodeUtil.moveNode(tab, dialogTabs);
         }
     }
@@ -163,25 +160,25 @@ public class DialogMigrationTask  extends AbstractTask {
     /**
      * Handle a Tab.
      */
-    private void handleTab(Node tab) throws RepositoryException{
-        if((tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")) || (tab.getParent().hasProperty("extends"))){
-            if(tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")){
-                //Remove controlType Property
+    private void handleTab(Node tab) throws RepositoryException {
+        if ((tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")) || (tab.getParent().hasProperty("extends"))) {
+            if (tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")) {
+                // Remove controlType Property
                 tab.getProperty("controlType").remove();
             }
-            //get all controls to be migrated
-            Iterator<Node> controls = NodeUtil.getNodes(tab,NodeTypes.ContentNode.NAME).iterator();
-            //create a fields Node
+            // get all controls to be migrated
+            Iterator<Node> controls = NodeUtil.getNodes(tab, NodeTypes.ContentNode.NAME).iterator();
+            // create a fields Node
             Node fields = tab.addNode("fields", NodeTypes.ContentNode.NAME);
 
-            while(controls.hasNext()){
+            while (controls.hasNext()) {
                 Node control = controls.next();
-                //Handle fields
+                // Handle fields
                 handleField(control);
-                //Move to fields
+                // Move to fields
                 NodeUtil.moveNode(control, fields);
             }
-        }else if(tab.hasNode("inheritable")) {
+        } else if (tab.hasNode("inheritable")) {
             // Handle inheritable
             Node inheritable = tab.getNode("inheritable");
             handleExtendsAndReference(inheritable);
@@ -195,30 +192,30 @@ public class DialogMigrationTask  extends AbstractTask {
      * Change the extend path.
      */
     private void handleField(Node fieldNode) throws RepositoryException {
-        if(fieldNode.hasProperty("controlType")){
-            if(fieldNode.getProperty("controlType").getString().equals("edit")){
+        if (fieldNode.hasProperty("controlType")) {
+            if (fieldNode.getProperty("controlType").getString().equals("edit")) {
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.TextFieldDefinition");
-            }else if(fieldNode.getProperty("controlType").getString().equals("fckEdit")){
+            } else if (fieldNode.getProperty("controlType").getString().equals("fckEdit")) {
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.RichTextFieldDefinition");
-            }else if(fieldNode.getProperty("controlType").getString().equals("date")){
+            } else if (fieldNode.getProperty("controlType").getString().equals("date")) {
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.DateFieldDefinition");
-            }else if(fieldNode.getProperty("controlType").getString().equals("select")){
+            } else if (fieldNode.getProperty("controlType").getString().equals("select")) {
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.SelectFieldDefinition");
-            }else if(fieldNode.getProperty("controlType").getString().equals("checkbox")){
+            } else if (fieldNode.getProperty("controlType").getString().equals("checkbox")) {
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition");
                 fieldNode.setProperty("multiselect", "true");
-            }else if(fieldNode.getProperty("controlType").getString().equals("checkboxSwitch")){
+            } else if (fieldNode.getProperty("controlType").getString().equals("checkboxSwitch")) {
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.CheckboxFieldDefinition");
-            }else if(fieldNode.getProperty("controlType").getString().equals("radio")){
+            } else if (fieldNode.getProperty("controlType").getString().equals("radio")) {
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition");
-            }else if(fieldNode.getProperty("controlType").getString().equals("dam")){
+            } else if (fieldNode.getProperty("controlType").getString().equals("dam")) {
 
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.dam.app.assets.field.definition.AssetLinkFieldDefinition");
@@ -231,35 +228,35 @@ public class DialogMigrationTask  extends AbstractTask {
                 fieldNode.setProperty("allowedMimeType", "image.*");
                 fieldNode.setProperty("appName", "assets");
 
-            }else if(fieldNode.getProperty("controlType").getString().equals("hidden")){
+            } else if (fieldNode.getProperty("controlType").getString().equals("hidden")) {
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.HiddenFieldDefinition");
-            }else if(fieldNode.getProperty("controlType").getString().equals("uuidLink")){
-                if(fieldNode.hasProperty("repository") && !fieldNode.getProperty("repository").getString().equals("dms")) {
+            } else if (fieldNode.getProperty("controlType").getString().equals("uuidLink")) {
+                if (fieldNode.hasProperty("repository") && !fieldNode.getProperty("repository").getString().equals("dms")) {
                     fieldNode.getProperty("controlType").remove();
                     fieldNode.setProperty("identifier", "true");
-                    if(fieldNode.getProperty("repository").getString().equals("website")) {
+                    if (fieldNode.getProperty("repository").getString().equals("website")) {
                         fieldNode.setProperty("appName", "pages");
                         fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.LinkFieldDefinition");
                         fieldNode.setProperty("dialogName", "ui-pages-app:link");
-                    }else if (fieldNode.getProperty("repository").getString().equals("data")) {
+                    } else if (fieldNode.getProperty("repository").getString().equals("data")) {
                         // Handle contacts
-                        if(fieldNode.hasProperty("tree") && fieldNode.getProperty("tree").getString().equals("Contact")) {
+                        if (fieldNode.hasProperty("tree") && fieldNode.getProperty("tree").getString().equals("Contact")) {
                             fieldNode.setProperty("appName", "contacts");
                             fieldNode.setProperty("workspace", "contacts");
                             fieldNode.setProperty("dialogName", "ui-contacts-app:link");
                             fieldNode.setProperty("class", "info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition");
                         }
                     }
-                }else {
+                } else {
                     fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.StaticFieldDefinition");
                     fieldNode.setProperty("value", "Field not yet supported");
                 }
-            }else {
+            } else {
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.StaticFieldDefinition");
                 fieldNode.setProperty("value", "Field not yet supported");
             }
-        }else  {
+        } else {
             // Handle Field Extends/Reference
             handleExtendsAndReference(fieldNode);
         }
@@ -268,10 +265,10 @@ public class DialogMigrationTask  extends AbstractTask {
     private void handleExtendsAndReference(Node node) throws RepositoryException {
         if (node.hasProperty("extends")) {
             // Handle Field Extends
-            node.setProperty("extends",renameExtendsPath(node, "extends"));
-        }else if (node.hasProperty("reference")) {
+            node.setProperty("extends", renameExtendsPath(node, "extends"));
+        } else if (node.hasProperty("reference")) {
             // Handle Field Extends
-            node.setProperty("reference",renameExtendsPath(node, "reference"));
+            node.setProperty("reference", renameExtendsPath(node, "reference"));
         }
     }
 
@@ -288,45 +285,45 @@ public class DialogMigrationTask  extends AbstractTask {
         public boolean evaluateTyped(Node node) {
             try {
                 return !node.getName().startsWith(NodeTypes.JCR_PREFIX)
-                && !NodeUtil.isNodeType(node, NodeTypes.MetaData.NAME) &&
-                NodeUtil.isNodeType(node, NodeTypes.ContentNode.NAME);
+                        && !NodeUtil.isNodeType(node, NodeTypes.MetaData.NAME) &&
+                        NodeUtil.isNodeType(node, NodeTypes.ContentNode.NAME);
             } catch (RepositoryException e) {
                 return false;
             }
         }
     };
 
-
     /**
      * Check if the extends and reference are correct. If not try to do the best
      * to found a correct path.
+     * 
      * @throws RepositoryException
      */
-    private void postProcessForExtendsAndReference() throws RepositoryException  {
-        for(Property p:extendsAndReferenceProperty) {
+    private void postProcessForExtendsAndReference() throws RepositoryException {
+        for (Property p : extendsAndReferenceProperty) {
             String path = p.getString();
-            if(path.equals("override")) {
+            if (path.equals("override")) {
                 continue;
             }
-            if(!p.getSession().nodeExists(path)) {
+            if (!p.getSession().nodeExists(path)) {
                 // Referred path do not exist.
                 // add /tabs before the last /
-                String newPath  = insertBeforeLastSlash(path, "/tabs");
-                if(p.getSession().nodeExists(newPath)) {
+                String newPath = insertBeforeLastSlash(path, "/tabs");
+                if (p.getSession().nodeExists(newPath)) {
                     p.setValue(newPath);
                     continue;
                 }
                 // add /fields before the last /
-                newPath  = insertBeforeLastSlash(path, "/fields");
-                if(p.getSession().nodeExists(newPath)) {
+                newPath = insertBeforeLastSlash(path, "/fields");
+                if (p.getSession().nodeExists(newPath)) {
                     p.setValue(newPath);
                     continue;
                 }
 
-                //try with a fields before the last / with a tabs before the last /
-                newPath  = insertBeforeLastSlash(path, "/tabs");
-                newPath  = insertBeforeLastSlash(newPath, "/fields");
-                if(p.getSession().nodeExists(newPath)) {
+                // try with a fields before the last / with a tabs before the last /
+                newPath = insertBeforeLastSlash(path, "/tabs");
+                newPath = insertBeforeLastSlash(newPath, "/fields");
+                if (p.getSession().nodeExists(newPath)) {
                     p.setValue(newPath);
                     continue;
                 }
@@ -334,17 +331,17 @@ public class DialogMigrationTask  extends AbstractTask {
                 String beging = path.substring(0, path.lastIndexOf("/"));
                 String end = path.substring(beging.lastIndexOf("/"));
                 beging = beging.substring(0, beging.lastIndexOf("/"));
-                newPath = beging+"/formDefinition/tabs"+end;
-                if(p.getSession().nodeExists(newPath)) {
+                newPath = beging + "/formDefinition/tabs" + end;
+                if (p.getSession().nodeExists(newPath)) {
                     p.setValue(newPath);
                     continue;
                 }
-                //try with a fields before the last / with a tabs before the 2nd last /
-                newPath  = insertBeforeLastSlash(newPath, "/fields");
-                if(p.getSession().nodeExists(newPath)) {
+                // try with a fields before the last / with a tabs before the 2nd last /
+                newPath = insertBeforeLastSlash(newPath, "/fields");
+                if (p.getSession().nodeExists(newPath)) {
                     p.setValue(newPath);
-                }else {
-                    log.warn("reference to "+path+" not found");
+                } else {
+                    log.warn("reference to " + path + " not found");
                 }
             }
         }
@@ -356,7 +353,7 @@ public class DialogMigrationTask  extends AbstractTask {
     private String insertBeforeLastSlash(String reference, String toInsert) {
         String beging = reference.substring(0, reference.lastIndexOf("/"));
         String end = reference.substring(reference.lastIndexOf("/"));
-        return  beging+toInsert+end;
+        return beging + toInsert + end;
     }
 
     /**
@@ -367,7 +364,7 @@ public class DialogMigrationTask  extends AbstractTask {
         final String destParentPath = StringUtils.defaultIfEmpty(StringUtils.substringBeforeLast(dest, "/"), "/");
         final String destNodeName = StringUtils.substringAfterLast(dest, "/");
         final Session session = src.getSession();
-        try{
+        try {
             final File file = File.createTempFile("mgnl", null, Path.getTempDirectory());
             final FileOutputStream outStream = new FileOutputStream(file);
             session.exportSystemView(src.getPath(), outStream, false, false);
@@ -380,18 +377,17 @@ public class DialogMigrationTask  extends AbstractTask {
                     ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
             IOUtils.closeQuietly(inStream);
             file.delete();
-            if(!StringUtils.equals(src.getName(), destNodeName)){
+            if (!StringUtils.equals(src.getName(), destNodeName)) {
                 String currentPath;
-                if(destParentPath.equals("/")){
+                if (destParentPath.equals("/")) {
                     currentPath = "/" + src.getName();
                 }
-                else{
+                else {
                     currentPath = destParentPath + "/" + src.getName();
                 }
                 session.move(currentPath, dest);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RepositoryException("Can't copy node " + src + " to " + dest, e);
         }
     }

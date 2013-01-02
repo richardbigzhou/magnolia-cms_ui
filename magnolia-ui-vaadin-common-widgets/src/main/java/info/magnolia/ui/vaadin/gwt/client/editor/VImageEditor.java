@@ -49,41 +49,39 @@ import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.VConsole;
 
-
-
 /**
  * Client side implementtaion for ImageEditor widget.
  */
 public class VImageEditor extends VerticalPanel implements Paintable, ClientSideHandler {
 
-public static final String CLASSNAME = "v-image-editor";
-    
+    public static final String CLASSNAME = "v-image-editor";
+
     private int margins = 0;
-    
+
     private int nativeImageWidth;
 
     private int nativeImageHeight;
 
     private int explicitWidth = 0;
-    
+
     private int explicitHeight = 0;
 
     private double scaleRatio = 1d;
-    
+
     private Image img = null;
 
     private final GWTSelector selector = new GWTSelector();
-    
+
     protected ApplicationConnection client;
-    
+
     private final Label scaleLabel = new Label();
-    
-    private final Label fileNameLabel = new Label(); 
-    
+
+    private final Label fileNameLabel = new Label();
+
     private final Label sizeLabel = new Label();
-    
+
     private final Label mimeLabel = new Label();
-    
+
     private final ClientSideProxy proxy = new ClientSideProxy(this) {
         {
             register("setFileName", new Method() {
@@ -93,7 +91,7 @@ public static final String CLASSNAME = "v-image-editor";
                     fileNameLabel.setText(String.valueOf(params[0]));
                 }
             });
-            
+
             register("setMimeType", new Method() {
 
                 @Override
@@ -101,7 +99,7 @@ public static final String CLASSNAME = "v-image-editor";
                     mimeLabel.setText(String.valueOf(params[0]));
                 }
             });
-            
+
             register("setSource", new Method() {
 
                 @Override
@@ -134,18 +132,18 @@ public static final String CLASSNAME = "v-image-editor";
             register("setMarginsPx", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    margins = (Integer)params[0];
+                    margins = (Integer) params[0];
                     updateImage();
                 }
             });
-            
+
             register("fetchCropArea", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    int x = (int)(selector.getSelectionXCoordinate() / scaleRatio);
-                    int y = (int)(selector.getSelectionYCoordinate() / scaleRatio);
-                    int w = (int)(selector.getSelectionWidth() / scaleRatio);
-                    int h = (int)(selector.getSelectionHeight() / scaleRatio);
+                    int x = (int) (selector.getSelectionXCoordinate() / scaleRatio);
+                    int y = (int) (selector.getSelectionYCoordinate() / scaleRatio);
+                    int w = (int) (selector.getSelectionWidth() / scaleRatio);
+                    int h = (int) (selector.getSelectionHeight() / scaleRatio);
                     call("croppedAreaReady", x, y, w, h);
                 }
             });
@@ -159,11 +157,11 @@ public static final String CLASSNAME = "v-image-editor";
                     }
                 }
             });
-            
+
             register("setMinDimension", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
-                    int minDimension = (Integer)params[0];
+                    int minDimension = (Integer) params[0];
                 }
             });
         }
@@ -174,14 +172,14 @@ public static final String CLASSNAME = "v-image-editor";
         getElement().getStyle().setBackgroundColor("rgba(51,51,51,1)");
         setHorizontalAlignment(ALIGN_CENTER);
         setVerticalAlignment(ALIGN_MIDDLE);
-        
+
         scaleLabel.getElement().getStyle().setColor("#FFFFFF");
         fileNameLabel.getElement().getStyle().setColor("#FFFFFF");
-        
+
         final HorizontalPanel details = new HorizontalPanel();
         details.getElement().getStyle().setColor("#FFFFFF");
         details.setWidth("360px");
-        
+
         details.add(fileNameLabel);
         details.add(sizeLabel);
         details.add(mimeLabel);
@@ -216,7 +214,7 @@ public static final String CLASSNAME = "v-image-editor";
             selector.setHeight(img.getHeight() + "px");
         }
     }
-    
+
     public void scale(double ratio) {
         if (selector.isAttached()) {
             selector.scale(ratio);
@@ -235,7 +233,7 @@ public static final String CLASSNAME = "v-image-editor";
         }
 
     }
-    
+
     private void updateImage() {
         if (nativeImageHeight > 0 && nativeImageWidth > 0) {
             int width = explicitWidth == 0 ? nativeImageWidth : explicitWidth - 2 * margins;
@@ -244,14 +242,14 @@ public static final String CLASSNAME = "v-image-editor";
             double heightRatio = height * 1d / nativeImageHeight;
             double widthRatio = width * 1d / nativeImageWidth;
             scaleRatio = Math.min(heightRatio, widthRatio);
-            
-            img.setWidth((int)(nativeImageWidth * scaleRatio) + "px");
-            img.setHeight((int)(nativeImageHeight * scaleRatio) + "px");   
-            
-            scaleLabel.setText("Showing " + (int)(width * 1d / nativeImageWidth * 100) + "% of original size");
+
+            img.setWidth((int) (nativeImageWidth * scaleRatio) + "px");
+            img.setHeight((int) (nativeImageHeight * scaleRatio) + "px");
+
+            scaleLabel.setText("Showing " + (int) (width * 1d / nativeImageWidth * 100) + "% of original size");
         }
     }
-    
+
     @Override
     public boolean initWidget(Object[] params) {
         return false;

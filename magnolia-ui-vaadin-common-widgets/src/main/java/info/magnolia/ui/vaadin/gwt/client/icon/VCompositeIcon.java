@@ -39,7 +39,6 @@ import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
 
-
 /**
  * The VCompositeIcon vaadin client-side proxy for the CompositeIcon component.
  */

@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.app.contacts.field.builder;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
-
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
@@ -47,6 +44,9 @@ import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDe
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 
 import javax.inject.Inject;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
 
 /**
  * Creates and initializes a ContactLinkField field based on a field definition.

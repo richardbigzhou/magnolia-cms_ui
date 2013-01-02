@@ -44,12 +44,11 @@ import java.util.Map;
 
 import com.google.inject.Inject;
 
-
 /**
  * Dummy app used for test purpose.
- *
+ * 
  * The two static fields are used to access the AppContext set by AppControler.
- * As AppContext is  linked to a child GuiceComponentProvider used in AppControler
+ * As AppContext is linked to a child GuiceComponentProvider used in AppControler
  * it's not possible in the test class to access child GuiceComponentProvider
  * (app specific provider) defining the AppContext.
  */
@@ -64,20 +63,20 @@ public class AppTestImpl extends AbstractApp {
     @Inject
     public AppTestImpl(AppContext ctx) {
         super(ctx);
-        res.put("TestPageApp"+appNumber, this);
-        appNumber +=1;
+        res.put("TestPageApp" + appNumber, this);
+        appNumber += 1;
     }
 
     @Override
     public void start(Location location) {
         super.start(location);
-        events.add("start() with location "+location);
+        events.add("start() with location " + location);
     }
 
     @Override
     public void locationChanged(Location location) {
         super.locationChanged(location);
-        events.add("locationChanged() for location "+location);
+        events.add("locationChanged() for location " + location);
     }
 
     @Override

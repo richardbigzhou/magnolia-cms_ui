@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.ui.model.action.ActionDefinition;
 
-
 /**
  * Add a property to a node.
  */

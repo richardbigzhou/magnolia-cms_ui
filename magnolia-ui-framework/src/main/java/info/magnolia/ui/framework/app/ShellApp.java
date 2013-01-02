@@ -44,5 +44,3 @@ public interface ShellApp {
 
     void locationChanged(Location location);
 }
-
-

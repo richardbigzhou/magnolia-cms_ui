@@ -33,18 +33,8 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import info.magnolia.ui.framework.app.SubAppDescriptor;
-import info.magnolia.ui.framework.location.Location;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ComponentsDefinition;
@@ -56,10 +46,11 @@ import info.magnolia.ui.admincentral.app.simple.AppControllerImplTest.AppEventCo
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.event.AppEventBusConfigurer;
@@ -68,10 +59,19 @@ import info.magnolia.ui.framework.event.InvocationCountingTestEventHandler;
 import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.framework.event.TestEvent;
 import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.message.MessagesManagerImpl;
 import info.magnolia.ui.framework.shell.Shell;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test case for {@link info.magnolia.ui.framework.app.AppController} local App's event.
@@ -118,7 +118,7 @@ public class AppEventTest {
     @After
     public void tearDown() throws Exception {
         componentProvider.destroy();
-        //Reset the static fields
+        // Reset the static fields
         AppTestImpl.appNumber = 0;
         AppTestImpl.res = new HashMap<String, Object>();
     }
@@ -178,7 +178,7 @@ public class AppEventTest {
         Map<String, SubAppDescriptor> subApps = new HashMap<String, SubAppDescriptor>();
         subApps.put(subAppName_1, AppTestUtility.createSubAppDescriptor(subAppName_1, AppTestSubApp.class, true));
 
-        //Set cat1 with App1
+        // Set cat1 with App1
         AppDescriptor app = AppTestUtility.createAppDescriptorWithSubApps(name, AppEventTestImpl.class, subApps);
         AppLauncherGroup cat = AppTestUtility.createAppGroup("cat", app);
         AppLauncherGroupEntry entry = new AppLauncherGroupEntry();

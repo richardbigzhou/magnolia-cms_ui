@@ -37,5 +37,5 @@ package info.magnolia.ui.model.field.definition;
  * Hidden Field Definition.
  */
 public class HiddenFieldDefinition extends ConfiguredFieldDefinition {
-    //No Specific variable yet.
+    // No Specific variable yet.
 }

@@ -50,10 +50,10 @@ import javax.inject.Inject;
  * <li>{@link #onSubAppStart()}
  * <li>{@link #locationChanged(Location)}
  * </ul>
- *
+ * 
  * Currently lacking listeners for {@link info.magnolia.ui.admincentral.event.ContentChangedEvent}.
  * Currently lacking handling of locationChanged. Related to MGNLUI-154
- *
+ * 
  * @see ItemWorkbenchPresenter
  * @see WorkbenchSubAppView
  * @see ItemLocation
@@ -111,7 +111,7 @@ public class AbstractItemSubApp extends AbstractSubApp {
     @Override
     public void locationChanged(Location location) {
         ItemLocation itemLocation = ItemLocation.wrap(location);
-        //getView().setWorkbenchView(workbench.start(itemLocation.getNodePath()));
+        // getView().setWorkbenchView(workbench.start(itemLocation.getNodePath()));
         super.locationChanged(location);
     }
 
@@ -123,5 +123,5 @@ public class AbstractItemSubApp extends AbstractSubApp {
     public String getCaption() {
         return caption;
     }
-   
+
 }

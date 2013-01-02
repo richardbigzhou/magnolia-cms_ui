@@ -33,6 +33,11 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.widget.dnd;
 
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.SortComponentEvent;
+import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.ComponentBar;
+import info.magnolia.ui.vaadin.gwt.client.editor.widget.placeholder.ComponentPlaceHolder;
+
 import com.google.gwt.event.dom.client.DragEndEvent;
 import com.google.gwt.event.dom.client.DragEndHandler;
 import com.google.gwt.event.dom.client.DragLeaveEvent;
@@ -44,11 +49,6 @@ import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.event.dom.client.DropHandler;
 import com.google.gwt.event.shared.EventBus;
-
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.SortComponentEvent;
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.ComponentBar;
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.placeholder.ComponentPlaceHolder;
 
 /**
  * DragAndDropImpl.

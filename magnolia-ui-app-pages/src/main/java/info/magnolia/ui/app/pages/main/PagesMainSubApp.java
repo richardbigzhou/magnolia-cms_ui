@@ -43,7 +43,6 @@ import info.magnolia.ui.framework.instantpreview.InstantPreviewDispatcher;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-
 /**
  * PagesMainSubApp.
  */
@@ -55,7 +54,7 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
 
     @Inject
     public PagesMainSubApp(final SubAppContext subappContext, PagesMainView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus, InstantPreviewDispatcher dispatcher) {
-        super(subappContext,view, workbench, subAppEventBus);
+        super(subappContext, view, workbench, subAppEventBus);
         this.view = view;
         this.view.setListener(this);
         this.dispatcher = dispatcher;
@@ -68,7 +67,7 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
         actionbar.disable("move", "duplicate");
 
         // actions disabled based on selection
-        final String[] defaultActions = new String[] {"delete", "preview", "edit", "export"};
+        final String[] defaultActions = new String[] { "delete", "preview", "edit", "export" };
         if (getWorkbench().getSelectedItemId() == null || "/".equals(getWorkbench().getSelectedItemId())) {
             actionbar.disable(defaultActions);
         } else {

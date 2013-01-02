@@ -62,7 +62,7 @@ public interface ColumnDefinition {
 
     Class<? extends ColumnFormatter> getFormatterClass();
 
-    Class< ? > getType();
+    Class<?> getType();
 
     boolean isDisplayInDialog();
 

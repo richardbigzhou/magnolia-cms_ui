@@ -55,7 +55,6 @@ import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
-
 /**
  * View implementation for the Messages app.
  */
@@ -74,7 +73,7 @@ public class MessagesViewImpl implements MessagesView {
         final Form form = new Form();
         form.setItemDataSource(messageItem);
         form.setFormFieldFactory(new MessageFieldFactory());
-        form.setVisibleItemProperties(new String[]{"title", "content", "type", "scope", "user"});
+        form.setVisibleItemProperties(new String[] { "title", "content", "type", "scope", "user" });
         form.setWriteThrough(false);
         form.setImmediate(true);
         form.setWidth(100, Sizeable.UNITS_PERCENTAGE);
@@ -127,7 +126,7 @@ public class MessagesViewImpl implements MessagesView {
 
         // intro text
         Label intro = new Label("This app enables to send different types of messages to some or all users on a Magnolia instance.<br />" +
-            "Please note that this app is for testing purposes only and will be removed in the final release.", Label.CONTENT_XHTML);
+                "Please note that this app is for testing purposes only and will be removed in the final release.", Label.CONTENT_XHTML);
         intro.addStyleName("intro");
 
         CssLayout container = new CssLayout();

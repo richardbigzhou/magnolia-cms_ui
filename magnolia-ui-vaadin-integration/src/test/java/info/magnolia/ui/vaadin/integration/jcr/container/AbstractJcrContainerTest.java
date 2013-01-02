@@ -425,7 +425,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testConstructJCRQuerySortBySortableColumn() {
         // GIVEN
-        jcrContainer.sort(new String[] {ModelConstants.JCR_NAME}, new boolean[] { true });
+        jcrContainer.sort(new String[] { ModelConstants.JCR_NAME }, new boolean[] { true });
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(true);
@@ -556,7 +556,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testConstructJCRQueryReturnDefaultSelectStatement() {
         // GIVEN
-        //default mainItemType used by constructJCRQuery() is mgnl:content
+        // default mainItemType used by constructJCRQuery() is mgnl:content
         final String expected = String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME);
 
         // WHEN
@@ -599,7 +599,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
     /**
      * Dummy Implementation of the {AbstractJcrContainer}.
-     *
+     * 
      */
     public class JcrContainerTestImpl extends AbstractJcrContainer {
 

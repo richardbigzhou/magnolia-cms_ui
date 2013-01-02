@@ -38,7 +38,6 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigation
 
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
  * Shell apps viewport client side.
  */
@@ -55,7 +54,8 @@ public class VShellAppsViewport extends VShellViewport {
     /**
      * Gets a shell app widget if it has already been loaded in the viewport.
      * 
-     * @param type the shell app type
+     * @param type
+     *            the shell app type
      * @return the shell app widget
      */
     public Widget getShellAppByType(ShellAppType type) {

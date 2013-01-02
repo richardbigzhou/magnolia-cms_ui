@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form;
 
+import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VInlineMessage;
+
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -48,7 +50,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.impl.FocusImpl;
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VInlineMessage;
 
 /**
  * Wrapper widget that provides help and error indication.
@@ -203,7 +204,5 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
             errorSection.setMessage("");
         }
     }
-
-
 
 }

@@ -44,15 +44,14 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * A custom save action for contacts. It automatically creates a unique node name for a new contact based on their <code>firstName</code> and <code>lastName</code>
- * properties.
+ * A custom save action for contacts. It automatically creates a unique node name for a new contact based on their <code>firstName</code> and <code>lastName</code> properties.
  */
 public class SaveContactDialogAction extends SaveDialogAction {
 
     public SaveContactDialogAction(final SaveContactDialogActionDefinition definition, final FormDialogPresenter presenter) {
         super(definition, presenter);
     }
-    
+
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
@@ -62,8 +61,8 @@ public class SaveContactDialogAction extends SaveDialogAction {
 
             try {
                 final Node node = itemChanged.getNode();
-                if(node.isNew()) {
-                   generateUniqueNodeNameForContact(node);
+                if (node.isNew()) {
+                    generateUniqueNodeNameForContact(node);
                 }
                 MetaDataUtil.updateMetaData(node);
                 node.getSession().save();
@@ -73,19 +72,19 @@ public class SaveContactDialogAction extends SaveDialogAction {
             getPresenter().getCallback().onSuccess(getDefinition().getName());
 
         } else {
-            //validation errors are displayed in the UI.
+            // validation errors are displayed in the UI.
         }
     }
 
     private void generateUniqueNodeNameForContact(final Node node) throws RepositoryException {
         String firstName = node.getProperty("firstName").getString();
-        String lastName =  node.getProperty("lastName").getString();
+        String lastName = node.getProperty("lastName").getString();
         String newNodeName = (firstName.charAt(0) + lastName.replaceAll("\\s+", "")).toLowerCase();
         String parentPath = node.getParent().getPath();
         String newNodeAbsPath = NodeUtil.combinePathAndName(parentPath, newNodeName);
         int i = 1;
 
-        while(node.getSession().itemExists(newNodeAbsPath)) {
+        while (node.getSession().itemExists(newNodeAbsPath)) {
             newNodeAbsPath = NodeUtil.combinePathAndName(parentPath, newNodeName + i);
             i++;
         }

@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.admincentral.dialog.builder;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
@@ -50,15 +53,12 @@ import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.vaadin.dialog.FormDialog;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Main test for {@link DialogBuilder}.

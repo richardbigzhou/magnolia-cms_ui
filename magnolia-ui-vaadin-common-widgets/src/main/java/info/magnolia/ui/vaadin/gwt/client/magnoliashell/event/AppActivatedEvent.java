@@ -37,14 +37,13 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ShellNavig
 
 import com.google.gwt.event.shared.GwtEvent;
 
-
 /**
  * Shell app loaded event.
  */
-public class AppActivatedEvent extends GwtEvent<ShellNavigationHandler>{
+public class AppActivatedEvent extends GwtEvent<ShellNavigationHandler> {
 
     public static final Type<ShellNavigationHandler> TYPE = new Type<ShellNavigationHandler>();
-    
+
     private final boolean isShellApp;
     private final String appId;
     private String subAppId;

@@ -42,7 +42,6 @@ import info.magnolia.ui.vaadin.grid.MagnoliaTable;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 
 import java.util.ArrayList;
-
 import java.util.Iterator;
 import java.util.List;
 
@@ -59,7 +58,7 @@ import com.vaadin.ui.Table;
 
 /**
  * Vaadin UI component that displays a list.
- *
+ * 
  */
 public class ListViewImpl implements ListView {
 
@@ -109,9 +108,9 @@ public class ListViewImpl implements ListView {
                 }
             }
         });
-        
+
         table.setCellStyleGenerator(new Table.CellStyleGenerator() {
-            
+
             @Override
             public String getStyle(Object itemId, Object propertyId) {
                 return presenterGetIcon(itemId, propertyId);
@@ -220,10 +219,10 @@ public class ListViewImpl implements ListView {
 
     private String presenterGetIcon(Object itemId, Object propertyId) {
         Container container = table.getContainerDataSource();
-        if(listener != null && propertyId == null) {
-            return listener.getItemIcon(container.getItem(itemId));                    
+        if (listener != null && propertyId == null) {
+            return listener.getItemIcon(container.getItem(itemId));
         }
-        
+
         return null;
     }
 }

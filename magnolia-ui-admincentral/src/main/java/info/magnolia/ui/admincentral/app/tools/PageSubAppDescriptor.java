@@ -36,9 +36,8 @@ package info.magnolia.ui.admincentral.app.tools;
 import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
 
 /**
- * Allows to specify the url to an html page to be embedded in an iframe. The iframe url is built like the following
- * {@code <webapp-context-path>/.magnolia/pages/<page-name>.html }
- *
+ * Allows to specify the url to an html page to be embedded in an iframe. The iframe url is built like the following {@code <webapp-context-path>/.magnolia/pages/<page-name>.html }
+ * 
  */
 public class PageSubAppDescriptor extends ConfiguredSubAppDescriptor {
 

@@ -66,22 +66,20 @@ public class VDialogHeader extends FlowPanel {
     private final Button closeButton = new Button("", new ClickHandler() {
         @Override
         public void onClick(ClickEvent event) {
-            ((VDialogHeaderCallback)callback).onCloseFired();
+            callback.onCloseFired();
         }
     });
-
 
     private final Button helpButton = new Button("", new ClickHandler() {
         @Override
         public void onClick(ClickEvent event) {
             isDescriptionVisible = !isDescriptionVisible;
-            if (hasDescription){
+            if (hasDescription) {
                 descriptionPanel.setVisible(isDescriptionVisible);
             }
             callback.onDescriptionVisibilityChanged(isDescriptionVisible);
         }
     });
-
 
     public void construct() {
         captionContainer.addClassName(CLASSNAME_HEADER);
@@ -93,7 +91,6 @@ public class VDialogHeader extends FlowPanel {
         descriptionPanel.addStyleName(ClASSNAME_DESCRIPTION);
         helpButton.setStyleName(CLASSNAME_HELPBUTTON);
 
-
         getElement().appendChild(captionContainer);
         captionContainer.appendChild(caption);
 
@@ -101,7 +98,6 @@ public class VDialogHeader extends FlowPanel {
         add(helpButton, captionContainer);
         add(descriptionPanel);
     }
-
 
     public VDialogHeader(final VDialogHeaderCallback callback) {
         this.callback = callback;
@@ -125,7 +121,6 @@ public class VDialogHeader extends FlowPanel {
         this.caption.setInnerText(caption);
     }
 
-
     /**
      * Callback interface for the Dialog header.
      */
@@ -134,4 +129,5 @@ public class VDialogHeader extends FlowPanel {
         void onCloseFired();
 
         void onDescriptionVisibilityChanged(boolean isVisible);
-    }}
+    }
+}

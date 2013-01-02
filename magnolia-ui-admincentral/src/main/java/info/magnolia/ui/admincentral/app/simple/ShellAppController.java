@@ -74,7 +74,7 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
         this.componentProvider = componentProvider;
         this.shell = shell;
         this.locationController = locationController;
-        
+
         addShellApp("applauncher", AppLauncherShellApp.class);
         addShellApp("pulse", PulseShellApp.class);
         addShellApp("favorite", FavoritesShellApp.class);

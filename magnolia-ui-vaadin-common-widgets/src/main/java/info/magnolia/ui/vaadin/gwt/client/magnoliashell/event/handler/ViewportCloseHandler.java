@@ -37,7 +37,6 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent
 
 import com.google.gwt.event.shared.EventHandler;
 
-
 /**
  * Handler of the {@link ViewportCloseEvent}.
  */

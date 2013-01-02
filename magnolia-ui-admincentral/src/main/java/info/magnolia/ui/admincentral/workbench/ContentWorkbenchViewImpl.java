@@ -61,7 +61,6 @@ import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.BaseTheme;
 
-
 /**
  * Implementation of {@link ContentWorkbenchView}.
  */
@@ -270,22 +269,22 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         viewTypeArrow.removeStyleName("search");
 
         switch (viewType) {
-            case TREE :
-                treeButton.addStyleName("active");
-                viewTypeArrow.addStyleName("tree");
-                break;
-            case LIST :
-                listButton.addStyleName("active");
-                viewTypeArrow.addStyleName("list");
-                break;
-            case THUMBNAIL :
-                thumbsButton.addStyleName("active");
-                viewTypeArrow.addStyleName("thumbs");
-                break;
-            case SEARCH :
-                viewTypeArrow.addStyleName("search");
-                break;
-            default :
+        case TREE:
+            treeButton.addStyleName("active");
+            viewTypeArrow.addStyleName("tree");
+            break;
+        case LIST:
+            listButton.addStyleName("active");
+            viewTypeArrow.addStyleName("list");
+            break;
+        case THUMBNAIL:
+            thumbsButton.addStyleName("active");
+            viewTypeArrow.addStyleName("thumbs");
+            break;
+        case SEARCH:
+            viewTypeArrow.addStyleName("search");
+            break;
+        default:
         }
     }
 

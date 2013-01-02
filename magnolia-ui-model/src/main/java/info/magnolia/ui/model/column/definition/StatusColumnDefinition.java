@@ -38,9 +38,9 @@ package info.magnolia.ui.model.column.definition;
  */
 public class StatusColumnDefinition extends AbstractColumnDefinition {
 
-    //Show Activation Status
+    // Show Activation Status
     private boolean activation = true;
-    //Show Permission Status
+    // Show Permission Status
     private boolean permissions = false;
 
     public boolean isActivation() {

@@ -35,7 +35,7 @@ package info.magnolia.ui.framework.app.registry;
 
 /**
  * Enumeration of events fired by {@link AppDescriptorRegistry}.
- *
+ * 
  * @see AppRegistryEventHandler
  * @see AppDescriptorRegistry
  */

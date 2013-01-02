@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.model.focus;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.shared.EventBus;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.SelectElementEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
+
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.shared.EventBus;
 
 /**
  * Helper class to keep track of selected items. Welcome to the MindTwister.

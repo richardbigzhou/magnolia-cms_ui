@@ -33,6 +33,15 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
@@ -45,15 +54,6 @@ import com.vaadin.terminal.gwt.client.Container;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Layout for the {@link info.magnolia.ui.vaadin.gwt.client.form.FormFieldWrapper} widgets.
@@ -77,7 +77,7 @@ public class VFormSection extends FlowPanel implements Container {
     public VFormSection() {
         super();
         getElement().appendChild(fieldSet);
-        //both only display when show all tab is active
+        // both only display when show all tab is active
         horizontalRule.getStyle().setDisplay(Display.NONE);
         legend.getStyle().setDisplay(Display.NONE);
     }
@@ -90,7 +90,7 @@ public class VFormSection extends FlowPanel implements Container {
 
         isValidationVisible = uidl.getBooleanAttribute("validationVisible");
 
-        if(uidl.hasAttribute("caption")) {
+        if (uidl.hasAttribute("caption")) {
             String caption = uidl.getStringAttribute("caption");
             legend.setInnerText(caption);
             fieldSet.appendChild(legend);
@@ -169,7 +169,7 @@ public class VFormSection extends FlowPanel implements Container {
         if (!(super.getParent() instanceof VFormTab)) {
             throw new RuntimeException("Parent of VFormSection must be of type VFormTab, you have used: " + super.getParent().getClass());
         }
-        return (VFormTab)super.getParent();
+        return (VFormTab) super.getParent();
     }
 
     @Override
@@ -197,10 +197,10 @@ public class VFormSection extends FlowPanel implements Container {
         super.setHeight(height);
         final Integer heightPx = ComputedStyle.parseInt(height);
         if (heightPx != null) {
-            fieldSet.getStyle().setHeight(heightPx, Unit.PX);   
+            fieldSet.getStyle().setHeight(heightPx, Unit.PX);
         }
     }
-    
+
     public void setValidationVisible(boolean isVisible) {
         this.isValidationVisible = isVisible;
     }

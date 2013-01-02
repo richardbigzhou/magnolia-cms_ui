@@ -61,15 +61,15 @@ public class ImageEditor extends AbstractComponent implements ServerSideHandler 
     private int minDimension = DEFAULT_MIN_DIMENSION;
 
     private int marginsPx = 20;
-    
+
     private boolean isCropAspectRatioLocked = false;
 
     private boolean isAttached = false;
 
     private String fileName = "";
-    
+
     private String mimeType = "";
-            
+
     private final ServerSideProxy proxy = new ServerSideProxy(this) {
         {
             register("croppedAreaReady", new Method() {
@@ -107,7 +107,7 @@ public class ImageEditor extends AbstractComponent implements ServerSideHandler 
         this.marginsPx = marginsPx;
         callOnceIfAttached("setMarginsPx", marginsPx);
     }
-    
+
     public void setSource(Resource source) {
         this.source = source;
         callOnceIfAttached("setSource", this.source);
@@ -136,12 +136,12 @@ public class ImageEditor extends AbstractComponent implements ServerSideHandler 
         this.fileName = fileName;
         callOnceIfAttached("setFileName", fileName);
     }
-    
+
     public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
         callOnceIfAttached("setMimeType", mimeType);
     }
-    
+
     public boolean isCropping() {
         return isCropping;
     }

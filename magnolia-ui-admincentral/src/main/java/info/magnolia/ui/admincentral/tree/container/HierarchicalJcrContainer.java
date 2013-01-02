@@ -61,7 +61,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Container;
 
-
 /**
  * Hierarchical implementation of {@link info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer}.
  */
@@ -80,7 +79,6 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         }
     }
 
-
     public HierarchicalJcrContainer(WorkbenchDefinition workbenchDefinition) {
         super(workbenchDefinition);
     }
@@ -92,8 +90,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             Collection<Item> children = getChildren(getItemByPath((String) itemId));
             log.debug("Fetched {} children in {}ms", children.size(), System.currentTimeMillis() - start);
             return createContainerIds(children);
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
     }
@@ -106,8 +103,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
                 return null;
             }
             return item.getParent().getPath();
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
     }
@@ -116,8 +112,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     public Collection<String> rootItemIds() {
         try {
             return createContainerIds(getRootItemIds());
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
     }
@@ -143,8 +138,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     public boolean isRoot(Object itemId) {
         try {
             return isRoot(getItemByPath((String) itemId));
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
     }
@@ -154,8 +148,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         try {
             final Item item = getItemByPath((String) itemId);
             return item.isNode() && !getChildren(item).isEmpty();
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
     }
@@ -170,10 +163,9 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     @Override
     public List<String> getSortableContainerPropertyIds() {
-        //at present tree view is not sortable
+        // at present tree view is not sortable
         return Collections.emptyList();
     }
-
 
     public Collection<Item> getChildren(Item item) throws RepositoryException {
         if (!item.isNode()) {
@@ -245,7 +237,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     // TODO these move methods need to be commands instead
 
     public boolean moveItem(Item source, Item target) throws RepositoryException {
-        if(!basicMoveCheck(source,target)) {
+        if (!basicMoveCheck(source, target)) {
             return false;
         }
         NodeUtil.moveNode((Node) source, (Node) target);
@@ -255,22 +247,22 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     }
 
     public boolean moveItemBefore(Item source, Item target) throws RepositoryException {
-        if(!basicMoveCheck(source,target)) {
+        if (!basicMoveCheck(source, target)) {
             return false;
         }
 
-        NodeUtil.moveNodeBefore((Node)source, (Node)target);
+        NodeUtil.moveNodeBefore((Node) source, (Node) target);
         source.getSession().save();
 
         return true;
     }
 
     public boolean moveItemAfter(Item source, Item target) throws RepositoryException {
-        if(!basicMoveCheck(source,target)) {
+        if (!basicMoveCheck(source, target)) {
             return false;
         }
 
-        NodeUtil.moveNodeAfter((Node)source, (Node)target);
+        NodeUtil.moveNodeAfter((Node) source, (Node) target);
         source.getSession().save();
 
         return true;
@@ -309,8 +301,8 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     }
 
     private String getPathInWorkspace(String pathInTree) {
-        //if path is absolute, just return it
-        if(pathInTree.startsWith("/")) {
+        // if path is absolute, just return it
+        if (pathInTree.startsWith("/")) {
             return pathInTree;
         }
         String base = getWorkbenchDefinition().getPath();

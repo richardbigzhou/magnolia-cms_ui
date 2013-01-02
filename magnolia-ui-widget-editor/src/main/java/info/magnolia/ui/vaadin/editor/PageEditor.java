@@ -33,21 +33,21 @@
  */
 package info.magnolia.ui.vaadin.editor;
 
+import info.magnolia.ui.vaadin.gwt.client.editor.VPageEditor;
+
+import java.io.Serializable;
+import java.util.Map;
+
+import org.vaadin.rpc.ServerSideHandler;
+import org.vaadin.rpc.ServerSideProxy;
+import org.vaadin.rpc.client.Method;
+
 import com.google.gson.Gson;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.Component;
-
-import info.magnolia.ui.vaadin.gwt.client.editor.VPageEditor;
-
-import org.vaadin.rpc.ServerSideHandler;
-import org.vaadin.rpc.ServerSideProxy;
-import org.vaadin.rpc.client.Method;
-
-import java.io.Serializable;
-import java.util.Map;
 
 /**
  * PageEditor widget server side implementation.

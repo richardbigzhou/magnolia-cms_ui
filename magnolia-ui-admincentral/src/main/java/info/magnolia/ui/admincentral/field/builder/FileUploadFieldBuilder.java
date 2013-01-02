@@ -65,7 +65,7 @@ import com.vaadin.ui.Field;
 public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadFieldDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(FileUploadFieldBuilder.class);
-    
+
     private final MagnoliaShell magnoliaShell;
 
     @Inject

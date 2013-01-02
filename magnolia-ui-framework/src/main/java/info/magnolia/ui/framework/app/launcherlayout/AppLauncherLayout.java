@@ -33,16 +33,16 @@
  */
 package info.magnolia.ui.framework.app.launcherlayout;
 
+import info.magnolia.ui.framework.app.AppDescriptor;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import info.magnolia.ui.framework.app.AppDescriptor;
-
 /**
  * Describes the layout in the app launcher. Provides convenience methods for querying the layout.
- *
+ * 
  * @see AppLauncherGroup
  * @see AppLauncherGroupEntry
  * @see AppLauncherLayoutManager

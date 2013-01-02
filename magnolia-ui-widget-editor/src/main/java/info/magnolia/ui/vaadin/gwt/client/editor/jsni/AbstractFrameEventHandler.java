@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.jsni;
 
-import com.google.gwt.dom.client.Element;
-import com.google.web.bindery.event.shared.EventBus;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.VPageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.editor.jsni.event.FrameLoadedEvent;
+
+import com.google.gwt.dom.client.Element;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * AbstractFrameEventHandler.
@@ -117,9 +117,7 @@ abstract public class AbstractFrameEventHandler {
             var that = listener;
             element.contentDocument.onmouseup = function(event) {
                 that.@info.magnolia.ui.vaadin.gwt.client.editor.VPageEditor::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
-
             }
-
         }
     }-*/;
 }

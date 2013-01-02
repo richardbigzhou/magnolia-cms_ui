@@ -56,7 +56,7 @@ public class ChooseDialogContentPresenter extends ContentPresenter {
     public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named("choosedialog") EventBus subAppEventBus, Shell shell) {
         super(context, contentViewBuilder, subAppEventBus, shell);
         workbenchDefinition = new Cloner().deepClone(workbenchDefinition);
-        ((ConfiguredWorkbenchDefinition)workbenchDefinition).setDialogWorkbench(true);
+        ((ConfiguredWorkbenchDefinition) workbenchDefinition).setDialogWorkbench(true);
     }
 
     /**
@@ -65,5 +65,5 @@ public class ChooseDialogContentPresenter extends ContentPresenter {
     public String getRootPath() {
         return StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
     }
-    
+
 }

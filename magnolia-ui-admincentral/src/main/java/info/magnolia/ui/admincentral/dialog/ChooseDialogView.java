@@ -39,9 +39,9 @@ import info.magnolia.ui.vaadin.dialog.DialogView;
  * View interface of Value Selection Dialog.
  */
 public interface ChooseDialogView extends DialogView {
-    
+
     void setCancelActionLabel(final String caption);
-    
+
     void setSelectionActionLabel(final String caption);
-    
+
 }

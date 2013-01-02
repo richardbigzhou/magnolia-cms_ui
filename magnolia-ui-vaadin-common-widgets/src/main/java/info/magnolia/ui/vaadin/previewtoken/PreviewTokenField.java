@@ -49,7 +49,6 @@ public class PreviewTokenField extends TextField {
         setNullRepresentation("");
     }
 
-
     @Override
     public Long getValue() {
         final String strValue = String.valueOf(super.getValue()).replaceAll("-", "");

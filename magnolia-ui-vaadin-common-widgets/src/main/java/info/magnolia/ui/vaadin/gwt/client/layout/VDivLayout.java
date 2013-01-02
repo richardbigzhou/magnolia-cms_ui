@@ -38,7 +38,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-//import java.util.Set;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.DomEvent.Type;
@@ -63,28 +62,27 @@ import com.vaadin.terminal.gwt.client.ui.VMarginInfo;
 
 /**
  * DivLayout
- *
+ * 
  * A custom layout intended to be as simple and fast as possible.
  * It will most likely not support all typical Vaadin functionality
  * It has one div.
- *
+ * 
  * Currently based on CssLayout, but with no margin support.
  */
 public class VDivLayout extends FlowPanel implements Paintable, Container {
     public static final String TAGNAME = "divlayout";
     public static final String CLASSNAME = "v-" + TAGNAME;
 
-    //private FlowPane panel = new FlowPane();
+    // private FlowPane panel = new FlowPane();
 
     VDivLayout that = this;
 
     private LayoutClickEventHandler clickEventHandler = new LayoutClickEventHandler(
             this, EventId.LAYOUT_CLICK) {
 
-
         @Override
         protected Paintable getChildComponent(Element element) {
-            //return panel.getComponent(element);
+            // return panel.getComponent(element);
             return that.getComponent(element);
         }
 
@@ -101,18 +99,19 @@ public class VDivLayout extends FlowPanel implements Paintable, Container {
 
     public VDivLayout() {
         super();
-        //getElement().appendChild(margin);
+        // getElement().appendChild(margin);
         setStyleName(CLASSNAME);
-        //margin.setClassName(CLASSNAME + "-margin");
-        //setWidget(panel);
+        // margin.setClassName(CLASSNAME + "-margin");
+        // setWidget(panel);
     }
 
     /*
-    @Override
-    protected Element getContainerElement() {
-        //return margin;
-        return this.getElement();
-    }*/
+     * @Override
+     * protected Element getContainerElement() {
+     * //return margin;
+     * return this.getElement();
+     * }
+     */
 
     @Override
     public void setWidth(String width) {
@@ -134,210 +133,185 @@ public class VDivLayout extends FlowPanel implements Paintable, Container {
         }
     }
 
+    // public class FlowPane extends FlowPanel {
 
+    private final HashMap<Widget, VCaption> widgetToCaption = new HashMap<Widget, VCaption>();
+    private ApplicationConnection client;
+    private int lastIndex;
 
+    /*
+     * public FlowPane() {
+     * super();
+     * setStyleName(CLASSNAME + "-container");
+     * }
+     */
 
+    public void updateRelativeSizes() {
+        for (Widget w : getChildren()) {
+            if (w instanceof Paintable) {
+                client.handleComponentRelativeSize(w);
+            }
+        }
+    }
 
+    @Override
+    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+        rendering = true;
 
+        if (client.updateComponent(this, uidl, true)) {
+            rendering = false;
+            return;
+        }
+        clickEventHandler.handleEventHandlerRegistration(client);
 
+        final VMarginInfo margins = new VMarginInfo(
+                uidl.getIntAttribute("margins"));
+        /*
+         * setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_TOP,
+         * margins.hasTop());
+         * setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_RIGHT,
+         * margins.hasRight());
+         * setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_BOTTOM,
+         * margins.hasBottom());
+         * setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_LEFT,
+         * margins.hasLeft());
+         * 
+         * setStyleName(margin, CLASSNAME + "-" + "spacing",
+         * uidl.hasAttribute("spacing"));
+         */
+        updateFromUIDLPanel(uidl, client);
+        rendering = false;
+    }
 
+    public void updateFromUIDLPanel(UIDL uidl, ApplicationConnection client) {
 
+        // for later requests
+        this.client = client;
 
+        final Collection<Widget> oldWidgets = new HashSet<Widget>();
+        for (final Iterator<Widget> iterator = iterator(); iterator
+                .hasNext();) {
+            oldWidgets.add(iterator.next());
+        }
 
+        ValueMap mapAttribute = null;
+        if (uidl.hasAttribute("css")) {
+            mapAttribute = uidl.getMapAttribute("css");
+        }
 
-
-
-
-
-    //public class FlowPane extends FlowPanel {
-
-        private final HashMap<Widget, VCaption> widgetToCaption = new HashMap<Widget, VCaption>();
-        private ApplicationConnection client;
-        private int lastIndex;
-
-        /*public FlowPane() {
-            super();
-            setStyleName(CLASSNAME + "-container");
-        }*/
-
-        public void updateRelativeSizes() {
-            for (Widget w : getChildren()) {
-                if (w instanceof Paintable) {
-                    client.handleComponentRelativeSize(w);
+        lastIndex = 0;
+        for (final Iterator<Object> i = uidl.getChildIterator(); i
+                .hasNext();) {
+            final UIDL r = (UIDL) i.next();
+            final Paintable child = client.getPaintable(r);
+            final Widget widget = (Widget) child;
+            if (widget.getParent() == this) {
+                oldWidgets.remove(child);
+                VCaption vCaption = widgetToCaption.get(child);
+                if (vCaption != null) {
+                    addOrMove(vCaption, lastIndex++);
+                    oldWidgets.remove(vCaption);
                 }
+            }
+
+            addOrMove(widget, lastIndex++);
+            if (mapAttribute != null && mapAttribute.containsKey(r.getId())) {
+                String css = null;
+                try {
+                    Style style = widget.getElement().getStyle();
+                    css = mapAttribute.getString(r.getId());
+                    String[] cssRules = css.split(";");
+                    for (int j = 0; j < cssRules.length; j++) {
+                        String[] rule = cssRules[j].split(":");
+                        if (rule.length == 0) {
+                            continue;
+                        } else {
+                            style.setProperty(
+                                    makeCamelCase(rule[0].trim()),
+                                    rule[1].trim());
+                        }
+                    }
+                } catch (Exception e) {
+                    VConsole.log("CssLayout encounterd invalid css string: "
+                            + css);
+                }
+            }
+
+            if (!r.getBooleanAttribute("cached")) {
+                child.updateFromUIDL(r, client);
             }
         }
 
+        // loop oldWidgetWrappers that where not re-attached and unregister
+        // them
+        for (Widget w : oldWidgets) {
+            remove(w);
+            if (w instanceof Paintable) {
+                final Paintable p = (Paintable) w;
+                client.unregisterPaintable(p);
+            }
+            VCaption vCaption = widgetToCaption.remove(w);
+            if (vCaption != null) {
+                remove(vCaption);
+            }
+        }
+    }
 
-        @Override
-        public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-            rendering = true;
-
-            if (client.updateComponent(this, uidl, true)) {
-                rendering = false;
+    private void addOrMove(Widget child, int index) {
+        if (child.getParent() == this) {
+            int currentIndex = getWidgetIndex(child);
+            if (index == currentIndex) {
                 return;
             }
-            clickEventHandler.handleEventHandlerRegistration(client);
-
-            final VMarginInfo margins = new VMarginInfo(
-                    uidl.getIntAttribute("margins"));
-            /*setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_TOP,
-                    margins.hasTop());
-            setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_RIGHT,
-                    margins.hasRight());
-            setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_BOTTOM,
-                    margins.hasBottom());
-            setStyleName(margin, CLASSNAME + "-" + StyleConstants.MARGIN_LEFT,
-                    margins.hasLeft());
-
-            setStyleName(margin, CLASSNAME + "-" + "spacing",
-                    uidl.hasAttribute("spacing"));
-                    */
-            updateFromUIDLPanel(uidl, client);
-            rendering = false;
         }
+        insert(child, index);
+    }
 
+    @Override
+    public boolean hasChildComponent(Widget component) {
+        return component.getParent() == this;
+    }
 
-        public void updateFromUIDLPanel(UIDL uidl, ApplicationConnection client) {
-
-            // for later requests
-            this.client = client;
-
-            final Collection<Widget> oldWidgets = new HashSet<Widget>();
-            for (final Iterator<Widget> iterator = iterator(); iterator
-                    .hasNext();) {
-                oldWidgets.add(iterator.next());
-            }
-
-            ValueMap mapAttribute = null;
-            if (uidl.hasAttribute("css")) {
-                mapAttribute = uidl.getMapAttribute("css");
-            }
-
-            lastIndex = 0;
-            for (final Iterator<Object> i = uidl.getChildIterator(); i
-                    .hasNext();) {
-                final UIDL r = (UIDL) i.next();
-                final Paintable child = client.getPaintable(r);
-                final Widget widget = (Widget) child;
-                if (widget.getParent() == this) {
-                    oldWidgets.remove(child);
-                    VCaption vCaption = widgetToCaption.get(child);
-                    if (vCaption != null) {
-                        addOrMove(vCaption, lastIndex++);
-                        oldWidgets.remove(vCaption);
-                    }
-                }
-
-                addOrMove(widget, lastIndex++);
-                if (mapAttribute != null && mapAttribute.containsKey(r.getId())) {
-                    String css = null;
-                    try {
-                        Style style = widget.getElement().getStyle();
-                        css = mapAttribute.getString(r.getId());
-                        String[] cssRules = css.split(";");
-                        for (int j = 0; j < cssRules.length; j++) {
-                            String[] rule = cssRules[j].split(":");
-                            if (rule.length == 0) {
-                                continue;
-                            } else {
-                                style.setProperty(
-                                        makeCamelCase(rule[0].trim()),
-                                        rule[1].trim());
-                            }
-                        }
-                    } catch (Exception e) {
-                        VConsole.log("CssLayout encounterd invalid css string: "
-                                + css);
-                    }
-                }
-
-                if (!r.getBooleanAttribute("cached")) {
-                    child.updateFromUIDL(r, client);
-                }
-            }
-
-            // loop oldWidgetWrappers that where not re-attached and unregister
-            // them
-            for (Widget w : oldWidgets) {
-                remove(w);
-                if (w instanceof Paintable) {
-                    final Paintable p = (Paintable) w;
-                    client.unregisterPaintable(p);
-                }
-                VCaption vCaption = widgetToCaption.remove(w);
-                if (vCaption != null) {
-                    remove(vCaption);
-                }
-            }
+    @Override
+    public void replaceChildComponent(Widget oldComponent,
+            Widget newComponent) {
+        VCaption caption = widgetToCaption.get(oldComponent);
+        if (caption != null) {
+            remove(caption);
+            widgetToCaption.remove(oldComponent);
         }
+        int index = getWidgetIndex(oldComponent);
+        if (index >= 0) {
+            remove(oldComponent);
+            insert(newComponent, index);
+        }
+    }
 
-        private void addOrMove(Widget child, int index) {
-            if (child.getParent() == this) {
-                int currentIndex = getWidgetIndex(child);
-                if (index == currentIndex) {
-                    return;
-                }
+    @Override
+    public void updateCaption(Paintable component, UIDL uidl) {
+        VCaption caption = widgetToCaption.get(component);
+        if (VCaption.isNeeded(uidl)) {
+            Widget widget = (Widget) component;
+            if (caption == null) {
+                caption = new VCaption(component, client);
+                widgetToCaption.put(widget, caption);
+                insert(caption, getWidgetIndex(widget));
+                lastIndex++;
+            } else if (!caption.isAttached()) {
+                insert(caption, getWidgetIndex(widget));
+                lastIndex++;
             }
-            insert(child, index);
+            caption.updateCaption(uidl);
+        } else if (caption != null) {
+            remove(caption);
+            widgetToCaption.remove(component);
         }
+    }
 
-        @Override
-        public boolean hasChildComponent(Widget component) {
-            return component.getParent() == this;
-        }
-
-        @Override
-        public void replaceChildComponent(Widget oldComponent,
-                Widget newComponent) {
-            VCaption caption = widgetToCaption.get(oldComponent);
-            if (caption != null) {
-                remove(caption);
-                widgetToCaption.remove(oldComponent);
-            }
-            int index = getWidgetIndex(oldComponent);
-            if (index >= 0) {
-                remove(oldComponent);
-                insert(newComponent, index);
-            }
-        }
-
-        @Override
-        public void updateCaption(Paintable component, UIDL uidl) {
-            VCaption caption = widgetToCaption.get(component);
-            if (VCaption.isNeeded(uidl)) {
-                Widget widget = (Widget) component;
-                if (caption == null) {
-                    caption = new VCaption(component, client);
-                    widgetToCaption.put(widget, caption);
-                    insert(caption, getWidgetIndex(widget));
-                    lastIndex++;
-                } else if (!caption.isAttached()) {
-                    insert(caption, getWidgetIndex(widget));
-                    lastIndex++;
-                }
-                caption.updateCaption(uidl);
-            } else if (caption != null) {
-                remove(caption);
-                widgetToCaption.remove(component);
-            }
-        }
-
-        private Paintable getComponent(Element element) {
-            return Util
-                    .getPaintableForElement(client, VDivLayout.this, element);
-        }
-
-
-
-
-
-
-
-
-
-
-
+    private Paintable getComponent(Element element) {
+        return Util
+                .getPaintableForElement(client, VDivLayout.this, element);
+    }
 
     private RenderSpace space;
 
@@ -347,31 +321,33 @@ public class VDivLayout extends FlowPanel implements Paintable, Container {
             space = new RenderSpace(-1, -1) {
                 @Override
                 public int getWidth() {
-                    /*if (BrowserInfo.get().isIE()) {
-                        int width = getOffsetWidth();
-                        int margins = margin.getOffsetWidth()
-                                - panel.getOffsetWidth();
-                        return width - margins;
-                    } else {
-                        return panel.getOffsetWidth();
-                    }*/
+                    /*
+                     * if (BrowserInfo.get().isIE()) {
+                     * int width = getOffsetWidth();
+                     * int margins = margin.getOffsetWidth()
+                     * - panel.getOffsetWidth();
+                     * return width - margins;
+                     * } else {
+                     * return panel.getOffsetWidth();
+                     * }
+                     */
                     return getOffsetWidth();
                 }
 
                 @Override
                 public int getHeight() {
-                    /*int height = getOffsetHeight();
-                    int margins = margin.getOffsetHeight()
-                            - panel.getOffsetHeight();
-                    return height - margins;
-                    */
+                    /*
+                     * int height = getOffsetHeight();
+                     * int margins = margin.getOffsetHeight()
+                     * - panel.getOffsetHeight();
+                     * return height - margins;
+                     */
                     return getOffsetHeight();
                 }
             };
         }
         return space;
     }
-
 
     @Override
     public boolean requestLayout(Set<Paintable> children) {
@@ -384,7 +360,6 @@ public class VDivLayout extends FlowPanel implements Paintable, Container {
             return false;
         }
     }
-
 
     private boolean hasSize() {
         return hasWidth && hasHeight;
@@ -407,6 +382,5 @@ public class VDivLayout extends FlowPanel implements Paintable, Container {
         }
         return cssProperty;
     }
-
 
 }

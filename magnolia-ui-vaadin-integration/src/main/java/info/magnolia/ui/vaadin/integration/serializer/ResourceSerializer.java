@@ -49,10 +49,11 @@ import com.vaadin.terminal.ApplicationResource;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.ThemeResource;
+import com.vaadin.terminal.gwt.server.JsonPaintTarget;
 
 /**
  * Gson custom serializer to serialize vaadin resources with appropriate uri.
- *
+ * 
  * @see JsonPaintTarget#addAttribute(String, Resource)
  */
 @SuppressWarnings("deprecation")

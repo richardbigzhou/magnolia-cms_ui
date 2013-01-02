@@ -36,11 +36,11 @@ package info.magnolia.ui.vaadin.gwt.client.tabsheet;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.TabSetChangedEvent.Handler;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.TabSetChangedEvent.HasTabSetChangedHandlers;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent.HasActiveTabChangeHandlers;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ShowAllTabsEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ShowAllTabsHandler;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabCloseEventHandler;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent.HasActiveTabChangeHandlers;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -67,8 +67,8 @@ import com.vaadin.terminal.gwt.client.VConsole;
 /**
  * Client side implementation of the simple tab sheet.
  */
-public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoliaTabSheetView.Presenter, 
-    Container, ClientSideHandler, HasTabSetChangedHandlers, HasActiveTabChangeHandlers {
+public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoliaTabSheetView.Presenter,
+        Container, ClientSideHandler, HasTabSetChangedHandlers, HasActiveTabChangeHandlers {
 
     protected String paintableId;
 
@@ -93,7 +93,7 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
         });
 
         eventBus.addHandler(ActiveTabChangedEvent.TYPE, new ActiveTabChangedEvent.Handler() {
-            
+
             @Override
             public void onActiveTabChanged(ActiveTabChangedEvent event) {
                 view.setActiveTab(event.getTab());
@@ -143,7 +143,7 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
                 register("setActiveTabFullscreen", new Method() {
                     @Override
                     public void invoke(String methodName, Object[] params) {
-                        boolean isFullscreen = (Boolean)params[0];
+                        boolean isFullscreen = (Boolean) params[0];
                         view.setShowActiveTabFullscreen(isFullscreen);
                         client.runDescendentsLayout(VMagnoliaTabSheet.this);
                     }
@@ -158,7 +158,8 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
                     }
                 });
 
-            }};
+            }
+        };
     }
 
     protected void closeTab(final VMagnoliaTab tab) {
@@ -179,7 +180,7 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
         updateTabs(uidl);
         proxy.update(this, uidl, client);
     }
-    
+
     private void updateTabs(final UIDL uidl) {
         final UIDL tabsUidl = uidl.getChildByTagName("tabs");
         if (tabsUidl != null) {
@@ -202,7 +203,8 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
     }
 
     @Override
-    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {}
+    public void replaceChildComponent(Widget oldComponent, Widget newComponent) {
+    }
 
     @Override
     public boolean hasChildComponent(Widget component) {
@@ -224,7 +226,7 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
     @Override
     public RenderSpace getAllocatedSpace(Widget child) {
         if (child instanceof VMagnoliaTab && hasChildComponent(child)) {
-            return new RenderSpace(getOffsetWidth(), view.getTabHeight((VMagnoliaTab)child));
+            return new RenderSpace(getOffsetWidth(), view.getTabHeight((VMagnoliaTab) child));
         }
         return new RenderSpace();
     }
@@ -242,11 +244,11 @@ public class VMagnoliaTabSheet extends Composite implements HasWidgets, VMagnoli
     public List<VMagnoliaTab> getTabs() {
         return view.getTabs();
     }
-    
+
     public VMagnoliaTab getActiveTab() {
         return view.getActiveTab();
     }
-    
+
     public EventBus getEventBus() {
         return eventBus;
     }

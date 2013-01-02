@@ -50,9 +50,9 @@ public interface VAppLauncherView extends IsWidget {
     }
 
     void setPresenter(Presenter presenter);
-    
+
     void setAppActive(String appName, boolean isActive);
-    
+
     void addAppGroup(VAppGroupJSO group);
 
     void addAppTile(VAppTileJSO appTile, String groupName);

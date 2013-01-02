@@ -37,7 +37,6 @@ import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.UIDL;
 
-
 /**
  * The VLoadingIcon vaadin client-side proxy for the LoadingIcon component.
  */

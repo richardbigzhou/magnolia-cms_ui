@@ -45,7 +45,6 @@ import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-
 /**
  * Opens a page for editing.
  */

@@ -42,7 +42,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
  * The ShellAppsTransitionDelegate provides custom transition logic when activating viewport or a
  * specific app. It also defines its own slide and fade transitions (not those from JQueryWrapper)
@@ -139,8 +138,10 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
     /**
      * SLIDE DOWN TRANSITION.
      * 
-     * @param viewport the viewport widget
-     * @param callbacks the callbacks
+     * @param viewport
+     *            the viewport widget
+     * @param callbacks
+     *            the callbacks
      */
     private void slideDown(final VShellViewport viewport, final Callbacks callbacks) {
         JQueryWrapper jq = JQueryWrapper.select(viewport);
@@ -180,8 +181,10 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
     /**
      * SLIDE UP TRANSITION.
      * 
-     * @param viewport the viewport widget
-     * @param callbacks the callbacks
+     * @param viewport
+     *            the viewport widget
+     * @param callbacks
+     *            the callbacks
      */
     private void slideUp(final VShellViewport viewport, final Callbacks callbacks) {
         JQueryWrapper jq = JQueryWrapper.select(viewport);
@@ -217,8 +220,10 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
     /**
      * FADE IN TRANSITION.
      * 
-     * @param w the app widget
-     * @param callbacks the callbacks
+     * @param w
+     *            the app widget
+     * @param callbacks
+     *            the callbacks
      */
     private void fadeIn(final Widget w, final Callbacks callbacks) {
 
@@ -259,8 +264,10 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
     /**
      * FADE OUT TRANSITION.
      * 
-     * @param w the app widget
-     * @param callbacks the callbacks
+     * @param w
+     *            the app widget
+     * @param callbacks
+     *            the callbacks
      */
     private void fadeOut(final Widget w, final Callbacks callbacks) {
 

@@ -52,7 +52,7 @@ import com.vaadin.terminal.gwt.server.ApplicationServlet;
 public class MagnoliaIcePushServlet extends ApplicationServlet {
 
     private MainServlet ICEPushServlet;
-    
+
     private JavascriptProvider javascriptProvider;
 
     @Override
@@ -73,10 +73,12 @@ public class MagnoliaIcePushServlet extends ApplicationServlet {
         try {
             String codeBasePath = servletConfig.getServletContext().getContextPath();
             String codeLocation = servletConfig.getInitParameter("codeBasePath");
-            if (codeLocation != null)
+            if (codeLocation != null) {
                 codeBasePath += codeLocation;
-            if (codeBasePath.endsWith("/"))
+            }
+            if (codeBasePath.endsWith("/")) {
                 codeBasePath = codeBasePath.substring(0, codeBasePath.length() - 2);
+            }
             this.javascriptProvider = new JavascriptProvider(codeBasePath);
             ICEPush.setCodeJavascriptLocation(this.javascriptProvider.getCodeLocation());
         } catch (IOException e) {

@@ -33,10 +33,6 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Field;
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
@@ -47,13 +43,19 @@ import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Field;
 
 /**
  * Creates and initializes a LinkField field based on a field definition.

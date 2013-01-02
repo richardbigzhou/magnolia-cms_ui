@@ -42,7 +42,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
-
 /**
  * PageEditorViewImpl.
  */
@@ -77,8 +76,6 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
         this.listener = listener;
     }
 
-
-
     @Override
     public void setPageEditorView(PageEditorView pageEditor) {
         container.addComponent(pageEditor.asVaadinComponent());
@@ -99,7 +96,7 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
 
     @Override
     public void hideActionbar(boolean hide) {
-        if(actionbar != null) {
+        if (actionbar != null) {
             actionbar.asVaadinComponent().setVisible(!hide);
         }
     }

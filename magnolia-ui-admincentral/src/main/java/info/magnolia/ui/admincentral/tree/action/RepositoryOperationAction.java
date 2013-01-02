@@ -46,11 +46,11 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-
 /**
  * A repository operation action which saves the changes and informs the event bus.
- *
- * @param <D> The {@link ActionDefinition} used by the action.
+ * 
+ * @param <D>
+ *            The {@link ActionDefinition} used by the action.
  */
 public abstract class RepositoryOperationAction<D extends ActionDefinition> extends ActionBase<D> {
 
@@ -74,8 +74,7 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
             onExecute(item);
             session.save();
             eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemPath()));
-        }
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             throw new ActionExecutionException("Can't execute repository operation.\n" + e.getMessage(), e);
         }
     }
@@ -91,7 +90,7 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
     protected abstract void onExecute(Item item) throws RepositoryException;
 
     protected String getUniqueNewItemName(final Item item) throws RepositoryException, ItemNotFoundException, AccessDeniedException {
-        if(item == null) {
+        if (item == null) {
             throw new IllegalArgumentException("Item cannot be null.");
         }
         return Path.getUniqueLabel(item.getSession(), item.getPath(), "untitled");

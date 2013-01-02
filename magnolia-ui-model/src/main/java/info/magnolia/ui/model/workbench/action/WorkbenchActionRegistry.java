@@ -43,7 +43,6 @@ import java.util.List;
 
 import javax.inject.Singleton;
 
-
 /**
  * Dialog WorkbenchAction Registry. This registry currently listen to changes
  * coming from the following path: /modules/ui-admincentral/workbenchActionRegistry
@@ -62,7 +61,7 @@ public class WorkbenchActionRegistry implements Serializable {
     }
 
     public void setDefinitionToImplementationMappings(
-        List<DefinitionToImplementationMapping<ActionDefinition, Action>> definitionToImplementationMappings) {
+            List<DefinitionToImplementationMapping<ActionDefinition, Action>> definitionToImplementationMappings) {
         this.definitionToImplementationMappings = definitionToImplementationMappings;
     }
 

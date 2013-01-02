@@ -70,7 +70,6 @@ import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 
-
 /**
  * Server side implementation of the MagnoliaShell container.
  */
@@ -103,7 +102,6 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Com
         for (ShellAppType type : ShellAppType.values()) {
             indications.put(type, new MutableInt());
         }
-
 
     }
 
@@ -289,7 +287,7 @@ public abstract class BaseMagnoliaShell extends AbstractComponent implements Com
                 }
             }
         }
-        return new Object[]{};
+        return new Object[] {};
     }
 
     @Override

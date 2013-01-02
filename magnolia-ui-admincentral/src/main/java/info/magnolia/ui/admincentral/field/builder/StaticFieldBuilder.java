@@ -57,7 +57,6 @@ public class StaticFieldBuilder extends AbstractFieldBuilder<StaticFieldDefiniti
         return field;
     }
 
-
     /**
      * Do not set datasource for a Static field.
      */
@@ -70,4 +69,3 @@ public class StaticFieldBuilder extends AbstractFieldBuilder<StaticFieldDefiniti
         return String.class;
     }
 }
-

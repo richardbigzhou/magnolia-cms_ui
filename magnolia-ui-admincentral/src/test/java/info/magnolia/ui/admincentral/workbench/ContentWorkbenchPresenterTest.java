@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.workbench;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
@@ -62,7 +63,6 @@ import javax.jcr.Property;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 
 /**
  * Tests covering business logic in {@link ContentWorkbenchPresenter}.
@@ -115,7 +115,7 @@ public class ContentWorkbenchPresenterTest {
         ActionbarPresenter mockActionbarPresenter = mock(ActionbarPresenter.class);
 
         presenter = new ContentWorkbenchPresenter(subAppContext, mockView, adminCentralEventBus, subAppEventBus,
-            null, mockContentPresenter, mockActionbarPresenter, null);
+                null, mockContentPresenter, mockActionbarPresenter, null);
 
         // start presenter (binds event handlers)
         presenter.start();

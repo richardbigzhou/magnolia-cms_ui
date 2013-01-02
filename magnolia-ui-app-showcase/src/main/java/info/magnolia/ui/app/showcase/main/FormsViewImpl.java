@@ -34,10 +34,10 @@
 package info.magnolia.ui.app.showcase.main;
 
 import com.vaadin.terminal.ExternalResource;
-import com.vaadin.ui.Component;
-
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.GridLayout;
@@ -50,7 +50,6 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Button.ClickEvent;
 
 /**
  * Implementation for forms example.
@@ -81,26 +80,26 @@ public class FormsViewImpl implements FormsView {
     private void createComponents(Layout layout) {
         layout.addComponent(createRow("Static text",
                 new Label("Lorem ipsum dolor sit amet, consectetur adipisicing elit"))
-        );
+                );
         layout.addComponent(createRow("Commit button in a form", createSendButton()));
         layout.addComponent(createRow("Reset button in a form", createResetButton()));
         layout.addComponent(
-            createRow("Link",
-                new Link(
-                    "magnolia-cms.com",
-                    new ExternalResource(
-                            "http://www.magnolia-cms.com"
-                    )
+                createRow("Link",
+                        new Link(
+                                "magnolia-cms.com",
+                                new ExternalResource(
+                                        "http://www.magnolia-cms.com"
+                                )
+                        )
                 )
-            )
-        );
+                );
         layout.addComponent(createRow("Text field", new TextField()));
         layout.addComponent(createRow("Text area", new TextArea()));
         layout.addComponent(createRow("Password field", new PasswordField()));
         layout.addComponent(createRow("Checkbox", new CheckBox()));
         layout.addComponent(createRow("Radio button group", createRadioButtonGroup(false)));
         layout.addComponent(createRow("Checkbox group", createRadioButtonGroup(true)));
-        layout.addComponent(createRow("Select",createSelect()));
+        layout.addComponent(createRow("Select", createSelect()));
         layout.addComponent(createRow("Date field", new DateField()));
     }
 
@@ -119,7 +118,6 @@ public class FormsViewImpl implements FormsView {
         layout.addComponent(content);
         return layout;
     }
-
 
     private Select createSelect() {
         Select select = new Select();

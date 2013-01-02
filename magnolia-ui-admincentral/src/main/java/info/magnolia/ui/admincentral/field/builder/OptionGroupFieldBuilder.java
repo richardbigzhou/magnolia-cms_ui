@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
+import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
+
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.OptionGroup;
-
-import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
 
 /**
  * Creates and initializes a select field based on a field definition.
@@ -52,7 +52,7 @@ public class OptionGroupFieldBuilder extends SelectFieldBuilder<OptionGroupField
     protected AbstractSelect buildField() {
         super.buildField();
         select.setMultiSelect(getFieldDefinition().isMultiselect());
-        if(select.isMultiSelect()) {
+        if (select.isMultiSelect()) {
             select.setNullSelectionAllowed(true);
         }
         return select;

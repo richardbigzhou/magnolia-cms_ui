@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
+
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
 import info.magnolia.ui.model.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -50,7 +51,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
     private LinkFieldBuilder linkFieldBuilder;
 
     @Test
-    public void simpleLinkFieldTest() throws Exception{
+    public void simpleLinkFieldTest() throws Exception {
         // GIVEN
         linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
         linkFieldBuilder.setI18nContentSupport(i18nContentSupport);
@@ -62,7 +63,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
     }
 
     @Test
-    public void simpleLinkFieldUuidTest() throws Exception{
+    public void simpleLinkFieldUuidTest() throws Exception {
         // GIVEN
         definition.setIdentifier(true);
         definition.setName(propertyName);
@@ -81,7 +82,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
     }
 
     @Test
-    public void linkField_SetButtonCaptionNewTest() throws Exception{
+    public void linkField_SetButtonCaptionNewTest() throws Exception {
         // GIVEN
         linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
         linkFieldBuilder.setI18nContentSupport(i18nContentSupport);
@@ -92,11 +93,11 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
 
         // THEN
         assertEquals(true, field instanceof TextAndButtonField);
-        assertEquals("New", ((TextAndButtonField)field).getSelectButton().getCaption());
+        assertEquals("New", ((TextAndButtonField) field).getSelectButton().getCaption());
     }
 
     @Test
-    public void linkField_SetButtonCaptionOtherTest() throws Exception{
+    public void linkField_SetButtonCaptionOtherTest() throws Exception {
         // GIVEN
         definition.setName(propertyName);
         baseNode.setProperty(propertyName, "notChanged");
@@ -110,11 +111,11 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
 
         // THEN
         assertEquals(true, field instanceof TextAndButtonField);
-        assertEquals("Other", ((TextAndButtonField)field).getSelectButton().getCaption());
+        assertEquals("Other", ((TextAndButtonField) field).getSelectButton().getCaption());
     }
 
     @Test
-    public void linkField_SetFieldPropagation() throws Exception{
+    public void linkField_SetFieldPropagation() throws Exception {
         // GIVEN
         definition.setName(propertyName);
         baseNode.setProperty(propertyName, "notChanged");
@@ -122,12 +123,12 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
         linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
         linkFieldBuilder.setI18nContentSupport(i18nContentSupport);
         Field field = linkFieldBuilder.getField();
-        assertEquals("notChanged", (String)((TextAndButtonField)field).getTextField().getValue());
+        assertEquals("notChanged", ((TextAndButtonField) field).getTextField().getValue());
         // WHEN
-        ((TextAndButtonField)field).getTextField().setValue("Changed");
+        ((TextAndButtonField) field).getTextField().setValue("Changed");
 
         // THEN
-        assertEquals("Changed", (String)baseItem.getItemProperty(propertyName).getValue());
+        assertEquals("Changed", baseItem.getItemProperty(propertyName).getValue());
     }
 
     @Override

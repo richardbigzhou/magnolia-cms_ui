@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
+import info.magnolia.ui.model.field.definition.DateFieldDefinition;
+
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.PopupDateField;
-
-import info.magnolia.ui.model.field.definition.DateFieldDefinition;
 
 /**
  * Creates and initializes a date field based on a field definition.

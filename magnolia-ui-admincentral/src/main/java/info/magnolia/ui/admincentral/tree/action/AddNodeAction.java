@@ -42,10 +42,9 @@ import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-
 /**
  * Action for adding a new folder.
- *
+ * 
  * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
  */
 public class AddNodeAction extends RepositoryOperationAction<AddNodeActionDefinition> implements TreeAction {

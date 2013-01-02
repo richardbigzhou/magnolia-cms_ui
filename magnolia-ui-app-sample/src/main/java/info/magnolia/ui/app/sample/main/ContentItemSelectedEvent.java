@@ -38,7 +38,7 @@ import info.magnolia.ui.framework.event.EventHandler;
 
 /**
  * Event fired when an item is selected in the navigation view.
- *
+ * 
  * @see NavigationPresenter
  */
 public class ContentItemSelectedEvent implements Event<ContentItemSelectedEvent.Handler> {

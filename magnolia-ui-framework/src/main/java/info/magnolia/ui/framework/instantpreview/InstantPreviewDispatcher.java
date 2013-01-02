@@ -65,7 +65,7 @@ public class InstantPreviewDispatcher implements PreviewLocationListener {
     private String hostId = null;
 
     @Inject
-    public InstantPreviewDispatcher(InstantPreviewLocationManager manager, LocationController controller, Shell shell, @Named("admincentral")EventBus eventBus) {
+    public InstantPreviewDispatcher(InstantPreviewLocationManager manager, LocationController controller, Shell shell, @Named("admincentral") EventBus eventBus) {
         this.manager = manager;
         this.controller = controller;
         this.shell = shell;
@@ -94,6 +94,7 @@ public class InstantPreviewDispatcher implements PreviewLocationListener {
         log.info("Started sharing with host id {}", hostId);
         return hostId;
     }
+
     public void unshare(String hostId) {
         manager.unregisterInstantPreviewHost(hostId);
         log.info("Stopped sharing host with id {}", hostId);

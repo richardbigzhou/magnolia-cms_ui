@@ -60,23 +60,23 @@ public class PasswordFields extends CustomField {
     /**
      * Create a {@link CustomField} based on a {@link VerticalLayout}.
      * The layout is composed by:
-     *   - {@link PasswordField}.
-     *   if verification:
-     *   - {@link Label} (verificationMessage).
-     *   - {@link PasswordField}.
+     * - {@link PasswordField}.
+     * if verification:
+     * - {@link Label} (verificationMessage).
+     * - {@link PasswordField}.
      */
     public PasswordFields(boolean verification, String verificationMessage, String verificationErrorMessage, boolean encode) {
         this.verification = verification;
         this.verificationErrorMessage = verificationErrorMessage;
         // Initialize encoder
-        if(encode) {
+        if (encode) {
             this.translator = new Base64Translator();
         }
         // Init layout
         layout = new VerticalLayout();
         passwordField = new PasswordField();
         layout.addComponent(passwordField);
-        if(this.verification) {
+        if (this.verification) {
             Label msg = new Label(verificationMessage);
             layout.addComponent(msg);
             verificationField = new PasswordField();
@@ -84,7 +84,6 @@ public class PasswordFields extends CustomField {
         }
         setCompositionRoot(layout);
     }
-
 
     public VerticalLayout getVerticalLayout() {
         return this.layout;
@@ -96,10 +95,11 @@ public class PasswordFields extends CustomField {
     @Override
     public void validate() throws InvalidValueException {
         super.validate();
-        if(this.verification) {
-            if(StringUtils.isBlank(passwordField.getValue().toString()) || StringUtils.isBlank(verificationField.getValue().toString())) {
+        if (this.verification) {
+            if (StringUtils.isBlank(passwordField.getValue().toString()) || StringUtils.isBlank(verificationField.getValue().toString())) {
                 throw new InvalidValueException(verificationErrorMessage);
-            }if(!passwordField.getValue().toString().equals(verificationField.getValue().toString())) {
+            }
+            if (!passwordField.getValue().toString().equals(verificationField.getValue().toString())) {
                 throw new InvalidValueException(verificationErrorMessage);
             }
         }
@@ -107,20 +107,20 @@ public class PasswordFields extends CustomField {
 
     @Override
     public boolean isValid() {
-        if(super.isValid()) {
+        if (super.isValid()) {
             try {
                 this.validate();
                 return true;
             } catch (InvalidValueException ive) {
                 return false;
             }
-        }else {
+        } else {
             return false;
         }
     }
 
     @Override
-    public Class< ? > getType() {
+    public Class<?> getType() {
         return String.class;
     }
 
@@ -136,22 +136,22 @@ public class PasswordFields extends CustomField {
 
     @Override
     public void setPropertyDataSource(Property newDataSource) {
-        if(translator != null) {
+        if (translator != null) {
             translator.setPropertyDataSource(newDataSource);
             passwordField.setPropertyDataSource(translator);
         } else {
             passwordField.setPropertyDataSource(newDataSource);
         }
 
-        if(this.verification) {
-            verificationField.setValue(new String (passwordField.getPropertyDataSource().getValue().toString()));
+        if (this.verification) {
+            verificationField.setValue(new String(passwordField.getPropertyDataSource().getValue().toString()));
         }
     }
 
     @Override
     public Property getPropertyDataSource() {
         Property property = null;
-        if(translator != null) {
+        if (translator != null) {
             property = translator.getPropertyDataSource();
         } else {
             property = passwordField.getPropertyDataSource();

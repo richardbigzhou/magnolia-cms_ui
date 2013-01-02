@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.event;
 import info.magnolia.ui.framework.event.Event;
 import info.magnolia.ui.framework.event.EventHandler;
 
-
 /**
  * This event is fired when a search is launched, i.e. by hitting the ENTER key in the search box in the UI.
  */

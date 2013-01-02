@@ -33,6 +33,20 @@
  */
 package info.magnolia.ui.vaadin.form;
 
+import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.vaadin.gwt.client.form.VForm;
+import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.vaadin.rpc.ServerSideHandler;
+import org.vaadin.rpc.ServerSideProxy;
+import org.vaadin.rpc.client.Method;
+
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.vaadin.data.Item;
@@ -43,18 +57,6 @@ import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Field;
-import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.vaadin.gwt.client.form.VForm;
-import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
-import org.vaadin.rpc.ServerSideHandler;
-import org.vaadin.rpc.ServerSideProxy;
-import org.vaadin.rpc.client.Method;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * {@link Form}. The server side implementation of the form view.
@@ -80,14 +82,14 @@ public class Form extends AbstractComponent implements ServerSideHandler, FormVi
     };
 
     private boolean isAttached;
-    
+
     private String description;
 
     private Item itemDatasource;
 
     private final List<Field> fields = new LinkedList<Field>();
 
-    private final ListMultimap<String, FormView.FormActionListener> actionCallbackMap = 
+    private final ListMultimap<String, FormView.FormActionListener> actionCallbackMap =
             ArrayListMultimap.<String, FormView.FormActionListener> create();
 
     private final Map<String, String> actionMap = new HashMap<String, String>();
@@ -120,7 +122,7 @@ public class Form extends AbstractComponent implements ServerSideHandler, FormVi
     public void setCaption(String caption) {
         tabSheet.setCaption(caption);
     }
-    
+
     @Override
     public void setItemDataSource(Item newDataSource) {
         itemDatasource = newDataSource;

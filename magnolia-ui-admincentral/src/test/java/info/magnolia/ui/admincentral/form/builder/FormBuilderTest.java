@@ -33,6 +33,10 @@
  */
 package info.magnolia.ui.admincentral.form.builder;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
@@ -52,22 +56,19 @@ import info.magnolia.ui.admincentral.field.builder.TextFieldBuilder;
 import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.form.definition.ConfiguredFormDefinition;
-import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.model.form.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.vaadin.form.Form;
 import info.magnolia.ui.vaadin.form.FormView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.util.Locale;
+
+import javax.jcr.Node;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.jcr.Node;
-import java.util.Locale;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * FormBuilderTest.

@@ -57,7 +57,7 @@ import com.vaadin.ui.ClientWidget;
 
 /**
  * Lazy layout of asset thumbnails.
- *
+ * 
  */
 @ClientWidget(VLazyThumbnailLayout.class)
 public class LazyThumbnailLayout extends AbstractComponent implements ServerSideHandler, Container.Viewer {

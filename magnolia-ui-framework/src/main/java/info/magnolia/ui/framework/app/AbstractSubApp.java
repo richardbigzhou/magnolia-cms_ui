@@ -33,17 +33,16 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.view.View;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.View;
-
-
 /**
  * Abstract implementation with default behavior suitable for most sub apps.
- *
+ * 
  * @see info.magnolia.ui.framework.app.SubApp
  */
 public abstract class AbstractSubApp implements SubApp {
@@ -55,7 +54,7 @@ public abstract class AbstractSubApp implements SubApp {
     private static final Logger log = LoggerFactory.getLogger(AbstractSubApp.class);
 
     protected AbstractSubApp(final SubAppContext subAppContext, final View view) {
-        if(subAppContext == null || view == null) {
+        if (subAppContext == null || view == null) {
             throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", View = " + view);
         }
         this.subAppContext = subAppContext;
@@ -89,7 +88,8 @@ public abstract class AbstractSubApp implements SubApp {
      * This hook-up method is called on {@link #start(info.magnolia.ui.framework.location.Location)} and enables subclasses to perform additional work before the view is displayed.
      * The default implementation does nothing.
      */
-    protected void onSubAppStart() { }
+    protected void onSubAppStart() {
+    }
 
     public SubAppContext getSubAppContext() {
         return subAppContext;
@@ -110,17 +110,18 @@ public abstract class AbstractSubApp implements SubApp {
 
     /**
      * This method will try to determine the current sub app caption, the one usually displayed in the tab where the subapp opens.
+     * 
      * @return the configured label for this subapp. If no label is found in the subapp configuration, it will try to use the label from the parent app.
-     * If the latter is missing too, it will return an empty string.
+     *         If the latter is missing too, it will return an empty string.
      */
     @Override
     public String getCaption() {
         String label = subAppContext.getSubAppDescriptor().getLabel();
-        if(StringUtils.isNotBlank(label)) {
+        if (StringUtils.isNotBlank(label)) {
             return label;
         }
         label = subAppContext.getAppContext().getAppDescriptor().getLabel();
-        if(StringUtils.isNotBlank(label)) {
+        if (StringUtils.isNotBlank(label)) {
             return label;
         }
         log.warn("No label could be found for subapp [{}] at app [{}]", subAppContext.getSubAppDescriptor().getName(), subAppContext.getAppContext().getAppDescriptor().getName());

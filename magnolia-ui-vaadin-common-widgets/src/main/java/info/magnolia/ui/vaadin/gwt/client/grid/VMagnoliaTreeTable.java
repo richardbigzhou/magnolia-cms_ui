@@ -46,27 +46,27 @@ import com.vaadin.terminal.gwt.client.ui.VTreeTablePatched;
  * VMagnoliaTreeTable extends VTreeTable by ways that patching is required to expose the necessary private fields.
  */
 public class VMagnoliaTreeTable extends VTreeTablePatched {
-    
+
     @Override
     protected VScrollTableBody createScrollBody() {
         scrollBody = new VMagnoliaTreeTableScrollBody();
         return scrollBody;
     }
-    
+
     @Override
     protected String buildCaptionHtmlSnippet(UIDL uidl) {
         return (uidl.getTag().equals("column")) ? super.buildCaptionHtmlSnippet(uidl) : uidl.getStringAttribute("caption");
     }
-    
+
     /**
      * Extension for Scroll body.
      */
     public class VMagnoliaTreeTableScrollBody extends VTreeTableScrollBody {
-        
+
         protected VMagnoliaTreeTableScrollBody() {
             super();
         }
-        
+
         @Override
         protected VScrollTableRow createRow(UIDL uidl, char[] aligns2) {
             if (uidl.hasAttribute("gen_html")) {
@@ -75,7 +75,7 @@ public class VMagnoliaTreeTable extends VTreeTablePatched {
             }
             return new VMagnoliaTreeTableRow(uidl, aligns2);
         }
-        
+
         /**
          * Extension for table row.
          */
@@ -84,7 +84,7 @@ public class VMagnoliaTreeTable extends VTreeTablePatched {
             public VMagnoliaTreeTableRow(UIDL uidl, char[] aligns2) {
                 super(uidl, aligns2);
             }
-            
+
             /*
              * Forked from VTreeTable.
              */
@@ -124,22 +124,22 @@ public class VMagnoliaTreeTable extends VTreeTablePatched {
                 }
                 return false;
             }
-            
+
             @Override
             public void onBrowserEvent(Event event) {
-                if (event.getEventTarget().cast() == treeSpacer && 
+                if (event.getEventTarget().cast() == treeSpacer &&
                         treeSpacer.getClassName().contains("node")) {
-                        if (event.getTypeInt() == Event.ONMOUSEDOWN ||
-                                event.getTypeInt() == Event.ONTOUCHSTART) {
-                            sendToggleCollapsedUpdate(getKey());
-                            event.stopPropagation();
-                            event.preventDefault();
-                        }
-                        return;
+                    if (event.getTypeInt() == Event.ONMOUSEDOWN ||
+                            event.getTypeInt() == Event.ONTOUCHSTART) {
+                        sendToggleCollapsedUpdate(getKey());
+                        event.stopPropagation();
+                        event.preventDefault();
                     }
-                    super.onBrowserEvent(event);
+                    return;
+                }
+                super.onBrowserEvent(event);
             }
-            
+
             @Override
             protected void setIndent() {
                 if (getIndentWidth() > 0) {

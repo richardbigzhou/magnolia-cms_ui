@@ -45,7 +45,6 @@ import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 
-
 /**
  * The CompositeIcon allows for layered icons, such as a warning sign, with optional outer shape
  * outline. It mostly serves as the base class for preset composite icons such as InfoIcon,

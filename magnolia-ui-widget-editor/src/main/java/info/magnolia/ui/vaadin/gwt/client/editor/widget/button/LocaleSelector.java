@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.widget.button;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ListBox;
-
-import java.util.Map;
-import java.util.Map.Entry;
 
 
 /**

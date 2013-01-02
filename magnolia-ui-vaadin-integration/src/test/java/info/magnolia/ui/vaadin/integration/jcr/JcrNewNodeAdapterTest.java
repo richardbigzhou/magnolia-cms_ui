@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -64,24 +65,21 @@ public class JcrNewNodeAdapterTest {
         MgnlContext.setInstance(null);
     }
 
-
-
-
     @Test
     public void testGetItemPropertyReturnsModified() throws Exception {
         // GIVEN
-        //Create a NewNodeAdapter
+        // Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyName";
         String nodeType = "mgnl:content";
         Node parentNode = session.getRootNode().addNode(nodeName);
-        JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode,nodeType);
+        JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
 
         Property propertyInitial = adapter.getItemProperty(id);
-        //New property --> null.
+        // New property --> null.
         assertEquals(true, propertyInitial == null);
         propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, null, "test");
-        adapter.addItemProperty(id,propertyInitial);
+        adapter.addItemProperty(id, propertyInitial);
 
         propertyInitial.setValue("new");
 
@@ -95,11 +93,11 @@ public class JcrNewNodeAdapterTest {
     @Test
     public void testGetNodeUpdatesNode() throws Exception {
         // GIVEN
-        //Create a NewNodeAdapter
+        // Create a NewNodeAdapter
         String nodeName = "rootNode";
         String nodeType = "mgnl:content";
         Node parentNode = session.getRootNode().addNode(nodeName);
-        JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode,nodeType);
+        JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
 
         Property notModifyProperty = DefaultPropertyUtil.newDefaultProperty("notModify", null, "");
         adapter.addItemProperty("notModify", notModifyProperty);
@@ -131,17 +129,16 @@ public class JcrNewNodeAdapterTest {
         assertEquals(nodeType, res.getPrimaryNodeType().getName());
     }
 
-
     @Test
     public void testGetNodeTwice() throws Exception {
         // GIVEN
-        //Create a NewNodeAdapter
+        // Create a NewNodeAdapter
         String nodeName = "rootNode";
         String nodeType = "mgnl:content";
         Node parentNode = session.getRootNode().addNode(nodeName);
-        JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode,nodeType);
+        JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
 
-        Property propertyModified= DefaultPropertyUtil.newDefaultProperty("id", null, "");
+        Property propertyModified = DefaultPropertyUtil.newDefaultProperty("id", null, "");
         adapter.addItemProperty("id", propertyModified);
         Node node1 = adapter.getNode();
 
@@ -153,4 +150,3 @@ public class JcrNewNodeAdapterTest {
     }
 
 }
-

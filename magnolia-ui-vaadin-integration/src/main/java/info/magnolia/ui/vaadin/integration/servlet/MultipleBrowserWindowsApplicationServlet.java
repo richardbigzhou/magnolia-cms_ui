@@ -56,7 +56,6 @@ import com.vaadin.terminal.gwt.server.AbstractApplicationServlet;
 import com.vaadin.terminal.gwt.server.CommunicationManager;
 import com.vaadin.ui.Window;
 
-
 /**
  * Vaadin ApplicationServlet that supports running a unique Application per browser window. The
  * applications are identified in the URIs used by UIDL requests and file downloads. The browser
@@ -156,7 +155,7 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
 
     @Override
     protected void writeAjaxPageHtmlVaadinScripts(Window window, String themeName, Application application, BufferedWriter page, String appUrl,
-        String themeUri, String appId, HttpServletRequest request) throws ServletException, IOException {
+            String themeUri, String appId, HttpServletRequest request) throws ServletException, IOException {
         super.writeAjaxPageHtmlVaadinScripts(window, themeName, application, page, appUrl, themeUri, appId, request);
 
         String applicationId = (String) request.getAttribute(ATTRIBUTE_APPLICATION_ID);
@@ -180,21 +179,21 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
 
     @Override
     protected void writeAjaxPageHtmlHeader(BufferedWriter page, String title, String themeUri, HttpServletRequest request)
-        throws IOException {
+            throws IOException {
         super.writeAjaxPageHtmlHeader(page, title, themeUri, request);
         page.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\" />");
 
         // Add a CSS file based on browser in order to normalize the weight of the DinWebPro font.
         /*
-        page.write("<script type=\"text/javascript\">\n");
-        page.write("//<![CDATA[\n");
-        page.write("if (navigator.userAgent.toLowerCase().indexOf('webkit')>-1 || navigator.appName == 'Microsoft Internet Explorer') {\n");
-        page.write("    document.write(\"<link rel='stylesheet' type='text/css' href='../VAADIN/themes/admincentraltheme/css-conditional/fonts-heavy.css' \\/>\");\n");
-        page.write("} else {\n");
-        page.write("    document.write(\"<link rel='stylesheet' type='text/css' href='../VAADIN/themes/admincentraltheme/css-conditional/fonts-default.css' \\/>\");\n");
-        page.write("}\n");
-        page.write("//]]>\n</script>\n");
-        */
+         * page.write("<script type=\"text/javascript\">\n");
+         * page.write("//<![CDATA[\n");
+         * page.write("if (navigator.userAgent.toLowerCase().indexOf('webkit')>-1 || navigator.appName == 'Microsoft Internet Explorer') {\n");
+         * page.write("    document.write(\"<link rel='stylesheet' type='text/css' href='../VAADIN/themes/admincentraltheme/css-conditional/fonts-heavy.css' \\/>\");\n");
+         * page.write("} else {\n");
+         * page.write("    document.write(\"<link rel='stylesheet' type='text/css' href='../VAADIN/themes/admincentraltheme/css-conditional/fonts-default.css' \\/>\");\n");
+         * page.write("}\n");
+         * page.write("//]]>\n</script>\n");
+         */
 
         page.write("<script type=\"text/javascript\">\n");
         page.write("//<![CDATA[\n");
@@ -212,13 +211,13 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
         }
 
         final URL reqURL = new URL(
-            (request.isSecure() ? "https://" : "http://")
-                + request.getServerName()
-                + ((request.isSecure() && request.getServerPort() == 443)
-                    || (!request.isSecure() && request
-                        .getServerPort() == 80) ? "" : ":"
-                    + request.getServerPort())
-                + path);
+                (request.isSecure() ? "https://" : "http://")
+                        + request.getServerName()
+                        + ((request.isSecure() && request.getServerPort() == 443)
+                                || (!request.isSecure() && request
+                                        .getServerPort() == 80) ? "" : ":"
+                                + request.getServerPort())
+                        + path);
         return reqURL;
     }
 
@@ -269,7 +268,7 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
 
         @Override
         public void handleUidlRequest(HttpServletRequest request, HttpServletResponse response, AbstractApplicationServlet applicationServlet,
-            Window window) throws IOException, ServletException, InvalidUIDLSecurityKeyException {
+                Window window) throws IOException, ServletException, InvalidUIDLSecurityKeyException {
 
             // Terminal is normally set on the first request after starting the application and
             // before serving the kick
@@ -360,7 +359,8 @@ public class MultipleBrowserWindowsApplicationServlet extends MagnoliaIcePushSer
      * The servlet container is supposed to not include the part of the request uri following a
      * semicolon but some containers (Jetty) leaves it in. This method removes it if it's there.
      * 
-     * @param uri a decoded request uri
+     * @param uri
+     *            a decoded request uri
      */
     private static String cleanRequestUri(String uri) {
         int i = uri.indexOf(';');

@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.vaadin.form;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
 import info.magnolia.ui.framework.view.View;
 
 import java.util.List;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
 
 /**
  * Interface for {@link Form}.

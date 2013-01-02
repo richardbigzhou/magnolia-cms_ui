@@ -33,12 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
+import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
+
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.DeleteComponentEvent;
@@ -47,7 +43,12 @@ import info.magnolia.ui.vaadin.gwt.client.editor.event.NewAreaEvent;
 
 import java.util.Map;
 
-import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PushButton;
 
 
 /**

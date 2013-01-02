@@ -50,7 +50,6 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
 
     private boolean enabled = true;
 
-
     private String icon;
 
     private Class<? extends SubApp> subAppClass;

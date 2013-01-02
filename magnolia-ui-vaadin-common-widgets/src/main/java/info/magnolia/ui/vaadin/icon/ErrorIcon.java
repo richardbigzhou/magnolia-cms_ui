@@ -44,8 +44,8 @@ public class ErrorIcon extends CompositeIcon {
 
     public ErrorIcon(int size) {
         super(
-            new Icon("shape-triangle", size, Icon.COLOR_ERROR),
-            new Icon("error-mark", size, "#fff"));
+                new Icon("shape-triangle", size, Icon.COLOR_ERROR),
+                new Icon("error-mark", size, "#fff"));
     }
 
 }

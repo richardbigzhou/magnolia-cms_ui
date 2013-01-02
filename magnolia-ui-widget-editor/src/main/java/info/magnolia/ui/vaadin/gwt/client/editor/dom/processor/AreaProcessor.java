@@ -33,10 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.event.shared.EventBus;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
@@ -45,6 +41,11 @@ import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.AreaEndBar;
 import info.magnolia.ui.vaadin.gwt.client.editor.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.Map;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.event.shared.EventBus;
 
 /**
  * Factory Class for MgnlElement processors.

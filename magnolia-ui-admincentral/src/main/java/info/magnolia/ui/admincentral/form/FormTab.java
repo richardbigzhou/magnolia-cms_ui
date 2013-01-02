@@ -41,13 +41,13 @@ import com.vaadin.ui.Field;
 
 /**
  * Represents a tab in a dialog.
- *
+ * 
  * @see info.magnolia.ui.admincentral.dialog.Dialog
  * @see info.magnolia.ui.admincentral.field.FieldBuilder
  */
 public class FormTab extends AbstractFormItem {
-    
-    //private static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
+
+    // private static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
 
     private TabDefinition definition;
 
@@ -55,7 +55,7 @@ public class FormTab extends AbstractFormItem {
 
     public FormTab(TabDefinition definition) {
         this.definition = definition;
-        //container.setStyleName(FIELD_CONTAINER_STYLE_NAME);
+        // container.setStyleName(FIELD_CONTAINER_STYLE_NAME);
     }
 
     public void addField(Component component) {

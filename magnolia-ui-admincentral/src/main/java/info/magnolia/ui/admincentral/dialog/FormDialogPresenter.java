@@ -33,10 +33,11 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import com.vaadin.data.Item;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
+
+import com.vaadin.data.Item;
 
 /**
  * Interface for {@link FormDialogPresenterImpl}.

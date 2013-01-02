@@ -35,6 +35,7 @@ package info.magnolia.ui.framework.instantpreview;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
+
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -50,7 +51,6 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 
 /**
  * InstantPreviewDispatcherTest.
@@ -83,7 +83,7 @@ public class InstantPreviewDispatcherTest {
         controller = null;
         dispatcher = null;
         events = null;
-     }
+    }
 
     @Test
     public void onPreviewLocationReceivedTest() throws InterruptedException {
@@ -112,7 +112,7 @@ public class InstantPreviewDispatcherTest {
         // WHEN
         boolean isSharing = dispatcher.isSharing();
 
-        //THEN
+        // THEN
         assertTrue(isSharing);
     }
 
@@ -123,7 +123,7 @@ public class InstantPreviewDispatcherTest {
         // WHEN
         String id = dispatcher.share();
 
-        //THEN
+        // THEN
         assertNotNull(id);
         assertTrue(manager.getHosts().contains(id));
     }
@@ -137,7 +137,7 @@ public class InstantPreviewDispatcherTest {
         // WHEN
         dispatcher.unshare(hostId);
 
-        //THEN
+        // THEN
         boolean isSharing = dispatcher.isSharing();
         assertFalse(isSharing);
     }
@@ -149,14 +149,14 @@ public class InstantPreviewDispatcherTest {
         assertTrue(dispatcher.isSharing());
         assertEquals(0, manager.getListeners().get(hostId).size());
 
-        //WHEN
+        // WHEN
         dispatcher.subscribeTo(hostId);
 
-        //THEN
+        // THEN
         assertEquals(1, manager.getListeners().get(hostId).size());
     }
 
-    @Test(expected=InstantPreviewHostNotFoundException.class)
+    @Test(expected = InstantPreviewHostNotFoundException.class)
     public void subscribeToUnavailableHostThrowsExceptionTest() {
         // GIVEN see also setUp
         String hostId = dispatcher.share();
@@ -164,10 +164,10 @@ public class InstantPreviewDispatcherTest {
         dispatcher.unshare(hostId);
         assertFalse(dispatcher.isSharing());
 
-        //WHEN
+        // WHEN
         dispatcher.subscribeTo(hostId);
 
-        //THEN exception
+        // THEN exception
     }
 
     @Test
@@ -178,10 +178,10 @@ public class InstantPreviewDispatcherTest {
         dispatcher.subscribeTo(hostId);
         assertEquals(1, manager.getListeners().get(hostId).size());
 
-        //WHEN
+        // WHEN
         dispatcher.unshare(hostId);
 
-        //THEN
+        // THEN
         assertEquals(0, manager.getListeners().get(hostId).size());
     }
 

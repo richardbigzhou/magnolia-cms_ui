@@ -33,11 +33,6 @@
  */
 package info.magnolia.ui.admincentral.setup;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -46,6 +41,12 @@ import info.magnolia.module.InstallContextImpl;
 import info.magnolia.module.delta.TaskExecutionException;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import org.junit.Test;
 
 /**
  * Test case for {@link ChangeAllPropertiesWithCertainValueTask}.

@@ -42,7 +42,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.VerticalLayout;
 
-
 /**
  * Component container capable of holding a single component.
  */
@@ -69,17 +68,18 @@ public class SimplePanel extends AbstractComponentContainer {
                 if (content.getParent() != null) {
                     content.setParent(null);
                 }
-                super.addComponent(content);   
+                super.addComponent(content);
             }
             this.content = content;
             requestRepaint();
-        };
+        }
+        ;
     }
 
     public ComponentContainer getContent() {
         return content;
     }
-    
+
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
@@ -114,18 +114,21 @@ public class SimplePanel extends AbstractComponentContainer {
             return content.getComponentIterator();
         } else {
             return new Iterator<Component>() {
-                
+
                 @Override
-                public void remove() {}
-                
+                public void remove() {
+                }
+
                 @Override
-                public Component next() {return null;}
-                
+                public Component next() {
+                    return null;
+                }
+
                 @Override
                 public boolean hasNext() {
                     return false;
                 }
-            };   
-        } 
+            };
+        }
     }
 }

@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
+
 import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 
@@ -53,7 +54,7 @@ public class OptionGroupFieldBuilderTest extends AbstractBuilderTest<OptionGroup
     private OptionGroupFieldBuilder dialogSelect;
 
     @Test
-    public void simpleRadioFieldTest() throws Exception{
+    public void simpleRadioFieldTest() throws Exception {
         // GIVEN
         dialogSelect = new OptionGroupFieldBuilder(definition, baseItem);
         dialogSelect.setI18nContentSupport(i18nContentSupport);
@@ -63,13 +64,13 @@ public class OptionGroupFieldBuilderTest extends AbstractBuilderTest<OptionGroup
 
         // THEN
         assertEquals(true, field instanceof OptionGroup);
-        Collection<?> items = ((OptionGroup)field).getItemIds();
+        Collection<?> items = ((OptionGroup) field).getItemIds();
         assertEquals(3, items.size());
         assertEquals("1", field.getValue().toString());
     }
 
     @Test
-    public void selectedRadioFieldTest() throws Exception{
+    public void selectedRadioFieldTest() throws Exception {
         // GIVEN
         definition.setDefaultValue("3");
         dialogSelect = new OptionGroupFieldBuilder(definition, baseItem);
@@ -82,9 +83,8 @@ public class OptionGroupFieldBuilderTest extends AbstractBuilderTest<OptionGroup
         assertEquals("3", field.getValue().toString());
     }
 
-
     @Test
-    public void simpleCheckBoxFieldTest() throws Exception{
+    public void simpleCheckBoxFieldTest() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
         dialogSelect = new OptionGroupFieldBuilder(definition, baseItem);
@@ -95,14 +95,14 @@ public class OptionGroupFieldBuilderTest extends AbstractBuilderTest<OptionGroup
 
         // THEN
         assertEquals(true, field instanceof OptionGroup);
-        Collection<?> items = ((OptionGroup)field).getItemIds();
+        Collection<?> items = ((OptionGroup) field).getItemIds();
         assertEquals(3, items.size());
         assertEquals("[]", field.getValue().toString());
     }
 
     @SuppressWarnings("rawtypes")
     @Test
-    public void multiSelectCheckBoxFieldTest() throws Exception{
+    public void multiSelectCheckBoxFieldTest() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
         dialogSelect = new OptionGroupFieldBuilder(definition, baseItem);
@@ -112,19 +112,18 @@ public class OptionGroupFieldBuilderTest extends AbstractBuilderTest<OptionGroup
         ArrayList<String> selected = new ArrayList<String>();
         selected.add("1");
         selected.add("3");
-        ((OptionGroup)field).setValue(selected);
+        ((OptionGroup) field).setValue(selected);
 
         // THEN
-        assertEquals(2, ((Collection)field.getValue()).toArray().length);
-        assertEquals("1", ((Collection)field.getValue()).toArray()[0]);
-        assertEquals("3", ((Collection)field.getValue()).toArray()[1]);
+        assertEquals(2, ((Collection) field.getValue()).toArray().length);
+        assertEquals("1", ((Collection) field.getValue()).toArray()[0]);
+        assertEquals("3", ((Collection) field.getValue()).toArray()[1]);
     }
-
 
     @Override
     protected void createConfiguredFieldDefinition() {
         OptionGroupFieldDefinition fieldDefinition = new OptionGroupFieldDefinition();
-        fieldDefinition = (OptionGroupFieldDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+        fieldDefinition = (OptionGroupFieldDefinition) AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
         fieldDefinition.setDefaultValue(null);
         SelectFieldOptionDefinition option1 = new SelectFieldOptionDefinition();
         option1.setLabel("One");

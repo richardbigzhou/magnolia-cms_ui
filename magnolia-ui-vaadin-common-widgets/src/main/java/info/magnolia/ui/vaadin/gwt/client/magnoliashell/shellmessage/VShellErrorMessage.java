@@ -44,7 +44,7 @@ import com.google.gwt.user.client.Element;
 public class VShellErrorMessage extends VShellMessage {
 
     private Element detailsLinkEl = DOM.createElement("b");
-    
+
     public VShellErrorMessage(final VMagnoliaShellView shell, String topic, String message, String id) {
         super(shell, topic, message, id);
         addStyleName("error");
@@ -57,7 +57,7 @@ public class VShellErrorMessage extends VShellMessage {
         detailsLinkEl.setInnerHTML("[SHOW DETAILS]");
         header.appendChild(detailsLinkEl);
     }
-    
+
     @Override
     protected void onMessageClicked(Element targetEl) {
         if (targetEl == detailsLinkEl) {
@@ -65,13 +65,13 @@ public class VShellErrorMessage extends VShellMessage {
         }
         super.onMessageClicked(targetEl);
     }
-    
+
     @Override
     public void show() {
         getShell().shiftViewportsVertically(getHeaderHeight(), true);
         super.show();
     }
-    
+
     @Override
     public void hide() {
         getShell().shiftViewportsVertically(-getOffsetHeight(), false);

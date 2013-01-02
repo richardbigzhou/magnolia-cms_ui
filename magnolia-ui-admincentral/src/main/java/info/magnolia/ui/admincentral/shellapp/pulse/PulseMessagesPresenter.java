@@ -53,7 +53,6 @@ import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 
-
 /**
  * Presenter of {@link PulseMessagesView}.
  */
@@ -63,7 +62,7 @@ public class PulseMessagesPresenter implements Serializable {
 
     public static final String GROUP_COLUMN = "type";
 
-    private static final String[] order = new String[]{"new", "type", "text", "sender", "date", "quickdo"};
+    private static final String[] order = new String[] { "new", "type", "text", "sender", "date", "quickdo" };
 
     private HierarchicalContainer container = null;
 
@@ -84,7 +83,7 @@ public class PulseMessagesPresenter implements Serializable {
             public void messageSent(Message message) {
                 addMessageAsItem(message);
 
-                if(grouping) {
+                if (grouping) {
                     buildTree();
                 }
 
@@ -103,8 +102,8 @@ public class PulseMessagesPresenter implements Serializable {
         });
 
         shell.setIndication(
-            VMainLauncher.ShellAppType.PULSE,
-            messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
+                VMainLauncher.ShellAppType.PULSE,
+                messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
     }
 
     public Container getMessageDataSource() {
@@ -135,7 +134,7 @@ public class PulseMessagesPresenter implements Serializable {
     }
 
     private void createSuperItems() {
-        for(MessageType type: MessageType.values()) {
+        for (MessageType type : MessageType.values()) {
             Item item = container.addItem(getSuperItem(type));
             item.getItemProperty(GROUP_COLUMN).setValue(type);
             container.setChildrenAllowed(getSuperItem(type), true);
@@ -143,13 +142,13 @@ public class PulseMessagesPresenter implements Serializable {
     }
 
     private void clearSuperItemFromMessages() {
-        for(Object itemId: container.getItemIds()) {
+        for (Object itemId : container.getItemIds()) {
             container.setParent(itemId, null);
         }
     }
 
     private Object getSuperItem(MessageType type) {
-        return GROUP_PLACEHOLDER_ITEMID+type;
+        return GROUP_PLACEHOLDER_ITEMID + type;
     }
 
     /*
@@ -161,24 +160,27 @@ public class PulseMessagesPresenter implements Serializable {
         clearSuperItemFromMessages();
         container.removeContainerFilter(sectionFilter);
 
-        if(checked) {
+        if (checked) {
             buildTree();
         }
 
         container.addContainerFilter(sectionFilter);
     }
-    
+
     /**
      * Return list of child items.
-     * @param itemId parent itemId
+     * 
+     * @param itemId
+     *            parent itemId
      * @return
      */
-    public Collection<?> getGroup(Object itemId) {        
+    public Collection<?> getGroup(Object itemId) {
         return container.getChildren(itemId);
     }
-    
+
     /**
      * Return parent itemId for an item.
+     * 
      * @param itemId
      * @return
      */
@@ -195,7 +197,7 @@ public class PulseMessagesPresenter implements Serializable {
         @Override
         public boolean passesFilter(Object itemId, Item item)
                 throws UnsupportedOperationException {
-            if(itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID) &&
+            if (itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID) &&
                     (!grouping ||
                     isTypeGroupEmpty(itemId))) {
                 return false;
@@ -221,13 +223,13 @@ public class PulseMessagesPresenter implements Serializable {
      * grouping works.
      */
     private void buildTree() {
-        for(Object itemId: container.getItemIds()) {
-            //Skip super items
-            if(!itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID)) {
+        for (Object itemId : container.getItemIds()) {
+            // Skip super items
+            if (!itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID)) {
                 Item item = container.getItem(itemId);
-                MessageType type = (MessageType)item.getItemProperty("type").getValue();
+                MessageType type = (MessageType) item.getItemProperty("type").getValue();
                 Item parentItem = container.getItem(getSuperItem(type));
-                if(parentItem != null) {
+                if (parentItem != null) {
                     container.setParent(itemId, getSuperItem(type));
                 }
             }
@@ -272,14 +274,14 @@ public class PulseMessagesPresenter implements Serializable {
                 final MessageType type = (MessageType) item.getItemProperty("type").getValue();
 
                 switch (category) {
-                    case WORK_ITEM :
-                        return type == MessageType.WARNING;
-                    case PROBLEM :
-                        return type == MessageType.ERROR;
-                    case INFO :
-                        return type == MessageType.INFO;
-                    default :
-                        return true;
+                case WORK_ITEM:
+                    return type == MessageType.WARNING;
+                case PROBLEM:
+                    return type == MessageType.ERROR;
+                case INFO:
+                    return type == MessageType.INFO;
+                default:
+                    return true;
                 }
             }
 

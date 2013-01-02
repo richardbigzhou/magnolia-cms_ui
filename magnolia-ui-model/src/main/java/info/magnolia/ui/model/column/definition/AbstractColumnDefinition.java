@@ -125,7 +125,7 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
      * returning the actual type.
      */
     @Override
-    public Class< ? > getType() {
+    public Class<?> getType() {
         return String.class;
     }
 

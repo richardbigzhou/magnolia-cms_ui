@@ -39,12 +39,12 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigation
 import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Event handler for the header controls events. 
+ * Event handler for the header controls events.
  */
 public interface ShellNavigationHandler extends EventHandler {
 
     void onShellAppNavigation(final ShellAppNavigationEvent event);
-    
+
     void onAppActivated(final AppActivatedEvent event);
-    
+
 }

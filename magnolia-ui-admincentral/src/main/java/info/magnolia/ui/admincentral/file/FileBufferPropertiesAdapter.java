@@ -37,23 +37,23 @@ import org.vaadin.easyuploads.FileBuffer;
 
 /**
  * Implements {@link FilePropertiesAdapter} for {@link FileBuffer}.
- *
+ * 
  */
 public class FileBufferPropertiesAdapter implements FilePropertiesAdapter {
- 
+
     private final FileBuffer buffer;
-    
+
     public static FileBufferPropertiesAdapter adapt(final FileBuffer buffer) {
         return new FileBufferPropertiesAdapter(buffer);
     }
-    
+
     protected FileBufferPropertiesAdapter(final FileBuffer buffer) {
-        this.buffer = buffer;        
+        this.buffer = buffer;
     }
 
     @Override
     public byte[] getBinaryData() {
-        return (byte[])buffer.getValue();
+        return (byte[]) buffer.getValue();
     }
 
     @Override

@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-
 import info.magnolia.ui.admincentral.field.builder.CheckBoxFieldBuilder;
 import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 
 /**
  * Enabled field GUI builder. Enabled field handles checkbox bound to a String property (while by default the checkbox
@@ -54,14 +54,13 @@ public class EnabledField extends CheckBoxFieldBuilder {
     public com.vaadin.data.Property getOrCreateProperty() {
         Property old = item.getItemProperty("enabled");
         String stringValue = "true";
-        if (old!=null) {
+        if (old != null) {
             stringValue = old.toString();
         }
-        DefaultProperty prop = new DefaultProperty("enabled",Boolean.parseBoolean(stringValue));
+        DefaultProperty prop = new DefaultProperty("enabled", Boolean.parseBoolean(stringValue));
         item.removeItemProperty("enabled");
         item.addItemProperty("enabled", prop);
         return prop;
     }
-
 
 }

@@ -40,7 +40,6 @@ import info.magnolia.ui.framework.event.EventBus;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-
 /**
  * Sub app for the main tab in a page app.
  */

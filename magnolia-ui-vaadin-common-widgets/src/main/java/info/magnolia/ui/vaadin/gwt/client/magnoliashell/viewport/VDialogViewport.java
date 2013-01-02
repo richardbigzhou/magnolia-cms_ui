@@ -40,7 +40,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.UIDL;
 
-
 /**
  * Dialogs viewport.
  * 

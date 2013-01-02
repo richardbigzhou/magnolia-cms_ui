@@ -41,7 +41,6 @@ import java.util.Map;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.TreeTable;
 
-
 /**
  * VMagnoliaTreeTable.
  */
@@ -62,7 +61,7 @@ public class MagnoliaTreeTable extends TreeTable {
         if (variables.containsKey("selectAll")) {
             boolean selectAll = (Boolean) variables.get("selectAll");
             if (selectAll) {
-                Collection< ? > ids = getItemIds();
+                Collection<?> ids = getItemIds();
                 for (final Object id : ids) {
                     select(id);
                 }

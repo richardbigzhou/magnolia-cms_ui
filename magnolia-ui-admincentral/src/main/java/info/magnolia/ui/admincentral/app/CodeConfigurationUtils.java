@@ -33,6 +33,24 @@
  */
 package info.magnolia.ui.admincentral.app;
 
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.builder.App;
+import info.magnolia.ui.framework.app.builder.AppBuilder;
+import info.magnolia.ui.framework.app.registry.AppDescriptorProvider;
+import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
+import info.magnolia.ui.model.builder.UiConfig;
+import info.magnolia.ui.model.dialog.builder.Dialog;
+import info.magnolia.ui.model.dialog.builder.DialogBuilder;
+import info.magnolia.ui.model.dialog.builder.DialogConfig;
+import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.model.dialog.registry.DialogDefinitionProvider;
+import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
+import info.magnolia.ui.model.form.builder.FormConfig;
+import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.InvocationTargetException;
@@ -41,24 +59,6 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
-import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
-import info.magnolia.ui.framework.app.builder.App;
-import info.magnolia.ui.framework.app.builder.AppBuilder;
-import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
-import info.magnolia.ui.model.builder.UiConfig;
-import info.magnolia.ui.model.dialog.builder.Dialog;
-import info.magnolia.ui.model.dialog.builder.DialogBuilder;
-import info.magnolia.ui.model.dialog.builder.DialogConfig;
-import info.magnolia.ui.model.form.builder.FormConfig;
-import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.registry.AppDescriptorProvider;
-import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.dialog.registry.DialogDefinitionProvider;
-import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
 
 /**
  * Utility class for detecting annotated methods and registering providers with respective registries.
@@ -81,7 +81,7 @@ public class CodeConfigurationUtils {
             try {
                 appDescriptorRegistry.register(new JustInTimeAppProvider(app.value(), instance, method));
             } catch (RegistrationException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
             }
         }
     }
@@ -183,7 +183,7 @@ public class CodeConfigurationUtils {
                         parameters[parameterIndex] = new ActionbarConfig();
                     } else if (parameterType.equals(FormConfig.class)) {
                         parameters[parameterIndex] = new FormConfig();
-                    }else {
+                    } else {
                         throw new RegistrationException("Unable to resolve parameter " + parameterIndex + " for method " + method);
                     }
                 }
@@ -201,7 +201,6 @@ public class CodeConfigurationUtils {
             }
         }
     }
-
 
     private static List<Method> findAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> annotation) {
         LinkedList<Method> methods = new LinkedList<Method>();

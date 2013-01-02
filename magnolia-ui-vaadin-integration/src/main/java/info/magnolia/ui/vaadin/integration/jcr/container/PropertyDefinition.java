@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr.container;
 
-
 /**
  * Definition for Properties.
  */

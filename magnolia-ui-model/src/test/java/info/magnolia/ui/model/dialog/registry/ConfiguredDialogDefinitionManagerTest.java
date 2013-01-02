@@ -33,11 +33,9 @@
  */
 package info.magnolia.ui.model.dialog.registry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.jcr.node2bean.TypeMapping;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
@@ -64,10 +62,10 @@ import java.util.Set;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.observation.Event;
 
 import org.junit.Before;
 import org.junit.Test;
-
 
 /**
  * Tests for the dialog definition manager.
@@ -92,15 +90,15 @@ public class ConfiguredDialogDefinitionManagerTest {
         ComponentsTestUtil.setImplementation(DialogActionDefinition.class, ConfiguredDialogActionDefinition.class);
 
         session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
-            A_DIALOG_PATH + ".id=aModule:aDialog",
-            A_DIALOG_PATH + ".class="+ConfiguredDialogDefinition.class.getName(),
-            A_DIALOG_PATH + "/formDefinition/tabs/taba",
-            A_DIALOG_PATH + "/formDefinition/tabs/taba.label=label",
-            B_DIALOG_PATH + ".id=bModule:bDialog",
-            B_DIALOG_PATH + "/actions/actionb",
-            B_DIALOG_PATH + "/actions/actionb.label=label",
-            C_DIALOG_PATH + ".id=cModule:cDialog"
-            );
+                A_DIALOG_PATH + ".id=aModule:aDialog",
+                A_DIALOG_PATH + ".class=" + ConfiguredDialogDefinition.class.getName(),
+                A_DIALOG_PATH + "/formDefinition/tabs/taba",
+                A_DIALOG_PATH + "/formDefinition/tabs/taba.label=label",
+                B_DIALOG_PATH + ".id=bModule:bDialog",
+                B_DIALOG_PATH + "/actions/actionb",
+                B_DIALOG_PATH + "/actions/actionb.label=label",
+                C_DIALOG_PATH + ".id=cModule:cDialog"
+                );
         MockUtil.initMockContext();
         MockUtil.setSystemContextSessionAndHierarchyManager(session);
 
@@ -136,7 +134,7 @@ public class ConfiguredDialogDefinitionManagerTest {
         assertEquals("bModule:bDialog", bDialog.getId());
     }
 
-    @Test(expected=RegistrationException.class)
+    @Test(expected = RegistrationException.class)
     public void testDialogDefinitionReloadsOnChange() throws RegistrationException, UnsupportedRepositoryOperationException, RepositoryException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
@@ -178,7 +176,7 @@ public class ConfiguredDialogDefinitionManagerTest {
         session.getNode(B_DIALOG_PATH).getParent().addNode("cDialog").setProperty("id", "bModule:cDialog");
         session.getNode(B_DIALOG_PATH).remove();
         MockEvent event = new MockEvent();
-        event.setType(MockEvent.NODE_MOVED);
+        event.setType(Event.NODE_MOVED);
         event.setPath(B_DIALOG_PATH);
         observationManager.fireEvent(event);
         Thread.sleep(6000);

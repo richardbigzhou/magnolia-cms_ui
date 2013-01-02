@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.model.form.definition;
 
+import info.magnolia.ui.model.field.definition.FieldDefinition;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-
 /**
  * Standard tab definition implementation.
- *
+ * 
  * @see TabDefinition
  */
 public class ConfiguredTabDefinition implements TabDefinition {

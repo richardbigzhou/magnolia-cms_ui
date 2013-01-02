@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
+
 import info.magnolia.ui.admincentral.field.CheckBoxAndLabelField;
 import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
 
@@ -49,7 +50,7 @@ public class CheckBoxFieldBuilderTest extends AbstractBuilderTest<CheckboxFieldD
     private CheckBoxFieldBuilder checkBoxField;
 
     @Test
-    public void simpleCheckBoxFieldTest() throws Exception{
+    public void simpleCheckBoxFieldTest() throws Exception {
         // GIVEN
         checkBoxField = new CheckBoxFieldBuilder(definition, baseItem);
         checkBoxField.setI18nContentSupport(i18nContentSupport);
@@ -62,7 +63,7 @@ public class CheckBoxFieldBuilderTest extends AbstractBuilderTest<CheckboxFieldD
     }
 
     @Test
-    public void checkBoxField_SetSelectedTest() throws Exception{
+    public void checkBoxField_SetSelectedTest() throws Exception {
         // GIVEN
         checkBoxField = new CheckBoxFieldBuilder(definition, baseItem);
         checkBoxField.setI18nContentSupport(i18nContentSupport);

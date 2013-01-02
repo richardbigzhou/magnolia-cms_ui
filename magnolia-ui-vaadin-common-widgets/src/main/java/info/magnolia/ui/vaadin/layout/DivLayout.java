@@ -35,16 +35,15 @@ package info.magnolia.ui.vaadin.layout;
 
 import info.magnolia.ui.vaadin.gwt.client.layout.VDivLayout;
 
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.CssLayout;
 
 /**
  * DivLayout
- *
+ * 
  * See VDivLayout.
  */
 @ClientWidget(VDivLayout.class)
-public class DivLayout extends CssLayout  {
-
+public class DivLayout extends CssLayout {
 
 }

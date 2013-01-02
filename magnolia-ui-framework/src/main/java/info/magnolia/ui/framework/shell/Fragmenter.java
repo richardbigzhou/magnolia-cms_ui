@@ -40,8 +40,7 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Allows to get sub fragments of a url fragment. Each fragment is separated with the
- * {@link #FRAGMENT_SEPARATOR} and has the format <code>id:subfragment</code>.
+ * Allows to get sub fragments of a url fragment. Each fragment is separated with the {@link #FRAGMENT_SEPARATOR} and has the format <code>id:subfragment</code>.
  */
 public class Fragmenter {
 

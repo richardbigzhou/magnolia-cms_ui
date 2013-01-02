@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.app.pages.field;
 
-
 import info.magnolia.cms.i18n.Messages;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.objectfactory.Components;
@@ -68,7 +67,7 @@ public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDe
      * Returns the available templates based on the current node.
      */
     @Override
-    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition(){
+    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
         List<SelectFieldOptionDefinition> res = new ArrayList<SelectFieldOptionDefinition>();
         TemplateDefinitionAssignment templateAssignment = Components.getComponent(TemplateDefinitionAssignment.class);
         Collection<TemplateDefinition> templates = templateAssignment.getAvailableTemplates(asNode(item));
@@ -90,7 +89,7 @@ public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDe
     /**
      * Get i18n Template title.
      */
-    //FIXME: SCRUM-1635 (ehe) review PageEditorPresenter and way Templates are parsed.
+    // FIXME: SCRUM-1635 (ehe) review PageEditorPresenter and way Templates are parsed.
     public static synchronized String getI18nTitle(TemplateDefinition templateDefinition) {
         Messages messages = MessagesManager.getMessages(templateDefinition.getI18nBasename());
         return messages.getWithDefault(templateDefinition.getTitle(), templateDefinition.getTitle());

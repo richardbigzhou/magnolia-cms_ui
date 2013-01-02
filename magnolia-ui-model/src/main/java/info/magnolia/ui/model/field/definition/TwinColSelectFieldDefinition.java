@@ -57,5 +57,4 @@ public class TwinColSelectFieldDefinition extends OptionGroupFieldDefinition {
         this.rightColumnCaption = rightColumnCaption;
     }
 
-
 }

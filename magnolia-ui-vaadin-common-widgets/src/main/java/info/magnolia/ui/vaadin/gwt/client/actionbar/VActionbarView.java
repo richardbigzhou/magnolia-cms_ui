@@ -40,7 +40,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.terminal.gwt.client.ui.Icon;
 
-
 /**
  * View interface of client-side action bar.
  */
@@ -48,65 +47,76 @@ public interface VActionbarView extends HasWidgets, IsWidget {
 
     /**
      * Gets the section widgets inside this action bar view.
-     *
+     * 
      * @return the sections
      */
     Map<String, VActionbarSection> getSections();
 
     /**
      * Sets the presenter.
-     *
-     * @param presenter the new presenter
+     * 
+     * @param presenter
+     *            the new presenter
      */
     void setPresenter(Presenter presenter);
 
     /**
      * Adds a section to this action bar.
-     *
-     * @param sectionParams the section parameters
+     * 
+     * @param sectionParams
+     *            the section parameters
      */
     void addSection(VActionbarSectionJSO sectionParams);
 
     /**
      * Removes the section from this action bar.
-     *
-     * @param sectionName the section name
+     * 
+     * @param sectionName
+     *            the section name
      */
     void removeSection(String sectionName);
 
     /**
      * Adds an action item to this action bar.
-     *
-     * @param actionParams the action parameters
-     * @param icon the icon ui object
-     * @param groupName the group name
-     * @param sectionName the section name
-     *
-     * use {@link #addAction(VActionbarItemJSO, String, String)} instead.
+     * 
+     * @param actionParams
+     *            the action parameters
+     * @param icon
+     *            the icon ui object
+     * @param groupName
+     *            the group name
+     * @param sectionName
+     *            the section name
+     * 
+     *            use {@link #addAction(VActionbarItemJSO, String, String)} instead.
      */
     @Deprecated
     void addAction(VActionbarItemJSO actionParams, Icon icon, String groupName, String sectionName);
 
     /**
      * Adds an action item to this action bar.
-     *
-     * @param actionParams the action parameters including the icon CSS class name
-     * @param groupName the group name
-     * @param sectionName the section name
+     * 
+     * @param actionParams
+     *            the action parameters including the icon CSS class name
+     * @param groupName
+     *            the group name
+     * @param sectionName
+     *            the section name
      */
     void addAction(VActionbarItemJSO actionParams, String groupName, String sectionName);
 
     /**
      * Update the classes on the actions so that they are positioned correctly.
      * Necessary to handle when sections are dynamically changed like in the page editor.
-     *
+     * 
      */
     void refreshActionsPositionsTablet();
 
     /**
      * Checks if given widget is a child of this component.
-     *
-     * @param component the component
+     * 
+     * @param component
+     *            the component
      * @return true, if successful
      */
     boolean hasChildComponent(Widget component);

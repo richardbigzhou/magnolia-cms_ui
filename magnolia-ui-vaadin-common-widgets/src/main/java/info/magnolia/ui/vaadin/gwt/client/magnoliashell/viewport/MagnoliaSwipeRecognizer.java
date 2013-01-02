@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport;
 
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HasHandlers;
 import com.googlecode.mgwt.dom.client.event.touch.Touch;
@@ -53,8 +52,8 @@ import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeStartEvent;
  */
 public class MagnoliaSwipeRecognizer implements TouchHandler {
 
-    private static final int DEFAULT_TOUCH_TRESHOLD = 3; 
-    
+    private static final int DEFAULT_TOUCH_TRESHOLD = 3;
+
     private static EventPropagator DEFAULT_EVENT_PROPAGATOR;
 
     private final HasHandlers source;
@@ -68,7 +67,7 @@ public class MagnoliaSwipeRecognizer implements TouchHandler {
     private int touchCount;
 
     private int desiredTouchCount;
-    
+
     private enum State {
         INVALID, READY, FINDER_DOWN, FOUND_DIRECTION
     }
@@ -80,9 +79,9 @@ public class MagnoliaSwipeRecognizer implements TouchHandler {
     private int lastDistance;
 
     private int touchStartX = Integer.MAX_VALUE;
-    
+
     private int touchStartY = Integer.MIN_VALUE;
-    
+
     public MagnoliaSwipeRecognizer(HasHandlers source) {
         this(source, 40);
     }
@@ -93,7 +92,7 @@ public class MagnoliaSwipeRecognizer implements TouchHandler {
 
     public MagnoliaSwipeRecognizer(HasHandlers source, int minDistance, int threshold) {
         if (source == null) {
-            throw new IllegalArgumentException("source can not be null");   
+            throw new IllegalArgumentException("source can not be null");
         }
 
         if (minDistance <= 0 || minDistance < threshold) {
@@ -122,11 +121,11 @@ public class MagnoliaSwipeRecognizer implements TouchHandler {
             if (touchCount == desiredTouchCount) {
                 state = State.FINDER_DOWN;
                 touchStartX = event.getTouches().get(0).getPageX();
-                touchStartY = event.getTouches().get(0).getPageY();   
+                touchStartY = event.getTouches().get(0).getPageY();
             }
             break;
         case FINDER_DOWN:
-        default:    
+        default:
             break;
         }
     }
@@ -189,7 +188,7 @@ public class MagnoliaSwipeRecognizer implements TouchHandler {
         case FOUND_DIRECTION:
             if (touchCount < desiredTouchCount) {
                 getEventPropagator().fireEvent(source, new SwipeEndEvent(lastDistance > minDistance, lastDistance, direction));
-                reset();   
+                reset();
             }
             break;
 
@@ -203,8 +202,9 @@ public class MagnoliaSwipeRecognizer implements TouchHandler {
     @Override
     public void onTouchCanceled(TouchCancelEvent event) {
         touchCount--;
-        if (touchCount <= 0)
+        if (touchCount <= 0) {
             reset();
+        }
 
     }
 
@@ -237,4 +237,3 @@ public class MagnoliaSwipeRecognizer implements TouchHandler {
     }
 
 }
-

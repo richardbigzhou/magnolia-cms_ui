@@ -42,11 +42,11 @@ public class CssHooks extends JavaScriptObject {
 
     protected  CssHooks() {
     }
-    
+
     public native static final CssHooks create() /*-{
         return $wnd.jQuery.cssHooks;
     }-*/;
-    
+
     public final native void addHook(final String property, CssHookHandler handler) /*-{
         this.property = {
             get: function(elem, computed, extra) {
@@ -54,7 +54,7 @@ public class CssHooks extends JavaScriptObject {
             },
             set: function(elem, value) {
                 handler.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.CssHookHandler::set(Lcom/google/gwt/user/client/Element;Ljava/lang/String;)(elem, value);
-            } 
+            }
         }
     }-*/;
 }

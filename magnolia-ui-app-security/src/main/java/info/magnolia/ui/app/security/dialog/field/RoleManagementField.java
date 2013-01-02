@@ -33,25 +33,28 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.TwinColSelect;
 import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.field.builder.TwinColSelectFieldBuilder;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.TwinColSelect;
 
 /**
  * GUI builder for the Role Management field.
@@ -64,6 +67,7 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
     private static class Role {
         public String name;
         public String uuid;
+
         public Role(String name, String uuid) {
             this.name = name;
             this.uuid = uuid;
@@ -76,7 +80,6 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
         super(definition, relatedFieldItem);
         definition.setOptions(getSelectFieldOptionDefinition());
     }
-
 
     @Override
     protected AbstractSelect buildField() {
@@ -95,9 +98,9 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
      * Returns the available roles with those already assigned marked selected, according to the current node.
      */
     @Override
-    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition(){
+    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
         List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
-        List<Role> allRoles = getAllRoles();  // name,uuid
+        List<Role> allRoles = getAllRoles(); // name,uuid
         List<String> assignedGroups = getAssignedRoles();
         for (Role role : allRoles) {
             SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
@@ -114,15 +117,15 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
     private List<Role> getAllRoles() {
         List<Role> roles = new ArrayList<Role>();
         try {
-            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_ROLES, "SELECT * FROM ["+NodeTypes.Role.NAME+"] ORDER BY name()");
+            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_ROLES, "SELECT * FROM [" + NodeTypes.Role.NAME + "] ORDER BY name()");
             while (ni.hasNext()) {
                 Node n = ni.nextNode();
                 String name = n.getName();
                 String uuid = n.getIdentifier();
-                roles.add(new Role(name,uuid));
+                roles.add(new Role(name, uuid));
             }
         } catch (RepositoryException e) {
-            log.error("Cannot read roles from the ["+RepositoryConstants.USER_ROLES+"] workspace.", e);
+            log.error("Cannot read roles from the [" + RepositoryConstants.USER_ROLES + "] workspace.", e);
         }
         return roles;
     }
@@ -146,7 +149,7 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
                 }
             }
         } catch (RepositoryException re) {
-            log.error("Cannot read assigned roles of the node ["+mainNode+"].", re);
+            log.error("Cannot read assigned roles of the node [" + mainNode + "].", re);
         }
         return roles;
     }

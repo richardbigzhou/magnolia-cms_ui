@@ -42,12 +42,11 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.themes.BaseTheme;
 
-
 /**
  * Message category navigation component in Pulse.
  */
 public class PulseMessageCategoryNavigator extends CssLayout {
-    
+
     private CheckBox groupByTypeCheckBox;
 
     public PulseMessageCategoryNavigator() {
@@ -65,13 +64,13 @@ public class PulseMessageCategoryNavigator extends CssLayout {
             }
             addComponent(button);
         }
-        
+
         groupByTypeCheckBox = new CheckBox("group by type");
         groupByTypeCheckBox.addStyleName("navigator-grouping");
         groupByTypeCheckBox.setImmediate(true);
         addComponent(groupByTypeCheckBox);
     }
-    
+
     public void addGroupingListener(ValueChangeListener listener) {
         groupByTypeCheckBox.addListener(listener);
     }
@@ -106,7 +105,7 @@ public class PulseMessageCategoryNavigator extends CssLayout {
         static {
             try {
                 MESSAGE_CATEGORY_CHANGED = MessageCategoryChangedListener.class.getDeclaredMethod("messageCategoryChanged",
-                    new Class[]{CategoryChangedEvent.class});
+                        new Class[] { CategoryChangedEvent.class });
             } catch (final java.lang.NoSuchMethodException e) {
                 throw new java.lang.RuntimeException(e);
             }
@@ -140,7 +139,7 @@ public class PulseMessageCategoryNavigator extends CssLayout {
         Iterator<Component> iterator = getComponentIterator();
         while (iterator.hasNext()) {
             Component component = iterator.next();
-            if(component instanceof MessageCategoryButton) {
+            if (component instanceof MessageCategoryButton) {
                 MessageCategoryButton button = (MessageCategoryButton) component;
                 button.setActive(button.category == category);
             }

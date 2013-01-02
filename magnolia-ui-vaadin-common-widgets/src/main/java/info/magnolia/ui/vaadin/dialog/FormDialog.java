@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import com.vaadin.ui.ClientWidget;
-
 import info.magnolia.ui.vaadin.form.FormView;
 import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VFormDialog;
 
+import com.vaadin.ui.ClientWidget;
+
 /**
- * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that 
+ * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that
  * adapts to the content ({@link FormView}) and delegates the view logic to it.
  */
 @ClientWidget(VFormDialog.class)

@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.integration.jcr;
 
 import com.vaadin.data.Item;
 
-
 /**
  * Define common operation for Jcr Item Adapter.
  */

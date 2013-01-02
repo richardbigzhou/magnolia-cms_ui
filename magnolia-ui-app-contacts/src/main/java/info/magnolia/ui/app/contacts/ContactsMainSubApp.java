@@ -42,8 +42,6 @@ import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -51,6 +49,8 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Sub app for the main tab in the contacts app.
@@ -89,7 +89,8 @@ public class ContactsMainSubApp extends AbstractContentSubApp {
     }
 
     /**
-     * contact selected.<p>
+     * contact selected.
+     * <p>
      * - can only edit/delete contact
      */
     private void contactActions(final ActionbarPresenter actionbar) {
@@ -100,7 +101,8 @@ public class ContactsMainSubApp extends AbstractContentSubApp {
     }
 
     /**
-     * folder selected.<p>
+     * folder selected.
+     * <p>
      * - can create/edit/delete folder or create contact
      */
     private void folderActions(final ActionbarPresenter actionbar) {
@@ -112,8 +114,9 @@ public class ContactsMainSubApp extends AbstractContentSubApp {
     }
 
     /**
-     * initial state (root selected).<p>
-     *  - can create folder or contact
+     * initial state (root selected).
+     * <p>
+     * - can create folder or contact
      */
     private void rootNodeActions(final ActionbarPresenter actionbar) {
         actionbar.showSection("contactsActions");

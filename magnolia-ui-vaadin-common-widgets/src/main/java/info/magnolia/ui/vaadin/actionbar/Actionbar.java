@@ -553,8 +553,7 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
         private final Resource icon;
 
         /**
-         * Use {@link ActionbarItem#ActionbarItem(String, String, String)}
-         * instead.
+         * Use {@link ActionbarItem#ActionbarItem(String, String, String)} instead.
          */
         @Deprecated
         public ActionbarResourceItem(String name, String label, Resource icon, String groupName) {

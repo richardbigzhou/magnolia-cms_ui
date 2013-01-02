@@ -53,7 +53,6 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 import com.vaadin.terminal.gwt.client.ui.Icon;
 
-
 /**
  * The Class VActionbarViewImpl, GWT implementation for the VActionbarView interface.
  */
@@ -121,6 +120,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
      * Determine if device is tablet. Allows option to add a querystring parameter of tablet=true
      * for testing.
      * TODO: Christopher Zimmermann - there should be only one instance of this code ithe project.
+     * 
      * @return Whether device is tablet.
      */
     private boolean isDeviceTablet() {
@@ -351,6 +351,7 @@ public class VActionbarViewImpl extends ComplexPanel implements VActionbarView, 
 
     /**
      * For tablet mode, position these buttons at the bottom of the button stack.
+     * 
      * @return
      */
     private void setToggleAndFullScreenButtonHeights(int tabletRow) {

@@ -34,15 +34,15 @@
 package info.magnolia.ui.admincentral.file;
 
 /**
- * Adapter for various ways of updating the file properties. 
+ * Adapter for various ways of updating the file properties.
  */
 public interface FilePropertiesAdapter {
 
     byte[] getBinaryData();
-    
+
     long getFileSize();
-    
+
     String getFileName();
-    
+
     String getMimeType();
 }

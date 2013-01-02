@@ -35,7 +35,6 @@ package info.magnolia.ui.model.imageprovider.definition;
 
 import com.vaadin.terminal.Resource;
 
-
 /**
  * Defines a provider for Thumbnail images.
  */
@@ -52,7 +51,6 @@ public interface ImageProvider {
 
     String getThumbnailPathByIdentifier(String workspace, String uuid);
 
-
     /**
      * Get a Preview Resource.
      * This preview is an image or an icon representing the Document type.
@@ -60,6 +58,5 @@ public interface ImageProvider {
     Resource getThumbnailResourceByPath(String workspace, String path, String generator);
 
     Resource getThumbnailResourceById(String workspace, String identifier, String generator);
-
 
 }

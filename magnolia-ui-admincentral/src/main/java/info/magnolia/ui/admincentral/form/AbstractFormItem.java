@@ -35,14 +35,15 @@ package info.magnolia.ui.admincentral.form;
 
 import info.magnolia.cms.i18n.Messages;
 import info.magnolia.cms.i18n.MessagesUtil;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Abstract base class for dialog items, provides resolution of {@link Messages} in the hierarchical.
- *
+ * 
  * @see Messages
  * @see info.magnolia.ui.admincentral.form.FormItem
  */
@@ -54,13 +55,13 @@ public abstract class AbstractFormItem implements FormItem {
 
     static {
         String uiPackagePrefix = "info.magnolia.ui.";
-        String[] uiModules = {"model", "framework", "widget.actionbar", "widget.dialog", "widget.editor",
-                "widget.magnoliashell", "widget.tabsheet", "vaadin.integration"};
+        String[] uiModules = { "model", "framework", "widget.actionbar", "widget.dialog", "widget.editor",
+                "widget.magnoliashell", "widget.tabsheet", "vaadin.integration" };
         List<String> basenames = new ArrayList<String>();
-        for(String module: uiModules) {
+        for (String module : uiModules) {
             basenames.add(uiPackagePrefix + module + ".messages");
         }
-        UI_BASENAMES = basenames.toArray(new String[]{});
+        UI_BASENAMES = basenames.toArray(new String[] {});
     }
 
     @Override

@@ -45,7 +45,6 @@ import com.vaadin.ui.Field;
  */
 public class PasswordFieldBuilder extends AbstractFieldBuilder<PasswordFieldDefinition> {
 
-
     public PasswordFieldBuilder(PasswordFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
@@ -54,7 +53,7 @@ public class PasswordFieldBuilder extends AbstractFieldBuilder<PasswordFieldDefi
     protected Field buildField() {
         String verificationErrorMessage = "";
         String verificationMessage = "";
-        if(definition.isVerification()) {
+        if (definition.isVerification()) {
             verificationErrorMessage = getMessage(definition.getVerificationErrorMessage());
             verificationMessage = getMessage(definition.getVerificationMessage());
         }
@@ -62,10 +61,8 @@ public class PasswordFieldBuilder extends AbstractFieldBuilder<PasswordFieldDefi
         return new PasswordFields(definition.isVerification(), verificationMessage, verificationErrorMessage, definition.isEncode());
     }
 
-
     @Override
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
         return String.class;
     }
 }
-

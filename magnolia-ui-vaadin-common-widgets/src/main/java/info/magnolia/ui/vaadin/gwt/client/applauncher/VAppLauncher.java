@@ -70,29 +70,29 @@ public class VAppLauncher extends Composite implements Paintable, ClientSideHand
                     view.addAppTile(appTile, groupName);
                 }
             });
-            
+
             register("setAppActive", new Method() {
                 @Override
                 public void invoke(String methodName, Object[] params) {
                     final String appName = String.valueOf(params[0]);
-                    final boolean isActive = (Boolean)params[1];
+                    final boolean isActive = (Boolean) params[1];
                     view.setAppActive(appName, isActive);
                 }
             });
         }
     };
-    
+
     private final VAppLauncherView view;
 
     private final EventBus internalEventBus = new SimpleEventBus();
-    
+
     public VAppLauncher() {
         super();
         this.view = new VAppLauncherViewImpl(internalEventBus);
         this.view.setPresenter(this);
         initWidget(view.asWidget());
     }
-    
+
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         proxy.update(this, uidl, client);

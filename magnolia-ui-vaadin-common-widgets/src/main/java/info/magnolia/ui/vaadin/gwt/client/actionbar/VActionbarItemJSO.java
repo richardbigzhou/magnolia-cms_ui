@@ -40,34 +40,35 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public final class VActionbarItemJSO extends JavaScriptObject {
 
-    protected VActionbarItemJSO() {}
+    protected VActionbarItemJSO() {
+    }
 
     public static native VActionbarItemJSO parse(String json) /*-{
-       try {
-         return eval('(' + json + ')');
-       } catch(e) {
-           return null;
-       }
-    }-*/;
+                                                              try {
+                                                              return eval('(' + json + ')');
+                                                              } catch(e) {
+                                                              return null;
+                                                              }
+                                                              }-*/;
 
     public final native String getName() /*-{
-        return this.name;
-}-*/;
+                                         return this.name;
+                                         }-*/;
 
     public final native String getLabel() /*-{
-        return this.label;
-    }-*/;
+                                          return this.label;
+                                          }-*/;
 
     public final native String getIcon() /*-{
-        return this.icon;
-    }-*/;
+                                         return this.icon;
+                                         }-*/;
 
     public final native boolean isEnabled() /*-{
-        return this.enabled;
-    }-*/;
+                                            return this.enabled;
+                                            }-*/;
 
     public final native void setEnabled(boolean enabled) /*-{
-        this.enabled = enabled;
-    }-*/;
+                                                         this.enabled = enabled;
+                                                         }-*/;
 
 }

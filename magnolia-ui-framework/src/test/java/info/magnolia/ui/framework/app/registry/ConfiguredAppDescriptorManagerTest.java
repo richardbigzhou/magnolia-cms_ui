@@ -33,11 +33,9 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
@@ -60,6 +58,7 @@ import java.util.Set;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.observation.Event;
 
 import org.junit.After;
 import org.junit.Before;
@@ -77,15 +76,15 @@ public class ConfiguredAppDescriptorManagerTest {
     @SuppressWarnings("deprecation")
     @Before
     public void setUp() throws Exception {
-        //INIT
+        // INIT
         EventBus eventBus = new SimpleEventBus();
         ComponentsTestUtil.setImplementation(AppDescriptor.class, ConfiguredAppDescriptor.class);
         session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
-            "/modules/aModule/apps/app1.name=appNameA",
-            "/modules/aModule/apps/app1.categoryName=categoryA",
-            "/modules/bModule/apps/app1.name=appNameB",
-            "/modules/bModule/apps/app1.categoryName=\n"
-            );
+                "/modules/aModule/apps/app1.name=appNameA",
+                "/modules/aModule/apps/app1.categoryName=categoryA",
+                "/modules/bModule/apps/app1.name=appNameB",
+                "/modules/bModule/apps/app1.categoryName=\n"
+                );
         MockUtil.initMockContext();
         MockUtil.setSystemContextSessionAndHierarchyManager(session);
 
@@ -166,7 +165,7 @@ public class ConfiguredAppDescriptorManagerTest {
         // Rename app b, chnge the app name.
         session.getNode("/modules/bModule/apps/app1").getProperty("name").setValue("appNameB_B");
         MockEvent event = new MockEvent();
-        event.setType(MockEvent.PROPERTY_CHANGED);
+        event.setType(Event.PROPERTY_CHANGED);
         event.setPath("/modules/bModule/apps/app1");
 
         observationManager.fireEvent(event);
@@ -182,6 +181,5 @@ public class ConfiguredAppDescriptorManagerTest {
         b = appRegistry.getAppDescriptor("appNameB_B");
         assertNotNull(b);
     }
-
 
 }

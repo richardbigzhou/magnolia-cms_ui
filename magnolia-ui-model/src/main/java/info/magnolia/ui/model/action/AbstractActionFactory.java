@@ -36,12 +36,13 @@ package info.magnolia.ui.model.action;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.model.builder.FactoryBase;
 
-
 /**
  * Abstract base class used by action factories.
  * 
- * @param <D> definition parent type
- * @param <I> implementation parent type
+ * @param <D>
+ *            definition parent type
+ * @param <I>
+ *            implementation parent type
  * @see FactoryBase
  */
 public abstract class AbstractActionFactory<D extends ActionDefinition, I extends Action> extends FactoryBase<D, I> implements ActionFactory<D, I> {
@@ -51,7 +52,7 @@ public abstract class AbstractActionFactory<D extends ActionDefinition, I extend
     }
 
     @Override
-    public void addMapping(Class< ? extends D> definitionClass, Class< ? extends I> implementationClass) {
+    public void addMapping(Class<? extends D> definitionClass, Class<? extends I> implementationClass) {
         super.addMapping(definitionClass, implementationClass);
     }
 

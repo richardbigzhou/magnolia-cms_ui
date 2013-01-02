@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.app.showcase.main;
 
-import com.google.inject.Inject;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
@@ -46,6 +45,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
+
+import com.google.inject.Inject;
 
 /**
  * Presenter for form showcase.
@@ -69,33 +70,32 @@ public class FormsPresenter implements FormsView.Listener {
     @Override
     public void onViewInDialog() {
         try {
-        String workspace = "website";
-        String path = "/";
-        final FormDialogPresenter formPresenter = formFactory.createDialogPresenterByName("ui-showcase-app:showcasedialog");
-        Session session = MgnlContext.getJCRSession(workspace);
+            String workspace = "website";
+            String path = "/";
+            final FormDialogPresenter formPresenter = formFactory.createDialogPresenterByName("ui-showcase-app:showcasedialog");
+            Session session = MgnlContext.getJCRSession(workspace);
 
-        Node parentNode = session.getNode(path);
+            Node parentNode = session.getNode(path);
 
-        final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, NodeTypes.Component.NAME);
-        DefaultProperty property = new DefaultProperty(ModelConstants.JCR_NAME, "0");
-        item.addItemProperty(ModelConstants.JCR_NAME, property);
-        
-        formPresenter.start(item, new FormDialogPresenter.Callback() {
+            final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, NodeTypes.Component.NAME);
+            DefaultProperty property = new DefaultProperty(ModelConstants.JCR_NAME, "0");
+            item.addItemProperty(ModelConstants.JCR_NAME, property);
 
-            @Override
-            public void onCancel() {
-                formPresenter.closeDialog();
-            }
+            formPresenter.start(item, new FormDialogPresenter.Callback() {
 
-            @Override
-            public void onSuccess(String actionName) {
-                formPresenter.closeDialog();
-            }
-            
-        });
-        } catch(Exception e) {
-            
+                @Override
+                public void onCancel() {
+                    formPresenter.closeDialog();
+                }
+
+                @Override
+                public void onSuccess(String actionName) {
+                    formPresenter.closeDialog();
+                }
+
+            });
+        } catch (Exception e) {
+
         }
     }
 }
-

@@ -35,7 +35,6 @@ package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.ui.model.action.ActionDefinition;
 
-
 /**
  * Defines an action for editing an element (page/area/component) of the page editor.
  * 

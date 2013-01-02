@@ -97,12 +97,12 @@ public class GWTSelector extends HTMLPanel implements MouseMoveHandler, MouseUpH
     private final int MIN_SIZE = 20;
 
     private Image cropImage = null;
-    
+
     private Image selectionImage = null;
-    
+
     /**
      * IBundleResources.
-     */    
+     */
     public interface IBundleResources extends ClientBundle {
 
         /**
@@ -137,7 +137,7 @@ public class GWTSelector extends HTMLPanel implements MouseMoveHandler, MouseUpH
         this();
         cropImage(image);
     }
-    
+
     public void cropImage(Image image) {
         addCanvas(image);
     }
@@ -187,7 +187,7 @@ public class GWTSelector extends HTMLPanel implements MouseMoveHandler, MouseUpH
         this.container.add(image, 0, 0);
         this.add(this.container);
     }
-    
+
     @Override
     public void setHeight(String height) {
         super.setHeight(height);
@@ -197,7 +197,7 @@ public class GWTSelector extends HTMLPanel implements MouseMoveHandler, MouseUpH
         }
         if (cropImage != null) {
             cropImage.setHeight(height);
-        }    
+        }
     }
 
     @Override
@@ -209,9 +209,9 @@ public class GWTSelector extends HTMLPanel implements MouseMoveHandler, MouseUpH
         }
         if (cropImage != null) {
             cropImage.setWidth(width);
-        }        
+        }
     }
-    
+
     private void addSelection(final String src) {
 
         selectionContainer.addStyleName(this.bundleResources.css().selection());
@@ -230,7 +230,7 @@ public class GWTSelector extends HTMLPanel implements MouseMoveHandler, MouseUpH
         selectionImage.setWidth(nOuterWidth + "px");
         selectionImage.setHeight(nOuterHeight + "px");
         selectionContainer.add(selectionImage, -this.nInnerX, -this.nInnerY);
-        
+
         this.container.add(selectionContainer, this.nInnerX, this.nInnerY);
         this.buildSelectionArea(selectionContainer);
         this.container.add(this.handlesContainer, this.nInnerX, this.nInnerY);
@@ -271,17 +271,21 @@ public class GWTSelector extends HTMLPanel implements MouseMoveHandler, MouseUpH
             }
         });
 
-        if (top != 0)
+        if (top != 0) {
             handle.getElement().getStyle().setTop(top, Unit.PX);
-        if (right != 0)
+        }
+        if (right != 0) {
             handle.getElement().getStyle().setRight(right, Unit.PX);
-        if (bottom != 0)
+        }
+        if (bottom != 0) {
             handle.getElement().getStyle().setBottom(bottom, Unit.PX);
-        if (left != 0)
+        }
+        if (left != 0) {
             handle.getElement().getStyle().setLeft(left, Unit.PX);
+        }
         this.handlesContainer.add(handle);
     }
-    
+
     private HTML appendDraggableBackground() {
 
         final HTML backgroundHandle = new HTML();
@@ -340,14 +344,18 @@ public class GWTSelector extends HTMLPanel implements MouseMoveHandler, MouseUpH
             this.nInnerY = targetY - offsetY;
 
             // don't drag selection out of the canvas borders
-            if (this.nInnerX < 0)
+            if (this.nInnerX < 0) {
                 this.nInnerX = 0;
-            if (this.nInnerY < 0)
+            }
+            if (this.nInnerY < 0) {
                 this.nInnerY = 0;
-            if (this.nInnerX + this.nInnerWidth > this.nOuterWidth)
+            }
+            if (this.nInnerX + this.nInnerWidth > this.nOuterWidth) {
                 this.nInnerX = this.nOuterWidth - this.nInnerWidth;
-            if (this.nInnerY + this.nInnerHeight > this.nOuterHeight)
+            }
+            if (this.nInnerY + this.nInnerHeight > this.nOuterHeight) {
                 this.nInnerY = this.nOuterHeight - this.nInnerHeight;
+            }
 
             el.getStyle().setLeft(this.nInnerX, Unit.PX);
             el.getStyle().setTop(this.nInnerY, Unit.PX);
@@ -675,19 +683,19 @@ public class GWTSelector extends HTMLPanel implements MouseMoveHandler, MouseUpH
     public void scale(double ratio) {
         nOuterHeight *= ratio;
         nOuterWidth *= ratio;
-        
+
         nInnerX *= ratio;
         nInnerY *= ratio;
-        
+
         nInnerWidth *= ratio;
         nInnerHeight *= ratio;
-        
+
         setWidth(nOuterWidth + "px");
         setHeight(nOuterHeight + "px");
-        
+
         handlesContainer.setWidth(nInnerWidth + "px");
         handlesContainer.setHeight(nInnerHeight + "px");
-        
+
         selectionContainer.setHeight(nInnerHeight + "px");
         selectionContainer.setWidth(nInnerWidth + "px");
 

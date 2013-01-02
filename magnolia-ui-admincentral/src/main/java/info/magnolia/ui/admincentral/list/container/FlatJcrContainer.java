@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.list.container;
 
-
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 

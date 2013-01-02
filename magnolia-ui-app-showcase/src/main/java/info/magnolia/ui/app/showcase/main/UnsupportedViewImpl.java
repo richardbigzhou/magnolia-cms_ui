@@ -61,10 +61,10 @@ public class UnsupportedViewImpl implements UnsupportedView {
         layout.setMargin(true, true, false, true);
         layout.setSpacing(true);
         layout.addComponent(new Label("The UI elements in the Vaadin framework" +
-            " that are not recommended for use with Magnolia. These elements" +
-            " may not perform well on touch devices, and the look and feel" +
-            " may not match the Magnolia interface. Use of these elements" +
-            " is not supported by Magnolia."));
+                " that are not recommended for use with Magnolia. These elements" +
+                " may not perform well on touch devices, and the look and feel" +
+                " may not match the Magnolia interface. Use of these elements" +
+                " is not supported by Magnolia."));
 
         layout.addComponent(getAccordionPreviews());
         layout.addComponent(getMenuBarPreviews());
@@ -108,13 +108,13 @@ public class UnsupportedViewImpl implements UnsupportedView {
         final Layout grid = getPreviewLayout("Windows");
 
         Button win = new Button("Open normal sub-window",
-            new Button.ClickListener() {
+                new Button.ClickListener() {
 
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    grid.getApplication().getMainWindow().addWindow(new Window("Normal window"));
-                }
-            });
+                    @Override
+                    public void buttonClick(ClickEvent event) {
+                        grid.getApplication().getMainWindow().addWindow(new Window("Normal window"));
+                    }
+                });
         grid.addComponent(win);
         win.setDescription("new Window()");
 
@@ -201,9 +201,9 @@ public class UnsupportedViewImpl implements UnsupportedView {
                 t.setClosable(closable);
                 if (i == 1) {
                     l
-                        .addComponent(new Label(
-                            "<h4>Accordion content</h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada volutpat vestibulum. Quisque elementum quam sed sem ultrices lobortis. Pellentesque non ligula ac dolor posuere tincidunt sed eu mi. Integer mattis fringilla nulla, ut cursus mauris scelerisque eu. Etiam bibendum placerat euismod. Nam egestas adipiscing orci sed tristique. Sed vitae enim nisi. Sed ac vehicula ipsum. Nulla quis quam nisi. Proin interdum lacus ipsum, at tristique nibh. Curabitur at ipsum sem. Donec venenatis aliquet neque, sit amet cursus lectus condimentum et. In mattis egestas erat, non cursus metus consectetur ac. Pellentesque eget nisl tellus.",
-                            Label.CONTENT_XHTML));
+                            .addComponent(new Label(
+                                    "<h4>Accordion content</h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada volutpat vestibulum. Quisque elementum quam sed sem ultrices lobortis. Pellentesque non ligula ac dolor posuere tincidunt sed eu mi. Integer mattis fringilla nulla, ut cursus mauris scelerisque eu. Etiam bibendum placerat euismod. Nam egestas adipiscing orci sed tristique. Sed vitae enim nisi. Sed ac vehicula ipsum. Nulla quis quam nisi. Proin interdum lacus ipsum, at tristique nibh. Curabitur at ipsum sem. Donec venenatis aliquet neque, sit amet cursus lectus condimentum et. In mattis egestas erat, non cursus metus consectetur ac. Pellentesque eget nisl tellus.",
+                                    Label.CONTENT_XHTML));
                 }
                 if (i == 3) {
                     t.setIcon(new ThemeResource("../runo/icons/16/document.png"));
@@ -215,10 +215,10 @@ public class UnsupportedViewImpl implements UnsupportedView {
         public void setStyleName(String style) {
             super.setStyleName(style);
             Label l = new Label(
-                "<h4>"
-                    + style
-                    + " accordion content</h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada volutpat vestibulum.",
-                Label.CONTENT_XHTML);
+                    "<h4>"
+                            + style
+                            + " accordion content</h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada volutpat vestibulum.",
+                    Label.CONTENT_XHTML);
             l.setDescription("Accordion.setStyleName(\"" + style + "\")");
             ((VerticalLayout) getSelectedTab()).removeAllComponents();
             ((VerticalLayout) getSelectedTab()).addComponent(l);

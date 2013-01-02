@@ -50,16 +50,16 @@ public class VPreviewTokenField extends VTextField {
         addKeyPressHandler(new KeyPressHandler() {
             @Override
             public void onKeyPress(final KeyPressEvent event) {
-                final int keyCode = event.getNativeEvent().getKeyCode(); 
+                final int keyCode = event.getNativeEvent().getKeyCode();
                 Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                     @Override
                     public void execute() {
                         String text = getText();
-                        if (keyCode == KeyCodes.KEY_BACKSPACE || 
-                            keyCode == KeyCodes.KEY_LEFT ||
-                            keyCode == KeyCodes.KEY_RIGHT ||
-                            keyCode == KeyCodes.KEY_HOME ||
-                            keyCode == KeyCodes.KEY_END) {
+                        if (keyCode == KeyCodes.KEY_BACKSPACE ||
+                                keyCode == KeyCodes.KEY_LEFT ||
+                                keyCode == KeyCodes.KEY_RIGHT ||
+                                keyCode == KeyCodes.KEY_HOME ||
+                                keyCode == KeyCodes.KEY_END) {
                         } else {
                             text = text.replaceAll("[^0-9]+", "");
                             text = text.replaceAll("([0-9][0-9][0-9])", "$1-");

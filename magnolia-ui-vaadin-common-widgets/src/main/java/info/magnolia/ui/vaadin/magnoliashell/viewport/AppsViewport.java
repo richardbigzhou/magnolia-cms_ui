@@ -39,7 +39,6 @@ import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 
-
 /**
  * Apps viewport.
  * 

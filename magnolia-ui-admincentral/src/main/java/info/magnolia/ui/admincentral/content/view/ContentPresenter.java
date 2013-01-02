@@ -59,7 +59,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 
-
 /**
  * Presenter for ContentView.
  */
@@ -118,10 +117,11 @@ public class ContentPresenter implements ContentView.Listener {
 
         if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
             throw new IllegalStateException(workbenchDefinition.getName()
-                + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
+                    + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
         }
 
-        selectedItemPath = StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");;
+        selectedItemPath = StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
+        ;
         parentView.setViewType(ViewType.TREE);
     }
 
@@ -144,7 +144,7 @@ public class ContentPresenter implements ContentView.Listener {
 
     /**
      * @return the path of the vaadin item currently selected in the currently active {@link ContentView}. It is
-     * equivalent to javax.jcr.Item#getPath().
+     *         equivalent to javax.jcr.Item#getPath().
      * @see JcrItemAdapter#getPath()
      */
     public String getSelectedItemPath() {
@@ -181,24 +181,24 @@ public class ContentPresenter implements ContentView.Listener {
     }
 
     @Override
-    public String getItemIcon(Item item) {       
-        if(item instanceof JcrPropertyAdapter && workbenchDefinition.includeProperties()) {
+    public String getItemIcon(Item item) {
+        if (item instanceof JcrPropertyAdapter && workbenchDefinition.includeProperties()) {
             return ICON_PROPERTY;
         }
-        
-        if(item instanceof JcrNodeAdapter) {
-            JcrNodeAdapter node = (JcrNodeAdapter)item;
+
+        if (item instanceof JcrNodeAdapter) {
+            JcrNodeAdapter node = (JcrNodeAdapter) item;
             String typeName = node.getPrimaryNodeTypeName();
             ItemTypeDefinition groupingType = workbenchDefinition.getGroupingItemType();
             ItemTypeDefinition mainType = workbenchDefinition.getMainItemType();
-            
-            if(groupingType != null && groupingType.getItemType().equals(typeName)) {
+
+            if (groupingType != null && groupingType.getItemType().equals(typeName)) {
                 return groupingType.getIcon();
-            } else if(mainType != null && mainType.getItemType().equals(typeName)) {
+            } else if (mainType != null && mainType.getItemType().equals(typeName)) {
                 return mainType.getIcon();
             }
         }
-        
+
         return null;
     }
 }

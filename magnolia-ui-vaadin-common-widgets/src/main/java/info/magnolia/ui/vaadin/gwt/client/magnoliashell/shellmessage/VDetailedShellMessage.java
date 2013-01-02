@@ -33,26 +33,26 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage;
 
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMagnoliaShellView;
+
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMagnoliaShellView;
-
 /**
- * Shell message that displays the details. 
+ * Shell message that displays the details.
  */
 public abstract class VDetailedShellMessage extends VShellMessage {
 
     private Element detailsEl = DOM.createDiv();
-    
+
     public VDetailedShellMessage(VMagnoliaShellView shell, String topic, String message, String id) {
         super(shell, topic, message, id);
     }
-    
+
     protected Element getDetailsElement() {
         return detailsEl;
     }
-    
+
     @Override
     protected void construct() {
         super.construct();

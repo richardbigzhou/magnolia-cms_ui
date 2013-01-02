@@ -46,7 +46,7 @@ import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Implementation of AppLauncher view.
- *
+ * 
  */
 public class VAppLauncherViewImpl extends FlowPanel implements VAppLauncherView, AppActivationEvent.Handler {
 

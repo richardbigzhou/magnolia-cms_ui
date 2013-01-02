@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.widget.placeholder;
 
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
-
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 
 /**
  * Abstract Widget for area and component placeholder.

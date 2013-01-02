@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.jsni;
 
+import info.magnolia.ui.vaadin.gwt.client.editor.VPageEditorView;
+import info.magnolia.ui.vaadin.gwt.client.editor.jsni.event.FrameLoadedEvent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -43,9 +46,6 @@ import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Frame;
 import com.vaadin.terminal.gwt.client.BrowserInfo;
-
-import info.magnolia.ui.vaadin.gwt.client.editor.VPageEditorView;
-import info.magnolia.ui.vaadin.gwt.client.editor.jsni.event.FrameLoadedEvent;
 
 /**
  * WebkitFrameEventHandler. Provides separated implementations to overcome different bugs in the

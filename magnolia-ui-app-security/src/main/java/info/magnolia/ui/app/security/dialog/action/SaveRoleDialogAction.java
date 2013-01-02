@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.app.security.dialog.action;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * Save role dialog action.
@@ -69,7 +69,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
             getPresenter().getCallback().onSuccess(getDefinition().getName());
 
         } else {
-            //validation errors are displayed in the UI.
+            // validation errors are displayed in the UI.
         }
     }
 

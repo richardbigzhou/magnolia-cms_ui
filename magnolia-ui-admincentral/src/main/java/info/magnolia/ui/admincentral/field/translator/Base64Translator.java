@@ -52,20 +52,21 @@ public class Base64Translator extends PropertyTranslator {
      */
     @Override
     public Object translateFromDatasource(Object encoded) {
-        if(StringUtils.isBlank((String)encoded)) {
+        if (StringUtils.isBlank((String) encoded)) {
             return StringUtils.EMPTY;
         }
-        return new String(Base64.decodeBase64(((String)encoded).getBytes()));
+        return new String(Base64.decodeBase64(((String) encoded).getBytes()));
     }
+
     /**
      * Encode.
      */
     @Override
     public Object translateToDatasource(Object decoded) throws Exception {
-        if(StringUtils.isBlank((String)decoded)) {
+        if (StringUtils.isBlank((String) decoded)) {
             return StringUtils.EMPTY;
         }
-        return  new String(Base64.encodeBase64(((String)decoded).getBytes()));
+        return new String(Base64.encodeBase64(((String) decoded).getBytes()));
     }
 
 }

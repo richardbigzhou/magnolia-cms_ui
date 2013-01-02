@@ -37,13 +37,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-//import com.google.gwt.user.client.Window;
-
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService;
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField;
 
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.vaadin.terminal.gwt.client.ApplicationConnection;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.ValueMap;
@@ -72,28 +70,30 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         super.updateFromUIDL(uidl, client);
 
-        /* External plugins has to be loaded after CKEDITOR instance
-        have been created but before editor instance is created.
-        Store external plugins into member and let CKEditor loader
-        to pick up them. Server side component has the responsibility
-        to send this attribute early enough. */
-        if(uidl.hasAttribute(VAR_SERVERPLUGINS)) {
+        /*
+         * External plugins has to be loaded after CKEDITOR instance
+         * have been created but before editor instance is created.
+         * Store external plugins into member and let CKEditor loader
+         * to pick up them. Server side component has the responsibility
+         * to send this attribute early enough.
+         */
+        if (uidl.hasAttribute(VAR_SERVERPLUGINS)) {
             customPlugins = uidl.getMapAttribute(VAR_SERVERPLUGINS);
         }
-        
-        //list of plugin events that server is interested of handling.
-        if(uidl.hasAttribute(VAR_EVENTNAMES) && this.editor != null) {
+
+        // list of plugin events that server is interested of handling.
+        if (uidl.hasAttribute(VAR_EVENTNAMES) && this.editor != null) {
             pluginEvents = Arrays.asList(
                     uidl.getStringArrayAttribute(VAR_EVENTNAMES)
                     );
 
-            for(String eventName: pluginEvents) {
+            for (String eventName : pluginEvents) {
                 this.editor.addListener(this, eventName);
             }
         }
 
-        //Server wants to send an event to a plugin.
-        if(uidl.hasAttribute(VAR_FIRE_PLUGIN_EVENT) && this.editor != null) {
+        // Server wants to send an event to a plugin.
+        if (uidl.hasAttribute(VAR_FIRE_PLUGIN_EVENT) && this.editor != null) {
             this.editor.fire(
                     uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT),
                     uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT_VALUE)
@@ -102,19 +102,19 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
     }
 
     private static native void loadExternalPlugin(String pluginName, String path) /*-{    
-       $wnd.CKEDITOR.plugins.addExternal( pluginName, path, 'plugin.js' );
-    }-*/;
+                                                                                  $wnd.CKEDITOR.plugins.addExternal( pluginName, path, 'plugin.js' );
+                                                                                  }-*/;
 
     /**
      * Will be invoked from CK plugins.
      */
     @Override
     public void onPluginEvent(String eventName, String data) {
-        if(pluginEvents.contains(eventName)) {
+        if (pluginEvents.contains(eventName)) {
             clientToServer.updateVariable(
                     paintableId,
-                    VAR_EVENT_PREFIX+eventName,
-                    data==null?"":data,
+                    VAR_EVENT_PREFIX + eventName,
+                    data == null ? "" : data,
                     true);
         }
     }
@@ -124,7 +124,7 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
      * injected.
      */
     private void loadCKEditor() {
-        if(!CKEditorService.libraryReady()) {
+        if (!CKEditorService.libraryReady()) {
             CKEditorService.loadLibrary(new ScheduledCommand() {
                 @Override
                 public void execute() {
@@ -137,20 +137,20 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
             injectEditorTo(this);
         }
     }
-    
+
     /**
      * Load plugins from custom path.
      */
     private void loadPlugins() {
-        if(customPlugins != null) {
-            for(String key: customPlugins.getKeySet()) {
-              loadExternalPlugin(key, customPlugins.getString(key));                
-          }
+        if (customPlugins != null) {
+            for (String key : customPlugins.getKeySet()) {
+                loadExternalPlugin(key, customPlugins.getString(key));
+            }
         }
     }
 
     protected void setEditor(JavaScriptObject editor) {
-        this.editor = (VMagnoliaRichTextEditor)editor;
+        this.editor = (VMagnoliaRichTextEditor) editor;
     }
 
     /*

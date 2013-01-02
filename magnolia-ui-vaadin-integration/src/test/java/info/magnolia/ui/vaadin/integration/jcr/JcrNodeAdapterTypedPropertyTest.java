@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -72,16 +73,16 @@ public class JcrNodeAdapterTypedPropertyTest {
     @Test
     public void testGetItemPropertyWithNonTypedProperty() throws Exception {
         // GIVEN
-        //Create a NewNodeAdapter
+        // Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
         String value = "test";
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
-        //Create the property
+        // Create the property
         Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, null, value);
-        adapter.addItemProperty(id,propertyInitial);
+        adapter.addItemProperty(id, propertyInitial);
 
         // WHEN
         Property property = adapter.getItemProperty(id);
@@ -95,16 +96,16 @@ public class JcrNodeAdapterTypedPropertyTest {
     @Test
     public void testGetItemPropertyWithStringProperty() throws Exception {
         // GIVEN
-        //Create a NewNodeAdapter
+        // Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
         String value = "test";
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
-        //Create the property
+        // Create the property
         Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, "String", value);
-        adapter.addItemProperty(id,propertyInitial);
+        adapter.addItemProperty(id, propertyInitial);
 
         // WHEN
         Property property = adapter.getItemProperty(id);
@@ -115,20 +116,19 @@ public class JcrNodeAdapterTypedPropertyTest {
         assertEquals(value, property.getValue().toString());
     }
 
-
     @Test
     public void testGetItemPropertyWithLongProperty() throws Exception {
         // GIVEN
-        //Create a NewNodeAdapter
+        // Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
         String value = "10000";
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
-        //Create the property
+        // Create the property
         Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, "Long", value);
-        adapter.addItemProperty(id,propertyInitial);
+        adapter.addItemProperty(id, propertyInitial);
 
         // WHEN
         Property property = adapter.getItemProperty(id);
@@ -142,16 +142,16 @@ public class JcrNodeAdapterTypedPropertyTest {
     @Test
     public void testGetItemPropertyWithDoubleProperty() throws Exception {
         // GIVEN
-        //Create a NewNodeAdapter
+        // Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
         String value = "10000.99";
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
-        //Create the property
+        // Create the property
         Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, "Double", value);
-        adapter.addItemProperty(id,propertyInitial);
+        adapter.addItemProperty(id, propertyInitial);
 
         // WHEN
         Property property = adapter.getItemProperty(id);
@@ -165,7 +165,7 @@ public class JcrNodeAdapterTypedPropertyTest {
     @Test
     public void testGetItemPropertyWithDateProperty() throws Exception {
         // GIVEN
-        //Create a NewNodeAdapter
+        // Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
         String value = "1970-07-04";
@@ -180,9 +180,9 @@ public class JcrNodeAdapterTypedPropertyTest {
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
-        //Create the property
+        // Create the property
         Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, "Date", value);
-        adapter.addItemProperty(id,propertyInitial);
+        adapter.addItemProperty(id, propertyInitial);
 
         // WHEN
         Property property = adapter.getItemProperty(id);
@@ -196,16 +196,16 @@ public class JcrNodeAdapterTypedPropertyTest {
     @Test
     public void testGetItemPropertyWithBooleanProperty() throws Exception {
         // GIVEN
-        //Create a NewNodeAdapter
+        // Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
         String value = "true";
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
-        //Create the property
+        // Create the property
         Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, "Boolean", value);
-        adapter.addItemProperty(id,propertyInitial);
+        adapter.addItemProperty(id, propertyInitial);
 
         // WHEN
         Property property = adapter.getItemProperty(id);
@@ -219,16 +219,16 @@ public class JcrNodeAdapterTypedPropertyTest {
     @Test
     public void testGetItemPropertyWithDecimalProperty() throws Exception {
         // GIVEN
-        //Create a NewNodeAdapter
+        // Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
-        String value ="1111111";
+        String value = "1111111";
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
-        //Create the property
+        // Create the property
         Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, "Decimal", value);
-        adapter.addItemProperty(id,propertyInitial);
+        adapter.addItemProperty(id, propertyInitial);
 
         // WHEN
         Property property = adapter.getItemProperty(id);
@@ -236,18 +236,18 @@ public class JcrNodeAdapterTypedPropertyTest {
         // THEN
         assertSame(property, propertyInitial);
         assertEquals("BigDecimal", property.getType().getSimpleName());
-        assertEquals( new BigDecimal(value), property.getValue());
+        assertEquals(new BigDecimal(value), property.getValue());
     }
 
     @Test
     public void testGetItemPropertyWithBooleanPropertyFromJcr() throws Exception {
         // GIVEN
-        //Create a NewNodeAdapter
+        // Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
         Boolean value = Boolean.TRUE;
         Node parentNode = session.getRootNode().addNode(nodeName);
-        //Create the JCR property
+        // Create the JCR property
         parentNode.setProperty(id, value);
         session.save();
 
@@ -264,15 +264,15 @@ public class JcrNodeAdapterTypedPropertyTest {
     @Test
     public void testGetItemPropertyWithBooleanPropertyFromJcrModifiedByVaadin() throws Exception {
         // GIVEN
-        //Create a NewNodeAdapter
+        // Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
         Boolean value = Boolean.TRUE;
         Node parentNode = session.getRootNode().addNode(nodeName);
-        //Create the JCR property
+        // Create the JCR property
         parentNode.setProperty(id, value);
         session.save();
-        //Get the Jcr Property as a Vaadin props
+        // Get the Jcr Property as a Vaadin props
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
         Property property = adapter.getItemProperty(id);
         // Modify
@@ -290,16 +290,16 @@ public class JcrNodeAdapterTypedPropertyTest {
     @Test
     public void testGetItemPropertyWithBinaryPropertyCreatedByVaadinStoredIntoJcr() throws Exception {
         // GIVEN
-        //Create a NewNodeAdapter
+        // Create a NewNodeAdapter
         String nodeName = "rootNode";
         String id = "propertyID";
         BinaryValue value = new BinaryValue("text");
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
-        //Create the property
+        // Create the property
         Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, "Binary", null);
-        adapter.addItemProperty(id,propertyInitial);
+        adapter.addItemProperty(id, propertyInitial);
         propertyInitial.setValue(value.getBinary());
 
         // WHEN

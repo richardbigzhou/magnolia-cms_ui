@@ -42,8 +42,8 @@ public class OrderBy {
     private boolean isAscending;
 
     public OrderBy(String property, boolean isAscending) {
-       this.property = property;
-       this.isAscending = isAscending;
+        this.property = property;
+        this.isAscending = isAscending;
     }
 
     public String getProperty() {

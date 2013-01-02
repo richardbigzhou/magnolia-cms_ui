@@ -42,17 +42,16 @@ import com.vaadin.data.Property;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 
-
 /**
  * Specific Contact TextAndButtonField field that add a Thumbnail before the select action and field
  * see basic implementation {@link TextAndButtonField}.
  */
-public class ContactTextAndButtonField extends CustomField{
+public class ContactTextAndButtonField extends CustomField {
 
     private TextAndButtonField textAndButtonField;
 
     public ContactTextAndButtonField(TextAndButtonField textAndButtonField, ImageProvider imageThumbnailProvider, String workspace) {
-        //used to set the correct property and values
+        // used to set the correct property and values
         this.textAndButtonField = textAndButtonField;
         HorizontalLayout layout = new HorizontalLayout();
         // Add Thumbnail Field
@@ -68,7 +67,7 @@ public class ContactTextAndButtonField extends CustomField{
     }
 
     @Override
-    public Class< ? > getType() {
+    public Class<?> getType() {
         return String.class;
     }
 
@@ -81,6 +80,7 @@ public class ContactTextAndButtonField extends CustomField{
     public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
         textAndButtonField.setValue(newValue);
     }
+
     @Override
     public void setPropertyDataSource(Property newDataSource) {
         textAndButtonField.setPropertyDataSource(newDataSource);

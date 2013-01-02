@@ -37,7 +37,7 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 
 /**
  * Entry of an app group describing an app to be part of that group.
- *
+ * 
  * @see AppLauncherLayout
  * @see AppLauncherGroup
  * @see AppLauncherLayoutManager
@@ -48,7 +48,7 @@ public class AppLauncherGroupEntry {
     private boolean enabled = true;
     private String iconFont;
     private String iconCharacter;
-    
+
     private transient AppDescriptor appDescriptor;
 
     public String getName() {

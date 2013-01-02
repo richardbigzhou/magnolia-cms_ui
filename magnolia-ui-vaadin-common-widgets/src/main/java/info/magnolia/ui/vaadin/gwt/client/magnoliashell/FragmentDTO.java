@@ -39,7 +39,7 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppTy
  * Helper class for holding the parsed info from the fragment.
  */
 public class FragmentDTO {
-    
+
     /**
      * Enum for the types of fragments used within MagnoliaShell.
      */
@@ -47,7 +47,7 @@ public class FragmentDTO {
         APP,
         SHELL_APP
     }
-    
+
     private FragmentType appType = FragmentType.SHELL_APP;
 
     private String appId = "";

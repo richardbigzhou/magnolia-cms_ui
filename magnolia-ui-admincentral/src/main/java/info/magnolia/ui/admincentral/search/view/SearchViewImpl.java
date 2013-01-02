@@ -49,14 +49,14 @@ public class SearchViewImpl extends ListViewImpl implements SearchView {
 
     @Override
     public void search(String fulltextExpr) {
-        SearchJcrContainer container = ((SearchJcrContainer)getContainer());
+        SearchJcrContainer container = ((SearchJcrContainer) getContainer());
         container.setFullTextExpression(fulltextExpr);
         refresh();
     }
 
     @Override
     public void clear() {
-        SearchJcrContainer container = ((SearchJcrContainer)getContainer());
+        SearchJcrContainer container = ((SearchJcrContainer) getContainer());
         container.setFullTextExpression(null);
         refresh();
     }

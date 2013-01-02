@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.tabsheet;
 
-
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.loading.LoadingPane;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
@@ -55,7 +54,7 @@ import com.vaadin.terminal.gwt.client.Util;
 
 /**
  * VShellTabSheetViewImpl.
- *
+ * 
  * Contains the tabs at the top (VMagnoliaTabNavigator), and the tabs themselves. The tabs are all contained in a ScrollPanel,
  * this enables a single showing tab to be scrolled - or the contents of all the tabs to be scrolled together when they are stacked in the
  * 'ShowAllTabs' mode.
@@ -81,7 +80,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     public VMagnoliaTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
         this.presenter = presenter;
-        this.tabContainer =  new VMagnoliaTabNavigator(eventBus);
+        this.tabContainer = new VMagnoliaTabNavigator(eventBus);
         addStyleName("v-shell-tabsheet");
         scroller.addStyleName("v-shell-tabsheet-scroller");
         tabPanel.addStyleName("v-shell-tabsheet-tab-wrapper");
@@ -92,10 +91,6 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         loadingPane.appendTo(tabPanel);
         loadingPane.hide();
     }
-
-
-
-
 
     @Override
     public VMagnoliaTabNavigator getTabContainer() {
@@ -114,7 +109,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         tabPanel.remove(tabToOrphan);
     }
 
-    //private int count = 0;
+    // private int count = 0;
 
     @Override
     public void setActiveTab(final VMagnoliaTab tab) {
@@ -136,11 +131,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
             }
         }.schedule(10);
 
-
-
     }
-
-
 
     @Override
     public VMagnoliaTab getTabById(String tabId) {
@@ -173,7 +164,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
         if (!tabs.contains(tab)) {
             getTabs().add(tab);
             tabPanel.add(tab);
-            fireEvent(new TabSetChangedEvent((VMagnoliaTabSheet)presenter));
+            fireEvent(new TabSetChangedEvent((VMagnoliaTabSheet) presenter));
         }
     }
 
@@ -193,7 +184,7 @@ public class VMagnoliaTabSheetViewImpl extends FlowPanel implements VMagnoliaTab
     @Override
     protected void onLoad() {
         super.onLoad();
-        fireEvent(new TabSetChangedEvent((VMagnoliaTabSheet)presenter));
+        fireEvent(new TabSetChangedEvent((VMagnoliaTabSheet) presenter));
     }
 
     @Override

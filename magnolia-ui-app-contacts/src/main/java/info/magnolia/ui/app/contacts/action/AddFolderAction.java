@@ -33,16 +33,16 @@
  */
 package info.magnolia.ui.app.contacts.action;
 
-import javax.inject.Named;
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.tree.action.RepositoryOperationAction;
 import info.magnolia.ui.framework.event.EventBus;
+
+import javax.inject.Named;
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * Creates a folder either as a child if the node given is itself a folder or as a child of the nearest ancestor that

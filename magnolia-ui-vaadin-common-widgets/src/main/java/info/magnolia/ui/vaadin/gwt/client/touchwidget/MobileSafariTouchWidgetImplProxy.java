@@ -45,7 +45,7 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchWidgetImpl;
  * Special implementation of {@link TouchWidgetImpl} that prevents conflicts with the inbuilt GWT touch functionality.
  */
 public class MobileSafariTouchWidgetImplProxy implements TouchWidgetImpl {
-    
+
     @Override
     public HandlerRegistration addTouchStartHandler(Widget w, TouchStartHandler handler) {
         return w.addDomHandler(new TouchStartHandlerProxy(handler), com.google.gwt.event.dom.client.TouchStartEvent.getType());

@@ -41,7 +41,7 @@ import com.vaadin.ui.Component;
  */
 public class ItemViewImpl implements ItemView {
 
-    //private CssLayout root = new CssLayout();
+    // private CssLayout root = new CssLayout();
     private Component itemView;
     private ViewType viewType;
 
@@ -51,11 +51,11 @@ public class ItemViewImpl implements ItemView {
 
     @Override
     public void setItemView(Component newView, ViewType viewType) {
-      //  if (itemView != null) {
-       //     root.removeComponent(itemView);
-        //}
-        //root.addComponent(newView);
-        this.itemView = newView; 
+        // if (itemView != null) {
+        // root.removeComponent(itemView);
+        // }
+        // root.addComponent(newView);
+        this.itemView = newView;
         this.itemView = newView;
         this.viewType = viewType;
     }

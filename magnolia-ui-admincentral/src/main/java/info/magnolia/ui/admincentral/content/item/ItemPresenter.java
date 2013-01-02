@@ -44,7 +44,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-
 /**
  * Presenter for the item displayed in the {@link info.magnolia.ui.admincentral.workbench.ItemWorkbenchPresenter}. Takes
  * care of building and switching between the right {@link ItemView.ViewType}.
@@ -80,24 +79,24 @@ public class ItemPresenter {
         final FormPresenter formPresenter = formPresenterFactory.createFormPresenterByDefinition(formDefinition);
 
         switch (viewType) {
-            case VIEW :
-            case EDIT :
-            default :
-                final FormView formView = formPresenter.start(item, new FormPresenter.Callback() {
+        case VIEW:
+        case EDIT:
+        default:
+            final FormView formView = formPresenter.start(item, new FormPresenter.Callback() {
 
-                    @Override
-                    public void onCancel() {
-                        setItemView(ItemView.ViewType.VIEW);
-                    }
+                @Override
+                public void onCancel() {
+                    setItemView(ItemView.ViewType.VIEW);
+                }
 
-                    @Override
-                    public void onSuccess(String actionName) {
-                        eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
-                        setItemView(ItemView.ViewType.VIEW);
-                    }
-                });
-                view.setItemView(formView.asVaadinComponent(), viewType);
-                break;
+                @Override
+                public void onSuccess(String actionName) {
+                    eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
+                    setItemView(ItemView.ViewType.VIEW);
+                }
+            });
+            view.setItemView(formView.asVaadinComponent(), viewType);
+            break;
 
         }
 

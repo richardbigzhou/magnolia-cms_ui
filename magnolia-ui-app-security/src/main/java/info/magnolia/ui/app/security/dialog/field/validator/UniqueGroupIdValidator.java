@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.app.security.dialog.field.validator;
 
-import java.util.Collection;
-
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.Security;
+
+import java.util.Collection;
 
 import com.vaadin.data.validator.AbstractStringValidator;
 

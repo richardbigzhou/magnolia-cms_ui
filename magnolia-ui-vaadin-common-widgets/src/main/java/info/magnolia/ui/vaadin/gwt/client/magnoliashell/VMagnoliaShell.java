@@ -38,8 +38,8 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppTy
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppNavigationEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellMessage.MessageType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.util.JSONUtil;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VShellViewport;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VAppsViewport.PreloaderCallback;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VShellViewport;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -68,7 +68,6 @@ import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.VConsole;
-
 
 /**
  * Vaadin implementation of MagnoliaShell client side.

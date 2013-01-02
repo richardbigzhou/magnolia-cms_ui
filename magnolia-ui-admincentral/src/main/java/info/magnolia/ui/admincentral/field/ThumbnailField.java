@@ -34,11 +34,10 @@
 package info.magnolia.ui.admincentral.field;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +53,7 @@ import com.vaadin.ui.Label;
  * A base custom field comprising of a Thumbnail and related image information.
  * This Field is waiting for path Node value.
  */
-public class ThumbnailField extends CustomField{
+public class ThumbnailField extends CustomField {
     private static final Logger log = LoggerFactory.getLogger(ThumbnailField.class);
     private HorizontalLayout layout;
     private Label label;
@@ -85,7 +84,7 @@ public class ThumbnailField extends CustomField{
     }
 
     @Override
-    public Class< ? > getType() {
+    public Class<?> getType() {
         return String.class;
     }
 
@@ -102,13 +101,13 @@ public class ThumbnailField extends CustomField{
                     Node parentNode = MgnlContext.getJCRSession(workspace).getNode(event.getProperty().getValue().toString());
                     String uuid = parentNode.getIdentifier();
 
-                    if(!currentIdentifier.equals(uuid)) {
+                    if (!currentIdentifier.equals(uuid)) {
                         // Set Text info
                         label.setValue(createFieldDetail(parentNode));
                         // Set Thumbnail
                         String path = imageThumbnailProvider.getPortraitPath(workspace, parentNode.getPath());
                         layout.removeComponent(embedded);
-                        if(path != null) {
+                        if (path != null) {
                             embedded = new Embedded("", new ExternalResource(path));
                         } else {
                             embedded = new Embedded(null);
@@ -125,7 +124,7 @@ public class ThumbnailField extends CustomField{
     /**
      * Create a field detail displayed after the thumbnail.
      */
-    public String createFieldDetail(Node parentNode) throws RepositoryException{
+    public String createFieldDetail(Node parentNode) throws RepositoryException {
         return "";
     }
 }

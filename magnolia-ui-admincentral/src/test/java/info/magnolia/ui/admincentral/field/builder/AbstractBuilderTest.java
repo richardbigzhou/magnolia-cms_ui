@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
@@ -60,7 +60,6 @@ import org.junit.After;
 import org.junit.Before;
 
 import com.vaadin.data.Item;
-
 
 /**
  * Abstract test class used to initialize the DialogField Tests.
@@ -88,16 +87,16 @@ public abstract class AbstractBuilderTest<D extends FieldDefinition> {
         when(systemContext.getLocale()).thenReturn(DEFAULT_LOCALE);
         ComponentsTestUtil.setInstance(SystemContext.class, systemContext);
 
-        //Init Session
+        // Init Session
         session = new MockSession(workspaceName);
         MockContext ctx = new MockContext();
         ctx.addSession(workspaceName, session);
         MgnlContext.setInstance(ctx);
 
-        //Create ConfiguredField POJO
+        // Create ConfiguredField POJO
         createConfiguredFieldDefinition();
 
-        //Init Node and Item.
+        // Init Node and Item.
         Node rootNode = session.getRootNode();
         baseNode = rootNode.addNode(itemName);
         baseItem = new JcrNodeAdapter(baseNode);

@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+
 import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
@@ -46,12 +46,10 @@ import javax.jcr.PropertyType;
 import org.junit.Ignore;
 import org.junit.Test;
 
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
-
 
 /**
  * Main testcase for {@link AbstractFieldBuilder}.
@@ -70,15 +68,15 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         // THEN
         assertEquals(TextField.class, field.getClass());
         assertEquals(definition, abstractDialogField.getFieldDefinition());
-        assertEquals(false,field.isRequired());
-        assertEquals("label",field.getCaption());
-        assertEquals(false,field.getPropertyDataSource().isReadOnly());
+        assertEquals(false, field.isRequired());
+        assertEquals("label", field.getCaption());
+        assertEquals(false, field.getPropertyDataSource().isReadOnly());
         assertEquals(true, field.getPropertyDataSource() instanceof DefaultProperty);
-        assertEquals(propertyName, ((DefaultProperty)field.getPropertyDataSource()).getPropertyName());
+        assertEquals(propertyName, ((DefaultProperty) field.getPropertyDataSource()).getPropertyName());
     }
 
     @Test
-    public void changePropertyValueTest() throws Exception{
+    public void changePropertyValueTest() throws Exception {
         // GIVEN
         abstractDialogField = new TestFormField(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
@@ -88,7 +86,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         field.setValue("new Value");
 
         // THEN
-        Node res = ((JcrNodeAdapter)baseItem).getNode();
+        Node res = ((JcrNodeAdapter) baseItem).getNode();
         assertEquals(true, res.hasProperty(propertyName));
         assertEquals("new Value", res.getProperty(propertyName).getString());
         assertEquals(PropertyType.STRING, res.getProperty(propertyName).getType());
@@ -99,11 +97,11 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     }
 
     @Test
-    public void propertyValueChangeTest_SaveInfo_True() throws Exception{
+    public void propertyValueChangeTest_SaveInfo_True() throws Exception {
         // GIVEN
         baseNode.setProperty(propertyName, "value");
         baseItem = new JcrNodeAdapter(baseNode);
-        //Set do not change
+        // Set do not change
         definition.setReadOnly(false);
         abstractDialogField = new TestFormField(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
@@ -113,7 +111,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         field.setValue("new Value");
 
         // THEN
-        Node res = ((JcrNodeAdapter)baseItem).getNode();
+        Node res = ((JcrNodeAdapter) baseItem).getNode();
         assertEquals(true, res.hasProperty(propertyName));
         assertEquals("new Value", res.getProperty(propertyName).getString());
         Property p = baseItem.getItemProperty(propertyName);
@@ -122,9 +120,9 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     }
 
     @Test
-    public void propertyType_Double() throws Exception{
+    public void propertyType_Double() throws Exception {
         // GIVEN
-        //Set property Type
+        // Set property Type
         definition.setType("Double");
         definition.setDefaultValue("");
         abstractDialogField = new TestFormField(definition, baseItem);
@@ -135,10 +133,10 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         field.setValue(21.98);
 
         // THEN
-        Node res = ((JcrNodeAdapter)baseItem).getNode();
+        Node res = ((JcrNodeAdapter) baseItem).getNode();
         assertEquals(true, res.hasProperty(propertyName));
         assertEquals(PropertyType.DOUBLE, res.getProperty(propertyName).getType());
-        assertEquals(Double.parseDouble("21.98"), res.getProperty(propertyName).getDouble(),0);
+        assertEquals(Double.parseDouble("21.98"), res.getProperty(propertyName).getDouble(), 0);
 
         Property p = baseItem.getItemProperty(propertyName);
         assertEquals("21.98", p.getValue().toString());
@@ -157,7 +155,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         Field field = abstractDialogField.getField();
         // THEN
 
-        assertEquals("label",field.getCaption());
+        assertEquals("label", field.getCaption());
 
     }
 
@@ -177,8 +175,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         assertTrue(field.getCaption().contains("*"));
     }
 
-
-    public static ConfiguredFieldDefinition createConfiguredFieldDefinition(ConfiguredFieldDefinition configureFieldDefinition, String propertyName){
+    public static ConfiguredFieldDefinition createConfiguredFieldDefinition(ConfiguredFieldDefinition configureFieldDefinition, String propertyName) {
         configureFieldDefinition.setDefaultValue("defaultValue");
         configureFieldDefinition.setDescription("description");
         configureFieldDefinition.setI18nBasename("i18nBasename");

@@ -48,11 +48,12 @@ import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Presenter for the workbench displayed in the {@link info.magnolia.ui.admincentral.app.content.AbstractItemSubApp}.
@@ -72,7 +73,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
 
     @Inject
     public ItemWorkbenchPresenter(final SubAppContext subAppContext, final ItemWorkbenchView view, final @Named("subapp") EventBus subAppEventBus,
-                                  final ItemPresenter itemPresenter, final WorkbenchActionFactory actionFactory, final ActionbarPresenter actionbarPresenter) {
+            final ItemPresenter itemPresenter, final WorkbenchActionFactory actionFactory, final ActionbarPresenter actionbarPresenter) {
         this.view = view;
         this.subAppEventBus = subAppEventBus;
         this.itemPresenter = itemPresenter;
@@ -115,14 +116,14 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
     public String getNodePath() {
         return nodePath;
     }
-    
+
     public ActionbarPresenter getActionbarPresenter() {
         return actionbarPresenter;
     }
-    
+
     @Override
     public void onViewTypeChanged(final ItemView.ViewType viewType) {
-        //eventBus.fireEvent(new ViewTypeChangedEvent(viewType));
+        // eventBus.fireEvent(new ViewTypeChangedEvent(viewType));
     }
 
 }

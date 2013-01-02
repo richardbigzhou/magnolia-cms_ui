@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.framework.message;
 
+import static org.junit.Assert.assertEquals;
+
 import info.magnolia.test.mock.jcr.MockNode;
+
 import org.junit.Test;
-
-
-import static org.junit.Assert.*;
 
 /**
  * Tests.
@@ -45,7 +45,7 @@ import static org.junit.Assert.*;
 public class MessageStoreTest {
 
     @Test
-    public void testMarshall() throws Exception{
+    public void testMarshall() throws Exception {
         // GIVEN
         final MockNode messageNode = new MockNode();
         final long now = System.currentTimeMillis();

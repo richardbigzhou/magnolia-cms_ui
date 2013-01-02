@@ -46,7 +46,6 @@ import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Layout;
 
-
 /**
  * LightLayout is a lightened version of CssLayout whose client-side counterpart is a plain GWT
  * FlowPanel (one single div, no vaadin margins).
@@ -77,7 +76,8 @@ public class LightLayout extends AbstractComponentContainer implements Layout {
      * Adds a component into this container. The component is added to the left or on top of the
      * other components.
      * 
-     * @param c the component to be added.
+     * @param c
+     *            the component to be added.
      */
     public void addComponentAsFirst(Component c) {
         // If c is already in this, we must remove it before proceeding
@@ -98,9 +98,11 @@ public class LightLayout extends AbstractComponentContainer implements Layout {
     /**
      * Adds a component into indexed position in this container.
      * 
-     * @param c the component to be added.
-     * @param index the index of the component position. The components currently in and after the
-     * position are shifted forwards.
+     * @param c
+     *            the component to be added.
+     * @param index
+     *            the index of the component position. The components currently in and after the
+     *            position are shifted forwards.
      */
     public void addComponent(Component c, int index) {
         // If c is already in this, we must remove it before proceeding
@@ -146,8 +148,7 @@ public class LightLayout extends AbstractComponentContainer implements Layout {
     }
 
     /**
-     * Gets the number of contained components. Consistent with the iterator returned by
-     * {@link #getComponentIterator()}.
+     * Gets the number of contained components. Consistent with the iterator returned by {@link #getComponentIterator()}.
      * 
      * @return the number of contained components
      */
@@ -158,7 +159,8 @@ public class LightLayout extends AbstractComponentContainer implements Layout {
     /**
      * Returns the index of the given component.
      * 
-     * @param component The component to look up.
+     * @param component
+     *            The component to look up.
      * @return The index of the component or -1 if the component is not a child.
      */
     public int getComponentIndex(Component component) {
@@ -168,9 +170,11 @@ public class LightLayout extends AbstractComponentContainer implements Layout {
     /**
      * Returns the component at the given position.
      * 
-     * @param index The position of the component.
+     * @param index
+     *            The position of the component.
      * @return The component at the given index.
-     * @throws IndexOutOfBoundsException If the index is out of range.
+     * @throws IndexOutOfBoundsException
+     *             If the index is out of range.
      */
     public Component getComponent(int index) throws IndexOutOfBoundsException {
         return components.get(index);
@@ -179,8 +183,10 @@ public class LightLayout extends AbstractComponentContainer implements Layout {
     /**
      * Paints the content of this component.
      * 
-     * @param target the Paint Event.
-     * @throws PaintException if the paint operation failed.
+     * @param target
+     *            the Paint Event.
+     * @throws PaintException
+     *             if the paint operation failed.
      */
     @Override
     public void paintContent(PaintTarget target) throws PaintException {

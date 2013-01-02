@@ -38,12 +38,10 @@ import info.magnolia.ui.framework.app.AppContext;
 
 import javax.inject.Inject;
 
-
 /**
  * A page app simply embeds an html page in an iframe.
  */
 public class PageApp extends AbstractApp {
-
 
     @Inject
     public PageApp(AppContext appContext) {

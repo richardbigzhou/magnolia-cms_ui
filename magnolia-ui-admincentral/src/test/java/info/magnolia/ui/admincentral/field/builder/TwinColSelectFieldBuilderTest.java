@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
+
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.model.field.definition.TwinColSelectFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -56,7 +57,7 @@ public class TwinColSelectFieldBuilderTest extends AbstractBuilderTest<TwinColSe
     private TwinColSelectFieldBuilder twinSelect;
 
     @Test
-    public void simpleTwinColFieldTest() throws Exception{
+    public void simpleTwinColFieldTest() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
         twinSelect = new TwinColSelectFieldBuilder(definition, baseItem);
@@ -67,15 +68,14 @@ public class TwinColSelectFieldBuilderTest extends AbstractBuilderTest<TwinColSe
 
         // THEN
         assertEquals(true, field instanceof TwinColSelect);
-        Collection<?> items = ((TwinColSelect)field).getItemIds();
+        Collection<?> items = ((TwinColSelect) field).getItemIds();
         assertEquals(3, items.size());
         assertEquals("[]", field.getValue().toString());
     }
 
-
     @SuppressWarnings("rawtypes")
     @Test
-    public void multiSelectTwinColFieldTest() throws Exception{
+    public void multiSelectTwinColFieldTest() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
         twinSelect = new TwinColSelectFieldBuilder(definition, baseItem);
@@ -85,17 +85,17 @@ public class TwinColSelectFieldBuilderTest extends AbstractBuilderTest<TwinColSe
         ArrayList<String> selected = new ArrayList<String>();
         selected.add("1");
         selected.add("3");
-        ((TwinColSelect)field).setValue(selected);
+        ((TwinColSelect) field).setValue(selected);
 
         // THEN
-        assertEquals(2, ((Collection)field.getValue()).toArray().length);
-        assertEquals("1", ((Collection)field.getValue()).toArray()[0]);
-        assertEquals("3", ((Collection)field.getValue()).toArray()[1]);
+        assertEquals(2, ((Collection) field.getValue()).toArray().length);
+        assertEquals("1", ((Collection) field.getValue()).toArray()[0]);
+        assertEquals("3", ((Collection) field.getValue()).toArray()[1]);
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void multiSelectTwinColField_ItemResult_Test() throws Exception{
+    public void multiSelectTwinColField_ItemResult_Test() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
         twinSelect = new TwinColSelectFieldBuilder(definition, baseItem);
@@ -105,20 +105,21 @@ public class TwinColSelectFieldBuilderTest extends AbstractBuilderTest<TwinColSe
         ArrayList<String> selected = new ArrayList<String>();
         selected.add("1");
         selected.add("3");
-        ((TwinColSelect)field).setValue(selected);
+        ((TwinColSelect) field).setValue(selected);
 
         // THEN
-        Property res = ((JcrNodeAdapter)baseItem).getItemProperty("propertyName");;
+        Property res = ((JcrNodeAdapter) baseItem).getItemProperty("propertyName");
+        ;
 
-        assertEquals(2, ((LinkedHashSet<String>)res.getValue()).size());
-        assertEquals("1", ((LinkedHashSet<String>)res.getValue()).toArray()[0]);
-        assertEquals("3", ((LinkedHashSet<String>)res.getValue()).toArray()[1]);
+        assertEquals(2, ((LinkedHashSet<String>) res.getValue()).size());
+        assertEquals("1", ((LinkedHashSet<String>) res.getValue()).toArray()[0]);
+        assertEquals("3", ((LinkedHashSet<String>) res.getValue()).toArray()[1]);
     }
 
     @Override
     protected void createConfiguredFieldDefinition() {
         TwinColSelectFieldDefinition fieldDefinition = new TwinColSelectFieldDefinition();
-        fieldDefinition = (TwinColSelectFieldDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+        fieldDefinition = (TwinColSelectFieldDefinition) AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
         fieldDefinition.setDefaultValue(null);
         SelectFieldOptionDefinition option1 = new SelectFieldOptionDefinition();
         option1.setLabel("One");

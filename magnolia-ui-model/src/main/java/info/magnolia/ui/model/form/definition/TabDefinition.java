@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.model.form.definition;
 
-import java.util.List;
-
 import info.magnolia.ui.model.field.definition.FieldDefinition;
+
+import java.util.List;
 
 /**
  * Defines a tab within a form. Holds a list of fields contained in this tab.
- *
+ * 
  * @see info.magnolia.ui.model.form.definition.FormDefinition
  * @see FieldDefinition
  */

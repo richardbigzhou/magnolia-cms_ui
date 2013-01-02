@@ -41,7 +41,6 @@ import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 
-
 /**
  * The Icon is a lightweight component that outputs a simple scalable icon. The client-side
  * implementation is based on the icon font technique, which means it only allows for monochromatic

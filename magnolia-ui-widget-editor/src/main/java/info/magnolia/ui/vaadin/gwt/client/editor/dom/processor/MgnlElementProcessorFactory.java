@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
-import com.google.gwt.event.shared.EventBus;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
+
+import com.google.gwt.event.shared.EventBus;
 
 /**
  * Factory Class for MgnlElement processors.

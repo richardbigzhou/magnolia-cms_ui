@@ -50,43 +50,43 @@ import com.vaadin.ui.ComponentContainer;
 /**
  * A tab in the shell tabsheet.
  */
-@ClientWidget(value=VMagnoliaTab.class, loadStyle = LoadStyle.EAGER)
+@ClientWidget(value = VMagnoliaTab.class, loadStyle = LoadStyle.EAGER)
 public class MagnoliaTab extends SimplePanel implements ServerSideHandler {
 
     private String tabId = null;
-    
+
     private boolean isClosable = false;
-    
+
     private boolean hasError = false;
-    
+
     private String notification = null;
 
     private final ServerSideProxy proxy = new ServerSideProxy(this);
-    
+
     public MagnoliaTab(final String caption, final ComponentContainer c) {
         super(c);
         setSizeFull();
         setImmediate(true);
         setCaption(caption);
     }
-    
+
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
         super.paintContent(target);
         proxy.paintContent(target);
     }
-    
+
     @Override
     public void changeVariables(Object source, Map<String, Object> variables) {
         super.changeVariables(source, variables);
         proxy.changeVariables(source, variables);
     }
-    
+
     public void setTabId(String tabId) {
         this.tabId = tabId;
         proxy.callOnce("setTabId", tabId);
     }
-    
+
     public String getTabId() {
         return tabId;
     }
@@ -94,7 +94,7 @@ public class MagnoliaTab extends SimplePanel implements ServerSideHandler {
     public boolean isClosable() {
         return isClosable;
     }
-    
+
     public void setClosable(boolean isClosable) {
         this.isClosable = isClosable;
         proxy.callOnce("setClosable", isClosable);
@@ -109,16 +109,16 @@ public class MagnoliaTab extends SimplePanel implements ServerSideHandler {
         this.hasError = hasError;
         proxy.callOnce("setHasError", hasError);
     }
-    
+
     public void hideNotification() {
         proxy.callOnce("hideNotification");
         this.notification = null;
     }
-    
+
     public String getNotification() {
         return notification;
     }
-    
+
     public boolean hasNotification() {
         return this.notification != null;
     }
@@ -126,17 +126,17 @@ public class MagnoliaTab extends SimplePanel implements ServerSideHandler {
     public boolean hasError() {
         return hasError;
     }
-    
+
     @Override
     public void childRequestedRepaint(Collection<RepaintRequestListener> alreadyNotified) {
         super.childRequestedRepaint(alreadyNotified);
     }
-    
+
     @Override
     public void paint(PaintTarget target) throws PaintException {
         super.paint(target);
     }
-    
+
     @Override
     public Object[] initRequestFromClient() {
         if (tabId != null) {
@@ -144,7 +144,7 @@ public class MagnoliaTab extends SimplePanel implements ServerSideHandler {
             proxy.callOnce("setClosable", isClosable);
             proxy.callOnce("setHasError", hasError);
             if (notification != null) {
-                proxy.callOnce("updateNotification", notification);   
+                proxy.callOnce("updateNotification", notification);
             } else {
                 proxy.callOnce("hideNotification");
             }

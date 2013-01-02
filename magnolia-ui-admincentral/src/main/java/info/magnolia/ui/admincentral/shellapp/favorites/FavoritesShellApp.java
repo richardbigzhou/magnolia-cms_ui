@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import javax.inject.Inject;
-
 import info.magnolia.ui.framework.app.ShellApp;
 import info.magnolia.ui.framework.app.ShellAppContext;
 import info.magnolia.ui.framework.app.ShellView;
 import info.magnolia.ui.framework.location.Location;
+
+import javax.inject.Inject;
 
 /**
  * Favorites shell app.

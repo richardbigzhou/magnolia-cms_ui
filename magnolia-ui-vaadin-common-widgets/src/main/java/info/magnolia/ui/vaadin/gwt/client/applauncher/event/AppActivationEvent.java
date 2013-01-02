@@ -51,15 +51,15 @@ public class AppActivationEvent extends Event<AppActivationEvent.Handler> {
     public static final Type<Handler> TYPE = new Type<Handler>();
 
     private String appName;
-    
+
     public AppActivationEvent(final String appName) {
         this.appName = appName;
     }
-    
+
     public String getAppName() {
         return appName;
     }
-    
+
     @Override
     public Type<Handler> getAssociatedType() {
         return TYPE;

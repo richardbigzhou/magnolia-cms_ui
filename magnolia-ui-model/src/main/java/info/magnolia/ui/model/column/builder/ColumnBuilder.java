@@ -38,8 +38,9 @@ import info.magnolia.ui.model.column.definition.ColumnFormatter;
 
 /**
  * Builder for building a column definition.
- *
- * @param <T> type of field definition
+ * 
+ * @param <T>
+ *            type of field definition
  * @see info.magnolia.ui.model.workbench.builder.WorkbenchBuilder
  */
 public class ColumnBuilder<T extends AbstractColumnDefinition> {

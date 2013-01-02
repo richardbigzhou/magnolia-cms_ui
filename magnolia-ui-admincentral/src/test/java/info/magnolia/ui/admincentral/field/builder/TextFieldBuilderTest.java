@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
+
 import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 
 import org.junit.Test;
@@ -59,7 +60,7 @@ public class TextFieldBuilderTest extends AbstractBuilderTest<TextFieldDefinitio
 
         // THEN
         assertEquals(true, field instanceof TextField);
-        assertEquals(-1, ((TextField)field).getMaxLength());
+        assertEquals(-1, ((TextField) field).getMaxLength());
     }
 
     @Test
@@ -74,16 +75,15 @@ public class TextFieldBuilderTest extends AbstractBuilderTest<TextFieldDefinitio
 
         // THEN
         assertEquals(true, field instanceof TextArea);
-        assertEquals(2, ((TextArea)field).getRows());
-        assertEquals(250, ((TextArea)field).getMaxLength());
+        assertEquals(2, ((TextArea) field).getRows());
+        assertEquals(250, ((TextArea) field).getMaxLength());
         assertEquals(0, field.getWidthUnits());
     }
-
 
     @Override
     protected void createConfiguredFieldDefinition() {
         TextFieldDefinition fieldDefinition = new TextFieldDefinition();
-        fieldDefinition = (TextFieldDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+        fieldDefinition = (TextFieldDefinition) AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
 
         fieldDefinition.setRows(0);
 

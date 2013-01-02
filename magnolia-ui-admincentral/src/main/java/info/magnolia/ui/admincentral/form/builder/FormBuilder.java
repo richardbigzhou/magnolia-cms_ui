@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.admincentral.form.builder;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.Field;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.field.FieldBuilder;
 import info.magnolia.ui.admincentral.field.builder.FieldFactory;
@@ -46,7 +43,12 @@ import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.model.form.definition.TabDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
+
 import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Field;
 
 /**
  * Builder for forms.
@@ -84,10 +86,10 @@ public class FormBuilder {
                     formField.setParent(tab);
                     final Field field = formField.getField();
                     if (field instanceof AbstractComponent) {
-                        ((AbstractComponent)field).setImmediate(true);
+                        ((AbstractComponent) field).setImmediate(true);
                     }
                     tab.addField(field);
-                    if(StringUtils.isNotBlank(fieldDefinition.getDescription())) {
+                    if (StringUtils.isNotBlank(fieldDefinition.getDescription())) {
                         tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
                     }
                     view.addField(field);

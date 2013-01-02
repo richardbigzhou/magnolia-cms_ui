@@ -76,7 +76,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 
-
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
  */
@@ -172,7 +171,7 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     @Override
     public int getViewportHeight() {
         int errorMessageHeight = hiPriorityMessage == null &&
-            (getWidgetIndex(hiPriorityMessage) > -1) ? hiPriorityMessage.getOffsetHeight() : 0;
+                (getWidgetIndex(hiPriorityMessage) > -1) ? hiPriorityMessage.getOffsetHeight() : 0;
         return getOffsetHeight() - mainAppLauncher.getExpandedHeight() - errorMessageHeight;
     }
 
@@ -217,29 +216,29 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
     public void showMessage(MessageType type, String topic, String message, String id) {
         final VShellMessage msg;
         switch (type) {
-            case WARNING :
-                msg = new VWarningMessage(this, topic, message, id);
-                if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
-                    lowPriorityMessage.hide();
-                }
-                lowPriorityMessage = msg;
-                break;
-            case INFO :
-                msg = new VInfoMessage(this, topic, message, id);
-                if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
-                    lowPriorityMessage.hide();
-                }
-                lowPriorityMessage = msg;
-                break;
-            case ERROR :
-                msg = new VShellErrorMessage(this, topic, message, id);
-                if (hiPriorityMessage != null && getWidgetIndex(hiPriorityMessage) != -1) {
-                    hiPriorityMessage.hide();
-                }
-                hiPriorityMessage = msg;
-                break;
-            default :
-                msg = null;
+        case WARNING:
+            msg = new VWarningMessage(this, topic, message, id);
+            if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
+                lowPriorityMessage.hide();
+            }
+            lowPriorityMessage = msg;
+            break;
+        case INFO:
+            msg = new VInfoMessage(this, topic, message, id);
+            if (lowPriorityMessage != null && getWidgetIndex(lowPriorityMessage) != -1) {
+                lowPriorityMessage.hide();
+            }
+            lowPriorityMessage = msg;
+            break;
+        case ERROR:
+            msg = new VShellErrorMessage(this, topic, message, id);
+            if (hiPriorityMessage != null && getWidgetIndex(hiPriorityMessage) != -1) {
+                hiPriorityMessage.hide();
+            }
+            hiPriorityMessage = msg;
+            break;
+        default:
+            msg = null;
         }
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
@@ -275,11 +274,11 @@ public class VMagnoliaShellViewImpl extends TouchPanel implements VMagnoliaShell
         @Override
         public void onAppActivated(AppActivatedEvent event) {
             final String fragment = activeViewportType.getFragmentPrefix()
-                + event.getAppId()
-                + ":"
-                + event.getSubAppId()
-                + ";"
-                + event.getParameter();
+                    + event.getAppId()
+                    + ":"
+                    + event.getSubAppId()
+                    + ";"
+                    + event.getParameter();
             History.newItem(fragment, false);
         }
 

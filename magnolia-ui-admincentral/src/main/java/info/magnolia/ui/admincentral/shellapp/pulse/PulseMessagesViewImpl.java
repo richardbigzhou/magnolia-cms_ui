@@ -48,9 +48,9 @@ import javax.inject.Inject;
 import org.apache.commons.lang.time.FastDateFormat;
 
 import com.vaadin.data.Container;
+import com.vaadin.data.Container.ItemSetChangeEvent;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.Container.ItemSetChangeEvent;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ItemClickEvent;
@@ -58,9 +58,9 @@ import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.GeneratedRow;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Table.GeneratedRow;
 
 /**
  * Implementation of {@link PulseMessagesView}.

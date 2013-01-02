@@ -34,6 +34,7 @@
 package info.magnolia.ui.app.security.dialog.field.validator;
 
 import info.magnolia.cms.security.Security;
+
 import com.vaadin.data.validator.AbstractStringValidator;
 
 /**

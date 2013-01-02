@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 /**
  * Simple implementation for {@link ActionbarSectionDefinition}.
  */
@@ -90,7 +89,8 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
     /**
      * Adds a group to this section.
      * 
-     * @param groupDefinition the group definition
+     * @param groupDefinition
+     *            the group definition
      */
     public void addGroup(ActionbarGroupDefinition groupDefinition) {
         groups.add(groupDefinition);

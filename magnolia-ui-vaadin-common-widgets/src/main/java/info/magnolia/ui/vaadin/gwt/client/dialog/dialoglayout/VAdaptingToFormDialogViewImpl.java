@@ -45,13 +45,13 @@ import com.google.gwt.user.client.ui.Widget;
 public class VAdaptingToFormDialogViewImpl extends SimplePanel implements VBaseDialogView {
 
     private VForm form;
-    
+
     private Presenter presenter;
-    
+
     public VAdaptingToFormDialogViewImpl() {
         setStyleName("dialog-panel");
     }
-    
+
     @Override
     public Widget asWidget() {
         return this;
@@ -85,16 +85,16 @@ public class VAdaptingToFormDialogViewImpl extends SimplePanel implements VBaseD
     @Override
     public void setContent(Widget contentWidget) {
         if (contentWidget instanceof VForm) {
-            this.form = ((VForm)contentWidget);
+            this.form = ((VForm) contentWidget);
             this.form.getView().setPresenter(new VFormView.Presenter() {
                 @Override
                 public void fireAction(String action) {
                     presenter.fireAction(action);
                 }
-                
+
                 @Override
                 public void runLayout() {
-                    
+
                 }
             });
             setWidget(contentWidget);
@@ -115,12 +115,12 @@ public class VAdaptingToFormDialogViewImpl extends SimplePanel implements VBaseD
                 public void fireAction(String action) {
                     presenter.fireAction(action);
                 }
-                
+
                 @Override
                 public void runLayout() {
                     form.runLayout();
                 }
-            });            
+            });
         }
     }
 

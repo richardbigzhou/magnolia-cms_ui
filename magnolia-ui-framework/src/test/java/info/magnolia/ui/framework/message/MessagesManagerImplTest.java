@@ -33,36 +33,30 @@
  */
 package info.magnolia.ui.framework.message;
 
-import java.util.ArrayList;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
-import com.google.inject.util.Providers;
-
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.test.mock.MockWebContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockUtil;
+import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
+
+import java.util.ArrayList;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.google.inject.util.Providers;
 
 /**
  * Test case {@link MessagesManagerImpl}.

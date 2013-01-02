@@ -39,7 +39,6 @@ import javax.jcr.Node;
 
 import com.vaadin.data.Item;
 
-
 /**
  * Common definition for child handling and corresponding Node access.
  */
@@ -74,7 +73,8 @@ public interface JcrItemNodeAdapter extends Item {
     Node getNode();
 
     /**
-     * @param nodeIdentifier AbstractJcrAdapter.getNodeIdentifier().
+     * @param nodeIdentifier
+     *            AbstractJcrAdapter.getNodeIdentifier().
      * @return child JcrItemNodeAdapter if part of the children, or null if not defined.
      */
     JcrItemNodeAdapter getChild(String nodeIdentifier);

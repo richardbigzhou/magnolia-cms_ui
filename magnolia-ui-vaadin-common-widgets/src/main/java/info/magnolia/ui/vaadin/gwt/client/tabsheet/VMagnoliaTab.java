@@ -156,9 +156,9 @@ public class VMagnoliaTab extends SimplePanel implements Container, ClientSideHa
     @Override
     public void setWidth(String width) {
 
-      Util.runWebkitOverflowAutoFix(this.getElement());
+        Util.runWebkitOverflowAutoFix(this.getElement());
 
-      super.setWidth(width);
+        super.setWidth(width);
     }
 
     public String getTabId() {

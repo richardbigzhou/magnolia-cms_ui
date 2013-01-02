@@ -33,14 +33,9 @@
  */
 package info.magnolia.ui.framework.app.launcherlayout;
 
-import java.util.ArrayList;
-
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherGroupDefinition;
@@ -52,6 +47,11 @@ import info.magnolia.ui.framework.app.registry.AppRegistryEvent;
 import info.magnolia.ui.framework.app.registry.AppRegistryEventType;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SimpleEventBus;
+
+import java.util.ArrayList;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test case for {@link AppLauncherLayoutManagerImpl}.
@@ -68,7 +68,7 @@ public class AppLayoutManagerImplTest {
 
     @Before
     public void setUp() throws Exception {
-        //Init
+        // Init
         appDescriptor1 = AppLauncherLayoutTest.createAppDescriptor("appDescriptor1");
         appDescriptor2 = AppLauncherLayoutTest.createAppDescriptor("appDescriptor2");
         appDescriptor3 = AppLauncherLayoutTest.createAppDescriptor("appDescriptor3");

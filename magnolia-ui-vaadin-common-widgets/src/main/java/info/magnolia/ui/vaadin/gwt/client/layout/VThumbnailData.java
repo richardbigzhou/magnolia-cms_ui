@@ -37,7 +37,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Client side DTO for the thumbnail.
- *
+ * 
  */
 public class VThumbnailData extends JavaScriptObject {
 

@@ -51,7 +51,6 @@ import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.ClientWidget.LoadStyle;
 
-
 /**
  * Server side of AppLauncher.
  */
@@ -65,7 +64,7 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
     private boolean isAttached = false;
 
     private List<String> runningApps = new ArrayList<String>();
-    
+
     public AppLauncher() {
         super();
         setSizeFull();
@@ -122,7 +121,7 @@ public class AppLauncher extends AbstractComponent implements ServerSideHandler 
         for (final String appName : runningApps) {
             proxy.call("setAppActive", appName, true);
         }
-        return new Object[]{};
+        return new Object[] {};
     }
 
     @Override

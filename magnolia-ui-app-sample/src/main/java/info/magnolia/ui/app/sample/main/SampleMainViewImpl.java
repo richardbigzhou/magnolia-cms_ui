@@ -46,7 +46,7 @@ import com.vaadin.ui.HorizontalSplitPanel;
 public class SampleMainViewImpl implements SampleMainView {
 
     private Listener listener;
-    
+
     private final HorizontalSplitPanel layout;
 
     @Inject

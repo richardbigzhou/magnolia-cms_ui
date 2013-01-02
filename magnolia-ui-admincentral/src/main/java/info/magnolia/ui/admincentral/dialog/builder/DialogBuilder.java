@@ -37,14 +37,15 @@ import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
  * Builder for {@link DialogView} and {@link FormDialogView}.
  * Receives the definition parameters for the dialog surrounding (like i18n base and caption/description).
- *
+ * 
  * @see info.magnolia.ui.admincentral.dialog.FormDialogPresenter
- *
+ * 
  */
 public class DialogBuilder {
 
@@ -76,4 +77,3 @@ public class DialogBuilder {
         return view;
     }
 }
-

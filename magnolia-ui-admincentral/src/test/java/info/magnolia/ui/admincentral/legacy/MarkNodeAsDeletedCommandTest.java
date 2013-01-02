@@ -92,7 +92,7 @@ public class MarkNodeAsDeletedCommandTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testUpdateAuthorIdAndModificationDateWhenMarkNodeAsDelete() throws  Exception{
+    public void testUpdateAuthorIdAndModificationDateWhenMarkNodeAsDelete() throws Exception {
         // GIVEN
         MetaData md = new MetaData(node);
         Calendar timeBeforeDelete = new GregorianCalendar(TimeZone.getDefault());
@@ -106,7 +106,7 @@ public class MarkNodeAsDeletedCommandTest extends RepositoryTestCase {
         node.getSession().save();
 
         MockContext context = (MockContext) MgnlContext.getInstance();
-        context.setUser(new MgnlUser("user-after-delete","admin",Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.EMPTY_MAP, null, null));
+        context.setUser(new MgnlUser("user-after-delete", "admin", Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.EMPTY_MAP, null, null));
         MgnlContext.setInstance(context);
 
         // WHEN

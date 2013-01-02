@@ -54,7 +54,6 @@ import com.vaadin.terminal.gwt.client.UIDL;
 import com.vaadin.terminal.gwt.client.Util;
 import com.vaadin.terminal.gwt.client.ui.VScrollTablePatched;
 
-
 /**
  * Magnolia table extends VScrollTable in a way that out-of-the-box version of it would not allow.
  * Therefore maven build will patch the VScrollTable to reveal it's private members.
@@ -65,7 +64,7 @@ public class VMagnoliaTable extends VScrollTablePatched {
 
     public VMagnoliaTable() {
         super();
-        MagnoliaTableHead head = (MagnoliaTableHead)tHead;
+        MagnoliaTableHead head = (MagnoliaTableHead) tHead;
         head.addToDom();
     }
 
@@ -139,7 +138,7 @@ public class VMagnoliaTable extends VScrollTablePatched {
             });
             selectAll.addStyleName("v-select-all");
         }
-        
+
         public void addToDom() {
             div.appendChild(selectAll.getElement());
             getChildren().add(selectAll);
@@ -182,18 +181,18 @@ public class VMagnoliaTable extends VScrollTablePatched {
 
             public MagnoliaTableRow(UIDL uidl, char[] aligns) {
                 super(uidl, aligns);
-                //Minor hack. Use row style for icon definition.
-                if(uidl.hasAttribute("rowstyle")) {
+                // Minor hack. Use row style for icon definition.
+                if (uidl.hasAttribute("rowstyle")) {
                     String iconFontStyle = uidl.getStringAttribute("rowstyle");
-                    if(iconFontStyle.startsWith("icon-")) {
+                    if (iconFontStyle.startsWith("icon-")) {
                         SpanElement iconElement = Document.get().createSpanElement();
                         iconElement.setClassName(iconFontStyle);
                         iconElement.addClassName("v-table-icon-element");
                         Node parentNode = selectionCheckBox.getElement().getParentNode();
-                        //insert before cell text and this will also work with tree table.
+                        // insert before cell text and this will also work with tree table.
                         parentNode.insertBefore(iconElement, parentNode.getLastChild());
                     }
-                }   
+                }
             }
 
             public MagnoliaTableRow() {
@@ -212,7 +211,7 @@ public class VMagnoliaTable extends VScrollTablePatched {
 
             @Override
             protected void initCellWithText(String text, char align, String style, boolean textIsHTML, boolean sorted, String description,
-                final TableCellElement td) {
+                    final TableCellElement td) {
                 super.initCellWithText(text, align, style, textIsHTML, sorted, description, td);
                 insertSelectionCheckbox(td);
             }
@@ -277,16 +276,16 @@ public class VMagnoliaTable extends VScrollTablePatched {
                     public void onMultiTap(MultiTapEvent event) {
                         if (BrowserInfo.get().isTouchDevice()) {
                             final NativeEvent doubleClickEvent =
-                                Document.get().createDblClickEvent(
-                                    0,
-                                    event.getTouchStarts().get(0).get(0).getPageX(),
-                                    event.getTouchStarts().get(0).get(0).getPageY(),
-                                    event.getTouchStarts().get(0).get(0).getPageX(),
-                                    event.getTouchStarts().get(0).get(0).getPageY(),
-                                    false,
-                                    false,
-                                    false,
-                                    false);
+                                    Document.get().createDblClickEvent(
+                                            0,
+                                            event.getTouchStarts().get(0).get(0).getPageX(),
+                                            event.getTouchStarts().get(0).get(0).getPageY(),
+                                            event.getTouchStarts().get(0).get(0).getPageX(),
+                                            event.getTouchStarts().get(0).get(0).getPageY(),
+                                            false,
+                                            false,
+                                            false,
+                                            false);
                             getElement().dispatchEvent(doubleClickEvent);
                         }
                     }

@@ -56,38 +56,38 @@ public class IdentifierToPathTranslator extends PropertyTranslator {
         this.workspace = workspace;
     }
 
-
     /**
      * Transform the UUID to Path.
      */
     @Override
     public Object translateFromDatasource(Object uuid) {
         String res = StringUtils.EMPTY;
-        if(StringUtils.isBlank((String)uuid)) {
+        if (StringUtils.isBlank((String) uuid)) {
             return res;
         }
         try {
             Session session = MgnlContext.getJCRSession(workspace);
             res = session.getNodeByIdentifier(uuid.toString()).getPath();
         } catch (RepositoryException e) {
-            log.error("Unable to convert UUID to Path",e);
+            log.error("Unable to convert UUID to Path", e);
         }
         return res;
     }
+
     /**
      * Transform the Path to UUID.
      */
     @Override
     public Object translateToDatasource(Object path) throws Exception {
-        String res  = StringUtils.EMPTY;
-        if(StringUtils.isBlank((String)path)) {
+        String res = StringUtils.EMPTY;
+        if (StringUtils.isBlank((String) path)) {
             return res;
         }
         try {
             Session session = MgnlContext.getJCRSession(workspace);
             res = session.getNode(path.toString()).getIdentifier();
         } catch (RepositoryException e) {
-            log.error("Unable to convert Path to UUID",e);
+            log.error("Unable to convert Path to UUID", e);
         }
         return res;
     }

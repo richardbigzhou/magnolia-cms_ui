@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.field.upload;
 
 import java.io.File;
 
-
 /**
  * Configure the UploadFileField based on the UploadField Definition.
  */
@@ -58,6 +57,7 @@ public interface UploadFileField {
 
     /**
      * Define if the Uploaded file can be deleted.
+     * 
      * @param: fileDeletion true will add a delete Button.
      */
     public void setFileDeletion(boolean fileDeletion);

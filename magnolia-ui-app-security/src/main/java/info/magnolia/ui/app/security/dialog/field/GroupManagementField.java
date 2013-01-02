@@ -33,25 +33,28 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.TwinColSelect;
 import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.field.builder.TwinColSelectFieldBuilder;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.TwinColSelect;
 
 /**
  * GUI builder for the Group Management field.
@@ -64,6 +67,7 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
     public static class Group {
         public String name;
         public String uuid;
+
         public Group(String name, String uuid) {
             this.name = name;
             this.uuid = uuid;
@@ -76,7 +80,6 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
         super(definition, relatedFieldItem);
         this.definition.setOptions(getSelectFieldOptionDefinition());
     }
-
 
     @Override
     protected AbstractSelect buildField() {
@@ -96,7 +99,7 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
      * Returns the available groups with those already assigned marked selected, according to the current node.
      */
     @Override
-    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition(){
+    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
         List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
         List<Group> allGroups = getAllGroups(); // name,uuid
         List<String> assignedGroups = getAssignedGroups();
@@ -124,7 +127,7 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
     private List<Group> getAllGroups() {
         List<Group> groups = new ArrayList<Group>();
         try {
-            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_GROUPS, "SELECT * FROM ["+NodeTypes.Group.NAME+"] ORDER BY name()");
+            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_GROUPS, "SELECT * FROM [" + NodeTypes.Group.NAME + "] ORDER BY name()");
             while (ni.hasNext()) {
                 Node n = ni.nextNode();
                 String name = n.getName();
@@ -132,7 +135,7 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
                 groups.add(new Group(name, uuid));
             }
         } catch (RepositoryException e) {
-            log.error("Cannot read groups from the ["+RepositoryConstants.USER_GROUPS+"] workspace.", e);
+            log.error("Cannot read groups from the [" + RepositoryConstants.USER_GROUPS + "] workspace.", e);
         }
         return groups;
     }
@@ -157,7 +160,7 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
                 }
             }
         } catch (RepositoryException re) {
-            log.error("Cannot read assigned groups of the node ["+mainNode+"].", re);
+            log.error("Cannot read assigned groups of the node [" + mainNode + "].", re);
         }
         return groups;
     }

@@ -34,6 +34,8 @@
 package info.magnolia.ui.vaadin.gwt.client.editor;
 
 
+import info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Composite;
@@ -43,8 +45,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.terminal.gwt.client.BrowserInfo;
-
-import info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).

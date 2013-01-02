@@ -42,18 +42,18 @@ import com.google.gwt.event.shared.GwtEvent;
  * Navigation event fired when the controls in the headers are triggered.
  */
 public class ShellAppNavigationEvent extends GwtEvent<ShellNavigationHandler> {
-    
+
     public static Type<ShellNavigationHandler> TYPE = new Type<ShellNavigationHandler>();
 
     private ShellAppType type;
-    
+
     private String token;
-    
+
     public ShellAppNavigationEvent(final ShellAppType type, final String token) {
         this.token = token;
         this.type = type;
     }
-    
+
     @Override
     protected void dispatch(ShellNavigationHandler handler) {
         handler.onShellAppNavigation(this);
@@ -63,15 +63,15 @@ public class ShellAppNavigationEvent extends GwtEvent<ShellNavigationHandler> {
     public GwtEvent.Type<ShellNavigationHandler> getAssociatedType() {
         return TYPE;
     }
-    
+
     public ShellAppType getType() {
         return type;
     }
-    
+
     public String getToken() {
         return token;
     }
-    
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("[Shell App Navigation]");

@@ -52,13 +52,13 @@ public interface VFormView extends IsWidget, HasWidgets, ValidationChangedEvent.
     public interface Presenter {
 
         void fireAction(String action);
-        
+
         void runLayout();
 
     }
 
     VMagnoliaTabSheet getContent();
-    
+
     void setPresenter(Presenter presenter);
 
     void addAction(String label, String action);
@@ -66,7 +66,7 @@ public interface VFormView extends IsWidget, HasWidgets, ValidationChangedEvent.
     void setDescription(String description);
 
     void setCaption(final String caption);
-    
+
     int getFormWidth();
 
     int getFormHeight();

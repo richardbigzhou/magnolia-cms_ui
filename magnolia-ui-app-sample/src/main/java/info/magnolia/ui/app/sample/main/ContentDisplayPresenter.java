@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.app.sample.main;
 
-import javax.inject.Inject;
-
 import info.magnolia.ui.app.sample.editor.location.EditorLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
+
+import javax.inject.Inject;
 
 /**
  * Presenter for the content display.

@@ -64,7 +64,6 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 
-
 /**
  * Navigation bar.
  */
@@ -285,12 +284,12 @@ public class VMainLauncher extends FlowPanel {
         int divetPos = w.getAbsoluteLeft() + (w.getOffsetWidth() / 2) - divetWrapper.getOffsetWidth() / 2;
         divet.setVisible(true);
         switch (type) {
-            case APPLAUNCHER :
-                divet.setResource(VShellImageBundle.BUNDLE.getDivetGreen());
-                break;
-            default :
-                divet.setResource(VShellImageBundle.BUNDLE.getDivetWhite());
-                break;
+        case APPLAUNCHER:
+            divet.setResource(VShellImageBundle.BUNDLE.getDivetGreen());
+            break;
+        default:
+            divet.setResource(VShellImageBundle.BUNDLE.getDivetWhite());
+            break;
         }
         if (animated) {
             final AnimationSettings settings = new AnimationSettings();

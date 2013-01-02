@@ -42,7 +42,6 @@ import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Default configured implementation for the WorkbenchDefinition.
  */

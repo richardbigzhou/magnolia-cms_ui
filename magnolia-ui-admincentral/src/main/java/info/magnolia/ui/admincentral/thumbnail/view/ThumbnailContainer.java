@@ -111,20 +111,18 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
         final String itemType = workbenchDefinition.getMainItemType().getItemType();
         return String.format("select * from ['%s'] as t ", itemType);
     }
-    
+
     protected String prepareFilterQueryStatement() {
         return "";
     }
-    
+
     protected String prepareOrderQueryStatement() {
         return " order by name(t)";
     }
 
-    
     /**
      * @return a List of JCR identifiers for all the nodes recursively found
-     *         under <code>initialPath</code>. This method is called in
-     *         {@link LazyThumbnailViewImpl#refresh()}. You can override it, if
+     *         under <code>initialPath</code>. This method is called in {@link LazyThumbnailViewImpl#refresh()}. You can override it, if
      *         you need a different strategy than the default one to fetch the
      *         identifiers of the nodes for which thumbnails need to be
      *         displayed.
@@ -237,7 +235,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Resour
 
         @Override
         public Resource getValue() {
-            if (imageProvider == null){
+            if (imageProvider == null) {
                 return null;
             }
 

@@ -33,9 +33,7 @@
  */
 package info.magnolia.ui.vaadin.layout;
 
-
 import com.vaadin.ui.Component;
-
 
 /**
  * The basic layout for content apps, consisting of two columns, one for the content view and one

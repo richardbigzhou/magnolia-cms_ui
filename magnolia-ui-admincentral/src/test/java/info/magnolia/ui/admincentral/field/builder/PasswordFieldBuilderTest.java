@@ -35,13 +35,12 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.jcr.Node;
-
-import javax.jcr.RepositoryException;
-
 import info.magnolia.ui.admincentral.field.PasswordFields;
 import info.magnolia.ui.model.field.definition.PasswordFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
@@ -78,12 +77,12 @@ public class PasswordFieldBuilderTest extends AbstractBuilderTest<PasswordFieldD
         passwordFieldBuilder = new PasswordFieldBuilder(definition, baseItem);
         passwordFieldBuilder.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        PasswordFields field = (PasswordFields)passwordFieldBuilder.getField();
+        PasswordFields field = (PasswordFields) passwordFieldBuilder.getField();
 
         // THEN
         assertEquals(true, field.getVerticalLayout().getComponent(0) instanceof PasswordField);
         assertEquals(true, field.getVerticalLayout().getComponent(1) instanceof Label);
-        assertEquals("Please confirm", ((Label)field.getVerticalLayout().getComponent(1)).getValue().toString());
+        assertEquals("Please confirm", ((Label) field.getVerticalLayout().getComponent(1)).getValue().toString());
         assertEquals(true, field.getVerticalLayout().getComponent(2) instanceof PasswordField);
     }
 
@@ -93,9 +92,9 @@ public class PasswordFieldBuilderTest extends AbstractBuilderTest<PasswordFieldD
         definition.setVerification(true);
         passwordFieldBuilder = new PasswordFieldBuilder(definition, baseItem);
         passwordFieldBuilder.setI18nContentSupport(i18nContentSupport);
-        PasswordFields field = (PasswordFields)passwordFieldBuilder.getField();
-        ((PasswordField)field.getVerticalLayout().getComponent(0)).setValue("aa");
-        ((PasswordField)field.getVerticalLayout().getComponent(2)).setValue("aa");
+        PasswordFields field = (PasswordFields) passwordFieldBuilder.getField();
+        ((PasswordField) field.getVerticalLayout().getComponent(0)).setValue("aa");
+        ((PasswordField) field.getVerticalLayout().getComponent(2)).setValue("aa");
 
         // WHEN
         field.validate();
@@ -111,9 +110,9 @@ public class PasswordFieldBuilderTest extends AbstractBuilderTest<PasswordFieldD
         definition.setVerification(true);
         passwordFieldBuilder = new PasswordFieldBuilder(definition, baseItem);
         passwordFieldBuilder.setI18nContentSupport(i18nContentSupport);
-        PasswordFields field = (PasswordFields)passwordFieldBuilder.getField();
-        ((PasswordField)field.getVerticalLayout().getComponent(0)).setValue("aa");
-        ((PasswordField)field.getVerticalLayout().getComponent(2)).setValue("axa");
+        PasswordFields field = (PasswordFields) passwordFieldBuilder.getField();
+        ((PasswordField) field.getVerticalLayout().getComponent(0)).setValue("aa");
+        ((PasswordField) field.getVerticalLayout().getComponent(2)).setValue("axa");
 
         // WHEN
         field.validate();
@@ -132,7 +131,7 @@ public class PasswordFieldBuilderTest extends AbstractBuilderTest<PasswordFieldD
         field.validate();
 
         // WHEN
-        Node res = ((JcrNodeAdapter)baseItem).getNode();
+        Node res = ((JcrNodeAdapter) baseItem).getNode();
 
         // THEN
         assertEquals("awdYxe?m,483*", new String(Base64.decodeBase64(res.getProperty(propertyName).getString())));
@@ -150,7 +149,7 @@ public class PasswordFieldBuilderTest extends AbstractBuilderTest<PasswordFieldD
         field.validate();
 
         // WHEN
-        Node res = ((JcrNodeAdapter)baseItem).getNode();
+        Node res = ((JcrNodeAdapter) baseItem).getNode();
 
         // THEN
         assertEquals("awdYxe?m,483*", (res.getProperty(propertyName).getString()));
@@ -159,7 +158,7 @@ public class PasswordFieldBuilderTest extends AbstractBuilderTest<PasswordFieldD
     @Override
     protected void createConfiguredFieldDefinition() {
         PasswordFieldDefinition fieldDefinition = new PasswordFieldDefinition();
-        fieldDefinition = (PasswordFieldDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+        fieldDefinition = (PasswordFieldDefinition) AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
 
         fieldDefinition.setVerificationErrorMessage("Password should match");
         fieldDefinition.setVerificationMessage("Please confirm");

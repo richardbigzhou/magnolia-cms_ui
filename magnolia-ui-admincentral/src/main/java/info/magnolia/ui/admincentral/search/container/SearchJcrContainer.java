@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The jcr container backing the search view. It provides the subset of items returned by the current search. By default it will perform a full-text search OR a search on the jcr name
  */
-public class SearchJcrContainer extends FlatJcrContainer{
+public class SearchJcrContainer extends FlatJcrContainer {
 
     private static final Logger log = LoggerFactory.getLogger(SearchJcrContainer.class);
 
@@ -60,15 +60,15 @@ public class SearchJcrContainer extends FlatJcrContainer{
         final String clauseWorkspacePath = getQueryWhereClauseWorkspacePath();
         String whereClause = getQueryWhereClauseSearch();
 
-        if (!"".equals(clauseWorkspacePath)){
-            if (!"".equals(whereClause)){
-                 whereClause = clauseWorkspacePath + " and " + whereClause;
+        if (!"".equals(clauseWorkspacePath)) {
+            if (!"".equals(whereClause)) {
+                whereClause = clauseWorkspacePath + " and " + whereClause;
             } else {
                 whereClause += clauseWorkspacePath;
             }
         }
 
-        if (!"".equals(whereClause)){
+        if (!"".equals(whereClause)) {
             whereClause = " where (" + whereClause + ")";
         }
 
@@ -76,11 +76,11 @@ public class SearchJcrContainer extends FlatJcrContainer{
         return whereClause;
     }
 
-    protected String getQueryWhereClauseSearch(){
-        if(StringUtils.isBlank(getFullTextExpression())) {
+    protected String getQueryWhereClauseSearch() {
+        if (StringUtils.isBlank(getFullTextExpression())) {
             return "";
         }
-        //See http://wiki.apache.org/jackrabbit/EncodingAndEscaping
+        // See http://wiki.apache.org/jackrabbit/EncodingAndEscaping
         final String escapedFullTextExpression = getFullTextExpression().replaceAll("'", "''").trim();
         final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, escapedFullTextExpression);
         log.debug("Search where-clause is {}", stmt);

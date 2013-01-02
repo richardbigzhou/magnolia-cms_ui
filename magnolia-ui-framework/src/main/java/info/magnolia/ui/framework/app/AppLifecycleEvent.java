@@ -37,7 +37,7 @@ import info.magnolia.ui.framework.event.Event;
 
 /**
  * Event fired when the lifecycle of an app changes.
- *
+ * 
  * @see AppLifecycleEventHandler
  */
 public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
@@ -66,15 +66,15 @@ public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {
         }
 
         switch (eventType) {
-            case STARTED:
-                handler.onAppStarted(this);
-                break;
-            case FOCUSED:
-                handler.onAppFocused(this);
-                break;
-            case STOPPED:
-                handler.onAppStopped(this);
-                break;
+        case STARTED:
+            handler.onAppStarted(this);
+            break;
+        case FOCUSED:
+            handler.onAppFocused(this);
+            break;
+        case STOPPED:
+            handler.onAppStopped(this);
+            break;
         }
     }
 }

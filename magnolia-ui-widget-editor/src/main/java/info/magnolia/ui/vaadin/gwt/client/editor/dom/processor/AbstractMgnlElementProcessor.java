@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.event.shared.EventBus;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.AbstractBar;
+
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.event.shared.EventBus;
 
 /**
  * Abstract Class for MgnlElement processors.

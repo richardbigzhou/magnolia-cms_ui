@@ -54,8 +54,8 @@ import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
 
 import java.util.List;
@@ -155,7 +155,6 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
         messagesManager.sendLocalMessage(message);
     }
 
-
     @Override
     public String getFragment() {
         final ShellViewport activeViewport = getActiveViewport();
@@ -220,16 +219,16 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     public void messageSent(MessageEvent event) {
         final Message message = event.getMessage();
         switch (message.getType()) {
-            case WARNING:
-                showWarning(message);
-                break;
-            case ERROR:
-                showError(message);
-                break;
-            case INFO:
-                showInfo(message);
-            default:
-                break;
+        case WARNING:
+            showWarning(message);
+            break;
+        case ERROR:
+            showError(message);
+            break;
+        case INFO:
+            showInfo(message);
+        default:
+            break;
         }
     }
 
@@ -281,12 +280,12 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
         } else {
             // No apps are open.
-            String appLauncherNameLower = ShellAppType.APPLAUNCHER.name().toLowerCase() ;
+            String appLauncherNameLower = ShellAppType.APPLAUNCHER.name().toLowerCase();
 
-            //Only navigate if the requested location is not the applauncher
+            // Only navigate if the requested location is not the applauncher
             String fragmentCurrent = getActiveViewport().getCurrentShellFragment();
 
-            if (!fragmentCurrent.startsWith(appLauncherNameLower)  ){
+            if (!fragmentCurrent.startsWith(appLauncherNameLower)) {
                 navigateToShellApp(appLauncherNameLower, "");
             }
         }

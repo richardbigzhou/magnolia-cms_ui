@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
+
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 
 /**
  * Processor for DOM elements.

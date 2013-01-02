@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
+
 import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -56,7 +57,7 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
     private SelectFieldBuilder<SelectFieldDefinition> dialogSelect;
 
     @Test
-    public void simpleSelectFieldTest() throws Exception{
+    public void simpleSelectFieldTest() throws Exception {
         // GIVEN
         dialogSelect = new SelectFieldBuilder<SelectFieldDefinition>(definition, baseItem);
         dialogSelect.setI18nContentSupport(i18nContentSupport);
@@ -66,14 +67,13 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
 
         // THEN
         assertEquals(true, field instanceof Select);
-        Collection<?> items = ((Select)field).getItemIds();
+        Collection<?> items = ((Select) field).getItemIds();
         assertEquals(3, items.size());
         assertEquals("1", field.getValue().toString());
     }
 
-
     @Test
-    public void selectFieldTest_DefaultSelected() throws Exception{
+    public void selectFieldTest_DefaultSelected() throws Exception {
         // GIVEN
         SelectFieldOptionDefinition option = definition.getOptions().get(1);
         option.setSelected(true);
@@ -88,7 +88,7 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
     }
 
     @Test
-    public void selectFieldTest_SavedDefaultSelected() throws Exception{
+    public void selectFieldTest_SavedDefaultSelected() throws Exception {
         // GIVEN
         baseNode.setProperty(propertyName, "3");
         baseItem = new JcrNodeAdapter(baseNode);
@@ -103,7 +103,7 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
     }
 
     @Test
-    public void selectFieldTest_RemoteOptions() throws Exception{
+    public void selectFieldTest_RemoteOptions() throws Exception {
         // GIVEN
         // Create a Options node.
         Node options = session.getRootNode().addNode("options");
@@ -124,13 +124,13 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
         Field field = dialogSelect.getField();
 
         // THEN
-        Collection<?> items = ((Select)field).getItemIds();
+        Collection<?> items = ((Select) field).getItemIds();
         assertEquals(2, items.size());
         assertEquals("en", field.getValue().toString());
     }
 
     @Test
-    public void selectFieldTest_RemoteOptions_OtherValueANdLabelName() throws Exception{
+    public void selectFieldTest_RemoteOptions_OtherValueANdLabelName() throws Exception {
         // GIVEN
         // Create a Options node.
         Node options = session.getRootNode().addNode("options");
@@ -145,7 +145,7 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
         definition.setPath(options.getPath());
         definition.setRepository(workspaceName);
         definition.setOptions(new ArrayList<SelectFieldOptionDefinition>());
-        //Define the name of value and label
+        // Define the name of value and label
         definition.setValueProperty("x");
         definition.setLabelProperty("z");
 
@@ -156,16 +156,15 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
         Field field = dialogSelect.getField();
 
         // THEN
-        Collection<?> items = ((Select)field).getItemIds();
+        Collection<?> items = ((Select) field).getItemIds();
         assertEquals(2, items.size());
         assertEquals("fr", field.getValue().toString());
     }
 
-
     @Override
     protected void createConfiguredFieldDefinition() {
         SelectFieldDefinition fieldDefinition = new SelectFieldDefinition();
-        fieldDefinition = (SelectFieldDefinition)AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
+        fieldDefinition = (SelectFieldDefinition) AbstractFieldBuilderTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
         fieldDefinition.setDefaultValue(null);
         SelectFieldOptionDefinition option1 = new SelectFieldOptionDefinition();
         option1.setLabel("One");

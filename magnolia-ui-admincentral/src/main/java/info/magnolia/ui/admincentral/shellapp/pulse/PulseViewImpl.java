@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
 
 import java.util.List;
 
@@ -47,17 +47,15 @@ import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 
-
 /**
  * Default view implementation for Pulse.
  */
 public class PulseViewImpl implements PulseView {
 
-
-    private String id= ShellAppType.PULSE.getClassId();
+    private String id = ShellAppType.PULSE.getClassId();
 
     @Override
-    public String getId(){
+    public String getId() {
         return id;
     }
 
@@ -123,11 +121,11 @@ public class PulseViewImpl implements PulseView {
         }
 
         switch (type) {
-            case MESSAGES :
-                messagesView.update(params);
-                break;
-            default :
-                break;
+        case MESSAGES:
+            messagesView.update(params);
+            break;
+        default:
+            break;
         }
         return finalDisplayedTabId;
     }

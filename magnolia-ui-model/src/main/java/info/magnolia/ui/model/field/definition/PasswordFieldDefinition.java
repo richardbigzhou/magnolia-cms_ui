@@ -40,7 +40,7 @@ public class PasswordFieldDefinition extends ConfiguredFieldDefinition {
 
     private boolean verification = true;
     private boolean encode = true;
-    private String verificationMessage= "field.password.verificationMessage";
+    private String verificationMessage = "field.password.verificationMessage";
     private String verificationErrorMessage = "field.password.verificationErrorMessage";
 
     public boolean isVerification() {
@@ -74,6 +74,5 @@ public class PasswordFieldDefinition extends ConfiguredFieldDefinition {
     public void setEncode(boolean encode) {
         this.encode = encode;
     }
-
 
 }

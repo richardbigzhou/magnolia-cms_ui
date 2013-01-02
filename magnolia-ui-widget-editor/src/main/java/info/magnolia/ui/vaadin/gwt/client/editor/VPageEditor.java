@@ -33,20 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.HeadElement;
-import com.google.gwt.dom.client.LinkElement;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.ui.Composite;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.UIDL;
-import com.vaadin.terminal.gwt.client.VConsole;
-
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.Comment;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
@@ -73,11 +59,25 @@ import info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModelImpl;
 import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.PageBar;
 
+import java.util.List;
+
 import org.vaadin.rpc.client.ClientSideHandler;
 import org.vaadin.rpc.client.ClientSideProxy;
 import org.vaadin.rpc.client.Method;
 
-import java.util.List;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.HeadElement;
+import com.google.gwt.dom.client.LinkElement;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.ui.Composite;
+import com.vaadin.terminal.gwt.client.ApplicationConnection;
+import com.vaadin.terminal.gwt.client.Paintable;
+import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.terminal.gwt.client.VConsole;
 
 
 /**

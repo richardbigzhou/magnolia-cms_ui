@@ -42,7 +42,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.themes.BaseTheme;
 
-
 /**
  * Split panel that displays two column feed.
  */

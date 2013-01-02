@@ -39,7 +39,7 @@ import info.magnolia.module.ModuleLifecycleContext;
 /**
  * Initializes the Vaadin module.
  */
-public class VaadinModule  implements ModuleLifecycle {
+public class VaadinModule implements ModuleLifecycle {
 
     @Override
     public void start(ModuleLifecycleContext ctx) {

@@ -33,11 +33,6 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import com.google.gson.Gson;
-import com.google.inject.Inject;
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
-
 import info.magnolia.ui.admincentral.AdminCentralApplication;
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
@@ -50,12 +45,19 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig.ToolbarGroup;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.jcr.Node;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Node;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gson.Gson;
+import com.google.inject.Inject;
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
 
 /**
  * Creates and initializes an edit field based on a field definition.
@@ -71,20 +73,20 @@ public class RichTextFieldBuilder extends
      * Event is emit from server to client when link has been selected.
      */
     public static final String EVENT_SEND_MAGNOLIA_LINK = "mgnlLinkSelected";
-    
+
     /**
      * Event is emit from server to client when link dialog has been
      * canceled or exception has occurred. In case of exception
      * the event will carry error message.
      */
     public static final String EVENT_CANCEL_LINK = "mgnlLinkCancel";
-    
+
     /**
      * Event is emit from client to server when user requests a link dialog.
      * Event carries optional link that should be treated as default link value.
      */
     public static final String EVENT_GET_MAGNOLIA_LINK = "mgnlGetLink";
-    
+
     private final AppController appController;
     private MagnoliaRichTextField richTextEditor;
     private static final Logger log = LoggerFactory
@@ -107,7 +109,7 @@ public class RichTextFieldBuilder extends
                 "Italic", "Underline", "SpecialChar" }));
         toolbars.add(new ToolbarGroup("paragraph", new String[] {
                 "NumberedList", "BulletedList" }));
-        toolbars.add(new ToolbarGroup("insert", new String[] { "Link", 
+        toolbars.add(new ToolbarGroup("insert", new String[] { "Link",
                 "InternalLink", "Unlink" }));
         toolbars.add(new ToolbarGroup("clipboard", new String[] { "Cut",
                 "Copy", "Paste", "PasteText", "PasteFromWord" }));
@@ -123,11 +125,11 @@ public class RichTextFieldBuilder extends
             @Override
             public void attach() {
                 super.attach();
-                
+
                 if (getApplication() instanceof AdminCentralApplication) {
-                    AdminCentralApplication admincentral = (AdminCentralApplication)getApplication();
+                    AdminCentralApplication admincentral = (AdminCentralApplication) getApplication();
                     String path = admincentral.getAdminCentralPath();
-                    config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path+PLUGIN_PATH_MAGNOLIALINK);
+                    config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
                 }
             }
         };
@@ -162,15 +164,15 @@ public class RichTextFieldBuilder extends
                     if (!(chosenValue instanceof JcrItemAdapter)) {
                         return;
                     }
-                    
-                    try {                                    
-                    
+
+                    try {
+
                         javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
-                        
+
                         if (!jcrItem.isNode()) {
                             return;
                         }
-    
+
                         final Node selected = (Node) jcrItem;
                         Gson gson = new Gson();
                         MagnoliaLink mlink = new MagnoliaLink();
@@ -182,15 +184,15 @@ public class RichTextFieldBuilder extends
                         } else {
                             mlink.caption = selected.getName();
                         }
-                                                            
+
                         richTextEditor.firePluginEvent(EVENT_SEND_MAGNOLIA_LINK, gson.toJson(mlink));
                     } catch (Exception e) {
                         String error = "Not able to access the selected item. Value will not be set.";
                         log.error(error, e);
                         richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, error);
-                    }                            
+                    }
                 }
-    
+
                 @Override
                 public void selectionCanceled() {
                     richTextEditor.firePluginEvent(EVENT_CANCEL_LINK);
@@ -198,7 +200,7 @@ public class RichTextFieldBuilder extends
             });
         }
     }
-    
+
     private static class MagnoliaLink {
         @SuppressWarnings("unused")
         public String identifier;

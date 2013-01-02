@@ -34,9 +34,7 @@
 package info.magnolia.ui.admincentral.content.view;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
@@ -51,7 +49,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-
 
 /**
  * Tests for ContentPresenter.
@@ -72,7 +69,7 @@ public class ContentPresenterTest {
     protected static final String TEST_ITEM_PATH = "2";
 
     private static final String TEST_WORKBENCHDEF_PATH = "/path/to/somewhere";
-    
+
     @Before
     public void setUp() {
         contentViewBuilder = mock(ContentViewBuilder.class);
@@ -118,15 +115,15 @@ public class ContentPresenterTest {
         assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
         assertEquals(TEST_ITEM_PATH, argument.getValue().getPath());
     }
-    
+
     @Test
     public void testOnItemSelectionWithNullItemSetSelectedPath() {
         // GIVEN see setUp
-        
+
         // WHEN
         ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
         presenter.onItemSelection(null);
-        
+
         // THEN
         assertEquals(TEST_WORKBENCHDEF_PATH, presenter.getSelectedItemPath());
     }

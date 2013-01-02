@@ -42,11 +42,11 @@ import info.magnolia.ui.model.action.ActionExecutionException;
  * Save action for showcase app form dialog.
  */
 public class SaveShowcaseDialogAction extends SaveDialogAction {
-    
+
     public SaveShowcaseDialogAction(final SaveDialogActionDefinition definition, final FormDialogPresenter presenter) {
         super(definition, presenter);
     }
-    
+
     @Override
     public void execute() throws ActionExecutionException {
         getPresenter().getCallback().onSuccess("");

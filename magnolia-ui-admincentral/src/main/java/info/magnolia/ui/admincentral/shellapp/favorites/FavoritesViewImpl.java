@@ -34,14 +34,12 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.admincentral.components.SplitFeed;
-import info.magnolia.ui.vaadin.layout.DivLayout;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
+import info.magnolia.ui.vaadin.layout.DivLayout;
 
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
-//import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
-
 
 /**
  * Default view implementation for favorites.
@@ -49,20 +47,19 @@ import com.vaadin.ui.Label;
 
 public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
 
-    //private final SplitFeed splitPanel = new SplitFeed();
+    // private final SplitFeed splitPanel = new SplitFeed();
 
     private String id = ShellAppType.FAVORITE.getClassId();
 
     @Override
-    public String getId(){
+    public String getId() {
         return id;
     }
-
 
     public FavoritesViewImpl() {
         super();
         addStyleName("favorites");
-        //setHeight("100%");
+        // setHeight("100%");
         setWidth("900px");
         this.setDebugId(id);
         construct();
@@ -100,6 +97,7 @@ public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
     public Component asVaadinComponent() {
         return this;
     }
+
     /**
      * Favorite entry.
      */
@@ -131,6 +129,7 @@ public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
             iconElement.setValue("<span class=\"" + icon + "\"></span>");
         }
     }
+
     /**
      * Favorite section.
      */

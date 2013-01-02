@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-
 /**
- * Messages Pulse tab UI. 
+ * Messages Pulse tab UI.
  */
 public interface PulseMessagesView extends PulseSubView {
 

@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import com.vaadin.data.Item;
+import static org.junit.Assert.assertEquals;
+
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.form.FormItem;
 import info.magnolia.ui.admincentral.form.FormPresenter;
@@ -43,14 +44,14 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
 import info.magnolia.ui.vaadin.form.FormView;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import com.vaadin.data.Item;
 
 /**
- * Main test class for {@link CallbackDialogAction} and
- * {@link CallbackDialogActionDefinition}.
+ * Main test class for {@link CallbackDialogAction} and {@link CallbackDialogActionDefinition}.
  */
 
 public class CallbackDialogActionTest {
@@ -107,17 +108,19 @@ public class CallbackDialogActionTest {
      * Init the Definition.
      */
     private void initDefinition(String name, String label, Boolean callSuccess, String successActionName) {
-        this.dialogActionDefinition.setCallSuccess((callSuccess!=null)?callSuccess:true);
+        this.dialogActionDefinition.setCallSuccess((callSuccess != null) ? callSuccess : true);
         this.dialogActionDefinition.setLabel(label);
         this.dialogActionDefinition.setName(name);
-        this.dialogActionDefinition.setSuccessActionName(successActionName!=null?successActionName:"success");
+        this.dialogActionDefinition.setSuccessActionName(successActionName != null ? successActionName : "success");
     }
 
     public static class FormPresenterTest implements FormPresenter {
         private Item item;
+
         public void setTestItem(Item item) {
             this.item = item;
         }
+
         @Override
         public Callback getCallback() {
             return null;
@@ -174,14 +177,13 @@ public class CallbackDialogActionTest {
             return callbackActionCalled;
         }
 
-
         @Override
         public Callback getCallback() {
             return new Callback() {
 
                 @Override
                 public void onSuccess(String actionName) {
-                    callbackActionCalled = "onSuccess("+actionName+")";
+                    callbackActionCalled = "onSuccess(" + actionName + ")";
                 }
 
                 @Override
@@ -214,7 +216,6 @@ public class CallbackDialogActionTest {
         @Override
         public void closeDialog() {
         }
-        
 
         @Override
         public void addDialogCloseHandler(DialogCloseEvent.Handler listener) {
@@ -223,13 +224,13 @@ public class CallbackDialogActionTest {
         @Override
         public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
             // TODO Auto-generated method stub
-            
+
         }
 
         @Override
         public void addActionCallback(String actionName, DialogActionListener callback) {
             // TODO Auto-generated method stub
-            
+
         }
 
     }

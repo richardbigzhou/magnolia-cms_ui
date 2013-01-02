@@ -63,6 +63,7 @@ public class DialogFieldRegistry implements Serializable {
     public void setDefinitionToImplementationMappings(List<DefinitionToImplementationMapping<FieldDefinition, FieldBuilder>> definitionToImplementationMappings) {
         this.definitionToImplementationMappings = definitionToImplementationMappings;
     }
+
     public void addDefinitionToImplementationMapping(DefinitionToImplementationMapping<FieldDefinition, FieldBuilder> mapping) {
         this.definitionToImplementationMappings.add(mapping);
     }

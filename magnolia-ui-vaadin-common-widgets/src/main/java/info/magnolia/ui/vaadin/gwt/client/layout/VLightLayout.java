@@ -46,7 +46,6 @@ import com.vaadin.terminal.gwt.client.Paintable;
 import com.vaadin.terminal.gwt.client.RenderSpace;
 import com.vaadin.terminal.gwt.client.UIDL;
 
-
 /**
  * Client-side implementation for the LightLayout.
  */
@@ -78,7 +77,7 @@ public class VLightLayout extends FlowPanel implements Paintable, Container {
 
         int lastIndex = 0;
         for (final Iterator<Object> i = uidl.getChildIterator(); i
-            .hasNext();) {
+                .hasNext();) {
             final UIDL r = (UIDL) i.next();
             final Paintable child = client.getPaintable(r);
             final Widget widget = (Widget) child;

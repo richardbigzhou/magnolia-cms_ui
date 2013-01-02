@@ -38,12 +38,12 @@ import com.google.gwt.user.client.Element;
 
 /**
  * The permanent App Group.
- *
+ * 
  */
 public class VPermanentAppTileGroup extends VAppTileGroup {
 
     private String caption;
-    
+
     final Element sectionEl = DOM.createDiv();
 
     public VPermanentAppTileGroup(String caption, String color) {
@@ -51,32 +51,32 @@ public class VPermanentAppTileGroup extends VAppTileGroup {
         this.caption = caption;
         construct();
     }
-    
+
     public void setCaption(String caption) {
         this.caption = caption;
     }
-    
+
     private void createSectionItem() {
         final Element sectionEl = DOM.createDiv();
         final Element sectionLabel = DOM.createSpan();
-        
+
         sectionEl.appendChild(sectionLabel);
         sectionEl.addClassName("item");
         sectionEl.addClassName("section");
-        
+
         sectionLabel.addClassName("label");
         sectionLabel.setInnerText(caption);
         sectionEl.getStyle().setBackgroundColor(getColor());
         getElement().appendChild(sectionEl);
     }
-    
+
     @Override
     protected void construct() {
         createSectionItem();
     }
-    
+
     public Element getSectionEl() {
         return sectionEl;
     }
-    
+
 }

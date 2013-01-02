@@ -43,7 +43,7 @@ public class DefaultPropertyTest {
     public void testGetValue() throws Exception {
         // GIVEN
         final String value = "value";
-        final DefaultProperty property = new DefaultProperty("propertyName",value);
+        final DefaultProperty property = new DefaultProperty("propertyName", value);
 
         // WHEN
         final Object result = property.getValue();
@@ -56,7 +56,7 @@ public class DefaultPropertyTest {
     public void testGetType() throws Exception {
         // GIVEN
         final String value = "value";
-        final DefaultProperty property = new DefaultProperty("propertyName",value);
+        final DefaultProperty property = new DefaultProperty("propertyName", value);
 
         // WHEN
         final Class<?> result = property.getType();
@@ -69,7 +69,7 @@ public class DefaultPropertyTest {
     public void testSetValue() throws Exception {
         // GIVEN
         final String value = "old";
-        final DefaultProperty property = new DefaultProperty("propertyName",value);
+        final DefaultProperty property = new DefaultProperty("propertyName", value);
         final String newValue = "new";
 
         // WHEN
@@ -83,7 +83,7 @@ public class DefaultPropertyTest {
     public void testSetReadOnlyValue() throws Exception {
         // GIVEN
         final String value = "old";
-        final DefaultProperty property = new DefaultProperty("propertyName",value);
+        final DefaultProperty property = new DefaultProperty("propertyName", value);
         property.setReadOnly(true);
         assertEquals(true, property.isReadOnly());
 

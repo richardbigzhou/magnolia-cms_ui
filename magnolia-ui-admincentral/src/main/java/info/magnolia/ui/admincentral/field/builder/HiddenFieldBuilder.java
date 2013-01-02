@@ -45,7 +45,6 @@ import com.vaadin.ui.TextField;
  */
 public class HiddenFieldBuilder extends AbstractFieldBuilder<HiddenFieldDefinition> {
 
-
     public HiddenFieldBuilder(HiddenFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
