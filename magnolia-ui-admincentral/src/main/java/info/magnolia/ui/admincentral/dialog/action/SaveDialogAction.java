@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -76,15 +78,34 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
                 final Node node = itemChanged.getNode();
+                updateLastModified(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
             }
             presenter.getCallback().onSuccess(getDefinition().getName());
         } else {
-            log.info("Validation error(s) occured. No save performed.");
+            log.info("Validation error(s) occurred. No save performed.");
         }
     }
+
+    /**
+     * Recursively update LastModified for the node until the parent node is of type
+     * mgnl:content or deph=1. If it's not the 'website' workspace, do not perform recursivity.
+     */
+    protected void updateLastModified(Node currentNode) throws RepositoryException {
+        if (!currentNode.isNodeType(NodeTypes.Folder.NAME)) {
+            // Update
+            NodeTypes.LastModified.update(currentNode);
+            // Break or perform a recursive call
+            if (RepositoryConstants.WEBSITE.equals(currentNode.getSession().getWorkspace().getName())
+                    && !currentNode.isNodeType(NodeTypes.Content.NAME)
+                    && currentNode.getDepth() > 2) {
+                updateLastModified(currentNode.getParent());
+            }
+        }
+    }
+
 
     protected FormDialogPresenter getPresenter() {
         return presenter;
