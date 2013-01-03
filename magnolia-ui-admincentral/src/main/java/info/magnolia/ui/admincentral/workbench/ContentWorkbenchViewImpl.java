@@ -289,7 +289,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     }
 
     @Override
-    public void resynch(final String path, final ViewType viewType, final String query) {
+    public void resync(final String path, final ViewType viewType, final String query) {
         setViewType(viewType);
         if (viewType == ViewType.SEARCH) {
             if (StringUtils.isBlank(query)) {

@@ -80,7 +80,7 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
      * Synchronize the view status to reflect the information extracted from the Location token,
      * i.e. selected path, view type and optional query (in case of a 'search' view).
      */
-    void resynch(String path, ViewType viewType, String query);
+    void resync(String path, ViewType viewType, String query);
 
     ContentView getSelectedView();
 }

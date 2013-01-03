@@ -243,7 +243,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
                     "Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.",
                     path, workbenchDefinition.getWorkspace());
         }
-        this.view.resynch(itemExists ? path : "/", viewType, query);
+        this.view.resync(itemExists ? path : "/", viewType, query);
     }
 
     private void refreshActionbarPreviewImage(final String path, final String workspace) {
@@ -266,7 +266,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         final String searchExpression = event.getSearchExpression();
 
         if (StringUtils.isBlank(searchExpression)) {
-            view.resynch(null, view.getSelectedView().getViewType(), searchExpression);
+            view.resync(null, view.getSelectedView().getViewType(), searchExpression);
             searchView.clear();
         } else {
             searchView.search(searchExpression);
