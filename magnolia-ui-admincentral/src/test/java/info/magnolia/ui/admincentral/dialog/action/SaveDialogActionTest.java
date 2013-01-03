@@ -95,14 +95,14 @@ public class SaveDialogActionTest {
         node = session.getRootNode().addNode("underlying");
         node.getSession().save();
         item = new JcrNodeAdapter(node);
-        ((CallbackDialogActionTest.FormPresenterTest) this.presenter.getForm()).setTestItem(item);
+        ((CallbackDialogActionTest.FormPresenterTest) presenter.getForm()).setTestItem(item);
         dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
 
         // WHEN
         dialogAction.execute();
 
         // THEN
-        assertEquals("onSuccess(name)", this.presenter.getCallbackActionCalled());
+        assertEquals("onSuccess(name)", presenter.getCallbackActionCalled());
     }
 
     @Test
@@ -112,7 +112,7 @@ public class SaveDialogActionTest {
         node.setProperty("property", "initial");
         item = new JcrNodeAdapter(node);
         item.getItemProperty("property").setValue("changed");
-        ((CallbackDialogActionTest.FormPresenterTest) this.presenter.getForm()).setTestItem(item);
+        ((CallbackDialogActionTest.FormPresenterTest) presenter.getForm()).setTestItem(item);
         dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
 
         // WHEN
@@ -131,7 +131,7 @@ public class SaveDialogActionTest {
 
         item = new JcrNodeAdapter(node);
         item.addItemProperty("property", DefaultPropertyUtil.newDefaultProperty("property", null, "changed"));
-        ((CallbackDialogActionTest.FormPresenterTest) this.presenter.getForm()).setTestItem(item);
+        ((CallbackDialogActionTest.FormPresenterTest) presenter.getForm()).setTestItem(item);
         dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
 
         // WHEN
@@ -150,7 +150,7 @@ public class SaveDialogActionTest {
         node.setProperty("property", "initial");
         item = new JcrNodeAdapter(node);
         item.removeItemProperty("property");
-        ((CallbackDialogActionTest.FormPresenterTest) this.presenter.getForm()).setTestItem(item);
+        ((CallbackDialogActionTest.FormPresenterTest) presenter.getForm()).setTestItem(item);
         dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
         assertEquals(true, node.hasProperty("property"));
         // WHEN
