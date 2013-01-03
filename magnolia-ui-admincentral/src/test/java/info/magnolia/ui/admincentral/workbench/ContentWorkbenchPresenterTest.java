@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.workbench;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
@@ -52,7 +51,6 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.model.workbench.builder.WorkbenchBuilder;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
@@ -155,8 +153,10 @@ public class ContentWorkbenchPresenterTest {
         // GIVEN
         Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
         node.addMixin(LastModified.NAME);
-        JcrItemNodeAdapter adapter = mock(JcrItemNodeAdapter.class);
+        AbstractJcrNodeAdapter adapter = mock(AbstractJcrNodeAdapter.class);
         when(adapter.getNode()).thenReturn(node);
+        // simulate pending change
+        when(adapter.hasChangedProperties()).thenReturn(true);
 
         Calendar firstModified = LastModified.getLastModified(node);
         String firstModifiedBy = LastModified.getLastModifiedBy(node);
@@ -180,6 +180,8 @@ public class ContentWorkbenchPresenterTest {
         Property property = node.setProperty(DUMMY_PROPERTY_NAME, true);
         JcrPropertyAdapter adapter = mock(JcrPropertyAdapter.class);
         when(adapter.getProperty()).thenReturn(property);
+        // simulate pending change
+        when(adapter.hasChangedProperties()).thenReturn(true);
 
         Calendar firstModified = LastModified.getLastModified(node);
         String firstModifiedBy = LastModified.getLastModifiedBy(node);
