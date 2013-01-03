@@ -51,6 +51,7 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.model.workbench.builder.WorkbenchBuilder;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -192,6 +193,27 @@ public class ContentWorkbenchPresenterTest {
         assertNotSame(firstModified, LastModified.getLastModified(node));
         assertNotSame(firstModifiedBy, LastModified.getLastModifiedBy(node));
         assertEquals(USER, LastModified.getLastModifiedBy(node));
+    }
+
+    @Test
+    public void testEditItemDoesNotUpdateLastModifiedWithoutChanges() throws Exception {
+        // GIVEN
+        Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
+        LastModified.update(node);
+        AbstractJcrNodeAdapter adapter = mock(AbstractJcrNodeAdapter.class);
+        when(adapter.getNode()).thenReturn(node);
+
+        Calendar firstModified = LastModified.getLastModified(node);
+        String firstModifiedBy = LastModified.getLastModifiedBy(node);
+
+        // WHEN
+        subAppEventBus.fireEvent(new ItemEditedEvent(adapter));
+
+        // THEN
+        assertNotNull(LastModified.getLastModified(node));
+        assertNotNull(LastModified.getLastModifiedBy(node));
+        assertEquals(firstModified, LastModified.getLastModified(node));
+        assertEquals(firstModifiedBy, LastModified.getLastModifiedBy(node));
     }
 
 }
