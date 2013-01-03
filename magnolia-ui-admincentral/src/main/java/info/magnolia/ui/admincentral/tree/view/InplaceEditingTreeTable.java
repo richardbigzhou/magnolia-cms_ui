@@ -54,7 +54,6 @@ import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ShortcutAction;
-import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
@@ -97,7 +96,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
     /**
      * Sets the item and property for inplace editing.
-     * 
+     *
      * @param itemId
      *            the item id
      * @param propertyId
@@ -140,7 +139,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                 Field field = super.createField(container, itemId, propertyId, uiContext);
 
                 // set TextField Focus listeners
-                ((AbstractComponent) field).setImmediate(false);
                 if (field instanceof AbstractTextField) {
                     final AbstractTextField tf = (AbstractTextField) field;
                     tf.addListener(new FieldEvents.FocusListener() {
@@ -148,7 +146,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                         @Override
                         public void focus(FocusEvent event) {
                             tf.setCursorPosition(tf.toString().length());
-                            tf.commit();
                         }
                     });
 
@@ -156,7 +153,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
                         @Override
                         public void blur(BlurEvent event) {
-                            tf.commit();
                             fireItemEditedEvent(getItemFromField(tf));
                             setEditing(null, null);
                         }
@@ -197,7 +193,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
      * Gets the item whose property is currently being edited in the given field. Since the {{Table}} doesn't keep
      * references to its items, the only way to get it back is to ask the property datasource for its listeners and see
      * if the Item is there.
-     * 
+     *
      * @param source
      *            the vaadin {{Field}} where the editing occured
      * @return the vaadin {{Item}} if it could be fetched, null otherwise.
@@ -269,30 +265,26 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                 Field field = (Field) target;
 
                 if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
-                    field.commit();
                     fireItemEditedEvent(getItemFromField(field));
                     setEditing(null, null);
 
                 } else if (action == tabNext) {
                     // Saves first
-                    field.commit();
                     fireItemEditedEvent(getItemFromField(field));
 
-                    // Should then update current editingItemId, and ask for next candidate
+                    // Then updates current editingItemId, and asks for next candidate
                     TableCell nextCell = getNextEditableCandidate(editingItemId, editingPropertyId);
                     setEditing(nextCell.getItemId(), nextCell.getPropertyId());
 
                 } else if (action == tabPrev) {
                     // Saves first
-                    field.commit();
                     fireItemEditedEvent(getItemFromField(field));
 
-                    // Should then update current editingItemId, and ask for previous candidate
+                    // Then updates current editingItemId, and asks for previous candidate
                     TableCell previousCell = getPreviousEditableCandidate(editingItemId, editingPropertyId);
                     setEditing(previousCell.getItemId(), previousCell.getPropertyId());
 
                 } else if (action == escape) {
-                    field.discard();
                     setEditing(null, null);
                 }
             } else if (target == InplaceEditingTreeTable.this) {

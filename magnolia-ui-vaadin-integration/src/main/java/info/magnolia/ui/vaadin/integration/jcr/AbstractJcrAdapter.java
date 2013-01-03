@@ -120,6 +120,10 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
 
     // ABSTRACT IMPLEMENTATION OF PROPERTY CHANGES
 
+    public boolean hasChangedProperties() {
+        return changedProperties.size() > 0;
+    }
+
     protected Map<String, Property> getChangedProperties() {
         return changedProperties;
     }
