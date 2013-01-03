@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.form.action;
 
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -72,7 +73,7 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
                 final Node node = itemChanged.getNode();
-                // MetaDataUtil.updateMetaData(node);
+                NodeTypes.LastModified.update(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);

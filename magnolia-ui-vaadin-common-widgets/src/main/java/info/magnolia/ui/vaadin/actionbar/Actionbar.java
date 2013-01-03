@@ -255,10 +255,8 @@ public class Actionbar extends AbstractComponent implements ActionbarView, Serve
                 previewContainer.addComponent(previewIconFont);
             } else {
 
-                // Add a cache buster to the preview image to ensure that it is
-                // updated to the new image after any edits.
                 String resourcePath = ((ExternalResource) previewResource).getURL();
-                ExternalResource cacheBustedPreviewResource = new ExternalResource(resourcePath + "?cb=" + System.currentTimeMillis());
+                ExternalResource cacheBustedPreviewResource = new ExternalResource(resourcePath);
 
                 Embedded preview = new Embedded(null, cacheBustedPreviewResource);
                 preview.setWidth("100%");
