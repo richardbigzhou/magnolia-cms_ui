@@ -68,6 +68,16 @@ public class Fragment implements Serializable {
         return dto;
     }
 
+    public ShellAppType resolveShellAppType() {
+        if (isApp()) {
+            return null;
+        }
+        try {
+            return ShellAppType.valueOf(appId.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ShellAppType.APPLAUNCHER;
+        }
+    }
     public void setParameter(String parameter) {
         this.parameter = parameter;
     }
@@ -151,5 +161,13 @@ public class Fragment implements Serializable {
     private static String removeParameter(String fragment) {
         int i = fragment.indexOf(';');
         return i != -1 ? fragment.substring(0, i) : fragment;
+    }
+
+    public boolean isShellApp() {
+        return appViewportType == ViewportType.SHELL_APP;
+    }
+    
+    public boolean isApp() {
+        return !isShellApp();
     }
 }

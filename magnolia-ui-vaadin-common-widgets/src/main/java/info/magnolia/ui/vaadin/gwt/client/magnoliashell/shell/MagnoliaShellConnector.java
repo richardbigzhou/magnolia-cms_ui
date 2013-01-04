@@ -42,7 +42,6 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsView
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 
 import java.util.Iterator;
@@ -208,8 +207,8 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     @Override
     public void handleHistoryChange(String fragmentStr) {
         final Fragment f = Fragment.fromString(fragmentStr);
-        if (f.getAppViewportType() == ViewportType.SHELL_APP) {
-            eventBus.fireEvent(new ShellAppActivatedEvent(ShellAppType.resolveType(f.getAppId()), f.getParameter()));
+        if (f.isShellApp()) {
+            eventBus.fireEvent(new ShellAppActivatedEvent(f.resolveShellAppType(), f.getParameter()));
         } else {
             final String appId = f.getAppId();
             if (isAppRegistered(appId)) {

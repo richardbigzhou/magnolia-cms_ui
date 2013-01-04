@@ -146,29 +146,15 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
         return getActiveViewport().getCurrentShellFragment();
     }
 
-    private String getActiveViewportName() {
-        final ShellViewport activeViewport = getActiveViewport();
-        String viewPortName = "";
-        if (activeViewport == appViewport()) {
-            viewPortName = "shell";
-        } else if (activeViewport == shellAppViewport()) {
-            viewPortName = "app";
-        } else if (activeViewport == dialogViewport()) {
-            viewPortName = "dialog";
-        }
-        return viewPortName;
-    }
-
     @Override
     public void setFragment(String fragment) {
-        String appId = DefaultLocation.extractAppId(fragment);
-        String subAppId = DefaultLocation.extractSubAppId(fragment);
-        String parameter = DefaultLocation.extractParameter(fragment);
+        Fragment f = Fragment.fromString(fragment);
+        f.setAppId(DefaultLocation.extractAppId(fragment));
+        f.setSubAppId(DefaultLocation.extractSubAppId(fragment));
+        f.setParameter(DefaultLocation.extractParameter(fragment));
 
-        String actualFragment = getActiveViewportName() + ":" + appId + ":" + subAppId + ";" + parameter;
-
-        getActiveViewport().setCurrentShellFragment(actualFragment);
-        propagateFragmentToClient(Fragment.fromString(actualFragment));
+        getActiveViewport().setCurrentShellFragment(f.toFragment());
+        propagateFragmentToClient(f);
     }
 
     @Override

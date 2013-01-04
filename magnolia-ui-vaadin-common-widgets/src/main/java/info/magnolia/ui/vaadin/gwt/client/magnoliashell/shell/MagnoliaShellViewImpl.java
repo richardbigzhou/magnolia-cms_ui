@@ -292,8 +292,8 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
             } else {
                 viewport.setRefreshEvent(null);
                 getShellAppViewport().showLoadingPane();
-                presenter.activateShellApp(Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken()));
             }
+            presenter.activateShellApp(Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken()));
         }
     };
 }

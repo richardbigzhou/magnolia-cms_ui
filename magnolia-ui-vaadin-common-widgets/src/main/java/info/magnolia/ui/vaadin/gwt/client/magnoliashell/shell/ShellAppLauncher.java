@@ -149,8 +149,8 @@ public class ShellAppLauncher extends FlowPanel {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 Fragment f = Fragment.fromString(event.getValue());
-                if (f.getAppViewportType() == ViewportType.SHELL_APP) {
-                    activateControl(ShellAppType.valueOf(f.getAppId().toUpperCase()));
+                if (f.isShellApp()) {
+                    activateControl(f.resolveShellAppType());
                 }
             }
         });
