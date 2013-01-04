@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
-import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -62,16 +61,5 @@ public class MagnoliaShellState extends AbstractLayoutState {
     public Map<ViewportType, Connector> viewports = new EnumMap<ViewportType, Connector>(ViewportType.class);
 
     public Connector activeViewport = null;
-
-    public ShellViewport appViewport() {
-        return (ShellViewport) viewports.get(ViewportType.APP);
-    }
-
-    public ShellViewport shellAppViewport() {
-        return (ShellViewport) viewports.get(ViewportType.SHELL_APP);
-    }
-
-    public ShellViewport dialogViewport() {
-        return (ShellViewport) viewports.get(ViewportType.DIALOG);
-    }
+    
 }

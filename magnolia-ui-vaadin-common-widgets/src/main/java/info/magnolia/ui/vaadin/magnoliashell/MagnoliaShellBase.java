@@ -105,11 +105,11 @@ public abstract class MagnoliaShellBase extends AbstractComponent implements Has
     }
 
     public void goToApp(Fragment fragment) {
-        doNavigate(getState(false).appViewport(), fragment);
+        doNavigate(appViewport(), fragment);
     }
 
     public void goToShellApp(Fragment fragment) {
-        doNavigate(getState(false).shellAppViewport(), fragment);
+        doNavigate(shellAppViewport(), fragment);
     }
 
     public void doNavigate(final ShellViewport viewport, Fragment fragment) {
@@ -229,5 +229,17 @@ public abstract class MagnoliaShellBase extends AbstractComponent implements Has
     @Override
     public Iterator<Component> iterator() {
         return new ComponentIterator<Connector>(getState(false).viewports.values().iterator());
+    }
+    
+    public ShellViewport appViewport() {
+        return (ShellViewport) getState(false).viewports.get(ViewportType.APP);
+    }
+
+    public ShellViewport shellAppViewport() {
+        return (ShellViewport) getState(false).viewports.get(ViewportType.SHELL_APP);
+    }
+
+    public ShellViewport dialogViewport() {
+        return (ShellViewport) getState(false).viewports.get(ViewportType.DIALOG);
     }
 }

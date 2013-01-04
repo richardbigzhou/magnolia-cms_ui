@@ -94,7 +94,7 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
 
             @Override
             public void onAppFocused(AppLifecycleEvent event) {
-                setActiveViewport(getState(false).appViewport());
+                setActiveViewport(appViewport());
             }
 
             @Override
@@ -113,9 +113,9 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
 
     @Override
     public void stopCurrentApp() {
-        getState().appViewport().pop();
+        appViewport().pop();
         appController.stopCurrentApp();
-        if (getState().appViewport().isEmpty()) {
+        if (appViewport().isEmpty()) {
             goToShellApp(Fragment.fromString("shell:applauncher"));
         }
     }
@@ -149,11 +149,11 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
     private String getActiveViewportName() {
         final ShellViewport activeViewport = getActiveViewport();
         String viewPortName = "";
-        if (activeViewport == getState(false).appViewport()) {
+        if (activeViewport == appViewport()) {
             viewPortName = "shell";
-        } else if (activeViewport == getState(false).shellAppViewport()) {
+        } else if (activeViewport == shellAppViewport()) {
             viewPortName = "app";
-        } else if (activeViewport == getState(false).dialogViewport()) {
+        } else if (activeViewport == dialogViewport()) {
             viewPortName = "dialog";
         }
         return viewPortName;
@@ -242,7 +242,7 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
 
     @Override
     public void stopCurrentShellApp() {
-        ShellViewport appViewport = getState(false).appViewport();
+        ShellViewport appViewport = appViewport();
         if (!appViewport.isEmpty()) {
             // An app is open.
             setActiveViewport(appViewport);
