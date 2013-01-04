@@ -57,6 +57,7 @@ import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
@@ -284,6 +285,11 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     private void editItem(ItemEditedEvent event) {
         Item item = event.getItem();
+        // don't save if no value change occurred on adapter
+        if (!(item instanceof AbstractJcrAdapter) || !((AbstractJcrAdapter) item).hasChangedProperties()) {
+            return;
+        }
+
         if (item instanceof JcrItemNodeAdapter) {
             // Saving JCR Node, getting updated node first
             Node node = ((JcrItemNodeAdapter) item).getNode();
