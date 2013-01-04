@@ -292,10 +292,10 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
     }
 
     public ViewPort getShellAppViewport() {
-        return getState(false).shellAppViewport();
+        return shellAppViewport();
     }
 
     public ViewPort getAppViewport() {
-        return getState(false).appViewport();
+        return appViewport();
     }
 }
