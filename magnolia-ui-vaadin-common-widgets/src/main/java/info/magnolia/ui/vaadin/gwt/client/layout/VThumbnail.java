@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Thumbnail widget.
- * 
+ *
  */
 public class VThumbnail extends Composite {
 
@@ -78,9 +78,7 @@ public class VThumbnail extends Composite {
                 } else {
                     // image
                     Image image = new Image(LazyThumbnailLayoutImageBundle.INSTANCE.getStubImage().getSafeUri());
-                    // Add cachebuster so that browser definitely displays updated thumbnails after edits.
-                    String cacheBuster = "?cb=" + System.currentTimeMillis();
-                    image.setUrl(data.getSrc() + cacheBuster);
+                    image.setUrl(data.getSrc());
                     image.setStyleName("thumbnail-image");
                     panel.setWidget(image);
                 }
