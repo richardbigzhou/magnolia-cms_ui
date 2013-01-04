@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Thumbnail widget.
- *
+ * 
  */
 public class VThumbnail extends Composite {
 

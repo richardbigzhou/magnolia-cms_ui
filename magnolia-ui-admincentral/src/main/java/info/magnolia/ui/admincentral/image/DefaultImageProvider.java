@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.admincentral.image;
 
-import java.util.Calendar;
-
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
@@ -43,6 +41,8 @@ import info.magnolia.link.LinkUtilAsset;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.terminal.IconFontResource;
+
+import java.util.Calendar;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
