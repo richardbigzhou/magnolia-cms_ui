@@ -86,8 +86,6 @@
           <module>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</module>
           <runTarget>.magnolia/admincentral</runTarget>
           <draftCompile>${draftCompile}</draftCompile>
-          <logLevel>DEBUG</logLevel>
-         <strict>true</strict>
         </configuration>
         <executions>
           <execution>
