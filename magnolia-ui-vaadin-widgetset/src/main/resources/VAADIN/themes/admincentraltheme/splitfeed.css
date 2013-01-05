@@ -10,15 +10,9 @@
 	position: relative;
 }
 
-.v-split-feed .v-csslayout-margin-top {
+.v-feed-section {
     padding-top: 30px;
-}
-
-.v-split-feed .v-csslayout-margin-left {
     padding-left: 20px;
-}
-
-.v-split-feed .v-csslayout-margin-right {
     padding-right: 28px;
 }
 
