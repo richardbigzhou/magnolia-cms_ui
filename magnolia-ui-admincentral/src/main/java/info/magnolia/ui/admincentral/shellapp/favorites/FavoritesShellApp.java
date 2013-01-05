@@ -36,9 +36,9 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.ShellApp;
 import info.magnolia.ui.framework.app.ShellAppContext;
-import info.magnolia.ui.framework.app.ShellView;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import javax.inject.Inject;
@@ -60,7 +60,7 @@ public class FavoritesShellApp implements ShellApp {
     }
 
     @Override
-    public ShellView start(ShellAppContext context) {
+    public View start(ShellAppContext context) {
         return favoritesView;
     }
 

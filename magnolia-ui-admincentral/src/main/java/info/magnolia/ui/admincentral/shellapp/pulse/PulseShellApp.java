@@ -36,9 +36,9 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.ShellApp;
 import info.magnolia.ui.framework.app.ShellAppContext;
-import info.magnolia.ui.framework.app.ShellView;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
     }
 
     @Override
-    public ShellView start(ShellAppContext context) {
+    public View start(ShellAppContext context) {
         this.context = context;
         pulseView.setPresenter(this);
 

@@ -50,13 +50,7 @@ import com.vaadin.ui.Component;
  */
 public class PulseViewImpl implements PulseView {
 
-    @Override
-    public String getId() {
-        return "pulse";
-    }
-
     private final MagnoliaTabSheet tabsheet = new MagnoliaTabSheet() {
-
         @Override
         public void setActiveTab(MagnoliaTab tab) {
             super.setActiveTab(tab);
