@@ -206,8 +206,7 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
     }
 
     @Override
-    public void messageCleared(MessageEvent event) {
-    }
+    public void messageCleared(MessageEvent event) {}
 
     @Override
     public void registerApps(List<String> appNames) {

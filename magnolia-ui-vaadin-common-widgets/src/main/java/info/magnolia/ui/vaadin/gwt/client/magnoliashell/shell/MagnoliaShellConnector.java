@@ -48,6 +48,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
@@ -128,11 +130,21 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 view.updateShellDivet();
             }
         });
+        
+        History.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                Fragment newFragment = Fragment.fromString(event.getValue());
+                Fragment currentFragment = Fragment.fromString(getActiveViewportFragment());
+                if (event.getValue().isEmpty() || !newFragment.isSameApp(currentFragment)) {
+                    changeAppFromFragment(newFragment);
+                }
+            }
+        });
     }
 
     @Override
-    public void updateCaption(ComponentConnector connector) {
-    }
+    public void updateCaption(ComponentConnector connector) {}
 
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {
@@ -204,9 +216,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         return getState().runningAppNames.contains(appName);
     }
 
-    @Override
-    public void handleHistoryChange(String fragmentStr) {
-        final Fragment f = Fragment.fromString(fragmentStr);
+    public void changeAppFromFragment(final Fragment f) {
         if (f.isShellApp()) {
             eventBus.fireEvent(new ShellAppActivatedEvent(f.resolveShellAppType(), f.getParameter()));
         } else {
@@ -238,7 +248,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         eventBus.fireEvent(new ShellAppActivatedEvent(ShellAppType.APPLAUNCHER, parameter));
     }
 
-    @Override
     public String getActiveViewportFragment() {
         ViewportConnector cc = (ViewportConnector) getState().activeViewport;
         return cc == null ? "" : cc.getState().currentFragment;

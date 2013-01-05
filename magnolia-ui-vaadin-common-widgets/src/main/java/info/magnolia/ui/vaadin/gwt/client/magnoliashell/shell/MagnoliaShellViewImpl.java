@@ -57,9 +57,6 @@ import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
@@ -97,15 +94,6 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     private void bindEventHandlers() {
         eventBus.addHandler(ViewportCloseEvent.TYPE, this);
         eventBus.addHandler(ShellAppActivatedEvent.TYPE, navigationHandler);
-        History.addValueChangeHandler(new ValueChangeHandler<String>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<String> event) {
-                String newFragment = event.getValue();
-                if (newFragment.isEmpty() || !newFragment.equals(presenter.getActiveViewportFragment())) {
-                    presenter.handleHistoryChange(event.getValue());
-                }
-            }
-        });
     }
 
     protected AppsViewportWidget getAppViewport() {

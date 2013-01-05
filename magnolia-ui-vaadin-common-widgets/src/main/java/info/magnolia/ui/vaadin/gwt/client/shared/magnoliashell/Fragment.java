@@ -116,6 +116,10 @@ public class Fragment implements Serializable {
         return toString();
     }
 
+    public boolean isSameApp(Fragment other) {
+        return appViewportType == other.appViewportType && appId.equals(other.appId);
+    }
+    
     @Override
     public String toString() {
         return appViewportType.getFragmentPrefix() + appId + ":" + subAppId + ";" + parameter;
@@ -123,7 +127,8 @@ public class Fragment implements Serializable {
 
     public static String extractAppType(String fragment) {
         int i = fragment.indexOf(':');
-        return i != -1 ? fragment.substring(0, i) : fragment;
+        String result = i != -1 ? fragment.substring(0, i) : fragment;
+        return result == null || result.isEmpty() ? "shell" : result;
     }
 
     public static String extractAppId(String fragment) {

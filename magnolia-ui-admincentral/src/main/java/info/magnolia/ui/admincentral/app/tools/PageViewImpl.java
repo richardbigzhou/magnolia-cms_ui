@@ -53,11 +53,11 @@ public class PageViewImpl implements PageView {
 
     @Inject
     public PageViewImpl(final Shell shell, final AppContext appContext) {
-
         layout.setSizeFull();
 
         final String sourceURL = ((PageSubAppDescriptor) appContext.getAppDescriptor().getSubApps().get("main")).getUrl();
-        final BrowserFrame page = new BrowserFrame("", new ExternalResource(MgnlContext.getContextPath() + "/.magnolia/pages/" + sourceURL));
+        final String path = String.format("%s/.magnolia/pages/%s",MgnlContext.getContextPath(), sourceURL);
+        final BrowserFrame page = new BrowserFrame("", new ExternalResource(path));
         page.setSizeFull();
 
         layout.addComponent(page);

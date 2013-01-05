@@ -86,8 +86,8 @@ button.btn-dialog-selectCallBack {
 
 .v-checkbox > input[type="checkbox"]:checked + label,
 .gwt-CheckBox > input[type="checkbox"]:checked + label {
-	background-image:url('img/icon-checkbox_on.png');
-	background-image:none, url('img/icon-checkbox_on.svg');
+	background-image: url('img/icon-checkbox_on.png');
+	background-image: none, url('img/icon-checkbox_on.svg');
 }
 
 /*TwinCol styles*/

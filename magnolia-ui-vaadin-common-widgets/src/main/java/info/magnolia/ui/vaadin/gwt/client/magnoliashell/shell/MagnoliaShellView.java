@@ -96,9 +96,5 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
         boolean isAppRunning(String appName);
 
-        void handleHistoryChange(String fragment);
-
-        String getActiveViewportFragment();
-
     }
 }
