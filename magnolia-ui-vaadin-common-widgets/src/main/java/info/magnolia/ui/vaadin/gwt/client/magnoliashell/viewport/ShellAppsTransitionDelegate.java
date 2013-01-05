@@ -70,7 +70,6 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
     @Override
     public void setActive(final ViewportWidget viewport, boolean active) {
         final Callbacks callbacks = Callbacks.create();
-
         if (active) {
             viewport.setClosing(false);
             viewportReady = false;
@@ -82,12 +81,10 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
                 }
             });
             slideDown(viewport, callbacks);
-            // viewport.iLayout();
         } else {
             // slide up only if closing shell app
             if (viewport.isClosing()) {
                 callbacks.add(new JQueryCallback() {
-
                     @Override
                     public void execute(JQueryWrapper query) {
                         viewport.setClosing(false);
@@ -107,7 +104,6 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
     @Override
     public void setVisibleApp(final ViewportWidget viewport, final Widget app) {
         final Callbacks callbacks = Callbacks.create();
-
         if (viewport.getVisibleApp() == null || !viewport.isActive()) {
             // do not fade if first widget or viewport not active yet
             viewport.doSetVisibleApp(app);
@@ -125,7 +121,6 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
                 }
             });
             fadeIn(app, callbacks);
-            // viewport.iLayout();
         }
     }
 
@@ -146,12 +141,11 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
             viewport.getElement().getStyle().clearOpacity();
             GWT.log(viewport.getStyleName() + ": stopping animation");
         } else {
-            viewport.getElement().getStyle().setTop(-viewport.getOffsetHeight() + 60, Unit.PX);
+            viewport.getElement().getStyle().setTop(-viewport.getOffsetHeight(), Unit.PX);
         }
 
         // callback
         callbacks.add(new JQueryCallback() {
-
             @Override
             public void execute(JQueryWrapper query) {
                 viewport.getElement().getStyle().clearTop();
@@ -162,9 +156,8 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
 
         // animate
         jq.animate(SLIDE_DURATION, new AnimationSettings() {
-
             {
-                setProperty("top", "60px");
+                setProperty("top", 0);
                 setCallbacks(callbacks);
             }
         });
@@ -195,7 +188,7 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
         jq.animate(SLIDE_DURATION, new AnimationSettings() {
 
             {
-                setProperty("top", (-viewport.getOffsetHeight() + 60) + "px");
+                setProperty("top", (-viewport.getOffsetHeight()) + "px");
                 setCallbacks(callbacks);
             }
         });

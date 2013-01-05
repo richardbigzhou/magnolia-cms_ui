@@ -57,6 +57,8 @@ import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
@@ -82,12 +84,16 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
     private Presenter presenter;
 
+    private Element viewportSlot = DOM.createDiv();
+    
     public MagnoliaShellViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
         this.mainAppLauncher = new ShellAppLauncher(eventBus);
         setStyleName(CLASSNAME);
         add(mainAppLauncher, getElement());
+        getElement().appendChild(viewportSlot);
+        viewportSlot.setClassName("v-shell-viewport-slot");
         bindEventHandlers();
     }
 
@@ -132,7 +138,7 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
             }
         }
         if (getWidgetIndex(newWidget) < 0) {
-            add(newWidget, getElement());
+            add(newWidget, viewportSlot);
         }
     }
 
@@ -195,7 +201,12 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
     @Override
     public void updateViewport(ViewportWidget viewport, ViewportType type) {
-        doUpdateViewport(viewport, type);
+        ViewportWidget oldViewport = viewports.get(type);
+        if (oldViewport != viewport) {
+            replaceWidget(oldViewport, viewport);
+            viewport.setEventBus(eventBus);
+            viewports.put(type, viewport);
+        }
     }
 
     @Override
@@ -256,15 +267,6 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     @Override
     public void updateShellDivet() {
         mainAppLauncher.updateDivet();
-    }
-
-    private void doUpdateViewport(ViewportWidget viewport, ViewportType type) {
-        final ViewportWidget oldViewport = viewports.get(type);
-        if (oldViewport != viewport) {
-            replaceWidget(oldViewport, viewport);
-            viewport.setEventBus(eventBus);
-            viewports.put(type, viewport);
-        }
     }
 
     private final ShellAppActivatedEvent.Handler navigationHandler = new ShellAppActivatedEvent.Handler() {

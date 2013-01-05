@@ -1,5 +1,8 @@
 .v-app-preloader {
 	width:100%;
+	top: 60px;
+	bottom: 0;
+	position: absolute;
 }
 
 .v-preloader {

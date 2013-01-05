@@ -56,23 +56,19 @@ public class AppLauncherViewImpl implements AppLauncherView {
 
     private String id = ShellAppType.APPLAUNCHER.getCssClass();
 
+    private final AppLauncher appLauncher = new AppLauncher();
+
+    private Presenter presenter;
+    
     @Override
     public String getId() {
         return id;
     }
 
-    private Presenter presenter;
-
-    private final AppLauncher appLauncher = new AppLauncher();
-
-    public AppLauncherViewImpl() {
-        appLauncher.setHeight("100%");
-        appLauncher.setWidth("720px");
-
-        appLauncher.setDebugId(id);
-
+    public Presenter getPresenter() {
+        return presenter;
     }
-
+    
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;

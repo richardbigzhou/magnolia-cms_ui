@@ -92,10 +92,17 @@ button.action-close {
     width: 20px;
 }
 
-.v-viewport {
+.v-shell-viewport-slot {
     position:absolute;
     top:60px;
     bottom:0;
+    left: 0;
+    right: 0;	
+}
+
+.v-viewport {
+    position:absolute;
+    height: 100%;
     width:100%;
     overflow:visible;
 }
@@ -109,7 +116,6 @@ button.action-close {
 	position:absolute;
 	top:0;
 	bottom:0;
-	height:auto !important;
 }
 
 .v-shell-app {
