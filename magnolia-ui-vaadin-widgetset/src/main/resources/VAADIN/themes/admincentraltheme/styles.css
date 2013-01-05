@@ -16,7 +16,7 @@
 @import url(fonts.css);
 @import url(css-conditional/fonts-default.css);
 @import url(uploadfield.css);
-@import url(thumbnail_layout.css)
+@import url(thumbnail_layout.css);
 
 body{
     -webkit-user-select: none; /* Disable content selection on mobile safari */
