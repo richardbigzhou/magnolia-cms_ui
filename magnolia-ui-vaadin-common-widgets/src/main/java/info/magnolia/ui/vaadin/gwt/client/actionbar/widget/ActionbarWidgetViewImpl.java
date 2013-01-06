@@ -256,7 +256,6 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
                 tabletRow++;
                 group = new VActionbarGroup(actionParams.getGroupName());
                 section.addGroup(group);
-
                 setToggleAndFullScreenButtonHeights(tabletRow);
             }
 

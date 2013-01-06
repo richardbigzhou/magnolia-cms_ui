@@ -145,7 +145,10 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
     @Override
     public void updateCaption(ComponentConnector connector) {
         final String caption = connector.getState().caption;
-        view.getTabContainer().updateTab((MagnoliaTabWidget) connector.getWidget(), caption);
+        if (connector.getWidget() instanceof MagnoliaTabWidget) {
+            MagnoliaTabWidget tab = (MagnoliaTabWidget) connector.getWidget();
+            tab.getLabel().updateCaption(caption);
+        }
     }
 
     @Override

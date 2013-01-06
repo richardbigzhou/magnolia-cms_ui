@@ -61,7 +61,7 @@ public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHan
 
     void updateTab(MagnoliaTabWidget tab);
 
-    VMagnoliaTabNavigator getTabContainer();
+    TabBarWidget getTabContainer();
 
     MagnoliaTabWidget getActiveTab();
 

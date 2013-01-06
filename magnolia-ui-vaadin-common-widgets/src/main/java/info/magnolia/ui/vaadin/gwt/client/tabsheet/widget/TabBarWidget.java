@@ -56,7 +56,7 @@ import com.google.web.bindery.event.shared.EventBus;
 /**
  * A bar that contains the tab labels and controls the switching between tabs.
  */
-public class VMagnoliaTabNavigator extends ComplexPanel {
+public class TabBarWidget extends ComplexPanel {
 
     private static final String SINGLE_TAB_CLASSNAME = "single-tab";
 
@@ -68,7 +68,7 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
 
     private VShellShowAllTabLabel showAllTab;
 
-    public VMagnoliaTabNavigator(EventBus eventBus) {
+    public TabBarWidget(EventBus eventBus) {
         this.eventBus = eventBus;
         setElement(tabContainer);
         setStyleName("nav");
@@ -129,13 +129,12 @@ public class VMagnoliaTabNavigator extends ComplexPanel {
     protected MagnoliaTabLabel getNextLabel(final MagnoliaTabLabel label) {
         return CollectionUtil.getNext(tabLabels, label);
     }
-
-    public void updateTab(final MagnoliaTabWidget component, final String caption) {
-        component.getLabel().updateCaption(caption);
-        component.getLabel().setEventBus(eventBus);
-        if (!tabLabels.contains(component.getLabel())) {
-            tabLabels.add(component.getLabel());
-            add(component.getLabel(), getElement());
+    
+    public void addTabLabel(MagnoliaTabLabel label) {
+        label.setEventBus(eventBus);
+        if (!tabLabels.contains(label)) {
+            tabLabels.add(label);
+            add(label, getElement());
         }
     }
 

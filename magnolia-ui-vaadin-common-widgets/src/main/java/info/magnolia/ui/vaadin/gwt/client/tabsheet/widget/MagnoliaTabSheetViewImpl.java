@@ -65,7 +65,7 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     private final FlowPanel tabPanel = new FlowPanel();
 
-    private final VMagnoliaTabNavigator tabContainer;
+    private final TabBarWidget tabBar;
 
     private MagnoliaTabWidget activeTab = null;
 
@@ -78,12 +78,12 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     public MagnoliaTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
         this.presenter = presenter;
-        this.tabContainer = new VMagnoliaTabNavigator(eventBus);
+        this.tabBar = new TabBarWidget(eventBus);
 
         addStyleName("v-shell-tabsheet");
         scroller.addStyleName("v-shell-tabsheet-scroller");
         tabPanel.addStyleName("v-shell-tabsheet-tab-wrapper");
-        add(tabContainer);
+        add(tabBar);
         add(scroller);
         scroller.setWidget(tabPanel);
         scroller.getElement().getStyle().setPosition(Position.ABSOLUTE);
@@ -92,8 +92,8 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     }
 
     @Override
-    public VMagnoliaTabNavigator getTabContainer() {
-        return tabContainer;
+    public TabBarWidget getTabContainer() {
+        return tabBar;
     }
 
     @Override
@@ -147,6 +147,7 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         if (!tabs.contains(tab)) {
             getTabs().add(tab);
             tabPanel.add(tab);
+            tabBar.addTabLabel(tab.getLabel());
             fireEvent(new TabSetChangedEvent(this));
         }
     }

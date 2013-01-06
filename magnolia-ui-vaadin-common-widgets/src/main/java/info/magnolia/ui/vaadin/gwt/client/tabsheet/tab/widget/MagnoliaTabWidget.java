@@ -48,10 +48,6 @@ public class MagnoliaTabWidget extends SimplePanel {
         label.setTab(this);
     }
 
-    public void setLabel(MagnoliaTabLabel label) {
-        this.label = label;
-    }
-
     public MagnoliaTabLabel getLabel() {
         return label;
     }
