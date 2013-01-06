@@ -47,6 +47,7 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.Util;
 
 /**
  * The AppsTransitionDelegate provides custom transition logic when launching, closing an app, or
@@ -62,6 +63,8 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
 
     private static final int CURTAIN_FADE_OUT_DELAY = 200;
 
+    private Object lock = new Object();
+    
     @Override
     public void setVisibleApp(final ViewportWidget viewport, final Widget app) {
         // zoom-in if switching to a different running app, from appslauncher only
@@ -69,6 +72,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         // running apps are all hidden explicitly except current one
         if (!viewport.isClosing() && isWidgetVisibilityHidden(app)) {
             viewport.doSetVisibleApp(app);
+            Util.findConnectorFor(viewport).getConnection().suspendReponseHandling(lock);
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                 @Override
                 public void execute() {
@@ -77,6 +81,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
                         @Override
                         public void run() {
                             app.removeStyleName("zoom-in");
+                            Util.findConnectorFor(viewport).getConnection().resumeResponseHandling(lock);
                         }
                     }.schedule(500);
                 }
@@ -109,8 +114,6 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
             }.schedule(CURTAIN_FADE_OUT_DELAY);
         }
     }
-
-    Object lock = new Object();
 
     public void removeWidget(final AppsViewportWidget viewport, final Widget w) {
         w.addStyleName("zoom-out");
