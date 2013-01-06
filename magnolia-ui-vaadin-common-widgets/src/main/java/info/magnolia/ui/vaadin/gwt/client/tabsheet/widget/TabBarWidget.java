@@ -129,24 +129,21 @@ public class TabBarWidget extends ComplexPanel {
     protected MagnoliaTabLabel getNextLabel(final MagnoliaTabLabel label) {
         return CollectionUtil.getNext(tabLabels, label);
     }
-    
+
     public void addTabLabel(MagnoliaTabLabel label) {
         label.setEventBus(eventBus);
         if (!tabLabels.contains(label)) {
             tabLabels.add(label);
             add(label, getElement());
+            updateSingleTabStyle();
         }
     }
 
     public void updateSingleTabStyle() {
         if (tabLabels.size() <= 1) {
-            if (!tabContainer.getClassName().contains(SINGLE_TAB_CLASSNAME)) {
-                tabContainer.addClassName(SINGLE_TAB_CLASSNAME);
-            }
+            tabContainer.addClassName(SINGLE_TAB_CLASSNAME);
         } else {
-            if (tabContainer.getClassName().contains(SINGLE_TAB_CLASSNAME)) {
-                tabContainer.removeClassName(SINGLE_TAB_CLASSNAME);
-            }
+            tabContainer.removeClassName(SINGLE_TAB_CLASSNAME);
         }
     }
 
