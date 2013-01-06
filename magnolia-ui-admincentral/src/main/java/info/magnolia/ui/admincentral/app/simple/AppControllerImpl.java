@@ -237,16 +237,13 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      * case the app is already started, it will update its location.
      */
     private AppContext doStartIfNotAlreadyRunning(AppContext appContext, Location location) {
-        log.warn(String.format("Starting app: %s", appContext.getName()));
         if (isAppStarted(appContext.getName())) {
-            log.warn(String.format("App already started: %s", appContext.getName()));
             appContext.onLocationUpdate(location);
             return appContext;
         }
 
         runningApps.put(appContext.getName(), appContext);
         appContext.start(location);
-        log.warn(String.format("Started app: %s", appContext.getName()));
         sendEvent(AppLifecycleEventType.STARTED, appContext.getAppDescriptor());
         return appContext;
     }
