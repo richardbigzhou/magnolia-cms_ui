@@ -151,6 +151,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             root.setExpandRatio(messageTable, 1f);
         }
 
+        messageTable.setVisible(!isEmptyList);
         emptyPlaceHolder.setVisible(isEmptyList);
     }
 

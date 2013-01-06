@@ -65,9 +65,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementation of the {@link AppController}.
  * 
- * The App controller that manages the lifecycle of running apps and raises callbacks to the app.
- * It provides methods to start, stop and focus already running {@link App}s.
- * Registers handlers to the following location change events triggered by the {@link LocationController}:
+ * The App controller that manages the lifecycle of running apps and raises
+ * callbacks to the app. It provides methods to start, stop and focus already
+ * running {@link App}s. Registers handlers to the following location change
+ * events triggered by the {@link LocationController}:
  * <ul>
  * <li>{@link LocationChangedEvent}</li>
  * <li>{@link LocationChangeRequestedEvent}</li>
@@ -78,7 +79,8 @@ import org.slf4j.LoggerFactory;
  * @see App
  */
 @Singleton
-public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
+public class AppControllerImpl implements AppController, LocationChangedEvent.Handler,
+        LocationChangeRequestedEvent.Handler {
 
     private static final Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
 
@@ -105,7 +107,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private AppContext currentApp;
 
     @Inject
-    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController, MessagesManager messagesManager, Shell shell, @Named("admincentral") EventBus admincentralEventBus) {
+    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider,
+            AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController,
+            MessagesManager messagesManager, Shell shell, @Named("admincentral") EventBus admincentralEventBus) {
         this.moduleRegistry = moduleRegistry;
         this.componentProvider = componentProvider;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
@@ -124,9 +128,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
-     * This method is called to create an instant of an app independent from the {@link LocationController} and the {@link AppController} handling.
-     * It will not open in the {@link ViewPort} and will not register itself to the running apps.
-     * This is e.g. used to pass the {@link App} into a dialog and obtain app-specific information from outside the app.
+     * This method is called to create an instant of an app independent from the
+     * {@link LocationController} and the {@link AppController} handling. It
+     * will not open in the {@link ViewPort} and will not register itself to the
+     * running apps. This is e.g. used to pass the {@link App} into a dialog and
+     * obtain app-specific information from outside the app.
      * 
      * @param appId
      *            of the {@link App} to instantiate.
@@ -134,7 +140,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     @Override
     public App getAppWithoutStarting(String appId) {
         AppContext appContext = getAppContext(appId);
-        ComponentProvider appComponentProvider = appContext.createAppComponentProvider(appContext.getName(), appContext);
+        ComponentProvider appComponentProvider = appContext
+                .createAppComponentProvider(appContext.getName(), appContext);
         App app = appComponentProvider.newInstance(appContext.getAppDescriptor().getAppClass());
 
         appContext.setApp(app);
@@ -142,8 +149,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
-     * This method can be called to launch an {@link App} and then delegate it to the {@link LocationController}.
-     * It should have the same effect as calling the {@link LocationController} directly.
+     * This method can be called to launch an {@link App} and then delegate it
+     * to the {@link LocationController}. It should have the same effect as
+     * calling the {@link LocationController} directly.
      * 
      * @param appId
      *            of the {@link App} to start.
@@ -163,9 +171,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
-     * This method is called to launch an app independent from the {@link LocationController}.
-     * It will not open in the {@link ViewPort}.
-     * This is e.g. used to pass the {@link App} into a dialog and obtain app-specific information from outside the app.
+     * This method is called to launch an app independent from the
+     * {@link LocationController}. It will not open in the {@link ViewPort}.
+     * This is e.g. used to pass the {@link App} into a dialog and obtain
+     * app-specific information from outside the app.
      * 
      * See MGNLUI-379.
      * 
@@ -174,7 +183,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      * @param location
      *            holds information about the subApp to use and the parameters.
      * 
-     * @deprecated since introduction of {@link #getAppWithoutStarting(String appId) getAppWithoutStarting}
+     * @deprecated since introduction of
+     *             {@link #getAppWithoutStarting(String appId)
+     *             getAppWithoutStarting}
      */
     @Deprecated
     @Override
@@ -222,26 +233,27 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
-     * Delegates the starting of an {@link App} to the {@link AppContext}.
-     * In case the app is already started, it will update its location.
+     * Delegates the starting of an {@link App} to the {@link AppContext}. In
+     * case the app is already started, it will update its location.
      */
     private AppContext doStartIfNotAlreadyRunning(AppContext appContext, Location location) {
-
+        log.warn(String.format("Starting app: %s", appContext.getName()));
         if (isAppStarted(appContext.getName())) {
+            log.warn(String.format("App already started: %s", appContext.getName()));
             appContext.onLocationUpdate(location);
             return appContext;
         }
 
-        appContext.start(location);
-
         runningApps.put(appContext.getName(), appContext);
+        appContext.start(location);
+        log.warn(String.format("Started app: %s", appContext.getName()));
         sendEvent(AppLifecycleEventType.STARTED, appContext.getAppDescriptor());
-
         return appContext;
     }
 
     /**
-     * Focuses an already running {@link App} by passing it to the {@link LocationController}.
+     * Focuses an already running {@link App} by passing it to the
+     * {@link LocationController}.
      */
     private void doFocus(AppContext appContext) {
         locationController.goTo(appContext.getCurrentLocation());
@@ -273,9 +285,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     /**
      * Takes care of {@link LocationChangedEvent}s by:
      * <ul>
-     * <li>Obtaining the {@link AppDescriptor} associated with the {@link Location}.</li>
-     * <li>Creating a new {@link AppContext} if not running, otherwise obtain it from the running apps.</li>
-     * <li>Updating the {@Link Location} and redirecting in case of missing subAppId.</li>
+     * <li>Obtaining the {@link AppDescriptor} associated with the
+     * {@link Location}.</li>
+     * <li>Creating a new {@link AppContext} if not running, otherwise obtain it
+     * from the running apps.</li>
+     * <li>Updating the {@Link Location} and redirecting in case of
+     * missing subAppId.</li>
      * <li>Starting the App.</li>
      * <li>Adding the {@link AppContext} to the appHistory.</li>
      * <li>Setting the viewPort and updating the current running app.</li>
@@ -318,7 +333,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     /**
      * Updates the {@link Location} in case of missing subAppId:
      * <ul>
-     * <li>If the app is running, it will fetch the current Location associated with the App.</li>
+     * <li>If the app is running, it will fetch the current Location associated
+     * with the App.</li>
      * <li>Will fetch the configured default subAppId otherwise.</li>
      * </ul>
      */
@@ -332,8 +348,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             if (isAppStarted(appId)) {
                 AppContext runningAppContext = runningApps.get(appId);
                 return runningAppContext.getCurrentLocation();
-            }
-            else {
+            } else {
                 return appContext.getDefaultLocation();
             }
         }
@@ -344,14 +359,14 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private AppContext getAppContext(String appId) {
         if (isAppStarted(appId)) {
             return runningApps.get(appId);
-        }
-        else {
+        } else {
             AppDescriptor descriptor = getAppDescriptor(appId);
             if (descriptor == null) {
                 return null;
             }
 
-            return new AppContextImpl(moduleRegistry, componentProvider, this, locationController, shell, messagesManager, descriptor);
+            return new AppContextImpl(moduleRegistry, componentProvider, this, locationController, shell,
+                    messagesManager, descriptor);
 
         }
     }
