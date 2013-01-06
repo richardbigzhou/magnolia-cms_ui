@@ -130,11 +130,13 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
     @Override
     public void addSection(String sectionName, String caption) {
         getState().sections.put(sectionName, new ActionbarSection(sectionName, caption));
+        getState().sectionOrder.add(sectionName);
         setSectionVisible(sectionName, true);
     }
 
     @Override
     public void removeSection(String sectionName) {
+        getState().sectionOrder.remove(sectionName);
         getState().sections.remove(sectionName);
     }
 

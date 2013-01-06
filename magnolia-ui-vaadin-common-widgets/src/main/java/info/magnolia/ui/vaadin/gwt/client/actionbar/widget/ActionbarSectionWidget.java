@@ -87,7 +87,12 @@ public class ActionbarSectionWidget extends FlowPanel {
 
     public void addGroup(VActionbarGroup group) {
         groups.put(group.getName(), group);
-        add(group);
+        if (this.preview != null) {
+            int idx = Math.max(getWidgetIndex(preview), 0);
+            insert(group, idx);
+        } else {
+            add(group);   
+        }
     }
 
     public void setPreview(Widget preview) {

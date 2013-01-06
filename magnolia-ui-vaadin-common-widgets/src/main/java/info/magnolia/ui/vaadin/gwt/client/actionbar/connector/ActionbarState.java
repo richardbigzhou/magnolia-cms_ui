@@ -37,7 +37,7 @@ import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +48,9 @@ import com.vaadin.shared.AbstractComponentState;
  */
 public class ActionbarState extends AbstractComponentState {
 
-    public Map<String, ActionbarSection> sections = new LinkedHashMap<String, ActionbarSection>();
+    public List<String> sectionOrder = new ArrayList<String>();
+    
+    public Map<String, ActionbarSection> sections = new HashMap<String, ActionbarSection>();
 
     public List<ActionbarSection> visibleSections = new ArrayList<ActionbarSection>();
 

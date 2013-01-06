@@ -395,7 +395,7 @@
       <params>
         <param>
           <name>UI</name>
-          <value>info.magnolia.ui.admincentral.AdminCentralApplication</value>
+          <value>info.magnolia.ui.admincentral.AdminCentralUI</value>
         </param>
         <param>
           <name>widgetset</name>

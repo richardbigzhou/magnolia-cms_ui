@@ -47,6 +47,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
@@ -55,9 +56,10 @@ import com.vaadin.ui.UI;
  * The Application's "main" class.
  */
 @Theme("admincentraltheme")
-public class AdminCentralApplication extends UI {
+@PreserveOnRefresh
+public class AdminCentralUI extends UI {
 
-    private static final Logger log = LoggerFactory.getLogger(AdminCentralApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(AdminCentralUI.class);
 
     private static final Boolean isDeviceOverrideTablet = true;
 

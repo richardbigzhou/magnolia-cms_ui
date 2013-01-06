@@ -35,8 +35,14 @@ package info.magnolia.ui.vaadin.gwt.client.actionbar.connector;
 
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.rpc.ActionbarServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.widget.ActionbarWidgetView;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.widget.ActionbarWidgetViewImpl;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -66,7 +72,16 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     private final StateChangeHandler sectionRearrangementHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
-            view.setSections(getState().sections.values());
+            List<ActionbarSection> sections = new ArrayList<ActionbarSection>(getState().sections.values());
+            Collections.sort(sections, new Comparator<ActionbarSection>() {
+                @Override
+                public int compare(ActionbarSection o1, ActionbarSection o2) {
+                    Integer idx1 = getState().sectionOrder.indexOf(o1.getName());
+                    Integer idx2 = getState().sectionOrder.indexOf(o2.getName());
+                    return idx1.compareTo(idx2);
+                }
+            });
+            view.setSections(sections);
         }
     };
 
