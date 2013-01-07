@@ -158,9 +158,6 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
             @Override
             public void focus(FocusEvent event) {
-                if (currentViewType != ViewType.SEARCH) {
-                    setViewType(ViewType.SEARCH);
-                }
                 // put the cursor at the end of the field
                 TextField tf = (TextField) event.getSource();
                 tf.setCursorPosition(tf.toString().length());
@@ -209,17 +206,16 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     @Override
     public void setViewType(final ViewType type) {
 
-        if (type != ViewType.SEARCH) {
-            previousViewType = currentViewType;
-        }
-
         contentViewContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
         final Component c = contentViews.get(type).asVaadinComponent();
-
         c.setSizeFull();
         contentViewContainer.addComponent(c);
 
+        if (type != ViewType.SEARCH) {
+            previousViewType = type;
+        }
         this.currentViewType = type;
+
         setViewTypeStyling(currentViewType);
         refresh();
         this.contentWorkbenchViewListener.onViewTypeChanged(currentViewType);
@@ -298,18 +294,12 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     }
 
     @Override
-    public void resync(final String path, final ViewType viewType, final String query) {
-        setViewType(viewType);
-        if (viewType == ViewType.SEARCH) {
-            if (StringUtils.isBlank(query)) {
-                setViewType(previousViewType);
-            } else {
-                searchbox.setValue(query);
-                searchbox.focus();
-                contentWorkbenchViewListener.onSearch(query);
-            }
-        }
-        selectPath(path);
+    public void setSearchQuery(final String query) {
+        // turn off value change listener, so that presenter does not think there was user input and searches again
+        searchbox.removeListener(searchboxListener);
+        searchbox.setValue(query);
+        searchbox.focus();
+        searchbox.addListener(searchboxListener);
     }
 
 }

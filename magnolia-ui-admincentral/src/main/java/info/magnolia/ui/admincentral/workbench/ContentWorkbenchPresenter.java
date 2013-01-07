@@ -74,6 +74,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.terminal.Resource;
 
+
 /**
  * The workbench is a core component of AdminCentral. It represents the main hub through which users can interact with
  * JCR data. It is compounded by three main sub-components:
@@ -177,7 +178,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
             @Override
             public void onSearch(SearchEvent event) {
-                doSearch(event);
+                doSearch(event.getSearchExpression());
             }
         });
 
@@ -238,13 +239,22 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
      * view type and optional query (in case of a search view).
      */
     public void resynch(final String path, final ViewType viewType, final String query) {
+        view.setViewType(viewType);
+
+        if (viewType == ViewType.SEARCH) {
+            doSearch(query);
+            // update search field and focus it
+            view.setSearchQuery(query);
+        }
+
+        // restore selection
         boolean itemExists = itemExists(path);
         if (!itemExists) {
             log.warn(
                     "Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.",
                     path, workbenchDefinition.getWorkspace());
         }
-        this.view.resync(itemExists ? path : "/", viewType, query);
+        view.selectPath(itemExists ? path : "/");
     }
 
     private void refreshActionbarPreviewImage(final String path, final String workspace) {
@@ -258,16 +268,13 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         }
     }
 
-    private void doSearch(SearchEvent event) {
+    private void doSearch(String searchExpression) {
+        // firing new search forces search view as new view type
         if (view.getSelectedView().getViewType() != ViewType.SEARCH) {
-            log.warn("Expected view type {} but is {} instead.", ViewType.SEARCH.name(), view.getSelectedView().getViewType().name());
-            return;
+            view.setViewType(ViewType.SEARCH);
         }
         final SearchView searchView = (SearchView) view.getSelectedView();
-        final String searchExpression = event.getSearchExpression();
-
         if (StringUtils.isBlank(searchExpression)) {
-            view.resync(null, view.getSelectedView().getViewType(), searchExpression);
             searchView.clear();
         } else {
             searchView.search(searchExpression);
