@@ -33,66 +33,79 @@
  */
 package info.magnolia.ui.vaadin.richtext;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.vaadin.openesignforms.ckeditor.CKEditorConfig;
+
+import com.google.gson.Gson;
+
 /**
  * Extends CKEditorConfig by defining more
  * coherent toolbar API and configuring custom plugins.
  */
-//public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
-//
-//    private List<String> events = new ArrayList<String>();
-//    private Map<String, String> serverSidePlugins = new HashMap<String, String>();
-//
-//    public MagnoliaRichTextFieldConfig() {
-//        //addToRemovePlugins("elementspath");
-//    }
-//    
-//    /**
-//     * Adds list of toolbar groups. Groups are placed in one
-//     * row if space allows. 
-//     * @param toolbars
-//     */
-//    public void addToolbarLine(List<ToolbarGroup> toolbars) {
-//        Gson gson = new Gson();
-//        String json = gson.toJson(toolbars);
-//        //addCustomToolbarLine(json.substring(1, json.length()-1));
-//    }
-//    
-//    /**
-//     * Add CKEditor event name that server side will listen. 
-//     * Only event names added to configuration will be listened.
-//     * @param eventName This must match in client side. e.g: editor.fire('eventName')
-//     */
-//    public void addListenedEvent(String eventName) {
-//        events.add(eventName);
-//    }
-//    
-//    String[] getListenedEvents() {
-//        return events.toArray(new String[0]);
-//    }
-//    
-//    /**
-//     * Bean class for toolbar group.
-//     */
-//    public static class ToolbarGroup {        
-//        @SuppressWarnings("unused")
-//        private String name;
-//        private List<String> items;
-//        
-//        public ToolbarGroup(String groupname, String[] toolbarbuttons) {
-//            this.name = groupname;
-//            this.items = new ArrayList<String>();
-//            for(String item: toolbarbuttons) {
-//                this.items.add(item);
-//            }
-//        }
-//    }
-//
-//    public void addPlugin(String pluginName, String source) {
-//        addToExtraPlugins(pluginName);
-//        this.serverSidePlugins.put(pluginName, source);
-//    }
-//    
-//    Map<String, String> getServerPlugins() {
-//        return Collections.unmodifiableMap(this.serverSidePlugins);
-//    }
-// }
+public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
+
+    private List<String> events = new ArrayList<String>();
+    private Map<String, String> serverSidePlugins = new HashMap<String, String>();
+
+    public MagnoliaRichTextFieldConfig() {
+        addToRemovePlugins("elementspath");
+    }
+
+    /**
+     * Adds list of toolbar groups. Groups are placed in one
+     * row if space allows.
+     * 
+     * @param toolbars
+     */
+    public void addToolbarLine(List<ToolbarGroup> toolbars) {
+        Gson gson = new Gson();
+        String json = gson.toJson(toolbars);
+        addCustomToolbarLine(json.substring(1, json.length() - 1));
+    }
+
+    /**
+     * Add CKEditor event name that server side will listen.
+     * Only event names added to configuration will be listened.
+     * 
+     * @param eventName
+     *            This must match in client side. e.g: editor.fire('eventName')
+     */
+    public void addListenedEvent(String eventName) {
+        events.add(eventName);
+    }
+
+    String[] getListenedEvents() {
+        return events.toArray(new String[0]);
+    }
+
+    /**
+     * Bean class for toolbar group.
+     */
+    public static class ToolbarGroup {
+        @SuppressWarnings("unused")
+        private String name;
+        private List<String> items;
+
+        public ToolbarGroup(String groupname, String[] toolbarbuttons) {
+            this.name = groupname;
+            this.items = new ArrayList<String>();
+            for (String item : toolbarbuttons) {
+                this.items.add(item);
+            }
+        }
+    }
+
+    public void addPlugin(String pluginName, String source) {
+        addToExtraPlugins(pluginName);
+        this.serverSidePlugins.put(pluginName, source);
+    }
+
+    Map<String, String> getServerPlugins() {
+        return Collections.unmodifiableMap(this.serverSidePlugins);
+    }
+}

@@ -226,7 +226,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <excludes>**/*Patched.java</excludes>
+          <excludes>**/*Patched.java, **/org/vaadin/openesignforms/**/*.java</excludes>
         </configuration>
       </plugin>
     </plugins>
