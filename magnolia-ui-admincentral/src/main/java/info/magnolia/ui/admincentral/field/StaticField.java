@@ -44,12 +44,15 @@ import com.vaadin.ui.Label;
 public class StaticField extends CustomField<Object> {
 
     private Label label;
+    
+    public StaticField() {
+        label = new Label();        
+    }
 
     @Override
     protected Component initContent() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSpacing(true);
-        label = new Label();
         layout.addComponent(label);
         return layout;
     }

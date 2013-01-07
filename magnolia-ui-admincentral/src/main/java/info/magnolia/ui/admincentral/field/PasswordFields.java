@@ -68,6 +68,8 @@ public class PasswordFields extends CustomField<String> {
      * - {@link PasswordField}.
      */
     public PasswordFields(boolean verification, String verificationMessage, String verificationErrorMessage, boolean encode) {
+        layout = new VerticalLayout();
+        passwordField = new PasswordField();
         this.verification = verification;
         this.verificationErrorMessage = verificationErrorMessage;
         this.verificationMessage = verificationMessage;
@@ -81,8 +83,6 @@ public class PasswordFields extends CustomField<String> {
     @Override
     protected Component initContent() {
         // Init layout
-        layout = new VerticalLayout();
-        passwordField = new PasswordField();
         layout.addComponent(passwordField);
         if (this.verification) {
             Label msg = new Label(verificationMessage);
