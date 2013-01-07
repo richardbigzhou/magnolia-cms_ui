@@ -43,6 +43,7 @@ import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
@@ -59,6 +60,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -324,22 +326,24 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      */
     private Location updateLocation(AppContext appContext, Location location) {
 
+        String appType = location.getAppType();
         String appId = location.getAppId();
         String subAppId = location.getSubAppId();
+        String params = location.getParameter();
 
-        if (subAppId == null || subAppId.isEmpty()) {
+        if (StringUtils.isBlank(subAppId)) {
 
             if (isAppStarted(appId)) {
                 AppContext runningAppContext = runningApps.get(appId);
-                return runningAppContext.getCurrentLocation();
-            }
-            else {
-                return appContext.getDefaultLocation();
+                subAppId = runningAppContext.getCurrentLocation().getSubAppId();
+            } else if (StringUtils.isBlank(subAppId)) {
+                subAppId = appContext.getDefaultLocation().getSubAppId();
             }
         }
 
-        return location;
+        return new DefaultLocation(appType, appId, subAppId, params);
     }
+
 
     private AppContext getAppContext(String appId) {
         if (isAppStarted(appId)) {
