@@ -395,6 +395,26 @@ public class AppControllerImplTest {
         assertNotNull(appController.getCurrentApp().getCurrentLocation().getSubAppId());
     }
 
+    @Test
+    public void testOnLocationChangePreservesParameters() {
+        // GIVEN
+        Location location = new DefaultLocation(Location.LOCATION_TYPE_APP, appName_1 + "_name", subAppName_1 + "_name");
+        locationController.goTo(location);
+
+        String parameter = "/:param:test";
+        Location newLocation = new DefaultLocation(Location.LOCATION_TYPE_APP, appName_1 + "_name", "", parameter);
+        LocationChangedEvent newLocationEvent = new LocationChangedEvent(newLocation);
+
+        // WHEN
+        appController.onLocationChanged(newLocationEvent);
+
+        // THEN
+        assertNotNull(appController.getCurrentApp());
+        assertEquals(appName_1 + "_name", appController.getCurrentApp().getName());
+        assertNotNull(appController.getCurrentApp().getCurrentLocation().getParameter());
+        assertEquals(parameter, appController.getCurrentApp().getCurrentLocation().getParameter());
+    }
+
     /**
      * Init a LayoutManager containing 2 groups (group1 and group2) with
      * one app each (app1 and app2) linket to {TestApp}.
