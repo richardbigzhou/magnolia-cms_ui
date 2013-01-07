@@ -131,18 +131,8 @@ public class ActionbarItemWidget extends Widget {
 
         text.addClassName("v-text");
         icon.addClassName("v-icon");
-        if (iconImage == null) {
-            root.appendChild(icon);
-        } else {
-            root.appendChild(iconImage.getElement());
-        }
+        root.appendChild(iconImage == null ? icon : iconImage.getElement());
         root.appendChild(text);
-
-        /*
-         * flyoutIndicator.addClassName("v-flyout-indicator");
-         * flyoutIndicator.setInnerText("v"); //TODO: CLZ - add flyout icon. (currently implemented as background style.) Toggle it based on row state.
-         * root.appendChild(flyoutIndicator);
-         */
     }
 
     protected void bindHandlers() {
@@ -167,7 +157,9 @@ public class ActionbarItemWidget extends Widget {
             @Override
             public void onMouseUp(MouseUpEvent event) {
                 removeStyleName("mousedown");
-                eventBus.fireEvent(new ActionTriggerEvent(data.getName(), ActionbarItemWidget.this));
+                if (isEnabled) {
+                    eventBus.fireEvent(new ActionTriggerEvent(data.getName(), ActionbarItemWidget.this));   
+                }
             }
         }, MouseUpEvent.getType());
     }
@@ -187,7 +179,6 @@ public class ActionbarItemWidget extends Widget {
 
     public void update() {
         text.setInnerText(data.getLabel());
-
         if (data.getIconFontId() != null) {
             icon.setClassName("v-icon");
             icon.addClassName(data.getIconFontId());
@@ -197,10 +188,10 @@ public class ActionbarItemWidget extends Widget {
 
         if (isEnabled() && root.getClassName().contains(ApplicationConnection.DISABLED_CLASSNAME)) {
             root.removeClassName(ApplicationConnection.DISABLED_CLASSNAME);
-            bindHandlers();
         } else if (!isEnabled() && !root.getClassName().contains(ApplicationConnection.DISABLED_CLASSNAME)) {
             root.addClassName(ApplicationConnection.DISABLED_CLASSNAME);
         }
+        bindHandlers();
     }
 
     public ActionbarItem getData() {
