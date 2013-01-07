@@ -41,15 +41,11 @@ import com.vaadin.shared.annotations.DelegateToWidget;
  */
 public class BadgeIconState extends AbstractComponentState {
 
-    public transient static final int SIZE_DEFAULT = 16;
-
-    public int size = SIZE_DEFAULT;
+    @DelegateToWidget
+    public String fillColor;
 
     @DelegateToWidget
-    public String fill;
-
-    @DelegateToWidget
-    public String stroke;
+    public String strokeColor;
 
     @DelegateToWidget
     public boolean outline;
@@ -57,4 +53,6 @@ public class BadgeIconState extends AbstractComponentState {
     @DelegateToWidget
     public int value;
 
+    public int size = 16;
+    
 }

@@ -33,8 +33,21 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.icon.connector;
 
+import com.vaadin.shared.annotations.DelegateToWidget;
+import com.vaadin.shared.ui.AbstractLayoutState;
+
 /**
  * {@link CompositeIconState}.
  */
-public class CompositeIconState extends IconState {
+public class CompositeIconState extends AbstractLayoutState {
+    
+    @DelegateToWidget
+    public String iconName;
+
+    @DelegateToWidget
+    public int size;
+
+    @DelegateToWidget
+    public String color;
+    
 }

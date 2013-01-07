@@ -56,7 +56,7 @@ public class BadgeIconWidget extends Widget {
         root.appendChild(text);
     }
 
-    public void updateValue(int value) {
+    public void setValue(int value) {
         String s = String.valueOf(value);
         setVisible(value != 0);
         if (value > 99) {

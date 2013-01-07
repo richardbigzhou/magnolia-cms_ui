@@ -36,9 +36,7 @@ package info.magnolia.ui.vaadin.gwt.client.icon.connector;
 import info.magnolia.ui.vaadin.gwt.client.icon.widget.BadgeIconWidget;
 import info.magnolia.ui.vaadin.icon.BadgeIcon;
 
-import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ui.AbstractComponentConnector;
-import com.vaadin.shared.communication.SharedState;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -48,12 +46,13 @@ import com.vaadin.shared.ui.Connect;
 public class BadgeIconConnector extends AbstractComponentConnector {
 
     @Override
-    protected SharedState createState() {
-        return new BadgeIconState();
+    public BadgeIconState getState() {
+        return (BadgeIconState)super.getState();
     }
 
     @Override
-    protected Widget createWidget() {
-        return new BadgeIconWidget();
-    };
+    public BadgeIconWidget getWidget() {
+        return (BadgeIconWidget)super.getWidget();
+    }
+    
 }

@@ -65,8 +65,8 @@ public class BadgeIcon extends AbstractComponent {
      */
     public BadgeIcon(int size, String fill, String stroke, boolean outline) {
         getState().size = size;
-        getState().fill = fill;
-        getState().stroke = stroke;
+        getState().fillColor = fill;
+        getState().strokeColor = stroke;
         getState().outline = outline;
     }
 

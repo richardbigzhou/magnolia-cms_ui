@@ -111,7 +111,7 @@ public class ShellAppLauncher extends FlowPanel {
         }
 
         public void setIndication(int indication) {
-            indicator.updateValue(indication);
+            indicator.setValue(indication);
         }
     };
 
