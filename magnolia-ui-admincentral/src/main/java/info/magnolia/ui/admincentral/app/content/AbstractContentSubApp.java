@@ -75,7 +75,7 @@ import javax.inject.Named;
  */
 public abstract class AbstractContentSubApp extends AbstractSubApp {
 
-    private ContentWorkbenchPresenter workbench;
+    private final ContentWorkbenchPresenter workbench;
 
     public AbstractContentSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, final ContentWorkbenchPresenter workbench, final @Named("subapp") EventBus subAppEventBus) {
 
@@ -199,6 +199,10 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
             @Override
             public void onViewChanged(ViewTypeChangedEvent event) {
                 ContentLocation location = getCurrentLocation();
+                // remove search term from fragment when switching back
+                if (location.getViewType() == ViewType.SEARCH && event.getViewType() != ViewType.SEARCH) {
+                    location.updateQuery("");
+                }
                 location.updateViewType(event.getViewType());
                 currentLocation = location;
                 getAppContext().setSubAppLocation(subApp, currentLocation);
