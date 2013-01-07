@@ -55,6 +55,7 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImp
 import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.location.LocationChangedEvent;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.message.MessagesManagerImpl;
@@ -82,11 +83,11 @@ public class AppControllerImplTest {
     private LocationController locationController = null;
 
     private AppEventCollector eventCollector = null;
-    private String appName_1 = "app1";
-    private String appName_2 = "app2";
+    private final String appName_1 = "app1";
+    private final String appName_2 = "app2";
 
-    private String subAppName_1 = "subApp1";
-    private String subAppName_2 = "subApp2";
+    private final String subAppName_1 = "subApp1";
+    private final String subAppName_2 = "subApp2";
 
     @Before
     public void setUp() throws Exception {
@@ -372,6 +373,26 @@ public class AppControllerImplTest {
         assertNotSame(location4, appController.getCurrentApp().getCurrentLocation());
         assertEquals(location2, appController.getCurrentApp().getCurrentLocation());
 
+    }
+
+    @Test
+    public void testOnLocationChangeChecksForMissingSubAppId() {
+        // GIVEN
+        Location location = new DefaultLocation(Location.LOCATION_TYPE_APP, appName_1 + "_name", subAppName_1 + "_name");
+        locationController.goTo(location);
+
+        Location newLocation = new DefaultLocation(Location.LOCATION_TYPE_APP, appName_2 + "_name", "");
+        LocationChangedEvent newLocationEvent = new LocationChangedEvent(newLocation);
+
+        // WHEN
+        appController.onLocationChanged(newLocationEvent);
+
+        // THEN
+        assertNotNull(appController.getCurrentApp());
+        assertEquals(appName_2 + "_name", appController.getCurrentApp().getName());
+        assertNotNull(appController.getCurrentApp().getCurrentLocation());
+        assertNotEquals(newLocation, appController.getCurrentApp().getCurrentLocation());
+        assertNotNull(appController.getCurrentApp().getCurrentLocation().getSubAppId());
     }
 
     /**
