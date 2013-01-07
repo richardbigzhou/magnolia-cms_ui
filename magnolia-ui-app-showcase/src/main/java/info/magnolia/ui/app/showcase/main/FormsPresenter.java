@@ -95,7 +95,7 @@ public class FormsPresenter implements FormsView.Listener {
 
             });
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 }
