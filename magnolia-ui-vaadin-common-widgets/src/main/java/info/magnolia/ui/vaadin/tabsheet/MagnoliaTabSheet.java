@@ -68,7 +68,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
 
             @Override
             public void closeTab(Connector tabConnector) {
-                removeComponent((Component) tabConnector);
+                MagnoliaTabSheet.this.closeTab((MagnoliaTab) tabConnector);
             }
         });
     }
