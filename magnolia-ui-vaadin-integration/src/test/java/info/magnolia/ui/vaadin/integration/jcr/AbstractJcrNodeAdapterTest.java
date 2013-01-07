@@ -198,6 +198,41 @@ public class AbstractJcrNodeAdapterTest {
     }
 
     @Test
+    public void testUpdateNewProperties() throws Exception {
+        // GIVEN
+        final Node underlyingNode = session.getRootNode().addNode("underlying");
+        final String propertyNameNotEmpty = "NOT_EMPTY";
+        final String propertyValueNotEmpty = "value";
+        final String propertyNameEmpty = "EMPTY";
+        final String propertyNameBlank = "BLANK";
+        final String propertyNameAlreadyStored = "EXISTING";
+        final String propertyValueAlreadyStored = "existing";
+        final String propertyNameAlreadyStoredEmpty = "EXISTING_EMPTY";
+
+        underlyingNode.setProperty(propertyNameAlreadyStored, propertyValueAlreadyStored);
+        underlyingNode.setProperty(propertyNameAlreadyStoredEmpty, "");
+        underlyingNode.getSession().save();
+
+        final DummyJcrNodeAdapter item = new DummyJcrNodeAdapter(underlyingNode);
+        Property propertyNotEmpty = DefaultPropertyUtil.newDefaultProperty(propertyNameNotEmpty, PropertyType.TYPENAME_STRING, propertyValueNotEmpty);
+        item.getChangedProperties().put(propertyNameNotEmpty, propertyNotEmpty);
+        Property propertyEmpty = DefaultPropertyUtil.newDefaultProperty(propertyNameEmpty, PropertyType.TYPENAME_STRING, "");
+        item.getChangedProperties().put(propertyNameEmpty, propertyEmpty);
+        Property propertyBlank = DefaultPropertyUtil.newDefaultProperty(propertyNameBlank, PropertyType.TYPENAME_STRING, " ");
+        item.getChangedProperties().put(propertyNameBlank, propertyBlank);
+
+        // WHEN
+        item.updateProperties(underlyingNode);
+
+        // THEN
+        assertEquals(propertyValueNotEmpty, underlyingNode.getProperty(propertyNameNotEmpty).getString());
+        assertEquals(propertyValueAlreadyStored, underlyingNode.getProperty(propertyNameAlreadyStored).getString());
+        assertEquals(" ", underlyingNode.getProperty(propertyNameBlank).getString());
+        assertFalse(underlyingNode.hasProperty(propertyNameEmpty));
+        assertTrue(underlyingNode.hasProperty(propertyNameAlreadyStoredEmpty));
+    }
+
+    @Test
     public void testUpdatePropertiesNameToAlreadyExisting() throws Exception {
 
         // spy hooks for session move

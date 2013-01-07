@@ -97,12 +97,11 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
             // Break or perform a recursive call
             if (RepositoryConstants.WEBSITE.equals(currentNode.getSession().getWorkspace().getName())
                     && !currentNode.isNodeType(NodeTypes.Content.NAME)
-                    && currentNode.getDepth() > 2) {
+                    && currentNode.getDepth() > 1) {
                 updateLastModified(currentNode.getParent());
             }
         }
     }
-
 
     protected FormDialogPresenter getPresenter() {
         return presenter;

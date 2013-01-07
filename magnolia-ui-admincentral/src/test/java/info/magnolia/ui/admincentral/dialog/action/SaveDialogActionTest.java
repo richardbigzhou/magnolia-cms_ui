@@ -251,13 +251,36 @@ public class SaveDialogActionTest {
     }
 
     @Test
+    public void testUpdateLastModifiedDoesNotTouchParentWhenItHasLevel1() throws RepositoryException{
+        // GIVEN
+        Node parentOfParent = session.getRootNode().addNode("parentOfParent", NodeTypes.ContentNode.NAME);
+        Node parent = parentOfParent.addNode("parent", NodeTypes.ContentNode.NAME);
+        node = parent.addNode("node", NodeTypes.ContentNode.NAME);
+        Calendar past = Calendar.getInstance();
+        past.set(1970, 3, 3);
+
+        node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
+        parent.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+
+        // WHEN
+        dialogAction.updateLastModified(node);
+
+        // THEN
+        Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
+        assertTrue(NodeTypes.LastModified.NAME + " of node should have been updated.", past.before(lastModified));
+        lastModified = NodeTypes.LastModified.getLastModified(parent);
+        assertTrue(NodeTypes.LastModified.NAME + " of parent should have been updated.", past.before(lastModified));
+        lastModified = NodeTypes.LastModified.getLastModified(parentOfParent);
+        assertTrue(NodeTypes.LastModified.NAME + " of parentOfParent should have been updated.", past.before(lastModified));
+    }
+
+    @Test
     public void testUpdateLastModifiedDoesNotTouchParentWhenItIsTypeContent() throws RepositoryException{
         // GIVEN
-        // session has to be non-Website for this test
-        session = new MockSession(RepositoryConstants.CONFIG);
         Node parentOfParent = session.getRootNode().addNode("parentOfParent", NodeTypes.Content.NAME);
         Node parent = parentOfParent.addNode("parent", NodeTypes.Content.NAME);
-        node = parent.addNode("node", NodeTypes.ContentNode.NAME);
+        node = parent.addNode("node", NodeTypes.Content.NAME);
         Calendar past = Calendar.getInstance();
         past.set(1970, 3, 3);
 

@@ -121,7 +121,8 @@ public class JcrNewNodeAdapterTest {
         // THEN
         assertNotNull(res);
         assertSame(res, parentNode.getNode(res.getName()));
-        assertTrue(res.hasProperty("notModify"));
+        // new property and Empty: not stored
+        assertFalse(res.hasProperty("notModify"));
         assertFalse(res.hasProperty("notModifyRemoved"));
         assertTrue(res.hasProperty("modify"));
         assertEquals("newModify", res.getProperty("modify").getString());
