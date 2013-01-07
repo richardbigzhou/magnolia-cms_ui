@@ -45,13 +45,12 @@ import java.util.List;
 
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.web.bindery.event.shared.EventBus;
+import com.googlecode.mgwt.ui.client.widget.ScrollPanel;
 
 /**
  * Contains the tabs at the top and the tabs themselves. The tabs are all
@@ -175,11 +174,6 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         } else {
             RootPanel.get().removeStyleName("fullscreen");
         }
-    }
-
-    @Override
-    public HandlerRegistration addScrollHandler(ScrollHandler handler) {
-        return scroller.addScrollHandler(handler);
     }
 
     @Override

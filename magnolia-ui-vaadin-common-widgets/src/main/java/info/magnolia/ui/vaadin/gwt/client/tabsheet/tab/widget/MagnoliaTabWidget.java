@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.connector.MagnoliaTabConnector;
+
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
@@ -40,14 +42,21 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public class MagnoliaTabWidget extends SimplePanel {
 
+    private MagnoliaTabConnector connector;
+    
     private MagnoliaTabLabel label = new MagnoliaTabLabel();
 
-    public MagnoliaTabWidget() {
+    public MagnoliaTabWidget(MagnoliaTabConnector connector) {
         super();
+        this.connector = connector;
         setStyleName("v-shell-tab");
         label.setTab(this);
     }
 
+    public MagnoliaTabConnector getConnector() {
+        return connector;
+    }
+    
     public MagnoliaTabLabel getLabel() {
         return label;
     }

@@ -39,14 +39,13 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
 
 import java.util.List;
 
-import com.google.gwt.event.dom.client.HasScrollHandlers;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * VShellTabView.
  */
-public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasScrollHandlers, HasTabSetChangedHandlers, HasActiveTabChangeHandlers {
+public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetChangedHandlers, HasActiveTabChangeHandlers {
 
     /**
      * Presenter.

@@ -153,13 +153,18 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
     }
 
     public void setActiveTab(final MagnoliaTab tab) {
+        Iterator<Component> it = iterator();
+        while (it.hasNext()) {
+            MagnoliaTab tabIt = (MagnoliaTab)it.next();
+            if (tabIt.getContent() != null) {
+                tabIt.getContent().setVisible(tabIt == tab);   
+            }
+        }
         getState().activeTab = tab;
     }
 
     @Override
-    public void replaceComponent(Component oldComponent, Component newComponent) {
-        // TODO Auto-generated method stub
-    }
+    public void replaceComponent(Component oldComponent, Component newComponent) {}
 
     @Override
     public int getComponentCount() {

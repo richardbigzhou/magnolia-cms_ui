@@ -92,7 +92,7 @@ public class MagnoliaTabConnector extends AbstractSingleComponentContainerConnec
 
     @Override
     protected MagnoliaTabWidget createWidget() {
-        return new MagnoliaTabWidget();
+        return new MagnoliaTabWidget(this);
     }
 
     @Override

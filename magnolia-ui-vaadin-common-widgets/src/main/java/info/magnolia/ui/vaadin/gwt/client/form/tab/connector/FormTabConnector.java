@@ -70,6 +70,6 @@ public class FormTabConnector extends MagnoliaTabConnector {
 
     @Override
     protected MagnoliaTabWidget createWidget() {
-        return new FormTabWidget();
+        return new FormTabWidget(this);
     }
 }

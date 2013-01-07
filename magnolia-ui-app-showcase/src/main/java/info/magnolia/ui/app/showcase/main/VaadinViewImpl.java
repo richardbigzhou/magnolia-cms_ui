@@ -145,6 +145,7 @@ public class VaadinViewImpl implements VaadinView {
         for (int loop = 0; loop < 3; loop++) {
             table.addItem();
         }
+        table.setWidth("100%");
         table.setHeight("200px");
         grid.addComponent(table);
 
@@ -162,6 +163,7 @@ public class VaadinViewImpl implements VaadinView {
             container.setParent(itemId, root);
         }
         tree.setCollapsed(root, false);
+        tree.setWidth("100%");
         tree.setHeight("200px");
         grid.addComponent(tree);
 

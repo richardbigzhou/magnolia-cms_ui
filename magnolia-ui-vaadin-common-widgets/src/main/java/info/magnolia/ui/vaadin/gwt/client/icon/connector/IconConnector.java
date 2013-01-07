@@ -36,11 +36,9 @@ package info.magnolia.ui.vaadin.gwt.client.icon.connector;
 import info.magnolia.ui.vaadin.gwt.client.icon.widget.IconWidget;
 import info.magnolia.ui.vaadin.icon.Icon;
 
-import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractComponentConnector;
-import com.vaadin.shared.communication.SharedState;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -55,18 +53,18 @@ public class IconConnector extends AbstractComponentConnector {
         addStateChangeHandler(new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                ((IconWidget) getWidget()).updateBaseStyles();
+                getWidget().updateBaseStyles();
             }
         });
     }
 
     @Override
-    protected Widget createWidget() {
-        return new IconWidget();
+    public IconWidget getWidget() {
+        return (IconWidget)super.getWidget();
     }
 
     @Override
-    protected SharedState createState() {
-        return super.createState();
+    public IconState getState() {
+        return (IconState)super.createState();
     }
 }

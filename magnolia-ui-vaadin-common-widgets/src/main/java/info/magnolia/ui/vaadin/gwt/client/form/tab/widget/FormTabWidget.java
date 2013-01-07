@@ -38,6 +38,7 @@ import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChang
 import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent.HasValidationChangeHanlders;
 import info.magnolia.ui.vaadin.gwt.client.form.formsection.widget.FormSectionWidget;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormFieldWrapper;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.connector.MagnoliaTabConnector;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
 
 import java.util.LinkedList;
@@ -50,6 +51,10 @@ import com.google.gwt.user.client.ui.Widget;
  * FormTabWidget.
  */
 public class FormTabWidget extends MagnoliaTabWidget implements HasValidationChangeHanlders {
+
+    public FormTabWidget(MagnoliaTabConnector connector) {
+        super(connector);
+    }
 
     private FormSectionWidget content;
 

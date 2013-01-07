@@ -148,8 +148,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
                     for (int i = 0; i < tabs.size() - 1; ++i) {
                         final FormTabWidget nextTab = (FormTabWidget) tabs.get(++tabIndex % tabs.size());
                         if (nextTab.getProblematicFields().size() > 0) {
-                            // tabSheet.getEventBus().fireEvent(new
-                            // ActiveTabChangedEvent(nextTab));
+                            // tabSheet.getEventBus().fireEvent(new ActiveTabChangedEvent(nextTab));
                             lastShownProblematicField = null;
                             jumpToNextError();
                             break;

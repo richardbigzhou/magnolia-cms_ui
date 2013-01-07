@@ -54,11 +54,11 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
-import com.vaadin.client.Util;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractComponentContainerConnector;
+import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -118,7 +118,7 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
         eventBus.addHandler(TabCloseEvent.TYPE, new TabCloseEventHandler() {
             @Override
             public void onTabClosed(TabCloseEvent event) {
-                rpc.closeTab(Util.findConnectorFor(event.getTab()));
+                rpc.closeTab(event.getTab().getConnector());
             }
         });
 
@@ -126,7 +126,8 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
             @Override
             public void onActiveTabChanged(ActiveTabChangedEvent event) {
                 if (event.isNotifyServer()) {
-                    rpc.setActiveTab(Util.findConnectorFor(event.getTab()));
+                    Connector c = event.getTab().getConnector();
+                    rpc.setActiveTab(c);
                 }
             }
         });

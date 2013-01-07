@@ -1,5 +1,5 @@
 /* color definitions */
-.v-shell-tabsheet {background-color:#e6e6e6;}
+.v-shell-tabsheet {background-color:#e6e6e6;position: relative;}
 .v-shell-tabsheet .nav {background-color:#ccc; border-color:#999;}
 .v-shell-tabsheet .nav li {border-color:#999; color:#999;}
 .v-shell-tabsheet .nav li:hover {background-color:#999; color:#666;}
