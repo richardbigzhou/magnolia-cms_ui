@@ -130,7 +130,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
         String path = location.getNodePath();
         ViewType viewType = location.getViewType();
         String query = location.getQuery();
-        getWorkbench().resynch(path, viewType, query);
+        getWorkbench().resync(path, viewType, query);
         updateActionbar(getWorkbench().getActionbarPresenter());
     }
 

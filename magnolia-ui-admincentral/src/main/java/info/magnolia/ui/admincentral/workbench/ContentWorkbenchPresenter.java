@@ -238,7 +238,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
      * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected path,
      * view type and optional query (in case of a search view).
      */
-    public void resynch(final String path, final ViewType viewType, final String query) {
+    public void resync(final String path, final ViewType viewType, final String query) {
         view.setViewType(viewType);
 
         if (viewType == ViewType.SEARCH) {
