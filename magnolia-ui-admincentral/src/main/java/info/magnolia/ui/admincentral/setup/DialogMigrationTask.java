@@ -219,9 +219,13 @@ public class DialogMigrationTask extends AbstractTask {
 
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.dam.app.assets.field.definition.AssetLinkFieldDefinition");
-                fieldNode.setProperty("description", "Select an asset");
+                if (!fieldNode.hasProperty("description")) {
+                    fieldNode.setProperty("description", "Select an asset");
+                }
                 fieldNode.setProperty("identifier", "true");
-                fieldNode.setProperty("label", "Image");
+                if (!fieldNode.hasProperty("label")) {
+                    fieldNode.setProperty("label", "Image");
+                }
                 fieldNode.setProperty("repository", "data");
                 fieldNode.setProperty("type", "String");
                 fieldNode.setProperty("workspace", "dam");
@@ -254,7 +258,9 @@ public class DialogMigrationTask extends AbstractTask {
                 }
             } else {
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.StaticFieldDefinition");
-                fieldNode.setProperty("value", "Field not yet supported");
+                if (!fieldNode.hasProperty("value")) {
+                    fieldNode.setProperty("value", "Field not yet supported");
+                }
             }
         } else {
             // Handle Field Extends/Reference

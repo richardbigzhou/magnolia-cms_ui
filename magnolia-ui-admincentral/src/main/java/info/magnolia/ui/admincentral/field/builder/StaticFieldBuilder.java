@@ -53,7 +53,7 @@ public class StaticFieldBuilder extends AbstractFieldBuilder<StaticFieldDefiniti
     @Override
     protected Field buildField() {
         StaticField field = new StaticField();
-        field.getLabel().setCaption(definition.getValue());
+        field.getLabel().setCaption(getMessage(definition.getValue()));
         return field;
     }
 
@@ -62,6 +62,7 @@ public class StaticFieldBuilder extends AbstractFieldBuilder<StaticFieldDefiniti
      */
     @Override
     public void setPropertyDataSource(Property property) {
+        // do nothing specific
     }
 
     @Override
