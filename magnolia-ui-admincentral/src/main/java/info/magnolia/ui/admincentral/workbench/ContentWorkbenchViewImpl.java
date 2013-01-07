@@ -213,6 +213,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
         if (type != ViewType.SEARCH) {
             previousViewType = type;
+            setSearchQuery(null);
         }
         this.currentViewType = type;
 
@@ -297,8 +298,12 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     public void setSearchQuery(final String query) {
         // turn off value change listener, so that presenter does not think there was user input and searches again
         searchbox.removeListener(searchboxListener);
-        searchbox.setValue(query);
-        searchbox.focus();
+        if (StringUtils.isNotBlank(query)) {
+            searchbox.setValue(query);
+            searchbox.focus();
+        } else {
+            searchbox.setValue("");
+        }
         searchbox.addListener(searchboxListener);
     }
 
