@@ -43,11 +43,11 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.FocusEvent;
-import com.vaadin.event.ShortcutAction;
-import com.vaadin.event.ShortcutListener;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
@@ -77,6 +77,14 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
     private final Button thumbsButton;
 
     private final TextField searchbox;
+
+    private final Property.ValueChangeListener searchboxListener = new Property.ValueChangeListener() {
+
+        @Override
+        public void valueChange(ValueChangeEvent event) {
+            contentWorkbenchViewListener.onSearch(searchbox.getValue().toString());
+        }
+    };
 
     private final Embedded viewTypeArrow;
 
@@ -131,20 +139,18 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         searchbox.setSizeUndefined();
         searchbox.addStyleName("searchbox");
 
-        searchbox.addShortcutListener(new ShortcutListener("", ShortcutAction.KeyCode.ENTER, null) {
-
-            @Override
-            public void handleAction(Object sender, Object target) {
-                contentWorkbenchViewListener.onSearch(searchbox.getValue().toString());
-            }
-        });
+        // Textfield has to be immediate to fire value changes when pressing Enter, avoiding ShortcutListener overkill.
+        searchbox.setImmediate(true);
+        searchbox.addListener(searchboxListener);
 
         searchbox.addListener(new FieldEvents.BlurListener() {
 
             @Override
             public void blur(BlurEvent event) {
-                contentWorkbenchViewListener.onSearch(searchbox.getValue().toString());
-                searchbox.setInputPrompt(inputPrompt);
+                // return to previous view type when leaving empty field
+                if (StringUtils.isBlank(searchbox.getValue().toString())) {
+                    setViewType(previousViewType);
+                }
             }
         });
 
@@ -155,6 +161,9 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
                 if (currentViewType != ViewType.SEARCH) {
                     setViewType(ViewType.SEARCH);
                 }
+                // put the cursor at the end of the field
+                TextField tf = (TextField) event.getSource();
+                tf.setCursorPosition(tf.toString().length());
             }
         });
 
