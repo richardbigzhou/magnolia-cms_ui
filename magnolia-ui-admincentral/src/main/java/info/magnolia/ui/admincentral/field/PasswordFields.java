@@ -78,6 +78,7 @@ public class PasswordFields extends CustomField<String> {
             this.translator = new Base64Translator();
             passwordField.setConverter(translator);
         }
+        initContent();
     }
 
     @Override
@@ -147,7 +148,7 @@ public class PasswordFields extends CustomField<String> {
     public void setPropertyDataSource(Property newDataSource) {
         passwordField.setPropertyDataSource(newDataSource);
         if (this.verification) {
-            verificationField.setValue(new String(passwordField.getPropertyDataSource().getValue().toString()));
+            verificationField.setValue(String.valueOf(newDataSource.getValue()));
         }
     }
 

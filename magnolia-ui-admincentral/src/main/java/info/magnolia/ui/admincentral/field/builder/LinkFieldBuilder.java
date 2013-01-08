@@ -63,7 +63,7 @@ import com.vaadin.ui.Field;
  * @param <D>
  *            definition type
  */
-public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBuilder<LinkFieldDefinition> {
+public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBuilder<LinkFieldDefinition, String> {
 
     private static final Logger log = LoggerFactory.getLogger(LinkFieldBuilder.class);
 

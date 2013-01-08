@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.*;
-
 import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
@@ -56,7 +55,7 @@ import com.vaadin.ui.TextField;
  */
 public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFieldDefinition> {
 
-    private AbstractFieldBuilder<FieldDefinition> abstractDialogField;
+    private AbstractFieldBuilder<FieldDefinition, Object> abstractDialogField;
 
     @Test
     public void simpleInitializationTest() {
@@ -64,7 +63,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         abstractDialogField = new TestFormField(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        Field field = abstractDialogField.getField();
+        Field<Object> field = abstractDialogField.getField();
         // THEN
         assertEquals(TextField.class, field.getClass());
         assertEquals(definition, abstractDialogField.getFieldDefinition());
@@ -80,7 +79,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         // GIVEN
         abstractDialogField = new TestFormField(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        Field field = abstractDialogField.getField();
+        Field<Object> field = abstractDialogField.getField();
 
         // WHEN
         field.setValue("new Value");
@@ -105,7 +104,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         definition.setReadOnly(false);
         abstractDialogField = new TestFormField(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        Field field = abstractDialogField.getField();
+        Field<Object> field = abstractDialogField.getField();
 
         // WHEN
         field.setValue("new Value");
@@ -127,7 +126,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         definition.setDefaultValue("");
         abstractDialogField = new TestFormField(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        Field field = abstractDialogField.getField();
+        Field<Object> field = abstractDialogField.getField();
 
         // WHEN
         field.setValue(21.98);
@@ -152,7 +151,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field field = abstractDialogField.getField();
+        Field<Object> field = abstractDialogField.getField();
         // THEN
 
         assertEquals("label", field.getCaption());
@@ -167,7 +166,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field field = abstractDialogField.getField();
+        Field<Object> field = abstractDialogField.getField();
         field.setRequired(definition.isRequired());
 
         // THEN
@@ -190,7 +189,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     /**
      * Dummy Implementation of AbstractDialogField.
      */
-    public static class TestFormField extends AbstractFieldBuilder<FieldDefinition> {
+    public static class TestFormField extends AbstractFieldBuilder<FieldDefinition, Object> {
 
         public TestFormField(FieldDefinition definition, Item relatedFieldItem) {
             super(definition, relatedFieldItem);

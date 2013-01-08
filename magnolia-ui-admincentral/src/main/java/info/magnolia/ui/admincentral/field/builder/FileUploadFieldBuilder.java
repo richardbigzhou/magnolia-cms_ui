@@ -62,7 +62,7 @@ import com.vaadin.ui.Field;
 /**
  * Creates and configures a Vaadin UploadField.
  */
-public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadFieldDefinition> {
+public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadFieldDefinition, Byte[]> {
 
     private static final Logger log = LoggerFactory.getLogger(FileUploadFieldBuilder.class);
 
@@ -75,7 +75,7 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
     }
 
     @Override
-    protected Field buildField() {
+    protected Field<Byte[]> buildField() {
         // Temp Solution as long as we don't support DMS
         DefaultProperty property = (DefaultProperty) item.getItemProperty("image");
         if (property == null) {

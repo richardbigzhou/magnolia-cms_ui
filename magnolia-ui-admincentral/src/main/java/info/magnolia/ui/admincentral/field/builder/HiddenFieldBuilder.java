@@ -43,14 +43,14 @@ import com.vaadin.ui.TextField;
 /**
  * Creates and initializes a checkBox field based on a field definition.
  */
-public class HiddenFieldBuilder extends AbstractFieldBuilder<HiddenFieldDefinition> {
+public class HiddenFieldBuilder extends AbstractFieldBuilder<HiddenFieldDefinition, String> {
 
     public HiddenFieldBuilder(HiddenFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
-    protected Field buildField() {
+    protected Field<String> buildField() {
         TextField field = new TextField();
         field.setValue(definition.getDefaultValue());
         field.setVisible(false);
@@ -58,7 +58,7 @@ public class HiddenFieldBuilder extends AbstractFieldBuilder<HiddenFieldDefiniti
     }
 
     @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+    protected Class<String> getDefaultFieldType(FieldDefinition fieldDefinition) {
         return String.class;
     }
 }

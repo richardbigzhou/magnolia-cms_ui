@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.mockito.Mockito.*;
-
 import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;

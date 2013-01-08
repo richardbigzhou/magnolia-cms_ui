@@ -37,11 +37,10 @@ import info.magnolia.ui.framework.message.MessageType;
 
 import java.io.Serializable;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.fieldgroup.DefaultFieldGroupFieldFactory;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -145,7 +144,7 @@ public class MessagesViewImpl implements MessagesView {
 
         // intro text
         Label intro = new Label("This app enables to send different types of messages to some or all users on a Magnolia instance.<br />" +
-                "Please note that this app is for testing purposes only and will be removed in the final release.", Label.CONTENT_XHTML);
+                "Please note that this app is for testing purposes only and will be removed in the final release.", ContentMode.HTML);
         intro.addStyleName("intro");
 
         CssLayout container = new CssLayout();

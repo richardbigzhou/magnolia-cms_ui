@@ -41,11 +41,12 @@ import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
@@ -53,6 +54,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.TwinColSelect;
 
@@ -82,21 +84,60 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
     }
 
     @Override
+    public void setPropertyDataSource(Property dataSource) {
+        super.setPropertyDataSource(dataSource);
+    }
+    
+    @Override
+    @SuppressWarnings("rawtypes")
     protected AbstractSelect buildField() {
         super.buildField();
         select.setMultiSelect(true);
         select.setNullSelectionAllowed(true);
         select.setImmediate(true);
+        select.setConverter(new Converter<Object, List>() {
+
+            @Override
+            public List<?> convertToModel(Object value, Locale locale) throws ConversionException {
+                if (value != null && value instanceof Collection) {
+                    return new ArrayList<Object>((Collection<?>) value);
+                }
+                return null;
+            }
+
+            @Override
+            public Object convertToPresentation(List value, Locale locale) throws ConversionException {
+                return value;
+            }
+
+            @Override
+            public Class<List> getModelType() {
+                return List.class;
+            }
+
+            @Override
+            public Class<Object> getPresentationType() {
+                return Object.class;
+            }
+
+        });
         return select;
     }
 
     @Override
     protected AbstractSelect createSelectionField() {
-        return new TwinColSelect();
+        return new TwinColSelect() {
+            @Override
+            public void setConverter(Converter<Object, ?> converter) {
+                System.out.println("Set the converter bldjad! " + converter);
+                super.setConverter(converter);
+            }
+        };
     }
 
     /**
-     * Returns the available groups with those already assigned marked selected, according to the current node.
+     * Returns the available groups with those already assigned marked selected,
+     * according to the current node.
      */
     @Override
     public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
@@ -127,7 +168,8 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
     private List<Group> getAllGroups() {
         List<Group> groups = new ArrayList<Group>();
         try {
-            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_GROUPS, "SELECT * FROM [" + NodeTypes.Group.NAME + "] ORDER BY name()");
+            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_GROUPS, "SELECT * FROM ["
+                    + NodeTypes.Group.NAME + "] ORDER BY name()");
             while (ni.hasNext()) {
                 Node n = ni.nextNode();
                 String name = n.getName();

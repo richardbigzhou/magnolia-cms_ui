@@ -169,21 +169,6 @@ public class DefaultImageProviderTest {
     }
 
     @Test
-    public void testGetThumbnailResourceByIdForDocument() throws Exception {
-        // GIVEN
-        final Node contactNode = createMainImageNode("myNode", IMAGE_NODE_NAME);
-        contactNode.getNode(IMAGE_NODE_NAME).getProperty("jcr:mimeType").setValue("application/x-excel");
-
-        // WHEN
-        Object resource = imageProvider.getThumbnailResourceById(workspaceName, contactNode.getIdentifier(), ImageProvider.PORTRAIT_GENERATOR);
-
-        // THEN
-        assertNotNull(resource);
-        assertEquals(true, resource instanceof IconFontResource);
-        assertEquals("file-excel", ((IconFontResource) resource).getCssClassName());
-    }
-
-    @Test
     public void testGetThumbnailResourceByPath() throws Exception {
         // GIVEN
         final Node contactNode = createMainImageNode("myNode", IMAGE_NODE_NAME);
@@ -198,20 +183,6 @@ public class DefaultImageProviderTest {
         assertEquals("/foo/.imaging/thumbnail/test/" + imageNodeUuid + "/MaxMustermann.png", ((ExternalResource) resource).getURL());
     }
 
-    @Test
-    public void testGetThumbnailResourceByPathForDocument() throws Exception {
-        // GIVEN
-        final Node contactNode = createMainImageNode("myNode", IMAGE_NODE_NAME);
-        contactNode.getNode(IMAGE_NODE_NAME).getProperty("jcr:mimeType").setValue("application/msword");
-
-        // WHEN
-        Object resource = imageProvider.getThumbnailResourceByPath(workspaceName, contactNode.getPath(), ImageProvider.THUMBNAIL_GENERATOR);
-
-        // THEN
-        assertNotNull(resource);
-        assertEquals(true, resource instanceof IconFontResource);
-        assertEquals("file-word", ((IconFontResource) resource).getCssClassName());
-    }
 
     private Node createMainImageNode(String mainNodeName, String imageNodeName) throws Exception {
         String rootPath = "/" + mainNodeName + "/" + imageNodeName;

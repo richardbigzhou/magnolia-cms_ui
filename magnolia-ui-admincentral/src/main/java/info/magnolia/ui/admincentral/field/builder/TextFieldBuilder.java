@@ -45,7 +45,7 @@ import com.vaadin.ui.TextField;
 /**
  * Creates and initializes an edit field based on a field definition.
  */
-public class TextFieldBuilder extends AbstractFieldBuilder<TextFieldDefinition> {
+public class TextFieldBuilder extends AbstractFieldBuilder<TextFieldDefinition, String> {
 
     private AbstractTextField field;
 
@@ -54,7 +54,7 @@ public class TextFieldBuilder extends AbstractFieldBuilder<TextFieldDefinition> 
     }
 
     @Override
-    protected Field buildField() {
+    protected Field<String> buildField() {
         // Create a TextArea if the rows > 1
         if (definition.getRows() > 1) {
             TextArea textArea = new TextArea();
@@ -69,7 +69,7 @@ public class TextFieldBuilder extends AbstractFieldBuilder<TextFieldDefinition> 
     }
 
     @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+    protected Class<String> getDefaultFieldType(FieldDefinition fieldDefinition) {
         return String.class;
     }
 }

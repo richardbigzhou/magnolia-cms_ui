@@ -61,8 +61,7 @@ import com.vaadin.ui.Field;
 /**
  * Creates and initializes an edit field based on a field definition.
  */
-public class RichTextFieldBuilder extends
-        AbstractFieldBuilder<RichTextFieldDefinition> {
+public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefinition, String> {
 
     private static final String PLUGIN_NAME_MAGNOLIALINK = "magnolialink";
 
@@ -99,7 +98,7 @@ public class RichTextFieldBuilder extends
     }
 
     @Override
-    protected Field buildField() {
+    protected Field<String> buildField() {
         // RichTextFieldDefinition editDefinition = definition;
         final MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
 
