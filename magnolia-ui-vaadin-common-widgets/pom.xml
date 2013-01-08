@@ -152,7 +152,7 @@
         src/main/patches/vscrolltable.txt) to the class's original sources. 3) rename
         the original VScrollTable.java to VScrollTablePatched.java which our code
         will use instead of the original. -->
-      <!--  <plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
@@ -165,7 +165,7 @@
               <artifactItems>
                 <artifactItem>
                   <groupId>com.vaadin</groupId>
-                  <artifactId>vaadin</artifactId>
+                  <artifactId>vaadin-client</artifactId>
                   <version>${vaadinVersion}</version>
                   <type>jar</type>
                   <classifier>sources</classifier>
@@ -173,17 +173,20 @@
                   <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
                 </artifactItem>
               </artifactItems>
-              <includes>**\/*VScrollTable.java</includes>
+              <includes>**\/*VScrollTable.java, **\/*VTreeTable.java, **\/*TreeTableConnector.java, **\/*TableConnector.java</includes>
             </configuration>
           </execution>
         </executions>
-      </plugin>-->
-      <!--<plugin>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-patch-plugin</artifactId>
           <configuration>
           <patches>
             <patch>vscrolltable.txt</patch>
+            <patch>vtreetable.txt</patch>
+            <patch>treetableconnector.txt</patch>
+            <patch>scrolltableconnector.txt</patch>
           </patches>
           <strip>4</strip>
         </configuration>
@@ -195,8 +198,8 @@
             </goals>
           </execution>
         </executions>
-      </plugin>-->
-      <!--<plugin>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>groovy-maven-plugin</artifactId>
         <executions>
@@ -205,23 +208,25 @@
             <goals>
               <goal>execute</goal>
             </goals>
-             Rename patched VScrollTable.java
+             <!-- Rename patched VScrollTable.java -->
             <configuration>
               <source>
                 import java.io.File
-
-                def path =
-                "${project.build.sourceDirectory}/com/vaadin/terminal/gwt/client/ui/"
-                def originalFile = new File(path + "VScrollTable.java")
-                def renamedFile = new File(path +
-                "VScrollTablePatched.java")
-                println "Renaming ${originalFile.name} to ${renamedFile.name}..."
-                originalFile.renameTo(renamedFile)
+                def path = "${project.build.sourceDirectory}/com/vaadin/client/ui/"
+                def renameMap = [(new File(path + "VScrollTable.java")):(new File(path + "VScrollTablePatched.java")), 
+                    (new File(path + "VTreeTable.java")):(new File(path + "VTreeTablePatched.java")),
+                    (new File(path + "treetable/TreeTableConnector.java")):(new File(path + "treetable/TreeTableConnectorPatched.java")),
+                    (new File(path + "table/TableConnector.java")):(new File(path + "table/TableConnectorPatched.java"))];
+                     
+                for (v in renameMap) { 
+                    println "Renaming ${v.key.name} to ${v.value.name}..." 
+                    v.key.renameTo(v.value)
+                }
               </source>
             </configuration>
           </execution>
         </executions>
-      </plugin>-->
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
