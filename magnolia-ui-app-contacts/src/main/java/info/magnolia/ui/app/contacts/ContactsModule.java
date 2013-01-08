@@ -152,7 +152,9 @@ public class ContactsModule implements ModuleLifecycle {
                                 .workbench(cfg.workbenches.workbench().workspace("contacts").root("/").defaultOrder(ModelConstants.JCR_NAME)
                                         .form(cfg.forms.form().description("Define the contact information")
                                                 .tabs(
-                                                        cfg.forms.tab("Personal").label("Personal tab")
+cfg.forms
+                                                                .tab("Personal")
+                                                                .label("Personal")
                                                                 .fields(
                                                                         cfg.fields.text("salutation").label("Salutation").description("Define salutation"),
                                                                         cfg.fields.text("firstName").label("First name").description("Please enter the contact first name. Field is mandatory").required(),
@@ -161,7 +163,9 @@ public class ContactsModule implements ModuleLifecycle {
                                                                         cfg.fields.text("photoCaption").label("Image caption").description("Please define an image caption"),
                                                                         cfg.fields.text("photoAltText").label("Image alt text").description("Please define an image alt text")
                                                                 ),
-                                                        cfg.forms.tab("Company").label("Company tab")
+                                                                cfg.forms
+                                                                        .tab("Address")
+                                                                        .label("Address")
                                                                 .fields(
                                                                         cfg.fields.text("organizationName").label("Organization name").description("Enter the organization name").required(),
                                                                         cfg.fields.text("organizationUnitName").label("Organization unit name").description("Enter the organization unit name"),
@@ -170,7 +174,9 @@ public class ContactsModule implements ModuleLifecycle {
                                                                         cfg.fields.text("city").label("City").description("Please enter the company city  "),
                                                                         cfg.fields.text("country").label("Country").description("Please enter the company country")
                                                                 ),
-                                                        cfg.forms.tab("Contacts").label("Contact tab")
+                                                                cfg.forms
+                                                                        .tab("Contact details")
+                                                                        .label("Contact details")
                                                                 .fields(
                                                                         cfg.fields.text("officePhoneNr").label("Office phone").description("Please enter the office phone number"),
                                                                         cfg.fields.text("officeFaxNr").label("Office fax nr.").description("Please enter the office fax number"),
