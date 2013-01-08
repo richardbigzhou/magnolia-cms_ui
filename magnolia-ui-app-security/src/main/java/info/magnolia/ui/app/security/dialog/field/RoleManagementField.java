@@ -41,6 +41,8 @@ import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -81,6 +83,15 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
         definition.setOptions(getSelectFieldOptionDefinition());
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public void setPropertyDataSource(com.vaadin.data.Property dataSource) {
+        if (dataSource.getValue() != null && dataSource.getValue() instanceof Collection) {
+            dataSource.setValue(new HashSet<Object>((Collection<?>)dataSource.getValue()));
+        }
+        super.setPropertyDataSource(dataSource);
+    }
+    
     @Override
     protected AbstractSelect buildField() {
         super.buildField();

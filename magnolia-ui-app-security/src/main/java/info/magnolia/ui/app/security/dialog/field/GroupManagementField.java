@@ -42,11 +42,13 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
@@ -56,6 +58,8 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomField;
 import com.vaadin.ui.TwinColSelect;
 
 /**
@@ -84,43 +88,20 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
     }
 
     @Override
-    public void setPropertyDataSource(Property dataSource) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void setPropertyDataSource(com.vaadin.data.Property dataSource) {
+        if (dataSource.getValue() != null && dataSource.getValue() instanceof Collection) {
+            dataSource.setValue(new HashSet<Object>((Collection<?>)dataSource.getValue()));
+        }
         super.setPropertyDataSource(dataSource);
     }
     
     @Override
-    @SuppressWarnings("rawtypes")
     protected AbstractSelect buildField() {
         super.buildField();
         select.setMultiSelect(true);
         select.setNullSelectionAllowed(true);
         select.setImmediate(true);
-        select.setConverter(new Converter<Object, List>() {
-
-            @Override
-            public List<?> convertToModel(Object value, Locale locale) throws ConversionException {
-                if (value != null && value instanceof Collection) {
-                    return new ArrayList<Object>((Collection<?>) value);
-                }
-                return null;
-            }
-
-            @Override
-            public Object convertToPresentation(List value, Locale locale) throws ConversionException {
-                return value;
-            }
-
-            @Override
-            public Class<List> getModelType() {
-                return List.class;
-            }
-
-            @Override
-            public Class<Object> getPresentationType() {
-                return Object.class;
-            }
-
-        });
         return select;
     }
 
@@ -212,6 +193,20 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
         DefaultProperty prop = new DefaultProperty("groups", getAssignedGroups());
         item.addItemProperty("groups", prop);
         return prop;
+    }
+    
+    private static class GroupManagementTwinColSelect extends CustomField<Object> {
+
+        @Override
+        protected Component initContent() {
+            return null;
+        }
+
+        @Override
+        public Class<? extends Object> getType() {
+            return null;
+        }
+        
     }
 
 }

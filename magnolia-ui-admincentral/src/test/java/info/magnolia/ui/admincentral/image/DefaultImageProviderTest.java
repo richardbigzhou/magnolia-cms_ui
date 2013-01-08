@@ -44,7 +44,6 @@ import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
-import info.magnolia.ui.vaadin.integration.terminal.IconFontResource;
 
 import java.io.ByteArrayInputStream;
 
