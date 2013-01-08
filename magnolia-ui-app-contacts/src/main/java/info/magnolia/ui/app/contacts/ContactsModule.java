@@ -141,7 +141,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                                 .sections(
                                                                         cfg.actionbars
                                                                                 .section("contactsActions")
-                                                                                .label("Contacts")
+                                                                                .label("Contact")
                                                                                 .groups(cfg.actionbars.group("addActions").items(
                                                                                         cfg.actionbars.item("addContact").label("New contact").icon("icon-add-item").action(addContactAction)),
                                                                                         cfg.actionbars.group("editActions").items(
