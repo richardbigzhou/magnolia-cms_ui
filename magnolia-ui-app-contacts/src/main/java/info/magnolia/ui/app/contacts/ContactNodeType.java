@@ -47,22 +47,22 @@ public class ContactNodeType {
         public static final String NAME = NodeTypes.MGNL_PREFIX + "contact";
 
         // Property Name
-        public static final String CONTACT_PROPERTY_CITY = "city";
-        public static final String CONTACT_PROPERTY_COUNTRY = "country";
-        public static final String CONTACT_PROPERTY_EMAIL = "email";
-        public static final String CONTACT_PROPERTY_FIRST_NAME = "firstName";
-        public static final String CONTACT_PROPERTY_LAST_NAME = "lastName";
-        public static final String CONTACT_PROPERTY_MOBILE_PHONE_NR = "mobilePhoneNr";
-        public static final String CONTACT_PROPERTY_OFFICE_FAX_NR = "officeFaxNr";
-        public static final String CONTACT_PROPERTY_OFFICE_PHONE_NR = "officePhoneNr";
-        public static final String CONTACT_PROPERTY_ORGANIZATION_NAME = "organizationName";
-        public static final String CONTACT_PROPERTY_ORGANIZATION_UNIT_NAME = "organizationUnitName";
-        public static final String CONTACT_PROPERTY_PHOTO_ALT_TEXT = "photoAltText";
-        public static final String CONTACT_PROPERTY_PHOTO_CAPTION = "photoCaption";
-        public static final String CONTACT_PROPERTY_SALUTATION = "salutation";
-        public static final String CONTACT_PROPERTY_STREET_ADDRESS = "streetAddress";
-        public static final String CONTACT_PROPERTY_WEBSITE = "website";
-        public static final String CONTACT_PROPERTY_ZIP_CODE = "zipCode";
-        public static final String CONTACT_IMAGE_NODE_NAME = "photo";
+        public static final String PROPERTY_CITY = "city";
+        public static final String PROPERTY_COUNTRY = "country";
+        public static final String PROPERTY_EMAIL = "email";
+        public static final String PROPERTY_FIRST_NAME = "firstName";
+        public static final String PROPERTY_LAST_NAME = "lastName";
+        public static final String PROPERTY_MOBILE_PHONE_NR = "mobilePhoneNr";
+        public static final String PROPERTY_OFFICE_FAX_NR = "officeFaxNr";
+        public static final String PROPERTY_OFFICE_PHONE_NR = "officePhoneNr";
+        public static final String PROPERTY_ORGANIZATION_NAME = "organizationName";
+        public static final String PROPERTY_ORGANIZATION_UNIT_NAME = "organizationUnitName";
+        public static final String PROPERTY_PHOTO_ALT_TEXT = "photoAltText";
+        public static final String PROPERTY_PHOTO_CAPTION = "photoCaption";
+        public static final String PROPERTY_SALUTATION = "salutation";
+        public static final String PROPERTY_STREET_ADDRESS = "streetAddress";
+        public static final String PROPERTY_WEBSITE = "website";
+        public static final String PROPERTY_ZIP_CODE = "zipCode";
+        public static final String IMAGE_NODE_NAME = "photo";
     }
 }

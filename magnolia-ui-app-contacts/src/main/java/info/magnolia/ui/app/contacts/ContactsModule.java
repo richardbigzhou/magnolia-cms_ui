@@ -48,6 +48,7 @@ import info.magnolia.ui.admincentral.form.action.CancelFormActionDefinition;
 import info.magnolia.ui.admincentral.form.action.CreateItemActionDefinition;
 import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
+import info.magnolia.ui.app.contacts.ContactNodeType.Contact;
 import info.magnolia.ui.app.contacts.action.AddFolderActionDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
@@ -92,11 +93,11 @@ public class ContactsModule implements ModuleLifecycle {
 
         // Configure ImageProvider
         ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
-        cipd.setOriginalImageNodeName(ContactNodeType.Contact.CONTACT_IMAGE_NODE_NAME);
+        cipd.setOriginalImageNodeName(Contact.IMAGE_NODE_NAME);
         cipd.setImageProviderClass(DefaultImageProvider.class);
 
         CreateItemActionDefinition addContactAction = new CreateItemActionDefinition();
-        addContactAction.setNodeType(ContactNodeType.Contact.NAME);
+        addContactAction.setNodeType(Contact.NAME);
         addContactAction.setAppId("contacts");
         addContactAction.setSubAppId("item");
 
@@ -124,7 +125,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                 .root("/")
                                                 .defaultOrder(ModelConstants.JCR_NAME)
                                                 .groupingItemType(cfg.workbenches.itemType("mgnl:folder").icon("icon-node-folder"))
-                                                .mainItemType(cfg.workbenches.itemType(ContactNodeType.Contact.NAME).icon("icon-node-content"))
+                                                .mainItemType(cfg.workbenches.itemType(Contact.NAME).icon("icon-node-content"))
                                                 .imageProvider(cipd)
                                                 .columns(
                                                         cfg.columns.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME)
@@ -179,46 +180,46 @@ public class ContactsModule implements ModuleLifecycle {
                                                         .tabs(cfg.forms
                                                                 .tab("Personal")
                                                                 .label("Personal")
-                                                                .fields(cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_SALUTATION).label("Salutation").description("Define salutation"),
-                                                                        cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_FIRST_NAME).label("First name")
+                                                                .fields(cfg.fields.text(Contact.PROPERTY_SALUTATION).label("Salutation").description("Define salutation"),
+                                                                        cfg.fields.text(Contact.PROPERTY_FIRST_NAME).label("First name")
                                                                                 .description("Please enter the contact first name. Field is mandatory")
                                                                                 .required(),
-                                                                        cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_LAST_NAME).label("Last name")
+                                                                        cfg.fields.text(Contact.PROPERTY_LAST_NAME).label("Last name")
                                                                                 .description("Please enter the contact last name. Field is mandatory").required(),
-                                                                        cfg.fields.fileUpload("fileUpload").label("Image").preview().imageNodeName(ContactNodeType.Contact.CONTACT_IMAGE_NODE_NAME),
-                                                                        cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_PHOTO_CAPTION).label("Image caption")
+                                                                        cfg.fields.fileUpload("fileUpload").label("Image").preview().imageNodeName(Contact.IMAGE_NODE_NAME),
+                                                                        cfg.fields.text(Contact.PROPERTY_PHOTO_CAPTION).label("Image caption")
                                                                                 .description("Please define an image caption"),
-                                                                        cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_PHOTO_ALT_TEXT).label("Image alt text")
+                                                                        cfg.fields.text(Contact.PROPERTY_PHOTO_ALT_TEXT).label("Image alt text")
                                                                                 .description("Please define an image alt text")),
                                                                 cfg.forms
                                                                         .tab("Address")
                                                                         .label("Address")
-                                                                        .fields(cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_ORGANIZATION_NAME).label("Organization name")
+                                                                        .fields(cfg.fields.text(Contact.PROPERTY_ORGANIZATION_NAME).label("Organization name")
                                                                                 .description("Enter the organization name").required(),
-                                                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_ORGANIZATION_UNIT_NAME).label("Organization unit name")
+                                                                                cfg.fields.text(Contact.PROPERTY_ORGANIZATION_UNIT_NAME).label("Organization unit name")
                                                                                         .description("Enter the organization unit name"),
-                                                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_STREET_ADDRESS).label("Street address")
+                                                                                cfg.fields.text(Contact.PROPERTY_STREET_ADDRESS).label("Street address")
                                                                                         .description("Please enter the company street address").rows(2),
-                                                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_ZIP_CODE).label("ZIP code")
+                                                                                cfg.fields.text(Contact.PROPERTY_ZIP_CODE).label("ZIP code")
                                                                                         .description("Please enter the zip code (only digits)")
                                                                                         .validator(cfg.validators.digitsOnly().errorMessage("validation.message.only.digits")),
-                                                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_CITY).label("City")
+                                                                                cfg.fields.text(Contact.PROPERTY_CITY).label("City")
                                                                                         .description("Please enter the company city  "),
-                                                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_COUNTRY).label("Country")
+                                                                                cfg.fields.text(Contact.PROPERTY_COUNTRY).label("Country")
                                                                                         .description("Please enter the company country")),
                                                                 cfg.forms
                                                                         .tab("Contact details")
                                                                         .label("Contact details")
-                                                                        .fields(cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_OFFICE_PHONE_NR).label("Office phone")
+                                                                        .fields(cfg.fields.text(Contact.PROPERTY_OFFICE_PHONE_NR).label("Office phone")
                                                                                 .description("Please enter the office phone number"),
-                                                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_OFFICE_FAX_NR).label("Office fax nr.")
+                                                                                cfg.fields.text(Contact.PROPERTY_OFFICE_FAX_NR).label("Office fax nr.")
                                                                                         .description("Please enter the office fax number"),
-                                                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_MOBILE_PHONE_NR).label("Mobile phone")
+                                                                                cfg.fields.text(Contact.PROPERTY_MOBILE_PHONE_NR).label("Mobile phone")
                                                                                         .description("Please enter the mobile phone number"),
-                                                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_EMAIL).label("E-Mail address")
+                                                                                cfg.fields.text(Contact.PROPERTY_EMAIL).label("E-Mail address")
                                                                                         .description("Please enter the email address").required()
                                                                                         .validator(cfg.validators.email().errorMessage("validation.message.non.valid.email")),
-                                                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_WEBSITE).label("Website")
+                                                                                cfg.fields.text(Contact.PROPERTY_WEBSITE).label("Website")
                                                                                         .description("Please enter the Website")))
                                                         .actions(cfg.forms.action("commit").label("save changes").action(new SaveContactFormActionDefinition()),
                                                                 cfg.forms.action("cancel").label("cancel").action(new CancelFormActionDefinition())))));
@@ -270,35 +271,35 @@ public class ContactsModule implements ModuleLifecycle {
                         .tabs(cfg.forms
                                 .tab("Personal")
                                 .label("Personal")
-                                .fields(cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_SALUTATION).label("Salutation").description("Define salutation"),
-                                        cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_FIRST_NAME).label("First name").description("Please enter the contact first name. Field is mandatory")
+                                .fields(cfg.fields.text(Contact.PROPERTY_SALUTATION).label("Salutation").description("Define salutation"),
+                                        cfg.fields.text(Contact.PROPERTY_FIRST_NAME).label("First name").description("Please enter the contact first name. Field is mandatory")
                                                 .required(),
-                                        cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_LAST_NAME).label("Last name").description("Please enter the contact last name. Field is mandatory")
-                                                .required(), cfg.fields.fileUpload("fileUpload").label("Image").preview().imageNodeName(ContactNodeType.Contact.CONTACT_IMAGE_NODE_NAME),
-                                        cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_PHOTO_CAPTION).label("Image caption").description("Please define an image caption"),
-                                        cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_PHOTO_ALT_TEXT).label("Image alt text").description("Please define an image alt text")),
+                                        cfg.fields.text(Contact.PROPERTY_LAST_NAME).label("Last name").description("Please enter the contact last name. Field is mandatory").required(),
+                                        cfg.fields.fileUpload("fileUpload").label("Image").preview().imageNodeName(Contact.IMAGE_NODE_NAME),
+                                        cfg.fields.text(Contact.PROPERTY_PHOTO_CAPTION).label("Image caption").description("Please define an image caption"),
+                                        cfg.fields.text(Contact.PROPERTY_PHOTO_ALT_TEXT).label("Image alt text").description("Please define an image alt text")),
                                 cfg.forms
                                         .tab("Address")
                                         .label("Address")
-                                        .fields(cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_ORGANIZATION_NAME).label("Organization name").description("Enter the organization name")
+                                        .fields(cfg.fields.text(Contact.PROPERTY_ORGANIZATION_NAME).label("Organization name").description("Enter the organization name")
                                                 .required(),
-                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_ORGANIZATION_UNIT_NAME).label("Organization unit name")
+                                                cfg.fields.text(Contact.PROPERTY_ORGANIZATION_UNIT_NAME).label("Organization unit name")
                                                         .description("Enter the organization unit name"),
-                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_STREET_ADDRESS).label("Street address").description("Please enter the company street address")
+                                                cfg.fields.text(Contact.PROPERTY_STREET_ADDRESS).label("Street address").description("Please enter the company street address")
                                                         .rows(2),
-                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_ZIP_CODE).label("ZIP code").description("Please enter the zip code (only digits)")
+                                                cfg.fields.text(Contact.PROPERTY_ZIP_CODE).label("ZIP code").description("Please enter the zip code (only digits)")
                                                         .validator(cfg.validators.digitsOnly().errorMessage("validation.message.only.digits")),
-                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_CITY).label("City").description("Please enter the company city  "),
-                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_COUNTRY).label("Country").description("Please enter the company country")),
+                                                cfg.fields.text(Contact.PROPERTY_CITY).label("City").description("Please enter the company city  "),
+                                                cfg.fields.text(Contact.PROPERTY_COUNTRY).label("Country").description("Please enter the company country")),
                                 cfg.forms
                                         .tab("Contact details")
                                         .label("Contact details")
-                                        .fields(cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_OFFICE_PHONE_NR).label("Office phone").description("Please enter the office phone number"),
-                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_OFFICE_FAX_NR).label("Office fax nr.").description("Please enter the office fax number"),
-                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_MOBILE_PHONE_NR).label("Mobile phone").description("Please enter the mobile phone number"),
-                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_EMAIL).label("E-Mail address").description("Please enter the email address").required()
+                                        .fields(cfg.fields.text(Contact.PROPERTY_OFFICE_PHONE_NR).label("Office phone").description("Please enter the office phone number"),
+                                                cfg.fields.text(Contact.PROPERTY_OFFICE_FAX_NR).label("Office fax nr.").description("Please enter the office fax number"),
+                                                cfg.fields.text(Contact.PROPERTY_MOBILE_PHONE_NR).label("Mobile phone").description("Please enter the mobile phone number"),
+                                                cfg.fields.text(Contact.PROPERTY_EMAIL).label("E-Mail address").description("Please enter the email address").required()
                                                         .validator(cfg.validators.email().errorMessage("validation.message.non.valid.email")),
-                                                cfg.fields.text(ContactNodeType.Contact.CONTACT_PROPERTY_WEBSITE).label("Website").description("Please enter the Website")))).actions(
+                                                cfg.fields.text(Contact.PROPERTY_WEBSITE).label("Website").description("Please enter the Website")))).actions(
                 cfg.dialogs.action("commit").label("save changes").action(new SaveContactDialogActionDefinition()),
                 cfg.dialogs.action("cancel").label("cancel").action(new CancelDialogActionDefinition()));
     }
