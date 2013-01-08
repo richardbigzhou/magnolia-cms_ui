@@ -37,6 +37,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
 import info.magnolia.ui.admincentral.image.DefaultImageProvider;
+import info.magnolia.ui.app.contacts.ContactNodeType;
 import info.magnolia.ui.app.contacts.field.ContactTextAndButtonField;
 import info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition;
 import info.magnolia.ui.framework.app.AppController;
@@ -64,7 +65,7 @@ public class ContactLinkFieldBuilder extends LinkFieldBuilder<ContactLinkFieldDe
         // TODO: Retrieve imageProviderDefinition from Contact App
         // configuration. See ticket MGNLUI-374
         ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
-        cipd.setOriginalImageNodeName("photo");
+        cipd.setOriginalImageNodeName(ContactNodeType.Contact.CONTACT_IMAGE_NODE_NAME);
         cipd.setImageProviderClass(DefaultImageProvider.class);
 
         this.imageThumbnailProvider = componentProvider.newInstance(cipd.getImageProviderClass(), cipd);
