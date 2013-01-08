@@ -187,7 +187,7 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
     private void doSetGroupEnabled(ActionbarSection section, String groupName, boolean isEnabled) {
         for (ActionbarItem action : section.getActions().values()) {
             if (groupName.equals(action.getGroupName())) {
-                setActionEnabled(isEnabled, action);
+                doSetActionEnabled(isEnabled, action);
             }
         }
     }
@@ -204,15 +204,15 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
     public void setActionEnabled(String sectionName, String actionName, boolean isEnabled) {
         ActionbarItem action = getState().sections.get(sectionName).getActions().get(actionName);
         if (action != null) {
-            setActionEnabled(isEnabled, action);
+            doSetActionEnabled(isEnabled, action);
         }
     }
 
-    private void setActionEnabled(boolean isEnabled, ActionbarItem action) {
-        if (isEnabled && !getState().enabledActions.contains(action)) {
-            getState().enabledActions.add(action);
-        } else if (!isEnabled) {
-            getState().enabledActions.remove(action);
+    private void doSetActionEnabled(boolean isEnabled, ActionbarItem action) {
+        if (!isEnabled && !getState().disabledActions.contains(action)) {
+            getState().disabledActions.add(action);
+        } else if (isEnabled) {
+            getState().disabledActions.remove(action);
         }
     }
 

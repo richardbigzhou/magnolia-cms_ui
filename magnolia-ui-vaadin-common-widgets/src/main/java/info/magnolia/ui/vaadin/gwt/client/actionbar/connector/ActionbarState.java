@@ -54,7 +54,7 @@ public class ActionbarState extends AbstractComponentState {
 
     public List<ActionbarSection> visibleSections = new ArrayList<ActionbarSection>();
 
-    public List<ActionbarItem> enabledActions = new ArrayList<ActionbarItem>();
+    public List<ActionbarItem> disabledActions = new ArrayList<ActionbarItem>();
 
     public boolean isOpen;
 }

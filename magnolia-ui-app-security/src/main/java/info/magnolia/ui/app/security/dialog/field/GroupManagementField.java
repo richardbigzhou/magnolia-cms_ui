@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -58,8 +57,6 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomField;
 import com.vaadin.ui.TwinColSelect;
 
 /**
@@ -189,24 +186,9 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
     }
 
     @Override
-    public com.vaadin.data.Property getOrCreateProperty() {
+    public com.vaadin.data.Property<?> getOrCreateProperty() {
         DefaultProperty prop = new DefaultProperty("groups", getAssignedGroups());
         item.addItemProperty("groups", prop);
         return prop;
     }
-    
-    private static class GroupManagementTwinColSelect extends CustomField<Object> {
-
-        @Override
-        protected Component initContent() {
-            return null;
-        }
-
-        @Override
-        public Class<? extends Object> getType() {
-            return null;
-        }
-        
-    }
-
 }

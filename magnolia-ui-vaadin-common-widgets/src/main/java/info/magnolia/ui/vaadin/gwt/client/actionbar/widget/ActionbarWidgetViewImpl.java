@@ -317,11 +317,11 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
     }
 
     @Override
-    public void setEnabledActions(Collection<ActionbarItem> enabledActions) {
+    public void setDisabledActions(Collection<ActionbarItem> disabledActions) {
         for (final ActionbarSectionWidget section : sections.values()) {
             for (final VActionbarGroup group : section.getGroups().values()) {
                 for (final ActionbarItemWidget action : group.getActions()) {
-                    action.setEnabled(enabledActions.contains(action.getData()));
+                    action.setEnabled(!disabledActions.contains(action.getData()));
                 }
             }
         }

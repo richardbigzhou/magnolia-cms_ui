@@ -173,7 +173,6 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     }
 
     // WIDGET LISTENER
-
     @Override
     public void onActionbarItemClicked(String actionToken) {
         ActionDefinition actionDefinition = getActionDefinition(actionToken);

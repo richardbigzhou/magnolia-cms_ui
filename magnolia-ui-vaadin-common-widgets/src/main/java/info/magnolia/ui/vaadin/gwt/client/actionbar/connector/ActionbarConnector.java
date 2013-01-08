@@ -120,7 +120,7 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                 @Override
                 public void execute() {
-                    view.setEnabledActions(getState().enabledActions);
+                    view.setDisabledActions(getState().disabledActions);
                 }
             });
         }
@@ -139,7 +139,7 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
         addStateChangeHandler("resources", previewChangeHandler);
         addStateChangeHandler("sections", sectionRearrangementHandler);
         addStateChangeHandler("visibleSections", visibleSectionSetChangeHandler);
-        addStateChangeHandler("enabledActions", enabledActionSetChangeHandler);
+        addStateChangeHandler("disabledActions", enabledActionSetChangeHandler);
         addStateChangeHandler("isOpen", collapseChangeHandler);
     }
 
@@ -151,9 +151,9 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     @Override
     protected Widget createWidget() {
         this.view = new ActionbarWidgetViewImpl(eventBus, this);
-        // if (!isDeviceTablet()) {
-        // setOpened(true);
-        // }
+        if (isDeviceTablet()) {
+            setOpened(true);
+        }
         return this.view.asWidget();
     }
 

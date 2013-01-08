@@ -66,7 +66,7 @@ public interface ActionbarWidgetView extends HasWidgets, IsWidget {
 
     void setVisibleSections(Collection<ActionbarSection> visibleSections);
 
-    void setEnabledActions(Collection<ActionbarItem> enabledActions);
+    void setDisabledActions(Collection<ActionbarItem> enabledActions);
 
     void setSectionPreview(String sectionName, String previewUrl);
 
