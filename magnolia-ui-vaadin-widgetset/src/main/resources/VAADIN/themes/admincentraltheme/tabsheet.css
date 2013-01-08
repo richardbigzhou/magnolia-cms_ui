@@ -26,6 +26,10 @@
 	clear: both;
 }
 
+.mgwt-ScrollPanel-container { 
+	overflow: auto !important;
+}
+
 .v-shell-tabsheet-scroller {
 	position: absolute;
 	top: 25px;

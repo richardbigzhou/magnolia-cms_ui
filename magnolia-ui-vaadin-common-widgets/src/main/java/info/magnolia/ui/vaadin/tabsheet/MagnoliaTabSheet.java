@@ -87,7 +87,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
 
     public ComponentContainer addTabStub(String string) {
         final VerticalLayout c = new VerticalLayout();
-        addTab(string, c);
+        addTab(string, c).setHeight(null);
         return c;
     }
 
