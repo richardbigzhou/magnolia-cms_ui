@@ -63,7 +63,7 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
         root.addComponent(container);
         root.setExpandRatio(container, 1);
         root.setSpacing(true);
-        root.setMargin(false);
+        root.setMargin(true);
 
         container.setSizeFull();
         container.setImmediate(true);
