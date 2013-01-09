@@ -61,7 +61,7 @@ public class DeckLayout extends AbstractComponentContainer {
             if (children.contains(c)) {
                 children.remove(c);
             }
-            children.addFirst(c);
+            children.addLast(c);
             markAsDirty();
         }
     }
