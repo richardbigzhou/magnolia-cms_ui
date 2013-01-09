@@ -45,6 +45,8 @@ import info.magnolia.ui.vaadin.gwt.client.editor.event.DeleteComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.DeleteComponentEventHandler;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEventHandler;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.FrameNavigationEvent;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.FrameNavigationEventHandler;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.NewAreaEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.NewAreaEventHandler;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.NewComponentEvent;
@@ -99,12 +101,17 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
     private Model model;
 
     private FocusModel focusModel;
+    private ElementProcessor elementProcessor;
+    private CommentProcessor commentProcessor;
 
     @Override
     protected void init() {
         super.init();
         this.model = new ModelImpl();
         this.focusModel = new FocusModelImpl(eventBus, model);
+        this.elementProcessor = new ElementProcessor(eventBus, model);
+        this.commentProcessor = new CommentProcessor();
+
         addStateChangeHandler(new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
@@ -133,6 +140,13 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                     }
                     focusModel.init();
                 }
+            }
+        });
+
+        eventBus.addHandler(FrameNavigationEvent.TYPE, new FrameNavigationEventHandler() {
+            @Override
+            public void onFrameUrlChanged(FrameNavigationEvent frameUrlChangedEvent) {
+                view.setUrl(frameUrlChangedEvent.getPath());
             }
         });
 
@@ -213,7 +227,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
     }
 
     private void processDocument(Node node, MgnlElement mgnlElement) {
-        boolean proceed = true;
+
         if (mgnlElement == null && model.getRootPage() != null) {
             mgnlElement = model.getRootPage();
         }
@@ -221,19 +235,18 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             Node childNode = node.getChild(i);
             if (childNode.getNodeType() == Comment.COMMENT_NODE) {
                 try {
-                    CommentProcessor processor = new CommentProcessor();
-                    mgnlElement = processor.process(model, childNode, mgnlElement);
+                    mgnlElement = commentProcessor.process(model, childNode, mgnlElement);
                 } catch (IllegalArgumentException e) {
                     GWT.log("Not CMSComment element, skipping: " + e.toString());
                 } catch (Exception e) {
                     GWT.log("Caught undefined exception: " + e.toString());
                 }
-            } else if (childNode.getNodeType() == Node.ELEMENT_NODE && mgnlElement != null && !mgnlElement.isPage()) {
-                proceed = ElementProcessor.process(model, childNode, mgnlElement);
+            } else if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = childNode.cast();
+                elementProcessor.process(element, mgnlElement);
             }
-            if (proceed) {
-                processDocument(childNode, mgnlElement);
-            }
+            processDocument(childNode, mgnlElement);
+
         }
 
     }
