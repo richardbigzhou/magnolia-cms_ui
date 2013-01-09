@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.vaadin.data.Item;
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Field;
 
 /**
@@ -119,20 +120,17 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
         config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
         config.setResizeEnabled(false);
 
-        //TODO: re-implement this with Vaadin 7
         config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, ""+PLUGIN_PATH_MAGNOLIALINK);
-        richTextEditor = new MagnoliaRichTextField(config); /*{
+        richTextEditor = new MagnoliaRichTextField(config) {
             @Override
             public void attach() {
                 super.attach();
-
-                if (getApplication() instanceof AdminCentralApplication) {
-                    AdminCentralApplication admincentral = (AdminCentralApplication) getApplication();
-                    String path = admincentral.getAdminCentralPath();
-                    config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
-                }
+                String path = VaadinService.getCurrentRequest()
+                        .getContextPath();
+                config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path
+                        + PLUGIN_PATH_MAGNOLIALINK);
             }
-        };*/
+        };
 
         richTextEditor.addListener(new MagnoliaRichTextField.PluginListener() {
 
