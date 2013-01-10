@@ -101,9 +101,10 @@ public class ActionbarBuilder {
                     entry = new ActionbarItem(item.getName(), item.getLabel(), null, groupName);
                 }
             }
+        } else {
+            entry = new ActionbarItem(item.getName(), item.getLabel(), null,
+                    groupName);
         }
-        if (entry != null) {
-            actionBar.addAction(entry, sectionName);
-        }
+        actionBar.addAction(entry, sectionName);
     }
 }

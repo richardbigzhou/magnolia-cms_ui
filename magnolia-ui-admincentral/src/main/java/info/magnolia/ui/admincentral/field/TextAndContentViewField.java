@@ -65,11 +65,11 @@ public class TextAndContentViewField extends CustomField<String> {
         this.displayTextFieldOnTop = displayTextFieldOnTop;
         this.isTextFieldVisible = displayTextField;
         this.textField = new TextField();
+        this.layout = new VerticalLayout();
     }
 
     @Override
     protected Component initContent() {
-        layout = new VerticalLayout();
         addTextFieldToLayout(isTextFieldVisible);
         addStyleName("text-and-content");
         return layout;
