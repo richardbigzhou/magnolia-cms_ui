@@ -33,9 +33,10 @@
  */
 package info.magnolia.ui.app.contacts.column;
 
-import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.column.AbstractColumnFormatter;
+import info.magnolia.ui.app.contacts.ContactNodeType;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
@@ -66,7 +67,7 @@ public class ContactNameColumnFormatter extends AbstractColumnFormatter<ContactN
             Node node = (Node) jcrItem;
 
             try {
-                if (NodeUtil.isNodeType(node, MgnlNodeType.NT_FOLDER)) {
+                if (NodeUtil.isNodeType(node, NodeTypes.Folder.NAME)) {
                     return node.getName();
                 }
             } catch (RepositoryException e) {
@@ -74,7 +75,7 @@ public class ContactNameColumnFormatter extends AbstractColumnFormatter<ContactN
             }
 
             try {
-                if (NodeUtil.isNodeType(node, "mgnl:contact")) {
+                if (NodeUtil.isNodeType(node, ContactNodeType.Contact.NAME)) {
                     return node.getProperty("firstName").getString() + " " + node.getProperty("lastName").getString();
                 }
             } catch (RepositoryException e) {

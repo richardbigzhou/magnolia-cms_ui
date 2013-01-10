@@ -39,7 +39,7 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import javax.inject.Inject;
 
 /**
- *
+ * sub app test.
  */
 public class AppTestSubApp extends AbstractSubApp {
 

@@ -106,11 +106,12 @@ public class ContactsMainSubApp extends AbstractContentSubApp {
      * - can create/edit/delete folder or create contact
      */
     private void folderActions(final ActionbarPresenter actionbar) {
+        actionbar.showSection("contactsActions");
+        actionbar.enableGroup("addActions", "contactsActions");
+        actionbar.disableGroup("editActions", "contactsActions");
         actionbar.showSection("folderActions");
         actionbar.enableGroup("addActions", "folderActions");
         actionbar.enableGroup("editActions", "folderActions");
-        actionbar.showSection("contactsActions");
-        actionbar.enableGroup("addActions", "contactsActions");
     }
 
     /**

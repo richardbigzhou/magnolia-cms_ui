@@ -55,6 +55,7 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImp
 import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.location.LocationChangedEvent;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.message.MessagesManagerImpl;
@@ -75,6 +76,12 @@ import org.junit.Test;
  */
 public class AppControllerImplTest {
 
+    private static final String APP_NAME_1 = "app1";
+    private static final String APP_NAME_2 = "app2";
+
+    private static final String SUBAPP_NAME_1 = "subApp1";
+    private static final String SUBAPP_NAME_2 = "subApp2";
+
     private AppLauncherLayoutManager appLauncherLayoutManager = null;
     private GuiceComponentProvider componentProvider = null;
     private AppControllerImpl appController = null;
@@ -82,11 +89,6 @@ public class AppControllerImplTest {
     private LocationController locationController = null;
 
     private AppEventCollector eventCollector = null;
-    private String appName_1 = "app1";
-    private String appName_2 = "app2";
-
-    private String subAppName_1 = "subApp1";
-    private String subAppName_2 = "subApp2";
 
     @Before
     public void setUp() throws Exception {
@@ -117,35 +119,32 @@ public class AppControllerImplTest {
     }
 
     @Test
-    public void testStartIfNotAlreadyRunning_Basic() {
+    public void testStartIfNotAlreadyRunningBasic() {
         // GIVEN
-        String appName = appName_1 + "_name";
+        String appName = APP_NAME_1 + "_name";
 
         // WHEN
         App app = appController.startIfNotAlreadyRunning(appName, new DefaultLocation(Location.LOCATION_TYPE_APP, appName, "", ""));
 
         // THEN
         // Check Events
-        assertEquals(true, app != null);
+        assertNotNull(app);
         assertEquals(AppTestImpl.class.getName(), app.getClass().getName());
         assertEquals(1, eventCollector.appLifecycleEvent.size());
         assertEquals(AppLifecycleEventType.STARTED, eventCollector.appLifecycleEvent.get(0).getEventType());
         // Check App
-        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
+        assertTrue(AppTestImpl.res.containsKey("TestPageApp0"));
         AppTestImpl pageApp = (AppTestImpl) AppTestImpl.res.get("TestPageApp0");
         assertEquals(1, pageApp.events.size());
-        assertEquals(true, pageApp.events.get(0).startsWith("start()"));
+        assertTrue(pageApp.events.get(0).startsWith("start()"));
         // Check injection
         assertNotNull(pageApp.getAppContext());
-        // assertNotNull(pageApp.subApp);
-        // Check AppContext
-        // assertEquals("app:app1_name", pageApp.getDefaultLocation().toString());
     }
 
     @Test
-    public void testStartIfNotAlreadyRunningThenFocus_Basic() {
+    public void testStartIfNotAlreadyRunningThenFocusBasic() {
         // GIVEN
-        String appName = appName_1 + "_name";
+        String appName = APP_NAME_1 + "_name";
 
         // WHEN
         appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(Location.LOCATION_TYPE_APP, appName, "", ""));
@@ -156,28 +155,25 @@ public class AppControllerImplTest {
         checkAppEvent(eventCollector, appName, AppLifecycleEventType.STARTED, 0);
         checkAppEvent(eventCollector, appName, AppLifecycleEventType.FOCUSED, 1);
         // Check App
-        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
+        assertTrue(AppTestImpl.res.containsKey("TestPageApp0"));
         AppTestImpl pageApp = (AppTestImpl) AppTestImpl.res.get("TestPageApp0");
 
         // We expect two events here. One for starting the app, and one for the focus.
         assertEquals(2, pageApp.events.size());
-        assertEquals(true, pageApp.events.get(0).startsWith("start()"));
-        assertEquals(true, pageApp.events.get(1).startsWith("locationChanged()"));
-
-        // Check AppContext
-        // assertEquals("app:app1_name", pageApp.getDefaultLocation().toString());
+        assertTrue(pageApp.events.get(0).startsWith("start()"));
+        assertTrue(pageApp.events.get(1).startsWith("locationChanged()"));
     }
 
     @Test
-    public void testStopApp_oneApp() {
+    public void testStopAppOneApp() {
         // GIVEN
-        String appName = appName_1 + "_name";
+        String appName = APP_NAME_1 + "_name";
         appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(Location.LOCATION_TYPE_APP, appName, "", ""));
         // Check
-        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
+        assertTrue(AppTestImpl.res.containsKey("TestPageApp0"));
         AppTestImpl pageApp = (AppTestImpl) AppTestImpl.res.get("TestPageApp0");
         assertEquals(2, pageApp.events.size());
-        assertEquals(true, pageApp.events.get(0).startsWith("start()"));
+        assertTrue(pageApp.events.get(0).startsWith("start()"));
 
         // WHEN
         appController.stopApp(appName);
@@ -188,27 +184,27 @@ public class AppControllerImplTest {
         checkAppEvent(eventCollector, appName, AppLifecycleEventType.FOCUSED, 1);
         checkAppEvent(eventCollector, appName, AppLifecycleEventType.STOPPED, 2);
         assertEquals(3, pageApp.events.size());
-        assertEquals(true, pageApp.events.get(0).startsWith("start()"));
-        assertEquals(true, pageApp.events.get(1).startsWith("locationChanged()"));
-        assertEquals(true, pageApp.events.get(2).startsWith("stop()"));
+        assertTrue(pageApp.events.get(0).startsWith("start()"));
+        assertTrue(pageApp.events.get(1).startsWith("locationChanged()"));
+        assertTrue(pageApp.events.get(2).startsWith("stop()"));
 
     }
 
     @Test
-    public void testStopApp_twoApp_OneFocused() {
+    public void testStopAppTwoAppsWithOneFocused() {
         // GIVEN
         // Start first App
-        String appName1 = appName_1 + "_name";
+        String appName1 = APP_NAME_1 + "_name";
         appController.startIfNotAlreadyRunningThenFocus(appName1, new DefaultLocation(Location.LOCATION_TYPE_APP, appName1, "", ""));
         // Check
-        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
+        assertTrue(AppTestImpl.res.containsKey("TestPageApp0"));
         AppTestImpl pageApp1 = (AppTestImpl) AppTestImpl.res.get("TestPageApp0");
 
         // Start second App
-        String appName2 = appName_2 + "_name";
+        String appName2 = APP_NAME_2 + "_name";
         appController.startIfNotAlreadyRunning(appName2, new DefaultLocation(Location.LOCATION_TYPE_APP, appName2, "", ""));
         // Check
-        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
+        assertTrue(AppTestImpl.res.containsKey("TestPageApp1"));
         AppTestImpl pageApp2 = (AppTestImpl) AppTestImpl.res.get("TestPageApp1");
 
         // WHEN
@@ -223,29 +219,29 @@ public class AppControllerImplTest {
         checkAppEvent(eventCollector, appName1, AppLifecycleEventType.FOCUSED, 4);
 
         assertEquals(2, pageApp2.events.size());
-        assertEquals(true, pageApp2.events.get(0).startsWith("start()"));
-        assertEquals(true, pageApp2.events.get(1).startsWith("stop()"));
+        assertTrue(pageApp2.events.get(0).startsWith("start()"));
+        assertTrue(pageApp2.events.get(1).startsWith("stop()"));
         assertEquals(2, pageApp1.events.size());
-        assertEquals(true, pageApp1.events.get(0).startsWith("start()"));
-        assertEquals(true, pageApp1.events.get(1).startsWith("locationChanged()"));
+        assertTrue(pageApp1.events.get(0).startsWith("start()"));
+        assertTrue(pageApp1.events.get(1).startsWith("locationChanged()"));
 
     }
 
     @Test
-    public void testStopApp_twoApp_BothFocused() {
+    public void testStopAppTwoAppsWithBothFocused() {
         // GIVEN
         // Start first App
-        String appName1 = appName_1 + "_name";
+        String appName1 = APP_NAME_1 + "_name";
         appController.startIfNotAlreadyRunningThenFocus(appName1, new DefaultLocation(Location.LOCATION_TYPE_APP, appName1, "", ""));
         // Check
-        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
+        assertTrue(AppTestImpl.res.containsKey("TestPageApp0"));
         AppTestImpl pageApp1 = (AppTestImpl) AppTestImpl.res.get("TestPageApp0");
 
         // Start second App
-        String appName2 = appName_2 + "_name";
+        String appName2 = APP_NAME_2 + "_name";
         appController.startIfNotAlreadyRunningThenFocus(appName2, new DefaultLocation(Location.LOCATION_TYPE_APP, appName2, "", ""));
         // Check
-        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
+        assertTrue(AppTestImpl.res.containsKey("TestPageApp1"));
         AppTestImpl pageApp2 = (AppTestImpl) AppTestImpl.res.get("TestPageApp1");
 
         // WHEN
@@ -261,13 +257,13 @@ public class AppControllerImplTest {
         checkAppEvent(eventCollector, appName1, AppLifecycleEventType.FOCUSED, 5);
 
         assertEquals(3, pageApp2.events.size());
-        assertEquals(true, pageApp2.events.get(0).startsWith("start()"));
-        assertEquals(true, pageApp2.events.get(1).startsWith("locationChanged()"));
-        assertEquals(true, pageApp2.events.get(2).startsWith("stop()"));
+        assertTrue(pageApp2.events.get(0).startsWith("start()"));
+        assertTrue(pageApp2.events.get(1).startsWith("locationChanged()"));
+        assertTrue(pageApp2.events.get(2).startsWith("stop()"));
         assertEquals(3, pageApp1.events.size());
-        assertEquals(true, pageApp1.events.get(0).startsWith("start()"));
-        assertEquals(true, pageApp1.events.get(1).startsWith("locationChanged()"));
-        assertEquals(true, pageApp1.events.get(2).startsWith("locationChanged()"));
+        assertTrue(pageApp1.events.get(0).startsWith("start()"));
+        assertTrue(pageApp1.events.get(1).startsWith("locationChanged()"));
+        assertTrue(pageApp1.events.get(2).startsWith("locationChanged()"));
 
     }
 
@@ -275,17 +271,17 @@ public class AppControllerImplTest {
     public void testStopCurrentApp() {
         // GIVEN
         // Start first App
-        String appName1 = appName_1 + "_name";
+        String appName1 = APP_NAME_1 + "_name";
         appController.startIfNotAlreadyRunningThenFocus(appName1, new DefaultLocation(Location.LOCATION_TYPE_APP, appName1, "", ""));
         // Check
-        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
+        assertTrue(AppTestImpl.res.containsKey("TestPageApp0"));
         AppTestImpl.res.get("TestPageApp0");
 
         // Start second App
-        String appName2 = appName_2 + "_name";
+        String appName2 = APP_NAME_2 + "_name";
         appController.startIfNotAlreadyRunningThenFocus(appName2, new DefaultLocation(Location.LOCATION_TYPE_APP, appName2, "", ""));
         // Check
-        assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
+        assertTrue(AppTestImpl.res.containsKey("TestPageApp1"));
         AppTestImpl pageApp2 = (AppTestImpl) AppTestImpl.res.get("TestPageApp1");
 
         // WHEN
@@ -293,39 +289,39 @@ public class AppControllerImplTest {
 
         // THEN
         assertEquals(3, pageApp2.events.size());
-        assertEquals(true, pageApp2.events.get(0).startsWith("start()"));
-        assertEquals(true, pageApp2.events.get(1).startsWith("locationChanged()"));
-        assertEquals(true, pageApp2.events.get(2).startsWith("stop()"));
+        assertTrue(pageApp2.events.get(0).startsWith("start()"));
+        assertTrue(pageApp2.events.get(1).startsWith("locationChanged()"));
+        assertTrue(pageApp2.events.get(2).startsWith("stop()"));
     }
 
     @Test
     public void testIsAppStarted() {
         // GIVEN
-        String appName1 = appName_1 + "_name";
+        String appName1 = APP_NAME_1 + "_name";
         // Check
-        assertEquals(false, appController.isAppStarted(appName1));
+        assertFalse(appController.isAppStarted(appName1));
         // Start App
         appController.startIfNotAlreadyRunningThenFocus(appName1, new DefaultLocation(Location.LOCATION_TYPE_APP, appName1, "", ""));
         // Check
-        assertEquals(true, appController.isAppStarted(appName1));
+        assertTrue(appController.isAppStarted(appName1));
 
         // WHEN
         appController.stopCurrentApp();
 
         // THEN
-        assertEquals(false, appController.isAppStarted(appName1));
+        assertFalse(appController.isAppStarted(appName1));
     }
 
     @Test
     public void testLocationHandler() {
 
         // GIVEN
-        Location location = new DefaultLocation(Location.LOCATION_TYPE_APP, appName_1 + "_name", subAppName_1 + "_name");
+        Location location = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_1 + "_name", SUBAPP_NAME_1 + "_name");
 
         // WHEN
         locationController.goTo(location);
         // THEN
-        assertEquals(true, appController.isAppStarted(appName_1 + "_name"));
+        assertTrue(appController.isAppStarted(APP_NAME_1 + "_name"));
 
     }
 
@@ -333,15 +329,15 @@ public class AppControllerImplTest {
     public void testOpenTwoSubApps() {
 
         // GIVEN
-        Location location = new DefaultLocation(Location.LOCATION_TYPE_APP, appName_1 + "_name", subAppName_1 + "_name");
+        Location location = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_1 + "_name", SUBAPP_NAME_1 + "_name");
         locationController.goTo(location);
 
         // WHEN
-        Location location2 = new DefaultLocation(Location.LOCATION_TYPE_APP, appName_1 + "_name", subAppName_2 + "_name");
+        Location location2 = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_1 + "_name", SUBAPP_NAME_2 + "_name");
         locationController.goTo(location2);
 
         // THEN
-        assertEquals(true, appController.isAppStarted(appName_1 + "_name"));
+        assertTrue(appController.isAppStarted(APP_NAME_1 + "_name"));
         assertNotSame(location, appController.getCurrentApp().getCurrentLocation());
         assertEquals(location2, appController.getCurrentApp().getCurrentLocation());
 
@@ -351,27 +347,67 @@ public class AppControllerImplTest {
     public void testOpenTwoAppsWithSubApps() {
 
         // GIVEN
-        Location location = new DefaultLocation(Location.LOCATION_TYPE_APP, appName_1 + "_name", subAppName_1 + "_name");
+        Location location = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_1 + "_name", SUBAPP_NAME_1 + "_name");
         locationController.goTo(location);
 
-        Location location2 = new DefaultLocation(Location.LOCATION_TYPE_APP, appName_1 + "_name", subAppName_2 + "_name");
+        Location location2 = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_1 + "_name", SUBAPP_NAME_2 + "_name");
         locationController.goTo(location2);
 
-        Location location3 = new DefaultLocation(Location.LOCATION_TYPE_APP, appName_1 + "_name", subAppName_2 + "_name");
+        Location location3 = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_1 + "_name", SUBAPP_NAME_2 + "_name");
         locationController.goTo(location3);
 
         // WHEN
         // switch to current location of first app
-        Location location4 = new DefaultLocation(Location.LOCATION_TYPE_APP, appName_1 + "_name", "");
+        Location location4 = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_1 + "_name", "");
         locationController.goTo(location4);
 
         // THEN
-        assertEquals(true, appController.isAppStarted(appName_1 + "_name"));
+        assertTrue(appController.isAppStarted(APP_NAME_1 + "_name"));
         assertNotSame(location, appController.getCurrentApp().getCurrentLocation());
         assertNotSame(location3, appController.getCurrentApp().getCurrentLocation());
         assertNotSame(location4, appController.getCurrentApp().getCurrentLocation());
         assertEquals(location2, appController.getCurrentApp().getCurrentLocation());
 
+    }
+
+    @Test
+    public void testOnLocationChangeChecksForMissingSubAppId() {
+        // GIVEN
+        Location location = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_1 + "_name", SUBAPP_NAME_1 + "_name");
+        locationController.goTo(location);
+
+        Location newLocation = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_2 + "_name", "");
+        LocationChangedEvent newLocationEvent = new LocationChangedEvent(newLocation);
+
+        // WHEN
+        appController.onLocationChanged(newLocationEvent);
+
+        // THEN
+        assertNotNull(appController.getCurrentApp());
+        assertEquals(APP_NAME_2 + "_name", appController.getCurrentApp().getName());
+        assertNotNull(appController.getCurrentApp().getCurrentLocation());
+        assertNotEquals(newLocation, appController.getCurrentApp().getCurrentLocation());
+        assertNotNull(appController.getCurrentApp().getCurrentLocation().getSubAppId());
+    }
+
+    @Test
+    public void testOnLocationChangePreservesParameters() {
+        // GIVEN
+        Location location = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_1 + "_name", SUBAPP_NAME_1 + "_name");
+        locationController.goTo(location);
+
+        String parameter = "/:param:test";
+        Location newLocation = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_1 + "_name", "", parameter);
+        LocationChangedEvent newLocationEvent = new LocationChangedEvent(newLocation);
+
+        // WHEN
+        appController.onLocationChanged(newLocationEvent);
+
+        // THEN
+        assertNotNull(appController.getCurrentApp());
+        assertEquals(APP_NAME_1 + "_name", appController.getCurrentApp().getName());
+        assertNotNull(appController.getCurrentApp().getCurrentLocation().getParameter());
+        assertEquals(parameter, appController.getCurrentApp().getCurrentLocation().getParameter());
     }
 
     /**
@@ -384,12 +420,11 @@ public class AppControllerImplTest {
 
         // create subapps
         Map<String, SubAppDescriptor> subApps = new HashMap<String, SubAppDescriptor>();
-        subApps.put(subAppName_1, AppTestUtility.createSubAppDescriptor(subAppName_1, AppTestSubApp.class, true));
-        subApps.put(subAppName_2, AppTestUtility.createSubAppDescriptor(subAppName_2, AppTestSubApp.class, true));
+        subApps.put(SUBAPP_NAME_1, AppTestUtility.createSubAppDescriptor(SUBAPP_NAME_1, AppTestSubApp.class, true));
+        subApps.put(SUBAPP_NAME_2, AppTestUtility.createSubAppDescriptor(SUBAPP_NAME_2, AppTestSubApp.class, true));
 
         // Set group1 with App1
-        AppDescriptor app1 = AppTestUtility.createAppDescriptorWithSubApps(appName_1, AppTestImpl.class, subApps);
-
+        AppDescriptor app1 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_1, AppTestImpl.class, subApps);
         AppLauncherGroup group1 = AppTestUtility.createAppGroup("group1", app1);
         // Set group2 with App2
         AppDescriptor app2 = AppTestUtility.createAppDescriptorWithSubApps("app2", AppTestImpl.class, subApps);
@@ -427,6 +462,9 @@ public class AppControllerImplTest {
         return builder.build();
     }
 
+    /**
+     * App event collector.
+     */
     public static class AppEventCollector implements AppLifecycleEventHandler {
 
         List<AppLifecycleEvent> appLifecycleEvent = new ArrayList<AppLifecycleEvent>();
@@ -452,3 +490,4 @@ public class AppControllerImplTest {
         assertEquals(appName, eventCollector.appLifecycleEvent.get(position).getAppDescriptor().getName());
     }
 }
+

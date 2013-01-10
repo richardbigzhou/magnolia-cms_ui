@@ -11,7 +11,7 @@
   <packaging>jar</packaging>
   <name>magnolia-ui-admincentral</name>
   <properties>
-    <cloverCoverageThreshold>28</cloverCoverageThreshold>
+    <cloverCoverageThreshold>30</cloverCoverageThreshold>
   </properties>
   <dependencies>
     <dependency>
@@ -57,7 +57,7 @@
     <!-- For tests -->
     <dependency>
       <groupId>junit</groupId>
-      <artifactId>junit-dep</artifactId>
+      <artifactId>junit</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

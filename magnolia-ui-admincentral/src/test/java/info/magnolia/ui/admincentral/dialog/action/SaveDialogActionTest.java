@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -45,11 +46,13 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -58,7 +61,8 @@ import com.vaadin.data.Item;
 /**
  * Main test class for {@link SaveDialogAction} and {@link SaveDialogActionDefinition}.
  */
-public class SaveDialogActionTest extends RepositoryTestCase {
+public class SaveDialogActionTest {
+
     private SaveDialogAction dialogAction;
     private SaveDialogActionDefinition dialogActionDefinition;
     private CallbackDialogActionTest.FormDialogPresenterTest presenter;
@@ -66,46 +70,53 @@ public class SaveDialogActionTest extends RepositoryTestCase {
     private Item item;
     private MockSession session;
 
-    @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-        this.dialogActionDefinition = new SaveDialogActionDefinition();
-        this.presenter = new CallbackDialogActionTest.FormDialogPresenterTest();
+        dialogActionDefinition = new SaveDialogActionDefinition();
+        dialogActionDefinition.setLabel("label");
+        dialogActionDefinition.setName("name");
+
+        presenter = new CallbackDialogActionTest.FormDialogPresenterTest();
         // Init Node
-        session = new MockSession("config");
+        session = new MockSession(RepositoryConstants.WEBSITE);
         MockContext ctx = new MockContext();
         ctx.setUser(new MgnlUser("userName", "realm", new ArrayList<String>(), new ArrayList<String>(), new HashMap<String, String>()));
-        ctx.addSession("config", session);
+        ctx.addSession(RepositoryConstants.WEBSITE, session);
         MgnlContext.setInstance(ctx);
     }
 
+    @After
+    public void tearDown() throws Exception {
+        dialogActionDefinition = null;
+        presenter = null;
+        session = null;
+        MgnlContext.setInstance(null);
+    }
+
     @Test
-    public void executeDefaultExecuteTest() throws RepositoryException, ActionExecutionException {
+    public void testExecuteDefaultExecute() throws RepositoryException, ActionExecutionException {
         // GIVEN
         node = session.getRootNode().addNode("underlying");
         node.getSession().save();
         item = new JcrNodeAdapter(node);
-        ((CallbackDialogActionTest.FormPresenterTest) this.presenter.getForm()).setTestItem(item);
-        initDefinition("name", "label");
+        ((CallbackDialogActionTest.FormPresenterTest) presenter.getForm()).setTestItem(item);
         dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
 
         // WHEN
         dialogAction.execute();
 
         // THEN
-        assertEquals("onSuccess(name)", this.presenter.getCallbackActionCalled());
+        assertEquals("onSuccess(name)", presenter.getCallbackActionCalled());
     }
 
     @Test
-    public void executeSaveUpdatePropertyTest() throws RepositoryException, ActionExecutionException {
+    public void testExecuteSaveUpdateProperty() throws RepositoryException, ActionExecutionException {
         // GIVEN
         node = session.getRootNode().addNode("underlying");
         node.setProperty("property", "initial");
         item = new JcrNodeAdapter(node);
         item.getItemProperty("property").setValue("changed");
-        ((CallbackDialogActionTest.FormPresenterTest) this.presenter.getForm()).setTestItem(item);
-        initDefinition("name", "label");
+        ((CallbackDialogActionTest.FormPresenterTest) presenter.getForm()).setTestItem(item);
         dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
 
         // WHEN
@@ -118,14 +129,13 @@ public class SaveDialogActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void executeSaveCreatePropertyTest() throws RepositoryException, ActionExecutionException {
+    public void testExecuteSaveCreateProperty() throws RepositoryException, ActionExecutionException {
         // GIVEN
         node = session.getRootNode().addNode("underlying");
 
         item = new JcrNodeAdapter(node);
         item.addItemProperty("property", DefaultPropertyUtil.newDefaultProperty("property", null, "changed"));
-        ((CallbackDialogActionTest.FormPresenterTest) this.presenter.getForm()).setTestItem(item);
-        initDefinition("name", "label");
+        ((CallbackDialogActionTest.FormPresenterTest) presenter.getForm()).setTestItem(item);
         dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
 
         // WHEN
@@ -138,31 +148,154 @@ public class SaveDialogActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void executeSaveRemovePropertyTest() throws RepositoryException, ActionExecutionException {
+    public void testExecuteSaveRemoveProperty() throws RepositoryException, ActionExecutionException {
         // GIVEN
         node = session.getRootNode().addNode("underlying");
         node.setProperty("property", "initial");
         item = new JcrNodeAdapter(node);
         item.removeItemProperty("property");
-        ((CallbackDialogActionTest.FormPresenterTest) this.presenter.getForm()).setTestItem(item);
-        initDefinition("name", "label");
-        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+        ((CallbackDialogActionTest.FormPresenterTest) presenter.getForm()).setTestItem(item);
         assertEquals(true, node.hasProperty("property"));
+        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+
         // WHEN
         dialogAction.execute();
 
         // THEN
         node = session.getRootNode().getNode("underlying");
         assertEquals(false, node.hasProperty("property"));
-
     }
 
-    /**
-     * Init the Definition.
-     */
-    private void initDefinition(String name, String label) {
-        this.dialogActionDefinition.setLabel(label);
-        this.dialogActionDefinition.setName(name);
+    @Test
+    public void testUpdateLastModified() throws RepositoryException{
+        // GIVEN
+        node = session.getRootNode().addNode("content", NodeTypes.Content.NAME);
+
+        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+        Calendar past = Calendar.getInstance();
+        past.set(1970, 3, 3);
+        node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
+
+        // WHEN
+        dialogAction.updateLastModified(node);
+
+        // THEN
+        Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
+        assertTrue(NodeTypes.LastModified.NAME + " should have been updated.", past.before(lastModified));
+    }
+
+    @Test
+    public void testUpdateLastModifiedDoesNothingForFolder() throws RepositoryException{
+        // GIVEN
+        node = session.getRootNode().addNode("folder", NodeTypes.Folder.NAME);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+        Calendar past = Calendar.getInstance();
+        past.set(1970, 3, 3);
+
+        node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
+
+        // WHEN
+        dialogAction.updateLastModified(node);
+
+        // THEN
+        Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
+        assertEquals(NodeTypes.LastModified.NAME + " should not have been updated.", past, lastModified);
+    }
+
+    @Test
+    public void testUpdateLastModifiedTouchesParent() throws RepositoryException{
+        // GIVEN
+        Node parentOfParent = session.getRootNode().addNode("parentOfParent", NodeTypes.Content.NAME);
+        Node parent = parentOfParent.addNode("parent", NodeTypes.ContentNode.NAME);
+        node = parent.addNode("node", NodeTypes.ContentNode.NAME);
+        Calendar past = Calendar.getInstance();
+        past.set(1970, 3, 3);
+
+        node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
+        parent.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+
+        // WHEN
+        dialogAction.updateLastModified(node);
+
+        // THEN
+        Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
+        assertTrue(NodeTypes.LastModified.NAME + " of node should have been updated.", past.before(lastModified));
+        lastModified = NodeTypes.LastModified.getLastModified(parent);
+        assertTrue(NodeTypes.LastModified.NAME + " of parent should have been updated.", past.before(lastModified));
+    }
+
+    @Test
+    public void testUpdateLastModifiedDoesNotTouchParentWhenNotWebsiteWorkspace() throws RepositoryException{
+        // GIVEN
+        // session has to be non-Website for this test
+        session = new MockSession(RepositoryConstants.CONFIG);
+        Node parentOfParent = session.getRootNode().addNode("parentOfParent", NodeTypes.Content.NAME);
+        Node parent = parentOfParent.addNode("parent", NodeTypes.ContentNode.NAME);
+        node = parent.addNode("node", NodeTypes.ContentNode.NAME);
+        Calendar past = Calendar.getInstance();
+        past.set(1970, 3, 3);
+
+        node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
+        parent.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+
+        // WHEN
+        dialogAction.updateLastModified(node);
+
+        // THEN
+        Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
+        assertTrue(NodeTypes.LastModified.NAME + " of node should have been updated.", past.before(lastModified));
+        lastModified = NodeTypes.LastModified.getLastModified(parent);
+        assertEquals(NodeTypes.LastModified.NAME + " of parent should not have been updated.", past, lastModified);
+    }
+
+    @Test
+    public void testUpdateLastModifiedDoesNotTouchParentWhenItHasLevel1() throws RepositoryException{
+        // GIVEN
+        Node parentOfParent = session.getRootNode().addNode("parentOfParent", NodeTypes.ContentNode.NAME);
+        Node parent = parentOfParent.addNode("parent", NodeTypes.ContentNode.NAME);
+        node = parent.addNode("node", NodeTypes.ContentNode.NAME);
+        Calendar past = Calendar.getInstance();
+        past.set(1970, 3, 3);
+
+        node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
+        parent.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+
+        // WHEN
+        dialogAction.updateLastModified(node);
+
+        // THEN
+        Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
+        assertTrue(NodeTypes.LastModified.NAME + " of node should have been updated.", past.before(lastModified));
+        lastModified = NodeTypes.LastModified.getLastModified(parent);
+        assertTrue(NodeTypes.LastModified.NAME + " of parent should have been updated.", past.before(lastModified));
+        lastModified = NodeTypes.LastModified.getLastModified(parentOfParent);
+        assertTrue(NodeTypes.LastModified.NAME + " of parentOfParent should have been updated.", past.before(lastModified));
+    }
+
+    @Test
+    public void testUpdateLastModifiedDoesNotTouchParentWhenItIsTypeContent() throws RepositoryException{
+        // GIVEN
+        Node parentOfParent = session.getRootNode().addNode("parentOfParent", NodeTypes.Content.NAME);
+        Node parent = parentOfParent.addNode("parent", NodeTypes.Content.NAME);
+        node = parent.addNode("node", NodeTypes.Content.NAME);
+        Calendar past = Calendar.getInstance();
+        past.set(1970, 3, 3);
+
+        node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
+        parent.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+
+        // WHEN
+        dialogAction.updateLastModified(node);
+
+        // THEN
+        Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
+        assertTrue(NodeTypes.LastModified.NAME + " of node should have been updated.", past.before(lastModified));
+        lastModified = NodeTypes.LastModified.getLastModified(parent);
+        assertEquals(NodeTypes.LastModified.NAME + " of parent should not have been updated.", past, lastModified);
     }
 
 }

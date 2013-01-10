@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.app.showcase.main;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.framework.view.View;
@@ -77,7 +77,7 @@ public class FormsPresenter implements FormsView.Listener {
 
             Node parentNode = session.getNode(path);
 
-            final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, MgnlNodeType.NT_COMPONENT);
+            final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, NodeTypes.Component.NAME);
             DefaultProperty property = new DefaultProperty(ModelConstants.JCR_NAME, "0");
             item.addItemProperty(ModelConstants.JCR_NAME, property);
 

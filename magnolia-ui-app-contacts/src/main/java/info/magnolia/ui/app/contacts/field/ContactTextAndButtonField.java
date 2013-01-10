@@ -54,6 +54,7 @@ public class ContactTextAndButtonField extends CustomField<String> {
     private ContactThumbnailField thumbnail;
 
     public ContactTextAndButtonField(TextAndButtonField textAndButtonField, ImageProvider imageThumbnailProvider, String workspace) {
+        // used to set the correct property and values
         this.textAndButtonField = textAndButtonField;
         this.thumbnail = new ContactThumbnailField(imageThumbnailProvider, workspace);
     }

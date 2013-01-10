@@ -50,6 +50,7 @@ public class Base64Translator implements Converter<String, String> {
      * Encode.
      */
     @Override
+
     public String convertToModel(String decoded, Locale locale) throws Converter.ConversionException {
         if (StringUtils.isBlank(decoded)) {
             return StringUtils.EMPTY;
@@ -77,5 +78,4 @@ public class Base64Translator implements Converter<String, String> {
     public Class<String> getPresentationType() {
         return String.class;
     }
-
 }

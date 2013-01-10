@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
@@ -56,6 +57,7 @@ import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
@@ -175,7 +177,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
             @Override
             public void onSearch(SearchEvent event) {
-                doSearch(event);
+                doSearch(event.getSearchExpression());
             }
         });
 
@@ -235,14 +237,23 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
      * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected path,
      * view type and optional query (in case of a search view).
      */
-    public void resynch(final String path, final ViewType viewType, final String query) {
+    public void resync(final String path, final ViewType viewType, final String query) {
+        view.setViewType(viewType);
+
+        if (viewType == ViewType.SEARCH) {
+            doSearch(query);
+            // update search field and focus it
+            view.setSearchQuery(query);
+        }
+
+        // restore selection
         boolean itemExists = itemExists(path);
         if (!itemExists) {
             log.warn(
                     "Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.",
                     path, workbenchDefinition.getWorkspace());
         }
-        this.view.resynch(itemExists ? path : "/", viewType, query);
+        view.selectPath(itemExists ? path : "/");
     }
 
     private void refreshActionbarPreviewImage(final String path, final String workspace) {
@@ -258,16 +269,13 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         }
     }
 
-    private void doSearch(SearchEvent event) {
+    private void doSearch(String searchExpression) {
+        // firing new search forces search view as new view type
         if (view.getSelectedView().getViewType() != ViewType.SEARCH) {
-            log.warn("Expected view type {} but is {} instead.", ViewType.SEARCH.name(), view.getSelectedView().getViewType().name());
-            return;
+            view.setViewType(ViewType.SEARCH);
         }
         final SearchView searchView = (SearchView) view.getSelectedView();
-        final String searchExpression = event.getSearchExpression();
-
         if (StringUtils.isBlank(searchExpression)) {
-            view.resynch(null, view.getSelectedView().getViewType(), searchExpression);
             searchView.clear();
         } else {
             searchView.search(searchExpression);
@@ -285,10 +293,16 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     private void editItem(ItemEditedEvent event) {
         Item item = event.getItem();
+        // don't save if no value change occurred on adapter
+        if (!(item instanceof AbstractJcrAdapter) || !((AbstractJcrAdapter) item).hasChangedProperties()) {
+            return;
+        }
+
         if (item instanceof JcrItemNodeAdapter) {
             // Saving JCR Node, getting updated node first
             Node node = ((JcrItemNodeAdapter) item).getNode();
             try {
+                LastModified.update(node);
                 node.getSession().save();
             } catch (RepositoryException e) {
                 log.error("Could not save changes to node.", e);
@@ -301,6 +315,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
                 Property property = ((JcrPropertyAdapter) item).getProperty();
                 Node parent = property.getParent();
                 ((JcrPropertyAdapter) item).updateProperties();
+                LastModified.update(parent);
                 parent.getSession().save();
             } catch (RepositoryException e) {
                 log.error("Could not save changes to node.", e);

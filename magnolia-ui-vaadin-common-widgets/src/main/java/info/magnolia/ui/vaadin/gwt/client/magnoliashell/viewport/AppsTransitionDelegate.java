@@ -158,7 +158,6 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
 
     private void fadeOut(final Element curtainEl, final Callbacks callbacks) {
         JQueryWrapper jq = JQueryWrapper.select(curtainEl);
-
         // init
         if (jq.is(":animated")) {
             jq.stop();

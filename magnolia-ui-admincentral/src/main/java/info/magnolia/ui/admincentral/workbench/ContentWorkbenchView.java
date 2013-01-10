@@ -60,6 +60,11 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
     void setViewType(ContentView.ViewType type);
 
     /**
+     * Updates the search box with given search query.
+     */
+    void setSearchQuery(String query);
+
+    /**
      * Refreshes the current view.
      */
     void refresh();
@@ -75,12 +80,6 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
     void setActionbarView(ActionbarView actionbar);
 
     void selectPath(String path);
-
-    /**
-     * Synchronize the view status to reflect the information extracted from the Location token,
-     * i.e. selected path, view type and optional query (in case of a 'search' view).
-     */
-    void resynch(String path, ViewType viewType, String query);
 
     ContentView getSelectedView();
 }

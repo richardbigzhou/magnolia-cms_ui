@@ -57,5 +57,4 @@ public interface ImageProvider {
     Object getThumbnailResourceByPath(String workspace, String path, String generator);
 
     Object getThumbnailResourceById(String workspace, String identifier, String generator);
-
 }

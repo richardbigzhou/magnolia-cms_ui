@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
 import info.magnolia.ui.admincentral.content.item.ItemView;
@@ -65,7 +65,7 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
     public void execute() throws ActionExecutionException {
         try {
 
-            if (!NodeUtil.isNodeType(nodeToEdit, MgnlNodeType.NT_CONTENT)) {
+            if (!NodeUtil.isNodeType(nodeToEdit, NodeTypes.Content.NAME)) {
                 return;
             }
             ItemLocation location = new ItemLocation("pages", "editor", ItemView.ViewType.EDIT, nodeToEdit.getPath());

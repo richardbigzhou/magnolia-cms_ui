@@ -114,6 +114,9 @@ public class CallbackDialogActionTest {
         this.dialogActionDefinition.setSuccessActionName(successActionName != null ? successActionName : "success");
     }
 
+    /**
+     * Form presenter test.
+     */
     public static class FormPresenterTest implements FormPresenter {
         private Item item;
 
@@ -167,6 +170,9 @@ public class CallbackDialogActionTest {
         }
     }
 
+    /**
+     * Form dialog presenter test.
+     */
     public static class FormDialogPresenterTest implements FormDialogPresenter {
 
         private String callbackActionCalled;

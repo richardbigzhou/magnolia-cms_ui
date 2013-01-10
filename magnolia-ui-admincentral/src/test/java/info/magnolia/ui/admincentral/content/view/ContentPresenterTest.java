@@ -54,7 +54,6 @@ import org.mockito.ArgumentCaptor;
  * Tests for ContentPresenter.
  */
 public class ContentPresenterTest {
-
     protected ContentViewBuilder contentViewBuilder;
 
     protected AppContext context;
@@ -69,6 +68,8 @@ public class ContentPresenterTest {
 
     protected static final String TEST_ITEM_PATH = "2";
 
+    private static final String TEST_WORKBENCHDEF_PATH = "/path/to/somewhere";
+
     @Before
     public void setUp() {
         contentViewBuilder = mock(ContentViewBuilder.class);
@@ -78,6 +79,7 @@ public class ContentPresenterTest {
         final WorkbenchDefinition workbench = mock(WorkbenchDefinition.class);
         when(descr.getWorkbench()).thenReturn(workbench);
         when(workbench.getWorkspace()).thenReturn(TEST_WORKSPACE_NAME);
+        when(workbench.getPath()).thenReturn(TEST_WORKBENCHDEF_PATH);
         eventBus = mock(EventBus.class);
         shell = mock(Shell.class);
         item = mock(JcrItemAdapter.class);
@@ -112,5 +114,17 @@ public class ContentPresenterTest {
         verify(eventBus).fireEvent(argument.capture());
         assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
         assertEquals(TEST_ITEM_PATH, argument.getValue().getPath());
+    }
+
+    @Test
+    public void testOnItemSelectionWithNullItemSetSelectedPath() {
+        // GIVEN see setUp
+
+        // WHEN
+        ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
+        presenter.onItemSelection(null);
+
+        // THEN
+        assertEquals(TEST_WORKBENCHDEF_PATH, presenter.getSelectedItemPath());
     }
 }

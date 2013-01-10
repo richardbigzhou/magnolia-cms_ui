@@ -53,7 +53,6 @@ import com.vaadin.client.UIDL;
 import com.vaadin.client.Util;
 import com.vaadin.client.ui.VScrollTablePatched;
 
-
 /**
  * Magnolia table extends VScrollTable in a way that out-of-the-box version of it would not allow.
  * Therefore maven build will patch the VScrollTable to reveal it's private members.

@@ -38,6 +38,7 @@ import info.magnolia.ui.framework.event.EventBus;
 
 import javax.inject.Named;
 
+
 import com.google.inject.Inject;
 
 /**

@@ -1,5 +1,5 @@
---- k1/src/main/java/com/vaadin/client/ui/VTreeTable.java	2013-01-08 10:34:48.000000000 +0200
-+++ k2/src/main/java/com/vaadin/client/ui/VTreeTable.java	2013-01-08 12:26:00.000000000 +0200
+--- k1/src/main/java/com/vaadin/client/ui/VTreeTable.java   2013-01-08 10:34:48.000000000 +0200
++++ k2/src/main/java/com/vaadin/client/ui/VTreeTable.java   2013-01-08 12:26:00.000000000 +0200
 @@ -16,6 +16,8 @@
  
  package com.vaadin.client.ui;

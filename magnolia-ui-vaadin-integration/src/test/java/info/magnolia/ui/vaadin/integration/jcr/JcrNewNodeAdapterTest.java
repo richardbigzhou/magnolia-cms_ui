@@ -49,7 +49,7 @@ import com.vaadin.data.Property;
 
 public class JcrNewNodeAdapterTest {
 
-    private String worksapceName = "workspace";
+    private final String worksapceName = "workspace";
     private MockSession session;
 
     @Before
@@ -66,7 +66,7 @@ public class JcrNewNodeAdapterTest {
     }
 
     @Test
-    public void testGetItemProperty_Modified() throws Exception {
+    public void testGetItemPropertyReturnsModified() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter
         String nodeName = "rootNode";
@@ -91,7 +91,7 @@ public class JcrNewNodeAdapterTest {
     }
 
     @Test
-    public void testGetNode() throws Exception {
+    public void testGetNodeUpdatesNode() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter
         String nodeName = "rootNode";
@@ -121,16 +121,17 @@ public class JcrNewNodeAdapterTest {
         // THEN
         assertNotNull(res);
         assertSame(res, parentNode.getNode(res.getName()));
-        assertEquals(true, res.hasProperty("notModify"));
-        assertEquals(false, res.hasProperty("notModifyRemoved"));
-        assertEquals(true, res.hasProperty("modify"));
+        // new property and Empty: not stored
+        assertFalse(res.hasProperty("notModify"));
+        assertFalse(res.hasProperty("notModifyRemoved"));
+        assertTrue(res.hasProperty("modify"));
         assertEquals("newModify", res.getProperty("modify").getString());
-        assertEquals(false, res.hasProperty("modifyRemoved"));
+        assertFalse(res.hasProperty("modifyRemoved"));
         assertEquals(nodeType, res.getPrimaryNodeType().getName());
     }
 
     @Test
-    public void testGetNode_Twice() throws Exception {
+    public void testGetNodeTwice() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter
         String nodeName = "rootNode";

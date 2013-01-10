@@ -48,7 +48,6 @@ public class ItemViewImpl implements ItemView {
     @Override
     public void setItemView(Component newView, ViewType viewType) {
         this.itemView = newView;
-        this.itemView = newView;
         this.viewType = viewType;
     }
 

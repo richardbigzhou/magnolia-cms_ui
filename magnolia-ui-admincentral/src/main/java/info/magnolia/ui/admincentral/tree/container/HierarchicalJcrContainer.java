@@ -192,11 +192,6 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
                 groupingItemTypeNodes.add(next);
             }
         }
-        // TODO This behaviour is optional in old AdminCentral, you can set a custom comparator.
-        ItemNameComparator itemNameComparator = new ItemNameComparator();
-        Collections.sort(mainItemTypeNodes, itemNameComparator);
-
-        Collections.sort(groupingItemTypeNodes, itemNameComparator);
 
         items.addAll(groupingItemTypeNodes);
         items.addAll(mainItemTypeNodes);
@@ -211,6 +206,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
                     properties.add(property);
                 }
             }
+            ItemNameComparator itemNameComparator = new ItemNameComparator();
             Collections.sort(properties, itemNameComparator);
             items.addAll(properties);
         }

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.cms.core.MgnlNodeType;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
 import info.magnolia.ui.admincentral.content.item.ItemView;
@@ -79,7 +79,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
     public void execute() throws ActionExecutionException {
         try {
 
-            if (!NodeUtil.isNodeType(nodeToPreview, MgnlNodeType.NT_CONTENT)) {
+            if (!NodeUtil.isNodeType(nodeToPreview, NodeTypes.Content.NAME)) {
                 return;
             }
 

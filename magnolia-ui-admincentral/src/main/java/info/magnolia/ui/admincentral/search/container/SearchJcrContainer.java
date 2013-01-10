@@ -47,8 +47,7 @@ public class SearchJcrContainer extends FlatJcrContainer {
 
     private static final Logger log = LoggerFactory.getLogger(SearchJcrContainer.class);
 
-    protected static final String WHERE_TEMPLATE_FOR_SEARCH = " (localname() = '%s' or contains(" + SELECTOR_NAME + ".*, '%s'))";
-
+    protected static final String WHERE_TEMPLATE_FOR_SEARCH = " (localname() LIKE '%%%1$s%%' or contains(" + SELECTOR_NAME + ".*, '%1$s'))";
     private String fullTextExpression;
 
     public SearchJcrContainer(WorkbenchDefinition workbenchDefinition) {
@@ -57,11 +56,9 @@ public class SearchJcrContainer extends FlatJcrContainer {
 
     @Override
     protected String getQueryWhereClause() {
-        String whereClause = "";
         final String clauseWorkspacePath = getQueryWhereClauseWorkspacePath();
-        final String clauseSearch = getQueryWhereClauseSearch();
+        String whereClause = getQueryWhereClauseSearch();
 
-        whereClause = clauseSearch;
         if (!"".equals(clauseWorkspacePath)) {
             if (!"".equals(whereClause)) {
                 whereClause = clauseWorkspacePath + " and " + whereClause;
@@ -84,7 +81,7 @@ public class SearchJcrContainer extends FlatJcrContainer {
         }
         // See http://wiki.apache.org/jackrabbit/EncodingAndEscaping
         final String escapedFullTextExpression = getFullTextExpression().replaceAll("'", "''").trim();
-        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, escapedFullTextExpression, escapedFullTextExpression);
+        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, escapedFullTextExpression);
         log.debug("Search where-clause is {}", stmt);
         return stmt;
     }

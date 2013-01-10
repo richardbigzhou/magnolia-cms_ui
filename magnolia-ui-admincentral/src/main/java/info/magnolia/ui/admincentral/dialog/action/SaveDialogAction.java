@@ -33,15 +33,14 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -76,13 +75,31 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
                 final Node node = itemChanged.getNode();
+                updateLastModified(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
             }
             presenter.getCallback().onSuccess(getDefinition().getName());
         } else {
-            log.info("Validation error(s) occured. No save performed.");
+            log.info("Validation error(s) occurred. No save performed.");
+        }
+    }
+
+    /**
+     * Recursively update LastModified for the node until the parent node is of type
+     * mgnl:content or deph=1. If it's not the 'website' workspace, do not perform recursivity.
+     */
+    protected void updateLastModified(Node currentNode) throws RepositoryException {
+        if (!currentNode.isNodeType(NodeTypes.Folder.NAME)) {
+            // Update
+            NodeTypes.LastModified.update(currentNode);
+            // Break or perform a recursive call
+            if (RepositoryConstants.WEBSITE.equals(currentNode.getSession().getWorkspace().getName())
+                    && !currentNode.isNodeType(NodeTypes.Content.NAME)
+                    && currentNode.getDepth() > 1) {
+                updateLastModified(currentNode.getParent());
+            }
         }
     }
 
@@ -92,32 +109,6 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
 
     protected Item getItem() {
         return item;
-    }
-
-    private void traceNodeProperties(Node nodeOp) throws RepositoryException {
-        // debug by logging properties.
-        PropertyIterator propIter;
-        propIter = nodeOp.getProperties();
-        log.info("TRACE NODE PROPS:");
-        while (propIter.hasNext()) {
-            Property prop = propIter.nextProperty();
-            log.info(prop.toString() + " " + upToNCharacters(prop.getString(), 30));
-        }
-    }
-
-    private void traceNodeChildren(Node nodeOp) throws RepositoryException {
-        // debug by logging properties.
-        NodeIterator nodeIter;
-        nodeIter = nodeOp.getNodes();
-        log.info("TRACE NODE CHILDREN:");
-        while (nodeIter.hasNext()) {
-            Node n = nodeIter.nextNode();
-            log.info(n.toString());
-        }
-    }
-
-    private String upToNCharacters(String s, int n) {
-        return s.substring(0, Math.min(s.length(), n));
     }
 
 }

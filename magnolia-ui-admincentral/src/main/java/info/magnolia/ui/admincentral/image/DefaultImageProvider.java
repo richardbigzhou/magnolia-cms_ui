@@ -34,10 +34,14 @@
 package info.magnolia.ui.admincentral.image;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
+import info.magnolia.cms.util.LinkUtil;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
+
+import java.util.Calendar;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -104,8 +108,14 @@ public class DefaultImageProvider implements ImageProvider {
                 } else {
                     imageName = node.getName();
                 }
+
                 imagePath = MgnlContext.getContextPath() + "/" + definition.getImagingServletPath() + "/" + generator + "/" + workspace + "/"
                         + imageNode.getIdentifier() + "/" + imageName + "." + definition.getImageExtension();
+
+                // Add cache fingerprint so that browser caches asset only until asset is modified.
+                Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
+                imagePath = LinkUtil.addFingerprintToLink(imagePath, lastModified);
+
             } catch (RepositoryException e) {
                 log.warn("Could not get name or identifier from imageNode: {}", e.getMessage());
             }

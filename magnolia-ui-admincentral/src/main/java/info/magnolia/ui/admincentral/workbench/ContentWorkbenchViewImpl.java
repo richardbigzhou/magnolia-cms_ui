@@ -43,12 +43,12 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
-import com.vaadin.event.ShortcutAction;
-import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.AbstractEmbedded;
 import com.vaadin.ui.Button;
@@ -76,6 +76,14 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
     private final Button thumbsButton;
 
     private final TextField searchbox;
+
+    private final Property.ValueChangeListener searchboxListener = new Property.ValueChangeListener() {
+
+        @Override
+        public void valueChange(ValueChangeEvent event) {
+            contentWorkbenchViewListener.onSearch(searchbox.getValue().toString());
+        }
+    };
 
     private final AbstractEmbedded viewTypeArrow;
 
@@ -127,28 +135,26 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
         searchbox.setSizeUndefined();
         searchbox.addStyleName("searchbox");
 
-        searchbox.addShortcutListener(new ShortcutListener("", ShortcutAction.KeyCode.ENTER, null) {
-
-            @Override
-            public void handleAction(Object sender, Object target) {
-                contentWorkbenchViewListener.onSearch(searchbox.getValue().toString());
-            }
-        });
+        // Textfield has to be immediate to fire value changes when pressing Enter, avoiding ShortcutListener overkill.
+        searchbox.setImmediate(true);
+        searchbox.addListener(searchboxListener);
 
         searchbox.addBlurListener(new BlurListener() {
             @Override
             public void blur(BlurEvent event) {
-                contentWorkbenchViewListener.onSearch(searchbox.getValue().toString());
-                searchbox.setInputPrompt(inputPrompt);
+                // return to previous view type when leaving empty field
+                if (StringUtils.isBlank(searchbox.getValue().toString())) {
+                    setViewType(previousViewType);
+                }
             }
         });
 
         searchbox.addFocusListener(new FocusListener() {
             @Override
             public void focus(FocusEvent event) {
-                if (currentViewType != ViewType.SEARCH) {
-                    setViewType(ViewType.SEARCH);
-                }
+                // put the cursor at the end of the field
+                TextField tf = (TextField) event.getSource();
+                tf.setCursorPosition(tf.toString().length());
             }
         });
         return searchbox;
@@ -190,17 +196,17 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
 
     @Override
     public void setViewType(final ViewType type) {
-        if (type != ViewType.SEARCH) {
-            previousViewType = currentViewType;
-        }
-
-        Component c = contentViews.get(type).asVaadinComponent();
         contentViewContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
+        final Component c = contentViews.get(type).asVaadinComponent();
+        c.setSizeFull();
         contentViewContainer.addComponent(c);
         c.setSizeUndefined();
 
+        if (type != ViewType.SEARCH) {
+            previousViewType = type;
+            setSearchQuery(null);
+        }
         this.currentViewType = type;
-        currentViewType = type;
 
         setViewTypeStyling(currentViewType);
         refresh();
@@ -281,18 +287,16 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
     }
 
     @Override
-    public void resynch(final String path, final ViewType viewType, final String query) {
-        setViewType(viewType);
-        if (viewType == ViewType.SEARCH) {
-            if (StringUtils.isBlank(query)) {
-                setViewType(previousViewType);
-            } else {
-                searchbox.setValue(query);
-                searchbox.focus();
-                contentWorkbenchViewListener.onSearch(query);
-            }
+    public void setSearchQuery(final String query) {
+        // turn off value change listener, so that presenter does not think there was user input and searches again
+        searchbox.removeListener(searchboxListener);
+        if (StringUtils.isNotBlank(query)) {
+            searchbox.setValue(query);
+            searchbox.focus();
+        } else {
+            searchbox.setValue("");
         }
-        selectPath(path);
+        searchbox.addListener(searchboxListener);
     }
 
 }
