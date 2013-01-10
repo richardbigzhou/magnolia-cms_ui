@@ -120,11 +120,11 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     }
 
     @Test
+    @Ignore("See http://dev.vaadin.com/ticket/10663")
     public void propertyType_Double() throws Exception {
         // GIVEN
         // Set property Type
         definition.setType("Double");
-        definition.setDefaultValue("");
         abstractDialogField = new TestFormField(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
         Field<Object> field = abstractDialogField.getField();
@@ -176,7 +176,6 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     }
 
     public static ConfiguredFieldDefinition createConfiguredFieldDefinition(ConfiguredFieldDefinition configureFieldDefinition, String propertyName) {
-        configureFieldDefinition.setDefaultValue("defaultValue");
         configureFieldDefinition.setDescription("description");
         configureFieldDefinition.setI18nBasename("i18nBasename");
         configureFieldDefinition.setLabel("label");
