@@ -64,7 +64,7 @@ public class AreaEndBar extends FlowPanel {
     }
 
     public void setFocus(boolean focus, boolean child) {
-        String className = (child) ? "childFocus" : "focus";
+        String className = (child) ? CHILD_FOCUS_CLASSNAME : FOCUS_CLASSNAME;
         if (focus) {
             addStyleName(className);
         }

@@ -92,7 +92,7 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
         }
         super.setPropertyDataSource(dataSource);
     }
-    
+
     @Override
     protected AbstractSelect buildField() {
         super.buildField();
@@ -146,8 +146,8 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
     private List<Group> getAllGroups() {
         List<Group> groups = new ArrayList<Group>();
         try {
-            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_GROUPS, "SELECT * FROM ["
-                    + NodeTypes.Group.NAME + "] ORDER BY name()");
+            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_GROUPS, "SELECT * FROM [" + NodeTypes.Group.NAME + "] ORDER BY name()");
+
             while (ni.hasNext()) {
                 Node n = ni.nextNode();
                 String name = n.getName();

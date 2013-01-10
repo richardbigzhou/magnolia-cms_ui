@@ -54,7 +54,7 @@ public class AddPropertyActionTest {
 
     private final static String WORKSPACE = "workspace";
 
-    private final static String JOHN_NODE_NAME = "johnNode";
+    private final static String NODE_NAME = "johnNode";
 
     private final static String UNTITLED_PROPERTY_NAME = "untitled";
 
@@ -82,7 +82,7 @@ public class AddPropertyActionTest {
     }
 
     @Test
-    public void testExecute_onRoot_Once() throws Exception {
+    public void testExecuteOnRootOnce() throws Exception {
         // GIVEN
         Node root = session.getRootNode();
         long propertiesCount = root.getProperties().getSize();
@@ -96,7 +96,7 @@ public class AddPropertyActionTest {
     }
 
     @Test
-    public void testExecute_onRoot_Twice() throws Exception {
+    public void testExecuteOnRootTwice() throws Exception {
         // GIVEN
         Node root = session.getRootNode();
         long propertiesCount = root.getProperties().getSize();
@@ -111,51 +111,51 @@ public class AddPropertyActionTest {
     }
 
     @Test
-    public void testExecute_onJohnNode_Once() throws Exception {
+    public void testExecuteOnNodeOnce() throws Exception {
         // GIVEN
         Node root = session.getRootNode();
-        Node john = root.addNode(JOHN_NODE_NAME);
-        long propertiesCount = john.getProperties().getSize();
-        AddPropertyAction action = new AddPropertyAction(DEFINITION, john, eventBus);
+        Node node = root.addNode(NODE_NAME);
+        long propertiesCount = node.getProperties().getSize();
+        AddPropertyAction action = new AddPropertyAction(DEFINITION, node, eventBus);
 
         // WHEN
         action.execute();
 
         // THEN
-        assertEquals(propertiesCount + 1, john.getProperties().getSize());
+        assertEquals(propertiesCount + 1, node.getProperties().getSize());
     }
 
     @Test
-    public void testExecute_onJohnNode_Twice() throws Exception {
+    public void testExecuteOnNodeTwice() throws Exception {
         // GIVEN
         Node root = session.getRootNode();
-        Node john = root.addNode(JOHN_NODE_NAME);
-        long propertiesCount = john.getProperties().getSize();
-        AddPropertyAction action = new AddPropertyAction(DEFINITION, john, eventBus);
+        Node node = root.addNode(NODE_NAME);
+        long propertiesCount = node.getProperties().getSize();
+        AddPropertyAction action = new AddPropertyAction(DEFINITION, node, eventBus);
 
         // WHEN
         action.execute();
         action.execute();
 
         // THEN
-        assertEquals(propertiesCount + 2, john.getProperties().getSize());
+        assertEquals(propertiesCount + 2, node.getProperties().getSize());
     }
 
     @Test
-    public void testExecute_onJohnNode_WithExistingUntitled() throws Exception {
+    public void testExecuteOnNodeWithExistingUntitled() throws Exception {
         // GIVEN
         Node root = session.getRootNode();
-        Node john = root.addNode(JOHN_NODE_NAME);
-        john.setProperty(UNTITLED_PROPERTY_NAME, UNTITLED_PROPERTY_VALUE);
-        long propertiesCount = john.getProperties().getSize();
-        AddPropertyAction action = new AddPropertyAction(DEFINITION, john, eventBus);
+        Node node = root.addNode(NODE_NAME);
+        node.setProperty(UNTITLED_PROPERTY_NAME, UNTITLED_PROPERTY_VALUE);
+        long propertiesCount = node.getProperties().getSize();
+        AddPropertyAction action = new AddPropertyAction(DEFINITION, node, eventBus);
 
         // WHEN
         action.execute();
 
         // THEN
-        assertEquals(propertiesCount + 1, john.getProperties().getSize());
-        assertEquals(john.getProperty(UNTITLED_PROPERTY_NAME).getString(), UNTITLED_PROPERTY_VALUE);
+        assertEquals(propertiesCount + 1, node.getProperties().getSize());
+        assertEquals(node.getProperty(UNTITLED_PROPERTY_NAME).getString(), UNTITLED_PROPERTY_VALUE);
     }
 
 }

@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.util.ModuleConfigurationObservingManager;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.NodeVisitor;
 import info.magnolia.module.ModuleRegistry;
@@ -82,14 +82,14 @@ public class ConfiguredAppDescriptorManager extends ModuleConfigurationObserving
 
                 @Override
                 public void visit(Node nodeToVisit) throws RepositoryException {
-                    for (Node configNode : NodeUtil.getNodes(nodeToVisit, MgnlNodeType.NT_CONTENTNODE)) {
+                    for (Node configNode : NodeUtil.getNodes(nodeToVisit, NodeTypes.ContentNode.NAME)) {
                         AppDescriptorProvider provider = createProvider(configNode);
                         if (provider != null) {
                             providers.add(provider);
                         }
                     }
                 }
-            }, new NodeTypePredicate(MgnlNodeType.NT_CONTENT, false));
+            }, new NodeTypePredicate(NodeTypes.Content.NAME, false));
         }
         try {
             this.registeredIds = appDescriptorRegistry.unregisterAndRegister(registeredIds, providers);

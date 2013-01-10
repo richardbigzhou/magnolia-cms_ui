@@ -267,12 +267,18 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
             if (property.getValue() != null) {
                 try {
                     if (!node.hasProperty(propertyId)) {
+                        if (StringUtils.isEmpty(property.getValue().toString())) {
+                            log.debug("Property '{}' is a new property and has a null value: Will not be stored", propertyId);
+                            return;
+                        }
                         addListenerIfNotYetSet(property, this);
                     }
                     PropertyUtil.setProperty(node, propertyId, property.getValue());
                 } catch (RepositoryException e) {
                     log.error("Could not set JCR Property", e);
                 }
+            } else {
+                log.debug("Property '{}' has a null value: Will not be stored", propertyId);
             }
         }
     }

@@ -37,12 +37,12 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.core.MetaData;
-import info.magnolia.cms.core.MgnlNodeType;
 import info.magnolia.cms.exchange.ActivationManager;
 import info.magnolia.cms.exchange.Subscriber;
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.MockContext;
@@ -83,8 +83,8 @@ public class MarkNodeAsDeletedCommandTest extends RepositoryTestCase {
         when(activationManager.getSubscribers()).thenReturn(subscribers);
         when(subscriber.isActive()).thenReturn(true);
 
-        node = MgnlContext.getJCRSession("website").getRootNode().addNode("home-test", MgnlNodeType.NT_PAGE);
-        childNode = node.addNode("child-test", MgnlNodeType.NT_PAGE);
+        node = MgnlContext.getJCRSession("website").getRootNode().addNode("home-test", NodeTypes.Page.NAME);
+        childNode = node.addNode("child-test", NodeTypes.Page.NAME);
 
         cmd = new MarkNodeAsDeletedCommand();
         cmd.setPath("/");

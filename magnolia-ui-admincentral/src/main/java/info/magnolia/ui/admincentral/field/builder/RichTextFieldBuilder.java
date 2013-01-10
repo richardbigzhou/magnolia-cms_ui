@@ -120,7 +120,6 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
         config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
         config.setResizeEnabled(false);
 
-        config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, ""+PLUGIN_PATH_MAGNOLIALINK);
         richTextEditor = new MagnoliaRichTextField(config) {
             @Override
             public void attach() {

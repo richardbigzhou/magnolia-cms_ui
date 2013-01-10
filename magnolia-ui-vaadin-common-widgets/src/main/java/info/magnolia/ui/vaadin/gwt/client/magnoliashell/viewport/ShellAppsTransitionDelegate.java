@@ -130,6 +130,7 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
         }
     }
 
+
     private void slideDown(final ViewportWidget viewport, final Callbacks callbacks) {
         JQueryWrapper jq = JQueryWrapper.select(viewport);
 

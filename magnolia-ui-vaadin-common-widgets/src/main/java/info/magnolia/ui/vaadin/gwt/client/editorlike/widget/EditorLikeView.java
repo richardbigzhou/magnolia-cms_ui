@@ -62,7 +62,6 @@ public interface EditorLikeView<T extends EditorLikeView.Presenter> extends IsWi
      * Presenter.
      */
     public interface Presenter {
-
         void fireAction(String action);
     }
 

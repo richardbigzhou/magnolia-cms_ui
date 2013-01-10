@@ -144,14 +144,14 @@
           </execution>
         </executions>
       </plugin>
-      <!-- We currently need to maintain a patched version of Vaadin's VScrollTable.java
-        due to some limitations regarding extensibility in the original class and
-        which Vaadin cannot handle at the moment (TODO add Vaadin tickets raised
-        by Magnolia about this, if any). Here what we do is 1) extract VScrollTable.java
-        sources from the vaadin core jar dependency. 2) apply our own patch (see
-        src/main/patches/vscrolltable.txt) to the class's original sources. 3) rename
-        the original VScrollTable.java to VScrollTablePatched.java which our code
-        will use instead of the original. -->
+     <!--
+      We currently need to maintain a patched version of Vaadin's VScrollTable.java due to some limitations regarding extensibility
+      in the original class and which Vaadin cannot handle at the moment (TODO add Vaadin tickets raised by Magnolia about this, if any).
+      Here what we do is
+        1) extract VScrollTable.java sources from the vaadin core jar dependency.
+        2) apply our own patch (see src/main/patches/vscrolltable.txt) to the class's original sources.
+        3) rename the original VScrollTable.java to VScrollTablePatched.java which our code will use instead of the original.
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>

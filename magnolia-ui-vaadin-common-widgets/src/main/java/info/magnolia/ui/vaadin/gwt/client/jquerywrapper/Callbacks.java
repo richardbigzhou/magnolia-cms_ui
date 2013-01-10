@@ -39,9 +39,9 @@ import com.google.gwt.core.client.JavaScriptObject;
  * Wrapper for JQuery Callbacks API.
  */
 public class Callbacks extends JavaScriptObject {
-    
+
     protected Callbacks() {}
-    
+
     public static Callbacks create(final JQueryCallback... callbacks) {
         final Callbacks result = create();
         for (final JQueryCallback callback : callbacks) {
@@ -49,27 +49,27 @@ public class Callbacks extends JavaScriptObject {
         }
         return result;
     }
-    
+
     public static native Callbacks create() /*-{
         return $wnd.jQuery.Callbacks();
     }-*/;
-    
+
     public final void add(final JQueryCallback callback) {
         doAdd(JQueryFunction.create(callback));
     }
-    
+
     public final void remove(final JQueryCallback callback) {
         doRemove(JQueryFunction.create(callback));
     }
-    
+
     private final native void doRemove(final JQueryFunction callback) /*-{
         this.remove(callback);
     }-*/;
 
     private final native void doAdd(final JQueryFunction callback) /*-{
-        this.add(callback);   
+        this.add(callback);
     }-*/;
-    
+
     public final native void fire() /*-{
         this.fire();
     }-*/;

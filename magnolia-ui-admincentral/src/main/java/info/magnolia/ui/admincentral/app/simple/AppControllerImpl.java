@@ -43,6 +43,7 @@ import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
@@ -59,16 +60,23 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the {@link AppController}.
  * 
+<<<<<<< HEAD
  * The App controller that manages the lifecycle of running apps and raises
  * callbacks to the app. It provides methods to start, stop and focus already
  * running {@link App}s. Registers handlers to the following location change
  * events triggered by the {@link LocationController}:
+=======
+ * The App controller that manages the lifecycle of running apps and raises callbacks to the app.
+ * It provides methods to start, stop and focus already running {@link App}s.
+ * Registers handlers to the following location change events triggered by the {@link LocationController}:
+>>>>>>> master
  * <ul>
  * <li>{@link LocationChangedEvent}</li>
  * <li>{@link LocationChangeRequestedEvent}</li>
@@ -128,11 +136,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
-     * This method is called to create an instant of an app independent from the
-     * {@link LocationController} and the {@link AppController} handling. It
-     * will not open in the {@link ViewPort} and will not register itself to the
-     * running apps. This is e.g. used to pass the {@link App} into a dialog and
-     * obtain app-specific information from outside the app.
+     * This method is called to create an instant of an app independent from the {@link LocationController} and the {@link AppController} handling.
+     * It will not open in the {@link ViewPort} and will not register itself to the running apps.
+     * This is e.g. used to pass the {@link App} into a dialog and obtain app-specific information from outside the app.
      * 
      * @param appId
      *            of the {@link App} to instantiate.
@@ -149,9 +155,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
-     * This method can be called to launch an {@link App} and then delegate it
-     * to the {@link LocationController}. It should have the same effect as
-     * calling the {@link LocationController} directly.
+     * This method can be called to launch an {@link App} and then delegate it to the {@link LocationController}.
+     * It should have the same effect as calling the {@link LocationController} directly.
      * 
      * @param appId
      *            of the {@link App} to start.
@@ -171,10 +176,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
-     * This method is called to launch an app independent from the
-     * {@link LocationController}. It will not open in the {@link ViewPort}.
-     * This is e.g. used to pass the {@link App} into a dialog and obtain
-     * app-specific information from outside the app.
+     * This method is called to launch an app independent from the {@link LocationController}.
+     * It will not open in the {@link ViewPort}.
+     * This is e.g. used to pass the {@link App} into a dialog and obtain app-specific information from outside the app.
      * 
      * See MGNLUI-379.
      * 
@@ -183,9 +187,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      * @param location
      *            holds information about the subApp to use and the parameters.
      * 
-     * @deprecated since introduction of
-     *             {@link #getAppWithoutStarting(String appId)
-     *             getAppWithoutStarting}
+     * @deprecated since introduction of {@link #getAppWithoutStarting(String appId) getAppWithoutStarting}
      */
     @Deprecated
     @Override
@@ -282,12 +284,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     /**
      * Takes care of {@link LocationChangedEvent}s by:
      * <ul>
-     * <li>Obtaining the {@link AppDescriptor} associated with the
-     * {@link Location}.</li>
-     * <li>Creating a new {@link AppContext} if not running, otherwise obtain it
-     * from the running apps.</li>
-     * <li>Updating the {@Link Location} and redirecting in case of
-     * missing subAppId.</li>
+     * <li>Obtaining the {@link AppDescriptor} associated with the {@link Location}.</li>
+     * <li>Creating a new {@link AppContext} if not running, otherwise obtain it from the running apps.</li>
+     * <li>Updating the {@Link Location} and redirecting in case of missing subAppId.</li>
      * <li>Starting the App.</li>
      * <li>Adding the {@link AppContext} to the appHistory.</li>
      * <li>Setting the viewPort and updating the current running app.</li>
@@ -330,28 +329,30 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     /**
      * Updates the {@link Location} in case of missing subAppId:
      * <ul>
-     * <li>If the app is running, it will fetch the current Location associated
-     * with the App.</li>
+     * <li>If the app is running, it will fetch the current Location associated with the App.</li>
      * <li>Will fetch the configured default subAppId otherwise.</li>
      * </ul>
      */
     private Location updateLocation(AppContext appContext, Location location) {
-
+        String appType = location.getAppType();
         String appId = location.getAppId();
         String subAppId = location.getSubAppId();
+        String params = location.getParameter();
 
-        if (subAppId == null || subAppId.isEmpty()) {
+        if (StringUtils.isBlank(subAppId)) {
 
             if (isAppStarted(appId)) {
                 AppContext runningAppContext = runningApps.get(appId);
-                return runningAppContext.getCurrentLocation();
-            } else {
-                return appContext.getDefaultLocation();
+                subAppId = runningAppContext.getCurrentLocation().getSubAppId();
+            } else if (StringUtils.isBlank(subAppId)) {
+                subAppId = appContext.getDefaultLocation().getSubAppId();
+
             }
         }
 
-        return location;
+        return new DefaultLocation(appType, appId, subAppId, params);
     }
+
 
     private AppContext getAppContext(String appId) {
         if (isAppStarted(appId)) {

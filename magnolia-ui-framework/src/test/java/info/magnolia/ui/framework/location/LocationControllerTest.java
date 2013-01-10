@@ -66,27 +66,7 @@ public class LocationControllerTest {
 
         assertEquals(Location.NOWHERE, locationController.getWhere());
 
-        Location newLocation = new Location() {
-            @Override
-            public String getParameter() {
-                return null;
-            }
-
-            @Override
-            public String getAppType() {
-                return null;
-            }
-
-            @Override
-            public String getAppId() {
-                return null;
-            }
-
-            @Override
-            public String getSubAppId() {
-                return null;
-            }
-        };
+        Location newLocation = getNewEmptyLocation();
 
         // WHEN
         locationController.goTo(newLocation);
@@ -129,27 +109,7 @@ public class LocationControllerTest {
 
         assertEquals(Location.NOWHERE, locationController.getWhere());
 
-        Location newLocation = new Location() {
-            @Override
-            public String getParameter() {
-                return null;
-            }
-
-            @Override
-            public String getAppType() {
-                return null;
-            }
-
-            @Override
-            public String getAppId() {
-                return null;
-            }
-
-            @Override
-            public String getSubAppId() {
-                return null;
-            }
-        };
+        Location newLocation = getNewEmptyLocation();
 
         // WHEN
         locationController.goTo(newLocation);
@@ -194,27 +154,7 @@ public class LocationControllerTest {
 
         assertEquals(Location.NOWHERE, locationController.getWhere());
 
-        Location newLocation = new Location() {
-            @Override
-            public String getParameter() {
-                return null;
-            }
-
-            @Override
-            public String getAppType() {
-                return null;
-            }
-
-            @Override
-            public String getAppId() {
-                return null;
-            }
-
-            @Override
-            public String getSubAppId() {
-                return null;
-            }
-        };
+        Location newLocation = getNewEmptyLocation();
 
         // WHEN
         locationController.goTo(newLocation);
@@ -240,7 +180,27 @@ public class LocationControllerTest {
 
         assertEquals(Location.NOWHERE, locationController.getWhere());
 
-        Location newLocation = new Location() {
+        Location newLocation = getNewEmptyLocation();
+
+        locationController.goTo(newLocation);
+
+        assertSame(newLocation, locationController.getWhere());
+
+        LocationChangeRequestedHandler requestHandler = new LocationChangeRequestedHandler();
+        LocationChangedHandler changeHandler = new LocationChangedHandler();
+        eventBus.addHandler(LocationChangeRequestedEvent.class, requestHandler);
+        eventBus.addHandler(LocationChangedEvent.class, changeHandler);
+
+        // WHEN
+        locationController.goTo(newLocation);
+
+        // THEN
+        assertNull(requestHandler.event);
+        assertNull(changeHandler.event);
+    }
+
+    private Location getNewEmptyLocation() {
+        return new Location() {
             @Override
             public String getParameter() {
                 return null;
@@ -261,22 +221,6 @@ public class LocationControllerTest {
                 return null;
             }
         };
-
-        locationController.goTo(newLocation);
-
-        assertSame(newLocation, locationController.getWhere());
-
-        LocationChangeRequestedHandler requestHandler = new LocationChangeRequestedHandler();
-        LocationChangedHandler changeHandler = new LocationChangedHandler();
-        eventBus.addHandler(LocationChangeRequestedEvent.class, requestHandler);
-        eventBus.addHandler(LocationChangedEvent.class, changeHandler);
-
-        // WHEN
-        locationController.goTo(newLocation);
-
-        // THEN
-        assertNull(requestHandler.event);
-        assertNull(changeHandler.event);
     }
 
     private static class LocationChangeRequestedHandler implements LocationChangeRequestedEvent.Handler {

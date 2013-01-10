@@ -34,19 +34,50 @@ div.mgnlEditorBar {
     height: 20px !important;
     /* vertical paddings minus borders -1. "-1" to make sure that FF properly align labels in all cases; for other */
     /* browsers, this has no effect. This only works with single-line labels. */
-    color: #f0f2e6 !important;
+    background-color: #efefef !important;
+    color: #6a9090 !important;
     text-transform: uppercase !important;
 }
 
-div.mgnlEditorBar.component.focus, div.mgnlEditorBar.area.focus {
-    background-color: #666666 !important;
-    color: #FFF !important;
+/* Selected Item (focus) */
+div.mgnlEditorBar.page.focus,
+div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorBar.component.focus,
+div.mgnlEditorBar.area.focus
+{
+    background-color: #6a9000 !important;
+    color: #ffffff !important;
 }
 
-div.mgnlEditorBar.page.focus, div.mgnlEditorBar.area.childFocus {
-    background-color: #689600 !important;
-    color: #FFF !important;
+/* The parent of the focussed component */
+div.mgnlEditorBar.area.childFocus {
+    background-color: #e1e8cc !important;
+    color: #6a9000 !important;
 }
+
+/* Siblings of the selected area */
+div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorBar.component
+{
+    background-color: #e1e8cc !important;
+    color: #6a9000 !important;
+}
+
+
+/* "Children" of an area - (which are actually any siblings in the dom structure, which contain a mgnlEditorBar component.) */
+div.mgnlEditorBar.area.focus ~ * div.mgnlEditorBar.component
+{
+    background-color: #a5bc66 !important;
+    color: #ffffff !important;
+}
+
+/* "Children" of a component */
+div.mgnlEditorBar.component.focus ~ * div.mgnlEditorBar.area,
+div.mgnlEditorBar.component.focus ~ div.mgnlEditorBar.area
+{
+    background-color: #a5bc66 !important;
+    color: #ffffff !important;
+}
+
+
 
 /*
  * Page edit bar.
@@ -88,53 +119,55 @@ div.mgnlEditorBar.page.focus, div.mgnlEditorBar.area.childFocus {
  * Area edit bar.
  */
 div.mgnlEditorBar.area {
-    border-radius: 5px 5px 0 0 !important;
     margin: 0 0 5px 0 !important;
 }
 
 div.mgnlEditorBar.page, div.mgnlEditorBar.area {
-    background-color: #E6E6E6 !important;
+    background-color: #efefef !important;
     color: #689600 !important;
     clear: both !important;
 }
 
 div.mgnlEditorBar.area.end {
     height: 7px !important;
-    border-radius: 0 0 5px 5px !important;
     margin: 5px 0 !important;
 }
 
+/*
 div.mgnlEditorBar.area.end.focus {
-    background-color: #666666 !important;
+    background-color: #6a9000 !important;
     color: #FFF !important;
 }
 
 div.mgnlEditorBar.area.end.childFocus {
-    background-color: #689600 !important;
-    color: #FFF !important;
+    background-color: #e1e8cc !important;
+    color: #6a9000 !important;
 }
+*/
+
+
 
 /*
  * Component edit bar.
  */
 div.mgnlEditorBar.component {
-    background-color: #AABF2F !important;
+    background-color: #efefef !important;
 
     height: 20px !important;
     /* Component edit bars are one pixel less high than other bars. */
     line-height: 20px !important;
     /* See .mgnlEditorBar for an explanation of this */
-    color: #FFFFFF !important;
+    color: #6a9000 !important;
 }
 
 .mgnlEditorBar.placeholder {
-    background-color: #E6E6E6 !important;
+    background-color: #efefef !important;
 
     height: 20px !important;
     /* Component edit bars are one pixel less high than other bars. */
     line-height: 20px !important;
     /* See .mgnlEditorBar for an explanation of this */
-    color: #999999 !important;
+    color: #6a9000 !important;
 }
 
 /*
@@ -257,7 +290,7 @@ div.mgnlEditorPlaceholder {
     -moz-box-sizing: border-box !important;    /* Firefox, other Gecko */
     box-sizing: border-box !important;         /* IE 8+ */
     clear: both !important;
-    color: #487000 !important;
+    color: #6a9000 !important;
     font-family: Verdana, sans-serif !important;
     font-size: 12px !important;
 }
@@ -266,9 +299,8 @@ div.mgnlEditorPlaceholder {
 div.mgnlEditorPlaceholder.area {
     margin: 10px 0 !important;
     padding: 25px 15px !important;
-    border-radius: 5px !important;
     background-color: #eeeeee !important;
-    color: #aaaaaa !important;
+    color: #6a9000 !important;
     text-align: center !important;
 }
 
@@ -289,7 +321,7 @@ div.mgnlEditorPlaceholder.component .mgnlEditorPlaceholderElements {
     -webkit-box-sizing: border-box !important; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box !important;    /* Firefox, other Gecko */
     box-sizing: border-box !important;         /* IE 8+ */
-    background-color: #E6E6E6 !important;
+    background-color: #EfEfEf !important;
 }
 
 .mgnlEditorLocaleSelector {

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
@@ -69,7 +69,7 @@ public class AbstractJcrAdapterTest {
     }
 
     @Test
-    public void testSetCommonAttributes_Node() throws Exception {
+    public void testSetCommonAttributesWithNode() throws Exception {
         // GIVEN
         String nodeName = "nodeName";
         Node testNode = session.getRootNode().addNode(nodeName);
@@ -78,14 +78,14 @@ public class AbstractJcrAdapterTest {
         DummyJcrAdapter adapter = new DummyJcrAdapter(testNode);
 
         // THEN
-        assertEquals(true, adapter.isNode());
+        assertTrue(adapter.isNode());
         assertEquals(workspaceName, adapter.getWorkspace());
         assertEquals(testNode.getPath(), adapter.getPath());
         assertEquals(testNode.getPath(), ((Node) adapter.getJcrItem()).getPath());
     }
 
     @Test
-    public void testSetCommonAttributes_Property() throws Exception {
+    public void testSetCommonAttributesWithProperty() throws Exception {
         // GIVEN
         String nodeName = "nodeName";
         Node testNode = session.getRootNode().addNode(nodeName);
@@ -97,7 +97,7 @@ public class AbstractJcrAdapterTest {
         DummyJcrAdapter adapter = new DummyJcrAdapter(testProperty);
 
         // THEN
-        assertEquals(false, adapter.isNode());
+        assertFalse(adapter.isNode());
         assertEquals(workspaceName, adapter.getWorkspace());
         assertEquals(testProperty.getPath(), adapter.getPath());
         assertEquals(testProperty.getPath(), adapter.getJcrItem().getPath());
@@ -105,7 +105,7 @@ public class AbstractJcrAdapterTest {
     }
 
     @Test
-    public void testGetJcrItem_Node_Existing() throws Exception {
+    public void testGetJcrItemWithNodeExisting() throws Exception {
         // GIVEN
         String nodeName = "nodeName";
         Node testNode = session.getRootNode().addNode(nodeName);
@@ -114,11 +114,11 @@ public class AbstractJcrAdapterTest {
         DummyJcrAdapter adapter = new DummyJcrAdapter(testNode);
 
         // THEN
-        assertEquals(true, adapter.getJcrItem() != null);
+        assertNotNull(adapter.getJcrItem());
     }
 
     @Test
-    public void testGetJcrItem_Node_NotExisting() throws Exception {
+    public void testGetJcrItemWithNodeNotExisting() throws Exception {
         // GIVEN
         String nodeName = "nodeName";
         Node testNode = session.getRootNode().addNode(nodeName);
@@ -127,11 +127,11 @@ public class AbstractJcrAdapterTest {
         DummyJcrAdapter adapter = new DummyJcrAdapter(testNode);
 
         // THEN
-        assertEquals(true, adapter.getJcrItem() == null);
+        assertNull(adapter.getJcrItem());
     }
 
     @Test
-    public void testGetJcrItem_Property_Existing() throws Exception {
+    public void testGetJcrItemWithPropertyExisting() throws Exception {
         // GIVEN
         String nodeName = "nodeName";
         Node testNode = session.getRootNode().addNode(nodeName);
@@ -143,11 +143,11 @@ public class AbstractJcrAdapterTest {
         DummyJcrAdapter adapter = new DummyJcrAdapter(testProperty);
 
         // THEN
-        assertEquals(true, adapter.getJcrItem() != null);
+        assertNotNull(adapter.getJcrItem());
     }
 
     @Test
-    public void testGetJcrItem_Property_NotExisting() throws Exception {
+    public void testGetJcrItemWithPropertyNotExisting() throws Exception {
         // GIVEN
         String nodeName = "nodeName";
         Node testNode = session.getRootNode().addNode(nodeName);
@@ -160,7 +160,7 @@ public class AbstractJcrAdapterTest {
         DummyJcrAdapter adapter = new DummyJcrAdapter(testProperty);
 
         // THEN
-        assertEquals(true, adapter.getJcrItem() == null);
+        assertNull(adapter.getJcrItem());
     }
 
     /**

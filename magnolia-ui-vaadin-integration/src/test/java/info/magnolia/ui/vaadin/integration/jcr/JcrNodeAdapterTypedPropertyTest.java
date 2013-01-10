@@ -54,7 +54,7 @@ import com.vaadin.data.Property;
 
 public class JcrNodeAdapterTypedPropertyTest {
 
-    private String workspaceName = "workspace";
+    private final String workspaceName = "workspace";
     private MockSession session;
 
     @Before
@@ -71,7 +71,7 @@ public class JcrNodeAdapterTypedPropertyTest {
     }
 
     @Test
-    public void testGetItemProperty_Untyped_CheckInitialization() throws Exception {
+    public void testGetItemPropertyWithNonTypedProperty() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter
         String nodeName = "rootNode";
@@ -94,7 +94,7 @@ public class JcrNodeAdapterTypedPropertyTest {
     }
 
     @Test
-    public void testGetItemProperty_String_CheckInitialization() throws Exception {
+    public void testGetItemPropertyWithStringProperty() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter
         String nodeName = "rootNode";
@@ -117,7 +117,7 @@ public class JcrNodeAdapterTypedPropertyTest {
     }
 
     @Test
-    public void testGetItemProperty_Long_CheckInitialization() throws Exception {
+    public void testGetItemPropertyWithLongProperty() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter
         String nodeName = "rootNode";
@@ -140,7 +140,7 @@ public class JcrNodeAdapterTypedPropertyTest {
     }
 
     @Test
-    public void testGetItemProperty_Double_CheckInitialization() throws Exception {
+    public void testGetItemPropertyWithDoubleProperty() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter
         String nodeName = "rootNode";
@@ -163,7 +163,7 @@ public class JcrNodeAdapterTypedPropertyTest {
     }
 
     @Test
-    public void testGetItemProperty_Date_CheckInitialization() throws Exception {
+    public void testGetItemPropertyWithDateProperty() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter
         String nodeName = "rootNode";
@@ -194,7 +194,7 @@ public class JcrNodeAdapterTypedPropertyTest {
     }
 
     @Test
-    public void testGetItemProperty_Boolean_CheckInitialization() throws Exception {
+    public void testGetItemPropertyWithBooleanProperty() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter
         String nodeName = "rootNode";
@@ -217,7 +217,7 @@ public class JcrNodeAdapterTypedPropertyTest {
     }
 
     @Test
-    public void testGetItemProperty_Decimal_CheckInitialization() throws Exception {
+    public void testGetItemPropertyWithDecimalProperty() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter
         String nodeName = "rootNode";
@@ -240,7 +240,7 @@ public class JcrNodeAdapterTypedPropertyTest {
     }
 
     @Test
-    public void testGetItemProperty_String_FromJcr() throws Exception {
+    public void testGetItemPropertyWithBooleanPropertyFromJcr() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter
         String nodeName = "rootNode";
@@ -262,7 +262,7 @@ public class JcrNodeAdapterTypedPropertyTest {
     }
 
     @Test
-    public void testGetItemProperty_String_FromJcrModifyVaadin() throws Exception {
+    public void testGetItemPropertyWithBooleanPropertyFromJcrModifiedByVaadin() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter
         String nodeName = "rootNode";
@@ -288,7 +288,7 @@ public class JcrNodeAdapterTypedPropertyTest {
     }
 
     @Test
-    public void testGetItemProperty_Binary_CreatedByVaadin_StoreIntoJcr() throws Exception {
+    public void testGetItemPropertyWithBinaryPropertyCreatedByVaadinStoredIntoJcr() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter
         String nodeName = "rootNode";
