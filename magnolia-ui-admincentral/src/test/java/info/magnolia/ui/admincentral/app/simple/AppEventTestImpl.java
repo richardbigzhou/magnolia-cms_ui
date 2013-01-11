@@ -35,6 +35,8 @@ package info.magnolia.ui.admincentral.app.simple;
 
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.InvocationCountingTestEventHandler;
+import info.magnolia.ui.framework.event.TestEvent;
 
 import javax.inject.Named;
 
@@ -42,14 +44,13 @@ import javax.inject.Named;
 import com.google.inject.Inject;
 
 /**
- * FIXME: TEST IS BROKEN
  * AppEventTestImpl.
  */
 public class AppEventTestImpl extends AppTestImpl {
 
     public EventBus eventBus;
 
-    // public InvocationCountingTestEventHandler handler;
+    public InvocationCountingTestEventHandler handler;
 
     @Inject
     public AppEventTestImpl(AppContext ctx, @Named("app") EventBus eventBus) {
@@ -57,8 +58,8 @@ public class AppEventTestImpl extends AppTestImpl {
         this.eventBus = eventBus;
 
         // Register
-        // handler = new InvocationCountingTestEventHandler();
-        // eventBus.addHandler(TestEvent.class, handler);
+        handler = new InvocationCountingTestEventHandler();
+        eventBus.addHandler(TestEvent.class, handler);
     }
 
 }
