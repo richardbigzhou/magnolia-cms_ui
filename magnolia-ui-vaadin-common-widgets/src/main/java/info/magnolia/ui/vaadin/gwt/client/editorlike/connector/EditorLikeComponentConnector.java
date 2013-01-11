@@ -65,10 +65,10 @@ public abstract class EditorLikeComponentConnector<U extends EditorLikeView.Pres
             }
         });
 
-        addStateChangeHandler("dialogDescription", new StateChangeHandler() {
+        addStateChangeHandler("componentDescription", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                view.setCaption(getState().componentDescription);
+                view.setDescription(getState().componentDescription);
             }
         });
 
