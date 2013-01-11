@@ -90,7 +90,7 @@
         <executions>
           <execution>
             <configuration>
-              <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+              <extraJvmArgs>-Xmx1024M -Xss1024k</extraJvmArgs>
             </configuration>
             <goals>
               <goal>resources</goal>
