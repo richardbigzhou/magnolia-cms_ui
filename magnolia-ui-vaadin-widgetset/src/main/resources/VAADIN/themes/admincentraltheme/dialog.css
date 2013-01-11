@@ -17,6 +17,11 @@
   border-top: 2px solid black;
 }
 
+.dialog-content {
+	height: 100%;
+	width: 100%;
+}
+
 .dialog-header {
   background-color: #666;
   display: block;
