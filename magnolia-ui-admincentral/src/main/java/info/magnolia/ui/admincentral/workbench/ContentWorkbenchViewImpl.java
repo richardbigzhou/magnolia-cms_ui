@@ -122,9 +122,9 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
 
         contentViewContainer.addStyleName("v-workbench-content");
         contentViewContainer.setSizeFull();
+        contentViewContainer.addComponent(searchbox);
         contentViewContainer.addComponent(viewModes);
         contentViewContainer.addComponent(viewTypeArrow);
-        contentViewContainer.addComponent(searchbox);
     }
 
     private TextField buildBasicSearchbox() {
