@@ -127,7 +127,8 @@ public class FormSectionWidget extends FlowPanel {
     public List<FormFieldWrapper> getProblematicFields() {
         FormSectionConnector selfConnector = (FormSectionConnector) Util.findConnectorFor(this);
         List<FormFieldWrapper> result = new ArrayList<FormFieldWrapper>();
-        if (selfConnector.getState().isValidationVisible) {
+        if (selfConnector != null
+                && selfConnector.getState().isValidationVisible) {
             for (final Widget w : sections.keySet()) {
                 final ComponentConnector cc = Util.findConnectorFor(w);
                 if (cc != null) {
