@@ -191,7 +191,8 @@ public class ActionbarItemWidget extends Widget {
         } else if (!isEnabled() && !root.getClassName().contains(ApplicationConnection.DISABLED_CLASSNAME)) {
             root.addClassName(ApplicationConnection.DISABLED_CLASSNAME);
         }
-        bindHandlers();
+        // MGNLUI-541. binding handlers multiple times causes multiple clicks.
+        // bindHandlers();
     }
 
     public ActionbarItem getData() {
