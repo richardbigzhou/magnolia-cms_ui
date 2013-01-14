@@ -39,6 +39,8 @@ import java.util.Map;
 
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.ComponentConnector;
+import com.vaadin.client.Util;
 
 /**
  * Implements {@link BaseDialogView} by delegating to embedded form.
@@ -76,6 +78,10 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
 
                 @Override
                 public void runLayout() {
+                    ComponentConnector connector = Util
+                            .findConnectorFor(DialogAdaptingToFormViewImpl.this);
+
+                    connector.getLayoutManager().setNeedsMeasure(connector);
                 }
             });
         }
@@ -93,6 +99,10 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
 
                 @Override
                 public void runLayout() {
+                    ComponentConnector connector = Util
+                            .findConnectorFor(DialogAdaptingToFormViewImpl.this);
+
+                    connector.getLayoutManager().setNeedsMeasure(connector);
                 }
             });
         }
