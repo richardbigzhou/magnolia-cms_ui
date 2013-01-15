@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -50,6 +51,26 @@ public class DefaultPropertyTest {
 
         // THEN
         assertEquals(value, result);
+    }
+
+    @Test
+    public void testCreateDefaultPropertyNullValueWithType() throws Exception {
+        // GIVEN
+        final DefaultProperty property = new DefaultProperty("propertyName", null, String.class);
+
+        // WHEN
+        final Class<?> result = property.getType();
+
+        //THEN
+        assertEquals(property.getType(), result);
+        assertNull(property.getValue());
+        assertEquals(property.toString(), "");
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateDefaultPropertyNullValueWithoutType() {
+        new DefaultProperty("propertyName", null);
     }
 
     @Test
