@@ -44,4 +44,6 @@ public interface MagnoliaTabSheetServerRpc extends ServerRpc {
     void closeTab(Connector tabConnector);
 
     void setActiveTab(Connector tabConnector);
+
+    void setShowAll();
 }
