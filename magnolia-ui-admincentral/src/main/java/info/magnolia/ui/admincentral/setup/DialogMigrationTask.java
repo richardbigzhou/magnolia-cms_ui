@@ -216,27 +216,13 @@ public class DialogMigrationTask extends AbstractTask {
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition");
             } else if (fieldNode.getProperty("controlType").getString().equals("dam")) {
-
                 fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.dam.app.assets.field.definition.AssetLinkFieldDefinition");
-                if (!fieldNode.hasProperty("description")) {
-                    fieldNode.setProperty("description", "Select an asset");
-                }
-                fieldNode.setProperty("identifier", "true");
-                if (!fieldNode.hasProperty("label")) {
-                    fieldNode.setProperty("label", "Image");
-                }
-                fieldNode.setProperty("repository", "data");
-                fieldNode.setProperty("type", "String");
-                fieldNode.setProperty("workspace", "dam");
-                fieldNode.setProperty("allowedMimeType", "image.*");
-                fieldNode.setProperty("appName", "assets");
-
+                setDamField(fieldNode, "image.*");
             } else if (fieldNode.getProperty("controlType").getString().equals("hidden")) {
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.HiddenFieldDefinition");
             } else if (fieldNode.getProperty("controlType").getString().equals("uuidLink")) {
-                if (fieldNode.hasProperty("repository") && !fieldNode.getProperty("repository").getString().equals("dms")) {
+                if (fieldNode.hasProperty("repository")) {
                     fieldNode.getProperty("controlType").remove();
                     fieldNode.setProperty("identifier", "true");
                     if (fieldNode.getProperty("repository").getString().equals("website")) {
@@ -251,6 +237,8 @@ public class DialogMigrationTask extends AbstractTask {
                             fieldNode.setProperty("dialogName", "ui-contacts-app:link");
                             fieldNode.setProperty("class", "info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition");
                         }
+                    } else if (fieldNode.getProperty("repository").getString().equals("dms")) {
+                        setDamField(fieldNode, null);
                     }
                 } else {
                     fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.StaticFieldDefinition");
@@ -266,6 +254,24 @@ public class DialogMigrationTask extends AbstractTask {
             // Handle Field Extends/Reference
             handleExtendsAndReference(fieldNode);
         }
+    }
+
+    private void setDamField(Node fieldNode, String allowedMimeType) throws RepositoryException {
+        fieldNode.setProperty("class", "info.magnolia.dam.app.assets.field.definition.AssetLinkFieldDefinition");
+        if (!fieldNode.hasProperty("description")) {
+            fieldNode.setProperty("description", "Select an asset");
+        }
+        fieldNode.setProperty("identifier", "true");
+        if (!fieldNode.hasProperty("label")) {
+            fieldNode.setProperty("label", "Image");
+        }
+        fieldNode.setProperty("repository", "data");
+        fieldNode.setProperty("type", "String");
+        fieldNode.setProperty("workspace", "dam");
+        if (allowedMimeType != null) {
+            fieldNode.setProperty("allowedMimeType", "image.*");
+        }
+        fieldNode.setProperty("appName", "assets");
     }
 
     private void handleExtendsAndReference(Node node) throws RepositoryException {
