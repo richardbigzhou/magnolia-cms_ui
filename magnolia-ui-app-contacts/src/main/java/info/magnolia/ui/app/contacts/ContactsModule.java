@@ -73,6 +73,7 @@ import info.magnolia.ui.model.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
 
 import javax.inject.Inject;
+import javax.jcr.PropertyType;
 
 /**
  * Module class for the contacts module.
@@ -200,9 +201,8 @@ public class ContactsModule implements ModuleLifecycle {
                                                                                         .description("Enter the organization unit name"),
                                                                                 cfg.fields.text(Contact.PROPERTY_STREET_ADDRESS).label("Street address")
                                                                                         .description("Please enter the company street address").rows(2),
-                                                                                cfg.fields.text(Contact.PROPERTY_ZIP_CODE).label("ZIP code")
-                                                                                        .description("Please enter the zip code (only digits)")
-                                                                                        .validator(cfg.validators.digitsOnly().errorMessage("validation.message.only.digits")),
+                                                                                cfg.fields.text(Contact.PROPERTY_ZIP_CODE).type(PropertyType.TYPENAME_LONG).label("ZIP code")
+                                                                                        .description("Please enter the zip code (only digits)"),
                                                                                 cfg.fields.text(Contact.PROPERTY_CITY).label("City")
                                                                                         .description("Please enter the company city  "),
                                                                                 cfg.fields.text(Contact.PROPERTY_COUNTRY).label("Country")
@@ -287,8 +287,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                         .description("Enter the organization unit name"),
                                                 cfg.fields.text(Contact.PROPERTY_STREET_ADDRESS).label("Street address").description("Please enter the company street address")
                                                         .rows(2),
-                                                cfg.fields.text(Contact.PROPERTY_ZIP_CODE).label("ZIP code").description("Please enter the zip code (only digits)")
-                                                        .validator(cfg.validators.digitsOnly().errorMessage("validation.message.only.digits")),
+                                                cfg.fields.text(Contact.PROPERTY_ZIP_CODE).type(PropertyType.TYPENAME_LONG).label("ZIP code").description("Please enter the zip code (only digits)"),
                                                 cfg.fields.text(Contact.PROPERTY_CITY).label("City").description("Please enter the company city  "),
                                                 cfg.fields.text(Contact.PROPERTY_COUNTRY).label("Country").description("Please enter the company country")),
                                 cfg.forms
