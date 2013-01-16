@@ -34,11 +34,13 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.jcr.Binary;
 import javax.jcr.PropertyType;
 
 import org.junit.Test;
@@ -67,29 +69,25 @@ public class DefaultPropertyUtilTest {
         Date result = (Date) DefaultPropertyUtil.createTypedValue(PropertyType.TYPENAME_DATE, null);
 
         // THEN
-        Calendar today = Calendar.getInstance();
-
-        Calendar resultsCalendar = Calendar.getInstance();
-        resultsCalendar.setTime(result);
-
-        assertEquals(today.get(Calendar.YEAR), resultsCalendar.get(Calendar.YEAR));
-        assertEquals(today.get(Calendar.MONTH), resultsCalendar.get(Calendar.MONTH));
-        assertEquals(today.get(Calendar.DAY_OF_MONTH), resultsCalendar.get(Calendar.DAY_OF_MONTH));
+        assertNull(result);
     }
 
     @Test
     public void testGetFieldTypeClass() {
+        assertEquals(String.class, DefaultPropertyUtil.getFieldTypeClass(""));
+        assertEquals(String.class, DefaultPropertyUtil.getFieldTypeClass(null));
         assertEquals(String.class, DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_STRING));
         assertEquals(Long.class, DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_LONG));
         assertEquals(Boolean.class, DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_BOOLEAN));
         assertEquals(Date.class, DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_DATE));
         assertEquals(BigDecimal.class, DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_DECIMAL));
         assertEquals(Double.class, DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_DOUBLE));
+        assertEquals(Binary.class, DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_BINARY));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testGetFieldTypeClassForNotSupportedTypeBinary() {
-        DefaultPropertyUtil.getFieldTypeClass(PropertyType.TYPENAME_BINARY);
+        DefaultPropertyUtil.getFieldTypeClass("SOME_RANDOM_STRING");
     }
 
 }

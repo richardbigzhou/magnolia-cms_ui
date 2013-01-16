@@ -44,12 +44,28 @@ import com.vaadin.data.util.converter.Converter.ConversionException;
 public class DefaultProperty extends AbstractProperty {
 
     private Object value;
+    private final Class<?> type;
     private boolean readOnly;
     private String propertyName;
 
+    /**
+     * Constructor which reads the type from the value.
+     *
+     * @throws IllegalArgumentException if value is null.
+     */
     public DefaultProperty(String propertyName, Object value) {
         this.propertyName = propertyName;
+        if (value == null) {
+            throw new IllegalArgumentException("Value can not be null.");
+        }
         this.value = value;
+        this.type = value.getClass();
+    }
+
+    public DefaultProperty(String propertyName, Object value, Class<?> type) {
+        this.propertyName = propertyName;
+        this.value = value;
+        this.type = type;
     }
 
     @Override
@@ -68,7 +84,7 @@ public class DefaultProperty extends AbstractProperty {
 
     @Override
     public Class<?> getType() {
-        return value.getClass();
+        return type;
     }
 
     @Override

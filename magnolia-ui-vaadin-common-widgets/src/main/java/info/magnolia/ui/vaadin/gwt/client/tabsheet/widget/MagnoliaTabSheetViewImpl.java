@@ -45,6 +45,7 @@ import java.util.List;
 
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -135,6 +136,12 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         Display display = (visible) ? Display.BLOCK : Display.NONE;
         for (MagnoliaTabWidget tab : getTabs()) {
             tab.getElement().getStyle().setDisplay(display);
+            // MGNLUI-542. Style height breaks show all tab.
+            if (visible) {
+                tab.getElement().getStyle().clearHeight();
+            } else {
+                tab.getElement().getStyle().setHeight(100, Unit.PCT);
+            }
         }
         if (visible) {
             fireEvent(new ActiveTabChangedEvent(true, false));

@@ -70,7 +70,23 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
             public void closeTab(Connector tabConnector) {
                 MagnoliaTabSheet.this.closeTab((MagnoliaTab) tabConnector);
             }
+
+            @Override
+            public void setShowAll() {
+                MagnoliaTabSheet.this.showAll();
+            }
         });
+    }
+
+    protected void showAll() {
+        Iterator<Component> it = iterator();
+        while (it.hasNext()) {
+            MagnoliaTab tabIt = (MagnoliaTab) it.next();
+            if (tabIt.getContent() != null) {
+                tabIt.getContent().setVisible(true);
+            }
+        }
+        getState().showAllEnabled = true;
     }
 
     @Override
