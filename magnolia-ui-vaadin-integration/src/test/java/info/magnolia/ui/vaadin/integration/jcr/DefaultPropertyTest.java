@@ -149,7 +149,7 @@ public class DefaultPropertyTest {
         final List<String> value = new ArrayList<String>();
 
         // WHEN
-        final DefaultProperty<List> property = new DefaultProperty<List>("propertyName", value);
+        final DefaultProperty<List> property = new DefaultProperty<List>("propertyName", value, List.class);
 
 
         // THEN
