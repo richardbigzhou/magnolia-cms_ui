@@ -155,6 +155,12 @@
       <scope>singleton</scope>
     </component>
     <component>
+      <type>info.magnolia.cms.exchange.ActivationSupport</type>
+      <workspace>config</workspace>
+      <path>/modules/ui-admincentral/config/activation</path>
+      <observed>true</observed>
+    </component>
+    <component>
       <type>info.magnolia.ui.framework.location.LocationController</type>
       <implementation>info.magnolia.ui.framework.location.LocationController</implementation>
     </component>
@@ -227,7 +233,7 @@
       <type>info.magnolia.ui.admincentral.dialog.action.DialogActionFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.action.DialogActionFactoryImpl</implementation>
     </component>
-        
+
     <component>
       <type>info.magnolia.ui.admincentral.dialog.ChooseDialogFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.ChooseDialogFactoryImpl</implementation>

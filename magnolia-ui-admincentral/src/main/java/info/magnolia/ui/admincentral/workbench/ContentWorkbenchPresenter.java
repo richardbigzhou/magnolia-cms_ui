@@ -206,6 +206,10 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         return actionbarPresenter;
     }
 
+    public String getWorkspace() {
+        return workbenchDefinition.getWorkspace();
+    }
+
     /**
      * Executes the workbench's default action, as configured in the defaultAction property.
      */

@@ -36,6 +36,7 @@ package info.magnolia.ui.app.pages.editor;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.actionbar.util.ActionbarUtil;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
 import info.magnolia.ui.admincentral.content.item.ItemView;
@@ -127,7 +128,6 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     }
 
     private void updateActions() {
-
         // actions currently always disabled
         actionbarPresenter.disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
     }
@@ -140,7 +140,6 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     /**
      * Wraps the current DefaultLocation in a ContentLocation. Providing getter and setters for used parameters.
      * 
-     * @return
      */
     @Override
     public ItemLocation getCurrentLocation() {
@@ -277,6 +276,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
                     hideAllSections();
                     if (node.isNodeType(NodeTypes.Page.NAME)) {
                         actionbarPresenter.showSection("pageActions");
+                        ActionbarUtil.updateActivationActions(node, actionbarPresenter);
                     } else if (node.isNodeType(NodeTypes.Area.NAME)) {
                         if (dialog == null) {
                             actionbarPresenter.showSection("areaActions");

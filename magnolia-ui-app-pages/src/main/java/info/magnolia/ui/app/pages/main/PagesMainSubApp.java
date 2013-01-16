@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.app.pages.main;
 
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.actionbar.util.ActionbarUtil;
 import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -42,6 +44,7 @@ import info.magnolia.ui.framework.instantpreview.InstantPreviewDispatcher;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jcr.Node;
 
 /**
  * PagesMainSubApp.
@@ -67,11 +70,15 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
         actionbar.disable("move", "duplicate");
 
         // actions disabled based on selection
-        final String[] defaultActions = new String[] { "delete", "preview", "edit", "export" };
+        final String[] defaultActions = new String[] { "delete", "preview", "edit", "export", "activate", "deactivate" };
         if (getWorkbench().getSelectedItemId() == null || "/".equals(getWorkbench().getSelectedItemId())) {
             actionbar.disable(defaultActions);
         } else {
             actionbar.enable(defaultActions);
+            final String path = getWorkbench().getSelectedItemId();
+            final String workspace = getWorkbench().getWorkspace();
+            final Node page = SessionUtil.getNode(workspace, path);
+            ActionbarUtil.updateActivationActions(page, actionbar);
         }
     }
 
