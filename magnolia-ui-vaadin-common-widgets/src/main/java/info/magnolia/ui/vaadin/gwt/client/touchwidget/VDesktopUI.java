@@ -65,9 +65,9 @@ import com.vaadin.client.ui.VUI;
 /**
  * Special implementation of {@link VView} that burns mgwt theme styles down.
  */
-public class DesktopVView extends VUI {
+public class VDesktopUI extends VUI {
 
-    public DesktopVView() {
+    public VDesktopUI() {
         MGWTStyle.setTheme(new MGWTTheme() {
 
             private MGWTClientBundle bundle;
