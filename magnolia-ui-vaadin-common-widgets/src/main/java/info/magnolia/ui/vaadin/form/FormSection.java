@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.form;
 
 import info.magnolia.ui.vaadin.gwt.client.form.formsection.connector.FormSectionState;
+import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormSectionClientRpc;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -42,6 +43,7 @@ import java.util.List;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.shared.Connector;
 import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Component;
 
@@ -139,7 +141,7 @@ public class FormSection extends AbstractLayout {
         if (startIndex < components.size() - 1) {
             while (startIndex < components.size()) {
                 Component c = components.get(startIndex++);
-                if (c instanceof AbstractComponent && ((AbstractComponent)c).getComponentError() != null) {
+                if (c instanceof AbstractField && !((AbstractField<?>)c).isValid()) {
                     return c;
                 }
             }   
@@ -147,7 +149,7 @@ public class FormSection extends AbstractLayout {
         return null;
     }
 
-    public void focus(Component nextProblematic) {
-        
+    public void focusField(Component field) {
+        getRpcProxy(FormSectionClientRpc.class).focus(field);
     }
 }

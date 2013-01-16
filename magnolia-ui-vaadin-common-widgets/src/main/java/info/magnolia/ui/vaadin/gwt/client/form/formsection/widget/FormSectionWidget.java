@@ -36,6 +36,9 @@ package info.magnolia.ui.vaadin.gwt.client.form.formsection.widget;
 import info.magnolia.ui.vaadin.gwt.client.form.formsection.connector.FormSectionConnector;
 import info.magnolia.ui.vaadin.gwt.client.form.tab.widget.FormTabWidget;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormFieldWrapper;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -45,6 +48,7 @@ import java.util.Map;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
@@ -124,7 +128,7 @@ public class FormSectionWidget extends FlowPanel {
         return getProblematicFields().size();
     }
 
-    public List<FormFieldWrapper> getProblematicFields() {
+    private List<FormFieldWrapper> getProblematicFields() {
         FormSectionConnector selfConnector = (FormSectionConnector) Util.findConnectorFor(this);
         List<FormFieldWrapper> result = new ArrayList<FormFieldWrapper>();
         if (selfConnector != null
@@ -172,6 +176,27 @@ public class FormSectionWidget extends FlowPanel {
     }
 
     public void focus(Widget widget) {
-        widget.
+        scrollTo(sections.get(widget));
+    }
+    
+    private void scrollTo(final FormFieldWrapper field) {
+        final int top = JQueryWrapper.select(field).position().top();
+        JQueryWrapper.select((Element)getElement().getParentElement().cast())
+                .animate(300, new AnimationSettings() {
+                    {
+                        setProperty("scrollTop", top - 30);
+                        addCallback(new JQueryCallback() {
+                            @Override
+                            public void execute(JQueryWrapper query) {
+                                new Timer() {
+                                    @Override
+                                    public void run() {
+                                        field.focusField();
+                                    };
+                                }.schedule(300);
+                            }
+                        });
+                    }
+                });
     }
 }

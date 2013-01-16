@@ -83,6 +83,15 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
 
                     connector.getLayoutManager().setNeedsMeasure(connector);
                 }
+                
+                /* (non-Javadoc)
+                 * @see info.magnolia.ui.vaadin.gwt.client.form.widget.FormView.Presenter#jumpToNextError(info.magnolia.ui.vaadin.gwt.client.form.widget.FormFieldWrapper)
+                 */
+                @Override
+                public void jumpToNextError(FormFieldWrapper lastFocused) {
+                    // TODO Auto-generated method stub
+                    
+                }
             });
         }
     }
@@ -101,6 +110,12 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
                 public void runLayout() {
                     ComponentConnector connector = Util.findConnectorFor(DialogAdaptingToFormViewImpl.this);
                     connector.getLayoutManager().setNeedsMeasure(connector);
+                }
+                
+                @Override
+                public void jumpToNextError(FormFieldWrapper lastFocused) {
+                    // TODO Auto-generated method stub
+                    
                 }
             });
         }

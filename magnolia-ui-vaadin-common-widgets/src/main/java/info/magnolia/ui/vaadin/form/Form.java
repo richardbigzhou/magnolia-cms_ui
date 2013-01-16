@@ -120,7 +120,7 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
                     tabSheet.setActiveTab(nextTab);
                     focusNextProblematicField(null);
                 } else {
-                    formSection.focus(nextProblematic);
+                    formSection.focusField(nextProblematic);
                 }
             }
         });

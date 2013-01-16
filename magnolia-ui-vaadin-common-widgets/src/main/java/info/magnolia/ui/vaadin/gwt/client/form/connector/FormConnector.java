@@ -43,6 +43,7 @@ import info.magnolia.ui.vaadin.gwt.client.form.widget.FormView.Presenter;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormViewImpl;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.Util;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
@@ -91,7 +92,8 @@ public class FormConnector extends EditorLikeComponentConnector<FormView.Present
 
             @Override
             public void jumpToNextError(FormFieldWrapper fieldWrapper) {
-                focusRpc.focusNextProblematicField(Util.findConnectorFor(fieldWrapper.getField()));
+                ComponentConnector cc = fieldWrapper == null ? null : Util.findConnectorFor(fieldWrapper.getField()); 
+                focusRpc.focusNextProblematicField(cc);
             }
         };
     }
