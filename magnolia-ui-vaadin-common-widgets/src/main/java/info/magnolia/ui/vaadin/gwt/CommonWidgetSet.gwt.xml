@@ -5,7 +5,7 @@
 
 	<!--<inherits name="org.vaadin.autoreplacefield.AutoreplacefieldWidgetset" />
 	  <inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
-	
+
 	<inherits name='org.vaadin.artur.superdevmode.SuperdevmodeaddonWidgetset' />-->
     <inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
 	<inherits name='com.googlecode.mgwt.dom.DOM' />
@@ -17,37 +17,28 @@
     <inherits name="org.vaadin.openesignforms.ckeditor.widgetset.VaadinCKEditorWidgetset" />
 
     <stylesheet src="imageeditor/styles.css"/>
-  
-    <!--  -->
-	<!--  <inherits
-		name='org.vaadin.openesignforms.ckeditor.widgetset.VaadinCKEditorWidgetset' />-->
 
-	<replace-with
-		class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariTouchWidgetImplProxy">
-		<when-type-is
-			class="com.googlecode.mgwt.ui.client.widget.touch.TouchWidgetImpl" />
+	<replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariTouchWidgetImplProxy">
+		<when-type-is class="com.googlecode.mgwt.ui.client.widget.touch.TouchWidgetImpl" />
 		<all>
 			<when-property-is name="mobile.user.agent" value="mobilesafari" />
 		</all>
 	</replace-with>
 
-	<replace-with
-		class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariVView">
-		<when-type-is class="com.vaadin.terminal.gwt.client.ui.VView" />
+	<replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariVView">
+		<when-type-is class="com.vaadin.client.ui.VUI" />
 		<all>
 			<when-property-is name="mobile.user.agent" value="mobilesafari" />
 		</all>
 	</replace-with>
 
-	<replace-with
-		class="info.magnolia.ui.vaadin.gwt.client.touchwidget.DesktopVView">
-		<when-type-is class="com.vaadin.terminal.gwt.client.ui.VView" />
+	<replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.DesktopVView">
+		<when-type-is class="com.vaadin.client.ui.VUI" />
 		<all>
 			<when-property-is name="mgwt.os" value="desktop" />
 		</all>
 	</replace-with>
 
-	<set-configuration-property name="mgwt.css"
-		value="pretty" />
+	<set-configuration-property name="mgwt.css" value="pretty" />
 
 </module>
