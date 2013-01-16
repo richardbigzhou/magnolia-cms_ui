@@ -31,32 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.form.widget;
+package info.magnolia.ui.vaadin.editor;
 
-import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView;
-import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent;
+import info.magnolia.ui.vaadin.editor.JCrop.ReleaseListener;
+import info.magnolia.ui.vaadin.editor.JCrop.SelectionListener;
 
-import com.google.gwt.user.client.Element;
+import com.vaadin.ui.Image;
 
 /**
- * Interface of {@link FormViewImpl}.
+ * CroppableImage.
  */
-public interface FormView extends EditorLikeView<FormView.Presenter>, ValidationChangedEvent.Handler {
+public class CroppableImage extends Image {
 
-    Element getHeaderElement();
-
-    Element getContentElement();
-
-    /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
-     */
-    public interface Presenter extends EditorLikeView.Presenter {
-
-        @Deprecated
-        void runLayout();
-
-        void jumpToNextError(FormFieldWrapper lastFocused);
-
+    private final JCrop jcrop = new JCrop();
+    
+    public CroppableImage() {
+        addExtension(jcrop);
     }
 
+    public void setAspectRatio(double aspectRatio) {
+        jcrop.setAspectRatio(aspectRatio);
+    }
+    
+    public void setCropEnabled(boolean isEnabled) {
+        jcrop.setCropEnabled(isEnabled);
+    }
+    
+    public void addSelectionListener(SelectionListener listener) {
+        jcrop.addSelectionListener(listener);
+    }
+    
+    public void addReleaseListener(ReleaseListener listener) {
+        jcrop.addReleaseListener(listener);
+    }
+
+    public void enable() {
+        jcrop.enable();
+    }
+
+    public void disable() {
+        jcrop.disable();
+    }
+
+    public boolean isCropEnabled() {
+        return false;
+    }
+    
 }

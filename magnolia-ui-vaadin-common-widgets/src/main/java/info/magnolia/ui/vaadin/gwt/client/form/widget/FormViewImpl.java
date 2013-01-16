@@ -86,7 +86,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
 
     private final Element footer = DOM.createDiv();
 
-    private FormFieldWrapper lastShownProblematicField = null;
+    private FormFieldWrapper lastFocused = null;
 
     private MagnoliaTabSheetView tabSheet;
 
@@ -96,8 +96,9 @@ public class FormViewImpl extends FlowPanel implements FormView {
         @Override
         public void onFocus(FocusEvent event) {
             final Element target = event.getRelativeElement().cast();
-            final FormFieldWrapper field = Util.findWidget(target, FormFieldWrapper.class);
-            if (field != null) {
+            lastFocused = Util.findWidget(target, FormFieldWrapper.class);
+            //final FormFieldWrapper field = Util.findWidget(target, FormFieldWrapper.class);
+            /*if (field != null) {
                 lastShownProblematicField = null;
                 final List<FormFieldWrapper> fields = ((FormTabWidget) tabSheet.getActiveTab()).getFields();
                 int index = fields.indexOf(field);
@@ -114,7 +115,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
                         }
                     }
                 }
-            }
+            }*/
         }
     };
 
@@ -130,32 +131,7 @@ public class FormViewImpl extends FlowPanel implements FormView {
 
         @Override
         public void jumpToNextError() {
-            FormTabWidget activeTab = (FormTabWidget) tabSheet.getActiveTab();
-            final List<FormFieldWrapper> problematicFields = activeTab.getProblematicFields();
-            if (lastShownProblematicField == null && !problematicFields.isEmpty()) {
-                final FormFieldWrapper field = problematicFields.get(0);
-                scrollTo(field);
-                lastShownProblematicField = field;
-            } else {
-                int index = problematicFields.indexOf(lastShownProblematicField) + 1;
-                if (index <= problematicFields.size() - 1) {
-                    final FormFieldWrapper nextField = problematicFields.get(index);
-                    lastShownProblematicField = nextField;
-                    scrollTo(lastShownProblematicField);
-                } else {
-                    final List<MagnoliaTabWidget> tabs = tabSheet.getTabs();
-                    int tabIndex = tabs.indexOf(activeTab);
-                    for (int i = 0; i < tabs.size() - 1; ++i) {
-                        final FormTabWidget nextTab = (FormTabWidget) tabs.get(++tabIndex % tabs.size());
-                        if (nextTab.getProblematicFields().size() > 0) {
-                            // tabSheet.getEventBus().fireEvent(new ActiveTabChangedEvent(nextTab));
-                            lastShownProblematicField = null;
-                            jumpToNextError();
-                            break;
-                        }
-                    }
-                }
-            }
+            presenter.jumpToNextError(lastFocused);
         }
     });
 
@@ -198,7 +174,8 @@ public class FormViewImpl extends FlowPanel implements FormView {
             tabSheet.addActiveTabChangedHandler(new ActiveTabChangedEvent.Handler() {
                 @Override
                 public void onActiveTabChanged(ActiveTabChangedEvent event) {
-                    lastShownProblematicField = null;
+                    //lastShownProblematicField = null;
+                    lastFocused = null;
                     if (!event.isShowingAllTabs()) {
                         contentEl.removeClassName(CLASSNAME_CONTENT_SHOW_ALL);
                     } else {

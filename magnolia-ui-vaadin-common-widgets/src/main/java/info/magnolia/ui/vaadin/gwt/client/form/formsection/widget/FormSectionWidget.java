@@ -170,4 +170,8 @@ public class FormSectionWidget extends FlowPanel {
     public void setFieldError(Widget widget, String errorMsg) {
         sections.get(widget).showError(errorMsg);
     }
+
+    public void focus(Widget widget) {
+        widget.
+    }
 }

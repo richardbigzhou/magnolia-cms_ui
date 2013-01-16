@@ -138,7 +138,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
         return (MagnoliaTab) getState(false).activeTab;
     }
 
-    protected MagnoliaTab getNextTab(final MagnoliaTab tab) {
+    public MagnoliaTab getNextTab(final MagnoliaTab tab) {
         return CollectionUtil.getNext(tabs, tab);
     }
 
@@ -166,6 +166,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
     @Override
     public void replaceComponent(Component oldComponent, Component newComponent) {}
 
+    
     @Override
     public int getComponentCount() {
         return tabs.size();

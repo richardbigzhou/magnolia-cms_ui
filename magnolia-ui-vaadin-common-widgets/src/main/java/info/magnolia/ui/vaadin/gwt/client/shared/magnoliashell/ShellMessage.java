@@ -31,32 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.form.widget;
+package info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell;
 
-import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView;
-import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent;
-
-import com.google.gwt.user.client.Element;
+import java.io.Serializable;
 
 /**
- * Interface of {@link FormViewImpl}.
+ * ShellMessage. Client-server shared class in order to dispatch messages.
+ * TODO: Change Shell API to use this class.
  */
-public interface FormView extends EditorLikeView<FormView.Presenter>, ValidationChangedEvent.Handler {
-
-    Element getHeaderElement();
-
-    Element getContentElement();
-
-    /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
-     */
-    public interface Presenter extends EditorLikeView.Presenter {
-
-        @Deprecated
-        void runLayout();
-
-        void jumpToNextError(FormFieldWrapper lastFocused);
-
-    }
+public class ShellMessage implements Serializable {
 
 }

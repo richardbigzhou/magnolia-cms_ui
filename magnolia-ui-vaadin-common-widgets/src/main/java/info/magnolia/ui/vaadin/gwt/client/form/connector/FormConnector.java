@@ -36,11 +36,14 @@ package info.magnolia.ui.vaadin.gwt.client.form.connector;
 import info.magnolia.ui.vaadin.form.Form;
 import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.ActionFiringServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.editorlike.connector.EditorLikeComponentConnector;
+import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.form.widget.FormFieldWrapper;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormView;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormView.Presenter;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormViewImpl;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.vaadin.client.Util;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
@@ -52,8 +55,9 @@ import com.vaadin.shared.ui.Connect;
 @Connect(Form.class)
 public class FormConnector extends EditorLikeComponentConnector<FormView.Presenter, FormView> {
 
-    private final ActionFiringServerRpc rpc = RpcProxy.create(ActionFiringServerRpc.class, this);
+    private final ActionFiringServerRpc actionRpc = RpcProxy.create(ActionFiringServerRpc.class, this);
 
+    private final FormServerRpc focusRpc = RpcProxy.create(FormServerRpc.class, this);
     @Override
     protected void init() {
         super.init();
@@ -77,12 +81,17 @@ public class FormConnector extends EditorLikeComponentConnector<FormView.Present
 
             @Override
             public void fireAction(String action) {
-                rpc.fireAction(action);
+                actionRpc.fireAction(action);
             }
 
             @Override
             public void runLayout() {
                 getLayoutManager().setNeedsMeasure(FormConnector.this);
+            }
+
+            @Override
+            public void jumpToNextError(FormFieldWrapper fieldWrapper) {
+                focusRpc.focusNextProblematicField(Util.findConnectorFor(fieldWrapper.getField()));
             }
         };
     }
