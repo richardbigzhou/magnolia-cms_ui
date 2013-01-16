@@ -79,7 +79,7 @@ public class FormSection extends AbstractLayout {
     public int indexOf(Component c) {
         return components.indexOf(c);
     }
-    
+
     @Override
     public void addComponent(Component c) {
         super.addComponent(c);
@@ -97,8 +97,7 @@ public class FormSection extends AbstractLayout {
     }
 
     @Override
-    public void replaceComponent(Component oldComponent, Component newComponent) {
-    }
+    public void replaceComponent(Component oldComponent, Component newComponent) {}
 
     @Override
     public Iterator<Component> iterator() {
@@ -141,15 +140,27 @@ public class FormSection extends AbstractLayout {
         if (startIndex < components.size() - 1) {
             while (startIndex < components.size()) {
                 Component c = components.get(startIndex++);
-                if (c instanceof AbstractField && !((AbstractField<?>)c).isValid()) {
+                if (c instanceof AbstractField && !((AbstractField<?>) c).isValid()) {
                     return c;
                 }
-            }   
+            }
         }
         return null;
     }
 
     public void focusField(Component field) {
         getRpcProxy(FormSectionClientRpc.class).focus(field);
+    }
+
+    public int getErrorAmount() {
+        int result = 0;
+        if (getState(false).isValidationVisible) {
+            Component problem = getNextProblematicField(null);
+            while (problem != null) {
+                ++result;
+                problem = getNextProblematicField(problem);
+            }   
+        }
+        return result;
     }
 }

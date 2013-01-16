@@ -62,7 +62,7 @@ import com.vaadin.client.Util;
  * Actual client side implementation of the form view. Provides the methods for
  * the client side presenter {@link com.vaadin.client.ui.form.FormConnector}.
  */
-public class FormViewImpl extends FlowPanel implements FormView {
+public class FormViewImpl extends FlowPanel implements FormView, ValidationChangedEvent.Handler {
 
     private static final String CLASSNAME = "form-panel";
 
@@ -75,9 +75,11 @@ public class FormViewImpl extends FlowPanel implements FormView {
     private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
 
     private final Map<String, Button> actionMap = new HashMap<String, Button>();
-
+    
     private final List<FormTabWidget> formTabs = new ArrayList<FormTabWidget>();
-
+    
+    private final Map<FormTabWidget, Integer> errorAmounts = new HashMap<FormTabWidget, Integer>();
+    
     private final Element contentEl = DOM.createDiv();
 
     private final Element footer = DOM.createDiv();
@@ -208,11 +210,12 @@ public class FormViewImpl extends FlowPanel implements FormView {
 
     @Override
     public void onValidationChanged(ValidationChangedEvent event) {
-        int totalProblematicFields = 0;
-        for (final FormTabWidget tab : formTabs) {
-            totalProblematicFields += tab.getErrorAmount();
+        errorAmounts.put(event.getSender(), event.getErrorAmount());
+        Integer res = 0;
+        for (Integer amount : errorAmounts.values()) {
+            res += amount;
         }
-        formHeader.setErrorAmount(totalProblematicFields);
+        formHeader.setErrorAmount(res);
     }
 
     @Override

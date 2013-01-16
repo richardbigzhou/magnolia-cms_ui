@@ -91,7 +91,6 @@ public class FormSectionConnector extends AbstractLayoutConnector {
             updateChildError(cc);
             getWidget().setFieldDescription(cc.getWidget(), getState().helpDescriptions.get(cc));
         }
-        getParent().setHasErrors(getWidget().getErrorAmount() > 0);
     }
 
     @Override
@@ -139,6 +138,10 @@ public class FormSectionConnector extends AbstractLayoutConnector {
     @Override
     public FormSectionWidget getWidget() {
         return (FormSectionWidget) super.getWidget();
+    }
+
+    public boolean isValidationVisible() {
+        return getState().isValidationVisible;
     }
 
 }

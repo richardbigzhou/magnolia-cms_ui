@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.formsection.event;
 
+import info.magnolia.ui.vaadin.gwt.client.form.tab.widget.FormTabWidget;
+
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -43,6 +45,10 @@ import com.google.gwt.event.shared.HandlerRegistration;
  */
 public class ValidationChangedEvent extends GwtEvent<ValidationChangedEvent.Handler> {
 
+    private int errorAmount = 0;
+    
+    private FormTabWidget sender;
+    
     /**
      * Handler.
      */
@@ -60,6 +66,19 @@ public class ValidationChangedEvent extends GwtEvent<ValidationChangedEvent.Hand
 
     public static final Type<ValidationChangedEvent.Handler> TYPE = new Type<ValidationChangedEvent.Handler>();
 
+    public ValidationChangedEvent(FormTabWidget sender, int amount) {
+        this.errorAmount = amount;
+        this.sender = sender;
+    }
+    
+    public FormTabWidget getSender() {
+        return sender;
+    }
+    
+    public int getErrorAmount() {
+        return errorAmount;
+    }
+    
     @Override
     public Type<Handler> getAssociatedType() {
         return TYPE;
