@@ -10,7 +10,7 @@
     <sv:value>1224932f-fd4c-442e-a378-7593039df3b3</sv:value>
   </sv:property>
   <sv:property sv:name="definition" sv:type="String">
-    <sv:value>info.magnolia.ui.admincentral.activation.action.ActivationActionDefinition</sv:value>
+    <sv:value>info.magnolia.ui.admincentral.activation.action.DeactivationActionDefinition</sv:value>
   </sv:property>
   <sv:property sv:name="implementation" sv:type="String">
     <sv:value>info.magnolia.ui.admincentral.activation.action.DeactivationAction</sv:value>
