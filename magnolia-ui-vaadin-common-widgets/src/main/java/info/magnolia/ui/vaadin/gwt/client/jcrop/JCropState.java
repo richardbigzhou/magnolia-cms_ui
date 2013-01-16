@@ -31,45 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.form.tab;
+package info.magnolia.ui.vaadin.gwt.client.jcrop;
 
-import info.magnolia.ui.vaadin.form.FormSection;
-import info.magnolia.ui.vaadin.gwt.client.form.tab.connector.FormTabState;
-import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
+import info.magnolia.ui.vaadin.gwt.client.editor.shared.SelectionArea;
+
+import com.vaadin.shared.JavaScriptExtensionState;
 
 /**
- * Dialog tab.
+ * JCropState.
  */
-public class MagnoliaFormTab extends MagnoliaTab {
-
-    private final FormSection content;
-
-    public MagnoliaFormTab(String caption, final FormSection content) {
-        super(caption, content);
-        this.content = content;
-        // DialogLayout needs this info to display it when show all tab is active
-        this.content.setCaption(caption);
-    }
+public class JCropState extends JavaScriptExtensionState {
+    public double aspectRatio;
+    public int minHeight;
+    public int maxHeight;
     
-    @Override
-    protected FormTabState getState() {
-        return (FormTabState)super.getState();
-    }
+    public int minWidth;
+    public int maxWidth;
     
-    @Override
-    public FormSection getContent() {
-        return content;
-    }
-
-    public void setValidationVisible(boolean isVisible) {
-        content.setValidationVisible(isVisible);
-        markAsDirty();
-    }
-
-    @Override
-    public void beforeClientResponse(boolean initial) {
-        super.beforeClientResponse(initial);
-        getState().errorAmount = content.getErrorAmount();
-    }
-
+    public String backgroundColor;
+    public String backgroundOpacity;
+    
+    public SelectionArea selection;
+   
 }

@@ -31,14 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.form.tab.rpc;
+package info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell;
 
-import com.vaadin.shared.communication.ServerRpc;
+import java.io.Serializable;
 
 /**
- * FormTabServerRpc.
+ * ShellMessage. Client-server shared class in order to dispatch messages.
+ * TODO: Change Shell API to use this class.
  */
-public interface FormTabServerRpc extends ServerRpc {
+public class ShellMessage implements Serializable {
 
-    void setHasErrors(boolean errorOccured);
 }

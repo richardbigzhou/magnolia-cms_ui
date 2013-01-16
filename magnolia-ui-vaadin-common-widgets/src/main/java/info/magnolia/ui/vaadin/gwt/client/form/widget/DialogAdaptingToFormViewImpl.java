@@ -70,6 +70,7 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
         if (contentWidget instanceof FormView) {
             this.form = ((FormView) contentWidget);
             setWidget(contentWidget);
+            final FormView.Presenter oldPresenter = form.getPresenter();
             this.form.setPresenter(new FormView.Presenter() {
                 @Override
                 public void fireAction(String action) {
@@ -80,8 +81,12 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
                 public void runLayout() {
                     ComponentConnector connector = Util
                             .findConnectorFor(DialogAdaptingToFormViewImpl.this);
-
                     connector.getLayoutManager().setNeedsMeasure(connector);
+                }
+                
+                @Override
+                public void jumpToNextError(FormFieldWrapper lastFocused) {
+                    oldPresenter.jumpToNextError(lastFocused);
                 }
             });
         }
@@ -90,22 +95,6 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
     @Override
     public void setPresenter(final Presenter presenter) {
         this.presenter = presenter;
-        if (form != null) {
-            form.setPresenter(new FormView.Presenter() {
-                @Override
-                public void fireAction(String action) {
-                    presenter.fireAction(action);
-                }
-
-                @Override
-                public void runLayout() {
-                    ComponentConnector connector = Util
-                            .findConnectorFor(DialogAdaptingToFormViewImpl.this);
-
-                    connector.getLayoutManager().setNeedsMeasure(connector);
-                }
-            });
-        }
     }
 
     @Override

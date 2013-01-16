@@ -65,9 +65,9 @@ import com.vaadin.client.ui.VUI;
 /**
  * Special implementation of {@link VView} that burns mgwt theme styles down.
  */
-public class DesktopVView extends VUI {
+public class VDesktopUI extends VUI {
 
-    public DesktopVView() {
+    public VDesktopUI() {
         MGWTStyle.setTheme(new MGWTTheme() {
 
             private MGWTClientBundle bundle;
@@ -201,7 +201,54 @@ public class DesktopVView extends VUI {
 
         @Override
         public ScrollPanelCss getScrollPanelCss() {
-            return null;
+            // need not null object because impl calls ensure injected
+            return new ScrollPanelCss() {
+
+                @Override
+                public String getName() {
+                    return "getScrollPanelCss";
+                }
+
+                @Override
+                public String getText() {
+                    return "";
+                }
+
+                @Override
+                public boolean ensureInjected() {
+                    return false;
+                }
+
+                @Override
+                public String scrollPanel() {
+                    return "scroller";
+                }
+
+                @Override
+                public String scrollBarVertical() {
+                    return "scrollbar-vertical";
+                }
+
+                @Override
+                public String scrollBarHorizontal() {
+                    return "scrollbar-horizontal";
+                }
+
+                @Override
+                public String scrollBarBar() {
+                    return "scrollbar-bar";
+                }
+
+                @Override
+                public String scrollBar() {
+                    return "scrollbar";
+                }
+
+                @Override
+                public String container() {
+                    return "scroller-container";
+                }
+            };
         }
 
         @Override

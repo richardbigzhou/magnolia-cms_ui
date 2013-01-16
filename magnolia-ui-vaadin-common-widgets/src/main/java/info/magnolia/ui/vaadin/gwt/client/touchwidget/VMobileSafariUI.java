@@ -47,7 +47,7 @@ import com.vaadin.client.ui.VUI;
  * Special implementation of {@link VView} that would preinitialize mgwt
  * touch events, so that those will not interfere with native GWT touch events.
  */
-public class MobileSafariVView extends VUI {
+public class VMobileSafariUI extends VUI {
 
     private HandlerManager handlerManager;
 
@@ -62,7 +62,7 @@ public class MobileSafariVView extends VUI {
         };
     }
 
-    public MobileSafariVView() {
+    public VMobileSafariUI() {
         super();
         addStyleName("tablet");
 

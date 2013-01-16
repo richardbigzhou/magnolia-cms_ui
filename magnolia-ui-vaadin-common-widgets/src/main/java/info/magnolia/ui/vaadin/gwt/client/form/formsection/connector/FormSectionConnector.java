@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.gwt.client.form.formsection.connector;
 
 import info.magnolia.ui.vaadin.form.FormSection;
 import info.magnolia.ui.vaadin.gwt.client.form.formsection.widget.FormSectionWidget;
+import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormSectionClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.form.tab.connector.FormTabConnector;
 
 import java.util.List;
@@ -44,6 +45,7 @@ import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractLayoutConnector;
+import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -52,6 +54,17 @@ import com.vaadin.shared.ui.Connect;
 @Connect(FormSection.class)
 public class FormSectionConnector extends AbstractLayoutConnector {
 
+    @Override
+    protected void init() {
+        super.init();
+        registerRpc(FormSectionClientRpc.class, new FormSectionClientRpc() {
+            @Override
+            public void focus(Connector component) {
+                getWidget().focus(((ComponentConnector)component).getWidget());
+            }
+        });
+    }
+    
     private final StateChangeHandler errorHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent event) {
@@ -78,7 +91,6 @@ public class FormSectionConnector extends AbstractLayoutConnector {
             updateChildError(cc);
             getWidget().setFieldDescription(cc.getWidget(), getState().helpDescriptions.get(cc));
         }
-        getParent().setHasErrors(getWidget().getErrorAmount() > 0);
     }
 
     @Override
@@ -126,6 +138,10 @@ public class FormSectionConnector extends AbstractLayoutConnector {
     @Override
     public FormSectionWidget getWidget() {
         return (FormSectionWidget) super.getWidget();
+    }
+
+    public boolean isValidationVisible() {
+        return getState().isValidationVisible;
     }
 
 }

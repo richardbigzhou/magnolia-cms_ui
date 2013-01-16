@@ -37,6 +37,8 @@ import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.vaadin.form.tab.MagnoliaFormTab;
 import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.ActionFiringServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.form.connector.FormState;
+import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormServerRpc;
+import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
 import java.util.Collection;
@@ -47,6 +49,7 @@ import java.util.List;
 import com.google.gwt.thirdparty.guava.common.collect.ArrayListMultimap;
 import com.google.gwt.thirdparty.guava.common.collect.ListMultimap;
 import com.vaadin.data.Item;
+import com.vaadin.shared.Connector;
 import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
@@ -105,6 +108,23 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
             }
 
         });
+        
+        registerRpc(new FormServerRpc() {
+            @Override
+            public void focusNextProblematicField(Connector currentFocused) {
+                MagnoliaFormTab activeTab = (MagnoliaFormTab)tabSheet.getActiveTab();
+                FormSection formSection = activeTab.getContent();
+                Component nextProblematic = formSection.getNextProblematicField(currentFocused);
+                if (nextProblematic == null) {
+                    MagnoliaTab nextTab = tabSheet.getNextTab(activeTab);
+                    tabSheet.setActiveTab(nextTab);
+                    focusNextProblematicField(null);
+                } else {
+                    formSection.focusField(nextProblematic);
+                }
+            }
+        });
+        
     }
 
     @Override
@@ -152,7 +172,7 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
         while (it.hasNext()) {
             final Component c = it.next();
             if (c instanceof MagnoliaFormTab) {
-                ((MagnoliaFormTab) c).getContent().setValidationVisible(isVisible);
+                ((MagnoliaFormTab) c).setValidationVisible(isVisible);
             }
         }
     }

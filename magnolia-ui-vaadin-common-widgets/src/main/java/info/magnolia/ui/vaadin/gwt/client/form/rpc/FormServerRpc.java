@@ -31,13 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.event;
+package info.magnolia.ui.vaadin.gwt.client.form.rpc;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.vaadin.shared.Connector;
+import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * Handler of the active tab changed event.
+ * FormServerRpc.
  */
-public interface ActiveTabChangedHandler extends EventHandler {
-    void onActiveTabChanged(final ActiveTabChangedEvent event);
+public interface FormServerRpc extends ServerRpc {
+    
+    void focusNextProblematicField(Connector currentFocused);
+    
 }

@@ -31,45 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.form.tab;
+package info.magnolia.ui.vaadin.gwt.client.form.rpc;
 
-import info.magnolia.ui.vaadin.form.FormSection;
-import info.magnolia.ui.vaadin.gwt.client.form.tab.connector.FormTabState;
-import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
+import com.vaadin.shared.Connector;
+import com.vaadin.shared.communication.ClientRpc;
 
 /**
- * Dialog tab.
+ * FormSectionClientRpc.
  */
-public class MagnoliaFormTab extends MagnoliaTab {
+public interface FormSectionClientRpc extends ClientRpc {
 
-    private final FormSection content;
-
-    public MagnoliaFormTab(String caption, final FormSection content) {
-        super(caption, content);
-        this.content = content;
-        // DialogLayout needs this info to display it when show all tab is active
-        this.content.setCaption(caption);
-    }
-    
-    @Override
-    protected FormTabState getState() {
-        return (FormTabState)super.getState();
-    }
-    
-    @Override
-    public FormSection getContent() {
-        return content;
-    }
-
-    public void setValidationVisible(boolean isVisible) {
-        content.setValidationVisible(isVisible);
-        markAsDirty();
-    }
-
-    @Override
-    public void beforeClientResponse(boolean initial) {
-        super.beforeClientResponse(initial);
-        getState().errorAmount = content.getErrorAmount();
-    }
-
+    void focus(Connector component);
 }

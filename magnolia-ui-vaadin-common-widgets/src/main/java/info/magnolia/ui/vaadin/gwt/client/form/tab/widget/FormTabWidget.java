@@ -80,14 +80,6 @@ public class FormTabWidget extends MagnoliaTabWidget implements HasValidationCha
         }
     }
 
-    public int getErrorAmount() {
-        return content.getErrorAmount();
-    }
-
-    public List<FormFieldWrapper> getProblematicFields() {
-        return content.getProblematicFields();
-    }
-
     @Override
     public HandlerRegistration addValidationChangeHandler(Handler handler) {
         return addHandler(handler, ValidationChangedEvent.TYPE);

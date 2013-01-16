@@ -31,45 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.form.tab;
+package info.magnolia.ui.vaadin.editor;
 
-import info.magnolia.ui.vaadin.form.FormSection;
-import info.magnolia.ui.vaadin.gwt.client.form.tab.connector.FormTabState;
-import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
+import info.magnolia.ui.vaadin.editor.JCrop.ReleaseListener;
+import info.magnolia.ui.vaadin.editor.JCrop.SelectionListener;
+
+import com.vaadin.ui.Image;
 
 /**
- * Dialog tab.
+ * CroppableImage.
  */
-public class MagnoliaFormTab extends MagnoliaTab {
+public class CroppableImage extends Image {
 
-    private final FormSection content;
+    private final JCrop jcrop = new JCrop();
+    
+    public CroppableImage() {
+        addExtension(jcrop);
+    }
 
-    public MagnoliaFormTab(String caption, final FormSection content) {
-        super(caption, content);
-        this.content = content;
-        // DialogLayout needs this info to display it when show all tab is active
-        this.content.setCaption(caption);
+    public void setAspectRatio(double aspectRatio) {
+        jcrop.setAspectRatio(aspectRatio);
     }
     
-    @Override
-    protected FormTabState getState() {
-        return (FormTabState)super.getState();
+    public void setCropEnabled(boolean isEnabled) {
+        jcrop.setCropEnabled(isEnabled);
     }
     
-    @Override
-    public FormSection getContent() {
-        return content;
+    public void addSelectionListener(SelectionListener listener) {
+        jcrop.addSelectionListener(listener);
+    }
+    
+    public void addReleaseListener(ReleaseListener listener) {
+        jcrop.addReleaseListener(listener);
     }
 
-    public void setValidationVisible(boolean isVisible) {
-        content.setValidationVisible(isVisible);
-        markAsDirty();
+    public void enable() {
+        jcrop.enable();
     }
 
-    @Override
-    public void beforeClientResponse(boolean initial) {
-        super.beforeClientResponse(initial);
-        getState().errorAmount = content.getErrorAmount();
+    public void disable() {
+        jcrop.disable();
     }
 
+    public boolean isCropEnabled() {
+        return false;
+    }
+    
 }
