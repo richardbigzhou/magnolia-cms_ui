@@ -55,7 +55,7 @@ public class ActionbarUtil {
                 actionbarPresenter.disable("activate");
                 break;
             case NodeTypes.Activatable.ACTIVATION_STATUS_MODIFIED:
-                // actionbarPresenter.disable("deactivate");
+                // TODO fgrilli what do we do in this case?
                 break;
             case NodeTypes.Activatable.ACTIVATION_STATUS_NOT_ACTIVATED:
                 actionbarPresenter.disable("deactivate");
