@@ -172,7 +172,7 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
         while (it.hasNext()) {
             final Component c = it.next();
             if (c instanceof MagnoliaFormTab) {
-                ((MagnoliaFormTab) c).getContent().setValidationVisible(isVisible);
+                ((MagnoliaFormTab) c).setValidationVisible(isVisible);
             }
         }
     }

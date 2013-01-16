@@ -31,13 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.event;
+package info.magnolia.ui.vaadin.gwt.client.form.tab.connector;
 
-import com.google.gwt.event.shared.EventHandler;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.connector.MagnoliaTabState;
 
 /**
- * Handler of the active tab changed event.
+ * FormTabState.
  */
-public interface ActiveTabChangedHandler extends EventHandler {
-    void onActiveTabChanged(final ActiveTabChangedEvent event);
+public class FormTabState extends MagnoliaTabState {
+
+    public int errorAmount;
+    
 }

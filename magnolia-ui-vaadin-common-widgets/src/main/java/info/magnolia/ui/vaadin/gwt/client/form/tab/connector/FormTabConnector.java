@@ -35,12 +35,9 @@ package info.magnolia.ui.vaadin.gwt.client.form.tab.connector;
 
 import info.magnolia.ui.vaadin.form.tab.MagnoliaFormTab;
 import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent;
-import info.magnolia.ui.vaadin.gwt.client.form.tab.rpc.FormTabServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.form.tab.widget.FormTabWidget;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.connector.MagnoliaTabConnector;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
 
-import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.shared.ui.Connect;
@@ -50,26 +47,35 @@ import com.vaadin.shared.ui.Connect;
  */
 @Connect(MagnoliaFormTab.class)
 public class FormTabConnector extends MagnoliaTabConnector {
-
-    private final FormTabServerRpc rpc = RpcProxy.create(FormTabServerRpc.class, this);
-
+    
     @Override
     protected void init() {
         super.init();
-        addStateChangeHandler("hasError", new StateChangeHandler() {
+        addStateChangeHandler(new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                getWidget().fireEvent(new ValidationChangedEvent());
+                getWidget().fireEvent(new ValidationChangedEvent(getWidget(), getState().errorAmount));   
             }
         });
     }
-
-    public void setHasErrors(boolean hasErrors) {
-        rpc.setHasErrors(hasErrors);
+    
+    @Override
+    public FormTabState getState() {
+        return (FormTabState)super.getState();
+    }
+    
+    @Override
+    protected FormTabState createState() {
+        return new FormTabState();
     }
 
     @Override
-    protected MagnoliaTabWidget createWidget() {
+    public FormTabWidget getWidget() {
+        return (FormTabWidget)super.getWidget();
+    }
+    
+    @Override
+    protected FormTabWidget createWidget() {
         return new FormTabWidget(this);
     }
 }

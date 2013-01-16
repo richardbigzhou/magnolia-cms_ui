@@ -34,14 +34,13 @@
 package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView;
-import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent;
 
 import com.google.gwt.user.client.Element;
 
 /**
  * Interface of {@link FormViewImpl}.
  */
-public interface FormView extends EditorLikeView<FormView.Presenter>, ValidationChangedEvent.Handler {
+public interface FormView extends EditorLikeView<FormView.Presenter> {
 
     Element getHeaderElement();
 

@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.formsection.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.form.formsection.connector.FormSectionConnector;
 import info.magnolia.ui.vaadin.gwt.client.form.tab.widget.FormTabWidget;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormFieldWrapper;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
@@ -51,8 +50,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.ComponentConnector;
-import com.vaadin.client.Util;
 
 /**
  * Layout for the {@link info.magnolia.ui.vaadin.gwt.client.form.widget.FormFieldWrapper} widgets.
@@ -109,10 +106,7 @@ public class FormSectionWidget extends FlowPanel {
     @Override
     public FormTabWidget getParent() {
         final Widget parent = super.getParent();
-        if (parent == null) {
-            return null;
-        }
-        if (!(super.getParent() instanceof FormTabWidget)) {
+        if (parent == null || !(parent instanceof FormTabWidget)) {
             return null;
         }
         return (FormTabWidget) super.getParent();
@@ -122,28 +116,6 @@ public class FormSectionWidget extends FlowPanel {
         for (final FormFieldWrapper fs : sections.values()) {
             fs.setHelpEnabled(isAccessible);
         }
-    }
-
-    public int getErrorAmount() {
-        return getProblematicFields().size();
-    }
-
-    private List<FormFieldWrapper> getProblematicFields() {
-        FormSectionConnector selfConnector = (FormSectionConnector) Util.findConnectorFor(this);
-        List<FormFieldWrapper> result = new ArrayList<FormFieldWrapper>();
-        if (selfConnector != null
-                && selfConnector.getState().isValidationVisible) {
-            for (final Widget w : sections.keySet()) {
-                final ComponentConnector cc = Util.findConnectorFor(w);
-                if (cc != null) {
-                    String errMsg = cc.getState().errorMessage;
-                    if (errMsg != null && !errMsg.isEmpty()) {
-                        result.add(sections.get(w));
-                    }
-                }
-            }
-        }
-        return result;
     }
 
     public List<FormFieldWrapper> getFields() {
