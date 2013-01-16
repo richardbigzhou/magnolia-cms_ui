@@ -38,13 +38,15 @@ import com.vaadin.data.util.converter.Converter.ConversionException;
 
 /**
  * Basic implementation of {@link com.vaadin.data.Property}.
- * 
+ *
  * TODO dlipp - this impl is not depending on jcr, so it could/should be located in a different package.
+ *
+ * @param <T> generic type of the value.
  */
-public class DefaultProperty extends AbstractProperty {
+public class DefaultProperty<T> extends AbstractProperty<T> {
 
-    private Object value;
-    private final Class<?> type;
+    private T value;
+    private final Class<T> type;
     private boolean readOnly;
     private String propertyName;
 
@@ -53,28 +55,28 @@ public class DefaultProperty extends AbstractProperty {
      *
      * @throws IllegalArgumentException if value is null.
      */
-    public DefaultProperty(String propertyName, Object value) {
+    public DefaultProperty(String propertyName, T value) {
         this.propertyName = propertyName;
         if (value == null) {
             throw new IllegalArgumentException("Value can not be null.");
         }
         this.value = value;
-        this.type = value.getClass();
+        this.type = (Class<T>) value.getClass();
     }
 
-    public DefaultProperty(String propertyName, Object value, Class<?> type) {
+    public DefaultProperty(String propertyName, T value, Class<T> type) {
         this.propertyName = propertyName;
         this.value = value;
         this.type = type;
     }
 
     @Override
-    public Object getValue() {
+    public T getValue() {
         return value;
     }
 
     @Override
-    public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+    public void setValue(T newValue) throws ReadOnlyException, ConversionException {
         if (readOnly) {
             return;
         }
@@ -83,7 +85,7 @@ public class DefaultProperty extends AbstractProperty {
     }
 
     @Override
-    public Class<?> getType() {
+    public Class<T> getType() {
         return type;
     }
 
@@ -103,7 +105,7 @@ public class DefaultProperty extends AbstractProperty {
 
     @Override
     public String toString() {
-        Object value = getValue();
+        T value = getValue();
         return value != null ? value.toString() : "";
     }
 }
