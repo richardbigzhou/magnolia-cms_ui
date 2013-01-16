@@ -77,9 +77,9 @@ public class DefaultProperty<T> extends AbstractProperty<T> {
     @Override
     public void setValue(T newValue) throws ReadOnlyException, ConversionException {
         if (isReadOnly()) {
-            throw new ReadOnlyException("Property is readonly: Can not update value: " + newValue.toString());
+            throw new ReadOnlyException("Property is readonly: Can not update value: " + newValue != null ? newValue.toString() : "null");
         }
-        if (!getType().isAssignableFrom(newValue.getClass())) {
+        if (newValue != null && !getType().isAssignableFrom(newValue.getClass())) {
            throw new ConversionException("Cannot convert " + newValue.getClass() + " to " + getType());
         }
         value = newValue;
