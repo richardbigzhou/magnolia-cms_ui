@@ -43,7 +43,8 @@ import info.magnolia.context.Context;
 import info.magnolia.objectfactory.Components;
 
 /**
- * the deactivation command which do real deactivation
+ * The deactivation command which do real deactivation.
+ * 
  * @author jackie
  */
 public class DeactivationCommand extends BaseRepositoryCommand {

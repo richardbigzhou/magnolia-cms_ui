@@ -59,6 +59,11 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 
+/**
+ * The MarkNodeAsDeleted marks the specified node deleted and removes all the
+ * non-system content.
+ * 
+ */
 public class MarkNodeAsDeletedCommand extends BaseRepositoryCommand {
 
     public static final String DELETED_NODE_TEMPLATE = "adminInterface:mgnlDeleted";

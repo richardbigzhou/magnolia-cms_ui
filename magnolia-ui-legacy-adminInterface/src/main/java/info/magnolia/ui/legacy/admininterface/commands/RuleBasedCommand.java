@@ -38,18 +38,20 @@ import info.magnolia.cms.util.Rule;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * @author Sameer Charles
- * $Id$
+ * Abstract base for the rule based commands.
+ * 
+ * @author Sameer Charles $Id$
  */
 public abstract class RuleBasedCommand extends BaseRepositoryCommand {
 
     /**
-     * You can pass a rule to the command (optional)
+     * You can pass a rule to the command (optional).
      */
     public static final String ATTRIBUTE_RULE = "rule";
 
     /**
-     * All subnodes of this types are activated imediately (without using the recursion)
+     * All subnodes of this types are activated imediately (without using the
+     * recursion).
      */
     private String itemTypes = ItemType.CONTENTNODE.getSystemName();
 

@@ -40,14 +40,16 @@ import info.magnolia.objectfactory.Components;
 
 
 /**
+ * Abstract base for the activation command.
+ * 
  * @author Philipp Bracher
  * @version $Id$
- *
+ * 
  */
 public abstract class BaseActivationCommand extends RuleBasedCommand {
 
     /**
-     * You can pass a syndicator to the command (optional)
+     * You can pass a syndicator to the command (optional).
      */
     public static final String ATTRIBUTE_SYNDICATOR = "syndicator";
 

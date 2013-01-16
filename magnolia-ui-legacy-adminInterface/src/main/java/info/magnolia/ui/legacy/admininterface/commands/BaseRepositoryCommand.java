@@ -46,7 +46,10 @@ import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 
-
+/**
+ * Abstract base class for all repository commands.
+ * 
+ */
 public abstract class BaseRepositoryCommand extends MgnlCommand {
 
     private String path = "/";

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2003-2012 Magnolia International
+ * This file Copyright (c) 2003-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -56,15 +56,12 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * the activation command which do real activation
- * @author jackie
- * $Id$
+ * The activation command which do real activation.
+ * 
+ * @author jackie $Id$
  */
 public class ActivationCommand extends BaseActivationCommand {
 
-    /**
-     * Log
-     */
     private static Logger log = LoggerFactory.getLogger(ActivationCommand.class);
 
     private boolean recursive;
@@ -74,7 +71,7 @@ public class ActivationCommand extends BaseActivationCommand {
     private List versionMap;
 
     /**
-     * Execute activation
+     * Execute activation.
      */
     @Override
     public boolean execute(Context ctx) {
@@ -278,8 +275,9 @@ public class ActivationCommand extends BaseActivationCommand {
     }
 
     /**
-     * collect node UUID of the siblings in the exact order as it should be written on
-     * subscribers
+     * Collect node UUID of the siblings in the exact order as it should be
+     * written on. subscribers
+     * 
      * @param node
      * */
     protected List getOrderingInfo(Content node) {

@@ -44,14 +44,14 @@ import org.apache.commons.lang.StringUtils;
 
 
 /**
- * A command setting a message using the AlertUtil
+ * A command setting a message using the AlertUtil.
+ * 
  * @author Philipp Bracher
- * @version $Revision:6423 $ ($Author:scharles $)
  */
 public class MessageCommand extends MgnlCommand {
 
     /**
-     * The message
+     * The message.
      */
     private String message = "";
 

@@ -44,7 +44,8 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * the command to delete one node
+ * The command to delete one node.
+ * 
  * @author jackie
  */
 public class DeleteCommand extends BaseRepositoryCommand {
