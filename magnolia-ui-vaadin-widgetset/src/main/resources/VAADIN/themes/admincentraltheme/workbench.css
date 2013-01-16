@@ -23,9 +23,8 @@
 	left: 0;
 	right: 0;
 	top: 47px;
+	padding:4px;
 }
-
-.mgnl-content-view .v-csslayout-margin {padding:4px;}
 
 .v-horizontallayout.v-margin-top {padding-top: 20px;}
 .v-horizontallayout.v-margin-bottom {padding-bottom: 40px;}
