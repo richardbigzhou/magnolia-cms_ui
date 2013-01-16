@@ -47,7 +47,6 @@ public class DefaultProperty<T> extends AbstractProperty<T> {
 
     private T value;
     private final Class<T> type;
-    private boolean readOnly;
     private String propertyName;
 
     /**
@@ -77,8 +76,11 @@ public class DefaultProperty<T> extends AbstractProperty<T> {
 
     @Override
     public void setValue(T newValue) throws ReadOnlyException, ConversionException {
-        if (readOnly) {
-            return;
+        if (isReadOnly()) {
+            throw new ReadOnlyException("Property is readonly: Can not update value: " + newValue.toString());
+        }
+        if (!getType().isAssignableFrom(newValue.getClass())) {
+           throw new ConversionException("Cannot convert " + newValue.getClass() + " to " + getType());
         }
         value = newValue;
         fireValueChange();
@@ -87,16 +89,6 @@ public class DefaultProperty<T> extends AbstractProperty<T> {
     @Override
     public Class<T> getType() {
         return type;
-    }
-
-    @Override
-    public boolean isReadOnly() {
-        return readOnly;
-    }
-
-    @Override
-    public void setReadOnly(boolean newStatus) {
-        readOnly = newStatus;
     }
 
     public String getPropertyName() {

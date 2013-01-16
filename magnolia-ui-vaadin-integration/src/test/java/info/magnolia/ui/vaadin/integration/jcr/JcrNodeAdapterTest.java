@@ -381,7 +381,12 @@ public class JcrNodeAdapterTest {
 
         // WHEN
         // Modify one JCR and Vaadin property.
-        newProperty.setValue(value_3);
+        try {
+            newProperty.setValue(value_3);
+        }
+        catch(Property.ReadOnlyException e) {
+            // ignore
+        }
         DefaultProperty jcrProperty = (DefaultProperty) adapter.getItemProperty(propertyName);
         jcrProperty.setValue(propertyValue + modified);
         jcrProperty.setReadOnly(true);
