@@ -41,11 +41,12 @@ import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.google.gwt.thirdparty.guava.common.collect.ArrayListMultimap;
 import com.google.gwt.thirdparty.guava.common.collect.ListMultimap;
 import com.vaadin.data.Item;
-import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
@@ -61,7 +62,9 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
 
     private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");
 
-    private final FieldGroup fieldGroup = new FieldGroup();
+    private Item itemDataSource;
+
+    private List<Field<?>> fields = new LinkedList<Field<?>>();
 
     private final MagnoliaTabSheet tabSheet = new MagnoliaTabSheet() {
         @Override
@@ -111,12 +114,12 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
 
     @Override
     public void setItemDataSource(Item newDataSource) {
-        fieldGroup.setItemDataSource(newDataSource);
+        this.itemDataSource = newDataSource;
     }
 
     @Override
     public Item getItemDataSource() {
-        return fieldGroup.getItemDataSource();
+        return itemDataSource;
     }
 
     @Override
@@ -125,8 +128,13 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
     }
 
     @Override
+    public void addField(Field<?> field) {
+        fields.add(field);
+    }
+
+    @Override
     public Collection<Field<?>> getFields() {
-        return fieldGroup.getFields();
+        return fields;
     }
 
     @Override

@@ -136,6 +136,7 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
 
             @Override
             public void onShowAllTabs(ShowAllTabsEvent event) {
+                rpc.setShowAll();
                 view.showAllTabContents(true);
                 view.getTabContainer().showAll(true);
             }

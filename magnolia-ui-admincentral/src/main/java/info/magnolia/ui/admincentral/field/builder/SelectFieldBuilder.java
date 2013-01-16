@@ -215,8 +215,8 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
      */
     private void setDefaultSelectedItem(Property<?> dataSource) {
         String selectedValue = null;
-        if (!dataSource.getValue().toString().isEmpty()) {
-            selectedValue = dataSource.getValue().toString();
+        if (StringUtils.isNotEmpty(dataSource.toString())) {
+            selectedValue = dataSource.toString();
         } else if (initialSelecteKey != null) {
             selectedValue = initialSelecteKey;
         } else if (definition.getOptions() != null && !definition.getOptions().isEmpty()) {

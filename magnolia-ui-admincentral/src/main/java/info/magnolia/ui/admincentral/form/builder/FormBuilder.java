@@ -92,6 +92,7 @@ public class FormBuilder {
                     if (StringUtils.isNotBlank(fieldDefinition.getDescription())) {
                         tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
                     }
+                    view.addField(field);
                 }
             }
 

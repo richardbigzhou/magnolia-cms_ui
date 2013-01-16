@@ -45,6 +45,8 @@ import com.vaadin.ui.Field;
  */
 public interface FormView extends View, Item.Editor {
 
+    void addField(Field<?> field);
+
     /**
      * Action execution callback.
      */
