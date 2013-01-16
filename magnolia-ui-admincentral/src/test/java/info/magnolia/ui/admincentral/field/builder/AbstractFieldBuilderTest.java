@@ -33,8 +33,10 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
@@ -43,13 +45,13 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Main testcase for {@link AbstractFieldBuilder}.
@@ -61,12 +63,12 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     @Test
     public void simpleInitializationTest() {
         // GIVEN
-        abstractDialogField = new TestFormField(definition, baseItem);
+        abstractDialogField = new TestTextFieldBuilder(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field<Object> field = abstractDialogField.getField();
         // THEN
-        assertEquals(TextField.class, field.getClass());
+        assertTrue(TextField.class.isAssignableFrom(field.getClass()));
         assertEquals(definition, abstractDialogField.getFieldDefinition());
         assertEquals(false, field.isRequired());
         assertEquals("label", field.getCaption());
@@ -78,7 +80,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     @Test
     public void changePropertyValueTest() throws Exception {
         // GIVEN
-        abstractDialogField = new TestFormField(definition, baseItem);
+        abstractDialogField = new TestTextFieldBuilder(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
         Field<Object> field = abstractDialogField.getField();
 
@@ -103,7 +105,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         baseItem = new JcrNodeAdapter(baseNode);
         // Set do not change
         definition.setReadOnly(false);
-        abstractDialogField = new TestFormField(definition, baseItem);
+        abstractDialogField = new TestTextFieldBuilder(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
         Field<Object> field = abstractDialogField.getField();
 
@@ -120,17 +122,16 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     }
 
     @Test
-    @Ignore("See http://dev.vaadin.com/ticket/10663")
     public void propertyType_Double() throws Exception {
         // GIVEN
         // Set property Type
         definition.setType("Double");
-        abstractDialogField = new TestFormField(definition, baseItem);
+        abstractDialogField = new TestTextFieldBuilder(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
         Field<Object> field = abstractDialogField.getField();
 
         // WHEN
-        field.setValue(21.98);
+        field.setValue("21.98");
 
         // THEN
         Node res = ((JcrNodeAdapter) baseItem).getNode();
@@ -148,7 +149,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     public void simpleI18NTest() {
         // GIVEN
         definition.setLabel("message.label");
-        abstractDialogField = new TestFormField(definition, baseItem);
+        abstractDialogField = new TestTextFieldBuilder(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
@@ -163,7 +164,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     public void requiredFieldIsMarkedByAsteriskTest() {
         // GIVEN
         definition.setRequired(true);
-        abstractDialogField = new TestFormField(definition, baseItem);
+        abstractDialogField = new TestTextFieldBuilder(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
@@ -187,19 +188,30 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     }
 
     /**
-     * Dummy Implementation of AbstractDialogField.
+     * Simplified test implementation of a {@link TextFieldBuilder}.
      */
-    public static class TestFormField extends AbstractFieldBuilder<FieldDefinition, Object> {
+    public static class TestTextFieldBuilder extends AbstractFieldBuilder<FieldDefinition, Object> {
 
-        public TestFormField(FieldDefinition definition, Item relatedFieldItem) {
+        public TestTextFieldBuilder(FieldDefinition definition, Item relatedFieldItem) {
             super(definition, relatedFieldItem);
         }
 
         @Override
         protected Field buildField() {
-            return new TextField();
+            return new TestTextField();
         }
 
+        /**
+         * {@link com.vaadin.data.util.converter.ConverterFactory} is bound to the {@link VaadinSession}. To get The default converters to work we need to mock the VaadinSession.
+         * @see AbstractBuilderTest where we add the {@link com.vaadin.data.util.converter.DefaultConverterFactory} to the {@link info.magnolia.objectfactory.ComponentProvider}.
+         */
+        private class TestTextField extends TextField {
+
+            @Override
+            protected VaadinSession getSession() {
+                return Components.getComponentProvider().getComponent(VaadinSession.class);
+            }
+        }
     }
 
     @Override
