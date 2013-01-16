@@ -79,7 +79,9 @@ public class ViewportConnector extends AbstractLayoutConnector {
                 if (candidate != null && getWidget().getVisibleApp() != candidate) {
                     getWidget().setVisibleApp(candidate != null ? candidate.getWidget() : null);
                 }
+                getWidget().hideLoadingPane();
             }
+
         });
     };
 

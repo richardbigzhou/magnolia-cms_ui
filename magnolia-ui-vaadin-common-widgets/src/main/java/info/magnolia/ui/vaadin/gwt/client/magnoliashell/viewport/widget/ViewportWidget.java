@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.loading.LoadingPane;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
@@ -52,7 +53,7 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
  */
 public class ViewportWidget extends FlowPanel {
 
-    // private LoadingPane loadingPane = new LoadingPane();
+    private final LoadingPane loadingPane = new LoadingPane();
 
     private Widget visibleApp;
 
@@ -67,7 +68,7 @@ public class ViewportWidget extends FlowPanel {
     public ViewportWidget() {
         super();
         addStyleName("v-viewport");
-        // loadingPane.appendTo(this);
+        loadingPane.appendTo(this);
         DOM.sinkEvents(this.getElement(), Event.TOUCHEVENTS);
         new TouchDelegate(this).addTouchEndHandler(new TouchEndHandler() {
             @Override
@@ -81,7 +82,11 @@ public class ViewportWidget extends FlowPanel {
     }
 
     public void showLoadingPane() {
-        // loadingPane.show();
+        loadingPane.show();
+    }
+
+    public void hideLoadingPane() {
+        loadingPane.hide();
     }
 
     public EventBus getEventBus() {

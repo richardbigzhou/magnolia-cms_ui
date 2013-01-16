@@ -43,6 +43,7 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessag
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VInfoMessage;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellErrorMessage;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VWarningMessage;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ShellAppsViewportConnector;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget.PreloaderCallback;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.DialogViewportWidget;
@@ -62,6 +63,8 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
+import com.vaadin.client.Util;
+import com.vaadin.client.ui.AbstractComponentConnector;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
@@ -84,8 +87,8 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
     private Presenter presenter;
 
-    private Element viewportSlot = DOM.createDiv();
-    
+    private final Element viewportSlot = DOM.createDiv();
+
     public MagnoliaShellViewImpl(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
@@ -272,18 +275,46 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     private final ShellAppActivatedEvent.Handler navigationHandler = new ShellAppActivatedEvent.Handler() {
         @Override
         public void onShellAppActivated(final ShellAppActivatedEvent event) {
+
             Widget shellApp = presenter.getShellAppWidget(event.getType());
+
+            // Loading shell app for the first time
+            if (shellApp == null) {
+                getShellAppViewport().showLoadingPane();
+                presenter.activateShellApp(Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken()));
+                return;
+            }
+
             ShellAppsViewportWidget viewport = getShellAppViewport();
-            if (shellApp != null && !event.equals(viewport.getRefreshEvent())) {
+            ShellAppActivatedEvent refreshEvent = viewport.getRefreshEvent();
+
+            // Start immediate client transition
+            // Stores the current event as refresh event, which will be fired once again when transition completes.
+            // Therefore if current event is the same as the refresh event, it means transition completed.
+            if (refreshEvent == null || event != refreshEvent) {
+
+                // Store refresh event
                 viewport.setRefreshEvent(event);
-                // Need to update state of button and divet in the main launcher
+
+                // Update main launcher immediately
                 mainAppLauncher.activateControl(event.getType());
+
                 viewport.setVisibleApp(shellApp);
+                // Set shell apps viewport active if it was not.
+                if (!viewport.isActive()) {
+                    setActiveViewport(viewport);
+                }
             } else {
                 viewport.setRefreshEvent(null);
-                getShellAppViewport().showLoadingPane();
+
+                // Show loading pane only if refreshing a different shell app, otherwise client state does not change and loading pane cannot be hidden
+                ShellAppsViewportConnector viewportConnector = (ShellAppsViewportConnector) Util.findConnectorFor(viewport);
+                AbstractComponentConnector activeShellAppConnector = (AbstractComponentConnector) viewportConnector.getState().activeComponent;
+                if (activeShellAppConnector.getWidget() != shellApp) {
+                    getShellAppViewport().showLoadingPane();
+                }
+                presenter.activateShellApp(Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken()));
             }
-            presenter.activateShellApp(Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken()));
         }
     };
 }
