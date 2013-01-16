@@ -50,8 +50,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.web.bindery.event.shared.EventBus;
-import com.googlecode.mgwt.ui.client.widget.ScrollPanel;
 
 /**
  * Contains the tabs at the top and the tabs themselves. The tabs are all
@@ -75,11 +75,14 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     private final LoadingPane loadingPane = new LoadingPane();
 
+    private EventBus eventBus;
+    
     public MagnoliaTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
         this.presenter = presenter;
         this.tabBar = new TabBarWidget(eventBus);
-
+        this.eventBus = eventBus;
+        
         addStyleName("v-shell-tabsheet");
         scroller.addStyleName("v-shell-tabsheet-scroller");
         tabPanel.addStyleName("v-shell-tabsheet-tab-wrapper");

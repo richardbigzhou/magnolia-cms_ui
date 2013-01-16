@@ -189,6 +189,10 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         }
     }
 
+    public Widget getField() {
+        return field;
+    }
+    
     @Override
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
         return field.addDomHandler(handler, FocusEvent.getType());

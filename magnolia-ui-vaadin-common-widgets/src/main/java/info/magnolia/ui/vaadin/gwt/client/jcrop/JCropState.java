@@ -31,32 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.form.widget;
+package info.magnolia.ui.vaadin.gwt.client.jcrop;
 
-import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView;
-import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.editor.shared.SelectionArea;
 
-import com.google.gwt.user.client.Element;
+import com.vaadin.shared.JavaScriptExtensionState;
 
 /**
- * Interface of {@link FormViewImpl}.
+ * JCropState.
  */
-public interface FormView extends EditorLikeView<FormView.Presenter>, ValidationChangedEvent.Handler {
-
-    Element getHeaderElement();
-
-    Element getContentElement();
-
-    /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
-     */
-    public interface Presenter extends EditorLikeView.Presenter {
-
-        @Deprecated
-        void runLayout();
-
-        void jumpToNextError(FormFieldWrapper lastFocused);
-
-    }
-
+public class JCropState extends JavaScriptExtensionState {
+    public double aspectRatio;
+    public int minHeight;
+    public int maxHeight;
+    
+    public int minWidth;
+    public int maxWidth;
+    
+    public String backgroundColor;
+    public String backgroundOpacity;
+    
+    public SelectionArea selection;
+   
 }

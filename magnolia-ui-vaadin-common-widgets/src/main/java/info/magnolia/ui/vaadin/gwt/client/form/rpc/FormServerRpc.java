@@ -31,32 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.form.widget;
+package info.magnolia.ui.vaadin.gwt.client.form.rpc;
 
-import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView;
-import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent;
-
-import com.google.gwt.user.client.Element;
+import com.vaadin.shared.Connector;
+import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * Interface of {@link FormViewImpl}.
+ * FormServerRpc.
  */
-public interface FormView extends EditorLikeView<FormView.Presenter>, ValidationChangedEvent.Handler {
-
-    Element getHeaderElement();
-
-    Element getContentElement();
-
-    /**
-     * Presenter. Meant for Vaadin part of MagnoliaShell.
-     */
-    public interface Presenter extends EditorLikeView.Presenter {
-
-        @Deprecated
-        void runLayout();
-
-        void jumpToNextError(FormFieldWrapper lastFocused);
-
-    }
-
+public interface FormServerRpc extends ServerRpc {
+    
+    void focusNextProblematicField(Connector currentFocused);
+    
 }
