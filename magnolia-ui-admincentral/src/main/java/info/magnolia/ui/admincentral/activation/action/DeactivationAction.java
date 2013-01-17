@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 /**
  * UI action that allows to deactivate a single page (node).
  */
-public class DeactivationAction extends ActionBase<ActivationActionDefinition> {
+public class DeactivationAction extends ActionBase<DeactivationActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(DeactivationAction.class);
 
@@ -59,7 +59,7 @@ public class DeactivationAction extends ActionBase<ActivationActionDefinition> {
     @Inject
     private Provider<ActivationSupport> activationSupportProvider;
 
-    public DeactivationAction(ActivationActionDefinition definition, Node node) {
+    public DeactivationAction(final DeactivationActionDefinition definition, final Node node) {
         super(definition);
         this.node = node;
     }

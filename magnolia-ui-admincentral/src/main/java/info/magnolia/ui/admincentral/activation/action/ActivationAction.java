@@ -59,7 +59,7 @@ public class ActivationAction extends ActionBase<ActivationActionDefinition> {
     @Inject
     private Provider<ActivationSupport> activationSupportProvider;
 
-    public ActivationAction(ActivationActionDefinition definition, Node node) {
+    public ActivationAction(final ActivationActionDefinition definition, final Node node) {
         super(definition);
         this.node = node;
     }
