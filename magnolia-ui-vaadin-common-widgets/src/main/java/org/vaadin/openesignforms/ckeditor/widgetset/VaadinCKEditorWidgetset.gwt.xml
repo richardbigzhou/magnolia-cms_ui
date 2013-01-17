@@ -9,5 +9,5 @@
         <when-type-is class="com.vaadin.terminal.gwt.client.ui.VWindow"/>
     </replace-with>
 
-    <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
+    <inherits name="com.vaadin.DefaultWidgetSet" />
 </module>
