@@ -155,12 +155,6 @@
       <scope>singleton</scope>
     </component>
     <component>
-      <type>info.magnolia.cms.exchange.ActivationSupport</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-admincentral/config/activation</path>
-      <observed>true</observed>
-    </component>
-    <component>
       <type>info.magnolia.ui.framework.location.LocationController</type>
       <implementation>info.magnolia.ui.framework.location.LocationController</implementation>
     </component>
