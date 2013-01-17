@@ -144,11 +144,18 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
                     lastFocused = null;
                     if (!event.isShowingAllTabs()) {
                         contentEl.removeClassName(CLASSNAME_CONTENT_SHOW_ALL);
+                        setFieldFocusHandler((FormTabWidget) event.getTab());
                     } else {
                         contentEl.addClassName(CLASSNAME_CONTENT_SHOW_ALL);
+                        for (FormTabWidget tab : formTabs) {
+                            setFieldFocusHandler(tab);
+                        }
                     }
                     
-                    final List<FormFieldWrapper> fields = ((FormTabWidget) event.getTab()).getFields();
+                }
+
+                private void setFieldFocusHandler(FormTabWidget tab) {
+                    final List<FormFieldWrapper> fields = tab.getFields();
                     for (final FormFieldWrapper field : fields) {
                         field.addFocusHandler(new FocusHandler() {
                             @Override
