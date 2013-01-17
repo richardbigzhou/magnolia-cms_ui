@@ -51,11 +51,9 @@ public class AppsViewportConnector extends ViewportConnector {
     @Override
     public void onConnectorHierarchyChange(final ConnectorHierarchyChangeEvent event) {
         if (getWidget().hasPreloader()) {
-            // getConnection().suspendReponseHandling(lock);
             new Timer() {
                 @Override
                 public void run() {
-                    // getConnection().resumeResponseHandling(lock);
                     getWidget().removePreloader();
                 }
             }.schedule(500);

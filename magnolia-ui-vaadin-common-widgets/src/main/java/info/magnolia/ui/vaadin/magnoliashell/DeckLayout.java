@@ -88,8 +88,7 @@ public class DeckLayout extends AbstractComponentContainer {
 
     public void pop() {
         if (!children.isEmpty()) {
-            removeComponent(children.removeFirst());
-            markAsDirty();
+            removeComponent(children.removeLast());
         }
     }
 
