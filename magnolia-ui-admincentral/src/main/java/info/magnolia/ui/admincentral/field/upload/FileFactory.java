@@ -37,6 +37,8 @@ import java.io.File;
 
 /**
  * FileFactory.
+ * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on 
+ * @link{http://code.google.com/p/easyuploads-addon/}.
  */
 public interface FileFactory {
     public File createFile(String fileName, String mimeType);

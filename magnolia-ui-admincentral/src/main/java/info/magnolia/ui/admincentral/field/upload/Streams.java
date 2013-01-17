@@ -39,6 +39,8 @@ import java.io.OutputStream;
 
 /**
  * Streams.
+ * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on 
+ * @link{http://code.google.com/p/easyuploads-addon/}.
  */
 public class Streams {
 

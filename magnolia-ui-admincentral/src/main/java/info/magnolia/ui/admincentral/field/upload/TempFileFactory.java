@@ -38,6 +38,8 @@ import java.io.IOException;
 
 /**
  * TempFileFactory.
+ * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on
+ * @link{http://code.google.com/p/easyuploads-addon/}.
  */
 class TempFileFactory implements FileFactory {
 
