@@ -36,26 +36,33 @@ package info.magnolia.ui.app.contacts.field;
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 
-import org.vaadin.addon.customfield.CustomField;
-
 import com.vaadin.data.Property;
+import com.vaadin.data.util.converter.Converter.ConversionException;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 
 /**
  * Specific Contact TextAndButtonField field that add a Thumbnail before the select action and field
  * see basic implementation {@link TextAndButtonField}.
  */
-public class ContactTextAndButtonField extends CustomField {
+public class ContactTextAndButtonField extends CustomField<String> {
 
     private TextAndButtonField textAndButtonField;
+
+    private ContactThumbnailField thumbnail;
 
     public ContactTextAndButtonField(TextAndButtonField textAndButtonField, ImageProvider imageThumbnailProvider, String workspace) {
         // used to set the correct property and values
         this.textAndButtonField = textAndButtonField;
+        this.thumbnail = new ContactThumbnailField(imageThumbnailProvider, workspace);
+    }
+
+    @Override
+    protected Component initContent() {
         HorizontalLayout layout = new HorizontalLayout();
         // Add Thumbnail Field
-        ContactThumbnailField thumbnail = new ContactThumbnailField(imageThumbnailProvider, workspace);
         thumbnail.ValueChangeListener(textAndButtonField.getTextField());
         layout.addComponent(thumbnail);
         // Add Select Field
@@ -63,30 +70,32 @@ public class ContactTextAndButtonField extends CustomField {
         layout.setComponentAlignment(textAndButtonField, Alignment.MIDDLE_RIGHT);
         layout.setMargin(true);
 
-        setCompositionRoot(layout);
+        return layout;
     }
 
     @Override
-    public Class<?> getType() {
+    public Class<String> getType() {
         return String.class;
     }
 
     @Override
-    public Object getValue() {
+    public String getValue() {
         return textAndButtonField.getValue();
     }
 
     @Override
-    public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+    public void setValue(String newValue) throws ReadOnlyException, ConversionException {
         textAndButtonField.setValue(newValue);
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void setPropertyDataSource(Property newDataSource) {
         textAndButtonField.setPropertyDataSource(newDataSource);
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public Property getPropertyDataSource() {
         return textAndButtonField.getPropertyDataSource();
     }

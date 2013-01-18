@@ -1,0 +1,58 @@
+--- k1/src/main/java/com/vaadin/client/ui/table/TableConnector.java	2013-01-08 10:36:09.000000000 +0200
++++ k2/src/main/java/com/vaadin/client/ui/table/TableConnector.java	2013-01-08 11:28:43.000000000 +0200
+@@ -35,15 +35,15 @@
+ import com.vaadin.client.Util;
+ import com.vaadin.client.ui.AbstractHasComponentsConnector;
+ import com.vaadin.client.ui.PostLayoutListener;
+-import com.vaadin.client.ui.VScrollTable;
+-import com.vaadin.client.ui.VScrollTable.ContextMenuDetails;
+-import com.vaadin.client.ui.VScrollTable.VScrollTableBody.VScrollTableRow;
++import com.vaadin.client.ui.VScrollTablePatched;
++import com.vaadin.client.ui.VScrollTablePatched.ContextMenuDetails;
++import com.vaadin.client.ui.VScrollTablePatched.VScrollTableBody.VScrollTableRow;
+ import com.vaadin.shared.ui.Connect;
+ import com.vaadin.shared.ui.table.TableConstants;
+ import com.vaadin.shared.ui.table.TableState;
+ 
+-@Connect(com.vaadin.ui.Table.class)
+-public class TableConnector extends AbstractHasComponentsConnector implements
++//@Connect(com.vaadin.ui.Table.class)
++public class TableConnectorPatched extends AbstractHasComponentsConnector implements
+         Paintable, DirectionalManagedLayout, PostLayoutListener {
+ 
+     @Override
+@@ -292,8 +292,8 @@
+     }
+ 
+     @Override
+-    public VScrollTable getWidget() {
+-        return (VScrollTable) super.getWidget();
++    public VScrollTablePatched getWidget() {
++        return (VScrollTablePatched) super.getWidget();
+     }
+ 
+     @Override
+@@ -313,20 +313,20 @@
+ 
+     @Override
+     public void postLayout() {
+-        VScrollTable table = getWidget();
++        VScrollTablePatched table = getWidget();
+         if (table.sizeNeedsInit) {
+             table.sizeInit();
+             Scheduler.get().scheduleFinally(new ScheduledCommand() {
+                 @Override
+                 public void execute() {
+-                    getLayoutManager().setNeedsMeasure(TableConnector.this);
++                    getLayoutManager().setNeedsMeasure(TableConnectorPatched.this);
+                     ServerConnector parent = getParent();
+                     if (parent instanceof ComponentConnector) {
+                         getLayoutManager().setNeedsMeasure(
+                                 (ComponentConnector) parent);
+                     }
+                     getLayoutManager().setNeedsVerticalLayout(
+-                            TableConnector.this);
++                            TableConnectorPatched.this);
+                     getLayoutManager().layoutNow();
+                 }
+             });

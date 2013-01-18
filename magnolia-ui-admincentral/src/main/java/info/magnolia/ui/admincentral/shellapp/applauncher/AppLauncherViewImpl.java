@@ -38,7 +38,6 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.vaadin.applauncher.AppLauncher;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
 
 import com.vaadin.ui.Component;
 
@@ -54,25 +53,14 @@ import com.vaadin.ui.Component;
  */
 public class AppLauncherViewImpl implements AppLauncherView {
 
-    private String id = ShellAppType.APPLAUNCHER.getClassId();
-
-    @Override
-    public String getId() {
-        return id;
-    }
+    private final AppLauncher appLauncher = new AppLauncher();
 
     private Presenter presenter;
 
-    private final AppLauncher appLauncher = new AppLauncher();
-
-    public AppLauncherViewImpl() {
-        appLauncher.setHeight("100%");
-        appLauncher.setWidth("720px");
-
-        appLauncher.setDebugId(id);
-
+    public Presenter getPresenter() {
+        return presenter;
     }
-
+    
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;

@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMagnoliaShellView;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellView;
 
 /**
  * Info message.
  */
 public class VInfoMessage extends VDetailedShellMessage {
 
-    public VInfoMessage(VMagnoliaShellView shell, String topic, String message, String id) {
+    public VInfoMessage(MagnoliaShellView shell, String topic, String message, String id) {
         super(shell, topic, message, id);
         addStyleName("info");
     }

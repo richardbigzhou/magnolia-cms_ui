@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.editor.model.focus;
 
 import com.google.gwt.dom.client.Element;
 
-
 /**
  * Interface for Focus Model.
  */

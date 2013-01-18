@@ -34,7 +34,13 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.vaadin.data.Property;
+import com.vaadin.data.util.converter.Converter;
 import org.junit.Test;
 
 public class DefaultPropertyTest {
@@ -43,7 +49,7 @@ public class DefaultPropertyTest {
     public void testGetValue() throws Exception {
         // GIVEN
         final String value = "value";
-        final DefaultProperty property = new DefaultProperty("propertyName", value);
+        final DefaultProperty<String> property = new DefaultProperty<String>("propertyName", value, String.class);
 
         // WHEN
         final Object result = property.getValue();
@@ -53,10 +59,30 @@ public class DefaultPropertyTest {
     }
 
     @Test
+    public void testCreateDefaultPropertyNullValueWithType() throws Exception {
+        // GIVEN
+        final DefaultProperty<String> property = new DefaultProperty<String>("propertyName", null, String.class);
+
+        // WHEN
+        final Class<?> result = property.getType();
+
+        //THEN
+        assertEquals(property.getType(), result);
+        assertNull(property.getValue());
+        assertEquals(property.toString(), "");
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateDefaultPropertyNullValueWithoutType() {
+        new DefaultProperty("propertyName", null);
+    }
+
+    @Test
     public void testGetType() throws Exception {
         // GIVEN
         final String value = "value";
-        final DefaultProperty property = new DefaultProperty("propertyName", value);
+        final DefaultProperty<String> property = new DefaultProperty<String>("propertyName", value, String.class);
 
         // WHEN
         final Class<?> result = property.getType();
@@ -69,7 +95,7 @@ public class DefaultPropertyTest {
     public void testSetValue() throws Exception {
         // GIVEN
         final String value = "old";
-        final DefaultProperty property = new DefaultProperty("propertyName", value);
+        final DefaultProperty<String> property = new DefaultProperty<String>("propertyName", value, String.class);
         final String newValue = "new";
 
         // WHEN
@@ -83,15 +109,73 @@ public class DefaultPropertyTest {
     public void testSetReadOnlyValue() throws Exception {
         // GIVEN
         final String value = "old";
-        final DefaultProperty property = new DefaultProperty("propertyName", value);
+        final DefaultProperty<String> property = new DefaultProperty<String>("propertyName", value, String.class);
         property.setReadOnly(true);
-        assertEquals(true, property.isReadOnly());
 
         // WHEN
-        property.setValue("new");
+        try {
+            property.setValue("new");
+        }
+        catch(Property.ReadOnlyException e) {
+            // ignore
+        }
+
+        // THEN
+        assertEquals(true, property.isReadOnly());
+        assertEquals(value, property.getValue());
+    }
+
+    @Test
+    public void testSetNonAssignableValue() throws Exception {
+        // GIVEN
+        final String value = "old";
+        final DefaultProperty property = new DefaultProperty<String>("propertyName", value, String.class);
+
+        // WHEN
+        try {
+            property.setValue(12);
+        }
+        catch(Converter.ConversionException e) {
+            // ignore
+        }
 
         // THEN
         assertEquals(value, property.getValue());
+    }
+
+    @Test
+    public void testGenericDefaultProperty() throws Exception {
+        // GIVEN
+        final List<String> value = new ArrayList<String>();
+
+        // WHEN
+        final DefaultProperty<List> property = new DefaultProperty<List>("propertyName", value, List.class);
+
+
+        // THEN
+        assertEquals(List.class, property.getType());
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test(expected = Converter.ConversionException.class)
+    public void testSetNonAssignableValueException() {
+        // GIVEN
+        final String value = "old";
+        final DefaultProperty property = new DefaultProperty("propertyName", value, String.class);
+
+        // WHEN
+        property.setValue(1);
+    }
+
+    @Test(expected = Property.ReadOnlyException.class)
+    public void testReadOnlyExceptionOnSet() {
+        // GIVEN
+        final String value = "old";
+        final DefaultProperty<String> property = new DefaultProperty("propertyName", value, String.class);
+        property.setReadOnly(true);
+
+        // WHEN
+        property.setValue("new");
     }
 
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,41 +33,40 @@
  */
 package info.magnolia.ui.vaadin.icon;
 
-import info.magnolia.ui.vaadin.gwt.client.icon.VCompositeIcon;
-
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
+import com.vaadin.ui.AbstractComponentContainer;
+import com.vaadin.ui.Component;
 
 /**
  * The CompositeIcon allows for layered icons, such as a warning sign, with optional outer shape
  * outline. It mostly serves as the base class for preset composite icons such as InfoIcon,
  * WarningIcon, etc.
  */
-@ClientWidget(value = VCompositeIcon.class, loadStyle = LoadStyle.EAGER)
-public abstract class CompositeIcon extends AbstractComponent {
+public class CompositeIcon extends AbstractComponentContainer {
 
-    private final List<Icon> icons = new LinkedList<Icon>();
+    private final List<Component> icons;
 
     protected CompositeIcon(Icon... icons) {
-        this.icons.addAll(Arrays.asList(icons));
+        this.icons = Arrays.<Component> asList(icons);
+        addComponents(icons);
     }
 
     @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
+    public void replaceComponent(Component oldComponent, Component newComponent) {
+        throw new UnsupportedOperationException();
+    }
 
-        if (!icons.isEmpty()) {
-            for (Icon icon : icons) {
-                icon.paint(target);
-            }
-        }
+    @Override
+    public int getComponentCount() {
+        return icons.size();
+    }
+
+    @Override
+    public Iterator<Component> iterator() {
+        return icons.iterator();
     }
 
 }

@@ -48,7 +48,7 @@ public interface Model {
     String CMS_PAGE = "cms:page";
     String CMS_AREA = "cms:area";
     String CMS_COMPONENT = "cms:component";
-    String[] INHERITED_ATTRIBUTES = {"editable"};
+    String[] INHERITED_ATTRIBUTES = { "editable" };
 
     void addElement(MgnlElement mgnlElement, Element element);
 

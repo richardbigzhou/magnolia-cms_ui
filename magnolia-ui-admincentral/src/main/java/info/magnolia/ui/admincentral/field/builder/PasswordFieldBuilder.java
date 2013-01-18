@@ -43,14 +43,14 @@ import com.vaadin.ui.Field;
 /**
  * Creates and initializes an password field based on a field definition.
  */
-public class PasswordFieldBuilder extends AbstractFieldBuilder<PasswordFieldDefinition> {
+public class PasswordFieldBuilder extends AbstractFieldBuilder<PasswordFieldDefinition, String> {
 
     public PasswordFieldBuilder(PasswordFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
-    protected Field buildField() {
+    protected Field<String> buildField() {
         String verificationErrorMessage = "";
         String verificationMessage = "";
         if (definition.isVerification()) {

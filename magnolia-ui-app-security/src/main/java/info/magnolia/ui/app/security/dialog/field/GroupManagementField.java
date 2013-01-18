@@ -41,7 +41,9 @@ import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -49,12 +51,12 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.vaadin.data.Item;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.TwinColSelect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * GUI builder for the Group Management field.
@@ -92,17 +94,24 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
 
     @Override
     protected AbstractSelect createSelectionField() {
-        return new TwinColSelect();
+        return new TwinColSelect() {
+            @Override
+            public void setConverter(Converter<Object, ?> converter) {
+                System.out.println("Set the converter bldjad! " + converter);
+                super.setConverter(converter);
+            }
+        };
     }
 
     /**
-     * Returns the available groups with those already assigned marked selected, according to the current node.
+     * Returns the available groups with those already assigned marked selected,
+     * according to the current node.
      */
     @Override
     public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
         List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
         List<Group> allGroups = getAllGroups(); // name,uuid
-        List<String> assignedGroups = getAssignedGroups();
+        Set<String> assignedGroups = getAssignedGroups();
         String currentUUID = null;
         try {
             currentUUID = getRelatedNode(item).getIdentifier();
@@ -128,6 +137,7 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
         List<Group> groups = new ArrayList<Group>();
         try {
             NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_GROUPS, "SELECT * FROM [" + NodeTypes.Group.NAME + "] ORDER BY name()");
+
             while (ni.hasNext()) {
                 Node n = ni.nextNode();
                 String name = n.getName();
@@ -140,8 +150,8 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
         return groups;
     }
 
-    private List<String> getAssignedGroups() {
-        List<String> groups = new ArrayList<String>();
+    private Set<String> getAssignedGroups() {
+        Set<String> groups = new HashSet<String>();
         Node mainNode = getRelatedNode(item);
         try {
             if (mainNode.hasNode("groups")) {
@@ -166,10 +176,9 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
     }
 
     @Override
-    public com.vaadin.data.Property getOrCreateProperty() {
-        DefaultProperty prop = new DefaultProperty("groups", getAssignedGroups());
+    public com.vaadin.data.Property<?> getOrCreateProperty() {
+        DefaultProperty<Set> prop = new DefaultProperty<Set>("groups", getAssignedGroups(), Set.class);
         item.addItemProperty("groups", prop);
         return prop;
     }
-
 }

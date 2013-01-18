@@ -425,7 +425,6 @@ public class AppControllerImplTest {
 
         // Set group1 with App1
         AppDescriptor app1 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_1, AppTestImpl.class, subApps);
-
         AppLauncherGroup group1 = AppTestUtility.createAppGroup("group1", app1);
         // Set group2 with App2
         AppDescriptor app2 = AppTestUtility.createAppDescriptorWithSubApps("app2", AppTestImpl.class, subApps);
@@ -463,6 +462,9 @@ public class AppControllerImplTest {
         return builder.build();
     }
 
+    /**
+     * App event collector.
+     */
     public static class AppEventCollector implements AppLifecycleEventHandler {
 
         List<AppLifecycleEvent> appLifecycleEvent = new ArrayList<AppLifecycleEvent>();

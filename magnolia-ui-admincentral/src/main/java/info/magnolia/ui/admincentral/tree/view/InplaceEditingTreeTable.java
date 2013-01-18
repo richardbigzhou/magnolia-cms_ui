@@ -96,7 +96,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
     /**
      * Sets the item and property for inplace editing.
-     *
+     * 
      * @param itemId
      *            the item id
      * @param propertyId
@@ -193,7 +193,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
      * Gets the item whose property is currently being edited in the given field. Since the {{Table}} doesn't keep
      * references to its items, the only way to get it back is to ask the property datasource for its listeners and see
      * if the Item is there.
-     *
+     * 
      * @param source
      *            the vaadin {{Field}} where the editing occured
      * @return the vaadin {{Item}} if it could be fetched, null otherwise.

@@ -35,34 +35,60 @@ package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.FrameNavigationEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * Processor for DOM elements.
+ * Processor for {@link com.google.gwt.user.client.DOM} {@link Element}s. This is a crucial part of the page editor as it:
+ * <ul>
+ *     <li>Creates a mapping between the {@link Element} of the DOM and {@link MgnlElement}. Used e.g. in {@link info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel} to map elements to the right area or component.</li>
+ *     <li>Looks for certain markers in the attributes which will help inject the control bars at the right spot.</li>
+ *     <li>
+ *         Modifies links based on their function inside the page:
+ *         <ul>
+ *             <li>A link inside the navigation will be overwritten by an onclick method.</li>
+ *             <li>Normal links will simply be disabled.</li>
+ *         </ul>
+ *     </li>
+ * </ul>
  */
 public class ElementProcessor {
 
-    static final String NAVIGATION_ROLE = "navigation";
+    private static final String NAVIGATION_ROLE = "navigation";
+    private static final String ATTRIBUTE_ROLE = "role";
+    private final EventBus eventBus;
+    private final Model model;
 
-    public static boolean process(Model model, Node node, MgnlElement mgnlElement) {
+    public ElementProcessor(EventBus eventBus, Model model) {
 
+        this.eventBus = eventBus;
+        this.model = model;
+    }
 
-        Element element = node.cast();
-
-        if (element.getAttribute("role").equals(NAVIGATION_ROLE)) {
-            return false;
-        }
-        // we don't want to add every element to the page
-        if (mgnlElement.isPage()) {
-            return true;
-        }
+    /**
+     * Processes the current {@link Element}.
+     *
+     * @param element the current node beeing processed
+     * @param mgnlElement the associated {@link MgnlElement}
+     */
+    public void process(Element element, MgnlElement mgnlElement) {
 
         if (element.hasTagName("A")) {
-            disableLink(element);
-            removeHover(element);
+
+            if (isNavigation(element)) {
+                registerOnclick(element);
+            }
+            else {
+                disableLink(element);
+                removeHover(element);
+            }
+        }
+
+        if (mgnlElement == null || mgnlElement.isPage()) {
+            return;
         }
 
         model.addElement(mgnlElement, element);
@@ -88,19 +114,57 @@ public class ElementProcessor {
                 mgnlElement.setLastElement(element);
             }
         }
-        return true;
+
 
     }
 
-    public static void removeHover (Element element) {
-        element.addClassName("disabled");
+    /**
+     * Fires a {@link FrameNavigationEvent} to the eventBus.
+     * @see info.magnolia.ui.vaadin.gwt.client.connector.PageEditorConnector#init()
+     */
+    private void navigate(String path) {
+        eventBus.fireEvent(new FrameNavigationEvent(path));
     }
 
-    public native static void disableLink(Element element) /*-{
+    /**
+     * JSNI method which registers an onclick method which will call {@link #navigate(String)}.
+     * Extracts the href attribute from the {@link Element} and passes it as a parameter.
+     * By returning false the browser won't follow the link.
+     */
+    private native void registerOnclick(Element element) /*-{
+        var that = this;
+        var path = element.href;
         if (element.onclick == null) {
             element.onclick = function() {
-              return false;
+                that.@info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.ElementProcessor::navigate(Ljava/lang/String;)(path);
+                return false;
             };
         }
     }-*/;
+
+    private void removeHover(Element element) {
+        element.addClassName("disabled");
+    }
+
+    private native static void disableLink(Element element) /*-{
+        if (element.onclick == null) {
+            element.onclick = function() {
+                return false;
+            };
+        }
+    }-*/;
+
+    /**
+     * Searches for an element with attribute {@link #ATTRIBUTE_ROLE} defined as {@link #NAVIGATION_ROLE} on the element itself and it's ancestors.
+     */
+    private boolean isNavigation(Element element) {
+        if (element == null) {
+            return false;
+        }
+        if (element.getAttribute(ATTRIBUTE_ROLE).equals(NAVIGATION_ROLE)) {
+            return true;
+        }
+        return isNavigation(element.getParentElement());
+    }
+
 }

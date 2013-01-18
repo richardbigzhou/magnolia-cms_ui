@@ -45,28 +45,27 @@ import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.event.FieldEvents.FocusListener;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.AbstractEmbedded;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * Implementation of {@link ContentWorkbenchView}.
+ * TODO: consider restoring CustomComponent implementation here.
  */
-public class ContentWorkbenchViewImpl extends CustomComponent implements ContentWorkbenchView {
-
-    private final HorizontalLayout root = new HorizontalLayout();
+public class ContentWorkbenchViewImpl extends HorizontalLayout implements ContentWorkbenchView {
 
     private final CssLayout contentViewContainer = new CssLayout();
 
@@ -86,7 +85,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         }
     };
 
-    private final Embedded viewTypeArrow;
+    private final AbstractEmbedded viewTypeArrow;
 
     private Map<ViewType, ContentView> contentViews = new EnumMap<ViewType, ContentView>(ViewType.class);
 
@@ -101,19 +100,15 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     public ContentWorkbenchViewImpl() {
         super();
-        setCompositionRoot(root);
         setSizeFull();
-
-        root.setSizeFull();
-        root.setStyleName("workbench");
-        root.addComponent(contentViewContainer);
-        root.setExpandRatio(contentViewContainer, 1);
-        root.setSpacing(true);
-        root.setMargin(false);
+        setStyleName("workbench");
+        addComponent(contentViewContainer);
+        setExpandRatio(contentViewContainer, 1);
+        setSpacing(true);
+        setMargin(true);
 
         CssLayout viewModes = new CssLayout();
         viewModes.setStyleName("view-modes");
-        viewModes.setMargin(false);
 
         treeButton = buildButton(ViewType.TREE, "icon-view-tree", true);
         listButton = buildButton(ViewType.LIST, "icon-view-list", false);
@@ -125,10 +120,11 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         viewModes.addComponent(listButton);
         viewModes.addComponent(thumbsButton);
 
+        contentViewContainer.addStyleName("v-workbench-content");
         contentViewContainer.setSizeFull();
+        contentViewContainer.addComponent(searchbox);
         contentViewContainer.addComponent(viewModes);
         contentViewContainer.addComponent(viewTypeArrow);
-        contentViewContainer.addComponent(searchbox);
     }
 
     private TextField buildBasicSearchbox() {
@@ -143,8 +139,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
         searchbox.setImmediate(true);
         searchbox.addListener(searchboxListener);
 
-        searchbox.addListener(new FieldEvents.BlurListener() {
-
+        searchbox.addBlurListener(new BlurListener() {
             @Override
             public void blur(BlurEvent event) {
                 // return to previous view type when leaving empty field
@@ -154,8 +149,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
             }
         });
 
-        searchbox.addListener(new FieldEvents.FocusListener() {
-
+        searchbox.addFocusListener(new FocusListener() {
             @Override
             public void focus(FocusEvent event) {
                 // put the cursor at the end of the field
@@ -163,14 +157,12 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
                 tf.setCursorPosition(tf.toString().length());
             }
         });
-
         return searchbox;
     }
 
-    private Embedded buildViewTypeArrow() {
+    private AbstractEmbedded buildViewTypeArrow() {
         ThemeResource img = new ThemeResource("img/arrow-up-white.png");
-        Embedded arrow = new Embedded(null, img);
-        arrow.setType(Embedded.TYPE_IMAGE);
+        Image arrow = new Image(null, img);
         arrow.setSizeUndefined();
         arrow.addStyleName("view-type-arrow");
         return arrow;
@@ -178,7 +170,6 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     private Button buildButton(final ViewType viewType, final String icon, final boolean active) {
         NativeButton button = new NativeButton(null, new Button.ClickListener() {
-
             @Override
             public void buttonClick(ClickEvent event) {
                 setViewType(viewType);
@@ -205,11 +196,11 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     @Override
     public void setViewType(final ViewType type) {
-
         contentViewContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
         final Component c = contentViews.get(type).asVaadinComponent();
         c.setSizeFull();
         contentViewContainer.addComponent(c);
+        c.setSizeUndefined();
 
         if (type != ViewType.SEARCH) {
             previousViewType = type;
@@ -219,6 +210,7 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
         setViewTypeStyling(currentViewType);
         refresh();
+
         this.contentWorkbenchViewListener.onViewTypeChanged(currentViewType);
     }
 
@@ -238,11 +230,11 @@ public class ContentWorkbenchViewImpl extends CustomComponent implements Content
 
     @Override
     public void setActionbarView(final ActionbarView actionbar) {
-        actionbar.asVaadinComponent().setWidth(Sizeable.SIZE_UNDEFINED, 0);
+        actionbar.asVaadinComponent().setWidth(null);
         if (this.actionbar == null) {
-            root.addComponent(actionbar.asVaadinComponent());
+            addComponent(actionbar.asVaadinComponent());
         } else {
-            root.replaceComponent(this.actionbar.asVaadinComponent(), actionbar.asVaadinComponent());
+            replaceComponent(this.actionbar.asVaadinComponent(), actionbar.asVaadinComponent());
         }
         this.actionbar = actionbar;
     }

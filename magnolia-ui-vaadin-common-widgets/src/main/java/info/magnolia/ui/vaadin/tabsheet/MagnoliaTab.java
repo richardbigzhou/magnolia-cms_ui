@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,128 +33,63 @@
  */
 package info.magnolia.ui.vaadin.tabsheet;
 
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.VMagnoliaTab;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.connector.MagnoliaTabState;
 
-import java.util.Collection;
-import java.util.Map;
-
-import org.vaadin.rpc.ServerSideHandler;
-import org.vaadin.rpc.ServerSideProxy;
-
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
-import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.AbstractSingleComponentContainer;
+import com.vaadin.ui.HasComponents;
 
 /**
  * A tab in the shell tabsheet.
  */
-@ClientWidget(value = VMagnoliaTab.class, loadStyle = LoadStyle.EAGER)
-public class MagnoliaTab extends SimplePanel implements ServerSideHandler {
+public class MagnoliaTab extends AbstractSingleComponentContainer {
 
-    private String tabId = null;
-
-    private boolean isClosable = false;
-
-    private boolean hasError = false;
-
-    private String notification = null;
-
-    private final ServerSideProxy proxy = new ServerSideProxy(this);
-
-    public MagnoliaTab(final String caption, final ComponentContainer c) {
-        super(c);
+    public MagnoliaTab(final String caption, final HasComponents c) {
         setSizeFull();
         setImmediate(true);
         setCaption(caption);
-    }
-
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
-        proxy.paintContent(target);
-    }
-
-    @Override
-    public void changeVariables(Object source, Map<String, Object> variables) {
-        super.changeVariables(source, variables);
-        proxy.changeVariables(source, variables);
-    }
-
-    public void setTabId(String tabId) {
-        this.tabId = tabId;
-        proxy.callOnce("setTabId", tabId);
-    }
-
-    public String getTabId() {
-        return tabId;
+        setContent(c);
     }
 
     public boolean isClosable() {
-        return isClosable;
+        return getState(false).isClosable;
+    }
+
+    @Override
+    protected MagnoliaTabState getState(boolean markAsDirty) {
+        return (MagnoliaTabState) super.getState(markAsDirty);
+    }
+
+    @Override
+    protected MagnoliaTabState getState() {
+        return (MagnoliaTabState) super.getState();
     }
 
     public void setClosable(boolean isClosable) {
-        this.isClosable = isClosable;
-        proxy.callOnce("setClosable", isClosable);
+        getState().isClosable = isClosable;
     }
 
     public void setNotification(String text) {
-        this.notification = text;
-        proxy.callOnce("updateNotification", text);
+        getState().notification = text;
     }
 
     public void setHasError(boolean hasError) {
-        this.hasError = hasError;
-        proxy.callOnce("setHasError", hasError);
+        getState().hasError = hasError;
     }
 
     public void hideNotification() {
-        proxy.callOnce("hideNotification");
-        this.notification = null;
+        getState().isNotificationHidden = true;
     }
 
     public String getNotification() {
-        return notification;
+        return getState(false).notification;
     }
 
     public boolean hasNotification() {
-        return this.notification != null;
+        return getNotification() != null;
     }
 
     public boolean hasError() {
-        return hasError;
-    }
-
-    @Override
-    public void childRequestedRepaint(Collection<RepaintRequestListener> alreadyNotified) {
-        super.childRequestedRepaint(alreadyNotified);
-    }
-
-    @Override
-    public void paint(PaintTarget target) throws PaintException {
-        super.paint(target);
-    }
-
-    @Override
-    public Object[] initRequestFromClient() {
-        if (tabId != null) {
-            proxy.callOnce("setTabId", tabId);
-            proxy.callOnce("setClosable", isClosable);
-            proxy.callOnce("setHasError", hasError);
-            if (notification != null) {
-                proxy.callOnce("updateNotification", notification);
-            } else {
-                proxy.callOnce("hideNotification");
-            }
-        }
-        return new Object[] {};
-    }
-
-    @Override
-    public void callFromClient(String method, Object[] params) {
-        throw new RuntimeException("Unhandled method call from client: " + method);
+        return getState(false).hasError;
     }
 
 }

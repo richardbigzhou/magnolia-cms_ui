@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMagnoliaShellView;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellView;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -41,11 +41,11 @@ import com.google.gwt.user.client.Element;
 /**
  * Error message.
  */
-public class VShellErrorMessage extends VShellMessage {
+public class VShellErrorMessage extends ShellMessageWidget {
 
     private Element detailsLinkEl = DOM.createElement("b");
 
-    public VShellErrorMessage(final VMagnoliaShellView shell, String topic, String message, String id) {
+    public VShellErrorMessage(final MagnoliaShellView shell, String topic, String message, String id) {
         super(shell, topic, message, id);
         addStyleName("error");
     }

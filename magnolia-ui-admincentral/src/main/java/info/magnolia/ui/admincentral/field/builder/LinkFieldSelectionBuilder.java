@@ -61,7 +61,7 @@ import com.vaadin.ui.Field;
  * definition. If this value is not set, or the column is not part of the row
  * elements, the <b>Node Path is used</b>.
  */
-public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSelectionDefinition> {
+public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSelectionDefinition, String> {
 
     private static final Logger log = LoggerFactory.getLogger(LinkFieldSelectionBuilder.class);
 
@@ -88,7 +88,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
     }
 
     @Override
-    protected Field buildField() {
+    protected Field<String> buildField() {
         final ContentWorkbenchViewImpl parentView = new ContentWorkbenchViewImpl();
         textContent = new TextAndContentViewField(definition.isDisplayTextField(), definition.isDisplayTextFieldOnTop());
         contentPresenter.initContentView(parentView);

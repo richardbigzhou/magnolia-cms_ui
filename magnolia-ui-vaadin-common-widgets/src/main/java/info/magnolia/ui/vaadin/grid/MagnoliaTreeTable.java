@@ -33,18 +33,15 @@
  */
 package info.magnolia.ui.vaadin.grid;
 
-import info.magnolia.ui.vaadin.gwt.client.grid.VMagnoliaTreeTable;
-
 import java.util.Collection;
 import java.util.Map;
 
-import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.TreeTable;
 
 /**
  * VMagnoliaTreeTable.
  */
-@ClientWidget(VMagnoliaTreeTable.class)
+// @ClientWidget(VMagnoliaTreeTable.class)
 public class MagnoliaTreeTable extends TreeTable {
 
     public MagnoliaTreeTable() {

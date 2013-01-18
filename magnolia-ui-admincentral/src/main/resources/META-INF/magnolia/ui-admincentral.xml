@@ -387,15 +387,15 @@
   <servlets>
     <servlet>
       <name>AdminCentral</name>
-      <class>info.magnolia.ui.vaadin.integration.servlet.MultipleBrowserWindowsApplicationServlet</class>
+      <class>com.vaadin.server.VaadinServlet</class>
       <mappings>
         <mapping>/.magnolia/admincentral</mapping>
         <mapping>/.magnolia/admincentral/*</mapping>
       </mappings>
       <params>
         <param>
-          <name>application</name>
-          <value>info.magnolia.ui.admincentral.AdminCentralApplication</value>
+          <name>UI</name>
+          <value>info.magnolia.ui.admincentral.AdminCentralUI</value>
         </param>
         <param>
           <name>widgetset</name>

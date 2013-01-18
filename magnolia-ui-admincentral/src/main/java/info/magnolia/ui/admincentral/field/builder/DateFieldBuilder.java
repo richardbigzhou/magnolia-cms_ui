@@ -35,21 +35,23 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.ui.model.field.definition.DateFieldDefinition;
 
+import java.util.Date;
 import com.vaadin.data.Item;
+import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.PopupDateField;
 
 /**
  * Creates and initializes a date field based on a field definition.
  */
-public class DateFieldBuilder extends AbstractFieldBuilder<DateFieldDefinition> {
+public class DateFieldBuilder extends AbstractFieldBuilder<DateFieldDefinition, Date> {
 
     public DateFieldBuilder(DateFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
-    protected Field buildField() {
+    protected Field<Date> buildField() {
         DateFieldDefinition definition = getFieldDefinition();
         PopupDateField popupDateField = new PopupDateField();
 
@@ -57,10 +59,10 @@ public class DateFieldBuilder extends AbstractFieldBuilder<DateFieldDefinition> 
 
         // set Resolution
         if (definition.isTime()) {
-            popupDateField.setResolution(com.vaadin.ui.DateField.RESOLUTION_MIN);
+            popupDateField.setResolution(Resolution.MINUTE);
             dateFormat = definition.getDateFormat() + ":" + definition.getTimeFormat();
         } else {
-            popupDateField.setResolution(com.vaadin.ui.DateField.RESOLUTION_DAY);
+            popupDateField.setResolution(Resolution.DAY);
             dateFormat = definition.getDateFormat();
         }
 

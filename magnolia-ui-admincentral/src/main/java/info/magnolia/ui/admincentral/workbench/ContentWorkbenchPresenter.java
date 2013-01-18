@@ -72,8 +72,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.terminal.Resource;
-
+import com.vaadin.server.Resource;
 
 /**
  * The workbench is a core component of AdminCentral. It represents the main hub through which users can interact with
@@ -262,8 +261,10 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             actionbarPresenter.setPreview(null);
         } else {
             if (imageProvider != null) {
-                Resource previewResource = imageProvider.getThumbnailResourceByPath(workspace, path, ImageProvider.PORTRAIT_GENERATOR);
-                actionbarPresenter.setPreview(previewResource);
+                Object previewResource = imageProvider.getThumbnailResourceByPath(workspace, path, ImageProvider.PORTRAIT_GENERATOR);
+                if (previewResource instanceof Resource) {
+                    actionbarPresenter.setPreview((Resource) previewResource);
+                }
             }
         }
     }

@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-vaadin-integration</artifactId>
   <name>magnolia-ui-vaadin-integration</name>
   <properties>
-    <cloverCoverageThreshold>58</cloverCoverageThreshold>
+    <cloverCoverageThreshold>73</cloverCoverageThreshold>
   </properties>
 
   <build>
@@ -60,7 +60,7 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
+      <scope>provided, test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

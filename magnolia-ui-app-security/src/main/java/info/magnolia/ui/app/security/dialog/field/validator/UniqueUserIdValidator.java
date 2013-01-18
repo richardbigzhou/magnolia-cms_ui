@@ -47,7 +47,7 @@ public class UniqueUserIdValidator extends AbstractStringValidator {
     }
 
     @Override
-    protected boolean isValidString(String value) {
+    protected boolean isValidValue(String value) {
         if (Security.getUserManager().getUser(value) != null) {
             // user with such name already exists
             return false;

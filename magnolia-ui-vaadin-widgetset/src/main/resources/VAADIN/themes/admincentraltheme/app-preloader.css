@@ -1,5 +1,8 @@
 .v-app-preloader {
 	width:100%;
+	top: 60px;
+	bottom: 0;
+	position: absolute;
 }
 
 .v-preloader {
@@ -20,28 +23,43 @@
 
 /* MAGNOLIA LOADING SPINNER ICON */
 
-.spinner-icon {font-size:24px; color:#999;}
+.spinner-icon {
+	font-size:24px;
+	color:#999;
+	line-height:1;
+	height:1em;
+	cursor:default;
+}
 
 .spinner-icon .icon {
-	display:inline-block;
-    line-height:1;
-    vertical-align:middle;
-	letter-spacing:-2em;
-	-moz-animation-duration:2s;
+	        animation-duration:2s;
+	   -moz-animation-duration:2s;
 	-webkit-animation-duration:2s;
-	-moz-animation-name:spin;
+	        animation-name:spin;
+	   -moz-animation-name:spin;
 	-webkit-animation-name:spin;
-	-moz-animation-iteration-count:infinite;
+	        animation-iteration-count:infinite;
+	   -moz-animation-iteration-count:infinite;
 	-webkit-animation-iteration-count:infinite;
+    display:block;
+    height:0;
 }
-.spinner-icon .icon-spinner-1 {-moz-animation-delay:0;		-webkit-animation-delay:0;}
-.spinner-icon .icon-spinner-2 {-moz-animation-delay:0.125s;	-webkit-animation-delay:0.125s;}
-.spinner-icon .icon-spinner-3 {-moz-animation-delay:0.25s;	-webkit-animation-delay:0.25s;}
-.spinner-icon .icon-spinner-4 {-moz-animation-delay:0.375s;	-webkit-animation-delay:0.375s;}
-.spinner-icon .icon-spinner-5 {-moz-animation-delay:0.5s;	-webkit-animation-delay:0.5s;}
-.spinner-icon .icon-spinner-6 {-moz-animation-delay:0.625s;	-webkit-animation-delay:0.625s;}
-.spinner-icon .icon-spinner-7 {-moz-animation-delay:0.75s;	-webkit-animation-delay:0.75s;}
-.spinner-icon .icon-spinner-8 {-moz-animation-delay:0.875s;	-webkit-animation-delay:0.875s; letter-spacing:0;}
+
+.spinner-icon .icon-spinner-1 {animation-delay:0;      -moz-animation-delay:0;      -webkit-animation-delay:0;}
+.spinner-icon .icon-spinner-2 {animation-delay:0.125s; -moz-animation-delay:0.125s; -webkit-animation-delay:0.125s;}
+.spinner-icon .icon-spinner-3 {animation-delay:0.25s;  -moz-animation-delay:0.25s;  -webkit-animation-delay:0.25s;}
+.spinner-icon .icon-spinner-4 {animation-delay:0.375s; -moz-animation-delay:0.375s; -webkit-animation-delay:0.375s;}
+.spinner-icon .icon-spinner-5 {animation-delay:0.5s;   -moz-animation-delay:0.5s;   -webkit-animation-delay:0.5s;}
+.spinner-icon .icon-spinner-6 {animation-delay:0.625s; -moz-animation-delay:0.625s; -webkit-animation-delay:0.625s;}
+.spinner-icon .icon-spinner-7 {animation-delay:0.75s;  -moz-animation-delay:0.75s;  -webkit-animation-delay:0.75s;}
+.spinner-icon .icon-spinner-8 {animation-delay:0.875s; -moz-animation-delay:0.875s; -webkit-animation-delay:0.875s; height:1em;}
+
+@keyframes spin {
+	0% {color:#999;}
+	1% {color:#fff;}
+	50% {color:#fff;}
+	51% {color:#999;}
+}
 
 @-moz-keyframes spin {
 	0% {color:#999;}

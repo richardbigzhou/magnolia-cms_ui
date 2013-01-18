@@ -63,8 +63,8 @@ public class SplitFeed extends HorizontalSplitPanel {
     private void construct() {
         leftContainer.setSizeFull();
         rightContainer.setSizeFull();
-        leftContainer.setMargin(true);
-        rightContainer.setMargin(true);
+        // leftContainer.setMargin(true);
+        // rightContainer.setMargin(true);
         setFirstComponent(leftContainer);
         setSecondComponent(rightContainer);
     }

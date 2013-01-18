@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
+import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.app.ShellApp;
 import info.magnolia.ui.framework.app.ShellAppContext;
-import info.magnolia.ui.framework.app.ShellView;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
@@ -48,6 +48,8 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -79,6 +81,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
         this.shell = shell;
         this.appController = appController;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
+        ((MagnoliaShell) shell).registerShellApp(ShellAppType.APPLAUNCHER, view.asVaadinComponent());
         // Init view
         initView(appLauncherLayoutManager.getLayoutForCurrentUser());
         /**
@@ -121,7 +124,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
     }
 
     @Override
-    public ShellView start(ShellAppContext context) {
+    public View start(ShellAppContext context) {
         view.setPresenter(this);
         return view;
     }

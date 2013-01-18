@@ -50,10 +50,11 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.Resource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.Select;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 
 /**
  * Creates and initializes a selection field based on a field definition.
@@ -61,7 +62,7 @@ import com.vaadin.ui.Select;
  * @param <D>
  *            type of definition
  */
-public class SelectFieldBuilder<D extends SelectFieldDefinition> extends AbstractFieldBuilder<D> {
+public class SelectFieldBuilder<D extends SelectFieldDefinition> extends AbstractFieldBuilder<D, Object> {
 
     private static final Logger log = LoggerFactory.getLogger(SelectFieldBuilder.class);
 
@@ -89,10 +90,10 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
         select.setInvalidAllowed(false);
         select.setMultiSelect(false);
         select.setNewItemsAllowed(false);
-        if (select instanceof Select) {
-            ((Select) select).setFilteringMode(definition.getFilteringMode());
+        if (select instanceof ComboBox) {
+            ((ComboBox) select).setFilteringMode(definition.getFilteringMode());
         }
-        select.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
+        select.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         select.setItemCaptionPropertyId(optionLabelName);
 
         return select;
@@ -102,7 +103,7 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
      * Used to initialize the desired subclass of AbstractSelect field component. Subclasses can override this method.
      */
     protected AbstractSelect createSelectionField() {
-        return new Select();
+        return new ComboBox();
     }
 
     /**
@@ -111,6 +112,7 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
      * Second element is the Label
      * Third element is the Icon is defined.
      */
+    @SuppressWarnings("unchecked")
     private IndexedContainer buildOptions() {
         IndexedContainer optionContainer = new IndexedContainer();
         List<SelectFieldOptionDefinition> options = getSelectFieldOptionDefinition();
@@ -200,7 +202,7 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
      * Set the selected item if the DataSource is not empty.
      */
     @Override
-    public void setPropertyDataSource(Property dataSource) {
+    public void setPropertyDataSource(@SuppressWarnings("rawtypes") Property dataSource) {
         super.setPropertyDataSource(dataSource);
         setDefaultSelectedItem(dataSource);
     }
@@ -211,10 +213,10 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
      * If not yet stored, set initialSelectedKey as selectedItem
      * Else, set the first element of the list.
      */
-    private void setDefaultSelectedItem(Property dataSource) {
+    private void setDefaultSelectedItem(Property<?> dataSource) {
         String selectedValue = null;
-        if (!dataSource.getValue().toString().isEmpty()) {
-            selectedValue = dataSource.getValue().toString();
+        if (StringUtils.isNotEmpty(dataSource.toString())) {
+            selectedValue = dataSource.toString();
         } else if (initialSelecteKey != null) {
             selectedValue = initialSelecteKey;
         } else if (definition.getOptions() != null && !definition.getOptions().isEmpty()) {

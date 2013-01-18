@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,68 +35,59 @@ package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VShellViewport;
-import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ViewportState;
 import info.magnolia.ui.vaadin.magnoliashell.DeckLayout;
+import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 
-import java.util.Iterator;
-
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 
 /**
  * The server side implementation of the shell viewport. MagnoliaShell is capable of holding of such for the shell apps,
  * one - for the regular apps.
  */
-@ClientWidget(value = VShellViewport.class, loadStyle = LoadStyle.EAGER)
 public class ShellViewport extends DeckLayout implements ViewPort {
 
-    private String currentShellFragment = "";
-
-    private final BaseMagnoliaShell parentShell;
+    private MagnoliaShellBase parentShell;
 
     private View view;
 
-    public ShellViewport(final BaseMagnoliaShell shell) {
+    public ShellViewport(MagnoliaShellBase shell) {
         super();
-        setSizeFull();
         display(null);
         this.parentShell = shell;
     }
 
     public void setCurrentShellFragment(String currentShellFragment) {
-        this.currentShellFragment = currentShellFragment;
+        getState().currentFragment = currentShellFragment;
     }
 
     public String getCurrentShellFragment() {
-        return currentShellFragment;
+        return getState(false).currentFragment;
     }
 
     @Override
     public void setView(final View view) {
         if (view != null) {
             this.view = view;
-            final Component c = this.view.asVaadinComponent();
-            display(c);
+            display(this.view.asVaadinComponent());
             parentShell.setActiveViewport(this);
         }
     }
 
-    /**
-     * Viewports need to set visible state on the server first, for being able to resync to client on browser refresh.
-     */
     @Override
     public void display(Component content) {
+        getState().formerActive = getState().activeComponent;
+        getState().activeComponent = content;
         super.display(content);
-        Iterator<Component> iterator = getComponentIterator();
-        while (iterator.hasNext()) {
-            Component childComponent = iterator.next();
-            if (childComponent == content) {
-                childComponent.setVisible(true);
-            } else {
-                childComponent.setVisible(false);
-            }
-        }
+    }
+
+    @Override
+    protected ViewportState getState(boolean markAsDirty) {
+        return (ViewportState) super.getState(markAsDirty);
+    }
+
+    @Override
+    protected ViewportState getState() {
+        return (ViewportState) super.getState();
     }
 }

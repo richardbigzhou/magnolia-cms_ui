@@ -35,11 +35,11 @@ package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.AbstractBar;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AbstractBar;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Abstract Class for MgnlElement processors.
@@ -66,7 +66,6 @@ public abstract class AbstractMgnlElementProcessor {
         addToModel();
     }
 
-
     public void attach() {
         // if there is a marker for the controlBar insert here
         if (getMgnlElement().getEditElement() != null) {
@@ -87,9 +86,9 @@ public abstract class AbstractMgnlElementProcessor {
     public void attach(MgnlElement mgnlElement) {
         Element element = mgnlElement.getFirstElement();
         if (element != null) {
-            if(element.hasTagName("DIV")){
+            if (element.hasTagName("DIV")) {
                 element.insertFirst(getEditBar().getElement());
-            }else{
+            } else {
                 final Node parentNode = element.getParentNode();
                 parentNode.insertBefore(getEditBar().getElement(), element);
             }

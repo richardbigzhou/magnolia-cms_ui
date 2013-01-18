@@ -43,14 +43,14 @@ import com.vaadin.ui.Field;
 /**
  * Creates and initializes a checkBox field based on a field definition.
  */
-public class CheckBoxFieldBuilder extends AbstractFieldBuilder<CheckboxFieldDefinition> {
+public class CheckBoxFieldBuilder extends AbstractFieldBuilder<CheckboxFieldDefinition, Boolean> {
 
     public CheckBoxFieldBuilder(CheckboxFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
-    protected Field buildField() {
+    protected Field<Boolean> buildField() {
         CheckBoxAndLabelField field = new CheckBoxAndLabelField();
         field.setValue(Boolean.valueOf(definition.getSelected()));
         field.getCheckBox().setCaption(getMessage(definition.getButtonLabel()));

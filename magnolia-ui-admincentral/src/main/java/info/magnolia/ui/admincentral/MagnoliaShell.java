@@ -43,7 +43,6 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.HandlerRegistration;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
@@ -52,10 +51,12 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.view.ViewPort;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
-import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
+import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
 
 import java.util.List;
@@ -66,17 +67,12 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.vaadin.rpc.client.Method;
 
 /**
  * Admin shell.
  */
 @Singleton
-public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEventHandler {
-
-    private static final Logger log = LoggerFactory.getLogger(MagnoliaShell.class);
+public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEventHandler {
 
     private final EventBus admincentralEventBus;
 
@@ -87,7 +83,8 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     private final MessagesManager messagesManager;
 
     @Inject
-    public MagnoliaShell(@Named("admincentral") EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider, AppController appController, MessagesManager messagesManager, final Provider<LocationController> locationControllerProvider) {
+    public MagnoliaShell(@Named("admincentral") EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider,
+            AppController appController, MessagesManager messagesManager) {
         super();
         this.messagesManager = messagesManager;
         this.admincentralEventBus = admincentralEventBus;
@@ -97,7 +94,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
             @Override
             public void onAppFocused(AppLifecycleEvent event) {
-                setActiveViewport(getAppViewport());
+                setActiveViewport(appViewport());
             }
 
             @Override
@@ -111,26 +108,15 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
             }
         });
 
-        proxy.register("startApp", new Method() {
-            @Override
-            public void invoke(String methodName, Object[] params) {
-                setActiveViewport(getAppViewport());
-                final String appId = String.valueOf(params[0]);
-                final String subAppId = String.valueOf(params[1]);
-                final String parameter = String.valueOf(params[2]);
-                locationControllerProvider.get().goTo(new DefaultLocation(Location.LOCATION_TYPE_APP, appId, subAppId, parameter));
-            }
-        });
-
         this.admincentralEventBus.addHandler(MessageEvent.class, this);
     }
 
     @Override
-    public void closeCurrentApp() {
-        super.closeCurrentApp();
+    public void stopCurrentApp() {
+        appViewport().pop();
         appController.stopCurrentApp();
-        if (getAppViewport().isEmpty()) {
-            navigateToShellApp(ShellAppType.APPLAUNCHER.name().toLowerCase(), "");
+        if (appViewport().isEmpty()) {
+            goToShellApp(Fragment.fromString("shell:applauncher"));
         }
     }
 
@@ -157,36 +143,24 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
     @Override
     public String getFragment() {
-        final ShellViewport activeViewport = getActiveViewport();
-        String viewPortName = "";
-        if (activeViewport == getShellAppViewport()) {
-            viewPortName = "shell";
-        } else if (activeViewport == getAppViewport()) {
-            viewPortName = "app";
-        } else if (activeViewport == getDialogViewport()) {
-            viewPortName = "dialog";
-        }
-        return viewPortName + ":" + (activeViewport == null ? "" : activeViewport.getCurrentShellFragment());
+        return getActiveViewport().getCurrentShellFragment();
     }
 
     @Override
     public void setFragment(String fragment) {
+        Fragment f = Fragment.fromString(fragment);
+        f.setAppId(DefaultLocation.extractAppId(fragment));
+        f.setSubAppId(DefaultLocation.extractSubAppId(fragment));
+        f.setParameter(DefaultLocation.extractParameter(fragment));
 
-        String appId = DefaultLocation.extractAppId(fragment);
-        String subAppId = DefaultLocation.extractSubAppId(fragment);
-        String parameter = DefaultLocation.extractParameter(fragment);
-
-        final ShellViewport activeViewport = getActiveViewport();
-        activeViewport.setCurrentShellFragment(appId + ":" + subAppId + ";" + parameter);
-
-        proxy.call("navigate", appId, subAppId, parameter);
+        getActiveViewport().setCurrentShellFragment(f.toFragment());
+        propagateFragmentToClient(f);
     }
 
     @Override
     public HandlerRegistration addFragmentChangedHandler(final FragmentChangedHandler handler) {
         super.addFragmentChangedHanlder(handler);
         return new HandlerRegistration() {
-
             @Override
             public void removeHandler() {
                 removeFragmentChangedHanlder(handler);
@@ -196,7 +170,6 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
 
     @Override
     public void removeMessage(String messageId) {
-        super.removeMessage(messageId);
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
 
@@ -233,8 +206,7 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     }
 
     @Override
-    public void messageCleared(MessageEvent event) {
-    }
+    public void messageCleared(MessageEvent event) {}
 
     @Override
     public void registerApps(List<String> appNames) {
@@ -242,59 +214,73 @@ public class MagnoliaShell extends BaseMagnoliaShell implements Shell, MessageEv
     }
 
     @Override
-    public void navigateToApp(String appId, String subAppId, String parameter) {
-        if (StringUtils.isEmpty(parameter)) {
-
-            Location location = appController.getCurrentLocation(appId);
-            if (location == null) {
-                location = new DefaultLocation(Location.LOCATION_TYPE_APP, appId, subAppId, parameter);
-            }
-            super.navigateToApp(appId, subAppId, location.getParameter());
-
-        } else {
-            super.navigateToApp(appId, subAppId, parameter);
-        }
+    public void goToApp(Fragment f) {
+        restoreAppParameter(f);
+        super.goToApp(f);
     }
 
     @Override
-    public void navigateToShellApp(String shellAppId, String parameter) {
-        if (StringUtils.isEmpty(parameter)) {
-
-            Location location = shellAppControllerProvider.get().getCurrentLocation(shellAppId);
-            if (location == null) {
-                location = new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, shellAppId, "", parameter);
-            }
-            super.navigateToShellApp(shellAppId, location.getParameter());
-
-        } else {
-            super.navigateToShellApp(shellAppId, parameter);
-        }
+    public void goToShellApp(Fragment f) {
+        restoreShellAppParameter(f);
+        super.goToShellApp(f);
     }
 
     @Override
-    public void closeCurrentShellApp() {
-        if (!getAppViewport().isEmpty()) {
+    public void stopCurrentShellApp() {
+        ShellViewport appViewport = appViewport();
+        if (!appViewport.isEmpty()) {
             // An app is open.
-            setActiveViewport(getAppViewport());
+            setActiveViewport(appViewport);
             appController.focusCurrentApp();
-
         } else {
             // No apps are open.
             String appLauncherNameLower = ShellAppType.APPLAUNCHER.name().toLowerCase();
-
             // Only navigate if the requested location is not the applauncher
-            String fragmentCurrent = getActiveViewport().getCurrentShellFragment();
-
-            if (!fragmentCurrent.startsWith(appLauncherNameLower)) {
-                navigateToShellApp(appLauncherNameLower, "");
+            if (getActiveViewport() != null) {
+                String fragmentCurrent = getActiveViewport().getCurrentShellFragment();
+                if (fragmentCurrent != null && !fragmentCurrent.startsWith(appLauncherNameLower)) {
+                    goToShellApp(Fragment.fromString("shell:applauncher"));
+                }
             }
         }
     }
 
     @Override
     public void pushToClient() {
-        synchronized (getApplication()) {
-            getPusher().push();
+        // synchronized (getApplication()) {
+        // getPusher().push();
+        // }
+    }
+
+    /**
+     * Shell's client side doesn't remeber the parameter of an app,
+     * so we need to restore it from the framework internals.
+     */
+    private void restoreAppParameter(Fragment f) {
+        String actualParam = f.getParameter();
+        if (StringUtils.isEmpty(actualParam)) {
+            Location location = appController.getCurrentLocation(f.getAppId());
+            if (location != null) {
+                f.setParameter(location.getParameter());
+            }
         }
+    }
+
+    private void restoreShellAppParameter(Fragment f) {
+        String actualParam = f.getParameter();
+        if (StringUtils.isEmpty(actualParam)) {
+            Location location = shellAppControllerProvider.get().getCurrentLocation(f.getAppId());
+            if (location != null) {
+                f.setParameter(location.getParameter());
+            }
+        }
+    }
+
+    public ViewPort getShellAppViewport() {
+        return shellAppViewport();
+    }
+
+    public ViewPort getAppViewport() {
+        return appViewport();
     }
 }

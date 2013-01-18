@@ -33,37 +33,33 @@
  */
 package info.magnolia.ui.vaadin.editor;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.VPageEditor;
+import info.magnolia.ui.vaadin.gwt.client.connector.PageEditorState;
+import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorClientRpc;
+import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 
-import java.io.Serializable;
 import java.util.Map;
 
-import org.vaadin.rpc.ServerSideHandler;
-import org.vaadin.rpc.ServerSideProxy;
-import org.vaadin.rpc.client.Method;
-
 import com.google.gson.Gson;
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.ClientWidget;
 import com.vaadin.ui.Component;
 
 /**
  * PageEditor widget server side implementation.
  */
-@ClientWidget(value = VPageEditor.class, loadStyle = ClientWidget.LoadStyle.EAGER)
-public class PageEditor extends AbstractComponent implements PageEditorView, ServerSideHandler {
-
-    private boolean preview = false;
+public class PageEditor extends AbstractComponent implements PageEditorView {
 
     private PageEditorView.Listener listener;
 
-    protected ServerSideProxy proxy;
     private String PAGE_ELEMENT = "cms:page";
+
     private String AREA_ELEMENT = "cms:area";
+
     private String COMPONENT_ELEMENT = "cms:component";
-    private PageEditorParameters parameters;
 
     public PageEditor() {
         setSizeFull();
@@ -76,215 +72,76 @@ public class PageEditor extends AbstractComponent implements PageEditorView, Ser
     }
 
     @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
-        proxy.paintContent(target);
-    }
-
-    @Override
-    public void changeVariables(Object source, Map<String, Object> variables) {
-        super.changeVariables(source, variables);
-        proxy.changeVariables(source, variables);
-    }
-
-    @Override
     public void load(PageEditorParameters parameters) {
-        this.parameters = parameters;
-        Gson gson = new Gson();
-        String json = gson.toJson(parameters);
-        proxy.call("load", json);
-        requestRepaint();
+        getState().parameters = parameters;
     }
 
     @Override
     public void init() {
+        registerRpc(new PageEditorServerRpc() {
 
-        proxy = new ServerSideProxy(this) {
-
-            {
-                register("selectElement", new Method() {
-
-                    @Override
-                    public void invoke(String methodName, Object[] params) {
-                        final String type = String.valueOf(params[0]);
-                        final String json = String.valueOf(params[1]);
-
-                        AbstractElement element = resolveElement(type, json);
-
-                        listener.selectElement(element);
-                    }
-                });
-                register("editComponent", new Method() {
-
-                    @Override
-                    public void invoke(String methodName, Object[] params) {
-                        final String workspace = String.valueOf(params[0]);
-                        final String path = String.valueOf(params[1]);
-                        final String dialog = String.valueOf(params[2]);
-                        listener.editComponent(workspace, path, dialog);
-                    }
-                });
-                register("newArea", new Method() {
-
-                    @Override
-                    public void invoke(String methodName, Object[] params) {
-                        final String workspace = String.valueOf(params[0]);
-                        final String nodeType = String.valueOf(params[1]);
-                        final String path = String.valueOf(params[2]);
-                        listener.newArea(workspace, nodeType, path);
-                    }
-
-                });
-                register("newComponent", new Method() {
-
-                    @Override
-                    public void invoke(String methodName, Object[] params) {
-                        final String workspace = String.valueOf(params[0]);
-                        final String path = String.valueOf(params[1]);
-                        final String availableComponents = String.valueOf(params[2]);
-                        listener.newComponent(workspace, path, availableComponents);
-                    }
-
-                });
-                register("deleteComponent", new Method() {
-
-                    @Override
-                    public void invoke(String methodName, Object[] params) {
-                        final String workspace = String.valueOf(params[0]);
-                        final String path = String.valueOf(params[1]);
-                        listener.deleteComponent(workspace, path);
-                    }
-                });
-                register("sortComponent", new Method() {
-
-                    @Override
-                    public void invoke(String methodName, Object[] params) {
-                        final String workspace = String.valueOf(params[0]);
-                        final String parentPath = String.valueOf(params[1]);
-                        final String source = String.valueOf(params[2]);
-                        final String target = String.valueOf(params[3]);
-                        final String order = String.valueOf(params[4]);
-                        listener.sortComponent(workspace, parentPath, source, target, order);
-                    }
-                });
+            @Override
+            public void sortComponent(String workspace, String parentPath, String sourcePath, String targetPath, String order) {
+                listener.sortComponent(workspace, parentPath, sourcePath, targetPath, order);
             }
-        };
+
+            @Override
+            public void selectElement(String type, Map<String, String> attributes) {
+                AbstractElement element = resolveElement(type, attributes);
+                listener.selectElement(element);
+            }
+
+            @Override
+            public void newComponent(String workspace, String eventType, String availableComponents) {
+                listener.newComponent(workspace, eventType, availableComponents);
+            }
+
+            @Override
+            public void newArea(String workspace, String nodeType, String path) {
+                listener.newArea(workspace, nodeType, path);
+            }
+
+            @Override
+            public void editComponent(String workspace, String eventType, String dialog) {
+                listener.editComponent(workspace, eventType, dialog);
+            }
+
+            @Override
+            public void deleteComponent(String workspace, String path) {
+                listener.deleteComponent(workspace, path);
+
+            }
+        });
 
     }
 
-    private AbstractElement resolveElement(String type, String json) {
+    @Override
+    protected PageEditorState getState() {
+        return (PageEditorState) super.getState();
+    }
+
+    private AbstractElement resolveElement(String type, Map<String, String> attributes) {
         AbstractElement element = null;
         Gson gson = new Gson();
         if (type.equals(PAGE_ELEMENT)) {
-            element = gson.fromJson(String.valueOf(json), PageElement.class);
+            element = gson.fromJson(gson.toJson(attributes), PageElement.class);
         }
         else if (type.equals(AREA_ELEMENT)) {
-            element = gson.fromJson(String.valueOf(json), AreaElement.class);
+            element = gson.fromJson(gson.toJson(attributes), AreaElement.class);
         }
         else if (type.equals(COMPONENT_ELEMENT)) {
-            element = gson.fromJson(String.valueOf(json), ComponentElement.class);
+            element = gson.fromJson(gson.toJson(attributes), ComponentElement.class);
         }
         return element;
     }
 
     @Override
     public void refresh() {
-        proxy.call("refresh");
+        getRpcProxy(PageEditorClientRpc.class).refresh();
     }
 
     @Override
     public Component asVaadinComponent() {
         return this;
-    }
-
-    @Override
-    public Object[] initRequestFromClient() {
-        return new Object[]{};
-
-    }
-
-    @Override
-    public void callFromClient(String method, Object[] params) {
-        System.out.println("Client called " + method);
-    }
-
-    /**
-     * Class for GSON serialization of area elements.
-     */
-    public static class AreaElement extends AbstractElement {
-
-        private String availableComponents;
-
-        public AreaElement(String workspace, String path, String dialog, String availableComponents) {
-            super(workspace, path, dialog);
-            this.availableComponents = availableComponents;
-        }
-
-        public String getAvailableComponents() {
-            return availableComponents;
-        }
-    }
-
-    /**
-     * Class for GSON serialization of area elements.
-     */
-    public static class ComponentElement extends AbstractElement {
-
-        public ComponentElement(String workspace, String path, String dialog) {
-            super(workspace, path, dialog);
-        }
-
-    }
-
-    /**
-     * Class for GSON serialization of area elements.
-     */
-    public static class PageElement extends AbstractElement {
-
-        public PageElement(String workspace, String path, String dialog) {
-            super(workspace, path, dialog);
-        }
-
-    }
-
-    /**
-     *  AbstractElement.
-     */
-    public static abstract class AbstractElement implements Serializable {
-
-        private String workspace;
-
-        public void setWorkspace(String workspace) {
-            this.workspace = workspace;
-        }
-
-        public void setPath(String path) {
-            this.path = path;
-        }
-
-        public void setDialog(String dialog) {
-            this.dialog = dialog;
-        }
-
-        private String path;
-        private String dialog;
-
-        public AbstractElement(String workspace, String path, String dialog) {
-            this.workspace = workspace;
-            this.path = path;
-            this.dialog = dialog;
-        }
-
-        public String getWorkspace() {
-            return workspace;
-        }
-
-        public String getPath() {
-            return path;
-        }
-
-        public String getDialog() {
-            return dialog;
-        }
     }
 }

@@ -63,11 +63,13 @@ import com.vaadin.ui.Field;
  * 
  * @param <D>
  *            definition type
+ * @param <T>
+ *            field value type
  */
-public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends AbstractFormItem implements FieldBuilder {
+public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends AbstractFormItem implements FieldBuilder {
     private static final Logger log = LoggerFactory.getLogger(AbstractFieldBuilder.class);
     protected Item item;
-    protected Field field;
+    protected Field<T> field;
     protected D definition;
     private ValidatorFieldFactory validatorFieldFactory;
     private I18nContentSupport i18nContentSupport;
@@ -88,7 +90,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
     }
 
     @Override
-    public Field getField() {
+    public Field<T> getField() {
         if (field == null) {
 
             // Build the Vaadin field
@@ -96,7 +98,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
 
             // Get and set the DataSource property
             // Set i18n property name
-            Property property = getOrCreateProperty();
+            Property<?> property = getOrCreateProperty();
             setPropertyDataSource(property);
 
             // TODO fgrilli review: do we really want to provide users with the possibility
@@ -122,14 +124,14 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
     /**
      * Set the DataSource of the current field.
      */
-    public void setPropertyDataSource(Property property) {
+    public void setPropertyDataSource(Property<?> property) {
         this.field.setPropertyDataSource(property);
     }
 
     /**
      * Implemented by subclasses to create and initialize the Vaadin Field instance to use.
      */
-    protected abstract Field buildField();
+    protected abstract Field<T> buildField();
 
     /**
      * Get a property from the current Item.
@@ -137,7 +139,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition> extends Ab
      * <p>
      * If the property does not exist, create a new property based on the defined type, default value, and saveInfo.
      */
-    protected Property getOrCreateProperty() {
+    protected Property<?> getOrCreateProperty() {
         String propertyName = getPropertyName();
         DefaultProperty property = (DefaultProperty) item.getItemProperty(propertyName);
         if (property == null) {

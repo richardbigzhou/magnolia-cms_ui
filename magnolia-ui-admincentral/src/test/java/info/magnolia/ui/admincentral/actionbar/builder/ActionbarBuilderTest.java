@@ -43,9 +43,9 @@ import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefin
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
-import info.magnolia.ui.vaadin.actionbar.Actionbar.ActionbarItem;
-import info.magnolia.ui.vaadin.actionbar.Actionbar.ActionbarSection;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
 
 import java.util.Iterator;
 import java.util.List;

@@ -34,50 +34,63 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import com.vaadin.data.util.AbstractProperty;
+import com.vaadin.data.util.converter.Converter.ConversionException;
 
 /**
  * Basic implementation of {@link com.vaadin.data.Property}.
- * 
+ *
  * TODO dlipp - this impl is not depending on jcr, so it could/should be located in a different package.
+ *
+ * @param <T> generic type of the value.
  */
-public class DefaultProperty extends AbstractProperty {
+public class DefaultProperty<T> extends AbstractProperty<T> {
 
-    private Object value;
-    private boolean readOnly;
+    private T value;
+    private final Class<T> type;
     private String propertyName;
 
-    public DefaultProperty(String propertyName, Object value) {
+    /**
+     * Constructor which reads the type from the value.
+     * Do not use this constructor. As null values are actually wanted to not propagate empty fields to jcr.
+     * Resolving the class type from the value can cause problems with converters.
+     * @throws IllegalArgumentException if value is null.
+     */
+    @Deprecated
+    public DefaultProperty(String propertyName, T value) {
+        this.propertyName = propertyName;
+        if (value == null) {
+            throw new IllegalArgumentException("Null value passed to wrong constructor. This has been deprecated.");
+        }
+        this.value = value;
+        this.type = (Class<T>) value.getClass();
+    }
+
+    public DefaultProperty(String propertyName, T value, Class<T> type) {
         this.propertyName = propertyName;
         this.value = value;
+        this.type = type;
     }
 
     @Override
-    public Object getValue() {
+    public T getValue() {
         return value;
     }
 
     @Override
-    public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
-        if (readOnly) {
-            return;
+    public void setValue(T newValue) throws ReadOnlyException, ConversionException {
+        if (isReadOnly()) {
+            throw new ReadOnlyException("Property is readonly: Can not update value: " + String.valueOf(newValue));
+        }
+        if (newValue != null && !getType().isAssignableFrom(newValue.getClass())) {
+           throw new ConversionException("Cannot convert " + newValue.getClass() + " to " + getType());
         }
         value = newValue;
         fireValueChange();
     }
 
     @Override
-    public Class<?> getType() {
-        return value.getClass();
-    }
-
-    @Override
-    public boolean isReadOnly() {
-        return readOnly;
-    }
-
-    @Override
-    public void setReadOnly(boolean newStatus) {
-        readOnly = newStatus;
+    public Class<T> getType() {
+        return type;
     }
 
     public String getPropertyName() {
@@ -86,7 +99,7 @@ public class DefaultProperty extends AbstractProperty {
 
     @Override
     public String toString() {
-        Object value = getValue();
+        T value = getValue();
         return value != null ? value.toString() : "";
     }
 }

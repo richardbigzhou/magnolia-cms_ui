@@ -45,10 +45,15 @@ import org.apache.commons.lang.StringUtils;
 public class DefaultLocation implements Location {
 
     private String appType;
+
     private String appId;
+
     private String subAppId;
 
     private String parameter;
+
+    public DefaultLocation() {
+    }
 
     public DefaultLocation(String appType, String appId) {
         this.appType = appType;
@@ -107,6 +112,18 @@ public class DefaultLocation implements Location {
 
     public void setParameter(String parameter) {
         this.parameter = parameter;
+    }
+
+    public void setSubAppId(String subAppId) {
+        this.subAppId = subAppId;
+    }
+
+    public void setAppType(String appType) {
+        this.appType = appType;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 
     @Override

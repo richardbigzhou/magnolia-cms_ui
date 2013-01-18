@@ -68,7 +68,7 @@ public class ListViewImpl implements ListView {
 
     private final Table table;
 
-    private final CssLayout margin = new CssLayout();
+    private final CssLayout layout = new CssLayout();
 
     private final AbstractJcrContainer container;
 
@@ -83,15 +83,14 @@ public class ListViewImpl implements ListView {
         table.setNullSelectionAllowed(false);
         // table.setMultiSelectMode(MultiSelectMode.DEFAULT);
         table.setMultiSelect(false);
-        table.setSortDisabled(false);
+        table.setSortEnabled(true);
         // Important do not set page length and cache ratio on the Table, rather
         // set them by using
         // AbstractJcrContainer corresponding methods. Setting
         // those value explicitly on the Table will cause the same jcr query to
         // be repeated twice
         // thus degrading performance greatly.
-        table.addListener(new Table.ValueChangeListener() {
-
+        table.addValueChangeListener(new Table.ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
                 log.debug("Handle value change Event: {}", event.getProperty().getValue());
@@ -99,8 +98,7 @@ public class ListViewImpl implements ListView {
             }
         });
 
-        table.addListener(new ItemClickListener() {
-
+        table.addItemClickListener(new ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent event) {
                 if (event.isDoubleClick()) {
@@ -110,9 +108,8 @@ public class ListViewImpl implements ListView {
         });
 
         table.setCellStyleGenerator(new Table.CellStyleGenerator() {
-
             @Override
-            public String getStyle(Object itemId, Object propertyId) {
+            public String getStyle(Table source, Object itemId, Object propertyId) {
                 return presenterGetIcon(itemId, propertyId);
             }
         });
@@ -120,15 +117,13 @@ public class ListViewImpl implements ListView {
         table.setEditable(false);
         table.setSelectable(true);
         table.setColumnCollapsingAllowed(true);
-
         table.setColumnReorderingAllowed(false);
 
         this.container = container;
-
         buildColumns(workbenchDefinition, componentProvider);
 
-        margin.setStyleName("mgnl-content-view");
-        margin.addComponent(table);
+        layout.setStyleName("mgnl-content-view");
+        layout.addComponent(table);
     }
 
     @Override
@@ -145,7 +140,7 @@ public class ListViewImpl implements ListView {
 
     @Override
     public Component asVaadinComponent() {
-        return margin;
+        return layout;
     }
 
     @Override

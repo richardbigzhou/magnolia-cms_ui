@@ -36,9 +36,10 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.ShellApp;
 import info.magnolia.ui.framework.app.ShellAppContext;
-import info.magnolia.ui.framework.app.ShellView;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +61,10 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
     public PulseShellApp(PulseView pulseView, MagnoliaShell shell) {
         this.pulseView = pulseView;
         this.shell = shell;
-
+        shell.registerShellApp(ShellAppType.PULSE, pulseView.asVaadinComponent());
+        /**
+         * TODO - remove commented code if caused by V7 migration.
+         */
         /*
          * shell.setIndication(
          * VMainLauncher.ShellAppType.PULSE,
@@ -69,11 +73,11 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
     }
 
     @Override
-    public ShellView start(ShellAppContext context) {
+    public View start(ShellAppContext context) {
         this.context = context;
         pulseView.setPresenter(this);
 
-        // Causes a Juice error - probably the messagesManager is not ready yet or something.
+        // Causes a Guice error - probably the messagesManager is not ready yet or something.
         // shell.setIndicationOnPulseToNumberOfUnclearedMessagesForCurrentUser();
 
         return pulseView;

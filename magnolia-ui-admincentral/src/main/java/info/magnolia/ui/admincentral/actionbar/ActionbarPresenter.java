@@ -58,7 +58,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
-import com.vaadin.terminal.Resource;
+import com.vaadin.server.Resource;
 
 /**
  * Default presenter for an action bar.
@@ -89,9 +89,11 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     }
 
     /**
-     * Initializes an actionbar with given definition and returns the view for parent to add it.
+     * Initializes an actionbar with given definition and returns the view for
+     * parent to add it.
      */
-    public ActionbarView start(final ActionbarDefinition definition, final ActionFactory<ActionDefinition, Action> actionFactory) {
+    public ActionbarView start(final ActionbarDefinition definition,
+            final ActionFactory<ActionDefinition, Action> actionFactory) {
         this.definition = definition;
         this.actionFactory = actionFactory;
         actionbar = ActionbarBuilder.build(definition);
@@ -104,7 +106,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
             if (!((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
                 actionbar.addSection(PREVIEW_SECTION_NAME, "Preview");
             }
-            actionbar.setPreview(previewResource, PREVIEW_SECTION_NAME);
+            actionbar.setSectionPreview(previewResource, PREVIEW_SECTION_NAME);
         } else {
             if (((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
                 actionbar.removeSection(PREVIEW_SECTION_NAME);
@@ -117,7 +119,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     public void enable(String... actionNames) {
         if (actionbar != null) {
             for (String action : actionNames) {
-                actionbar.enable(action);
+                actionbar.setActionEnabled(action, true);
             }
         }
     }
@@ -125,39 +127,39 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     public void disable(String... actionNames) {
         if (actionbar != null) {
             for (String action : actionNames) {
-                actionbar.disable(action);
+                actionbar.setActionEnabled(action, false);
             }
         }
     }
 
     public void enableGroup(String groupName) {
         if (actionbar != null) {
-            actionbar.enableGroup(groupName);
+            actionbar.setGroupEnabled(groupName, true);
         }
     }
 
     public void disableGroup(String groupName) {
         if (actionbar != null) {
-            actionbar.disableGroup(groupName);
+            actionbar.setGroupEnabled(groupName, false);
         }
     }
 
     public void enableGroup(String groupName, String sectionName) {
         if (actionbar != null) {
-            actionbar.enableGroup(groupName, sectionName);
+            actionbar.setGroupEnabled(groupName, sectionName, true);
         }
     }
 
     public void disableGroup(String groupName, String sectionName) {
         if (actionbar != null) {
-            actionbar.disableGroup(groupName, sectionName);
+            actionbar.setGroupEnabled(groupName, sectionName, false);
         }
     }
 
     public void showSection(String... sectionNames) {
         if (actionbar != null) {
             for (String section : sectionNames) {
-                actionbar.showSection(section);
+                actionbar.setSectionVisible(section, true);
             }
         }
     }
@@ -165,13 +167,12 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     public void hideSection(String... sectionNames) {
         if (actionbar != null) {
             for (String section : sectionNames) {
-                actionbar.hideSection(section);
+                actionbar.setSectionVisible(section, false);
             }
         }
     }
 
     // WIDGET LISTENER
-
     @Override
     public void onActionbarItemClicked(String actionToken) {
         ActionDefinition actionDefinition = getActionDefinition(actionToken);
@@ -192,10 +193,9 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     private ActionDefinition getActionDefinition(String actionToken) {
         final String[] chunks = actionToken.split(":");
         if (chunks.length != 2) {
-            log
-                    .warn(
-                            "Invalid actionToken [{}]: it is expected to be in the form sectionName:actionName. ActionDefintion cannot be retrieved. Please check actionbar definition.",
-                            actionToken);
+            log.warn(
+                    "Invalid actionToken [{}]: it is expected to be in the form sectionName:actionName. ActionDefintion cannot be retrieved. Please check actionbar definition.",
+                    actionToken);
             return null;
         }
         final String sectionName = chunks[0];
@@ -227,9 +227,9 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     // DEFAULT ACTION
 
     /**
-     * Gets the default action definition, i.e. finds the first action bar item whose name matches
-     * the action bar definition's 'defaultAction' property, and returns its actionDefinition
-     * property.
+     * Gets the default action definition, i.e. finds the first action bar item
+     * whose name matches the action bar definition's 'defaultAction' property,
+     * and returns its actionDefinition property.
      */
     public ActionDefinition getDefaultActionDefinition() {
         String defaultAction = definition.getDefaultAction();
@@ -260,13 +260,16 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                 }
             }
         }
-        log.warn("No action definition found for default action [{}]. Please check actionbar definition.", defaultAction);
+        log.warn("No action definition found for default action [{}]. Please check actionbar definition.",
+                defaultAction);
         return null;
     }
 
-    public void createAndExecuteAction(final ActionDefinition actionDefinition, String workspace, String absPath) throws ActionExecutionException {
+    public void createAndExecuteAction(final ActionDefinition actionDefinition, String workspace, String absPath)
+            throws ActionExecutionException {
         if (actionDefinition == null || StringUtils.isBlank(workspace)) {
-            throw new ActionExecutionException("Got invalid arguments: action definition is " + actionDefinition + ", workspace is " + workspace);
+            throw new ActionExecutionException("Got invalid arguments: action definition is " + actionDefinition
+                    + ", workspace is " + workspace);
         }
         try {
             Session session = MgnlContext.getJCRSession(workspace);

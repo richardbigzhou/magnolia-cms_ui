@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.mockito.Mockito.*;
-
 import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
@@ -56,6 +55,8 @@ import java.util.Locale;
 
 import javax.jcr.Node;
 
+import com.vaadin.data.util.converter.DefaultConverterFactory;
+import com.vaadin.server.VaadinSession;
 import org.junit.After;
 import org.junit.Before;
 
@@ -75,6 +76,7 @@ public abstract class AbstractBuilderTest<D extends FieldDefinition> {
     protected Item baseItem;
     protected D definition;
 
+
     @Before
     public void setUp() throws Exception {
         // Init Message & Providers
@@ -83,9 +85,14 @@ public abstract class AbstractBuilderTest<D extends FieldDefinition> {
         ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
         ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
+
         SystemContext systemContext = mock(SystemContext.class);
         when(systemContext.getLocale()).thenReturn(DEFAULT_LOCALE);
         ComponentsTestUtil.setInstance(SystemContext.class, systemContext);
+
+        VaadinSession vaadinSession = mock(VaadinSession.class);
+        when(vaadinSession.getConverterFactory()).thenReturn(new DefaultConverterFactory());
+        ComponentsTestUtil.setInstance(VaadinSession.class, vaadinSession);
 
         // Init Session
         session = new MockSession(workspaceName);

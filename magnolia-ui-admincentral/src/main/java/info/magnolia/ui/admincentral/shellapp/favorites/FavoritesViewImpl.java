@@ -34,11 +34,9 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.admincentral.components.SplitFeed;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMainLauncher.ShellAppType;
-import info.magnolia.ui.vaadin.layout.DivLayout;
 
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 
 /**
@@ -49,19 +47,16 @@ public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
 
     // private final SplitFeed splitPanel = new SplitFeed();
 
-    private String id = ShellAppType.FAVORITE.getClassId();
-
     @Override
     public String getId() {
-        return id;
+        return "favorite";
     }
 
     public FavoritesViewImpl() {
         super();
         addStyleName("favorites");
-        // setHeight("100%");
+        setHeight("100%");
         setWidth("900px");
-        this.setDebugId(id);
         construct();
     }
 
@@ -101,7 +96,7 @@ public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
     /**
      * Favorite entry.
      */
-    public static class FavoriteEntry extends DivLayout {
+    public static class FavoriteEntry extends CssLayout {
 
         private final Label textElement = new Label();
 
@@ -113,10 +108,10 @@ public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
             setText(text);
             setIcon(icon);
             iconElement.setContentMode(Label.CONTENT_XHTML);
-            iconElement.setWidth(Sizeable.SIZE_UNDEFINED, 0);
+            iconElement.setWidth(null);
             iconElement.setStyleName("icon");
             textElement.setStyleName("text");
-            textElement.setWidth(Sizeable.SIZE_UNDEFINED, 0);
+            textElement.setWidth(null);
             addComponent(iconElement);
             addComponent(textElement);
         }
@@ -133,7 +128,7 @@ public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
     /**
      * Favorite section.
      */
-    public static class FavoritesSection extends DivLayout {
+    public static class FavoritesSection extends CssLayout {
 
         public FavoritesSection() {
             addStyleName("favorites-section");

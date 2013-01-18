@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,39 +33,26 @@
  */
 package info.magnolia.ui.vaadin.icon;
 
-import info.magnolia.ui.vaadin.gwt.client.icon.VLoadingIcon;
+import info.magnolia.ui.vaadin.gwt.client.icon.connector.LoadingIconState;
 
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
 
 /**
  * The LoadingIcon is a lightweight component that outputs the magnolia 5 loading icon as a simple
  * scalable widget. The client-side implementation is based on the icon font technique and CSS3
  * animations.
  */
-@ClientWidget(value = VLoadingIcon.class, loadStyle = LoadStyle.EAGER)
 public class LoadingIcon extends AbstractComponent {
-
-    private static final int SIZE_DEFAULT = 24;
-
-    private int size = SIZE_DEFAULT;
 
     public LoadingIcon() {
     }
 
     public LoadingIcon(int size) {
-        this.size = size;
+        getState().size = size;
     }
 
     @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
-        if (size != SIZE_DEFAULT) {
-            target.addAttribute("size", size);
-        }
-    }
-
+    protected LoadingIconState getState() {
+        return (LoadingIconState) super.getState();
+    };
 }

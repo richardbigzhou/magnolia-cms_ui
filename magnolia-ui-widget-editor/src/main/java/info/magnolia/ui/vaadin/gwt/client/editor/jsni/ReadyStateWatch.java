@@ -49,24 +49,33 @@ public class ReadyStateWatch {
     public static enum ReadyState {
         COMPLETE {
             @Override
-            public String toString() { return "complete"; }
+            public String toString() {
+                return "complete";
+            }
         },
         LOADING {
             @Override
-            public String toString() { return "loading"; }
+            public String toString() {
+                return "loading";
+            }
         },
         INTERACTIVE {
             @Override
-            public String toString() { return "interactive"; }
+            public String toString() {
+                return "interactive";
+            }
         },
         UNINITIALIZED {
             @Override
-            public String toString() { return "uninitialized"; }
+            public String toString() {
+                return "uninitialized";
+            }
         }
     }
+
     Frame iframe;
 
-    public ReadyStateWatch(Frame iframe){
+    public ReadyStateWatch(Frame iframe) {
         this.iframe = iframe;
         addNativeReadyStateWatch(this, iframe.getElement().<IFrameElement>
                 cast());
@@ -77,18 +86,19 @@ public class ReadyStateWatch {
         return iframe.addHandler(handler, ValueChangeEvent.getType());
     }
 
-    public ReadyState getReadyState(){
+    public ReadyState getReadyState() {
         try {
             return ReadyState.valueOf(iframe.getElement().getPropertyString("readyState"));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }
 
-    @SuppressWarnings("unused") //used in native function
+    @SuppressWarnings("unused")
+    // used in native function
     private void fireReadyStateChange() {
-        iframe.fireEvent(new ValueChangeEvent<ReadyState>(getReadyState()){});
+        iframe.fireEvent(new ValueChangeEvent<ReadyState>(getReadyState()) {
+        });
     }
 
     private static native void addNativeReadyStateWatch(ReadyStateWatch self, IFrameElement e) /*-{

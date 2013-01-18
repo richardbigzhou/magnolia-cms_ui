@@ -35,9 +35,10 @@ package info.magnolia.ui.admincentral.field;
 
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 
-import org.vaadin.addon.customfield.CustomField;
-
 import com.vaadin.data.Property;
+import com.vaadin.data.util.converter.Converter.ConversionException;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -48,7 +49,7 @@ import com.vaadin.ui.VerticalLayout;
  * <li>This field is mainly used to perform some selection in a list and to put the selected value into the text input field.
  * </ul>
  */
-public class TextAndContentViewField extends CustomField {
+public class TextAndContentViewField extends CustomField<String> {
 
     private ContentWorkbenchView contentView;
 
@@ -58,13 +59,20 @@ public class TextAndContentViewField extends CustomField {
 
     private boolean displayTextFieldOnTop;
 
+    private boolean isTextFieldVisible;
+
     public TextAndContentViewField(boolean displayTextField, boolean displayTextFieldOnTop) {
         this.displayTextFieldOnTop = displayTextFieldOnTop;
-        textField = new TextField();
-        layout = new VerticalLayout();
-        addTextFieldToLayout(displayTextField);
+        this.isTextFieldVisible = displayTextField;
+        this.textField = new TextField();
+        this.layout = new VerticalLayout();
+    }
+
+    @Override
+    protected Component initContent() {
+        addTextFieldToLayout(isTextFieldVisible);
         addStyleName("text-and-content");
-        setCompositionRoot(layout);
+        return layout;
     }
 
     /**
@@ -103,28 +111,30 @@ public class TextAndContentViewField extends CustomField {
     }
 
     @Override
-    public Object getValue() {
+    public String getValue() {
         return textField.getValue();
     }
 
     @Override
-    public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+    public void setValue(String newValue) throws ReadOnlyException, ConversionException {
         textField.setValue(newValue);
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void setPropertyDataSource(Property newDataSource) {
         textField.setPropertyDataSource(newDataSource);
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public Property getPropertyDataSource() {
         return textField.getPropertyDataSource();
     }
 
     @Override
-    public Class<?> getType() {
-        return getPropertyDataSource().getType();
+    public Class<String> getType() {
+        return String.class;
     }
 
     @Override

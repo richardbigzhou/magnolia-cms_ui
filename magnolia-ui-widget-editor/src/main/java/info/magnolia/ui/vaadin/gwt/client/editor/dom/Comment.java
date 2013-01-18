@@ -44,7 +44,8 @@ public class Comment extends Node {
     /**
      * Constructor must be protected.
      */
-    protected Comment() {}
+    protected Comment() {
+    }
 
     public final native String getData() /*-{ return this.data; }-*/;
 

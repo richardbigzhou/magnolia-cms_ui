@@ -171,7 +171,7 @@ public class TreeViewImpl implements TreeView {
         treeTable.setCellStyleGenerator(new Table.CellStyleGenerator() {
 
             @Override
-            public String getStyle(Object itemId, Object propertyId) {
+            public String getStyle(Table source, Object itemId, Object propertyId) {
                 return presenterGetIcon(itemId, propertyId);
             }
         });

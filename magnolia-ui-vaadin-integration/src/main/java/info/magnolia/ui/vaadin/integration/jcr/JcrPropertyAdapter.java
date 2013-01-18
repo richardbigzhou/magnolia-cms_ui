@@ -95,6 +95,7 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
     @Override
     public Property getItemProperty(Object id) {
         Object value = null;
+        String type = null;
         try {
             if (ModelConstants.JCR_NAME.equals(id)) {
                 value = getProperty().getName();
@@ -105,12 +106,15 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
             } else {
                 value = null;
             }
+            type = PropertyType.nameFromValue(getProperty().getType());
         } catch (RepositoryException re) {
             log.error("Could not get property for " + id, re);
             throw new RuntimeRepositoryException(re);
         }
-        DefaultProperty property = new DefaultProperty((String) id, value);
-        property.addListener(this);
+
+        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty((String) id, type, String.valueOf(value));
+
+        property.addValueChangeListener(this);
         return property;
     }
 

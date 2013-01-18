@@ -41,7 +41,9 @@ import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -49,12 +51,11 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.TwinColSelect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * GUI builder for the Role Management field.
@@ -80,7 +81,7 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
         super(definition, relatedFieldItem);
         definition.setOptions(getSelectFieldOptionDefinition());
     }
-
+    
     @Override
     protected AbstractSelect buildField() {
         super.buildField();
@@ -101,7 +102,7 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
     public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
         List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
         List<Role> allRoles = getAllRoles(); // name,uuid
-        List<String> assignedGroups = getAssignedRoles();
+        Set<String> assignedGroups = getAssignedRoles();
         for (Role role : allRoles) {
             SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
             option.setValue(role.uuid);
@@ -130,8 +131,8 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
         return roles;
     }
 
-    private List<String> getAssignedRoles() {
-        List<String> roles = new ArrayList<String>();
+    private Set<String> getAssignedRoles() {
+        Set<String> roles = new HashSet<String>();
         Node mainNode = getRelatedNode(item);
         try {
             if (mainNode.hasNode("roles")) {
@@ -155,8 +156,8 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
     }
 
     @Override
-    public com.vaadin.data.Property getOrCreateProperty() {
-        DefaultProperty prop = new DefaultProperty("roles", getAssignedRoles());
+    public com.vaadin.data.Property<Set> getOrCreateProperty() {
+        DefaultProperty<Set> prop = new DefaultProperty<Set>("roles", getAssignedRoles(), Set.class);
         item.addItemProperty("roles", prop);
         return prop;
     }

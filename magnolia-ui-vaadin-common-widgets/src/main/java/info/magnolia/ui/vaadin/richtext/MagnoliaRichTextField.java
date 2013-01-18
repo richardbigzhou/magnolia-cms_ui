@@ -42,15 +42,16 @@ import java.util.Map;
 import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField;
 
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
+import com.vaadin.server.PaintException;
+import com.vaadin.server.PaintTarget;
+
 
 /**
  * Extended CKEditorTextField for custom made Magnolia plugins.
  * By default CKEditor wrapper for Vaadin does not allow
  * custom events between CKEditor plugins and server.
  */
-@com.vaadin.ui.ClientWidget(VMagnoliaRichTextField.class)
+
 public class MagnoliaRichTextField extends CKEditorTextField {
 
     private String fireEvent = null;

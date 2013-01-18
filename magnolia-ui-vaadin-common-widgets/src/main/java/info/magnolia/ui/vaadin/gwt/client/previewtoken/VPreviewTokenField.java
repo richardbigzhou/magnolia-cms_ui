@@ -33,45 +33,38 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.previewtoken;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.vaadin.terminal.gwt.client.ui.VTextField;
-
 /**
  * VPreviewTokenField.
  */
-public class VPreviewTokenField extends VTextField {
+/*public class VPreviewTokenField extends VTextField {
 
-    public VPreviewTokenField() {
+ public VPreviewTokenField() {
 
-        addKeyPressHandler(new KeyPressHandler() {
-            @Override
-            public void onKeyPress(final KeyPressEvent event) {
-                final int keyCode = event.getNativeEvent().getKeyCode();
-                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-                    @Override
-                    public void execute() {
-                        String text = getText();
-                        if (keyCode == KeyCodes.KEY_BACKSPACE ||
-                                keyCode == KeyCodes.KEY_LEFT ||
-                                keyCode == KeyCodes.KEY_RIGHT ||
-                                keyCode == KeyCodes.KEY_HOME ||
-                                keyCode == KeyCodes.KEY_END) {
-                        } else {
-                            text = text.replaceAll("[^0-9]+", "");
-                            text = text.replaceAll("([0-9][0-9][0-9])", "$1-");
-                            if (text.length() > 11) {
-                                text = text.replaceAll("-$", "");
-                            }
-                            setText(text);
-                            setCursorPos(text.length());
-                        }
-                    }
-                });
-            }
-        });
-    }
-}
+ addKeyPressHandler(new KeyPressHandler() {
+ @Override
+ public void onKeyPress(final KeyPressEvent event) {
+ final int keyCode = event.getNativeEvent().getKeyCode(); 
+ Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+ @Override
+ public void execute() {
+ String text = getText();
+ if (keyCode == KeyCodes.KEY_BACKSPACE || 
+ keyCode == KeyCodes.KEY_LEFT ||
+ keyCode == KeyCodes.KEY_RIGHT ||
+ keyCode == KeyCodes.KEY_HOME ||
+ keyCode == KeyCodes.KEY_END) {
+ } else {
+ text = text.replaceAll("[^0-9]+", "");
+ text = text.replaceAll("([0-9][0-9][0-9])", "$1-");
+ if (text.length() > 11) {
+ text = text.replaceAll("-$", "");
+ }
+ setText(text);
+ setCursorPos(text.length());
+ }
+ }
+ });
+ }
+ });
+ }
+ }*/
