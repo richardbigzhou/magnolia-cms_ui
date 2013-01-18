@@ -52,6 +52,7 @@ import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.shared.ui.slider.SliderOrientation;
 import com.vaadin.ui.AbstractSelect;
@@ -93,10 +94,7 @@ public class VaadinViewImpl implements VaadinView {
         layout = new VerticalLayout();
         layout.setSpacing(true);
         layout.setWidth("100%");
-        /**
-         * TODO: handle margins in CSS style sheet.
-         */
-        // layout.setMargin(true, true, false, true);
+        layout.setMargin(new MarginInfo(true, true, false, true));
         layout.addComponent(new Label(
                 "The UI elements available in the Vaadin framework that " +
                         "are recommended for use with Magnolia. These fields " +

@@ -62,14 +62,6 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
         this.pulseView = pulseView;
         this.shell = shell;
         shell.registerShellApp(ShellAppType.PULSE, pulseView.asVaadinComponent());
-        /**
-         * TODO - remove commented code if caused by V7 migration.
-         */
-        /*
-         * shell.setIndication(
-         * VMainLauncher.ShellAppType.PULSE,
-         * messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
-         */
     }
 
     @Override

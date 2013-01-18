@@ -219,8 +219,6 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
             dateElement.setStyleName("date");
             wrapper.addStyleName("content");
             wrapper.setWidth("100%");
-            // TODO: HANDLE MARGINS IN CSS STYLESHEET
-            // wrapper.setMargin(false, false, false, true);
             wrapper.addComponent(textElement);
             wrapper.addComponent(dateElement);
             addComponent(iconElement);
