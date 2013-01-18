@@ -38,6 +38,8 @@ import java.io.IOException;
 
 /**
  * Default {@link FileFactory} used if no directory defined.
+ * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on
+ * @link{http://code.google.com/p/easyuploads-addon/}.
  */
 public class DefaultFileFactory implements FileFactory {
 

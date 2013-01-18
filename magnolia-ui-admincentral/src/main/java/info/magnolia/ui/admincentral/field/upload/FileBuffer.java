@@ -45,6 +45,8 @@ import java.io.OutputStream;
 
 /**
  * FileBuffer.
+ * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on 
+ * @link{http://code.google.com/p/easyuploads-addon/}. 
  */
 @SuppressWarnings("serial")
 public abstract class FileBuffer implements UploadFieldReceiver {

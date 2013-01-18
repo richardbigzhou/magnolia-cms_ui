@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.field.upload;
 import java.io.File;
 
 /**
+ * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on @link{http://code.google.com/p/easyuploads-addon/}.
  */
 public enum FieldType {
     UTF8_STRING, BYTE_ARRAY, FILE;

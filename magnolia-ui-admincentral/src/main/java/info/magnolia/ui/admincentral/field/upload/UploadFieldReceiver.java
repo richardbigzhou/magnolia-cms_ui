@@ -39,6 +39,8 @@ import com.vaadin.ui.Upload.Receiver;
 
 /**
  * UploadFieldReceiver.
+ * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on 
+ * @link{http://code.google.com/p/easyuploads-addon/}.
  */
 interface UploadFieldReceiver extends Receiver {
     Object getValue();
