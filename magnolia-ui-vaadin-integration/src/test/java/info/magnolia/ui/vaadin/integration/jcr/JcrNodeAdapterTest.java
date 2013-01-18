@@ -40,6 +40,7 @@ import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 
 import javax.jcr.Node;
+import javax.jcr.PropertyType;
 
 import org.junit.After;
 import org.junit.Before;
@@ -77,7 +78,7 @@ public class JcrNodeAdapterTest {
     public void testAddItemProperty() throws Exception {
         // GIVEN
         final Node underlyingNode = session.getRootNode().addNode("underlying");
-        DefaultProperty property = new DefaultProperty(propertyName, propertyValue);
+        DefaultProperty<String> property = new DefaultProperty<String>(propertyName, propertyValue, String.class);
         final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
         // WHEN
@@ -85,7 +86,7 @@ public class JcrNodeAdapterTest {
 
         // THEN
         assertTrue(b);
-        assertEquals(property.getValue().toString(), item.getItemProperty(propertyName).getValue().toString());
+        assertEquals(property.getValue(), item.getItemProperty(propertyName).getValue().toString());
     }
 
     @Test
@@ -108,11 +109,11 @@ public class JcrNodeAdapterTest {
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
 
         // WHEN
-        Property property = DefaultPropertyUtil.newDefaultProperty(propertyName, null, "");
+        Property<String> property = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, "");
         adapter.addItemProperty(propertyName, property);
 
         // THEN
-        assertEquals("", property.getValue().toString());
+        assertEquals("", property.getValue());
         assertSame(property, adapter.getItemProperty(propertyName));
     }
 
@@ -138,7 +139,7 @@ public class JcrNodeAdapterTest {
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Get and modify property
-        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(propertyName, null, propertyValue);
+        Property<String> propertyInitial = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, propertyValue);
         adapter.addItemProperty(propertyName, propertyInitial);
 
         // WHEN get property again
@@ -157,7 +158,7 @@ public class JcrNodeAdapterTest {
         node.setProperty(propertyName, propertyValue);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Get property: add listener
-        DefaultProperty propertyInitial = (DefaultProperty) adapter.getItemProperty(propertyName);
+        DefaultProperty<String> propertyInitial = (DefaultProperty) adapter.getItemProperty(propertyName);
         // Modify property --> add listener
         propertyInitial.setValue(propertyValue);
 
