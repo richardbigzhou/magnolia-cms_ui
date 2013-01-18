@@ -197,7 +197,7 @@ public class JcrPropertyAdapterTest {
         assertEquals(newValue, node.getProperty(propertyName).getString());
     }
 
-    @Ignore
+    @Ignore("http://jira.magnolia-cms.com/browse/MGNLUI-485")
     @Test
     public void testUpdatePropertyValueKeepsPropertyType() throws Exception {
         // GIVEN
