@@ -49,7 +49,7 @@ public class DefaultPropertyTest {
     public void testGetValue() throws Exception {
         // GIVEN
         final String value = "value";
-        final DefaultProperty property = new DefaultProperty("propertyName", value);
+        final DefaultProperty<String> property = new DefaultProperty<String>("propertyName", value, String.class);
 
         // WHEN
         final Object result = property.getValue();
@@ -61,7 +61,7 @@ public class DefaultPropertyTest {
     @Test
     public void testCreateDefaultPropertyNullValueWithType() throws Exception {
         // GIVEN
-        final DefaultProperty property = new DefaultProperty("propertyName", null, String.class);
+        final DefaultProperty<String> property = new DefaultProperty<String>("propertyName", null, String.class);
 
         // WHEN
         final Class<?> result = property.getType();
@@ -82,7 +82,7 @@ public class DefaultPropertyTest {
     public void testGetType() throws Exception {
         // GIVEN
         final String value = "value";
-        final DefaultProperty property = new DefaultProperty("propertyName", value);
+        final DefaultProperty<String> property = new DefaultProperty<String>("propertyName", value, String.class);
 
         // WHEN
         final Class<?> result = property.getType();
@@ -95,7 +95,7 @@ public class DefaultPropertyTest {
     public void testSetValue() throws Exception {
         // GIVEN
         final String value = "old";
-        final DefaultProperty property = new DefaultProperty("propertyName", value);
+        final DefaultProperty<String> property = new DefaultProperty<String>("propertyName", value, String.class);
         final String newValue = "new";
 
         // WHEN
@@ -109,7 +109,7 @@ public class DefaultPropertyTest {
     public void testSetReadOnlyValue() throws Exception {
         // GIVEN
         final String value = "old";
-        final DefaultProperty property = new DefaultProperty("propertyName", value);
+        final DefaultProperty<String> property = new DefaultProperty<String>("propertyName", value, String.class);
         property.setReadOnly(true);
 
         // WHEN
@@ -129,7 +129,7 @@ public class DefaultPropertyTest {
     public void testSetNonAssignableValue() throws Exception {
         // GIVEN
         final String value = "old";
-        final DefaultProperty property = new DefaultProperty("propertyName", value);
+        final DefaultProperty property = new DefaultProperty<String>("propertyName", value, String.class);
 
         // WHEN
         try {
@@ -156,6 +156,7 @@ public class DefaultPropertyTest {
         assertEquals(List.class, property.getType());
     }
 
+    @SuppressWarnings("rawtypes")
     @Test(expected = Converter.ConversionException.class)
     public void testSetNonAssignableValueException() {
         // GIVEN
@@ -170,7 +171,7 @@ public class DefaultPropertyTest {
     public void testReadOnlyExceptionOnSet() {
         // GIVEN
         final String value = "old";
-        final DefaultProperty property = new DefaultProperty("propertyName", value);
+        final DefaultProperty<String> property = new DefaultProperty("propertyName", value, String.class);
         property.setReadOnly(true);
 
         // WHEN
