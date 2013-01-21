@@ -69,9 +69,6 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
         this.context = context;
         pulseView.setPresenter(this);
 
-        // Causes a Guice error - probably the messagesManager is not ready yet or something.
-        // shell.setIndicationOnPulseToNumberOfUnclearedMessagesForCurrentUser();
-
         return pulseView;
     }
 

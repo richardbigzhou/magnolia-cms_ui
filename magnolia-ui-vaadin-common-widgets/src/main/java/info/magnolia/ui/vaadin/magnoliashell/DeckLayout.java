@@ -56,7 +56,7 @@ public class DeckLayout extends AbstractComponentContainer {
     @Override
     public void addComponent(Component c) {
         // Check first if this is the same as the currently shown, eliminates flicker
-        if (children.isEmpty() || children.getFirst() != c) {
+        if (children.isEmpty() || children.getLast() != c) {
             super.addComponent(c);
             if (children.contains(c)) {
                 children.remove(c);

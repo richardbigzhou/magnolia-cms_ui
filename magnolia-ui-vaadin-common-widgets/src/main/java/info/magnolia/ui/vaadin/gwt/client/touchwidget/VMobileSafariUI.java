@@ -51,6 +51,8 @@ public class VMobileSafariUI extends VUI {
 
     private HandlerManager handlerManager;
 
+    private static final String TABLET_STYLENAME = "tablet";
+
     static {
         new TouchStartEvent() {
         };
@@ -64,7 +66,7 @@ public class VMobileSafariUI extends VUI {
 
     public VMobileSafariUI() {
         super();
-        addStyleName("tablet");
+        addStyleName(TABLET_STYLENAME);
 
         Event.addNativePreviewHandler(new NativePreviewHandler() {
 
@@ -82,6 +84,12 @@ public class VMobileSafariUI extends VUI {
                     handlerManager.getHandler(com.google.gwt.event.dom.client.TouchStartEvent.getType(), 0);
             handlerManager.removeHandler(com.google.gwt.event.dom.client.TouchStartEvent.getType(), eh);
         }
+    }
+
+    @Override
+    public void setStyleName(String style) {
+        super.setStyleName(style);
+        addStyleName(TABLET_STYLENAME);
     }
 
     @Override
