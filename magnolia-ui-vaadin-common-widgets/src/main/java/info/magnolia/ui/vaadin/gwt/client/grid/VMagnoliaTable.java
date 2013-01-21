@@ -48,11 +48,10 @@ import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapEvent;
 import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapHandler;
 import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapRecognizer;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.BrowserInfo;
-import com.vaadin.terminal.gwt.client.UIDL;
-import com.vaadin.terminal.gwt.client.Util;
-import com.vaadin.terminal.gwt.client.ui.VScrollTablePatched;
+import com.vaadin.client.BrowserInfo;
+import com.vaadin.client.UIDL;
+import com.vaadin.client.Util;
+import com.vaadin.client.ui.VScrollTablePatched;
 
 /**
  * Magnolia table extends VScrollTable in a way that out-of-the-box version of it would not allow.
@@ -83,10 +82,7 @@ public class VMagnoliaTable extends VScrollTablePatched {
         return new MagnoliaHeaderCell(colId, headerText);
     }
 
-    @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        super.updateFromUIDL(uidl, client);
-
+    public void addStyleForMobile() {
         if (BrowserInfo.get().isTouchDevice()) {
             addStyleName("mobile");
         }

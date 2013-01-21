@@ -40,6 +40,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.jcr.Binary;
 import javax.jcr.PropertyType;
 
 import org.apache.commons.lang.BooleanUtils;
@@ -70,78 +71,83 @@ public class DefaultPropertyUtil {
             log.error("Exception during Value creation", e);
             value = "";
         }
-        return new DefaultProperty(name, value);
+        return new DefaultProperty(name, value, getFieldTypeClass(fieldType));
     }
 
     /**
      * Create a custom Field Object based on the Type and defaultValue.
-     * If the Type is not defined, used he default one (String).
+     * If the fieldType is null, the defaultValue will be returned as String or null.
+     * If the defaultValue is null, null will be returned.
      * 
      * @throws NumberFormatException
      *             In case of the default value could not be parsed to the desired class.
      */
     public static Object createTypedValue(String fieldType, String defaultValue) throws NumberFormatException {
-        boolean hasDefaultValue = defaultValue != null;
-        if (StringUtils.isNotBlank(fieldType)) {
+        if (StringUtils.isBlank(fieldType)) {
+            return defaultValue;
+        }
+        else if (defaultValue != null) {
             int valueType = PropertyType.valueFromName(fieldType);
             switch (valueType) {
-            case PropertyType.STRING:
-                return (hasDefaultValue ? defaultValue : "");
-            case PropertyType.BINARY:
-                return null;
-            case PropertyType.LONG:
-                return (Long.decode(hasDefaultValue ? defaultValue : "0"));
-            case PropertyType.DOUBLE:
-                return (Double.valueOf(hasDefaultValue ? defaultValue : "0"));
-            case PropertyType.DATE:
-                try {
-                    return hasDefaultValue ? new SimpleDateFormat(DateUtil.YYYY_MM_DD).parse(defaultValue) : new Date();
-                } catch (ParseException e) {
-                    throw new IllegalArgumentException(e);
+                case PropertyType.STRING:
+                    return defaultValue;
+                case PropertyType.BINARY:
+                    return null;
+                case PropertyType.LONG:
+                    return Long.decode(defaultValue);
+                case PropertyType.DOUBLE:
+                    return Double.valueOf(defaultValue);
+                case PropertyType.DATE:
+                    try {
+                        return new SimpleDateFormat(DateUtil.YYYY_MM_DD).parse(defaultValue);
+                    } catch (ParseException e) {
+                        throw new IllegalArgumentException(e);
+                    }
+                case PropertyType.BOOLEAN:
+                    return BooleanUtils.toBoolean(defaultValue);
+                case PropertyType.DECIMAL:
+                    return BigDecimal.valueOf(Long.decode(defaultValue));
+                default: {
+                    String msg = "Unsupported property type " + PropertyType.nameFromValue(valueType);
+                    log.error(msg);
+                    throw new IllegalArgumentException(msg);
                 }
-            case PropertyType.BOOLEAN:
-                return (BooleanUtils.toBoolean(hasDefaultValue ? defaultValue : ""));
-            case PropertyType.DECIMAL:
-                return (BigDecimal.valueOf(Long.decode(hasDefaultValue ? defaultValue : "0")));
-            default: {
-                String msg = "Unsupported property type " + PropertyType.nameFromValue(valueType);
-                log.error(msg);
-                throw new IllegalArgumentException(msg);
             }
-            }
-        } else {
-            return String.valueOf(hasDefaultValue ? defaultValue : "");
         }
+        return null;
     }
 
     /**
      * Return the related Class for a desired Type.
+     * If no fieldType is defined, the default is String.
      * 
      * @throws IllegalArgumentException
-     *             if the Type is null or not supported.
+     *             if the Type is not supported.
      */
     public static Class<?> getFieldTypeClass(String fieldType) {
         if (StringUtils.isNotEmpty(fieldType)) {
             int valueType = PropertyType.valueFromName(fieldType);
             switch (valueType) {
-            case PropertyType.STRING:
-                return String.class;
-            case PropertyType.LONG:
-                return Long.class;
-            case PropertyType.DOUBLE:
-                return Double.class;
-            case PropertyType.DATE:
-                // we use Date here instead of Calendar simply because the vaadin DateField uses Date not Calendar
-                return Date.class;
-            case PropertyType.BOOLEAN:
-                return Boolean.class;
-            case PropertyType.DECIMAL:
-                return BigDecimal.class;
-            default:
-                throw new IllegalArgumentException("Unsupported property type " + PropertyType.nameFromValue(valueType));
+                case PropertyType.STRING:
+                    return String.class;
+                case PropertyType.BINARY:
+                    return Binary.class;
+                case PropertyType.LONG:
+                    return Long.class;
+                case PropertyType.DOUBLE:
+                    return Double.class;
+                case PropertyType.DATE:
+                    // we use Date here instead of Calendar simply because the vaadin DateField uses Date not Calendar
+                    return Date.class;
+                case PropertyType.BOOLEAN:
+                    return Boolean.class;
+                case PropertyType.DECIMAL:
+                    return BigDecimal.class;
+                default:
+                    throw new IllegalArgumentException("Unsupported property type " + PropertyType.nameFromValue(valueType));
             }
         } else {
-            throw new IllegalArgumentException("Unsupported property type null");
+            return String.class;
         }
     }
 }

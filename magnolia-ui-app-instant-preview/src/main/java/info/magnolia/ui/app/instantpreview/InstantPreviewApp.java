@@ -48,11 +48,12 @@ public class InstantPreviewApp extends AbstractApp {
 
     @Inject
     public InstantPreviewApp(AppContext appContext) {
+        super(appContext);
         this.appContext = appContext;
     }
 
     @Override
     public void start(Location location) {
-        appContext.openSubApp("main", InstantPreviewAppMainSubApp.class, location, "main");
+        appContext.openSubApp(location);
     }
 }

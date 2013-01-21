@@ -36,7 +36,8 @@ package info.magnolia.ui.app.showcase.main;
 import java.util.Date;
 
 import com.vaadin.data.util.HierarchicalContainer;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -47,6 +48,7 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -58,7 +60,7 @@ public class UnsupportedViewImpl implements UnsupportedView {
     VerticalLayout layout = new VerticalLayout();
 
     public UnsupportedViewImpl() {
-        layout.setMargin(true, true, false, true);
+        layout.setMargin(new MarginInfo(true, true, false, true));
         layout.setSpacing(true);
         layout.addComponent(new Label("The UI elements in the Vaadin framework" +
                 " that are not recommended for use with Magnolia. These elements" +
@@ -112,7 +114,7 @@ public class UnsupportedViewImpl implements UnsupportedView {
 
                     @Override
                     public void buttonClick(ClickEvent event) {
-                        grid.getApplication().getMainWindow().addWindow(new Window("Normal window"));
+                        UI.getCurrent().addWindow(new Window("Normal window"));
                     }
                 });
         grid.addComponent(win);
@@ -233,7 +235,6 @@ public class UnsupportedViewImpl implements UnsupportedView {
     private Layout getPreviewLayout(String caption) {
         Layout grid = new HorizontalLayout();
         grid.setWidth("100%");
-        grid.setMargin(true);
         grid.setCaption(caption);
         return grid;
     }

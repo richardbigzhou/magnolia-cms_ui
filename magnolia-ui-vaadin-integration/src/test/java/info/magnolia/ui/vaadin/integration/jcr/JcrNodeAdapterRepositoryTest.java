@@ -85,6 +85,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Get the node name as property
         Property property = adapter.getItemProperty(id);
+        assertEquals(nodeName, property.getValue().toString());
         // Change the property node name
         property.setValue(value);
 
@@ -97,6 +98,29 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         assertTrue(res.hasNode("child"));
         assertTrue(res.hasProperty("propertyString"));
         assertEquals("hello", res.getProperty("propertyString").getString());
+    }
+
+    @Test
+    public void testGetNode_NewProperty() throws Exception {
+        // GIVEN
+        String id = ModelConstants.JCR_NAME;
+        String value = "newParent";
+
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+        // Get the node name as property
+        Property property = adapter.getItemProperty(id);
+        assertEquals(nodeName, property.getValue().toString());
+        // Change the property node name
+        property.setValue(value);
+
+        // WHEN
+        Node res = adapter.getNode();
+
+        // THEN
+        // should have a new NodeName
+        assertEquals(value, res.getName());
+        assertEquals(true, res.hasProperty("propertyString"));
+        assertEquals(true, res.hasNode("child"));
     }
 
 }

@@ -50,7 +50,7 @@ public class UniqueGroupIdValidator extends AbstractStringValidator {
     }
 
     @Override
-    protected boolean isValidString(String value) {
+    protected boolean isValidValue(String value) {
         // get all existing groups
         Collection<Group> groups = Security.getGroupManager().getAllGroups();
         for (Group g : groups) {

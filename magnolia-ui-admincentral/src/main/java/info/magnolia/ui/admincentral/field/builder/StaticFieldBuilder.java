@@ -44,14 +44,14 @@ import com.vaadin.ui.Field;
 /**
  * Creates and initializes an static field definition.
  */
-public class StaticFieldBuilder extends AbstractFieldBuilder<StaticFieldDefinition> {
+public class StaticFieldBuilder extends AbstractFieldBuilder<StaticFieldDefinition, Object> {
 
     public StaticFieldBuilder(StaticFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
-    protected Field buildField() {
+    protected Field<Object> buildField() {
         StaticField field = new StaticField();
         field.getLabel().setCaption(getMessage(definition.getValue()));
         return field;

@@ -34,8 +34,9 @@
 package info.magnolia.ui.vaadin.actionbar;
 
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
-import com.vaadin.terminal.Resource;
+import com.vaadin.server.Resource;
 
 /**
  * Base interface for an action bar view.
@@ -48,37 +49,21 @@ public interface ActionbarView extends View {
 
     void removeSection(String sectionName);
 
-    /**
-     * Use {@link #addAction(String, String, String, String, String)} instead.
-     */
-    @Deprecated
-    void addAction(String actionName, String label, Resource icon, String groupName, String sectionName);
+    void setSectionPreview(Resource previewResource, String sectionName);
 
-    void addAction(String actionName, String label, String icon, String groupName, String sectionName);
-
-    void setPreview(Resource previewResource, String sectionName);
+    void addAction(ActionbarItem action, String sectionName);
 
     // ENABLE / DISABLE
-    void enable(String actionName);
+    void setActionEnabled(String actionName, boolean isEnabled);
 
-    void enable(String actionName, String sectionName);
+    void setActionEnabled(String actionName, String sectionName, boolean isEnabled);
 
-    void enableGroup(String groupName);
+    void setGroupEnabled(String groupName, boolean isEnabled);
 
-    void enableGroup(String groupName, String sectionName);
-
-    void disable(String actionName);
-
-    void disable(String actionName, String sectionName);
-
-    void disableGroup(String groupName);
-
-    void disableGroup(String groupName, String sectionName);
+    void setGroupEnabled(String groupName, String sectionName, boolean isEnabled);
 
     // SHOW / HIDE SECTIONS
-    void showSection(String sectionName);
-
-    void hideSection(String sectionName);
+    void setSectionVisible(String sectionName, boolean isVisible);
 
     boolean isSectionVisible(String sectionName);
 

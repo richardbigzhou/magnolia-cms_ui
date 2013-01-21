@@ -46,8 +46,8 @@ import javax.jcr.Node;
 
 import org.junit.Test;
 
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.Select;
 
 /**
  * Main testcase for {@link SelectFieldBuilder}.
@@ -66,8 +66,8 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
         Field field = dialogSelect.getField();
 
         // THEN
-        assertEquals(true, field instanceof Select);
-        Collection<?> items = ((Select) field).getItemIds();
+        assertEquals(true, field instanceof ComboBox);
+        Collection<?> items = ((ComboBox) field).getItemIds();
         assertEquals(3, items.size());
         assertEquals("1", field.getValue().toString());
     }
@@ -124,7 +124,7 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
         Field field = dialogSelect.getField();
 
         // THEN
-        Collection<?> items = ((Select) field).getItemIds();
+        Collection<?> items = ((ComboBox) field).getItemIds();
         assertEquals(2, items.size());
         assertEquals("en", field.getValue().toString());
     }
@@ -156,7 +156,7 @@ public class SelectFieldBuilderTest extends AbstractBuilderTest<SelectFieldDefin
         Field field = dialogSelect.getField();
 
         // THEN
-        Collection<?> items = ((Select) field).getItemIds();
+        Collection<?> items = ((ComboBox) field).getItemIds();
         assertEquals(2, items.size());
         assertEquals("fr", field.getValue().toString());
     }

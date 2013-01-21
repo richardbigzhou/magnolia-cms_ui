@@ -38,9 +38,9 @@ import static org.junit.Assert.assertEquals;
 import info.magnolia.ui.admincentral.field.CheckBoxAndLabelField;
 import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
 
-import org.junit.Test;
-
 import com.vaadin.ui.Field;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Main testcase for {@link CheckBoxFieldBuilder}.
@@ -50,6 +50,7 @@ public class CheckBoxFieldBuilderTest extends AbstractBuilderTest<CheckboxFieldD
     private CheckBoxFieldBuilder checkBoxField;
 
     @Test
+    @Ignore("See http://dev.vaadin.com/ticket/10663")
     public void simpleCheckBoxFieldTest() throws Exception {
         // GIVEN
         checkBoxField = new CheckBoxFieldBuilder(definition, baseItem);
@@ -63,6 +64,7 @@ public class CheckBoxFieldBuilderTest extends AbstractBuilderTest<CheckboxFieldD
     }
 
     @Test
+    @Ignore("See http://dev.vaadin.com/ticket/10663")
     public void checkBoxField_SetSelectedTest() throws Exception {
         // GIVEN
         checkBoxField = new CheckBoxFieldBuilder(definition, baseItem);

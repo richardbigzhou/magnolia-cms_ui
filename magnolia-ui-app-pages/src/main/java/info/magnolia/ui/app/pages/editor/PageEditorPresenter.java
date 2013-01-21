@@ -57,9 +57,9 @@ import info.magnolia.ui.model.form.builder.FormConfig;
 import info.magnolia.ui.model.form.builder.OptionBuilder;
 import info.magnolia.ui.model.form.builder.SelectFieldBuilder;
 import info.magnolia.ui.model.form.builder.TabBuilder;
-import info.magnolia.ui.vaadin.editor.PageEditor;
-import info.magnolia.ui.vaadin.editor.PageEditorParameters;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -90,7 +90,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private final TemplateDefinitionRegistry templateDefinitionRegistry;
 
-    private PageEditor.AbstractElement selectedElement;
+    private AbstractElement selectedElement;
 
     @Inject
     public PageEditorPresenter(PageEditorView view, @Named("subapp") EventBus eventBus, FormDialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
@@ -158,7 +158,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             Node parentNode = session.getNode(path);
 
             final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, NodeTypes.Component.NAME);
-            DefaultProperty property = new DefaultProperty(ModelConstants.JCR_NAME, "0");
+            DefaultProperty<String> property = new DefaultProperty<String>(ModelConstants.JCR_NAME, "0", String.class);
             item.addItemProperty(ModelConstants.JCR_NAME, property);
 
             // perform custom chaining of dialogs
@@ -330,7 +330,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     @Override
-    public void selectElement(PageEditor.AbstractElement selectedElement) {
+    public void selectElement(AbstractElement selectedElement) {
         this.selectedElement = selectedElement;
         eventBus.fireEvent(new NodeSelectedEvent(selectedElement.getPath(), selectedElement.getWorkspace()));
     }
@@ -341,7 +341,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
         return view;
     }
 
-    public PageEditor.AbstractElement getSelectedElement() {
+    public AbstractElement getSelectedElement() {
         return selectedElement;
     }
 

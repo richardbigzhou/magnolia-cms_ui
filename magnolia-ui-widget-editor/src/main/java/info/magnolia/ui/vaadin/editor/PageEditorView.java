@@ -34,7 +34,8 @@
 package info.magnolia.ui.vaadin.editor;
 
 import info.magnolia.ui.framework.view.View;
-
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 
 /**
  * PageEditorView.
@@ -64,6 +65,6 @@ public interface PageEditorView extends View {
 
         void sortComponent(String workspace, String parentPath, String source, String target, String order);
 
-        void selectElement(PageEditor.AbstractElement nodeSelection);
+        void selectElement(AbstractElement nodeSelection);
     }
 }

@@ -45,27 +45,25 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.addon.customfield.CustomField;
-import org.vaadin.easyuploads.DirectoryFileFactory;
-import org.vaadin.easyuploads.FileBuffer;
-import org.vaadin.easyuploads.FileFactory;
-import org.vaadin.easyuploads.UploadField.FieldType;
 
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
-import com.vaadin.terminal.StreamVariable;
-import com.vaadin.ui.AbstractComponentContainer;
+import com.vaadin.server.StreamVariable;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomField;
 import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
 import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Html5File;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.FailedListener;
@@ -99,37 +97,52 @@ import com.vaadin.ui.Upload.StartedListener;
  * @param <D>
  *            definition type
  */
-public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends CustomField implements StartedListener, FinishedListener,
+public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends CustomField<Byte[]> implements StartedListener, FinishedListener,
         ProgressListener, FailedListener, DropHandler, UploadFileField {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractUploadFileField.class);
 
     protected boolean preview = true;
+
     protected boolean info = true;
+
     protected boolean progressInfo = true;
+
     protected boolean fileDeletion = true;
+
     protected boolean dragAndDrop = true;
 
     // Define global variable used by UploadFileField
     private File directory;
+
     private long maxUploadSize = Long.MAX_VALUE;
+
     private final String deleteFileCaption;
 
     // Define global variable used by this implementation
     protected D fileItem;
 
     private FileBuffer receiver;
+
     private FileFactory fileFactory;
+
     private final Map<DefaultComponent, Component> defaultComponent = new HashMap<DefaultComponent, Component>();
 
     // Define default component
     private Upload upload;
+
     private ProgressIndicatorComponent progress;
+
     private Label fileDetail;
+
     private Component previewComponent;
+
     private Button deleteButton;
+
     private Button cancelButton;
-    private AbstractComponentContainer root;
+
+    private HasComponents root;
+
     private DragAndDropWrapper dropZone;
 
     // Used to force the refresh of the Uploading view in case of Drag and Drop.
@@ -211,7 +224,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     }
 
     @Override
-    public Class<?> getType() {
+    public Class<Byte[]> getType() {
         return Byte[].class;
     }
 
@@ -300,9 +313,9 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
      */
     private void createUpload() {
         this.upload = new Upload(null, receiver);
-        this.upload.addListener((StartedListener) this);
-        this.upload.addListener((FinishedListener) this);
-        this.upload.addListener((ProgressListener) this);
+        this.upload.addStartedListener(this);
+        this.upload.addFinishedListener(this);
+        this.upload.addProgressListener(this);
         this.upload.setImmediate(true);
         defaultComponent.put(DefaultComponent.UPLOAD, this.upload);
     }
@@ -332,7 +345,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
      */
     protected Button createDeleteButton() {
         this.deleteButton = new Button(deleteFileCaption);
-        this.deleteButton.addListener(new Button.ClickListener() {
+        this.deleteButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 // Remove link between item and parent. In this case the child
@@ -366,7 +379,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
      * Create the Default File Detail.
      */
     public Label createFileDetail() {
-        this.fileDetail = new Label("", Label.CONTENT_XHTML);
+        this.fileDetail = new Label("", ContentMode.HTML);
         this.fileDetail.setSizeUndefined();
         this.fileDetail.addStyleName("file-details");
         defaultComponent.put(DefaultComponent.FILE_DETAIL, this.fileDetail);
@@ -382,11 +395,11 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
         return this.progress;
     }
 
-    public AbstractComponentContainer getRootLayout() {
+    public HasComponents getRootLayout() {
         return this.root;
     }
 
-    public void setRootLayout(AbstractComponentContainer root) {
+    public void setRootLayout(HasComponents root) {
         this.root = root;
     }
 
@@ -477,7 +490,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
             buildUploadStartedLayout();
         } else {
             interruptUpload();
-            getWindow().showNotification("Upload canceled due to unsupported file type " + event.getMIMEType());
+            Notification.show("Upload canceled due to unsupported file type " + event.getMIMEType());
         }
     }
 

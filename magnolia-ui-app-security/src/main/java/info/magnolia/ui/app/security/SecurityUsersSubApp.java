@@ -61,7 +61,6 @@ public class SecurityUsersSubApp extends AbstractContentSubApp {
     @Override
     public void updateActionbar(ActionbarPresenter actionbar) {
         String selectedItemId = getWorkbench().getSelectedItemId();
-
         // users can be created only under /admin or /system paths in users workspace
         if ("/admin".equals(selectedItemId) || "/system".equals(selectedItemId)) {
             actionbar.enableGroup("addActions");

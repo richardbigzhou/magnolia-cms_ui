@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.app.simple;
 import info.magnolia.ui.framework.view.View;
 
 /**
- *
+ * app test view interface.
  */
 public interface AppTestView extends View {
 }

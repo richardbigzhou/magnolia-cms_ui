@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.admincentral.AdminCentralApplication;
 import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
@@ -57,13 +56,13 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.vaadin.data.Item;
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Field;
 
 /**
  * Creates and initializes an edit field based on a field definition.
  */
-public class RichTextFieldBuilder extends
-        AbstractFieldBuilder<RichTextFieldDefinition> {
+public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefinition, String> {
 
     private static final String PLUGIN_NAME_MAGNOLIALINK = "magnolialink";
 
@@ -100,7 +99,7 @@ public class RichTextFieldBuilder extends
     }
 
     @Override
-    protected Field buildField() {
+    protected Field<String> buildField() {
         // RichTextFieldDefinition editDefinition = definition;
         final MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
 
@@ -125,12 +124,10 @@ public class RichTextFieldBuilder extends
             @Override
             public void attach() {
                 super.attach();
-
-                if (getApplication() instanceof AdminCentralApplication) {
-                    AdminCentralApplication admincentral = (AdminCentralApplication) getApplication();
-                    String path = admincentral.getAdminCentralPath();
-                    config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
-                }
+                String path = VaadinService.getCurrentRequest()
+                        .getContextPath();
+                config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path
+                        + PLUGIN_PATH_MAGNOLIALINK);
             }
         };
 

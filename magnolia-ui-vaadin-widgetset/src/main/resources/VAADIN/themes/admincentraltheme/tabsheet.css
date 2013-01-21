@@ -1,5 +1,5 @@
 /* color definitions */
-.v-shell-tabsheet {background-color:#e6e6e6;}
+.v-shell-tabsheet {background-color:#e6e6e6;position: relative;}
 .v-shell-tabsheet .nav {background-color:#ccc; border-color:#999;}
 .v-shell-tabsheet .nav li {border-color:#999; color:#999;}
 .v-shell-tabsheet .nav li:hover {background-color:#999; color:#666;}
@@ -17,48 +17,68 @@
 .dialog-panel .v-shell-tabsheet .nav li.active {color:#000;}
 
 .fullscreen .v-shell-tabsheet-scroller {
-	position:absolute !important;
-	zoom:1;
-	top:-60px;
-	z-index:500;
-	bottom:0;
-	background-color:#fff;
-	clear:both;
+	position: absolute !important;
+	zoom: 1;
+	top: -60px;
+	z-index: 500;
+	bottom: 0;
+	background-color: #fff;
+	clear: both;
+}
+
+.mgwt-ScrollPanel-container { 
+	overflow: auto !important;
+}
+
+.v-shell-tabsheet-scroller {
+	position: absolute;
+	top: 25px;
+	bottom: 0;
+	width: 100%;
+}
+
+.v-shell-tabsheet-scroller > div { 
+	height: 100%;
+}
+
+.v-shell-tabsheet-tab-wrapper {
+	height: 100%;
+	width: 100%;
 }
 
 /* tabs */
 .v-shell-tabsheet .nav {
-    height:24px;
-    margin:0;
-    padding:0;
-    border-style:solid;
-    border-width:0 0 1px 0;
-    list-style:none outside;
+    height: 24px;
+    margin: 0;
+    padding: 0;
+    border-style: solid;
+    border-width: 0 0 1px 0;
+    list-style: none outside;
 }
 
 .v-shell-tabsheet .nav li {
-    float:left;
-    height:19px;
-    margin:0;
-    padding:3px 48px 2px 24px;
-    border-style:solid;
-    border-width:0 1px 0 0;
-    font-size:14px;
-    line-height:normal;
-    cursor:pointer;
-    -moz-user-select:none;
-    -webkit-user-select:none;
+    float: left;
+    height: 19px;
+    margin: 0;
+    padding: 3px 48px 2px 24px;
+    border-style: solid;
+    border-width: 0 1px 0 0;
+    font-size: 14px;
+    line-height: normal;
+    cursor: pointer;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 }
 
 .v-shell-tabsheet .nav li.show-all {
-    float:right;
-    padding-right:24px;
-    border-width:0 0 0 1px;
+    float: right;
+    padding-right: 24px;
+    border-width: 0 0 0 1px;
 }
 
 .v-shell-tabsheet .nav li.active  {
-    padding-bottom:3px;
-    cursor:default;
+    padding-bottom: 3px;
+    cursor: default;
 }
 
 /* tab text */
@@ -111,20 +131,22 @@
 }
 
 .v-shell-tab-error {
+	height: 22px;
+    width: 22px;
+    
 	background: url("img/icons/icon-error-red.png") no-repeat scroll 1px 1px transparent;
 	display: inline-block;
-    height: 22px;
-    width: 22px;
     z-index: 1000;
     float: right;
 }
 
 .v-shell-tab-notification > span {
+	height: 22px;
+	width: 22px;
+	
     color: #FFFFFF;
     font-size: 12px;
-    height: 22px;
     vertical-align: text-bottom;
-    width: 22px;
     z-index: 4001;
     text-align: center;
 }

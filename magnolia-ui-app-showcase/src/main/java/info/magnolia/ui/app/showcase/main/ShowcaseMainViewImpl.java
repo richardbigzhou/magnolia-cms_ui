@@ -38,7 +38,7 @@ import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
 import javax.inject.Inject;
 
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CssLayout;
@@ -65,14 +65,14 @@ public class ShowcaseMainViewImpl implements ShowcaseMainView {
     public ShowcaseMainViewImpl() {
         root = new CssLayout();
         root.setSizeFull();
-        root.setWidth(900, Sizeable.UNITS_PIXELS);
+        root.setWidth(900, Unit.PIXELS);
         root.setStyleName("small-app");
 
         MagnoliaTabSheet tabsheet = new MagnoliaTabSheet();
         tabsheet.setSizeFull();
-        tabForms = tabsheet.addTab("Form Fields");
-        tabVaadin = tabsheet.addTab("Vaadin Fields");
-        tabUnsupported = tabsheet.addTab("Unsupported Vaadin Fields");
+        tabForms = tabsheet.addTabStub("Form Fields");
+        tabVaadin = tabsheet.addTabStub("Vaadin Fields");
+        tabUnsupported = tabsheet.addTabStub("Unsupported Vaadin Fields");
 
         tabsheet.addStyleName("small-app-panel");
 

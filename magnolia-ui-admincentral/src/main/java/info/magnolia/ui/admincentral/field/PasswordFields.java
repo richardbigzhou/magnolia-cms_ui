@@ -36,10 +36,11 @@ package info.magnolia.ui.admincentral.field;
 import info.magnolia.ui.admincentral.field.translator.Base64Translator;
 
 import org.apache.commons.lang.StringUtils;
-import org.vaadin.addon.customfield.CustomField;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.VerticalLayout;
@@ -48,7 +49,7 @@ import com.vaadin.ui.VerticalLayout;
  * A base custom field displaying one ore two Password Fields.
  * Implement the Logic to check the validity of typed passwords.
  */
-public class PasswordFields extends CustomField {
+public class PasswordFields extends CustomField<String> {
 
     private PasswordField passwordField;
     private PasswordField verificationField;
@@ -56,6 +57,7 @@ public class PasswordFields extends CustomField {
     private String verificationErrorMessage;
     private VerticalLayout layout;
     private Base64Translator translator;
+    private String verificationMessage;
 
     /**
      * Create a {@link CustomField} based on a {@link VerticalLayout}.
@@ -66,15 +68,22 @@ public class PasswordFields extends CustomField {
      * - {@link PasswordField}.
      */
     public PasswordFields(boolean verification, String verificationMessage, String verificationErrorMessage, boolean encode) {
+        layout = new VerticalLayout();
+        passwordField = new PasswordField();
         this.verification = verification;
         this.verificationErrorMessage = verificationErrorMessage;
+        this.verificationMessage = verificationMessage;
         // Initialize encoder
         if (encode) {
             this.translator = new Base64Translator();
+            passwordField.setConverter(translator);
         }
+        initContent();
+    }
+
+    @Override
+    protected Component initContent() {
         // Init layout
-        layout = new VerticalLayout();
-        passwordField = new PasswordField();
         layout.addComponent(passwordField);
         if (this.verification) {
             Label msg = new Label(verificationMessage);
@@ -82,7 +91,7 @@ public class PasswordFields extends CustomField {
             verificationField = new PasswordField();
             layout.addComponent(verificationField);
         }
-        setCompositionRoot(layout);
+        return layout;
     }
 
     public VerticalLayout getVerticalLayout() {
@@ -120,42 +129,31 @@ public class PasswordFields extends CustomField {
     }
 
     @Override
-    public Class<?> getType() {
+    public Class<String> getType() {
         return String.class;
     }
 
     @Override
-    public Object getValue() {
+    public String getValue() {
         return passwordField.getValue();
     }
 
     @Override
-    public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+    public void setValue(String newValue) throws ReadOnlyException {
         passwordField.setValue(newValue);
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void setPropertyDataSource(Property newDataSource) {
-        if (translator != null) {
-            translator.setPropertyDataSource(newDataSource);
-            passwordField.setPropertyDataSource(translator);
-        } else {
-            passwordField.setPropertyDataSource(newDataSource);
-        }
-
+        passwordField.setPropertyDataSource(newDataSource);
         if (this.verification) {
-            verificationField.setValue(new String(passwordField.getPropertyDataSource().getValue().toString()));
+            verificationField.setValue(String.valueOf(newDataSource.getValue()));
         }
     }
 
     @Override
-    public Property getPropertyDataSource() {
-        Property property = null;
-        if (translator != null) {
-            property = translator.getPropertyDataSource();
-        } else {
-            property = passwordField.getPropertyDataSource();
-        }
-        return property;
+    public Property<?> getPropertyDataSource() {
+        return passwordField.getPropertyDataSource();
     }
 }

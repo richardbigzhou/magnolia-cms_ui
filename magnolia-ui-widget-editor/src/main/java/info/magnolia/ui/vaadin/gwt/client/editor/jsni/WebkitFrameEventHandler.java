@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.jsni;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.VPageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.editor.jsni.event.FrameLoadedEvent;
+import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -45,7 +45,7 @@ import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Frame;
-import com.vaadin.terminal.gwt.client.BrowserInfo;
+import com.vaadin.client.BrowserInfo;
 
 /**
  * WebkitFrameEventHandler. Provides separated implementations to overcome different bugs in the
@@ -74,7 +74,6 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
             });
         }
     }
-
 
     @Override
     public void onFrameReady() {
@@ -130,6 +129,7 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
      * Javascript hack for handling scrolling in iframes on iPad.
      * This needs to be initialized after the iframe has been loaded, otherwise the document will be null.
      * The touchscrolling boolean is used to circumvent a selection being triggered while scrolling.
+     * 
      * @param doc
      * @param cont
      */
@@ -165,19 +165,18 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
                 });
     }-*/;
 
-
     /**
      * Custom implementation for iPads of the touchend handling. Surpresses the selection, when scrolling.
      */
     @Override
-    public native void initNativeTouchSelectionListener(Element element, VPageEditorView.Listener listener) /*-{
+    public native void initNativeTouchSelectionListener(Element element, PageEditorView.Listener listener) /*-{
         if (element != 'undefined') {
             var ref = this;
             var that = listener;
             element.contentDocument.ontouchend = function(event) {
                 var isTouchScrolling = ref.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::isTouchScrolling()();
                 if (!isTouchScrolling) {
-                    that.@info.magnolia.ui.vaadin.gwt.client.editor.VPageEditor::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
+                    that.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView.Listener::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
                     ref.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::resetScrollTop()();
                 }
             }
@@ -193,7 +192,7 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
      */
     public void resetScrollTop() {
 
-        Timer timer = new Timer(){
+        Timer timer = new Timer() {
             @Override
             public void run() {
                 getView().getContent().getElement().setScrollTop(lastY);
@@ -201,7 +200,7 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
         };
         timer.schedule(1);
 
-        Timer timer2 = new Timer(){
+        Timer timer2 = new Timer() {
             @Override
             public void run() {
                 getView().getContent().getElement().setScrollTop(lastY);
@@ -232,7 +231,6 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
             }
         }
 
-
         public void setIframe(Frame iframe) {
             this.iframe = iframe;
         }
@@ -243,7 +241,5 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
             }
             return '';
         }-*/;
-
-
     }
 }

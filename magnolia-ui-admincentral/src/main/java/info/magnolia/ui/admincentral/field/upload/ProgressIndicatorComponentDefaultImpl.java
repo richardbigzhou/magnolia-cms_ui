@@ -99,7 +99,7 @@ public class ProgressIndicatorComponentDefaultImpl extends CustomComponent imple
     }
 
     @Override
-    public void setProgressIndicatorValue(Object newValue) {
+    public void setProgressIndicatorValue(float newValue) {
         progressIndicator.setValue(newValue);
     }
 

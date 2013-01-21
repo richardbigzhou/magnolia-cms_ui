@@ -39,10 +39,10 @@ import info.magnolia.ui.framework.shell.Shell;
 
 import javax.inject.Inject;
 
-import com.vaadin.terminal.ExternalResource;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Embedded;
 
 /**
  * View implementation for a page app.
@@ -53,12 +53,11 @@ public class PageViewImpl implements PageView {
 
     @Inject
     public PageViewImpl(final Shell shell, final AppContext appContext) {
-
         layout.setSizeFull();
 
         final String sourceURL = ((PageSubAppDescriptor) appContext.getAppDescriptor().getSubApps().get("main")).getUrl();
-        final Embedded page = new Embedded(null, new ExternalResource(MgnlContext.getContextPath() + "/.magnolia/pages/" + sourceURL));
-        page.setType(Embedded.TYPE_BROWSER);
+        final String path = String.format("%s/.magnolia/pages/%s",MgnlContext.getContextPath(), sourceURL);
+        final BrowserFrame page = new BrowserFrame("", new ExternalResource(path));
         page.setSizeFull();
 
         layout.addComponent(page);

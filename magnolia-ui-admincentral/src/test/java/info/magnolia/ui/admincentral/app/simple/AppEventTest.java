@@ -74,7 +74,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test case for {@link info.magnolia.ui.framework.app.AppController} local App's event.
+ * Test case for {@link info.magnolia.ui.framework.app.AppController} local
+ * App's event.
  */
 public class AppEventTest {
 
@@ -89,9 +90,11 @@ public class AppEventTest {
     public void setUp() throws Exception {
         setAppLayoutManager();
 
-        // Creates a ModuleRegistry with a single module defining a AppEventBusConfigurer for components 'app'
+        // Creates a ModuleRegistry with a single module defining a
+        // AppEventBusConfigurer for components 'app'
         ConfigurerDefinition configurerDefinition = new ConfigurerDefinition();
-        configurerDefinition.setClassName(AppEventBusConfigurer.class.getName());
+        configurerDefinition
+                .setClassName(AppEventBusConfigurer.class.getName());
         ComponentsDefinition components = new ComponentsDefinition();
         components.setId("app");
         components.addConfigurer(configurerDefinition);
@@ -100,7 +103,8 @@ public class AppEventTest {
         ArrayList<ModuleDefinition> moduleDefinitions = new ArrayList<ModuleDefinition>();
         moduleDefinitions.add(moduleDefinition);
         ModuleRegistry moduleRegistry = mock(ModuleRegistry.class);
-        when(moduleRegistry.getModuleDefinitions()).thenReturn(moduleDefinitions);
+        when(moduleRegistry.getModuleDefinitions()).thenReturn(
+                moduleDefinitions);
 
         componentProvider = AppControllerImplTest.initComponentProvider();
         Shell shell = mock(MagnoliaShell.class);
@@ -112,7 +116,9 @@ public class AppEventTest {
 
         AppDescriptorRegistry appDescriptorRegistry = mock(AppDescriptorRegistry.class);
 
-        appController = new AppControllerImpl(moduleRegistry, componentProvider, appLauncherLayoutManager, locationController, messagesManager, shell, eventBus);
+        appController = new AppControllerImpl(moduleRegistry,
+                componentProvider, appLauncherLayoutManager,
+                locationController, messagesManager, shell, eventBus);
     }
 
     @After
@@ -128,16 +134,23 @@ public class AppEventTest {
 
         // GIVEN
         String appName = name + "_name";
-        // Start an App that has the AppBuss injected and that also add a dumy handler
-        appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(Location.LOCATION_TYPE_APP, appName, "", ""));
+        // Start an App that has the AppBuss injected and that also add a dumy
+        // handler
+        appController
+                .startIfNotAlreadyRunningThenFocus(appName,
+                        new DefaultLocation(Location.LOCATION_TYPE_APP,
+                                appName, "", ""));
 
         // Initial check
         assertEquals(2, eventCollector.appLifecycleEvent.size());
-        AppControllerImplTest.checkAppEvent(eventCollector, appName, AppLifecycleEventType.STARTED, 0);
-        AppControllerImplTest.checkAppEvent(eventCollector, appName, AppLifecycleEventType.FOCUSED, 1);
+        AppControllerImplTest.checkAppEvent(eventCollector, appName,
+                AppLifecycleEventType.STARTED, 0);
+        AppControllerImplTest.checkAppEvent(eventCollector, appName,
+                AppLifecycleEventType.FOCUSED, 1);
 
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
-        AppEventTestImpl firstAppInstance = (AppEventTestImpl) AppTestImpl.res.get("TestPageApp0");
+        AppEventTestImpl firstAppInstance = (AppEventTestImpl) AppTestImpl.res
+                .get("TestPageApp0");
         EventBus firstInstanceBus = firstAppInstance.eventBus;
         InvocationCountingTestEventHandler firstInstanceHandler = firstAppInstance.handler;
 
@@ -151,10 +164,14 @@ public class AppEventTest {
         appController.stopCurrentApp();
 
         // Start app again
-        appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(Location.LOCATION_TYPE_APP, appName, "", ""));
+        appController
+                .startIfNotAlreadyRunningThenFocus(appName,
+                        new DefaultLocation(Location.LOCATION_TYPE_APP,
+                                appName, "", ""));
 
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
-        AppEventTestImpl secondAppInstance = (AppEventTestImpl) AppTestImpl.res.get("TestPageApp1");
+        AppEventTestImpl secondAppInstance = (AppEventTestImpl) AppTestImpl.res
+                .get("TestPageApp1");
         EventBus secondInstanceBus = secondAppInstance.eventBus;
         InvocationCountingTestEventHandler secondInstanceHandler = secondAppInstance.handler;
 
@@ -176,10 +193,12 @@ public class AppEventTest {
         appLauncherLayoutManager = mock(AppLauncherLayoutManagerImpl.class);
         // create subapps
         Map<String, SubAppDescriptor> subApps = new HashMap<String, SubAppDescriptor>();
-        subApps.put(subAppName_1, AppTestUtility.createSubAppDescriptor(subAppName_1, AppTestSubApp.class, true));
+        subApps.put(subAppName_1, AppTestUtility.createSubAppDescriptor(
+                subAppName_1, AppTestSubApp.class, true));
 
         // Set cat1 with App1
-        AppDescriptor app = AppTestUtility.createAppDescriptorWithSubApps(name, AppEventTestImpl.class, subApps);
+        AppDescriptor app = AppTestUtility.createAppDescriptorWithSubApps(name,
+                AppEventTestImpl.class, subApps);
         AppLauncherGroup cat = AppTestUtility.createAppGroup("cat", app);
         AppLauncherGroupEntry entry = new AppLauncherGroupEntry();
         entry.setName(name);
@@ -187,6 +206,7 @@ public class AppEventTest {
         cat.addApp(entry);
         AppLauncherLayout appLauncherLayout = new AppLauncherLayout();
         appLauncherLayout.addGroup(cat);
-        when(appLauncherLayoutManager.getLayoutForCurrentUser()).thenReturn(appLauncherLayout);
+        when(appLauncherLayoutManager.getLayoutForCurrentUser()).thenReturn(
+                appLauncherLayout);
     }
 }

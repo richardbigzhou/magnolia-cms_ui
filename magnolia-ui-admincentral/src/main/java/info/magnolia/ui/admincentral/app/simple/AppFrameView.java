@@ -49,24 +49,23 @@ public class AppFrameView implements View {
      */
     public interface Listener {
 
-        void onActiveTabSet(String tabId);
+        void onActiveTabSet(MagnoliaTab tab);
 
-        void onTabClosed(String tabId);
+        void onTabClosed(MagnoliaTab tab);
     }
 
     private final MagnoliaTabSheet tabsheet = new MagnoliaTabSheet() {
 
         @Override
-        public void onActiveTabSet(String tabId) {
-            super.onActiveTabSet(tabId);
-            listener.onActiveTabSet(tabId);
-        }
+        public void setActiveTab(MagnoliaTab tab) {
+            super.setActiveTab(tab);
+            listener.onActiveTabSet(tab);
+        };
 
         @Override
-        protected void closeTab(String tabId) {
-            MagnoliaTab tab = super.getTabById(tabId);
-            super.closeTab(tabId);
-            listener.onTabClosed(tabId);
+        protected void closeTab(MagnoliaTab tab) {
+            super.closeTab(tab);
+            listener.onTabClosed(tab);
         }
     };
 
@@ -82,12 +81,11 @@ public class AppFrameView implements View {
         this.listener = listener;
     }
 
-    public String addTab(ComponentContainer cc, String caption, boolean closable) {
-        final MagnoliaTab tab = new MagnoliaTab(caption, cc);
-        tabsheet.addComponent(tab);
-        tabsheet.setTabClosable(tab, closable);
+    public MagnoliaTab addTab(ComponentContainer cc, String caption, boolean closable) {
+        final MagnoliaTab tab = tabsheet.addTab(caption, cc);
+        tab.setClosable(closable);
         tabsheet.setActiveTab(tab);
-        return tab.getTabId();
+        return tab;
     }
 
     public void closeTab(ComponentContainer cc) {
@@ -99,15 +97,11 @@ public class AppFrameView implements View {
         return tabsheet;
     }
 
-    public void setActiveTabId(String tabId) {
-        tabsheet.setActiveTabId(tabId);
-    }
-
     public MagnoliaTab getActiveTab() {
         return tabsheet.getActiveTab();
     }
 
-    public String getActiveTabId() {
-        return tabsheet.getActiveTabId();
+    public void setActiveTab(MagnoliaTab tab) {
+        tabsheet.setActiveTab(tab);
     }
 }

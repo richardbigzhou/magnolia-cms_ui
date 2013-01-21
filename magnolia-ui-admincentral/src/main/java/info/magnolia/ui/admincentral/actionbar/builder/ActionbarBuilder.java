@@ -39,6 +39,7 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.server.ThemeResource;
 
 /**
  * Basic builder for an action bar widget based on an action bar definition.
@@ -79,21 +79,7 @@ public class ActionbarBuilder {
                         }
 
                         actionNames.add(item.getName());
-
-                        Resource icon = null;
-                        if (StringUtils.isNotBlank(item.getIcon())) {
-                            if (item.getIcon().startsWith("icon-")) {
-                                actionbar.addAction(item.getName(), item.getLabel(), item.getIcon(), group.getName(), section.getName());
-                                continue;
-                            }
-
-                            try {
-                                icon = new ThemeResource(item.getIcon());
-                            } catch (NullPointerException e) {
-                                log.warn("Icon resource not found for Actionbar item '" + item.getName() + "'.");
-                            }
-                        }
-                        actionbar.addAction(item.getName(), item.getLabel(), icon, group.getName(), section.getName());
+                        addItemFromDefinition(item, actionbar, group.getName(), section.getName());
                     }
                 }
             }
@@ -101,4 +87,24 @@ public class ActionbarBuilder {
         return actionbar;
     }
 
+    public static void addItemFromDefinition(ActionbarItemDefinition item, Actionbar actionBar, String groupName, String sectionName) {
+        ActionbarItem entry = null;
+        if (StringUtils.isNotBlank(item.getIcon())) {
+            if (item.getIcon().startsWith("icon-")) {
+                entry = new ActionbarItem(item.getName(), item.getLabel(), item.getIcon(), groupName);
+            } else {
+                try {
+                    actionBar.registerActionIconResource(item.getName(), new ThemeResource(item.getIcon()));
+                } catch (NullPointerException e) {
+                    log.warn("Icon resource not found for Actionbar item '" + item.getName() + "'.");
+                } finally {
+                    entry = new ActionbarItem(item.getName(), item.getLabel(), null, groupName);
+                }
+            }
+        } else {
+            entry = new ActionbarItem(item.getName(), item.getLabel(), null,
+                    groupName);
+        }
+        actionBar.addAction(entry, sectionName);
+    }
 }

@@ -48,9 +48,9 @@ public class SortComponentEvent extends GwtEvent<SortComponentEventHandler> {
     private String targetPath;
     private String order;
 
-    public SortComponentEvent(String workspace,String parentPath, String sourcePath, String targetPath, String order) {
+    public SortComponentEvent(String workspace, String parentPath, String sourcePath, String targetPath, String order) {
         this.workspace = workspace;
-        this.parentPath= parentPath;
+        this.parentPath = parentPath;
         this.sourcePath = sourcePath;
         this.targetPath = targetPath;
         this.order = order;

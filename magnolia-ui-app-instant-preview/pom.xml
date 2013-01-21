@@ -19,11 +19,7 @@
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
-      <artifactId>vaadin</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>autoreplacefield</artifactId>
+      <artifactId>vaadin-server</artifactId>
     </dependency>
   </dependencies>
   <build>

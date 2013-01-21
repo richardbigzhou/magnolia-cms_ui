@@ -57,8 +57,8 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.editor.PageEditor;
-import info.magnolia.ui.vaadin.editor.PageEditorParameters;
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -233,7 +233,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
                         pageEditorPresenter.newComponent(
                                 ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
                                 pageEditorPresenter.getSelectedElement().getPath(),
-                                ((PageEditor.AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
+                                ((AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
                     } else if (actionDefinition instanceof DeleteItemActionDefinition) {
                         pageEditorPresenter.deleteComponent(((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(), pageEditorPresenter
                                 .getSelectedElement()

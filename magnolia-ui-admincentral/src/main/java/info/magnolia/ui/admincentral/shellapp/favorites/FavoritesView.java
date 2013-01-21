@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.framework.app.ShellView;
+import info.magnolia.ui.framework.view.View;
 
 /**
  * View for favorites.
  */
-public interface FavoritesView extends ShellView {
+public interface FavoritesView extends View {
 
 }

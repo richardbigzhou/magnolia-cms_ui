@@ -39,7 +39,7 @@
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
-      <artifactId>vaadin</artifactId>
+      <artifactId>vaadin-server</artifactId> 
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

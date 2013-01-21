@@ -33,18 +33,18 @@
  */
 package info.magnolia.ui.admincentral.field;
 
-import org.vaadin.addon.customfield.CustomField;
-
 import com.vaadin.data.Property;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
 /**
  * A Base Custom Field composed from a checkBox and Label.
  */
-public class CheckBoxAndLabelField extends CustomField {
+public class CheckBoxAndLabelField extends CustomField<Boolean> {
 
     private CheckBox checkBox;
     private Label label;
@@ -52,12 +52,17 @@ public class CheckBoxAndLabelField extends CustomField {
     public CheckBoxAndLabelField() {
         checkBox = new CheckBox();
         label = new Label("", Label.CONTENT_XHTML);
+
+    }
+
+    @Override
+    protected Component initContent() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSizeFull();
         layout.addComponent(checkBox);
         layout.addComponent(label);
         layout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
-        setCompositionRoot(layout);
+        return layout;
     }
 
     public CheckBox getCheckBox() {
@@ -69,34 +74,27 @@ public class CheckBoxAndLabelField extends CustomField {
     }
 
     @Override
-    public Object getValue() {
+    public Boolean getValue() {
         return checkBox.getValue();
     }
 
     @Override
-    public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+    public void setValue(Boolean newValue) throws ReadOnlyException {
         checkBox.setValue(newValue);
     }
 
-    /**
-     * Set propertyDatasource.
-     * If the translator is not null, set it as datasource.
-     */
     @Override
     public void setPropertyDataSource(Property newDataSource) {
         checkBox.setPropertyDataSource(newDataSource);
     }
 
     @Override
-    public Property getPropertyDataSource() {
-
+    public Property<Boolean> getPropertyDataSource() {
         return checkBox.getPropertyDataSource();
-
     }
 
     @Override
-    public Class<?> getType() {
+    public Class<? extends Boolean> getType() {
         return Boolean.class;
     }
-
 }

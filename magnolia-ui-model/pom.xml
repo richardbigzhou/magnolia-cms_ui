@@ -45,7 +45,7 @@
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
-      <artifactId>vaadin</artifactId>
+      <artifactId>vaadin-server</artifactId>
     </dependency>
 
     <!-- needed by some tests -->

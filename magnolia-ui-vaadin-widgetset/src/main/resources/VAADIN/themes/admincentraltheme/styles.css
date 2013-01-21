@@ -1,4 +1,4 @@
-@import url(../chameleon/styles.css);
+@import url(../chameleon/legacy-styles.css);
 @import url(splitfeed.css);
 @import url(form.css);
 @import url(dialog.css);
@@ -14,8 +14,9 @@
 @import url(favorites.css);
 @import url(shell.css);
 @import url(fonts.css);
+@import url(css-conditional/fonts-default.css);
 @import url(uploadfield.css);
-
+@import url(thumbnail_layout.css);
 
 body{
     -webkit-user-select: none; /* Disable content selection on mobile safari */
@@ -39,47 +40,9 @@ v2
 .clearfix:after { content: ""; display: table; clear: both; }
 
 
-.thumbnail {
-	border: 1px solid #F0F0F0;
-	display:inline-block;
-	margin: 3px;
-	padding: 5px;
-	cursor:pointer;
-	overflow:hidden;
-}
-
-.thumbnail-image{
-	display:block;
-	margin: auto;
-}
-
-.thumbnail.selected {
-	background-color: #AABF2F;
-}
-
-.thumbnail:hover {
-	border: 1px solid #AABF2F;
-}
-
-/* Contact info styles */
-.thumbnail-info ul {
-    list-style-type: none;
-    padding-left: 0;
-    width: 220px;
-}
-.thumbnail-info ul > li {
-    margin-bottom:2px;
-    margin-right: 3px;
-}
-
-.thumbnail-info ul > li span.left  {
-    font-weight:bold;
-}
-.thumbnail-info ul > li span.right  {
-    float: right;
-}
-
 /*END OF APP LAUNCHER RELATED STYLES*/
+
+
 
 /*AdminCentral module styles */
 button.btn-dialog-selectCallBack {
@@ -123,8 +86,8 @@ button.btn-dialog-selectCallBack {
 
 .v-checkbox > input[type="checkbox"]:checked + label,
 .gwt-CheckBox > input[type="checkbox"]:checked + label {
-	background-image:url('img/icon-checkbox_on.png');
-	background-image:none, url('img/icon-checkbox_on.svg');
+	background-image: url('img/icon-checkbox_on.png');
+	background-image: none, url('img/icon-checkbox_on.svg');
 }
 
 /*TwinCol styles*/
@@ -184,4 +147,15 @@ input.v-textfield-readonly, textarea.v-textarea-readonly {
 
 .cke_contents {
 	height: 120px !important;
+}
+
+
+/*Due to implementation reasons this has to be here. For all other styles of thumbnail layout - see thumbnail.css file.*/
+.thumbnail {
+	border: 1px solid #F0F0F0;
+	margin: 3px;
+	padding: 5px;
+	cursor:pointer;
+	overflow:hidden;
+	float:left;
 }

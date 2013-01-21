@@ -39,8 +39,8 @@ import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Event;
-import com.vaadin.terminal.gwt.client.UIDL;
-import com.vaadin.terminal.gwt.client.ui.VTreeTablePatched;
+import com.vaadin.client.UIDL;
+import com.vaadin.client.ui.VTreeTablePatched;
 
 /**
  * VMagnoliaTreeTable extends VTreeTable by ways that patching is required to expose the necessary private fields.

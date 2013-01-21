@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.file;
 import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
-import com.vaadin.Application;
 import com.vaadin.ui.Component;
 
 /**
@@ -62,7 +61,7 @@ public interface FileItemWrapper {
     /**
      * Create a preview Component object.
      */
-    public Component createPreview(Application application);
+    public Component createPreview();
 
     /**
      * Return the related JcrItem.

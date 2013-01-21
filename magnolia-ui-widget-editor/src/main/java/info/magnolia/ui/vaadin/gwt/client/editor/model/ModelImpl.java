@@ -138,7 +138,9 @@ public class ModelImpl implements Model {
 
         // remove all occurrences of the element
         if (mgnlElements.containsValue(mgnlElement)) {
-            while (mgnlElements.values().remove(mgnlElement));
+            while (mgnlElements.values().remove(mgnlElement)) {
+                ;
+            }
         }
         elements.remove(mgnlElement);
 

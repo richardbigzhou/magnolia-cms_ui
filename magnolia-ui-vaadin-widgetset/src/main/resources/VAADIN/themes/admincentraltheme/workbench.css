@@ -1,8 +1,13 @@
 .workbench {background-color:#e6e6e6;}
-.workbench .v-horizontallayout-margin {padding-top:20px; padding-left:40px; padding-bottom:40px;}
+.workbench .v-horizontallayout {padding-top:20px; padding-left:40px; padding-bottom:40px;}
 .workbench .v-horizontallayout-spacing-on {padding-left:25px;}
+.workbench .v-spacing {width: 20px;}
 
-.view-modes {padding-left:21px; padding-bottom:20px; display: inline-block;}
+.v-workbench-content {
+	position: relative;
+}
+
+.view-modes {padding-left:21px; padding-bottom:20px; display: inline-block; width: 200px;}
 .view-modes .v-nativebutton {font-style:normal; font-size:24px; color:#989898; line-height:1.0; padding:0 14px; border-left:1px solid #bbb;}
 .view-modes .v-nativebutton:first-child {border-left:none;}
 .view-modes .v-nativebutton:hover, .view-modes .v-nativebutton:focus, .view-modes .v-nativebutton-active {color:#fff;}
@@ -10,6 +15,21 @@
 .view-modes .v-nativebutton-caption {text-decoration:none;}
 
 .mgnl-workbench-thumbnail-view { background-color: #FFF;}
+
+.mgnl-content-view {
+	position: absolute;
+	background:#fff;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	top: 47px;
+	padding:4px;
+}
+
+.v-horizontallayout.v-margin-top {padding-top: 20px;}
+.v-horizontallayout.v-margin-bottom {padding-bottom: 40px;}
+.v-horizontallayout.v-margin-left {padding-left: 40px;}
+.v-horizontallayout.v-margin-right {padding-right: 0;}
 
 
 .activation-status {font-size:18px; text-align: center}
@@ -19,15 +39,15 @@
 
 .view-type-arrow {
     position: absolute;
-    top: 55px;
+    top: 37px;
     left: 75px;
 }
 
-.view-type-arrow.tree {left: 75px;}
+.view-type-arrow.tree {left: 35px;}
 
-.view-type-arrow.list {left: 130px;}
+.view-type-arrow.list {left: 90px;}
 
-.view-type-arrow.thumbs {left: 183px;}
+.view-type-arrow.thumbs {left: 143px;}
 
  /*FIXME fgrilli: just a temp workaround as moving the arrow beneath the search box (as per design) messes up the toolbar layout*/
 .view-type-arrow.search { display: none}

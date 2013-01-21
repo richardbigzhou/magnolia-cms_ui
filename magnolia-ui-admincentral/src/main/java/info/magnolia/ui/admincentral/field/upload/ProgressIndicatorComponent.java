@@ -55,7 +55,7 @@ public interface ProgressIndicatorComponent {
     /**
      * Convenience setter allowing to directly set the value of the {@link ProgressIndicator} component.
      */
-    public void setProgressIndicatorValue(Object newValue);
+    public void setProgressIndicatorValue(float newValue);
 
     /**
      * Set the Component Visible or not.

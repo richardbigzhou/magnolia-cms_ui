@@ -4,7 +4,7 @@
 	border:none;
 }
 
-.pulse-dashboard .v-feed-section > .v-csslayout-margin-top {
+.pulse-dashboard .v-feed-section {
     padding-top:12px;
 }
 
@@ -28,8 +28,7 @@
 .v-dashboard-entry { *zoom: 1; }
 
 
-.v-dashboard-entry .v-csslayout-margin-top {padding-top:10px;}
-.v-dashboard-entry .v-csslayout-margin-bottom {padding-bottom:5px;}
+.v-dashboard-entry {padding-top:10px; padding-bottom:5px;}
 
 .v-dashboard-entry .v-label {
 	display:inline-block;
@@ -51,7 +50,7 @@
 	width:350px !important
 }
 
-.v-dashboard-entry .content .v-csslayout-margin-left {
+.v-dashboard-entry .content {
 	padding-left:40px;
 }
 
@@ -120,7 +119,7 @@
     font-size: 20px;
 }
 
-.v-pulse .navigator .v-csslayout-margin {padding:13px 0 20px 4px;}
+.v-pulse .navigator {padding:13px 0 20px 4px;}
 .v-pulse .navigator-button {
 	height:12px;
 	border-right:1px solid #ccc;

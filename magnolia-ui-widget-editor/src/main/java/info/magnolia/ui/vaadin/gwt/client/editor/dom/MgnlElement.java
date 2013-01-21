@@ -34,20 +34,18 @@
 package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.AbstractBar;
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.placeholder.ComponentPlaceHolder;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AbstractBar;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaEndBar;
+import info.magnolia.ui.vaadin.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
 
 /**
-* MgnlElement Constructor.
-*
-*/
+ * MgnlElement Constructor.
+ * 
+ */
 public class MgnlElement extends CmsNode {
 
     private Map<String, String> attributes;
@@ -67,14 +65,12 @@ public class MgnlElement extends CmsNode {
     ComponentPlaceHolder componentPlaceHolder;
     AreaEndBar areaEndBar;
 
-
     /**
- * MgnlElement. Represents a node in the tree built on cms-tags.
- */
+     * MgnlElement. Represents a node in the tree built on cms-tags.
+     */
     public MgnlElement(MgnlElement parent) {
         super(parent);
     }
-
 
     public void setAttributes(Map<String, String> attributes) {
         this.attributes = attributes;
@@ -91,6 +87,7 @@ public class MgnlElement extends CmsNode {
     public void setControlBar(AbstractBar controlBar) {
         this.controlBar = controlBar;
     }
+
     public ComponentPlaceHolder getComponentPlaceHolder() {
         return componentPlaceHolder;
     }
@@ -166,6 +163,7 @@ public class MgnlElement extends CmsNode {
     public void setStartComment(Element element) {
         this.startComment = element;
     }
+
     public void setEndComment(Element element) {
         this.endComment = element;
     }
@@ -181,16 +179,5 @@ public class MgnlElement extends CmsNode {
         else {
             return Model.CMS_COMPONENT;
         }
-    }
-
-    public String getJsonAttributes() {
-
-        JSONObject json = new JSONObject();
-
-        for ( String key : attributes.keySet()) {
-            String value = attributes.get(key);
-            json.put(key, new JSONString(value));
-        }
-        return json.toString();
     }
 }

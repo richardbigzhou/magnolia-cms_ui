@@ -58,9 +58,6 @@
     <sv:property sv:name="website" sv:type="String">
       <sv:value/>
     </sv:property>
-    <sv:property sv:name="zipCode" sv:type="String">
-      <sv:value/>
-    </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>mgnl:metaData</sv:value>
@@ -204,9 +201,6 @@
     <sv:property sv:name="website" sv:type="String">
       <sv:value/>
     </sv:property>
-    <sv:property sv:name="zipCode" sv:type="String">
-      <sv:value/>
-    </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>mgnl:metaData</sv:value>
@@ -347,9 +341,6 @@
     <sv:property sv:name="website" sv:type="String">
       <sv:value/>
     </sv:property>
-    <sv:property sv:name="zipCode" sv:type="String">
-      <sv:value/>
-    </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>mgnl:metaData</sv:value>
@@ -488,9 +479,6 @@
       <sv:value/>
     </sv:property>
     <sv:property sv:name="website" sv:type="String">
-      <sv:value/>
-    </sv:property>
-    <sv:property sv:name="zipCode" sv:type="String">
       <sv:value/>
     </sv:property>
     <sv:node sv:name="MetaData">
@@ -636,9 +624,6 @@
     <sv:property sv:name="website" sv:type="String">
       <sv:value/>
     </sv:property>
-    <sv:property sv:name="zipCode" sv:type="String">
-      <sv:value/>
-    </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>mgnl:metaData</sv:value>
@@ -779,9 +764,6 @@
     <sv:property sv:name="website" sv:type="String">
       <sv:value/>
     </sv:property>
-    <sv:property sv:name="zipCode" sv:type="String">
-      <sv:value/>
-    </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>mgnl:metaData</sv:value>
@@ -920,9 +902,6 @@
       <sv:value/>
     </sv:property>
     <sv:property sv:name="website" sv:type="String">
-      <sv:value/>
-    </sv:property>
-    <sv:property sv:name="zipCode" sv:type="String">
       <sv:value/>
     </sv:property>
     <sv:node sv:name="MetaData">
@@ -1068,9 +1047,6 @@
     <sv:property sv:name="website" sv:type="String">
       <sv:value/>
     </sv:property>
-    <sv:property sv:name="zipCode" sv:type="String">
-      <sv:value/>
-    </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>mgnl:metaData</sv:value>
@@ -1214,9 +1190,6 @@
     <sv:property sv:name="website" sv:type="String">
       <sv:value/>
     </sv:property>
-    <sv:property sv:name="zipCode" sv:type="String">
-      <sv:value/>
-    </sv:property>
     <sv:node sv:name="MetaData">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
         <sv:value>mgnl:metaData</sv:value>
@@ -1358,9 +1331,6 @@
       <sv:value/>
     </sv:property>
     <sv:property sv:name="website" sv:type="String">
-      <sv:value/>
-    </sv:property>
-    <sv:property sv:name="zipCode" sv:type="String">
       <sv:value/>
     </sv:property>
     <sv:node sv:name="MetaData">

@@ -45,6 +45,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class JQueryWrapper extends JavaScriptObject {
 
+    public static final String TRANSITION_END_EVENT_ID = "transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd";
+    
     protected JQueryWrapper() {
     }
 
@@ -65,11 +67,14 @@ public class JQueryWrapper extends JavaScriptObject {
     };
 
     public final native void on(String eventId, Callbacks callbacks) /*-{
+        //var jq = this;
+        var win = $wnd;
+        win.alert('reg');
         this.on(eventId,
             function(event) {
-                var jq = @info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper::select(Lcom/google/gwt/user/client/Element;)(event.target);
+                win.alert('Fire');
                 if (callbacks != null) {
-                    callbacks.fire(jq);
+                    callbacks.fire(null);
                 }
         });
     }-*/;

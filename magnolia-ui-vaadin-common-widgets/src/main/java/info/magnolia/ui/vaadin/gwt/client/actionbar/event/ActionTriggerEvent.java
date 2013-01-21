@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.actionbar.event;
 
-import info.magnolia.ui.vaadin.gwt.client.actionbar.VActionbarItem;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.widget.ActionbarItemWidget;
 
 import com.google.web.bindery.event.shared.Event;
 
@@ -46,7 +46,7 @@ public class ActionTriggerEvent extends Event<ActionTriggerEvent.Handler> {
 
     private final String actionName;
 
-    public ActionTriggerEvent(final String actionName, final VActionbarItem source) {
+    public ActionTriggerEvent(final String actionName, final ActionbarItemWidget source) {
         this.actionName = actionName;
         setSource(source);
     }
@@ -56,8 +56,8 @@ public class ActionTriggerEvent extends Event<ActionTriggerEvent.Handler> {
     }
 
     @Override
-    public VActionbarItem getSource() {
-        return (VActionbarItem) super.getSource();
+    public ActionbarItemWidget getSource() {
+        return (ActionbarItemWidget) super.getSource();
     }
 
     @Override

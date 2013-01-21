@@ -40,11 +40,16 @@ import info.magnolia.ui.framework.event.TestEvent;
 
 import javax.inject.Named;
 
+
 import com.google.inject.Inject;
 
+/**
+ * AppEventTestImpl.
+ */
 public class AppEventTestImpl extends AppTestImpl {
 
     public EventBus eventBus;
+
     public InvocationCountingTestEventHandler handler;
 
     @Inject

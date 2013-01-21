@@ -78,13 +78,13 @@ public class FormBuilder {
         }
 
         for (TabDefinition tabDefinition : formDefinition.getTabs()) {
-            final FormTab tab = new FormTab(tabDefinition);
+            FormTab tab = new FormTab(tabDefinition);
             tab.setParent(form);
             for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
                 final FieldBuilder formField = fieldFactory.create(fieldDefinition, item);
                 if (formField != null) {
                     formField.setParent(tab);
-                    final Field field = formField.getField();
+                    final Field<?> field = formField.getField();
                     if (field instanceof AbstractComponent) {
                         ((AbstractComponent) field).setImmediate(true);
                     }
@@ -95,6 +95,7 @@ public class FormBuilder {
                     view.addField(field);
                 }
             }
+
             view.addFormSection(tab.getMessage(tabDefinition.getLabel()), tab.getContainer());
         }
         view.setShowAllEnabled(formDefinition.getTabs().size() > 1);

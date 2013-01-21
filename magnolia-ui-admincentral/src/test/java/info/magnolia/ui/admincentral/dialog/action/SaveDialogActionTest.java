@@ -59,10 +59,10 @@ import org.junit.Test;
 import com.vaadin.data.Item;
 
 /**
- * Main test class for {@link SaveDialogAction} and
- * {@link SaveDialogActionDefinition}.
+ * Main test class for {@link SaveDialogAction} and {@link SaveDialogActionDefinition}.
  */
 public class SaveDialogActionTest {
+
     private SaveDialogAction dialogAction;
     private SaveDialogActionDefinition dialogActionDefinition;
     private CallbackDialogActionTest.FormDialogPresenterTest presenter;

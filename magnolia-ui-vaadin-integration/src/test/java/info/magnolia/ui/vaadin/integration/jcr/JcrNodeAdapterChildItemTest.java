@@ -129,13 +129,13 @@ public class JcrNodeAdapterChildItemTest {
         // GIVEN
         JcrNodeAdapter item = new JcrNodeAdapter(baseNode);
         // Add property to the Item
-        DefaultProperty property = new DefaultProperty("propertyName", "propertyValue");
+        DefaultProperty<String> property = new DefaultProperty<String>("propertyName", "propertyValue", String.class);
         item.addItemProperty("propertyName", property);
         // Create one new child Item
         JcrNewNodeAdapter newChild = new JcrNewNodeAdapter(baseNode, "mgnl:content", "childNode");
         item.addChild(newChild);
         // Add property to the child Item
-        DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
+        DefaultProperty<String> childProperty = new DefaultProperty<String>("childPropertyName", "childPropertyValue", String.class);
         newChild.addItemProperty("childPropertyName", childProperty);
 
         // WHEN
@@ -156,14 +156,14 @@ public class JcrNodeAdapterChildItemTest {
         // GIVEN
         JcrNodeAdapter item = new JcrNodeAdapter(baseNode);
         // Add property to the Item
-        DefaultProperty property = new DefaultProperty("propertyName", "propertyValue");
+        DefaultProperty<String> property = new DefaultProperty<String>("propertyName", "propertyValue", String.class);
         item.addItemProperty("propertyName", property);
         // Create a child node
         Node child = baseNode.addNode("childNode");
         JcrNodeAdapter childItem = new JcrNodeAdapter(child);
         item.addChild(childItem);
         // Add property to the child Item
-        DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
+        DefaultProperty<String> childProperty = new DefaultProperty<String>("childPropertyName", "childPropertyValue", String.class);
         childItem.addItemProperty("childPropertyName", childProperty);
 
         // WHEN
@@ -184,20 +184,20 @@ public class JcrNodeAdapterChildItemTest {
         // GIVEN
         JcrNodeAdapter item = new JcrNodeAdapter(baseNode);
         // Add property to the Item
-        DefaultProperty property = new DefaultProperty("propertyName", "propertyValue");
+        DefaultProperty<String> property = new DefaultProperty<String>("propertyName", "propertyValue", String.class);
         item.addItemProperty("propertyName", property);
         // Create a child node
         Node child = baseNode.addNode("childNode");
         JcrNodeAdapter childItem = new JcrNodeAdapter(child);
         item.addChild(childItem);
         // Add property to the child Item
-        DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
+        DefaultProperty<String> childProperty = new DefaultProperty<String>("childPropertyName", "childPropertyValue", String.class);
         childItem.addItemProperty("childPropertyName", childProperty);
         // Create one new child Item
         JcrNewNodeAdapter newChild = new JcrNewNodeAdapter(baseNode, "mgnl:content", "newChild");
         item.addChild(newChild);
         // Add property to the child Item
-        DefaultProperty childPropertyNew = new DefaultProperty("childNewPropertyName", "childNewPropertyValue");
+        DefaultProperty<String> childPropertyNew = new DefaultProperty<String>("childNewPropertyName", "childNewPropertyValue", String.class);
         newChild.addItemProperty("childNewPropertyName", childPropertyNew);
 
         // WHEN
@@ -221,13 +221,13 @@ public class JcrNodeAdapterChildItemTest {
         // GIVEN
         JcrNodeAdapter item = new JcrNodeAdapter(baseNode);
         // Add property to the Item
-        DefaultProperty property = new DefaultProperty("propertyName", "propertyValue");
+        DefaultProperty<String> property = new DefaultProperty<String>("propertyName", "propertyValue", String.class);
         item.addItemProperty("propertyName", property);
         // Create one new child Item
         JcrNewNodeAdapter newChild = new JcrNewNodeAdapter(baseNode, "mgnl:content", "childNode");
         item.addChild(newChild);
         // Add property to the child Item
-        DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
+        DefaultProperty<String> childProperty = new DefaultProperty<String>("childPropertyName", "childPropertyValue", String.class);
         newChild.addItemProperty("childPropertyName", childProperty);
 
         // WHEN
@@ -248,7 +248,7 @@ public class JcrNodeAdapterChildItemTest {
         // GIVEN
         JcrNodeAdapter item = new JcrNodeAdapter(baseNode);
         // Add property to the Item
-        DefaultProperty property = new DefaultProperty("propertyName", "propertyValue");
+        DefaultProperty<String> property = new DefaultProperty<String>("propertyName", "propertyValue", String.class);
         item.addItemProperty("propertyName", property);
         // Create one new child Item
         // Create a child node
@@ -257,7 +257,7 @@ public class JcrNodeAdapterChildItemTest {
         item.addChild(childItem);
         assertEquals(true, baseNode.hasNode("childNode"));
         // Add property to the child Item
-        DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
+        DefaultProperty<String> childProperty = new DefaultProperty<String>("childPropertyName", "childPropertyValue", String.class);
         childItem.addItemProperty("childPropertyName", childProperty);
 
         // WHEN
@@ -278,7 +278,7 @@ public class JcrNodeAdapterChildItemTest {
         // GIVEN
         JcrNodeAdapter item = new JcrNodeAdapter(baseNode);
         // Add property to the Item
-        DefaultProperty property = new DefaultProperty("propertyName", "propertyValue");
+        DefaultProperty<String> property = new DefaultProperty<String>("propertyName", "propertyValue", String.class);
         item.addItemProperty("propertyName", property);
         // Create one new child Item
         // Create a child node
@@ -286,7 +286,7 @@ public class JcrNodeAdapterChildItemTest {
         JcrNodeAdapter childItem = new JcrNodeAdapter(child);
         assertEquals(true, baseNode.hasNode("childNode"));
         // Add property to the child Item
-        DefaultProperty childProperty = new DefaultProperty("childPropertyName", "childPropertyValue");
+        DefaultProperty<String> childProperty = new DefaultProperty<String>("childPropertyName", "childPropertyValue", String.class);
         childItem.addItemProperty("childPropertyName", childProperty);
 
         // WHEN

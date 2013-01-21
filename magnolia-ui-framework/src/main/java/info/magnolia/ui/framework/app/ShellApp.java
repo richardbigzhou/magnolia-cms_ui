@@ -34,13 +34,14 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.view.View;
 
 /**
  * Defines a shell app.
  */
 public interface ShellApp {
 
-    ShellView start(ShellAppContext context);
+    View start(ShellAppContext context);
 
     void locationChanged(Location location);
 }

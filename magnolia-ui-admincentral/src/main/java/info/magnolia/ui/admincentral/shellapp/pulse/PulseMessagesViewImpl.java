@@ -54,8 +54,8 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ItemClickEvent;
-import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.GeneratedRow;
@@ -122,8 +122,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         messageTable.setSortAscending(false);
         messageTable.setColumnHeaders(headers);
 
-        messageTable.addListener(new ItemClickEvent.ItemClickListener() {
-
+        messageTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent event) {
                 Object itemId = event.getItemId();
@@ -131,9 +130,8 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             }
         });
 
-        messageTable.addListener(selectionListener);
-        messageTable.addListener(new Container.ItemSetChangeListener() {
-
+        messageTable.addValueChangeListener(selectionListener);
+        messageTable.addItemSetChangeListener(new Container.ItemSetChangeListener() {
             @Override
             public void containerItemSetChange(ItemSetChangeEvent event) {
                 setComponentVisibility(event.getContainer());
@@ -153,6 +151,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             root.setExpandRatio(messageTable, 1f);
         }
 
+        messageTable.setVisible(!isEmptyList);
         emptyPlaceHolder.setVisible(isEmptyList);
     }
 
@@ -166,7 +165,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
              * selecting/unselecting cause valueChange events and it is not
              * preferred that an event handler generates more events.
              */
-            messageTable.removeListener(this);
+            messageTable.removeValueChangeListener(this);
 
             @SuppressWarnings("unchecked")
             Set<Object> currSelected = new HashSet<Object>((Set<Object>) event.getProperty().getValue());
@@ -268,10 +267,8 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     };
 
     private Table.CellStyleGenerator cellStyleGenerator = new Table.CellStyleGenerator() {
-
         @Override
-        public String getStyle(Object itemId, Object propertyId) {
-
+        public String getStyle(Table source, Object itemId, Object propertyId) {
             if (grouping && propertyId != null && propertyId.equals(PulseMessagesPresenter.GROUP_COLUMN)) {
                 return "v-cell-invisible";
             }
@@ -306,7 +303,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     };
 
     @Override
-    public ComponentContainer asVaadinComponent() {
+    public HasComponents asVaadinComponent() {
         return this;
     }
 
@@ -316,12 +313,11 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             final Set<Object> values = new HashSet<Object>();
             String messageId = params.get(0);
             values.add(messageId);
-            // This is a multi-select table, calling select would just add this
-            // message to the
-            // current
-            // set of selected rows so setting the value explicitly this way
-            // makes only this one
-            // selected.
+            /**
+             * This is a multi-select table, calling select would just add this
+             * message to the current set of selected rows so setting the value
+             * explicitly this way makes only this one selected.
+             */
             messageTable.setValue(values);
         }
     }

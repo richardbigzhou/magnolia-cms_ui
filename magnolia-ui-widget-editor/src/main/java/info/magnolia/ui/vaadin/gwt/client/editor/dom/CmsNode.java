@@ -117,7 +117,7 @@ public class CmsNode {
     public CmsNode getRoot() {
         CmsNode root = null;
         for (CmsNode parent = this; parent != null; parent = parent.getParent()) {
-                root = parent;
+            root = parent;
         }
         return root;
     }

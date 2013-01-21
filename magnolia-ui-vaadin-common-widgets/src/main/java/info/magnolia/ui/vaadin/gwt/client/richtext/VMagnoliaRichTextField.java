@@ -42,9 +42,9 @@ import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.UIDL;
-import com.vaadin.terminal.gwt.client.ValueMap;
+import com.vaadin.client.ApplicationConnection;
+import com.vaadin.client.UIDL;
+import com.vaadin.client.ValueMap;
 
 /**
  * Magnolia rich text field adds an ability to custom plugins to communicate

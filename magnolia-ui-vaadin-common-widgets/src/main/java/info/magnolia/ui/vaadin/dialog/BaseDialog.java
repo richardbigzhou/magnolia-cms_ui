@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,23 +34,14 @@
 package info.magnolia.ui.vaadin.dialog;
 
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
-import info.magnolia.ui.vaadin.gwt.client.dialog.dialoglayout.VBaseDialog;
+import info.magnolia.ui.vaadin.gwt.client.dialog.connector.BaseDialogState;
+import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.ActionFiringServerRpc;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
-import org.vaadin.rpc.ServerSideHandler;
-import org.vaadin.rpc.ServerSideProxy;
-import org.vaadin.rpc.client.Method;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
+import com.google.gwt.thirdparty.guava.common.collect.ArrayListMultimap;
+import com.google.gwt.thirdparty.guava.common.collect.ListMultimap;
+import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 
@@ -59,88 +50,33 @@ import com.vaadin.ui.VerticalLayout;
  * Is capable of displaying any content inside it's content component.
  * Provides Action registration and callbacks to the view.
  */
-@ClientWidget(value = VBaseDialog.class, loadStyle = LoadStyle.EAGER)
-public class BaseDialog extends AbstractComponent implements ServerSideHandler, DialogView {
+public class BaseDialog extends AbstractSingleComponentContainer implements DialogView {
 
     private final ListMultimap<String, DialogActionListener> actionCallbackMap = ArrayListMultimap.<String, DialogActionListener> create();
-
-    private final Map<String, String> actionMap = new HashMap<String, String>();
-
-    private Component content;
-
-    private boolean isAttached = false;
-
-    private String description;
-
-    private final ServerSideProxy proxy = new ServerSideProxy(this) {
-        {
-            register("fireAction", new Method() {
-
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    final String actionName = String.valueOf(params[0]);
-                    final Iterator<DialogActionListener> it = actionCallbackMap.get(actionName).iterator();
-                    while (it.hasNext()) {
-                        it.next().onActionExecuted(actionName);
-                    }
-                }
-            });
-            register("closeDialog", new Method() {
-
-                @Override
-                public void invoke(String methodName, Object[] params) {
-                    closeSelf();
-                }
-            });
-        }
-    };
 
     public BaseDialog() {
         setImmediate(true);
         setContent(createDefaultContent());
+        registerRpc(new ActionFiringServerRpc() {
+            @Override
+            public void fireAction(String actionId) {
+                final Iterator<DialogActionListener> it = actionCallbackMap.get(actionId).iterator();
+                while (it.hasNext()) {
+                    it.next().onActionExecuted(actionId);
+                }
+            }
+
+            @Override
+            public void closeSelf() {
+                BaseDialog.this.closeSelf();
+            }
+        });
     }
 
+    @Override
     public void setContent(Component content) {
         final Component actualContent = content == null ? createDefaultContent() : content;
-        if (actualContent != this.content) {
-            if (this.content != null) {
-                this.content.setParent(null);
-            }
-            this.content = actualContent;
-            actualContent.setParent(this);
-            actualContent.setCaption(getCaption());
-        }
-    }
-
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
-        content.paint(target);
-        proxy.paintContent(target);
-    }
-
-    @Override
-    public void changeVariables(Object source, Map<String, Object> variables) {
-        super.changeVariables(source, variables);
-        proxy.changeVariables(source, variables);
-    }
-
-    public Component getContent() {
-        return content;
-    }
-
-    @Override
-    public void attach() {
-        this.isAttached = true;
-        super.attach();
-        content.attach();
-    }
-
-    @Override
-    public void detach() {
-        this.isAttached = false;
-        super.detach();
-        content.detach();
+        super.setContent(actualContent);
     }
 
     public void closeSelf() {
@@ -148,48 +84,32 @@ public class BaseDialog extends AbstractComponent implements ServerSideHandler, 
     }
 
     public void addAction(String actionName, String actionLabel) {
-        actionMap.put(actionName, actionLabel);
-        if (isAttached) {
-            proxy.call("addAction", actionName, actionLabel);
-        }
+        getState().actions.put(actionName, actionLabel);
     }
 
-    public void setActionLabel(String actionName, String newLabel) {
-        proxy.call("setActionLabel", actionName, newLabel);
+    @Deprecated
+    public void setActionLabel(String actionName, String actionLabel) {
+        addAction(actionName, actionLabel);
     }
 
     @Override
     public void setDialogDescription(String description) {
-        this.description = description;
-        if (isAttached) {
-            proxy.call("setDescription", description);
-        }
+        getState().componentDescription = description;
+    }
+
+    @Override
+    protected BaseDialogState getState() {
+        return (BaseDialogState) super.getState();
     }
 
     @Override
     public void setCaption(String caption) {
         super.setCaption(caption);
-        content.setCaption(caption);
+        getContent().setCaption(caption);
     }
 
     protected Component createDefaultContent() {
         return new VerticalLayout();
-    }
-
-    @Override
-    public Object[] initRequestFromClient() {
-        if (description != null) {
-            proxy.call("setDescription", description);
-        }
-        for (final Map.Entry<String, String> entry : actionMap.entrySet()) {
-            proxy.call("addAction", entry.getKey(), entry.getValue());
-        }
-        return new Object[] {};
-    }
-
-    @Override
-    public void callFromClient(String method, Object[] params) {
-        throw new RuntimeException("Unknown call from client " + method);
     }
 
     @Override

@@ -50,6 +50,7 @@ import javax.jcr.ValueFactory;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -196,6 +197,7 @@ public class JcrPropertyAdapterTest {
         assertEquals(newValue, node.getProperty(propertyName).getString());
     }
 
+    @Ignore("http://jira.magnolia-cms.com/browse/MGNLUI-485")
     @Test
     public void testUpdatePropertyValueKeepsPropertyType() throws Exception {
         // GIVEN

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,17 +33,24 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.VMagnoliaShell.ViewportType;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.handler.ViewportCloseHandler;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * Event fired when the viewport is closed.
  */
-public class ViewportCloseEvent extends GwtEvent<ViewportCloseHandler> {
+public class ViewportCloseEvent extends GwtEvent<ViewportCloseEvent.Handler> {
 
-    public static final Type<ViewportCloseHandler> TYPE = new Type<ViewportCloseHandler>();
+    /**
+     * Handler of the {@link ViewportCloseEvent}.
+     */
+    public interface Handler extends EventHandler {
+        void onViewportClose(final ViewportCloseEvent event);
+    }
+
+    public static final Type<Handler> TYPE = new Type<Handler>();
 
     private final ViewportType viewportType;
 
@@ -52,12 +59,12 @@ public class ViewportCloseEvent extends GwtEvent<ViewportCloseHandler> {
     }
 
     @Override
-    protected void dispatch(ViewportCloseHandler handler) {
+    protected void dispatch(Handler handler) {
         handler.onViewportClose(this);
     }
 
     @Override
-    public GwtEvent.Type<ViewportCloseHandler> getAssociatedType() {
+    public GwtEvent.Type<Handler> getAssociatedType() {
         return TYPE;
     };
 

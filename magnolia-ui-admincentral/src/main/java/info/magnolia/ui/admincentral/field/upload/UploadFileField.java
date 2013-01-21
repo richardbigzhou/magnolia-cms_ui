@@ -37,6 +37,8 @@ import java.io.File;
 
 /**
  * Configure the UploadFileField based on the UploadField Definition.
+ * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on 
+ * @link{http://code.google.com/p/easyuploads-addon/}.
  */
 public interface UploadFileField {
 

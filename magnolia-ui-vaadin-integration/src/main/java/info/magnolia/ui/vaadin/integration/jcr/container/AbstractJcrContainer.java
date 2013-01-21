@@ -64,6 +64,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Container;
+import com.vaadin.data.ContainerHelpers;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 
@@ -152,7 +153,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     @Override
-    public void addListener(ItemSetChangeListener listener) {
+    public void addItemSetChangeListener(ItemSetChangeListener listener) {
         if (itemSetChangeListeners == null) {
             itemSetChangeListeners = new LinkedHashSet<ItemSetChangeListener>();
         }
@@ -160,7 +161,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     @Override
-    public void removeListener(ItemSetChangeListener listener) {
+    public void addListener(ItemSetChangeListener listener) {
+        addItemSetChangeListener(listener);
+    }
+
+    @Override
+    public void removeItemSetChangeListener(ItemSetChangeListener listener) {
         if (itemSetChangeListeners != null) {
             itemSetChangeListeners.remove(listener);
             if (itemSetChangeListeners.isEmpty()) {
@@ -170,7 +176,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     @Override
-    public void addListener(PropertySetChangeListener listener) {
+    public void removeListener(ItemSetChangeListener listener) {
+        removeItemSetChangeListener(listener);
+    }
+
+    @Override
+    public void addPropertySetChangeListener(PropertySetChangeListener listener) {
         if (propertySetChangeListeners == null) {
             propertySetChangeListeners = new LinkedHashSet<PropertySetChangeListener>();
         }
@@ -178,13 +189,23 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     @Override
-    public void removeListener(PropertySetChangeListener listener) {
+    public void addListener(PropertySetChangeListener listener) {
+        addPropertySetChangeListener(listener);
+    }
+
+    @Override
+    public void removePropertySetChangeListener(PropertySetChangeListener listener) {
         if (propertySetChangeListeners != null) {
             propertySetChangeListeners.remove(listener);
             if (propertySetChangeListeners.isEmpty()) {
                 propertySetChangeListeners = null;
             }
         }
+    }
+
+    @Override
+    public void removeListener(PropertySetChangeListener listener) {
+        removePropertySetChangeListener(listener);
     }
 
     public void fireItemSetChange() {
@@ -259,7 +280,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     @Override
-    public Property getContainerProperty(Object itemId, Object propertyId) {
+    public Property<?> getContainerProperty(Object itemId, Object propertyId) {
         final Item item = getItem(itemId);
         if (item != null) {
             return item.getItemProperty(propertyId);
@@ -638,6 +659,11 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
+    }
+
+    @Override
+    public List<?> getItemIds(int startIndex, int numberOfItems) {
+        return ContainerHelpers.getItemIdsUsingGetIdByIndex(startIndex, numberOfItems, this);
     }
 
     public String getWorkspace() {

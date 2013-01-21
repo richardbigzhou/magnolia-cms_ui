@@ -44,7 +44,6 @@ import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
-import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
@@ -62,18 +61,18 @@ import javax.inject.Singleton;
 @Singleton
 public class ShellAppController implements LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
 
-    private final ComponentProvider componentProvider;
-    private final Shell shell;
-    private ViewPort viewPort;
-    private final LocationController locationController;
-
     private final Map<String, ShellAppContextImpl> contexts = new HashMap<String, ShellAppContextImpl>();
 
+    private final ComponentProvider componentProvider;
+
+    private final Shell shell;
+
+    private ViewPort viewPort;
+
     @Inject
-    public ShellAppController(ComponentProvider componentProvider, Shell shell, @Named("admincentral") EventBus admincentralEventBus, LocationController locationController) {
+    public ShellAppController(ComponentProvider componentProvider, Shell shell, @Named("admincentral") EventBus admincentralEventBus) {
         this.componentProvider = componentProvider;
         this.shell = shell;
-        this.locationController = locationController;
 
         addShellApp("applauncher", AppLauncherShellApp.class);
         addShellApp("pulse", PulseShellApp.class);

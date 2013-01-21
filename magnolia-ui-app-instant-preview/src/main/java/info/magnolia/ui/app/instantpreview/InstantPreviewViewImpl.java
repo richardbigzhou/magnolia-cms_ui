@@ -35,12 +35,10 @@ package info.magnolia.ui.app.instantpreview;
 
 import info.magnolia.ui.framework.instantpreview.InstantPreviewHostNotFoundException;
 import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.vaadin.integration.widget.PreviewTokenField;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.autoreplacefield.IntegerField;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -64,7 +62,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
     private String hostId;
     private Button shareButton;
     private Button joinButton;
-    private PreviewTokenField inputHostId;
+    private TextField inputHostId;
     private Button hostIdLink;
 
     /**
@@ -101,8 +99,11 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
         return button;
     }
 
-    protected PreviewTokenField buildHostIdInputText() {
-        final PreviewTokenField inputCode = new PreviewTokenField();
+    /**
+     * FIXME: PreviewTokenField was removed for now. Consider restoring it from git.
+     */
+    protected TextField buildHostIdInputText() {
+        final TextField inputCode = new TextField();
         inputCode.setInputPrompt("Enter id, e.g. 123-456-789");
         inputCode.setMaxLength(11);
         inputCode.setImmediate(true);
@@ -213,7 +214,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
         return layout;
     }
 
-    private static class IdField extends IntegerField {
+    /*private static class IdField extends IntegerField {
 
         public IdField() {
             addReplaceRule("([0-9][0-9][0-9])", "$1-");
@@ -229,7 +230,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
         protected String getFormattedValue() {
             return applyRules(super.getFormattedValue());
         }
-    }
+    }*/
 
     /**
      * Given <code>123456789</code> returns <code>123-456-789</code>.

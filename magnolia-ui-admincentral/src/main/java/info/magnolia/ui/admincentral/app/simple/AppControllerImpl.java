@@ -67,9 +67,16 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementation of the {@link AppController}.
  * 
+<<<<<<< HEAD
+ * The App controller that manages the lifecycle of running apps and raises
+ * callbacks to the app. It provides methods to start, stop and focus already
+ * running {@link App}s. Registers handlers to the following location change
+ * events triggered by the {@link LocationController}:
+=======
  * The App controller that manages the lifecycle of running apps and raises callbacks to the app.
  * It provides methods to start, stop and focus already running {@link App}s.
  * Registers handlers to the following location change events triggered by the {@link LocationController}:
+>>>>>>> master
  * <ul>
  * <li>{@link LocationChangedEvent}</li>
  * <li>{@link LocationChangeRequestedEvent}</li>
@@ -80,7 +87,8 @@ import org.slf4j.LoggerFactory;
  * @see App
  */
 @Singleton
-public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
+public class AppControllerImpl implements AppController, LocationChangedEvent.Handler,
+        LocationChangeRequestedEvent.Handler {
 
     private static final Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
 
@@ -107,7 +115,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private AppContext currentApp;
 
     @Inject
-    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController, MessagesManager messagesManager, Shell shell, @Named("admincentral") EventBus admincentralEventBus) {
+    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider,
+            AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController,
+            MessagesManager messagesManager, Shell shell, @Named("admincentral") EventBus admincentralEventBus) {
         this.moduleRegistry = moduleRegistry;
         this.componentProvider = componentProvider;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
@@ -136,7 +146,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     @Override
     public App getAppWithoutStarting(String appId) {
         AppContext appContext = getAppContext(appId);
-        ComponentProvider appComponentProvider = appContext.createAppComponentProvider(appContext.getName(), appContext);
+        ComponentProvider appComponentProvider = appContext
+                .createAppComponentProvider(appContext.getName(), appContext);
         App app = appComponentProvider.newInstance(appContext.getAppDescriptor().getAppClass());
 
         appContext.setApp(app);
@@ -224,26 +235,24 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
-     * Delegates the starting of an {@link App} to the {@link AppContext}.
-     * In case the app is already started, it will update its location.
+     * Delegates the starting of an {@link App} to the {@link AppContext}. In
+     * case the app is already started, it will update its location.
      */
     private AppContext doStartIfNotAlreadyRunning(AppContext appContext, Location location) {
-
         if (isAppStarted(appContext.getName())) {
             appContext.onLocationUpdate(location);
             return appContext;
         }
 
-        appContext.start(location);
-
         runningApps.put(appContext.getName(), appContext);
+        appContext.start(location);
         sendEvent(AppLifecycleEventType.STARTED, appContext.getAppDescriptor());
-
         return appContext;
     }
 
     /**
-     * Focuses an already running {@link App} by passing it to the {@link LocationController}.
+     * Focuses an already running {@link App} by passing it to the
+     * {@link LocationController}.
      */
     private void doFocus(AppContext appContext) {
         locationController.goTo(appContext.getCurrentLocation());
@@ -325,7 +334,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      * </ul>
      */
     private Location updateLocation(AppContext appContext, Location location) {
-
         String appType = location.getAppType();
         String appId = location.getAppId();
         String subAppId = location.getSubAppId();
@@ -338,6 +346,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
                 subAppId = runningAppContext.getCurrentLocation().getSubAppId();
             } else if (StringUtils.isBlank(subAppId)) {
                 subAppId = appContext.getDefaultLocation().getSubAppId();
+
             }
         }
 
@@ -348,14 +357,14 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private AppContext getAppContext(String appId) {
         if (isAppStarted(appId)) {
             return runningApps.get(appId);
-        }
-        else {
+        } else {
             AppDescriptor descriptor = getAppDescriptor(appId);
             if (descriptor == null) {
                 return null;
             }
 
-            return new AppContextImpl(moduleRegistry, componentProvider, this, locationController, shell, messagesManager, descriptor);
+            return new AppContextImpl(moduleRegistry, componentProvider, this, locationController, shell,
+                    messagesManager, descriptor);
 
         }
     }

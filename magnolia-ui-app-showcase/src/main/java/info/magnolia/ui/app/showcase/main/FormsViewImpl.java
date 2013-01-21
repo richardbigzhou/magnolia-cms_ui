@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.showcase.main;
 
-import com.vaadin.terminal.ExternalResource;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
@@ -61,7 +61,6 @@ public class FormsViewImpl implements FormsView {
     private Listener listener;
 
     public FormsViewImpl() {
-        layout.setMargin(true, true, false, true);
         layout.setSizeFull();
         layout.addComponent(new Label("The fields available in a Magnolia" +
                 " Form or Dialog. Configurable by repository or code."));

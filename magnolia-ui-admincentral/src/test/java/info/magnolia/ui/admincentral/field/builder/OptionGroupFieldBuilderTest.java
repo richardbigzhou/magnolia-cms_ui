@@ -41,6 +41,7 @@ import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.vaadin.ui.Field;
@@ -84,6 +85,7 @@ public class OptionGroupFieldBuilderTest extends AbstractBuilderTest<OptionGroup
     }
 
     @Test
+    @Ignore("See http://dev.vaadin.com/ticket/10663")
     public void simpleCheckBoxFieldTest() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
@@ -100,8 +102,8 @@ public class OptionGroupFieldBuilderTest extends AbstractBuilderTest<OptionGroup
         assertEquals("[]", field.getValue().toString());
     }
 
-    @SuppressWarnings("rawtypes")
     @Test
+    @Ignore("See http://dev.vaadin.com/ticket/10663")
     public void multiSelectCheckBoxFieldTest() throws Exception {
         // GIVEN
         definition.setMultiselect(true);

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,7 +35,7 @@ package info.magnolia.ui.vaadin.form;
 
 import info.magnolia.ui.framework.view.View;
 
-import java.util.List;
+import java.util.Collection;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
@@ -45,16 +45,19 @@ import com.vaadin.ui.Field;
  */
 public interface FormView extends View, Item.Editor {
 
-    void addAction(String actionName, String actionLabel, FormActionListener callback);
+    void addField(Field<?> field);
 
     /**
      * Action execution callback.
      */
     interface FormActionListener {
-
         void onActionExecuted(final String actionName);
-
     }
+
+    @Override
+    public Form asVaadinComponent();
+
+    void addAction(String actionName, String actionLabel, FormActionListener callback);
 
     void setFormDescription(String description);
 
@@ -62,14 +65,14 @@ public interface FormView extends View, Item.Editor {
 
     void addFormSection(String tabName, FormSection inputFields);
 
-    void addField(Field field);
-
     void showValidation(boolean isVisible);
 
     void setShowAllEnabled(boolean enabled);
 
+    void suppressOwnActions();
+
     boolean isValid();
 
-    List<Field> getFields();
+    Collection<Field<?>> getFields();
 
 }

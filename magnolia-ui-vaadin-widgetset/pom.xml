@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>info.magnolia.ui</groupId>
@@ -9,6 +10,38 @@
   <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
   <name>magnolia-ui-vaadin-widgetset</name>
   <dependencies>
+
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-client-compiled</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-themes</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- this replaces gwt-dev.jar -->
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-client-compiler</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
@@ -21,19 +54,28 @@
     </dependency>
     <!-- explicit dep on gwt-user is needed else we get lots of skipped invalid
       unit errors during gwt compilation -->
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-    </dependency>
   </dependencies>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>vaadin-snapshots</id>
+      <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+
   <build>
     <plugins>
-      <!-- Compile custom GWT components or widget dependencies with the GWT
-        compiler -->
+      <!-- Compile custom GWT components or widget dependencies with the
+        GWT compiler -->
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>gwt-maven-plugin</artifactId>
-        <version>${gwtVersion}</version>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-maven-plugin</artifactId>
         <configuration>
           <!-- put the created resources on the classpath -->
           <webappDirectory>${project.build.outputDirectory}/VAADIN/widgetsets</webappDirectory>
@@ -48,7 +90,7 @@
         <executions>
           <execution>
             <configuration>
-              <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+              <extraJvmArgs>-Xmx1024M -Xss1024k</extraJvmArgs>
             </configuration>
             <goals>
               <goal>resources</goal>

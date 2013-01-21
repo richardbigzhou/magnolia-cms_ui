@@ -36,16 +36,16 @@ package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.AreaBar;
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.vaadin.gwt.client.editor.widget.placeholder.ComponentPlaceHolder;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaBar;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaEndBar;
+import info.magnolia.ui.vaadin.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Factory Class for MgnlElement processors.
@@ -86,7 +86,6 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
             // set all child parents to parent
             getMgnlElement().delete();
 
-
             // remove it from the Model
             getModel().removeMgnlElement(getMgnlElement());
         }
@@ -106,9 +105,8 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
 
         String type = attributes.get("type");
 
-
         String availableComponents = "";
-        if(AreaDefinition.TYPE_NO_COMPONENT.equals(type)) {
+        if (AreaDefinition.TYPE_NO_COMPONENT.equals(type)) {
             availableComponents = "";
         }
         else {
@@ -183,7 +181,7 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
             Node parentNode = element.getParentNode();
             parentNode.insertBefore(controlBar.getElement(), element);
 
-            //attach(getMgnlElement().getEndComment());
+            // attach(getMgnlElement().getEndComment());
         }
         controlBar.onAttach();
     }

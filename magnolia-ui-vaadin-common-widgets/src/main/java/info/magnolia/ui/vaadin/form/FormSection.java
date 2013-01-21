@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,89 +33,86 @@
  */
 package info.magnolia.ui.vaadin.form;
 
-import info.magnolia.ui.vaadin.gwt.client.form.VFormSection;
+import info.magnolia.ui.vaadin.gwt.client.form.formsection.connector.FormSectionState;
+import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormSectionClientRpc;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import com.vaadin.terminal.ErrorMessage;
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
+import com.vaadin.server.ErrorMessage;
+import com.vaadin.shared.Connector;
 import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.AbstractLayout;
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
 import com.vaadin.ui.Component;
 
 /**
  * Form layout server side implementation.
  */
-@ClientWidget(value = VFormSection.class, loadStyle = LoadStyle.EAGER)
 public class FormSection extends AbstractLayout {
 
-    private boolean isValidationVisible = false;
-
     private final List<Component> components = new LinkedList<Component>();
-
-    private final Map<Component, String> helpDescriptions = new HashMap<Component, String>();
 
     public FormSection() {
         addStyleName("v-form-layout");
     }
 
     @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
-        final Iterator<Component> it = getComponentIterator();
-        target.addAttribute("validationVisible", isValidationVisible);
-        while (it.hasNext()) {
-            final Component c = it.next();
-            target.startTag("component");
-            c.addStyleName("v-form-field");
-            c.setSizeUndefined();
-            c.paint(target);
-            if (helpDescriptions.containsKey(c)) {
-                target.addAttribute("helpDescription", helpDescriptions.get(c));
-            }
-            target.endTag("component");
-        }
+    protected FormSectionState getState() {
+        return (FormSectionState) super.getState();
+    }
+
+    @Override
+    protected FormSectionState getState(boolean markAsDirty) {
+        return (FormSectionState) super.getState(markAsDirty);
     }
 
     public void setComponentHelpDescription(Component c, String description) {
         if (components.contains(c)) {
-            helpDescriptions.put(c, description);
-            requestRepaint();
+            getState().helpDescriptions.put(c, description);
         } else {
             throw new IllegalArgumentException("Layout doesn't contain this component.");
         }
+    }
+
+    public int indexOf(Component c) {
+        return components.indexOf(c);
     }
 
     @Override
     public void addComponent(Component c) {
         super.addComponent(c);
         components.add(c);
-        requestRepaint();
+        c.addStyleName("v-form-field");
+        c.setSizeUndefined();
+        markAsDirty();
     }
 
     @Override
-    public void replaceComponent(Component oldComponent, Component newComponent) {
+    public void removeComponent(Component c) {
+        super.removeComponent(c);
+        components.remove(c);
+        markAsDirty();
     }
 
     @Override
-    public Iterator<Component> getComponentIterator() {
+    public void replaceComponent(Component oldComponent, Component newComponent) {}
+
+    @Override
+    public Iterator<Component> iterator() {
         return components.iterator();
     }
 
     public void setValidationVisible(boolean isVisible) {
-        this.isValidationVisible = isVisible;
-        requestRepaint();
+        getState().isValidationVisible = isVisible;
     }
 
     @Override
     public ErrorMessage getErrorMessage() {
+        if (!getState(false).isValidationVisible) {
+            return null;
+        }
         final Iterator<Component> it = getComponentIterator();
         while (it.hasNext()) {
             final Component c = it.next();
@@ -130,7 +127,40 @@ public class FormSection extends AbstractLayout {
     }
 
     public boolean hasError() {
-        return getErrorMessage() != null && isValidationVisible;
+        return getErrorMessage() != null && getState(false).isValidationVisible;
     }
 
+    @Override
+    public int getComponentCount() {
+        return components.size();
+    }
+
+    public Component getNextProblematicField(Connector currentFocused) {
+        int startIndex = components.indexOf(currentFocused) + 1;
+        if (startIndex < components.size() - 1) {
+            while (startIndex < components.size()) {
+                Component c = components.get(startIndex++);
+                if (c instanceof AbstractField && !((AbstractField<?>) c).isValid()) {
+                    return c;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void focusField(Component field) {
+        getRpcProxy(FormSectionClientRpc.class).focus(field);
+    }
+
+    public int getErrorAmount() {
+        int result = 0;
+        if (getState(false).isValidationVisible) {
+            Component problem = getNextProblematicField(null);
+            while (problem != null) {
+                ++result;
+                problem = getNextProblematicField(problem);
+            }   
+        }
+        return result;
+    }
 }

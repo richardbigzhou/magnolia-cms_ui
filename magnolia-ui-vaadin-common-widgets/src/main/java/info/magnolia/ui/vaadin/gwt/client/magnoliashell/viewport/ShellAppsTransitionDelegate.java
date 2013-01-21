@@ -37,6 +37,8 @@ import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.Callbacks;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ShellAppsViewportWidget;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -66,28 +68,23 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
      * Slides down if active, fades out if inactive - except if the viewport is closing.
      */
     @Override
-    public void setActive(final VShellViewport viewport, boolean active) {
+    public void setActive(final ViewportWidget viewport, boolean active) {
         final Callbacks callbacks = Callbacks.create();
-
         if (active) {
             viewport.setClosing(false);
             viewportReady = false;
             callbacks.add(new JQueryCallback() {
-
                 @Override
                 public void execute(JQueryWrapper query) {
                     viewportReady = true;
-                    refreshShellApp((VShellAppsViewport) viewport);
+                    refreshShellApp((ShellAppsViewportWidget) viewport);
                 }
             });
             slideDown(viewport, callbacks);
-            viewport.iLayout();
         } else {
-
             // slide up only if closing shell app
             if (viewport.isClosing()) {
                 callbacks.add(new JQueryCallback() {
-
                     @Override
                     public void execute(JQueryWrapper query) {
                         viewport.setClosing(false);
@@ -105,9 +102,8 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
      * Cross-fades between shell apps.
      */
     @Override
-    public void setVisibleApp(final VShellViewport viewport, final Widget app) {
+    public void setVisibleApp(final ViewportWidget viewport, final Widget app) {
         final Callbacks callbacks = Callbacks.create();
-
         if (viewport.getVisibleApp() == null || !viewport.isActive()) {
             // do not fade if first widget or viewport not active yet
             viewport.doSetVisibleApp(app);
@@ -121,29 +117,21 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
                 @Override
                 public void execute(JQueryWrapper query) {
                     visibleAppReady = true;
-                    refreshShellApp((VShellAppsViewport) viewport);
+                    refreshShellApp((ShellAppsViewportWidget) viewport);
                 }
             });
             fadeIn(app, callbacks);
-            viewport.iLayout();
         }
     }
 
-    private void refreshShellApp(VShellAppsViewport viewport) {
+    private void refreshShellApp(ShellAppsViewportWidget viewport) {
         if (viewportReady && visibleAppReady) {
             viewport.refreshShellApp();
         }
     }
 
-    /**
-     * SLIDE DOWN TRANSITION.
-     * 
-     * @param viewport
-     *            the viewport widget
-     * @param callbacks
-     *            the callbacks
-     */
-    private void slideDown(final VShellViewport viewport, final Callbacks callbacks) {
+
+    private void slideDown(final ViewportWidget viewport, final Callbacks callbacks) {
         JQueryWrapper jq = JQueryWrapper.select(viewport);
 
         // init
@@ -154,12 +142,11 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
             viewport.getElement().getStyle().clearOpacity();
             GWT.log(viewport.getStyleName() + ": stopping animation");
         } else {
-            viewport.getElement().getStyle().setTop(-viewport.getOffsetHeight() + 60, Unit.PX);
+            viewport.getElement().getStyle().setTop(-viewport.getOffsetHeight(), Unit.PX);
         }
 
         // callback
         callbacks.add(new JQueryCallback() {
-
             @Override
             public void execute(JQueryWrapper query) {
                 viewport.getElement().getStyle().clearTop();
@@ -170,23 +157,14 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
 
         // animate
         jq.animate(SLIDE_DURATION, new AnimationSettings() {
-
             {
-                setProperty("top", "60px");
+                setProperty("top", 0);
                 setCallbacks(callbacks);
             }
         });
     }
 
-    /**
-     * SLIDE UP TRANSITION.
-     * 
-     * @param viewport
-     *            the viewport widget
-     * @param callbacks
-     *            the callbacks
-     */
-    private void slideUp(final VShellViewport viewport, final Callbacks callbacks) {
+    private void slideUp(final ViewportWidget viewport, final Callbacks callbacks) {
         JQueryWrapper jq = JQueryWrapper.select(viewport);
 
         // init
@@ -211,20 +189,12 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
         jq.animate(SLIDE_DURATION, new AnimationSettings() {
 
             {
-                setProperty("top", (-viewport.getOffsetHeight() + 60) + "px");
+                setProperty("top", (-viewport.getOffsetHeight()) + "px");
                 setCallbacks(callbacks);
             }
         });
     }
 
-    /**
-     * FADE IN TRANSITION.
-     * 
-     * @param w
-     *            the app widget
-     * @param callbacks
-     *            the callbacks
-     */
     private void fadeIn(final Widget w, final Callbacks callbacks) {
 
         JQueryWrapper jq = JQueryWrapper.select(w);
@@ -235,7 +205,6 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
             jq.stop();
             GWT.log(debugId + ": stopping animation");
         } else {
-            // if (!jq.is(":visible")) {
             w.getElement().getStyle().setOpacity(ALPHA_MIN);
             w.setVisible(true);
         }
@@ -284,7 +253,6 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
 
         // callback
         callbacks.add(new JQueryCallback() {
-
             @Override
             public void execute(JQueryWrapper jq) {
                 w.setVisible(false);
@@ -295,7 +263,6 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
 
         // animate
         jq.animate(FADE_DURATION, new AnimationSettings() {
-
             {
                 setProperty("opacity", ALPHA_MIN);
                 setCallbacks(callbacks);

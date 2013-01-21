@@ -61,7 +61,7 @@ public interface FieldBuilder extends FormItem {
     /**
      * Creates and initializes a Vaadin {@link Field} component.
      */
-    Field getField();
+    Field<?> getField();
 
     FieldDefinition getFieldDefinition();
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,22 +33,18 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.VAppsViewport;
-import info.magnolia.ui.vaadin.magnoliashell.BaseMagnoliaShell;
-
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.ClientWidget.LoadStyle;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
+import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 
 /**
- * Apps viewport.
- * 
+ * AppsViewport is responsible for displaying all the apps except shell-apps.
  */
-@ClientWidget(value = VAppsViewport.class, loadStyle = LoadStyle.EAGER)
 public class AppsViewport extends ShellViewport {
 
-    public AppsViewport(BaseMagnoliaShell shell) {
+    public AppsViewport(MagnoliaShellBase shell) {
         super(shell);
         addStyleName("apps");
+        getState().type = ViewportType.APP;
     }
 
 }
