@@ -33,18 +33,21 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
-import info.magnolia.cms.exchange.ActivationSupport;
-import info.magnolia.cms.exchange.ExchangeException;
+import info.magnolia.commands.CommandsManager;
+import info.magnolia.context.Context;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -52,31 +55,44 @@ import org.slf4j.LoggerFactory;
  */
 public class DeactivationAction extends ActionBase<DeactivationActionDefinition> {
 
-    private static final Logger log = LoggerFactory.getLogger(DeactivationAction.class);
-
-    private Node node;
+    private CommandsManager commandsManager = Components.getComponent(CommandsManager.class);
+    private Map<String, Object> params = new HashMap<String, Object>();
 
     @Inject
-    private Provider<ActivationSupport> activationSupportProvider;
-
     public DeactivationAction(final DeactivationActionDefinition definition, final Node node) {
         super(definition);
-        this.node = node;
+        params = buildParams(node);
     }
-
 
     @Override
     public void execute() throws ActionExecutionException {
         try {
+            commandsManager.executeCommand("deactivate", params);
+        } catch (Exception e) {
+            throw new ActionExecutionException("An exception occured during activation ", e);
+        }
+    }
+
+    private Map<String, Object> buildParams(final Node node) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        try {
             final String path = node.getPath();
             final String workspace = node.getSession().getWorkspace().getName();
-            log.debug("Starting deactivation process for node [{}] in workspace [{}]...", path, workspace);
-            activationSupportProvider.get().deactivate(workspace, path);
-        } catch (ExchangeException e) {
-            throw new ActionExecutionException("An exception occured during deactivation ", e);
+            params.put(Context.ATTRIBUTE_REPOSITORY, workspace);
+
+            if (path != null) {
+
+                final String identifier = SessionUtil.getNode(workspace, path).getIdentifier();
+                // really only the uuid should be used to identify a piece of content and nothing else
+                params.put(Context.ATTRIBUTE_UUID, identifier);
+                // retrieve content again using uuid and system context to get unaltered path.
+                final String realPath = MgnlContext.getSystemContext().getJCRSession(workspace).getNodeByIdentifier(identifier).getPath();
+                params.put(Context.ATTRIBUTE_PATH, realPath);
+            }
         } catch (RepositoryException e) {
-            throw new ActionExecutionException("An exception occured during deactivation ", e);
+            throw new RuntimeRepositoryException(e);
         }
+        return params;
     }
 
 }
