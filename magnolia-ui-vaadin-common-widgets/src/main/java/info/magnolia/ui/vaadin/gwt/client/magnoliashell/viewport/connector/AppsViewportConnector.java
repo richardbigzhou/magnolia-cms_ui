@@ -36,14 +36,12 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.AppsViewport;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
-import com.vaadin.client.LayoutManager;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * AppsViewportConnector.
+ * Client-side connector for @link{AppsViewport}.
  */
 @Connect(AppsViewport.class)
 public class AppsViewportConnector extends ViewportConnector {
@@ -65,9 +63,4 @@ public class AppsViewportConnector extends ViewportConnector {
     public AppsViewportWidget getWidget() {
         return (AppsViewportWidget) super.getWidget();
     }
-
-    @Override
-    protected void alignContent(Element e, LayoutManager layoutManager) {
-    }
-
 }
