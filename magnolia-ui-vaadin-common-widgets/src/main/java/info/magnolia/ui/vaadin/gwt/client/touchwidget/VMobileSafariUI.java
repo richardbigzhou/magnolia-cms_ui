@@ -44,7 +44,7 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
 import com.vaadin.client.ui.VUI;
 
 /**
- * Special implementation of {@link VView} that would preinitialize mgwt
+ * Special implementation of {@link VUI} that would preinitialize mgwt
  * touch events, so that those will not interfere with native GWT touch events.
  */
 public class VMobileSafariUI extends VUI {
