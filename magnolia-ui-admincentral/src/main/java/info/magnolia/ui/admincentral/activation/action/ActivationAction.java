@@ -33,16 +33,22 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
+import info.magnolia.module.activation.commands.ActivationCommand;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 
+import org.apache.commons.chain.Command;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * UI action that allows to activate single page (node).
+ * UI action that allows to activate single or recursive page (node) depending on the value of {@link ActivationActionDefinition#isRecursive()}.
  */
 public class ActivationAction extends BaseActivationAction<ActivationActionDefinition> {
 
+    private static final Logger log = LoggerFactory.getLogger(ActivationAction.class);
 
     @Inject
     public ActivationAction(final ActivationActionDefinition definition, final Node node) {
@@ -51,8 +57,18 @@ public class ActivationAction extends BaseActivationAction<ActivationActionDefin
 
     @Override
     public void execute() throws ActionExecutionException {
+        Command command = getCommandsManager().getCommand("activate");
+        if (command == null) {
+            throw new ActionExecutionException(String.format("Could not find command %s in any catalog", "activate"));
+        }
         try {
-            getCommandsManager().executeCommand("activate", getParams());
+            ActivationCommand activationCommand = (ActivationCommand) command;
+            activationCommand.setRecursive(((ActivationActionDefinition)getDefinition()).isRecursive());
+
+            log.debug("Is activation recursive ? {}", activationCommand.isRecursive());
+
+            getCommandsManager().executeCommand(activationCommand, getParams());
+
         } catch (Exception e) {
             throw new ActionExecutionException("An exception occured during activation ", e);
         }

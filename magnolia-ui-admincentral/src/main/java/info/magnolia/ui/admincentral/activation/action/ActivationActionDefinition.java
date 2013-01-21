@@ -36,9 +36,16 @@ package info.magnolia.ui.admincentral.activation.action;
 
 
 /**
- * A marker interface.
- * 
+ * Activation action definition. By default performs a non-recursive activation.
  */
 public class ActivationActionDefinition implements BaseActivationActionDefinition {
+    private boolean recursive = false;
 
+    public void setRecursive(boolean recursive) {
+        this.recursive = recursive;
+    }
+
+    public boolean isRecursive() {
+        return recursive;
+    }
 }

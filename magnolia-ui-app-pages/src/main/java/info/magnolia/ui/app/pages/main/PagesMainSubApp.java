@@ -33,9 +33,11 @@
  */
 package info.magnolia.ui.app.pages.main;
 
+import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.actionbar.util.ActionbarUtil;
 import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -45,6 +47,7 @@ import info.magnolia.ui.framework.instantpreview.InstantPreviewDispatcher;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * PagesMainSubApp.
@@ -70,7 +73,7 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
         actionbar.disable("move", "duplicate");
 
         // actions disabled based on selection
-        final String[] defaultActions = new String[] { "delete", "preview", "edit", "export", "activate", "deactivate" };
+        final String[] defaultActions = new String[] { "delete", "preview", "edit", "export", "activate", "deactivate", "activateRecursive" };
         if (getWorkbench().getSelectedItemId() == null || "/".equals(getWorkbench().getSelectedItemId())) {
             actionbar.disable(defaultActions);
         } else {
@@ -78,7 +81,7 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
             final String path = getWorkbench().getSelectedItemId();
             final String workspace = getWorkbench().getWorkspace();
             final Node page = SessionUtil.getNode(workspace, path);
-            ActionbarUtil.updateActivationActions(page, actionbar);
+            updateActivationActions(page, actionbar);
         }
     }
 
@@ -90,5 +93,31 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
     @Override
     public void subscribe(String hostId) {
         dispatcher.subscribeTo(hostId);
+    }
+
+    private void updateActivationActions(final Node node, final ActionbarPresenter actionbarPresenter) {
+        try {
+            // if it's a leaf recursive activation makes no sense
+            if (!NodeUtil.getNodes(node, NodeTypes.Page.NAME).iterator().hasNext()) {
+                actionbarPresenter.disable("activateRecursive");
+            }
+
+            int status = NodeTypes.Activatable.getActivationStatus(node);
+
+            switch (status) {
+            case NodeTypes.Activatable.ACTIVATION_STATUS_ACTIVATED:
+                actionbarPresenter.disable("activate");
+                break;
+            case NodeTypes.Activatable.ACTIVATION_STATUS_MODIFIED:
+                // TODO fgrilli what do we do in this case?
+                break;
+            case NodeTypes.Activatable.ACTIVATION_STATUS_NOT_ACTIVATED:
+                actionbarPresenter.disable("deactivate");
+                break;
+            }
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+
     }
 }
