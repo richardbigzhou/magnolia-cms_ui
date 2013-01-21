@@ -68,7 +68,7 @@ public class BaseDialog extends AbstractSingleComponentContainer implements Dial
 
             @Override
             public void closeSelf() {
-                closeSelf();
+                BaseDialog.this.closeSelf();
             }
         });
     }

@@ -360,7 +360,7 @@ fieldset {
 * used by TextAndButtonField custom component.
 */
 input[type="text"].small-textfield {
-    width:400px !important;
+   width: 100%;
 }
 
 .v-form-field.v-richtextarea {
