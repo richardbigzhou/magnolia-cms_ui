@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
+import info.magnolia.commands.chain.Command;
 import info.magnolia.module.activation.commands.ActivationCommand;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 
-import org.apache.commons.chain.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ public class ActivationAction extends BaseActivationAction<ActivationActionDefin
     public void execute() throws ActionExecutionException {
         Command command = getCommandsManager().getCommand("activate");
         if (command == null) {
-            throw new ActionExecutionException(String.format("Could not find command %s in any catalog", "activate"));
+            throw new ActionExecutionException("Could not find command activate in any catalog");
         }
         try {
             ActivationCommand activationCommand = (ActivationCommand) command;
