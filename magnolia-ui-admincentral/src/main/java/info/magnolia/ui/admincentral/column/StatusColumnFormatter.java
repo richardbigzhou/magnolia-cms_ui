@@ -113,11 +113,9 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
                 root.addComponent(activationStatus);
                 root.addComponent(permissionStatus);
                 return root;
-            }
-            else if (definition.isActivation()) {
+            } else if (definition.isActivation()) {
                 return activationStatus;
-            }
-            else if (definition.isPermissions()) {
+            } else if (definition.isPermissions()) {
                 return permissionStatus;
             }
             return new CssLayout();

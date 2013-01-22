@@ -42,7 +42,7 @@ public class Position extends JavaScriptObject {
 
     protected Position() {
     }
-    
+
     public final native int top() /*-{
         return this.top;
     }-*/;

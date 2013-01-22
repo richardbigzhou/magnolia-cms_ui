@@ -53,9 +53,9 @@ public class InstantPreviewLocationManagerImpl implements InstantPreviewLocation
 
     private final Random idGenerator;
 
-    private List<String> hosts = Collections.synchronizedList(Lists.<String> newArrayList());
+    private List<String> hosts = Collections.synchronizedList(Lists.<String>newArrayList());
 
-    private ListMultimap<String, PreviewLocationListener> listeners = Multimaps.synchronizedListMultimap(ArrayListMultimap.<String, PreviewLocationListener> create());
+    private ListMultimap<String, PreviewLocationListener> listeners = Multimaps.synchronizedListMultimap(ArrayListMultimap.<String, PreviewLocationListener>create());
 
     private static final int MIN_HOST_ID = 0;
 

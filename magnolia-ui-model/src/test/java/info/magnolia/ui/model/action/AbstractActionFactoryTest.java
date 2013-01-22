@@ -80,5 +80,4 @@ public class AbstractActionFactoryTest {
         assertNotNull(action);
         assertSame(mockAction, action);
     }
-
 }

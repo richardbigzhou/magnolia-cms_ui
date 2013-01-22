@@ -69,7 +69,7 @@ import com.vaadin.ui.ComponentContainer;
 
 /**
  * Implementation of {@link AppContext}.
- * 
+ *
  * See MGNLUI-379.
  */
 public class AppContextImpl implements AppContext, AppFrameView.Listener {
@@ -235,8 +235,7 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
                 appFrameView.setActiveTab((MagnoliaTab) subAppContext.getTab());
             }
             currentSubAppContext = subAppContext;
-        }
-        else {
+        } else {
             // else start new subApp
             // startSubApp
 

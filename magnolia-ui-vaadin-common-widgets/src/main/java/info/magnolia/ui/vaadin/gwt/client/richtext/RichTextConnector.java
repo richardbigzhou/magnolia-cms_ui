@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.richtext;
 
-import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorConnector;
-
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
+
+import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorConnector;
 
 import com.vaadin.shared.ui.Connect;
 

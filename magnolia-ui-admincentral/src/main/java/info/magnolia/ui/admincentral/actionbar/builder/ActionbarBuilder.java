@@ -73,8 +73,7 @@ public class ActionbarBuilder {
 
                     for (ActionbarItemDefinition item : group.getItems()) {
                         if (actionNames.contains(item.getName())) {
-                            log.warn("Action was not added: an action with name '" + item.getName()
-                                    + "' already exists in section '" + section.getName() + "'.");
+                            log.warn("Action was not added: an action with name '" + item.getName() + "' already exists in section '" + section.getName() + "'.");
                             continue;
                         }
 
@@ -102,8 +101,7 @@ public class ActionbarBuilder {
                 }
             }
         } else {
-            entry = new ActionbarItem(item.getName(), item.getLabel(), null,
-                    groupName);
+            entry = new ActionbarItem(item.getName(), item.getLabel(), null, groupName);
         }
         actionBar.addAction(entry, sectionName);
     }

@@ -43,9 +43,8 @@ import com.vaadin.ui.Table;
 
 /**
  * Abstract ColumnFormatter implementations, initializes common attributes.
- * 
- * @param <D>
- *            definition type
+ *
+ * @param <D> definition type
  */
 public abstract class AbstractColumnFormatter<D extends ColumnDefinition> implements ColumnFormatter {
 
@@ -56,10 +55,8 @@ public abstract class AbstractColumnFormatter<D extends ColumnDefinition> implem
     }
 
     /**
-     * @param source
-     *            table to get jcrItem from
-     * @param itemId
-     *            id of the item to get
+     * @param source table to get jcrItem from
+     * @param itemId id of the item to get
      * @return the jcrItem with the provided id
      */
     protected Item getJcrItem(Table source, Object itemId) {

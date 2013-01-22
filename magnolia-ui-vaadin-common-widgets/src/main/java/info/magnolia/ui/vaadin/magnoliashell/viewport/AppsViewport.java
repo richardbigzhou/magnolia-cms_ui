@@ -37,7 +37,7 @@ import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 
 /**
- * AppsViewport is responsible for displaying all the apps except shell-apps.
+ * Apps viewport.
  */
 public class AppsViewport extends ShellViewport {
 

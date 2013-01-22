@@ -93,8 +93,7 @@ public class AppEventTest {
         // Creates a ModuleRegistry with a single module defining a
         // AppEventBusConfigurer for components 'app'
         ConfigurerDefinition configurerDefinition = new ConfigurerDefinition();
-        configurerDefinition
-                .setClassName(AppEventBusConfigurer.class.getName());
+        configurerDefinition.setClassName(AppEventBusConfigurer.class.getName());
         ComponentsDefinition components = new ComponentsDefinition();
         components.setId("app");
         components.addConfigurer(configurerDefinition);
@@ -103,8 +102,7 @@ public class AppEventTest {
         ArrayList<ModuleDefinition> moduleDefinitions = new ArrayList<ModuleDefinition>();
         moduleDefinitions.add(moduleDefinition);
         ModuleRegistry moduleRegistry = mock(ModuleRegistry.class);
-        when(moduleRegistry.getModuleDefinitions()).thenReturn(
-                moduleDefinitions);
+        when(moduleRegistry.getModuleDefinitions()).thenReturn(moduleDefinitions);
 
         componentProvider = AppControllerImplTest.initComponentProvider();
         Shell shell = mock(MagnoliaShell.class);
@@ -116,9 +114,7 @@ public class AppEventTest {
 
         AppDescriptorRegistry appDescriptorRegistry = mock(AppDescriptorRegistry.class);
 
-        appController = new AppControllerImpl(moduleRegistry,
-                componentProvider, appLauncherLayoutManager,
-                locationController, messagesManager, shell, eventBus);
+        appController = new AppControllerImpl(moduleRegistry, componentProvider, appLauncherLayoutManager, locationController, messagesManager, shell, eventBus);
     }
 
     @After
@@ -143,14 +139,11 @@ public class AppEventTest {
 
         // Initial check
         assertEquals(2, eventCollector.appLifecycleEvent.size());
-        AppControllerImplTest.checkAppEvent(eventCollector, appName,
-                AppLifecycleEventType.STARTED, 0);
-        AppControllerImplTest.checkAppEvent(eventCollector, appName,
-                AppLifecycleEventType.FOCUSED, 1);
+        AppControllerImplTest.checkAppEvent(eventCollector, appName, AppLifecycleEventType.STARTED, 0);
+        AppControllerImplTest.checkAppEvent(eventCollector, appName, AppLifecycleEventType.FOCUSED, 1);
 
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp0"));
-        AppEventTestImpl firstAppInstance = (AppEventTestImpl) AppTestImpl.res
-                .get("TestPageApp0");
+        AppEventTestImpl firstAppInstance = (AppEventTestImpl) AppTestImpl.res.get("TestPageApp0");
         EventBus firstInstanceBus = firstAppInstance.eventBus;
         InvocationCountingTestEventHandler firstInstanceHandler = firstAppInstance.handler;
 
@@ -170,8 +163,7 @@ public class AppEventTest {
                                 appName, "", ""));
 
         assertEquals(true, AppTestImpl.res.containsKey("TestPageApp1"));
-        AppEventTestImpl secondAppInstance = (AppEventTestImpl) AppTestImpl.res
-                .get("TestPageApp1");
+        AppEventTestImpl secondAppInstance = (AppEventTestImpl) AppTestImpl.res.get("TestPageApp1");
         EventBus secondInstanceBus = secondAppInstance.eventBus;
         InvocationCountingTestEventHandler secondInstanceHandler = secondAppInstance.handler;
 
@@ -206,7 +198,6 @@ public class AppEventTest {
         cat.addApp(entry);
         AppLauncherLayout appLauncherLayout = new AppLauncherLayout();
         appLauncherLayout.addGroup(cat);
-        when(appLauncherLayoutManager.getLayoutForCurrentUser()).thenReturn(
-                appLauncherLayout);
+        when(appLauncherLayoutManager.getLayoutForCurrentUser()).thenReturn(appLauncherLayout);
     }
 }

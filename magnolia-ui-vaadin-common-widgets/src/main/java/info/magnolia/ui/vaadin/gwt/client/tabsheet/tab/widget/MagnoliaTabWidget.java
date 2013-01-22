@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * MagnoliaTabWidget.
  */
 public class MagnoliaTabWidget extends SimplePanel {
-    
+
     private MagnoliaTabLabel label = new MagnoliaTabLabel();
 
     public MagnoliaTabWidget(MagnoliaTabConnector connector) {
@@ -49,7 +49,7 @@ public class MagnoliaTabWidget extends SimplePanel {
         setStyleName("v-shell-tab");
         label.setTab(this);
     }
-    
+
     public MagnoliaTabLabel getLabel() {
         return label;
     }

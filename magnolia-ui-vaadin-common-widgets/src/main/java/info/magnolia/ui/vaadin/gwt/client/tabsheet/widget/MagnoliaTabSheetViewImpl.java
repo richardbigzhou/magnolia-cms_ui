@@ -76,13 +76,13 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     private final LoadingPane loadingPane = new LoadingPane();
 
     private EventBus eventBus;
-    
+
     public MagnoliaTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
         this.presenter = presenter;
         this.tabBar = new TabBarWidget(eventBus);
         this.eventBus = eventBus;
-        
+
         addStyleName("v-shell-tabsheet");
         scroller.addStyleName("v-shell-tabsheet-scroller");
         tabPanel.addStyleName("v-shell-tabsheet-tab-wrapper");

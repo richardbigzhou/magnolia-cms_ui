@@ -38,7 +38,7 @@ import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayou
 /**
  * Manages the launcher layout displayed in the app launcher. Fires an {@link AppLauncherLayoutChangedEvent} of the system event bus
  * when the layout changes.
- * 
+ *
  * @see AppLauncherLayout
  * @see AppLauncherLayoutChangedEvent
  * @see AppLauncherLayoutChangedEventHandler

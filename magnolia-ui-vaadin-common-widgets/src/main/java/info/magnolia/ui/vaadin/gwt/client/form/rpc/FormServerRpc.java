@@ -40,7 +40,7 @@ import com.vaadin.shared.communication.ServerRpc;
  * FormServerRpc.
  */
 public interface FormServerRpc extends ServerRpc {
-    
+
     void focusNextProblematicField(Connector currentFocused);
-    
+
 }

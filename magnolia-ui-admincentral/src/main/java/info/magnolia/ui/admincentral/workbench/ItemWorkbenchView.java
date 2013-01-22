@@ -42,7 +42,7 @@ import com.vaadin.ui.ComponentContainer;
 
 /**
  * ItemWorkbenchView.
- * 
+ *
  * @see ItemWorkbenchViewImpl
  */
 public interface ItemWorkbenchView extends ComponentContainer, View {

@@ -116,8 +116,7 @@ public class ContentPresenter implements ContentView.Listener {
         }
 
         if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
-            throw new IllegalStateException(workbenchDefinition.getName()
-                    + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
+            throw new IllegalStateException(workbenchDefinition.getName() + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
         }
 
         selectedItemPath = StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");

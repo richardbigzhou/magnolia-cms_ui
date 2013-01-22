@@ -80,13 +80,10 @@ public class TreeViewImpl implements TreeView {
 
     /**
      * Instantiates a new content tree view.
-     * 
-     * @param workbench
-     *            the workbench definition
-     * @param componentProvider
-     *            the component provider
-     * @param container
-     *            the container data source
+     *
+     * @param workbench the workbench definition
+     * @param componentProvider the component provider
+     * @param container the container data source
      */
     public TreeViewImpl(WorkbenchDefinition workbench, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
         this.container = container;
@@ -181,15 +178,11 @@ public class TreeViewImpl implements TreeView {
 
     /**
      * Sets the columns for the vaadin TreeTable, based on workbench columns configuration.
-     * 
-     * @param treeTable
-     *            the TreeTable vaadin component
-     * @param container
-     *            the container data source
-     * @param columns
-     *            the list of ColumnDefinitions
-     * @param componentProvider
-     *            the component provider
+     *
+     * @param treeTable the TreeTable vaadin component
+     * @param container the container data source
+     * @param columns the list of ColumnDefinitions
+     * @param componentProvider the component provider
      */
     protected void buildColumns(TreeTable treeTable, Container container, List<ColumnDefinition> columns, ComponentProvider componentProvider) {
         final Iterator<ColumnDefinition> iterator = columns.iterator();

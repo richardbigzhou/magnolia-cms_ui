@@ -52,8 +52,7 @@ public class MessageEvent implements Event<MessageEventHandler> {
     public void dispatch(MessageEventHandler handler) {
         if (cleared) {
             handler.messageCleared(this);
-        }
-        else {
+        } else {
             handler.messageSent(this);
         }
     }

@@ -51,10 +51,8 @@ import com.google.gwt.user.client.ui.Label;
  * }
  * <p>
  * The placeholder is styled to be automatically centered in the main bar. See this module's editor.css file (id selector #mgnlEditorMainbarPlaceholder).
- * 
+ *
  * Note: This class is no longer used. Functionality provided by actionbar etc.
- * 
- * 
  */
 public class PageBar extends AbstractBar {
 

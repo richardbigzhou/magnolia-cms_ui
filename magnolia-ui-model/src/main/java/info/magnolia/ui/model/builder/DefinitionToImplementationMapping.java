@@ -35,11 +35,9 @@ package info.magnolia.ui.model.builder;
 
 /**
  * Defines a Mapping from a Definition to an specific implementation.
- * 
- * @param <D>
- *            class of the definition
- * @param <I>
- *            class of the implementation
+ *
+ * @param <D> class of the definition
+ * @param <I> class of the implementation
  */
 public class DefinitionToImplementationMapping<D, I> {
 

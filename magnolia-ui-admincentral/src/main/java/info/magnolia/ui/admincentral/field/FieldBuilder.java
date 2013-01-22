@@ -52,7 +52,7 @@ import com.vaadin.ui.Field;
  * <li>{@link com.vaadin.data.Item} they will be operating on additional injected constructor arguments.
  * </ul>
  * <strong>FieldBuilder are responsible to create/initialize Items that are by the Vaadin Field.</strong>
- * 
+ *
  * @see FieldDefinition
  * @see info.magnolia.ui.admincentral.field.builder.FieldFactory
  */

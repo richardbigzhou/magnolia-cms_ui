@@ -64,9 +64,8 @@ public class ActionbarSectionWidget extends FlowPanel {
 
     /**
      * Instantiates a new action bar section with given data.
-     * 
-     * @param data
-     *            the data
+     *
+     * @param data the data
      */
     public ActionbarSectionWidget(ActionbarSection data) {
         this.data = data;
@@ -91,7 +90,7 @@ public class ActionbarSectionWidget extends FlowPanel {
             int idx = Math.max(getWidgetIndex(preview), 0);
             insert(group, idx);
         } else {
-            add(group);   
+            add(group);
         }
     }
 

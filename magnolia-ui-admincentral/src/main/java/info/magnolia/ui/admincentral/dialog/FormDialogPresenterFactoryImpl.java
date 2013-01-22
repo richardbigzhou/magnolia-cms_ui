@@ -67,9 +67,9 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
 
     @Inject
     public FormDialogPresenterFactoryImpl(ComponentProvider componentProvider,
-            DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, FormPresenterFactory formPresenterFactory,
-            FieldFactory fieldFactory, Shell shell,
-            @Named("admincentral") EventBus eventBus, final DialogActionFactory actionFactory) {
+                                          DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, FormPresenterFactory formPresenterFactory,
+                                          FieldFactory fieldFactory, Shell shell,
+                                          @Named("admincentral") EventBus eventBus, final DialogActionFactory actionFactory) {
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.dialogBuilder = dialogBuilder;
         this.formPresenterFactory = formPresenterFactory;

@@ -433,7 +433,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         Collection<Item> res = hierarchicalJcrContainer.getChildren(session.getNode("/server/filters"));
 
         // THEN
-        Item[] items = res.toArray(new Item[] {});
+        Item[] items = res.toArray(new Item[]{});
         assertEquals("/server/filters/zzz", items[0].getPath());
         assertEquals("/server/filters/abc", items[1].getPath());
         assertEquals("/server/filters/aaa", items[2].getPath());

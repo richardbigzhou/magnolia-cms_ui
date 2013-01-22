@@ -154,11 +154,11 @@ public final class JavascriptUtils {
     }
 
     public static void moveComponent(String idTarget, String idSource, String path, String order) {
-        if(isEmpty(idTarget) || isEmpty(idSource) || isEmpty(path) || idTarget.equals(idSource)) {
+        if (isEmpty(idTarget) || isEmpty(idSource) || isEmpty(path) || idTarget.equals(idSource)) {
             return;
         }
-        String pathSource = path+"//"+idSource;
-        String pathTarget = path+"//"+idTarget;
+        String pathSource = path + "//" + idSource;
+        String pathTarget = path + "//" + idTarget;
 
         UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
         urlBuilder.removeParameter("mgnlIntercept");

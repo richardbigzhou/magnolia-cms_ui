@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Default Property Utility Class.
- * 
+ *
  * Allows the creation of custom Value Object.
  */
 public class DefaultPropertyUtil {
@@ -78,40 +78,38 @@ public class DefaultPropertyUtil {
      * Create a custom Field Object based on the Type and defaultValue.
      * If the fieldType is null, the defaultValue will be returned as String or null.
      * If the defaultValue is null, null will be returned.
-     * 
-     * @throws NumberFormatException
-     *             In case of the default value could not be parsed to the desired class.
+     *
+     * @throws NumberFormatException In case of the default value could not be parsed to the desired class.
      */
     public static Object createTypedValue(String fieldType, String defaultValue) throws NumberFormatException {
         if (StringUtils.isBlank(fieldType)) {
             return defaultValue;
-        }
-        else if (defaultValue != null) {
+        } else if (defaultValue != null) {
             int valueType = PropertyType.valueFromName(fieldType);
             switch (valueType) {
-                case PropertyType.STRING:
-                    return defaultValue;
-                case PropertyType.BINARY:
-                    return null;
-                case PropertyType.LONG:
-                    return Long.decode(defaultValue);
-                case PropertyType.DOUBLE:
-                    return Double.valueOf(defaultValue);
-                case PropertyType.DATE:
-                    try {
-                        return new SimpleDateFormat(DateUtil.YYYY_MM_DD).parse(defaultValue);
-                    } catch (ParseException e) {
-                        throw new IllegalArgumentException(e);
-                    }
-                case PropertyType.BOOLEAN:
-                    return BooleanUtils.toBoolean(defaultValue);
-                case PropertyType.DECIMAL:
-                    return BigDecimal.valueOf(Long.decode(defaultValue));
-                default: {
-                    String msg = "Unsupported property type " + PropertyType.nameFromValue(valueType);
-                    log.error(msg);
-                    throw new IllegalArgumentException(msg);
+            case PropertyType.STRING:
+                return defaultValue;
+            case PropertyType.BINARY:
+                return null;
+            case PropertyType.LONG:
+                return Long.decode(defaultValue);
+            case PropertyType.DOUBLE:
+                return Double.valueOf(defaultValue);
+            case PropertyType.DATE:
+                try {
+                    return new SimpleDateFormat(DateUtil.YYYY_MM_DD).parse(defaultValue);
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException(e);
                 }
+            case PropertyType.BOOLEAN:
+                return BooleanUtils.toBoolean(defaultValue);
+            case PropertyType.DECIMAL:
+                return BigDecimal.valueOf(Long.decode(defaultValue));
+            default: {
+                String msg = "Unsupported property type " + PropertyType.nameFromValue(valueType);
+                log.error(msg);
+                throw new IllegalArgumentException(msg);
+            }
             }
         }
         return null;
@@ -120,31 +118,30 @@ public class DefaultPropertyUtil {
     /**
      * Return the related Class for a desired Type.
      * If no fieldType is defined, the default is String.
-     * 
-     * @throws IllegalArgumentException
-     *             if the Type is not supported.
+     *
+     * @throws IllegalArgumentException if the Type is not supported.
      */
     public static Class<?> getFieldTypeClass(String fieldType) {
         if (StringUtils.isNotEmpty(fieldType)) {
             int valueType = PropertyType.valueFromName(fieldType);
             switch (valueType) {
-                case PropertyType.STRING:
-                    return String.class;
-                case PropertyType.BINARY:
-                    return Binary.class;
-                case PropertyType.LONG:
-                    return Long.class;
-                case PropertyType.DOUBLE:
-                    return Double.class;
-                case PropertyType.DATE:
-                    // we use Date here instead of Calendar simply because the vaadin DateField uses Date not Calendar
-                    return Date.class;
-                case PropertyType.BOOLEAN:
-                    return Boolean.class;
-                case PropertyType.DECIMAL:
-                    return BigDecimal.class;
-                default:
-                    throw new IllegalArgumentException("Unsupported property type " + PropertyType.nameFromValue(valueType));
+            case PropertyType.STRING:
+                return String.class;
+            case PropertyType.BINARY:
+                return Binary.class;
+            case PropertyType.LONG:
+                return Long.class;
+            case PropertyType.DOUBLE:
+                return Double.class;
+            case PropertyType.DATE:
+                // we use Date here instead of Calendar simply because the vaadin DateField uses Date not Calendar
+                return Date.class;
+            case PropertyType.BOOLEAN:
+                return Boolean.class;
+            case PropertyType.DECIMAL:
+                return BigDecimal.class;
+            default:
+                throw new IllegalArgumentException("Unsupported property type " + PropertyType.nameFromValue(valueType));
             }
         } else {
             return String.class;

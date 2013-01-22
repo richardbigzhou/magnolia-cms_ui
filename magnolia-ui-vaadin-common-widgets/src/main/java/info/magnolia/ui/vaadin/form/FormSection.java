@@ -97,7 +97,8 @@ public class FormSection extends AbstractLayout {
     }
 
     @Override
-    public void replaceComponent(Component oldComponent, Component newComponent) {}
+    public void replaceComponent(Component oldComponent, Component newComponent) {
+    }
 
     @Override
     public Iterator<Component> iterator() {
@@ -159,7 +160,7 @@ public class FormSection extends AbstractLayout {
             while (problem != null) {
                 ++result;
                 problem = getNextProblematicField(problem);
-            }   
+            }
         }
         return result;
     }

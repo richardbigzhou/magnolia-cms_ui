@@ -62,11 +62,9 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
     /**
      * Instantiates a new preview page action.
-     * 
-     * @param definition
-     *            the definition
-     * @param nodeToPreview
-     *            the node to preview
+     *
+     * @param definition the definition
+     * @param nodeToPreview the node to preview
      */
     @Inject
     public PreviewPageAction(PreviewPageActionDefinition definition, LocationController locationController, Node nodeToPreview) {

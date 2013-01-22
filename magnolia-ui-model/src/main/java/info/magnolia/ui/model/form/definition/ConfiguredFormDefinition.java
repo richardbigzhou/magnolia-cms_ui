@@ -40,7 +40,7 @@ import java.util.List;
 
 /**
  * Standard form definition implementation.
- * 
+ *
  * @see FormDefinition
  */
 public class ConfiguredFormDefinition implements FormDefinition {

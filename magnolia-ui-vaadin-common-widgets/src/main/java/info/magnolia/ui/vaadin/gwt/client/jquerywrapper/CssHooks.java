@@ -40,7 +40,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public class CssHooks extends JavaScriptObject {
 
-    protected  CssHooks() {
+    protected CssHooks() {
     }
 
     public native static final CssHooks create() /*-{

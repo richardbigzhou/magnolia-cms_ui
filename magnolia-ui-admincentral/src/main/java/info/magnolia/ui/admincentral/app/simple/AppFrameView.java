@@ -60,7 +60,7 @@ public class AppFrameView implements View {
         public void setActiveTab(MagnoliaTab tab) {
             super.setActiveTab(tab);
             listener.onActiveTabSet(tab);
-        };
+        }
 
         @Override
         protected void closeTab(MagnoliaTab tab) {

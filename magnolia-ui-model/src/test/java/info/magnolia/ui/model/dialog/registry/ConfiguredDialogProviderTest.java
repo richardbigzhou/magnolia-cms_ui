@@ -39,6 +39,7 @@ package info.magnolia.ui.model.dialog.registry;
  import info.magnolia.importexport.PropertiesImportExport;
  import info.magnolia.test.ComponentsTestUtil;
  */
+
 import info.magnolia.test.RepositoryTestCase;
 
 import org.junit.Test;
@@ -48,9 +49,9 @@ import org.junit.Test;
  import org.junit.Before;
  import org.junit.Test;
  */
+
 /**
  * Tests for Dialog C2B.
- * 
  */
 public class ConfiguredDialogProviderTest extends RepositoryTestCase {
     @Test

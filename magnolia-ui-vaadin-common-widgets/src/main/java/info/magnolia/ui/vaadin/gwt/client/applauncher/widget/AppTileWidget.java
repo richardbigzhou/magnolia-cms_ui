@@ -54,7 +54,6 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * The tile of one single app in AppLauncher.
- * 
  */
 public class AppTileWidget extends Widget {
 
@@ -146,7 +145,9 @@ public class AppTileWidget extends Widget {
         updateColors();
     }
 
-    /****** COLORING. *********/
+    /**
+     * ** COLORING. ********
+     */
 
     public void updateColors() {
         if (isActive()) {
@@ -183,8 +184,6 @@ public class AppTileWidget extends Widget {
 
     /**
      * Set colors with the group coloring.
-     * 
-     * @param isActive
      */
     private void setColors(boolean isTileWhite) {
         final Style style = getElement().getStyle();

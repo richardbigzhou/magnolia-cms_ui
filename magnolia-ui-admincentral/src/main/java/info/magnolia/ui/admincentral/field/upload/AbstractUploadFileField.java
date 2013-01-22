@@ -93,12 +93,10 @@ import com.vaadin.ui.Upload.StartedListener;
  * <li>file storage mode: {@link org.vaadin.easyuploads.UploadField.StorageMode#FILE}
  * <li>byte[] property ( {@link org.vaadin.easyuploads.UploadField.FieldType#BYTE_ARRAY})
  * </ul>
- * 
- * @param <D>
- *            definition type
+ *
+ * @param <D> definition type
  */
-public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends CustomField<Byte[]> implements StartedListener, FinishedListener,
-        ProgressListener, FailedListener, DropHandler, UploadFileField {
+public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends CustomField<Byte[]> implements StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler, UploadFileField {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractUploadFileField.class);
 
@@ -150,10 +148,9 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
 
     /**
      * Basic constructor.
-     * 
-     * @param item
-     *            used to store the File properties like binary data, file name,
-     *            etc.
+     *
+     * @param fileItem used to store the File properties like binary data, file name,
+     * etc.
      */
     public AbstractUploadFileField(D fileItem, Shell shell) {
         this.fileItem = fileItem;
@@ -206,7 +203,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
             @Override
             public FieldType getFieldType() {
                 return FieldType.BYTE_ARRAY;
-            };
+            }
         };
     }
 
@@ -271,8 +268,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
 
                 @Override
                 public void streamingFinished(StreamingEndEvent event) {
-                    FinishedEvent uploadEvent = new FinishedEvent(upload, event.getFileName(), event.getMimeType(), event
-                            .getContentLength());
+                    FinishedEvent uploadEvent = new FinishedEvent(upload, event.getFileName(), event.getMimeType(), event.getContentLength());
                     uploadFinished(uploadEvent);
                 }
 
@@ -475,7 +471,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     /**
      * @return a string representing relevant file info. By default returns an
      *         empty string.
-     **/
+     */
     protected String getDisplayDetails() {
         return "";
     }

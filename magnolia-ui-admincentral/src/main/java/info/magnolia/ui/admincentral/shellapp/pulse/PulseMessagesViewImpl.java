@@ -67,7 +67,7 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class PulseMessagesViewImpl extends CustomComponent implements PulseMessagesView {
 
-    private static final String[] headers = new String[] { "New", "Type", "Message text", "Sender", "Date", "Quick action" };
+    private static final String[] headers = new String[]{"New", "Type", "Message text", "Sender", "Date", "Quick action"};
 
     private final TreeTable messageTable = new MagnoliaTreeTable();
 

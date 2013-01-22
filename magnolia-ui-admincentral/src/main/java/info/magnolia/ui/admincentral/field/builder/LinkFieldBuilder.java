@@ -59,9 +59,8 @@ import com.vaadin.ui.Field;
 
 /**
  * Creates and initializes a LinkField field based on a field definition.
- * 
- * @param <D>
- *            definition type
+ *
+ * @param <D> definition type
  */
 public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBuilder<LinkFieldDefinition, String> {
 
@@ -86,8 +85,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
         if (definition.isIdentifier()) {
             converter = new IdentifierToPathTranslator(definition.getWorkspace());
         }
-        textButton = new TextAndButtonField(converter, getMessage(definition.getButtonSelectNewLabel()),
-                getMessage(definition.getButtonSelectOtherLabel()));
+        textButton = new TextAndButtonField(converter, getMessage(definition.getButtonSelectNewLabel()), getMessage(definition.getButtonSelectOtherLabel()));
         final Button selectButton = textButton.getSelectButton();
 
         if (StringUtils.isNotBlank(definition.getDialogName()) || StringUtils.isNotBlank(definition.getAppName())) {
@@ -124,8 +122,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                                 if (jcrItem.isNode()) {
                                     final Node selected = (Node) jcrItem;
                                     try {
-                                        boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) &&
-                                                !PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
+                                        boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && !PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
                                         textButton.setValue(isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath());
                                     } catch (RepositoryException e) {
                                         log.error("Not able to access the configured property. Value will not be set.", e);

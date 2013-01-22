@@ -133,13 +133,10 @@ public class PageEditorPresenter implements PageEditorView.Listener {
      * Creates a chain of dialogs for creating new components.
      * The first dialog is built on the fly based on the available components passed from the client.
      * Based on the selection made in the first dialog the second dialog will be created, providing fields for the actual component.
-     * 
-     * @param workspace
-     *            the workspace of the parent node
-     * @param path
-     *            the parent node path
-     * @param availableComponents
-     *            available components for the parent area
+     *
+     * @param workspace the workspace of the parent node
+     * @param path the parent node path
+     * @param availableComponents available components for the parent area
      */
     @Override
     public void newComponent(String workspace, String path, String availableComponents) {
@@ -225,7 +222,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
         dialogBuilder.actions(
                 dialogConfig.action("commit").label("choose").action(new CallbackDialogActionDefinition()),
                 dialogConfig.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
-                );
+        );
 
         FormBuilder formBuilder = formConfig.form().description("Select the Component to add to the page.");
         TabBuilder tabBuilder = formConfig.tab("Components").label("Components");
@@ -238,10 +235,8 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                 TemplateDefinition paragraphInfo = templateDefinitionRegistry.getTemplateDefinition(tokens[i]);
 
                 fieldBuilder.options(
-                        (new OptionBuilder())
-                                .value(paragraphInfo.getId())
-                                .label(TemplateSelectorField.getI18nTitle(paragraphInfo))
-                        );
+                        (new OptionBuilder()).value(paragraphInfo.getId()).label(TemplateSelectorField.getI18nTitle(paragraphInfo))
+                );
 
             } catch (RegistrationException e) {
                 log.error("Exception caught: {}", e.getMessage(), e);

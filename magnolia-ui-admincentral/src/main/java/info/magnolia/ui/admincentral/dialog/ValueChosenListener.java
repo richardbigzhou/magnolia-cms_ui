@@ -35,9 +35,8 @@ package info.magnolia.ui.admincentral.dialog;
 
 /**
  * Interface for value selection providers.
- * 
- * @param <VT>
- *            Value Type.
+ *
+ * @param <VT> Value Type.
  */
 public interface ValueChosenListener<VT> {
 
@@ -47,8 +46,6 @@ public interface ValueChosenListener<VT> {
 
     /**
      * Indicates that the implementor can accept {@link ValueChosenListener}.
-     * 
-     * @param <VT>
      */
     interface HasValueChosenListener<VT> {
 

@@ -78,6 +78,7 @@ public class Fragment implements Serializable {
             return ShellAppType.APPLAUNCHER;
         }
     }
+
     public void setParameter(String parameter) {
         this.parameter = parameter;
     }
@@ -119,7 +120,7 @@ public class Fragment implements Serializable {
     public boolean isSameApp(Fragment other) {
         return appViewportType == other.appViewportType && appId.equals(other.appId);
     }
-    
+
     @Override
     public String toString() {
         return appViewportType.getFragmentPrefix() + appId + ":" + subAppId + ";" + parameter;
@@ -171,7 +172,7 @@ public class Fragment implements Serializable {
     public boolean isShellApp() {
         return appViewportType == ViewportType.SHELL_APP;
     }
-    
+
     public boolean isApp() {
         return !isShellApp();
     }

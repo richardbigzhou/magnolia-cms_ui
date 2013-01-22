@@ -167,7 +167,7 @@ public class SaveDialogActionTest {
     }
 
     @Test
-    public void testUpdateLastModified() throws RepositoryException{
+    public void testUpdateLastModified() throws RepositoryException {
         // GIVEN
         node = session.getRootNode().addNode("content", NodeTypes.Content.NAME);
 
@@ -185,7 +185,7 @@ public class SaveDialogActionTest {
     }
 
     @Test
-    public void testUpdateLastModifiedDoesNothingForFolder() throws RepositoryException{
+    public void testUpdateLastModifiedDoesNothingForFolder() throws RepositoryException {
         // GIVEN
         node = session.getRootNode().addNode("folder", NodeTypes.Folder.NAME);
         dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
@@ -203,7 +203,7 @@ public class SaveDialogActionTest {
     }
 
     @Test
-    public void testUpdateLastModifiedTouchesParent() throws RepositoryException{
+    public void testUpdateLastModifiedTouchesParent() throws RepositoryException {
         // GIVEN
         Node parentOfParent = session.getRootNode().addNode("parentOfParent", NodeTypes.Content.NAME);
         Node parent = parentOfParent.addNode("parent", NodeTypes.ContentNode.NAME);
@@ -226,7 +226,7 @@ public class SaveDialogActionTest {
     }
 
     @Test
-    public void testUpdateLastModifiedDoesNotTouchParentWhenNotWebsiteWorkspace() throws RepositoryException{
+    public void testUpdateLastModifiedDoesNotTouchParentWhenNotWebsiteWorkspace() throws RepositoryException {
         // GIVEN
         // session has to be non-Website for this test
         session = new MockSession(RepositoryConstants.CONFIG);
@@ -251,7 +251,7 @@ public class SaveDialogActionTest {
     }
 
     @Test
-    public void testUpdateLastModifiedDoesNotTouchParentWhenItHasLevel1() throws RepositoryException{
+    public void testUpdateLastModifiedDoesNotTouchParentWhenItHasLevel1() throws RepositoryException {
         // GIVEN
         Node parentOfParent = session.getRootNode().addNode("parentOfParent", NodeTypes.ContentNode.NAME);
         Node parent = parentOfParent.addNode("parent", NodeTypes.ContentNode.NAME);
@@ -276,7 +276,7 @@ public class SaveDialogActionTest {
     }
 
     @Test
-    public void testUpdateLastModifiedDoesNotTouchParentWhenItIsTypeContent() throws RepositoryException{
+    public void testUpdateLastModifiedDoesNotTouchParentWhenItIsTypeContent() throws RepositoryException {
         // GIVEN
         Node parentOfParent = session.getRootNode().addNode("parentOfParent", NodeTypes.Content.NAME);
         Node parent = parentOfParent.addNode("parent", NodeTypes.Content.NAME);

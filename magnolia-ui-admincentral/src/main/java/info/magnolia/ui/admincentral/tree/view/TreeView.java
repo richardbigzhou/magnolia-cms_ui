@@ -37,7 +37,6 @@ import info.magnolia.ui.admincentral.content.view.ContentView;
 
 /**
  * Tree view interface.
- * 
  */
 public interface TreeView extends ContentView {
 

@@ -37,11 +37,9 @@ import info.magnolia.ui.admincentral.form.AbstractFormItem;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
 
 /**
- * 
- * .
- * 
- * @param <D>
- *            definition type.
+ * Base type for FieldValidationBuilders.
+ *
+ * @param <D> definition type.
  */
 public abstract class AbstractFieldValidatorBuilder<D extends ConfiguredFieldValidatorDefinition> extends AbstractFormItem implements FieldValidatorBuilder {
 

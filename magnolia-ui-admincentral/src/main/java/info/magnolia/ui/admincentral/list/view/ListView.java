@@ -37,7 +37,6 @@ import info.magnolia.ui.admincentral.content.view.ContentView;
 
 /**
  * List view interface.
- * 
  */
 public interface ListView extends ContentView {
 

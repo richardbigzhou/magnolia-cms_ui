@@ -80,15 +80,12 @@ public class ActionbarItemWidget extends Widget {
 
     /**
      * Instantiates a new action in action bar.
-     * 
-     * @param data
-     *            the data json object
-     * @param eventBus
-     *            the event bus
-     * @param icon
-     *            the icon
-     * 
-     *            Use {@link #VActionbarItem(VActionbarItemJSO, VActionbarGroup, EventBus)} instead.
+     *
+     * @param data the data json object
+     * @param eventBus the event bus
+     * @param icon the icon
+     *
+     * Use {@link #VActionbarItem(VActionbarItemJSO, VActionbarGroup, EventBus)} instead.
      */
     @Deprecated
     public ActionbarItemWidget(ActionbarItem data, VActionbarGroup group, EventBus eventBus, Icon icon) {
@@ -105,13 +102,10 @@ public class ActionbarItemWidget extends Widget {
 
     /**
      * Instantiates a new action in action bar.
-     * 
-     * @param data
-     *            the data json object
-     * @param group
-     *            the group
-     * @param eventBus
-     *            the event bus
+     *
+     * @param data the data json object
+     * @param group the group
+     * @param eventBus the event bus
      */
     public ActionbarItemWidget(ActionbarItem data, VActionbarGroup group, EventBus eventBus) {
         super();
@@ -158,7 +152,7 @@ public class ActionbarItemWidget extends Widget {
             public void onMouseUp(MouseUpEvent event) {
                 removeStyleName("mousedown");
                 if (isEnabled) {
-                    eventBus.fireEvent(new ActionTriggerEvent(data.getName(), ActionbarItemWidget.this));   
+                    eventBus.fireEvent(new ActionTriggerEvent(data.getName(), ActionbarItemWidget.this));
                 }
             }
         }, MouseUpEvent.getType());

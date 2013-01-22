@@ -37,7 +37,7 @@ package info.magnolia.ui.vaadin.gwt.client.jquerywrapper;
  * Calls JQuery noConflict on load.
  */
 public class jQueryBoostrap {
-    
+
     static {
         startJQuery();
     }

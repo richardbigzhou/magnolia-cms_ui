@@ -39,7 +39,7 @@ import java.util.List;
 
 /**
  * Defines a tab within a form. Holds a list of fields contained in this tab.
- * 
+ *
  * @see info.magnolia.ui.model.form.definition.FormDefinition
  * @see FieldDefinition
  */

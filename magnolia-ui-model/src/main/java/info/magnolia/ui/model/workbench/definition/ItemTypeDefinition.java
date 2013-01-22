@@ -35,7 +35,7 @@ package info.magnolia.ui.model.workbench.definition;
 
 /**
  * Configuration for inclusion of a certain item type in a tree.
- * 
+ *
  * @see info.magnolia.cms.core.ItemType
  */
 public interface ItemTypeDefinition {

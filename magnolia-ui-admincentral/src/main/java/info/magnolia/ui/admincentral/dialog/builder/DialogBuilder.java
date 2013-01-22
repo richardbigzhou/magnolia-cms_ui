@@ -43,9 +43,8 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Builder for {@link DialogView} and {@link FormDialogView}.
  * Receives the definition parameters for the dialog surrounding (like i18n base and caption/description).
- * 
+ *
  * @see info.magnolia.ui.admincentral.dialog.FormDialogPresenter
- * 
  */
 public class DialogBuilder {
 

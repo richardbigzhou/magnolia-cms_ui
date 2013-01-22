@@ -56,25 +56,25 @@ import com.vaadin.util.ReflectTools;
 @JavaScript({"js/jquery.min.js", "js/jquery.color.js", "js/jquery.Jcrop.js", "js/jcrop_connector.js"})
 @StyleSheet("css/jquery.Jcrop.css")
 public class JCrop extends AbstractJavaScriptExtension {
-    
+
     /**
      * JCropEvent.
      */
     public static class JCropEvent extends Component.Event {
-        
+
         private final SelectionArea area;
-        
+
         public JCropEvent(Component source, SelectionArea area) {
             super(source);
             this.area = area;
         }
-        
+
         public SelectionArea getArea() {
             return area;
         }
-        
+
     }
-    
+
     /**
      * JCropSelectionEvent.
      */
@@ -98,45 +98,45 @@ public class JCrop extends AbstractJavaScriptExtension {
      */
     public interface SelectionListener {
         public static String EVENT_ID = "jcrop_sl";
-        public static Method EVENT_METHOD = 
-                ReflectTools.findMethod(SelectionListener.class, "onSelected", JCropSelectionEvent.class);
+        public static Method EVENT_METHOD = ReflectTools.findMethod(SelectionListener.class, "onSelected", JCropSelectionEvent.class);
+
         void onSelected(JCropSelectionEvent e);
     }
-    
+
     /**
      * ReleaseListener.
      */
     public interface ReleaseListener {
         public static String EVENT_ID = "jcrop_rl";
-        public static Method EVENT_METHOD = 
-                ReflectTools.findMethod(ReleaseListener.class, "onRelease", JCropReleaseEvent.class);
+        public static Method EVENT_METHOD = ReflectTools.findMethod(ReleaseListener.class, "onRelease", JCropReleaseEvent.class);
+
         void onRelease(JCropReleaseEvent e);
     }
-    
+
     public void addSelectionListener(SelectionListener listener) {
         addListener(SelectionListener.EVENT_ID, JCropSelectionEvent.class, listener, SelectionListener.EVENT_METHOD);
     }
-    
+
     public void addReleaseListener(ReleaseListener listener) {
         addListener(ReleaseListener.EVENT_ID, JCropReleaseEvent.class, listener, ReleaseListener.EVENT_METHOD);
     }
-    
+
     public JCrop() {
         addFunction("doOnSelect", new JavaScriptFunction() {
             @Override
             public void call(JSONArray args) throws JSONException {
-                fireEvent(new JCropSelectionEvent((Component)getParent(), AreaFromJSON(args.getJSONObject(0))));
+                fireEvent(new JCropSelectionEvent((Component) getParent(), AreaFromJSON(args.getJSONObject(0))));
             }
         });
-        
+
         addFunction("doOnRelease", new JavaScriptFunction() {
             @Override
             public void call(JSONArray args) throws JSONException {
-                fireEvent(new JCropReleaseEvent((Component)getParent(), AreaFromJSON(args.getJSONObject(0))));
+                fireEvent(new JCropReleaseEvent((Component) getParent(), AreaFromJSON(args.getJSONObject(0))));
             }
         });
     }
-    
+
     protected SelectionArea AreaFromJSON(JSONObject json) {
         try {
             return new SelectionArea(json.getInt("x"), json.getInt("y"), json.getInt("w"), json.getInt("w"));
@@ -144,18 +144,18 @@ public class JCrop extends AbstractJavaScriptExtension {
             return new SelectionArea();
         }
     }
-    
+
     @Override
     public void attach() {
         super.attach();
-        ((Component)getParent()).addStyleName("croppable" + getConnectorId()); 
+        ((Component) getParent()).addStyleName("croppable" + getConnectorId());
     }
 
     @Override
     public JCropState getState() {
         return (JCropState) super.getState();
     }
-    
+
     @Override
     protected Class<Image> getSupportedParentType() {
         return Image.class;
@@ -164,11 +164,11 @@ public class JCrop extends AbstractJavaScriptExtension {
     public void setAspectRatio(double aspectRatio) {
         getState().aspectRatio = aspectRatio;
     }
-    
+
     public void setCropEnabled(boolean isOn) {
         callFunction(isOn ? "on" : "off");
     }
-    
+
     public void enable() {
         callFunction("enable");
     }

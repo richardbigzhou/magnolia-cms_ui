@@ -98,7 +98,7 @@ public class ConfiguredDialogDefinitionManagerTest {
                 B_DIALOG_PATH + "/actions/actionb",
                 B_DIALOG_PATH + "/actions/actionb.label=label",
                 C_DIALOG_PATH + ".id=cModule:cDialog"
-                );
+        );
         MockUtil.initMockContext();
         MockUtil.setSystemContextSessionAndHierarchyManager(session);
 

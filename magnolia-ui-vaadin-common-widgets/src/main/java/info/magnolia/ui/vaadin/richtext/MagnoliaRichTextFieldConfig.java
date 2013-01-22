@@ -59,8 +59,6 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
     /**
      * Adds list of toolbar groups. Groups are placed in one
      * row if space allows.
-     * 
-     * @param toolbars
      */
     public void addToolbarLine(List<ToolbarGroup> toolbars) {
         Gson gson = new Gson();
@@ -71,9 +69,8 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
     /**
      * Add CKEditor event name that server side will listen.
      * Only event names added to configuration will be listened.
-     * 
-     * @param eventName
-     *            This must match in client side. e.g: editor.fire('eventName')
+     *
+     * @param eventName This must match in client side. e.g: editor.fire('eventName')
      */
     public void addListenedEvent(String eventName) {
         events.add(eventName);

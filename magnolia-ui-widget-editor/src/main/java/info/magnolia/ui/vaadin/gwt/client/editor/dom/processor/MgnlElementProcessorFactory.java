@@ -48,14 +48,11 @@ public class MgnlElementProcessorFactory {
 
         if (mgnlElement.isPage()) {
             processor = new PageProcessor(model, eventBus, mgnlElement);
-        }
-        else if (mgnlElement.isArea()) {
+        } else if (mgnlElement.isArea()) {
             processor = new AreaProcessor(model, eventBus, mgnlElement);
-        }
-        else if (mgnlElement.isComponent()) {
+        } else if (mgnlElement.isComponent()) {
             processor = new ComponentProcessor(model, eventBus, mgnlElement);
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("mgnlElement is not a Area nor Component");
         }
         return processor;

@@ -62,7 +62,7 @@ public class PulseMessagesPresenter implements Serializable {
 
     public static final String GROUP_COLUMN = "type";
 
-    private static final String[] order = new String[] { "new", "type", "text", "sender", "date", "quickdo" };
+    private static final String[] order = new String[]{"new", "type", "text", "sender", "date", "quickdo"};
 
     private HierarchicalContainer container = null;
 
@@ -169,10 +169,8 @@ public class PulseMessagesPresenter implements Serializable {
 
     /**
      * Return list of child items.
-     * 
-     * @param itemId
-     *            parent itemId
-     * @return
+     *
+     * @param itemId parent itemId
      */
     public Collection<?> getGroup(Object itemId) {
         return container.getChildren(itemId);
@@ -180,9 +178,6 @@ public class PulseMessagesPresenter implements Serializable {
 
     /**
      * Return parent itemId for an item.
-     * 
-     * @param itemId
-     * @return
      */
     public Object getParent(Object itemId) {
         return container.getParent(itemId);
@@ -195,11 +190,8 @@ public class PulseMessagesPresenter implements Serializable {
     private Filter sectionFilter = new Filter() {
 
         @Override
-        public boolean passesFilter(Object itemId, Item item)
-                throws UnsupportedOperationException {
-            if (itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID) &&
-                    (!grouping ||
-                    isTypeGroupEmpty(itemId))) {
+        public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
+            if (itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID) && (!grouping || isTypeGroupEmpty(itemId))) {
                 return false;
             }
 
@@ -212,8 +204,7 @@ public class PulseMessagesPresenter implements Serializable {
         }
 
         private boolean isTypeGroupEmpty(Object typeId) {
-            return container.getChildren(typeId) == null ||
-                    container.getChildren(typeId).isEmpty();
+            return container.getChildren(typeId) == null || container.getChildren(typeId).isEmpty();
         }
 
     };

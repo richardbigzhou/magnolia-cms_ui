@@ -71,26 +71,26 @@ public class MessagesViewImpl implements MessagesView {
 
         final FieldGroup form = new FieldGroup();
         form.setItemDataSource(messageItem);
-        
+
         Field<?> subjectFiled = createSubjectTextField();
         Field<?> messageBodyField = createMessageBodyTextField();
         Field<?> typeField = createTypeSelectionField();
         Field<?> scopeField = createScopeSelectionField();
         Field<?> userIdField = createUserIdTextField();
-        
+
         form.bind(subjectFiled, "title");
         form.bind(messageBodyField, "content");
         form.bind(typeField, "type");
         form.bind(scopeField, "scope");
         form.bind(userIdField, "user");
-       
+
         FormLayout layout = new FormLayout();
         layout.addComponent(subjectFiled);
         layout.addComponent(messageBodyField);
         layout.addComponent(typeField);
         layout.addComponent(scopeField);
         layout.addComponent(userIdField);
-        
+
         layout.setSpacing(true);
         layout.setMargin(false);
         layout.setWidth("100%");
@@ -116,7 +116,7 @@ public class MessagesViewImpl implements MessagesView {
                         listener.handleUserMessage(userName, type, subject, content);
                     }
                 } catch (CommitException e) {
-                    
+
                 }
             }
         });
@@ -198,7 +198,7 @@ public class MessagesViewImpl implements MessagesView {
         types.addStyleName("horizontal");
         return types;
     }
-    
+
     private OptionGroup createScopeSelectionField() {
         final OptionGroup scopes = new OptionGroup("Scope");
         scopes.setNullSelectionAllowed(false);
@@ -212,7 +212,7 @@ public class MessagesViewImpl implements MessagesView {
         scopes.addStyleName("vertical");
         return scopes;
     }
-    
+
     private Field<String> createSubjectTextField() {
         final TextField subjectField = new TextField("Message title");
         subjectField.addStyleName("required");
@@ -222,7 +222,7 @@ public class MessagesViewImpl implements MessagesView {
         subjectField.setColumns(0);
         return subjectField;
     }
-    
+
     /**
      * The Message POJO.
      */

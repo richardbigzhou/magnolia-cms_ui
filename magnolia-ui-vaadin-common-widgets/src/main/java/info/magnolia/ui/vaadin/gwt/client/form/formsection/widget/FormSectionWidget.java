@@ -150,10 +150,10 @@ public class FormSectionWidget extends FlowPanel {
     public void focus(Widget widget) {
         scrollTo(sections.get(widget));
     }
-    
+
     private void scrollTo(final FormFieldWrapper field) {
         final int top = JQueryWrapper.select(field).position().top();
-        JQueryWrapper.select((Element)getElement().getParentElement().cast())
+        JQueryWrapper.select((Element) getElement().getParentElement().cast())
                 .animate(300, new AnimationSettings() {
                     {
                         setProperty("scrollTop", top - 30);
@@ -164,7 +164,7 @@ public class FormSectionWidget extends FlowPanel {
                                     @Override
                                     public void run() {
                                         field.focusField();
-                                    };
+                                    }
                                 }.schedule(300);
                             }
                         });

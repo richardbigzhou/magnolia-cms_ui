@@ -134,8 +134,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
                 // Create Property.
                 getNodeFromRepository().setProperty((String) id, (String) property.getValue());
                 return true;
-            }
-            else {
+            } else {
                 log.warn("Property " + id + " already exist.do nothing");
                 return false;
             }

@@ -88,12 +88,10 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
 
     private final AppController appController;
     private MagnoliaRichTextField richTextEditor;
-    private static final Logger log = LoggerFactory
-            .getLogger(LinkFieldBuilder.class);
+    private static final Logger log = LoggerFactory.getLogger(LinkFieldBuilder.class);
 
     @Inject
-    public RichTextFieldBuilder(RichTextFieldDefinition definition,
-            Item relatedFieldItem, AppController appController) {
+    public RichTextFieldBuilder(RichTextFieldDefinition definition, Item relatedFieldItem, AppController appController) {
         super(definition, relatedFieldItem);
         this.appController = appController;
     }
@@ -104,18 +102,12 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
         final MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
 
         List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
-        toolbars.add(new ToolbarGroup("basictyles", new String[] { "Bold",
-                "Italic", "Underline", "SpecialChar" }));
-        toolbars.add(new ToolbarGroup("paragraph", new String[] {
-                "NumberedList", "BulletedList" }));
-        toolbars.add(new ToolbarGroup("insert", new String[] { "Link",
-                "InternalLink", "Unlink" }));
-        toolbars.add(new ToolbarGroup("clipboard", new String[] { "Cut",
-                "Copy", "Paste", "PasteText", "PasteFromWord" }));
-        toolbars.add(new ToolbarGroup("objects", new String[] { "Image",
-                "Table" }));
-        toolbars.add(new ToolbarGroup("special",
-                new String[] { "Undo", "Redo" }));
+        toolbars.add(new ToolbarGroup("basictyles", new String[]{"Bold", "Italic", "Underline", "SpecialChar"}));
+        toolbars.add(new ToolbarGroup("paragraph", new String[]{"NumberedList", "BulletedList"}));
+        toolbars.add(new ToolbarGroup("insert", new String[]{"Link", "InternalLink", "Unlink"}));
+        toolbars.add(new ToolbarGroup("clipboard", new String[]{"Cut", "Copy", "Paste", "PasteText", "PasteFromWord"}));
+        toolbars.add(new ToolbarGroup("objects", new String[]{"Image", "Table"}));
+        toolbars.add(new ToolbarGroup("special", new String[]{"Undo", "Redo"}));
         config.addToolbarLine(toolbars);
         config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
         config.setResizeEnabled(false);
@@ -124,10 +116,8 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
             @Override
             public void attach() {
                 super.attach();
-                String path = VaadinService.getCurrentRequest()
-                        .getContextPath();
-                config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path
-                        + PLUGIN_PATH_MAGNOLIALINK);
+                String path = VaadinService.getCurrentRequest().getContextPath();
+                config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
             }
         };
 

@@ -49,6 +49,6 @@ public class TouchCancelHandlerProxy implements com.google.gwt.event.dom.client.
 
     @Override
     public void onTouchCancel(com.google.gwt.event.dom.client.TouchCancelEvent event) {
-        delegateHandler.onTouchCanceled(GwtTouchEventConverter.<TouchCancelEvent> convertGWTEvent(event));
+        delegateHandler.onTouchCanceled(GwtTouchEventConverter.<TouchCancelEvent>convertGWTEvent(event));
     }
 }

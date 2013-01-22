@@ -41,7 +41,7 @@ import org.apache.commons.lang.StringUtils;
 import com.vaadin.data.util.converter.Converter;
 
 /**
- * {@link PropertyTranslator} used to encode and decode password fields see {link Base64}.
+ * {@link Converter} used to encode and decode password fields see {link Base64}.
  * In general, if the translation is not possible, return emptyString.
  */
 public class Base64Translator implements Converter<String, String> {

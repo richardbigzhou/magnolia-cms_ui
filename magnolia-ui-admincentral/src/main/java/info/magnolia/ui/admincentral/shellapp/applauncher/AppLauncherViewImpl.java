@@ -49,7 +49,6 @@ import com.vaadin.ui.Component;
  * <li>RegisterApp: Create a new App and Group Icon/Section
  * <li>UnregisterApp: Remove the App and Group Icon/Section
  * </ul>
- * 
  */
 public class AppLauncherViewImpl implements AppLauncherView {
 
@@ -60,7 +59,7 @@ public class AppLauncherViewImpl implements AppLauncherView {
     public Presenter getPresenter() {
         return presenter;
     }
-    
+
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;

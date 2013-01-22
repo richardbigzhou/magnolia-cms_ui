@@ -41,5 +41,5 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.connector.MagnoliaTabStat
 public class FormTabState extends MagnoliaTabState {
 
     public int errorAmount;
-    
+
 }

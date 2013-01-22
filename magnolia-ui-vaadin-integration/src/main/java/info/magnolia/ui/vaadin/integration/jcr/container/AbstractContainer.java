@@ -77,7 +77,7 @@ public abstract class AbstractContainer implements Container {
 
         /**
          * Gets the Property where the event occurred.
-         * 
+         *
          * @see com.vaadin.data.Container.ItemSetChangeEvent#getContainer()
          */
         @Override
@@ -93,7 +93,7 @@ public abstract class AbstractContainer implements Container {
 
         /**
          * Gets the Property where the event occurred.
-         * 
+         *
          * @see com.vaadin.data.Container.ItemSetChangeEvent#getContainer()
          */
         @Override

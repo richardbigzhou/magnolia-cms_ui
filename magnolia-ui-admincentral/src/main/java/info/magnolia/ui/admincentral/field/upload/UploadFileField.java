@@ -37,7 +37,8 @@ import java.io.File;
 
 /**
  * Configure the UploadFileField based on the UploadField Definition.
- * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on 
+ * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on
+ *
  * @link{http://code.google.com/p/easyuploads-addon/}.
  */
 public interface UploadFileField {
@@ -59,7 +60,7 @@ public interface UploadFileField {
 
     /**
      * Define if the Uploaded file can be deleted.
-     * 
+     *
      * @param: fileDeletion true will add a delete Button.
      */
     public void setFileDeletion(boolean fileDeletion);

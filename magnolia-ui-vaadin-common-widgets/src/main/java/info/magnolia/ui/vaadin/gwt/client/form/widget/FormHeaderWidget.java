@@ -123,8 +123,7 @@ public class FormHeaderWidget extends FlowPanel {
     public void setErrorAmount(int totalProblematicFields) {
         errorPanel.setVisible(totalProblematicFields > 0);
         if (totalProblematicFields > 0) {
-            errorPanel.getElement().setInnerHTML("<span>Please correct the <b>" + totalProblematicFields +
-                    " errors </b> in this form </span>");
+            errorPanel.getElement().setInnerHTML("<span>Please correct the <b>" + totalProblematicFields + " errors </b> in this form </span>");
 
             final HTML errorButton = new HTML("[Jump to next error]");
             errorButton.setStyleName("action-jump-to-next-error");

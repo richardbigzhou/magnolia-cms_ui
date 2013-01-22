@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract implementation with default behavior suitable for most sub apps.
- * 
+ *
  * @see info.magnolia.ui.framework.app.SubApp
  */
 public abstract class AbstractSubApp implements SubApp {
@@ -110,7 +110,7 @@ public abstract class AbstractSubApp implements SubApp {
 
     /**
      * This method will try to determine the current sub app caption, the one usually displayed in the tab where the subapp opens.
-     * 
+     *
      * @return the configured label for this subapp. If no label is found in the subapp configuration, it will try to use the label from the parent app.
      *         If the latter is missing too, it will return an empty string.
      */

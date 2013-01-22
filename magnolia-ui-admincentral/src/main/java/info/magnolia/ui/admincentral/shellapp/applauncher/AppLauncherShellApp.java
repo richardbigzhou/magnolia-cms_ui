@@ -75,8 +75,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
     private Shell shell;
 
     @Inject
-    public AppLauncherShellApp(Shell shell, AppLauncherView view, AppController appController,
-            AppLauncherLayoutManager appLauncherLayoutManager, @Named("admincentral") EventBus admincentralEventBus, @Named("system") EventBus systemEventBus) {
+    public AppLauncherShellApp(Shell shell, AppLauncherView view, AppController appController, AppLauncherLayoutManager appLauncherLayoutManager, @Named("admincentral") EventBus admincentralEventBus, @Named("system") EventBus systemEventBus) {
         this.view = view;
         this.shell = shell;
         this.appController = appController;

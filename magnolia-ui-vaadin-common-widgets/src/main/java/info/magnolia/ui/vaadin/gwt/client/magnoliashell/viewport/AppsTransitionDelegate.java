@@ -64,7 +64,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
     private static final int CURTAIN_FADE_OUT_DELAY = 200;
 
     private Object lock = new Object();
-    
+
     @Override
     public void setVisibleApp(final ViewportWidget viewport, final Widget app) {
         // zoom-in if switching to a different running app, from appslauncher only

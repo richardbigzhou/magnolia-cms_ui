@@ -56,9 +56,7 @@ public class FormPresenterFactoryImpl implements FormPresenterFactory {
     private final FormActionFactory actionFactory;
 
     @Inject
-    public FormPresenterFactoryImpl(ComponentProvider componentProvider, FormBuilder formBuilder,
-            FieldFactory fieldFactory, @Named("admincentral") EventBus eventBus,
-            final FormActionFactory actionFactory) {
+    public FormPresenterFactoryImpl(ComponentProvider componentProvider, FormBuilder formBuilder, FieldFactory fieldFactory, @Named("admincentral") EventBus eventBus, final FormActionFactory actionFactory) {
         this.componentProvider = componentProvider;
         this.formBuilder = formBuilder;
         this.fieldFactory = fieldFactory;

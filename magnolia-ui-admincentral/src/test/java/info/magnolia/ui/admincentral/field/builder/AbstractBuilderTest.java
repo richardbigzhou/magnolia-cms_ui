@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import static org.mockito.Mockito.*;
+
 import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
@@ -55,12 +56,12 @@ import java.util.Locale;
 
 import javax.jcr.Node;
 
-import com.vaadin.data.util.converter.DefaultConverterFactory;
-import com.vaadin.server.VaadinSession;
 import org.junit.After;
 import org.junit.Before;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.util.converter.DefaultConverterFactory;
+import com.vaadin.server.VaadinSession;
 
 /**
  * Abstract test class used to initialize the DialogField Tests.

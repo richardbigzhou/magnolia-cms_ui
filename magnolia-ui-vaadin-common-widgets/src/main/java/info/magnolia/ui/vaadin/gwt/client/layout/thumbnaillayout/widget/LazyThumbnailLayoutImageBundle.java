@@ -39,7 +39,6 @@ import com.google.gwt.resources.client.ImageResource;
 
 /**
  * ImageBundle for the lazy thumbnail layout.
- * 
  */
 public interface LazyThumbnailLayoutImageBundle extends ClientBundle {
 

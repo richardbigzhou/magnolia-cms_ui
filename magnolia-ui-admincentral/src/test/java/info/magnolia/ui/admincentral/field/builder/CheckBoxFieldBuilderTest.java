@@ -38,9 +38,10 @@ import static org.junit.Assert.assertEquals;
 import info.magnolia.ui.admincentral.field.CheckBoxAndLabelField;
 import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
 
-import com.vaadin.ui.Field;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.vaadin.ui.Field;
 
 /**
  * Main testcase for {@link CheckBoxFieldBuilder}.

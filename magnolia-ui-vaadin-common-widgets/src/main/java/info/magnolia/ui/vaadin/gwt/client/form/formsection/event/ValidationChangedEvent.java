@@ -41,14 +41,13 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * ValidationChangedEvent. Sent when the field validation happened.
- * 
  */
 public class ValidationChangedEvent extends GwtEvent<ValidationChangedEvent.Handler> {
 
     private int errorAmount = 0;
-    
+
     private FormTabWidget sender;
-    
+
     /**
      * Handler.
      */
@@ -70,15 +69,15 @@ public class ValidationChangedEvent extends GwtEvent<ValidationChangedEvent.Hand
         this.errorAmount = amount;
         this.sender = sender;
     }
-    
+
     public FormTabWidget getSender() {
         return sender;
     }
-    
+
     public int getErrorAmount() {
         return errorAmount;
     }
-    
+
     @Override
     public Type<Handler> getAssociatedType() {
         return TYPE;

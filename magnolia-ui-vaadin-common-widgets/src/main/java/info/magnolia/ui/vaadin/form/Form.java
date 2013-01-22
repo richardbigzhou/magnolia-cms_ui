@@ -58,7 +58,7 @@ import com.vaadin.ui.HasComponents;
 /**
  * {@link Form}. The server side implementation of the form view. Displays the
  * form inside a {@link MagnoliaTabSheet}.
- * 
+ *
  * TODO: TAKE CARE OF FIELDGROUP IN THE FORM BUILDER LATER ON!
  */
 public class Form extends AbstractSingleComponentContainer implements FormView {
@@ -83,8 +83,7 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
         }
     };
 
-    private final ListMultimap<String, FormView.FormActionListener> actionCallbackMap = ArrayListMultimap
-            .<String, FormView.FormActionListener> create();
+    private final ListMultimap<String, FormView.FormActionListener> actionCallbackMap = ArrayListMultimap.<String, FormView.FormActionListener>create();
 
     public Form() {
         setStyleName("v-magnolia-form");
@@ -108,11 +107,11 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
             }
 
         });
-        
+
         registerRpc(new FormServerRpc() {
             @Override
             public void focusNextProblematicField(Connector currentFocused) {
-                MagnoliaFormTab activeTab = (MagnoliaFormTab)tabSheet.getActiveTab();
+                MagnoliaFormTab activeTab = (MagnoliaFormTab) tabSheet.getActiveTab();
                 FormSection formSection = activeTab.getContent();
                 Component nextProblematic = formSection.getNextProblematicField(currentFocused);
                 if (nextProblematic == null) {
@@ -124,7 +123,7 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
                 }
             }
         });
-        
+
     }
 
     @Override

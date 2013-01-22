@@ -38,7 +38,6 @@ import com.google.gwt.user.client.Element;
 
 /**
  * The permanent App Group.
- * 
  */
 public class VPermanentAppTileGroup extends VAppTileGroup {
 

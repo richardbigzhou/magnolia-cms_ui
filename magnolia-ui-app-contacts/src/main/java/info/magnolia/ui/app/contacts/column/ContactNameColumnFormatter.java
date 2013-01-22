@@ -49,7 +49,7 @@ import com.vaadin.ui.Table;
 
 /**
  * Column formatter that displays either the name of a contact or a folder.
- * 
+ *
  * @see ContactNameColumnDefinition
  */
 public class ContactNameColumnFormatter extends AbstractColumnFormatter<ContactNameColumnDefinition> {

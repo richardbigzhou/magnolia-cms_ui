@@ -91,16 +91,14 @@ public class VMagnoliaTreeTable extends VTreeTablePatched {
             @Override
             protected boolean addTreeSpacer(UIDL rowUidl) {
                 if (cellShowsTreeHierarchy(getElement().getChildCount() - 1)) {
-                    Element container = (Element) getElement().getLastChild()
-                            .getChild(0);
+                    Element container = (Element) getElement().getLastChild().getChild(0);
 
                     if (rowUidl.hasAttribute("icon")) {
                         // icons are in first content cell in TreeTable
                         ImageElement icon = Document.get().createImageElement();
                         icon.setClassName("v-icon");
                         icon.setAlt("icon");
-                        icon.setSrc(client.translateVaadinUri(rowUidl
-                                .getStringAttribute("icon")));
+                        icon.setSrc(client.translateVaadinUri(rowUidl.getStringAttribute("icon")));
                         container.insertFirst(icon);
                     }
 
@@ -116,8 +114,7 @@ public class VMagnoliaTreeTable extends VTreeTablePatched {
                     treeSpacer.getStyle().setDisplay(Display.INLINE_BLOCK);
                     treeSpacer.setClassName(classname);
                     container.insertAfter(treeSpacer, container.getFirstChild());
-                    depth = rowUidl.hasAttribute("depth") ? rowUidl
-                            .getIntAttribute("depth") : 0;
+                    depth = rowUidl.hasAttribute("depth") ? rowUidl.getIntAttribute("depth") : 0;
                     setIndent();
                     isTreeCellAdded = true;
                     return true;
@@ -129,8 +126,7 @@ public class VMagnoliaTreeTable extends VTreeTablePatched {
             public void onBrowserEvent(Event event) {
                 if (event.getEventTarget().cast() == treeSpacer &&
                         treeSpacer.getClassName().contains("node")) {
-                    if (event.getTypeInt() == Event.ONMOUSEDOWN ||
-                            event.getTypeInt() == Event.ONTOUCHSTART) {
+                    if (event.getTypeInt() == Event.ONMOUSEDOWN || event.getTypeInt() == Event.ONTOUCHSTART) {
                         sendToggleCollapsedUpdate(getKey());
                         event.stopPropagation();
                         event.preventDefault();
@@ -143,8 +139,7 @@ public class VMagnoliaTreeTable extends VTreeTablePatched {
             @Override
             protected void setIndent() {
                 if (getIndentWidth() > 0) {
-                    treeSpacer.getParentElement().getStyle()
-                            .setPaddingRight(getIndent(), Unit.PX);
+                    treeSpacer.getParentElement().getStyle().setPaddingRight(getIndent(), Unit.PX);
                     treeSpacer.getStyle().setWidth(getIndent(), Unit.PX);
                 }
             }

@@ -84,7 +84,7 @@ public class ConfiguredAppDescriptorManagerTest {
                 "/modules/aModule/apps/app1.categoryName=categoryA",
                 "/modules/bModule/apps/app1.name=appNameB",
                 "/modules/bModule/apps/app1.categoryName=\n"
-                );
+        );
         MockUtil.initMockContext();
         MockUtil.setSystemContextSessionAndHierarchyManager(session);
 

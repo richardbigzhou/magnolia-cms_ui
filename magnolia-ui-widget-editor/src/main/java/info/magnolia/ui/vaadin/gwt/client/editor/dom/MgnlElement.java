@@ -44,7 +44,6 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * MgnlElement Constructor.
- * 
  */
 public class MgnlElement extends CmsNode {
 
@@ -175,8 +174,7 @@ public class MgnlElement extends CmsNode {
         }
         if (isArea()) {
             return Model.CMS_AREA;
-        }
-        else {
+        } else {
             return Model.CMS_COMPONENT;
         }
     }

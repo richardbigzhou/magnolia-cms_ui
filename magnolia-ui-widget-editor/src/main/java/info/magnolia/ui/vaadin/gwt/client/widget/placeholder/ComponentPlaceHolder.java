@@ -176,8 +176,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
 
         if (AreaDefinition.TYPE_NO_COMPONENT.equals(this.type)) {
             this.availableComponents = "";
-        }
-        else {
+        } else {
             this.availableComponents = attributes.get("availableComponents");
         }
     }

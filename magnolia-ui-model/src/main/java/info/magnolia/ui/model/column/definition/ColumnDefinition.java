@@ -74,7 +74,7 @@ public interface ColumnDefinition {
 
     /**
      * Returns whether this column should be editable if workbench uses inplace editing.
-     * 
+     *
      * @return true, if column is editable
      * @see info.magnolia.ui.model.workbench.definition.WorkbenchDefinition#isEditable()
      */

@@ -37,7 +37,6 @@ import info.magnolia.ui.admincentral.field.upload.FileBuffer;
 
 /**
  * Implements {@link FilePropertiesAdapter} for {@link FileBuffer}.
- * 
  */
 public class FileBufferPropertiesAdapter implements FilePropertiesAdapter {
 

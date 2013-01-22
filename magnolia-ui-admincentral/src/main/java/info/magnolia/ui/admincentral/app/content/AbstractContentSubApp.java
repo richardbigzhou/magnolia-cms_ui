@@ -67,7 +67,7 @@ import javax.inject.Named;
  * <li>{@link #locationChanged(Location)}
  * <li>{@link #updateActionbar(ActionbarPresenter)}
  * </ul>
- * 
+ *
  * @see ContentWorkbenchPresenter
  * @see WorkbenchSubAppView
  * @see AbstractContentApp
@@ -111,17 +111,17 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * bookmark. I.e. given a bookmark containing the following URI fragment
      * <p>
      * {@code
-     *   #app:myapp:main;/foo/bar:list
+     * #app:myapp:main;/foo/bar:list
      * }
      * <p>
      * this method will select the path <code>/foo/bar</code> in the workspace used by the app, set the view type as <code>list</code> and finally update the available actions.
      * <p>
      * In case of a search view the URI fragment will look similar to the following one {@code
-     *   #app:myapp:main;/:search:qux
+     * #app:myapp:main;/:search:qux
      * }
      * <p>
      * then this method will select the root path, set the view type as <code>search</code>, perform a search for "qux" in the workspace used by the app and finally update the available actions.
-     * 
+     *
      * @see AbstractContentSubApp#updateActionbar(ActionbarPresenter)
      * @see AbstractContentSubApp#start(Location)
      * @see Location
@@ -139,7 +139,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * Depending on the selected item or on other conditions specific to a concrete app, certain actions will be enabled or disabled.
      * By default if no path is selected in the workbench, namely root is selected, "delete" and "edit" actions are not available.
      * If some path other than root is selected, "edit" and "delete" actions become available.
-     * 
+     *
      * @see #restoreWorkbench(ContentLocation)
      * @see #locationChanged(Location)
      * @see ActionbarPresenter

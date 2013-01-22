@@ -101,9 +101,8 @@ public class CreatePageThumbnailAction extends ActionBase<CreatePageThumbnailAct
 
     /**
      * Save the image to jcr.
-     * 
-     * @param inputStream
-     *            containing the image. Caution: it'll not be closed in here.
+     *
+     * @param inputStream containing the image. Caution: it'll not be closed in here.
      */
     private void saveImage(Node node, InputStream inputStream, String contentType, String extension) throws RepositoryException, IOException {
 

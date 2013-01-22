@@ -43,11 +43,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TwinColSelect;
-import org.junit.Ignore;
-import org.junit.Test;
 
 /**
  * Main testcase for {@link TwinColSelectFieldBuilder}.

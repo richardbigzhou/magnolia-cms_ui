@@ -42,6 +42,6 @@ import com.google.gwt.user.client.Element;
 public interface CssHookHandler {
 
     void get(final Element el, final String value);
-    
+
     void set(final Element el, final String value);
 }

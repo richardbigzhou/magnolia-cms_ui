@@ -405,8 +405,7 @@ public class VaadinViewImpl implements VaadinView {
     private Layout getLabelPreviews() {
         Layout grid = getPreviewLayout("Static text");
 
-        Label label = new Label(
-                "Plain text, lorem ipsum dolor sit amet consectetur amit.");
+        Label label = new Label("Plain text, lorem ipsum dolor sit amet consectetur amit.");
 
         grid.addComponent(label);
 
@@ -452,8 +451,7 @@ public class VaadinViewImpl implements VaadinView {
         button.setIcon(new ThemeResource("../runo/icons/16/user.png"));
         grid.addComponent(button);
 
-        Link l = new Link("Link: magnolia-cms.com", new ExternalResource(
-                "http://www.magnolia-cms.com"));
+        Link l = new Link("Link: magnolia-cms.com", new ExternalResource("http://www.magnolia-cms.com"));
         grid.addComponent(l);
 
         return grid;

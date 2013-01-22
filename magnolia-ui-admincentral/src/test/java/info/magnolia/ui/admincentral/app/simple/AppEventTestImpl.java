@@ -40,7 +40,6 @@ import info.magnolia.ui.framework.event.TestEvent;
 
 import javax.inject.Named;
 
-
 import com.google.inject.Inject;
 
 /**

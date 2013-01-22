@@ -72,8 +72,7 @@ import com.vaadin.data.Property;
  * Vaadin container that reads its items from a JCR repository. Implements a simple mechanism for lazy loading items
  * from a JCR repository and a cache for items and item ids.
  */
-public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed,
-        Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
+public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrContainer.class);
 
@@ -83,17 +82,23 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private int size = Integer.MIN_VALUE;
 
-    /** Page length = number of items contained in one page. */
+    /**
+     * Page length = number of items contained in one page.
+     */
     private int pageLength = DEFAULT_PAGE_LENGTH;
 
     public static final int DEFAULT_PAGE_LENGTH = 30;
 
-    /** Number of items to cache = cacheRatio x pageLength. */
+    /**
+     * Number of items to cache = cacheRatio x pageLength.
+     */
     private int cacheRatio = DEFAULT_CACHE_RATIO;
 
     public static final int DEFAULT_CACHE_RATIO = 2;
 
-    /** Item and index caches. */
+    /**
+     * Item and index caches.
+     */
     private final Map<Long, String> itemIndexes = new HashMap<Long, String>();
 
     private final List<String> sortableProperties = new ArrayList<String>();
@@ -102,12 +107,16 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private final WorkbenchDefinition workbenchDefinition;
 
-    /** Starting row number of the currently fetched page. */
+    /**
+     * Starting row number of the currently fetched page.
+     */
     private int currentOffset;
 
     private static final Long LONG_ZERO = Long.valueOf(0);
 
-    /** Item type to use if no other is properly defined. **/
+    /**
+     * Item type to use if no other is properly defined. *
+     */
     protected static final String DEFAULT_MAIN_ITEM_TYPE = NodeTypes.Content.NAME;
 
     private static final String QUERY_LANGUAGE = Query.JCR_JQOM;
@@ -139,8 +148,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                 if (StringUtils.isBlank(propertyName)) {
                     propertyName = columnDefinition.getName();
                     log.debug(
-                            "Column {} is sortable but no propertyName has been defined. Defaulting to column name (sorting may not work as expected).",
-                            columnDefinition.getName());
+                            "Column {} is sortable but no propertyName has been defined. Defaulting to column name (sorting may not work as expected).", columnDefinition.getName());
                 }
 
                 sortableProperties.add(propertyName);
@@ -254,7 +262,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**************************************/
     /** Methods from interface Container **/
-    /**************************************/
+    /**
+     * *********************************
+     */
 
     @Override
     public Item getItem(Object itemId) {
@@ -330,7 +340,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**********************************************/
     /** Methods from interface Container.Indexed **/
-    /**********************************************/
+    /**
+     * *****************************************
+     */
 
     @Override
     public int indexOfId(Object itemId) {
@@ -375,7 +387,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**********************************************/
     /** Methods from interface Container.Ordered **/
-    /**********************************************/
+    /**
+     * *****************************************
+     */
 
     @Override
     public Object nextItemId(Object itemId) {
@@ -419,7 +433,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /***********************************************/
     /** Methods from interface Container.Sortable **/
-    /***********************************************/
+    /**
+     * ******************************************
+     */
     @Override
     public void sort(Object[] propertyId, boolean[] ascending) {
         resetOffset();
@@ -446,7 +462,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /************************************/
     /** UNSUPPORTED CONTAINER FEATURES **/
-    /************************************/
+    /**
+     * *******************************
+     */
 
     @Override
     public Item addItemAfter(Object previousItemId, Object newItemId) throws UnsupportedOperationException {
@@ -471,9 +489,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * Determines a new offset for updating the row cache. The offset is calculated from the given index, and will be
      * fixed to match the start of a page, based on the value of pageLength.
-     * 
-     * @param index
-     *            Index of the item that was requested, but not found in cache
+     *
+     * @param index Index of the item that was requested, but not found in cache
      */
     private void updateOffsetAndCache(int index) {
         if (itemIndexes.containsKey(Long.valueOf(index))) {
@@ -524,7 +541,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * Updates this container by storing the items found in the query result passed as argument.
-     * 
+     *
      * @see #getPage()
      */
     private void updateItems(final QueryResult queryResult) throws RepositoryException {
@@ -543,14 +560,13 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
+     * @param the optional <code>ORDER BY</code> is added if this parameter is <code>true</code>. Sorting options can be configured in the {@link WorkbenchDefinition}.
      * @return a string representing a JCR statement to retrieve this container's items.
      *         It creates a JCR query in the form {@code select * from [mainItemType] as selector [WHERE] [ORDER BY]"}.
      *         <p>
      *         Subclasses can customize the optional <code>WHERE</code> clause by overriding {@link #getQueryWhereClause()}.
      *         <p>
      *         The main item type (as configured in the {@link WorkbenchDefinition}) in the <code>SELECT</code> statement can be changed to something different by calling {@link #getSelectStatement(String)}
-     * @param the
-     *            optional <code>ORDER BY</code> is added if this parameter is <code>true</code>. Sorting options can be configured in the {@link WorkbenchDefinition}.
      * @see AbstractJcrContainer#getQuerySelectStatement()
      * @see AbstractJcrContainer#getQueryWhereClause()
      * @see AbstractJcrContainer#getQueryWhereClauseWorkspacePath()
@@ -703,8 +719,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             if (offset >= 0) {
                 query.setOffset(offset);
             }
-            log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[] { getWorkspace(),
-                    statement, limit, offset });
+            log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{getWorkspace(),
+                    statement, limit, offset});
             long start = System.currentTimeMillis();
             final QueryResult result = query.execute();
             log.debug("Query execution took {} ms", System.currentTimeMillis() - start);

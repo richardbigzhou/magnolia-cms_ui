@@ -40,7 +40,7 @@ import com.vaadin.shared.ui.AbstractLayoutState;
  * {@link CompositeIconState}.
  */
 public class CompositeIconState extends AbstractLayoutState {
-    
+
     @DelegateToWidget
     public String iconName;
 
@@ -49,5 +49,5 @@ public class CompositeIconState extends AbstractLayoutState {
 
     @DelegateToWidget
     public String color;
-    
+
 }

@@ -47,23 +47,23 @@ import com.vaadin.shared.ui.Connect;
  */
 @Connect(MagnoliaFormTab.class)
 public class FormTabConnector extends MagnoliaTabConnector {
-    
+
     @Override
     protected void init() {
         super.init();
         addStateChangeHandler(new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                getWidget().fireEvent(new ValidationChangedEvent(getWidget(), getState().errorAmount));   
+                getWidget().fireEvent(new ValidationChangedEvent(getWidget(), getState().errorAmount));
             }
         });
     }
-    
+
     @Override
     public FormTabState getState() {
-        return (FormTabState)super.getState();
+        return (FormTabState) super.getState();
     }
-    
+
     @Override
     protected FormTabState createState() {
         return new FormTabState();
@@ -71,9 +71,9 @@ public class FormTabConnector extends MagnoliaTabConnector {
 
     @Override
     public FormTabWidget getWidget() {
-        return (FormTabWidget)super.getWidget();
+        return (FormTabWidget) super.getWidget();
     }
-    
+
     @Override
     protected FormTabWidget createWidget() {
         return new FormTabWidget(this);

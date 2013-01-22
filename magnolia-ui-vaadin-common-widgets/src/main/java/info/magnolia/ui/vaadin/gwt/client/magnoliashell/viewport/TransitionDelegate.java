@@ -65,5 +65,6 @@ public interface TransitionDelegate {
         public void setVisibleApp(ViewportWidget viewport, Widget app) {
             viewport.doSetVisibleApp(app);
         }
-    };
+    }
+
 }

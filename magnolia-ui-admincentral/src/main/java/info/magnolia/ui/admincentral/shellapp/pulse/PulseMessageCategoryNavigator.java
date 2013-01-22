@@ -103,8 +103,7 @@ public class PulseMessageCategoryNavigator extends CssLayout {
 
         static {
             try {
-                MESSAGE_CATEGORY_CHANGED = MessageCategoryChangedListener.class.getDeclaredMethod("messageCategoryChanged",
-                        new Class[] { CategoryChangedEvent.class });
+                MESSAGE_CATEGORY_CHANGED = MessageCategoryChangedListener.class.getDeclaredMethod("messageCategoryChanged", new Class[]{CategoryChangedEvent.class});
             } catch (final java.lang.NoSuchMethodException e) {
                 throw new java.lang.RuntimeException(e);
             }

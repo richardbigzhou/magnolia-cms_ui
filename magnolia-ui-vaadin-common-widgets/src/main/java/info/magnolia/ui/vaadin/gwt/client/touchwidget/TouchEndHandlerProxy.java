@@ -39,7 +39,6 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 /**
  * Proxy implementation of native gwt {@link com.google.gwt.event.dom.client.TouchEndHandler} that delegates to
  * mgwt {@link TouchEndHandler}.
- * 
  */
 public class TouchEndHandlerProxy implements com.google.gwt.event.dom.client.TouchEndHandler {
 
@@ -51,6 +50,6 @@ public class TouchEndHandlerProxy implements com.google.gwt.event.dom.client.Tou
 
     @Override
     public void onTouchEnd(com.google.gwt.event.dom.client.TouchEndEvent event) {
-        delegateHandler.onTouchEnd(GwtTouchEventConverter.<TouchEndEvent> convertGWTEvent(event));
+        delegateHandler.onTouchEnd(GwtTouchEventConverter.<TouchEndEvent>convertGWTEvent(event));
     }
 }

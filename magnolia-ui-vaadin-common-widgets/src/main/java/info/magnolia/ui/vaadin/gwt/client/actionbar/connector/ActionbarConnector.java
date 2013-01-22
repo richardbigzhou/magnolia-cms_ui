@@ -191,7 +191,7 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
      * Determine if device is tablet. Allows option to add a querystring parameter of tablet=true
      * for testing.
      * TODO: Christopher Zimmermann - there should be only one instance of this code in the project.
-     * 
+     *
      * @return Whether device is tablet.
      */
     private boolean isDeviceTablet() {

@@ -53,14 +53,13 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
+import com.vaadin.ui.ComboBox;
 
 /**
  * Creates and initializes a selection field based on a field definition.
- * 
- * @param <D>
- *            type of definition
+ *
+ * @param <D> type of definition
  */
 public class SelectFieldBuilder<D extends SelectFieldDefinition> extends AbstractFieldBuilder<D, Object> {
 

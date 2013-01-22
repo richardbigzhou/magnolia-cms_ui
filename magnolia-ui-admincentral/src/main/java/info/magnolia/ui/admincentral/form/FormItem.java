@@ -38,7 +38,7 @@ import info.magnolia.cms.i18n.Messages;
 /**
  * Common interface for participants of a dialog. Provides support for organizing them in a hierarchy and getting
  * access to the {@link Messages} they use.
- * 
+ *
  * @see Messages
  * @see AbstractFormItem
  */

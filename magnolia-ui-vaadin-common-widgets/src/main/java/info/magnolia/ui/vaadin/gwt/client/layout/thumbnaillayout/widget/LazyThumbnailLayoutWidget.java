@@ -67,7 +67,6 @@ import com.vaadin.client.VConsole;
 
 /**
  * Client side impl of lazy asset thumbnails layout.
- * 
  */
 public class LazyThumbnailLayoutWidget extends FlowPanel {
 
@@ -151,10 +150,8 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
             @Override
             public void onPinchMove(MagnoliaPinchMoveEvent event) {
                 double scaleFactor = 1 / event.getScaleFactor();
-                int width = Math.max((int) (ComputedStyle.parseInt(thumbnailStyle.getProperty("width")) * scaleFactor),
-                        25);
-                int height = Math.max(
-                        (int) (ComputedStyle.parseInt(thumbnailStyle.getProperty("height")) * scaleFactor), 25);
+                int width = Math.max((int) (ComputedStyle.parseInt(thumbnailStyle.getProperty("width")) * scaleFactor), 25);
+                int height = Math.max((int) (ComputedStyle.parseInt(thumbnailStyle.getProperty("height")) * scaleFactor), 25);
                 scroller.setVerticalScrollPosition((int) (scroller.getVerticalScrollPosition() * scaleFactor));
                 setThumbnailSize(width, height);
 
@@ -217,7 +214,9 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
         @Override
         public void run() {
             doQueryThumbnails(thumbnailStubs.size());
-        };
+        }
+
+        ;
     };
 
     public void addImages(List<ThumbnailData> thumbnailsData, ServerConnector connector) {

@@ -66,8 +66,7 @@ import com.vaadin.shared.ui.Connect;
  * MagnoliaTabSheetConnector.
  */
 @Connect(MagnoliaTabSheet.class)
-public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnector implements
-        MagnoliaTabSheetView.Presenter {
+public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnector implements MagnoliaTabSheetView.Presenter {
 
     private final MagnoliaTabSheetServerRpc rpc = RpcProxy.create(MagnoliaTabSheetServerRpc.class, this);
 

@@ -83,9 +83,7 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
 
         // list of plugin events that server is interested of handling.
         if (uidl.hasAttribute(VAR_EVENTNAMES) && this.editor != null) {
-            pluginEvents = Arrays.asList(
-                    uidl.getStringArrayAttribute(VAR_EVENTNAMES)
-                    );
+            pluginEvents = Arrays.asList(uidl.getStringArrayAttribute(VAR_EVENTNAMES));
 
             for (String eventName : pluginEvents) {
                 this.editor.addListener(this, eventName);
@@ -97,7 +95,7 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
             this.editor.fire(
                     uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT),
                     uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT_VALUE)
-                    );
+            );
         }
     }
 

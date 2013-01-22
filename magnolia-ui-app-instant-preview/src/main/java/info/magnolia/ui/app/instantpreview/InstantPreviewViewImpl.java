@@ -93,7 +93,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
     }
 
     protected Button buildHostIdLink(final String hostId) {
-        Button button = new Button(hostId != null ? formatHostId(hostId): "");
+        Button button = new Button(hostId != null ? formatHostId(hostId) : "");
         button.setImmediate(true);
         button.setStyleName(BaseTheme.BUTTON_LINK);
         return button;
@@ -125,10 +125,10 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
             @Override
             public void buttonClick(ClickEvent event) {
                 try {
-                    if(joinButton.isEnabled()) {
-                        if(joinButton.getData() == InstantPreviewActionType.JOIN) {
+                    if (joinButton.isEnabled()) {
+                        if (joinButton.getData() == InstantPreviewActionType.JOIN) {
                             hostId = String.valueOf(inputHostId.getValue());
-                            if(StringUtils.isNotBlank(hostId)) {
+                            if (StringUtils.isNotBlank(hostId)) {
                                 listener.joinSession(hostId);
                                 hostIdLink.setVisible(false);
                                 joinButton.setCaption("Leave");
@@ -140,7 +140,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                                 log.error("Host id cannot be empty or null");
                                 listener.sendLocalMessage("Host id cannot be empty or null", MessageType.WARNING);
                             }
-                        } else if(joinButton.getData()==InstantPreviewActionType.LEAVE) {
+                        } else if (joinButton.getData() == InstantPreviewActionType.LEAVE) {
                             listener.leaveSession(hostId);
                             hostIdLink.setVisible(true);
                             joinButton.setCaption("Join");
@@ -165,8 +165,8 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                if(shareButton.isEnabled()) {
-                    if(shareButton.getData()==InstantPreviewActionType.SHARE) {
+                if (shareButton.isEnabled()) {
+                    if (shareButton.getData() == InstantPreviewActionType.SHARE) {
                         //generate code and start session
                         hostId = listener.shareSession();
                         hostIdLink.setCaption(formatHostId(hostId));
@@ -176,7 +176,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                         getJoinButton().setEnabled(false);
                         getInputHostId().setEnabled(false);
                         listener.sendLocalMessage("You are now sharing with host id " + hostIdLink.getCaption(), MessageType.INFO);
-                    } else if(shareButton.getData()==InstantPreviewActionType.UNSHARE) {
+                    } else if (shareButton.getData() == InstantPreviewActionType.UNSHARE) {
                         listener.unshareSession(hostId);
                         hostId = null;
                         hostIdLink.setCaption("");

@@ -47,9 +47,6 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
- * MagnoliaTabLabel.
- */
-/**
  * Tab label in the tab bar.
  */
 public class MagnoliaTabLabel extends SimplePanel {

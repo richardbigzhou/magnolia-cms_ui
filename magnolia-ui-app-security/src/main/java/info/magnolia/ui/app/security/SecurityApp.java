@@ -43,7 +43,6 @@ import javax.inject.Inject;
 
 /**
  * The Security App, extending the base content app.
- * 
  */
 public class SecurityApp extends AbstractContentApp {
 

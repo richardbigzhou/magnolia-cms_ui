@@ -68,12 +68,10 @@ public class CommentProcessor {
 
                 if (mgnlElement.getParent() == null) {
                     model.setRootPage(mgnlElement);
-                }
-                else if (mgnlElement.getParent().isPage()) {
+                } else if (mgnlElement.getParent().isPage()) {
                     model.addRootArea(mgnlElement);
                     mgnlElement.getParent().getChildren().add(mgnlElement);
-                }
-                else {
+                } else {
                     mgnlElement.getParent().getChildren().add(mgnlElement);
                 }
 
@@ -109,8 +107,7 @@ public class CommentProcessor {
 
         if (delimiter < 0) {
             tagName = comment;
-        }
-        else {
+        } else {
             tagName = comment.substring(0, delimiter);
             attributeString = comment.substring(delimiter + 1);
         }
@@ -125,8 +122,7 @@ public class CommentProcessor {
             cmsComment.setAttribute(attributeString);
             cmsComment.setClosing(isClosing);
 
-        }
-        else {
+        } else {
 
             throw new IllegalArgumentException("Tagname must start with +'" + Model.CMS_TAG + "'.");
         }
@@ -146,8 +142,7 @@ public class CommentProcessor {
                 int i = content.indexOf(':');
                 attributes.put("workspace", content.substring(0, i));
                 attributes.put("path", content.substring(i + 1));
-            }
-            else {
+            } else {
                 attributes.put(keyValue[0], keyValue[1].replace("\"", ""));
             }
         }
@@ -167,17 +162,14 @@ public class CommentProcessor {
         if (Model.CMS_PAGE.equals(tagName)) {
             mgnlElement = new MgnlElement(parent);
             mgnlElement.setPage(true);
-        }
-        else if (Model.CMS_AREA.equals(tagName)) {
+        } else if (Model.CMS_AREA.equals(tagName)) {
             mgnlElement = new MgnlElement(parent);
             mgnlElement.setArea(true);
 
-        }
-        else if (Model.CMS_COMPONENT.equals(tagName)) {
+        } else if (Model.CMS_COMPONENT.equals(tagName)) {
             mgnlElement = new MgnlElement(parent);
             mgnlElement.setComponent(true);
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("The tagname must be one of the defined marker Strings.");
         }
 

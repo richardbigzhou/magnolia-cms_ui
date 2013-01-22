@@ -60,11 +60,11 @@ public class FormSectionConnector extends AbstractLayoutConnector {
         registerRpc(FormSectionClientRpc.class, new FormSectionClientRpc() {
             @Override
             public void focus(Connector component) {
-                getWidget().focus(((ComponentConnector)component).getWidget());
+                getWidget().focus(((ComponentConnector) component).getWidget());
             }
         });
     }
-    
+
     private final StateChangeHandler errorHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent event) {

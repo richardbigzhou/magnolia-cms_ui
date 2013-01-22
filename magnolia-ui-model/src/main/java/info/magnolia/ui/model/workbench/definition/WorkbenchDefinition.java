@@ -92,7 +92,7 @@ public interface WorkbenchDefinition extends Serializable {
 
     /**
      * Checks if workbench can edit tree view inplace.
-     * 
+     *
      * @return true, if workbench is editable
      */
     boolean isEditable();

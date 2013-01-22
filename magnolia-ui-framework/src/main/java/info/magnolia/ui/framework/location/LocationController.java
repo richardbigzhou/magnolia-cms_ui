@@ -92,8 +92,7 @@ public class LocationController {
                 public void onCancel() {
                 }
             });
-        }
-        else {
+        } else {
             goToWithoutChecks(newLocation);
         }
     }

@@ -71,11 +71,9 @@ public abstract class AbstractMgnlElementProcessor {
         if (getMgnlElement().getEditElement() != null) {
             Element parent = getMgnlElement().getEditElement();
             parent.insertFirst(getEditBar().getElement());
-        }
-        else if (getMgnlElement().getFirstElement() != null && getMgnlElement().getFirstElement() == getMgnlElement().getLastElement()) {
+        } else if (getMgnlElement().getFirstElement() != null && getMgnlElement().getFirstElement() == getMgnlElement().getLastElement()) {
             attach(getMgnlElement());
-        }
-        else {
+        } else {
             String nodeData = getMgnlElement().getStartComment().getNodeValue();
 
             attach(getMgnlElement().getStartComment());

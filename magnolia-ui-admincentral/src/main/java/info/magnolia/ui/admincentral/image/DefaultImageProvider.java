@@ -109,8 +109,7 @@ public class DefaultImageProvider implements ImageProvider {
                     imageName = node.getName();
                 }
 
-                imagePath = MgnlContext.getContextPath() + "/" + definition.getImagingServletPath() + "/" + generator + "/" + workspace + "/"
-                        + imageNode.getIdentifier() + "/" + imageName + "." + definition.getImageExtension();
+                imagePath = MgnlContext.getContextPath() + "/" + definition.getImagingServletPath() + "/" + generator + "/" + workspace + "/" + imageNode.getIdentifier() + "/" + imageName + "." + definition.getImageExtension();
 
                 // Add cache fingerprint so that browser caches asset only until asset is modified.
                 Calendar lastModified = NodeTypes.LastModified.getLastModified(node);

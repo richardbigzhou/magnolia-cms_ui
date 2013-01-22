@@ -96,11 +96,9 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
     /**
      * Sets the item and property for inplace editing.
-     * 
-     * @param itemId
-     *            the item id
-     * @param propertyId
-     *            the property id
+     *
+     * @param itemId the item id
+     * @param propertyId the property id
      */
     public void setEditing(Object itemId, Object propertyId) {
         if (itemId != null && propertyId != null) {
@@ -132,9 +130,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         public Field createField(Container container, final Object itemId, final Object propertyId, Component uiContext) {
 
             // add TextField only for selected row/column.
-            if (editableColumns.contains(propertyId)
-                    && itemId.equals(editingItemId)
-                    && propertyId.equals(editingPropertyId)) {
+            if (editableColumns.contains(propertyId) && itemId.equals(editingItemId) && propertyId.equals(editingPropertyId)) {
 
                 Field field = super.createField(container, itemId, propertyId, uiContext);
 
@@ -193,9 +189,8 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
      * Gets the item whose property is currently being edited in the given field. Since the {{Table}} doesn't keep
      * references to its items, the only way to get it back is to ask the property datasource for its listeners and see
      * if the Item is there.
-     * 
-     * @param source
-     *            the vaadin {{Field}} where the editing occured
+     *
+     * @param source the vaadin {{Field}} where the editing occured
      * @return the vaadin {{Item}} if it could be fetched, null otherwise.
      */
     private Item getItemFromField(Field source) {
@@ -239,14 +234,13 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
         private final ShortcutAction tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
 
-        private final ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB,
-                new int[] { ShortcutAction.ModifierKey.SHIFT });
+        private final ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB, new int[]{ShortcutAction.ModifierKey.SHIFT});
 
         private final ShortcutAction escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
 
         @Override
         public Action[] getActions(Object target, Object sender) {
-            return new Action[] { enter, tabNext, tabPrev, escape };
+            return new Action[]{enter, tabNext, tabPrev, escape};
         }
 
         @Override

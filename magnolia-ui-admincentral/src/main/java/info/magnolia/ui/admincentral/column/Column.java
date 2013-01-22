@@ -42,9 +42,8 @@ import com.vaadin.ui.Component;
 
 /**
  * Defines a Column - e.g. for lists or trees.
- * 
- * @param <D>
- *            type of the definition for this column.
+ *
+ * @param <D> type of the definition for this column.
  */
 public interface Column<D extends AbstractColumnDefinition> {
 

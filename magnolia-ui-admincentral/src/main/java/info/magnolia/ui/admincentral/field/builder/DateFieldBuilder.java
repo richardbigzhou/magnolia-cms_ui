@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.field.builder;
 import info.magnolia.ui.model.field.definition.DateFieldDefinition;
 
 import java.util.Date;
+
 import com.vaadin.data.Item;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Field;

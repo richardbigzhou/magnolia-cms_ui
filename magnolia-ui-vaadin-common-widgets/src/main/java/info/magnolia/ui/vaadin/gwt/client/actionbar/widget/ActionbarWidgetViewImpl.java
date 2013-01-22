@@ -84,7 +84,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
 
     private int tabletColumn = 0;
 
-    private final boolean isDeviceTablet = isDeviceTablet();;
+    private final boolean isDeviceTablet = isDeviceTablet();
 
     private boolean isToggledOpen = false;
 
@@ -113,7 +113,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
      * Determine if device is tablet. Allows option to add a querystring parameter of tablet=true
      * for testing.
      * TODO: Christopher Zimmermann - there should be only one instance of this code ithe project.
-     * 
+     *
      * @return Whether device is tablet.
      */
     private boolean isDeviceTablet() {
@@ -274,8 +274,6 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
 
     /**
      * For tablet mode, position these buttons at the bottom of the button stack.
-     * 
-     * @return
      */
     private void setToggleAndFullScreenButtonHeights(int tabletRow) {
         // Position toggleButton and fullScreenButton at bottom of stack.

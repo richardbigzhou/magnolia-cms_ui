@@ -56,55 +56,47 @@ public interface MessagesManager {
 
     /**
      * Returns how many of the messages kept for a specific user that hasn't been cleared.
-     * 
-     * @param userName
-     *            name of the user
+     *
+     * @param userName name of the user
      * @return number of uncleared messages
      */
     int getNumberOfUnclearedMessagesForUser(String userName);
 
     /**
      * Returns all messages kept for a specific user.
-     * 
-     * @param userName
-     *            name of the user
+     *
+     * @param userName name of the user
      * @return list of messages kept for the user
      */
     List<Message> getMessagesForUser(String userName);
 
     /**
      * Send message to a specific user.
-     * 
-     * @param userName
-     *            name of the user to receive the message
-     * @param message
-     *            message to send
+     *
+     * @param userName name of the user to receive the message
+     * @param message message to send
      */
     void sendMessage(String userName, Message message);
 
     /**
      * Send message to the current user.
-     * 
-     * @param message
-     *            message to send
+     *
+     * @param message message to send
      */
     void sendLocalMessage(Message message);
 
     /**
      * Sends a message to all users.
-     * 
-     * @param message
-     *            message to send
+     *
+     * @param message message to send
      */
     void broadcastMessage(Message message);
 
     /**
      * Marks a message as cleared.
-     * 
-     * @param userName
-     *            name of the user the message belongs to
-     * @param messageId
-     *            id of message
+     *
+     * @param userName name of the user the message belongs to
+     * @param messageId id of message
      */
     void clearMessage(String userName, String messageId);
 }

@@ -44,9 +44,9 @@ import com.vaadin.ui.Label;
 public class StaticField extends CustomField<Object> {
 
     private Label label;
-    
+
     public StaticField() {
-        label = new Label();        
+        label = new Label();
     }
 
     @Override

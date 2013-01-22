@@ -44,36 +44,36 @@ import com.google.gwt.json.client.JSONString;
  * Helper class that holds the animation settings.
  */
 public class AnimationSettings {
-    
+
     private final Map<String, Object> properties = new HashMap<String, Object>();
-   
+
     private Callbacks callbacks = Callbacks.create();
-    
+
     public void setProperty(final String properyName, final Object value) {
         properties.put(properyName, value);
     }
-    
+
     public void addCallback(final JQueryCallback callback) {
         callbacks.add(callback);
     }
-    
+
     public void setCallbacks(final Callbacks callbacks) {
         this.callbacks = callbacks;
     }
-    
+
     final JavaScriptObject getCallbacks() {
         return callbacks;
     }
-    
+
     JavaScriptObject asJSO() {
         final JSONObject parameter = new JSONObject();
-        if (properties !=null){
-        for (String key : properties.keySet()) {
-            String value = String.valueOf(properties.get(key));
-            parameter.put(key, new JSONString(value));
-        }
+        if (properties != null) {
+            for (String key : properties.keySet()) {
+                String value = String.valueOf(properties.get(key));
+                parameter.put(key, new JSONString(value));
+            }
         }
         return parameter.getJavaScriptObject();
     }
-    
+
 }

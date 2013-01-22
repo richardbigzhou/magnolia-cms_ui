@@ -50,7 +50,7 @@ public class CompositeIcon extends AbstractComponentContainer {
     private final List<Component> icons;
 
     protected CompositeIcon(Icon... icons) {
-        this.icons = Arrays.<Component> asList(icons);
+        this.icons = Arrays.<Component>asList(icons);
         addComponents(icons);
     }
 

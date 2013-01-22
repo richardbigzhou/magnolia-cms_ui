@@ -60,11 +60,9 @@ import com.vaadin.ui.Field;
 /**
  * Abstract FieldBuilder implementations. This class handle all common attributes defined in {@link FieldDefinition} and binds Vaadin {@link Field} instances created
  * by subclasses to the {@link Property} they will be reading and writing to.
- * 
- * @param <D>
- *            definition type
- * @param <T>
- *            field value type
+ *
+ * @param <D> definition type
+ * @param <T> field value type
  */
 public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends AbstractFormItem implements FieldBuilder {
     private static final Logger log = LoggerFactory.getLogger(AbstractFieldBuilder.class);

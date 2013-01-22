@@ -38,11 +38,9 @@ import info.magnolia.ui.model.builder.FactoryBase;
 
 /**
  * Abstract base class used by action factories.
- * 
- * @param <D>
- *            definition parent type
- * @param <I>
- *            implementation parent type
+ *
+ * @param <D> definition parent type
+ * @param <I> implementation parent type
  * @see FactoryBase
  */
 public abstract class AbstractActionFactory<D extends ActionDefinition, I extends Action> extends FactoryBase<D, I> implements ActionFactory<D, I> {

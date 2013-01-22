@@ -40,7 +40,8 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public class Callbacks extends JavaScriptObject {
 
-    protected Callbacks() {}
+    protected Callbacks() {
+    }
 
     public static Callbacks create(final JQueryCallback... callbacks) {
         final Callbacks result = create();

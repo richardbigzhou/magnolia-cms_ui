@@ -90,7 +90,7 @@ public class DialogFieldRegistryTest extends RepositoryTestCase {
         MgnlContext.setInstance(null);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Test
     public void testAppDescriptorOnStart() {
         // GIVEN
@@ -104,7 +104,7 @@ public class DialogFieldRegistryTest extends RepositoryTestCase {
         assertEquals(1, definitionToImplementationMappings.size());
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Ignore
     @Test
     public void testAppDescriptorReloadsOnChange() throws RepositoryException {
