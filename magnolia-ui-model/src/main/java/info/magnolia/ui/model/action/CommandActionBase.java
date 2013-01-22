@@ -75,7 +75,6 @@ public abstract class CommandActionBase<D extends CommandActionDefinition> exten
      * <li>Context.ATTRIBUTE_UUID = current node's identifier
      * <li>Context.ATTRIBUTE_PATH = current node's path
      * </ul>
-     * This method is called bythe constructor.
      */
     protected Map<String, Object> buildParams(final Node node) {
         Map<String, Object> params = getDefinition().getParams() == null ? new HashMap<String, Object>() : getDefinition().getParams();
