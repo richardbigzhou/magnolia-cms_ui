@@ -190,7 +190,9 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         });
     }
 
-    /** @see ContentPresenter#getSelectedItemPath() */
+    /**
+     * @see ContentPresenter#getSelectedItemPath()
+     */
     public String getSelectedItemId() {
         return contentPresenter.getSelectedItemPath();
     }
@@ -203,7 +205,9 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         return actionbarPresenter;
     }
 
-    /** Executes the workbench's default action, as configured in the defaultAction property. */
+    /**
+     * Executes the workbench's default action, as configured in the defaultAction property.
+     */
     public void executeDefaultAction() {
         ActionDefinition defaultActionDef = actionbarPresenter.getDefaultActionDefinition();
         if (defaultActionDef != null) {
@@ -246,8 +250,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         boolean itemExists = itemExists(path);
         if (!itemExists) {
             log.warn(
-                    "Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.",
-                    path, workbenchDefinition.getWorkspace());
+                "Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.",
+                path, workbenchDefinition.getWorkspace());
         }
         view.selectPath(itemExists ? path : "/");
     }

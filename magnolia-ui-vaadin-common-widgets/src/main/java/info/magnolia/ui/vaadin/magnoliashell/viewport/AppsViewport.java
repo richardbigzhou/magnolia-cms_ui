@@ -38,7 +38,6 @@ import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 
 /**
  * Apps viewport.
- *
  */
 public class AppsViewport extends ShellViewport {
 

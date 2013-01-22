@@ -53,7 +53,9 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
 
-/** Main testcase for {@link AbstractFieldBuilder}. */
+/**
+ * Main testcase for {@link AbstractFieldBuilder}.
+ */
 public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFieldDefinition> {
 
     private AbstractFieldBuilder<FieldDefinition, Object> abstractDialogField;
@@ -185,7 +187,9 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         return configureFieldDefinition;
     }
 
-    /** Simplified test implementation of a {@link TextFieldBuilder}. */
+    /**
+     * Simplified test implementation of a {@link TextFieldBuilder}.
+     */
     public static class TestTextFieldBuilder extends AbstractFieldBuilder<FieldDefinition, Object> {
 
         public TestTextFieldBuilder(FieldDefinition definition, Item relatedFieldItem) {

@@ -93,7 +93,9 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
 
     private ViewType currentViewType = ViewType.TREE;
 
-    /** for going back from search view if search expression is empty. */
+    /**
+     * for going back from search view if search expression is empty.
+     */
     private ViewType previousViewType = currentViewType;
 
     private ContentWorkbenchView.Listener contentWorkbenchViewListener;

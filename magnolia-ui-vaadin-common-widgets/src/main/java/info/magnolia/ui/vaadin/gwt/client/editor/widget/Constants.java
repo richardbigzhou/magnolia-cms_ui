@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.editor.widget;
 
 /**
  * Constants used in ImageEditor widget.
- *
  */
 public interface Constants {
 

@@ -40,7 +40,9 @@ package info.magnolia.ui.model.workbench.definition;
  */
 public class ConfiguredItemTypeDefinition implements ItemTypeDefinition {
 
-    /** The system name of the item type or 'nodeData' if it describes node data. */
+    /**
+     * The system name of the item type or 'nodeData' if it describes node data.
+     */
     private String itemType;
 
     private String icon;

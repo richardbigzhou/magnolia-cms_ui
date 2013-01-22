@@ -80,8 +80,7 @@ public class ConfiguredContentViewBuilderTest {
         final MockSession session = new MockSession(workspace);
         MockUtil.setSessionAndHierarchyManager(session);
         WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
-        when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(
-                new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>());
+        when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>());
 
         componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl(null, workbenchActionRegistry));
         final ImageProviderDefinition imageProvider = mock(ImageProviderDefinition.class);

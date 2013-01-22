@@ -462,7 +462,9 @@ public class AppControllerImplTest {
         return builder.build();
     }
 
-    /** App event collector. */
+    /**
+     * App event collector.
+     */
     public static class AppEventCollector implements AppLifecycleEventHandler {
 
         List<AppLifecycleEvent> appLifecycleEvent = new ArrayList<AppLifecycleEvent>();

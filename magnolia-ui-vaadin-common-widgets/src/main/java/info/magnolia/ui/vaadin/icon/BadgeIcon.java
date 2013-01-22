@@ -44,7 +44,9 @@ import com.vaadin.ui.AbstractComponent;
  */
 public class BadgeIcon extends AbstractComponent {
 
-    /** Creates a new badge icon, with default style. */
+    /**
+     * Creates a new badge icon, with default style.
+     */
     public BadgeIcon() {
     }
 

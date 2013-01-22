@@ -419,7 +419,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME) + AbstractJcrContainer.ORDER_BY
-                + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+            + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
     }
 
     @Test
@@ -432,7 +432,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME) + AbstractJcrContainer.ORDER_BY
-                + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+            + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
     }
 
     @Test
@@ -445,7 +445,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME) + AbstractJcrContainer.ORDER_BY
-                + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+            + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
     }
 
     @Test
@@ -583,20 +583,24 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         assertEquals(fooItemId, jcrContainer.firstItemId());
     }
 
-    /** Define the sorting criteria. */
+    /**
+     * Define the sorting criteria.
+     */
     private void setSorter(String sortingPorperty, boolean ascending) {
         boolean[] ascendingOrder = {ascending};
         jcrContainer.sort(Arrays.asList(sortingPorperty).toArray(), ascendingOrder);
     }
 
     public static Node createNode(Node rootNode, String nodename, String nodeType, String nodePropertyName, String nodePropertyValue)
-            throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         Node node = rootNode.addNode(nodename, nodeType);
         node.setProperty(nodePropertyName, nodePropertyValue);
         return node;
     }
 
-    /** Dummy Implementation of the {AbstractJcrContainer}. */
+    /**
+     * Dummy Implementation of the {AbstractJcrContainer}.
+     */
     public class JcrContainerTestImpl extends AbstractJcrContainer {
 
         public JcrContainerTestImpl(WorkbenchDefinition workbenchDefinition) {

@@ -41,7 +41,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * View interface of client side AppLauncher.
- *
  */
 public interface AppLauncherView extends HasWidgets, IsWidget {
 

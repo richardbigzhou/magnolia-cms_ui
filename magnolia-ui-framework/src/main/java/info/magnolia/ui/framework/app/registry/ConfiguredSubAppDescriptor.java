@@ -41,7 +41,9 @@ import info.magnolia.ui.framework.app.SubAppDescriptor;
  */
 public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
 
-    /** unique identifier. */
+    /**
+     * unique identifier.
+     */
     private String name;
 
     private String label;

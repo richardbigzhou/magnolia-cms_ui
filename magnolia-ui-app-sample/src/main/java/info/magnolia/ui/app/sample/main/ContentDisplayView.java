@@ -40,7 +40,9 @@ import info.magnolia.ui.framework.view.View;
  */
 public interface ContentDisplayView extends View {
 
-    /** Listener. */
+    /**
+     * Listener.
+     */
     public interface Listener {
 
         void onOpenInNewEditor();

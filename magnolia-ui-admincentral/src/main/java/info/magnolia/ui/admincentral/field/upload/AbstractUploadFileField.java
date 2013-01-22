@@ -96,8 +96,7 @@ import com.vaadin.ui.Upload.StartedListener;
  *
  * @param <D> definition type
  */
-public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends CustomField<Byte[]> implements StartedListener, FinishedListener,
-        ProgressListener, FailedListener, DropHandler, UploadFileField {
+public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends CustomField<Byte[]> implements StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler, UploadFileField {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractUploadFileField.class);
 
@@ -269,8 +268,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
 
                 @Override
                 public void streamingFinished(StreamingEndEvent event) {
-                    FinishedEvent uploadEvent = new FinishedEvent(upload, event.getFileName(), event.getMimeType(), event
-                            .getContentLength());
+                    FinishedEvent uploadEvent = new FinishedEvent(upload, event.getFileName(), event.getMimeType(), event.getContentLength());
                     uploadFinished(uploadEvent);
                 }
 

@@ -199,7 +199,9 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         });
     }
 
-    /** Actualize the state of the actionbar fullscreen button. */
+    /**
+     * Actualize the state of the actionbar fullscreen button.
+     */
     private void actualizeFullScreenState(boolean isFullScreen) {
         if (isFullScreen) {
             fullScreenButtonIcon.addClassName("icon-close-fullscreen");
@@ -211,7 +213,9 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         presenter.changeFullScreen(isFullScreen);
     }
 
-    /** Actualize the state of the actionbar 'openness' by setting classes on html elements. */
+    /**
+     * Actualize the state of the actionbar 'openness' by setting classes on html elements.
+     */
     private void actualizeToggleState(boolean isOpen) {
         if (isOpen) {
             toggleButtonIcon.addClassName("open");// NOTE:CLZ:With icon fonts this class name will change.
@@ -268,7 +272,9 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         }
     }
 
-    /** For tablet mode, position these buttons at the bottom of the button stack. */
+    /**
+     * For tablet mode, position these buttons at the bottom of the button stack.
+     */
     private void setToggleAndFullScreenButtonHeights(int tabletRow) {
         // Position toggleButton and fullScreenButton at bottom of stack.
         toggleButton.setStyleName(CLASSNAME_TOGGLE + " row-" + (tabletRow + 1));

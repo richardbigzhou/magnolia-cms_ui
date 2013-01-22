@@ -134,10 +134,14 @@ public class BaseDialog extends AbstractSingleComponentContainer implements Dial
         removeListener("dialogCloseEvent", DialogCloseEvent.class, handler);
     }
 
-    /** DialogCloseEvent. */
+    /**
+     * DialogCloseEvent.
+     */
     public static class DialogCloseEvent extends com.vaadin.ui.Component.Event {
 
-        /** Handler. */
+        /**
+         * Handler.
+         */
         public interface Handler {
             void onClose(DialogCloseEvent event);
         }
@@ -148,8 +152,7 @@ public class BaseDialog extends AbstractSingleComponentContainer implements Dial
 
         static {
             try {
-                ON_DIALOG_CLOSE = DialogCloseEvent.Handler.class.getDeclaredMethod(
-                        "onClose", new Class[]{DialogCloseEvent.class});
+                ON_DIALOG_CLOSE = DialogCloseEvent.Handler.class.getDeclaredMethod("onClose", new Class[]{DialogCloseEvent.class});
             } catch (final java.lang.NoSuchMethodException e) {
                 throw new java.lang.RuntimeException(e);
             }

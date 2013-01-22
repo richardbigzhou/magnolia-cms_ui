@@ -203,15 +203,13 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
             @Override
             public void onSwipeEnd(SwipeEndEvent event) {
                 final DIRECTION direction = event.getDirection();
-                final Widget newVisibleWidget = direction == DIRECTION.LEFT_TO_RIGHT ? getPreviousWidget()
-                        : getNextWidget();
+                final Widget newVisibleWidget = direction == DIRECTION.LEFT_TO_RIGHT ? getPreviousWidget() : getNextWidget();
                 if (event.isDistanceReached() && getWidgetCount() > 1) {
                     final JQueryWrapper jq = JQueryWrapper.select(getVisibleApp());
                     jq.animate(450, new AnimationSettings() {
 
                         {
-                            setProperty("left", getOffsetWidth() * (direction == DIRECTION.LEFT_TO_RIGHT ? 1 : -1)
-                                    - jq.position().left());
+                            setProperty("left", getOffsetWidth() * (direction == DIRECTION.LEFT_TO_RIGHT ? 1 : -1) - jq.position().left());
                             setCallbacks(Callbacks.create(new JQueryCallback() {
 
                                 @Override
@@ -264,7 +262,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
     private void processSwipe(int translationValue) {
         JQueryWrapper.select(getVisibleApp())
-                .setCss("-webkit-transform", "translate3d(" + translationValue + "px,0,0)");
+            .setCss("-webkit-transform", "translate3d(" + translationValue + "px,0,0)");
         if (getWidgetCount() > 1) {
             showCandidateApp(translationValue);
         }
@@ -284,13 +282,13 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
         if (isNext && getWidgetCount() > 2) {
             JQueryWrapper.select(nextWidget).setCss("-webkit-transform",
-                    "translate3d(" + (translationValue + getVisibleApp().getOffsetWidth()) + "px,0,0)");
+                "translate3d(" + (translationValue + getVisibleApp().getOffsetWidth()) + "px,0,0)");
         }
 
         nextWidget.getElement().getStyle()
-                .setVisibility(isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
+            .setVisibility(isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
         previousWidget.getElement().getStyle()
-                .setVisibility(!isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
+            .setVisibility(!isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
     }
 
     private Widget getNextWidget() {

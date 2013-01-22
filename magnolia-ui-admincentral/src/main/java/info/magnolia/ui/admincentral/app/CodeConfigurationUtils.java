@@ -238,7 +238,9 @@ public class CodeConfigurationUtils {
         return false;
     }
 
-    /** Returns true if a method overrides a method in a super class. */
+    /**
+     * Returns true if a method overrides a method in a super class.
+     */
     private static boolean overrides(Method method, Method methodInSuperclass) {
         if (!hasSameSignatures(method, methodInSuperclass)) {
             return false;

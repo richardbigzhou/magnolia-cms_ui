@@ -41,8 +41,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /**
  * {@link BaseDialogView}.
  */
-public interface BaseDialogView extends
-        EditorLikeView<BaseDialogView.Presenter>, IsWidget, HasWidgets {
+public interface BaseDialogView extends EditorLikeView<BaseDialogView.Presenter>, IsWidget, HasWidgets {
 
     /**
      * Presenter.

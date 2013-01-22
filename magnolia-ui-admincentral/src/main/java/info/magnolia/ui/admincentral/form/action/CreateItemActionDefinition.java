@@ -50,7 +50,9 @@ public class CreateItemActionDefinition implements ActionDefinition {
         return appId;
     }
 
-    /** @param appId associated with the action. */
+    /**
+     * @param appId associated with the action.
+     */
     public void setAppId(String appId) {
         this.appId = appId;
     }
@@ -59,7 +61,9 @@ public class CreateItemActionDefinition implements ActionDefinition {
         return subAppId;
     }
 
-    /** @param subAppId associated with the action. */
+    /**
+     * @param subAppId associated with the action.
+     */
     public void setSubAppId(String subAppId) {
         this.subAppId = subAppId;
     }
@@ -68,7 +72,9 @@ public class CreateItemActionDefinition implements ActionDefinition {
         return nodeType;
     }
 
-    /** @param nodeType specifies the new node nodeType. */
+    /**
+     * @param nodeType specifies the new node nodeType.
+     */
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
     }

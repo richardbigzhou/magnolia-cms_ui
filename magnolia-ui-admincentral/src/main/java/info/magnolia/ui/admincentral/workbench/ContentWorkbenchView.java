@@ -59,16 +59,24 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
 
     void setViewType(ContentView.ViewType type);
 
-    /** Updates the search box with given search query. */
+    /**
+     * Updates the search box with given search query.
+     */
     void setSearchQuery(String query);
 
-    /** Refreshes the current view. */
+    /**
+     * Refreshes the current view.
+     */
     void refresh();
 
-    /** Use this method to add sub views hosted by this view. */
+    /**
+     * Use this method to add sub views hosted by this view.
+     */
     void addContentView(ViewType type, ContentView view);
 
-    /** Use this method to add an action bar to this sub app view. */
+    /**
+     * Use this method to add an action bar to this sub app view.
+     */
     void setActionbarView(ActionbarView actionbar);
 
     void selectPath(String path);

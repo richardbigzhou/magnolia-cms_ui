@@ -114,8 +114,7 @@ public class ContentWorkbenchPresenterTest {
         ContentPresenter mockContentPresenter = mock(ContentPresenter.class);
         ActionbarPresenter mockActionbarPresenter = mock(ActionbarPresenter.class);
 
-        presenter = new ContentWorkbenchPresenter(subAppContext, mockView, adminCentralEventBus, subAppEventBus,
-                null, mockContentPresenter, mockActionbarPresenter, null);
+        presenter = new ContentWorkbenchPresenter(subAppContext, mockView, adminCentralEventBus, subAppEventBus, null, mockContentPresenter, mockActionbarPresenter, null);
 
         // start presenter (binds event handlers)
         presenter.start();
