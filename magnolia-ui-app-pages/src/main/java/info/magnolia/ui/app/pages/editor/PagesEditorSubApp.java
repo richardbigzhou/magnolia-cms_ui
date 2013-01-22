@@ -91,8 +91,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     private WorkbenchDefinition workbenchDefinition;
 
     @Inject
-    public PagesEditorSubApp(final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named("subapp") EventBus eventBus,
-            final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
+    public PagesEditorSubApp(final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named("subapp") EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
         super(subAppContext, view);
 
         this.view = view;
@@ -139,8 +138,6 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
 
     /**
      * Wraps the current DefaultLocation in a ContentLocation. Providing getter and setters for used parameters.
-     * 
-     * @return
      */
     @Override
     public ItemLocation getCurrentLocation() {

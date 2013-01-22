@@ -38,8 +38,6 @@ import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * Magnolia Pinch event.
- * 
- * @param <H>
  */
 public abstract class MagnoliaPinchEvent<H extends EventHandler> extends GwtEvent<H> {
 

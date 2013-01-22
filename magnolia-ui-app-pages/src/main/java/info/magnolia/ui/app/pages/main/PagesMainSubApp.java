@@ -67,7 +67,7 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
         actionbar.disable("move", "duplicate");
 
         // actions disabled based on selection
-        final String[] defaultActions = new String[] { "delete", "preview", "edit", "export" };
+        final String[] defaultActions = new String[]{"delete", "preview", "edit", "export"};
         if (getWorkbench().getSelectedItemId() == null || "/".equals(getWorkbench().getSelectedItemId())) {
             actionbar.disable(defaultActions);
         } else {

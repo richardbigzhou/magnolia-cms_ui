@@ -47,7 +47,6 @@ import com.vaadin.client.BrowserInfo;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
- * 
  */
 public class PageEditorViewImpl extends Composite implements PageEditorView {
 
@@ -101,8 +100,7 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
         // if the page is already loaded, force a reload
         if (url.equals(this.url)) {
             reload();
-        }
-        else {
+        } else {
             getFrame().setUrl(url);
             this.url = url;
         }
@@ -118,8 +116,7 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
     public void initSelectionListener() {
         if (BrowserInfo.get().isTouchDevice()) {
             handler.initNativeTouchSelectionListener(iframe.getElement(), listener);
-        }
-        else {
+        } else {
             handler.initNativeMouseSelectionListener(iframe.getElement(), listener);
         }
     }

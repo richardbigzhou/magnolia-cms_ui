@@ -68,8 +68,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
 
         DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLauncherLayoutManager);
         LocationHistoryHandler locationHistoryHandler = new LocationHistoryHandler(locationHistoryMapper, shell);
-        locationHistoryHandler
-                .register(locationController, eventBus, new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, "applauncher", "", ""));
+        locationHistoryHandler.register(locationController, eventBus, new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, "applauncher", "", ""));
         messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), messageDispatcher);
     }
 

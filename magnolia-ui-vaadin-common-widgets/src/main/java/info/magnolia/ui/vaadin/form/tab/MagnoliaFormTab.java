@@ -50,12 +50,12 @@ public class MagnoliaFormTab extends MagnoliaTab {
         // DialogLayout needs this info to display it when show all tab is active
         this.content.setCaption(caption);
     }
-    
+
     @Override
     protected FormTabState getState() {
-        return (FormTabState)super.getState();
+        return (FormTabState) super.getState();
     }
-    
+
     @Override
     public FormSection getContent() {
         return content;

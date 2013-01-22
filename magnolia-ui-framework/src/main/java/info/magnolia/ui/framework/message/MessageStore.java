@@ -75,11 +75,9 @@ public class MessageStore {
      * Stores a new message or overwrites an existing one depending on whether there's an id set. That is, the id of the
      * message is respected if present otherwise a new unique one is used. When the method returns the message has been
      * updated with a new id.
-     * 
-     * @param userName
-     *            user to save the message for
-     * @param message
-     *            message to save
+     *
+     * @param userName user to save the message for
+     * @param message message to save
      * @return true if saving was successful or false if it failed
      */
     public boolean saveMessage(final String userName, final Message message) {

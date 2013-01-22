@@ -130,7 +130,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 view.updateShellDivet();
             }
         });
-        
+
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -144,7 +144,8 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     }
 
     @Override
-    public void updateCaption(ComponentConnector connector) {}
+    public void updateCaption(ComponentConnector connector) {
+    }
 
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {

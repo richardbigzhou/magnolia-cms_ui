@@ -47,11 +47,9 @@ public class MoveNodeAction extends ActionBase<MoveNodeActionDefinition> {
 
     /**
      * Instantiates a new move node action.
-     * 
-     * @param definition
-     *            the definition
-     * @param nodeToEdit
-     *            the node to edit
+     *
+     * @param definition the definition
+     * @param nodeToEdit the node to edit
      */
     public MoveNodeAction(MoveNodeActionDefinition definition, Node nodeToEdit) {
         super(definition);

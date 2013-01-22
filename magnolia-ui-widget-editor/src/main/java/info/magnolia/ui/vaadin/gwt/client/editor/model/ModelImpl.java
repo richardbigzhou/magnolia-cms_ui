@@ -72,8 +72,7 @@ public class ModelImpl implements Model {
 
         if (elements.get(mgnlElement) != null) {
             elements.get(mgnlElement).add(element);
-        }
-        else {
+        } else {
             List<Element> elList = new LinkedList<Element>();
             elList.add(element);
             elements.put(mgnlElement, elList);

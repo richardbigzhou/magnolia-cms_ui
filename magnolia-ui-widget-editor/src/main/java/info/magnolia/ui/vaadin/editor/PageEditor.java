@@ -125,11 +125,9 @@ public class PageEditor extends AbstractComponent implements PageEditorView {
         Gson gson = new Gson();
         if (type.equals(PAGE_ELEMENT)) {
             element = gson.fromJson(gson.toJson(attributes), PageElement.class);
-        }
-        else if (type.equals(AREA_ELEMENT)) {
+        } else if (type.equals(AREA_ELEMENT)) {
             element = gson.fromJson(gson.toJson(attributes), AreaElement.class);
-        }
-        else if (type.equals(COMPONENT_ELEMENT)) {
+        } else if (type.equals(COMPONENT_ELEMENT)) {
             element = gson.fromJson(gson.toJson(attributes), ComponentElement.class);
         }
         return element;

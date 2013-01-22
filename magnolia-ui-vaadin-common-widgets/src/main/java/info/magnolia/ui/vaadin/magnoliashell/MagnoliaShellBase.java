@@ -63,7 +63,7 @@ import com.vaadin.ui.UI;
 /**
  * Server side implementation of the MagnoliaShell container.
  */
-@JavaScript({ "jquery-1.7.2.min.js", "jquery.transition.js" })
+@JavaScript({"jquery-1.7.2.min.js", "jquery.transition.js"})
 public abstract class MagnoliaShellBase extends AbstractComponent implements HasComponents {
 
     private final EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
@@ -230,7 +230,7 @@ public abstract class MagnoliaShellBase extends AbstractComponent implements Has
     public Iterator<Component> iterator() {
         return new ComponentIterator<Connector>(getState(false).viewports.values().iterator());
     }
-    
+
     public ShellViewport appViewport() {
         return (ShellViewport) getState(false).viewports.get(ViewportType.APP);
     }
