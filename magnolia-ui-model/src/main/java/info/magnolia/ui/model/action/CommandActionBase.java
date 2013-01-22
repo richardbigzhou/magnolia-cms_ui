@@ -46,7 +46,7 @@ import javax.jcr.Node;
  * 
  * @param <D> {@link CommandActionDefinition}.
  */
-public abstract class CommandActionBase<D extends CommandActionDefinition> extends ActionBase<CommandActionDefinition> {
+public abstract class CommandActionBase<D extends CommandActionDefinition> extends ActionBase<D> {
 
     private CommandsManager commandsManager;
 
