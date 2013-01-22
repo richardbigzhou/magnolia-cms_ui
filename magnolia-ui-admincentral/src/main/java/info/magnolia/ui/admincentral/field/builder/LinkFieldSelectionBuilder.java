@@ -102,7 +102,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
                 if (selected != null) {
                     try {
                         boolean isPropertyExisting = StringUtils.isNotBlank(propertyName)
-                            && !LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
+                                && !LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
                         textContent.setValue(isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath());
                     } catch (RepositoryException e) {
                         log.error("Not able to access the configured property. Value will not be set.", e);

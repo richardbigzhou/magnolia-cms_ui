@@ -256,8 +256,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                 }
             }
         }
-        log.warn("No action definition found for default action [{}]. Please check actionbar definition.",
-            defaultAction);
+        log.warn("No action definition found for default action [{}]. Please check actionbar definition.", defaultAction);
         return null;
     }
 

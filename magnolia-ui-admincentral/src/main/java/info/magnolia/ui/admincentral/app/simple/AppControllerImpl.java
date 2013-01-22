@@ -80,8 +80,7 @@ import org.slf4j.LoggerFactory;
  * @see App
  */
 @Singleton
-public class AppControllerImpl implements AppController, LocationChangedEvent.Handler,
-    LocationChangeRequestedEvent.Handler {
+public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
 
     private static final Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
 
@@ -109,8 +108,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Inject
     public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider,
-            AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController,
-            MessagesManager messagesManager, Shell shell, @Named("admincentral") EventBus admincentralEventBus) {
+                             AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController,
+                             MessagesManager messagesManager, Shell shell, @Named("admincentral") EventBus admincentralEventBus) {
         this.moduleRegistry = moduleRegistry;
         this.componentProvider = componentProvider;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
@@ -138,8 +137,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     @Override
     public App getAppWithoutStarting(String appId) {
         AppContext appContext = getAppContext(appId);
-        ComponentProvider appComponentProvider = appContext
-            .createAppComponentProvider(appContext.getName(), appContext);
+        ComponentProvider appComponentProvider = appContext.createAppComponentProvider(appContext.getName(), appContext);
         App app = appComponentProvider.newInstance(appContext.getAppDescriptor().getAppClass());
 
         appContext.setApp(app);
@@ -350,8 +348,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
                 return null;
             }
 
-            return new AppContextImpl(moduleRegistry, componentProvider, this, locationController, shell,
-                messagesManager, descriptor);
+            return new AppContextImpl(moduleRegistry, componentProvider, this, locationController, shell, messagesManager, descriptor);
 
         }
     }

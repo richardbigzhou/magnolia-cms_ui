@@ -55,9 +55,7 @@ public class ShowcaseMainSubApp extends AbstractSubApp implements ShowcaseMainVi
     private UnsupportedPresenter unsupportedPresenter;
 
     @Inject
-    public ShowcaseMainSubApp(final SubAppContext subAppContext, @Named("app") EventBus subAppEventBus, ShowcaseMainView view,
-            FormsPresenter formsPresenter, VaadinPresenter vaadinPresenter,
-            UnsupportedPresenter unsupportedPresenter) {
+    public ShowcaseMainSubApp(final SubAppContext subAppContext, @Named("app") EventBus subAppEventBus, ShowcaseMainView view, FormsPresenter formsPresenter, VaadinPresenter vaadinPresenter, UnsupportedPresenter unsupportedPresenter) {
         super(subAppContext, view);
         this.view = view;
         this.formPresenter = formsPresenter;

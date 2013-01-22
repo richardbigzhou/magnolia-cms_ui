@@ -130,9 +130,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         public Field createField(Container container, final Object itemId, final Object propertyId, Component uiContext) {
 
             // add TextField only for selected row/column.
-            if (editableColumns.contains(propertyId)
-                && itemId.equals(editingItemId)
-                && propertyId.equals(editingPropertyId)) {
+            if (editableColumns.contains(propertyId) && itemId.equals(editingItemId) && propertyId.equals(editingPropertyId)) {
 
                 Field field = super.createField(container, itemId, propertyId, uiContext);
 

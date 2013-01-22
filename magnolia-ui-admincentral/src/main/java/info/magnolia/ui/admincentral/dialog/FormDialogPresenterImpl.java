@@ -68,8 +68,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     private final DialogActionFactory dialogActionFactory;
     private FormPresenter formPresenter;
 
-    public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final FormPresenterFactory formPresenterFactory,
-            final DialogDefinition dialogDefinition, final Shell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
+    public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final FormPresenterFactory formPresenterFactory, final DialogDefinition dialogDefinition, final Shell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
         super(view, eventBus);
         this.view = view;
         this.dialogBuilder = dialogBuilder;

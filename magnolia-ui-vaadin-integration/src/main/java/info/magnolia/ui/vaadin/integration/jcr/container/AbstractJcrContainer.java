@@ -148,8 +148,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                 if (StringUtils.isBlank(propertyName)) {
                     propertyName = columnDefinition.getName();
                     log.debug(
-                        "Column {} is sortable but no propertyName has been defined. Defaulting to column name (sorting may not work as expected).",
-                        columnDefinition.getName());
+                            "Column {} is sortable but no propertyName has been defined. Defaulting to column name (sorting may not work as expected).", columnDefinition.getName());
                 }
 
                 sortableProperties.add(propertyName);
@@ -616,7 +615,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             mainItemType = workbenchDefinition.getMainItemType().getItemType();
         } else {
             log.warn("WorkbenchDefinition {} does not properly define a MainItemType - hence we'll use the default value '{}'.",
-                workbenchDefinition.getName(), DEFAULT_MAIN_ITEM_TYPE);
+                    workbenchDefinition.getName(), DEFAULT_MAIN_ITEM_TYPE);
         }
         return mainItemType;
     }
@@ -721,7 +720,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                 query.setOffset(offset);
             }
             log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{getWorkspace(),
-                statement, limit, offset});
+                    statement, limit, offset});
             long start = System.currentTimeMillis();
             final QueryResult result = query.execute();
             log.debug("Query execution took {} ms", System.currentTimeMillis() - start);

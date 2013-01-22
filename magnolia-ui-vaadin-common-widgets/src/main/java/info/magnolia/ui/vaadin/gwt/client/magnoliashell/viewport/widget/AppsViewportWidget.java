@@ -261,8 +261,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     }
 
     private void processSwipe(int translationValue) {
-        JQueryWrapper.select(getVisibleApp())
-            .setCss("-webkit-transform", "translate3d(" + translationValue + "px,0,0)");
+        JQueryWrapper.select(getVisibleApp()).setCss("-webkit-transform", "translate3d(" + translationValue + "px,0,0)");
         if (getWidgetCount() > 1) {
             showCandidateApp(translationValue);
         }
@@ -281,14 +280,11 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         }
 
         if (isNext && getWidgetCount() > 2) {
-            JQueryWrapper.select(nextWidget).setCss("-webkit-transform",
-                "translate3d(" + (translationValue + getVisibleApp().getOffsetWidth()) + "px,0,0)");
+            JQueryWrapper.select(nextWidget).setCss("-webkit-transform", "translate3d(" + (translationValue + getVisibleApp().getOffsetWidth()) + "px,0,0)");
         }
 
-        nextWidget.getElement().getStyle()
-            .setVisibility(isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
-        previousWidget.getElement().getStyle()
-            .setVisibility(!isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
+        nextWidget.getElement().getStyle().setVisibility(isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
+        previousWidget.getElement().getStyle().setVisibility(!isNext || nextWidget == previousWidget ? Visibility.VISIBLE : Visibility.HIDDEN);
     }
 
     private Widget getNextWidget() {

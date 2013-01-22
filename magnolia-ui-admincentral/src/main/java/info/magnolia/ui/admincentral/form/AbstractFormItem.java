@@ -55,8 +55,7 @@ public abstract class AbstractFormItem implements FormItem {
 
     static {
         String uiPackagePrefix = "info.magnolia.ui.";
-        String[] uiModules = {"model", "framework", "widget.actionbar", "widget.dialog", "widget.editor",
-            "widget.magnoliashell", "widget.tabsheet", "vaadin.integration"};
+        String[] uiModules = {"model", "framework", "widget.actionbar", "widget.dialog", "widget.editor", "widget.magnoliashell", "widget.tabsheet", "vaadin.integration"};
         List<String> basenames = new ArrayList<String>();
         for (String module : uiModules) {
             basenames.add(uiPackagePrefix + module + ".messages");

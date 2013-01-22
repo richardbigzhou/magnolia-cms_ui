@@ -76,9 +76,7 @@ public class FormsViewImpl implements FormsView {
     }
 
     private void createComponents(Layout layout) {
-        layout.addComponent(createRow("Static text",
-            new Label("Lorem ipsum dolor sit amet, consectetur adipisicing elit"))
-        );
+        layout.addComponent(createRow("Static text", new Label("Lorem ipsum dolor sit amet, consectetur adipisicing elit")));
         layout.addComponent(createRow("Commit button in a form", createSendButton()));
         layout.addComponent(createRow("Reset button in a form", createResetButton()));
         layout.addComponent(
@@ -90,7 +88,7 @@ public class FormsViewImpl implements FormsView {
                                 )
                         )
                 )
-                );
+        );
         layout.addComponent(createRow("Text field", new TextField()));
         layout.addComponent(createRow("Text area", new TextArea()));
         layout.addComponent(createRow("Password field", new PasswordField()));

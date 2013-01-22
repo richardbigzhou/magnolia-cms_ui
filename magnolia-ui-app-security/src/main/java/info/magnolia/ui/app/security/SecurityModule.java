@@ -265,7 +265,7 @@ public class SecurityModule implements ModuleLifecycle {
                                         roles
                                 )
                 )
-                )
+        )
                 .actions(
                         cfg.dialogs.action("commit").label("save changes").action(new SaveUserDialogActionDefinition()),
                         cfg.dialogs.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
@@ -320,7 +320,7 @@ public class SecurityModule implements ModuleLifecycle {
                                         roles
                                 )
                 )
-                )
+        )
                 .actions(
                         cfg.dialogs.action("commit").label("save changes").action(new SaveGroupDialogActionDefinition()),
                         cfg.dialogs.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
@@ -361,7 +361,7 @@ public class SecurityModule implements ModuleLifecycle {
                                         cfg.fields.staticField("placeholder").label("Placeholder for ACL control")
                                 )
                 )
-                )
+        )
                 .actions(
                         cfg.dialogs.action("commit").label("save changes").action(new SaveRoleDialogActionDefinition()),
                         cfg.dialogs.action("cancel").label("cancel").action(new CancelDialogActionDefinition())

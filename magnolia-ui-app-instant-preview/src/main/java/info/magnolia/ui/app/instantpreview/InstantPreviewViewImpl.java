@@ -125,10 +125,10 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
             @Override
             public void buttonClick(ClickEvent event) {
                 try {
-                    if(joinButton.isEnabled()) {
-                        if(joinButton.getData() == InstantPreviewActionType.JOIN) {
+                    if (joinButton.isEnabled()) {
+                        if (joinButton.getData() == InstantPreviewActionType.JOIN) {
                             hostId = String.valueOf(inputHostId.getValue());
-                            if(StringUtils.isNotBlank(hostId)) {
+                            if (StringUtils.isNotBlank(hostId)) {
                                 listener.joinSession(hostId);
                                 hostIdLink.setVisible(false);
                                 joinButton.setCaption("Leave");
@@ -140,7 +140,7 @@ public class InstantPreviewViewImpl implements InstantPreviewView {
                                 log.error("Host id cannot be empty or null");
                                 listener.sendLocalMessage("Host id cannot be empty or null", MessageType.WARNING);
                             }
-                        } else if(joinButton.getData()==InstantPreviewActionType.LEAVE) {
+                        } else if (joinButton.getData() == InstantPreviewActionType.LEAVE) {
                             listener.leaveSession(hostId);
                             hostIdLink.setVisible(true);
                             joinButton.setCaption("Join");

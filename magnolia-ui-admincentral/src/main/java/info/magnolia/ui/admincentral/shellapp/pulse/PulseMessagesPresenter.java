@@ -190,10 +190,8 @@ public class PulseMessagesPresenter implements Serializable {
     private Filter sectionFilter = new Filter() {
 
         @Override
-        public boolean passesFilter(Object itemId, Item item)
-            throws UnsupportedOperationException {
-            if (itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID) &&
-                (!grouping || isTypeGroupEmpty(itemId))) {
+        public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
+            if (itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID) && (!grouping || isTypeGroupEmpty(itemId))) {
                 return false;
             }
 

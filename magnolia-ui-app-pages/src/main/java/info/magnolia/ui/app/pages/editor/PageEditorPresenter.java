@@ -220,8 +220,8 @@ public class PageEditorPresenter implements PageEditorView.Listener {
         DialogBuilder dialogBuilder = new DialogBuilder("newComponent");
 
         dialogBuilder.actions(
-            dialogConfig.action("commit").label("choose").action(new CallbackDialogActionDefinition()),
-            dialogConfig.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
+                dialogConfig.action("commit").label("choose").action(new CallbackDialogActionDefinition()),
+                dialogConfig.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
         );
 
         FormBuilder formBuilder = formConfig.form().description("Select the Component to add to the page.");
@@ -235,9 +235,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                 TemplateDefinition paragraphInfo = templateDefinitionRegistry.getTemplateDefinition(tokens[i]);
 
                 fieldBuilder.options(
-                    (new OptionBuilder())
-                        .value(paragraphInfo.getId())
-                        .label(TemplateSelectorField.getI18nTitle(paragraphInfo))
+                        (new OptionBuilder()).value(paragraphInfo.getId()).label(TemplateSelectorField.getI18nTitle(paragraphInfo))
                 );
 
             } catch (RegistrationException e) {

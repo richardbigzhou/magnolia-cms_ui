@@ -95,7 +95,7 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
             this.editor.fire(
                     uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT),
                     uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT_VALUE)
-                    );
+            );
         }
     }
 

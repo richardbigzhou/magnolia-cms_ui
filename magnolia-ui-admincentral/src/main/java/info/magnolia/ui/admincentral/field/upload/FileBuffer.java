@@ -104,8 +104,7 @@ public abstract class FileBuffer implements UploadFieldReceiver {
         InputStream valueAsStream = getContentAsStream();
 
         try {
-            ByteArrayOutputStream bas = new ByteArrayOutputStream(
-                (int) file.length());
+            ByteArrayOutputStream bas = new ByteArrayOutputStream((int) file.length());
             Streams.copy(valueAsStream, bas);
             byte[] byteArray = bas.toByteArray();
             if (getFieldType() == FieldType.BYTE_ARRAY) {
@@ -155,8 +154,7 @@ public abstract class FileBuffer implements UploadFieldReceiver {
                 FileOutputStream fileOutputStream = new FileOutputStream(file);
                 InputStream is;
                 if (getFieldType() == FieldType.UTF8_STRING) {
-                    is = new ByteArrayInputStream(
-                        ((String) newValue).getBytes());
+                    is = new ByteArrayInputStream(((String) newValue).getBytes());
                 } else {
                     is = new ByteArrayInputStream((byte[]) newValue);
                 }

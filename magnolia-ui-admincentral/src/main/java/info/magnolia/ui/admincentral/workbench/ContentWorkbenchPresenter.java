@@ -108,8 +108,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     @Inject
     public ContentWorkbenchPresenter(final SubAppContext subAppContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus,
-            final @Named("subapp") EventBus subAppEventBus, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
-            final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
+                                     final @Named("subapp") EventBus subAppEventBus, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
+                                     final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
@@ -250,8 +250,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         boolean itemExists = itemExists(path);
         if (!itemExists) {
             log.warn(
-                "Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.",
-                path, workbenchDefinition.getWorkspace());
+                    "Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.",
+                    path, workbenchDefinition.getWorkspace());
         }
         view.selectPath(itemExists ? path : "/");
     }
