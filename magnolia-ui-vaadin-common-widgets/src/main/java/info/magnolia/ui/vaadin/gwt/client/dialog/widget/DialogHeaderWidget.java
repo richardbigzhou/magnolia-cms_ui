@@ -61,8 +61,6 @@ public class DialogHeaderWidget extends FlowPanel {
 
     private boolean isDescriptionVisible = false;
 
-    private boolean hasDescription = false;
-
     private final Button closeButton = new Button("", new ClickHandler() {
         @Override
         public void onClick(ClickEvent event) {
@@ -74,9 +72,7 @@ public class DialogHeaderWidget extends FlowPanel {
         @Override
         public void onClick(ClickEvent event) {
             isDescriptionVisible = !isDescriptionVisible;
-            if (hasDescription) {
-                descriptionPanel.setVisible(isDescriptionVisible);
-            }
+            descriptionPanel.setVisible(isDescriptionVisible);
             callback.onDescriptionVisibilityChanged(isDescriptionVisible);
         }
     });
