@@ -62,23 +62,12 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
         this.pulseView = pulseView;
         this.shell = shell;
         shell.registerShellApp(ShellAppType.PULSE, pulseView.asVaadinComponent());
-        /**
-         * TODO - remove commented code if caused by V7 migration.
-         */
-        /*
-         * shell.setIndication(
-         * VMainLauncher.ShellAppType.PULSE,
-         * messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
-         */
     }
 
     @Override
     public View start(ShellAppContext context) {
         this.context = context;
         pulseView.setPresenter(this);
-
-        // Causes a Guice error - probably the messagesManager is not ready yet or something.
-        // shell.setIndicationOnPulseToNumberOfUnclearedMessagesForCurrentUser();
 
         return pulseView;
     }

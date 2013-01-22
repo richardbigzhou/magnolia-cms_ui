@@ -61,10 +61,6 @@ public class FormsViewImpl implements FormsView {
     private Listener listener;
 
     public FormsViewImpl() {
-        /**
-         * TODO: HANDLE MARGINS IN CSS.
-         */
-        // layout.setMargin(true, true, false, true);
         layout.setSizeFull();
         layout.addComponent(new Label("The fields available in a Magnolia" + " Form or Dialog. Configurable by repository or code."));
 

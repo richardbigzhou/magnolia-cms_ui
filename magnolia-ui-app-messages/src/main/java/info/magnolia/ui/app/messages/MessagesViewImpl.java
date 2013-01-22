@@ -150,10 +150,6 @@ public class MessagesViewImpl implements MessagesView {
         CssLayout container = new CssLayout();
         container.setSizeFull();
         container.addStyleName("small-app-panel");
-        /**
-         * TODO: handle margins in CSS stylesheet.
-         */
-        // container.setMargin(true, true, true, false);
         container.addComponent(layout);
 
         CssLayout root = new CssLayout();

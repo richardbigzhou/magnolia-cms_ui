@@ -37,6 +37,7 @@ import java.util.Date;
 
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -59,10 +60,7 @@ public class UnsupportedViewImpl implements UnsupportedView {
     VerticalLayout layout = new VerticalLayout();
 
     public UnsupportedViewImpl() {
-        /**
-         * TODO handle margins in CSS Style sheet.
-         */
-        // layout.setMargin(true, true, false, true);
+        layout.setMargin(new MarginInfo(true, true, false, true));
         layout.setSpacing(true);
         layout.addComponent(new Label("The UI elements in the Vaadin framework" +
                 " that are not recommended for use with Magnolia. These elements" +
@@ -237,9 +235,6 @@ public class UnsupportedViewImpl implements UnsupportedView {
     private Layout getPreviewLayout(String caption) {
         Layout grid = new HorizontalLayout();
         grid.setWidth("100%");
-        /**
-         * TODO: handle margins in CSS stylesheet.
-         */
         grid.setCaption(caption);
         return grid;
     }

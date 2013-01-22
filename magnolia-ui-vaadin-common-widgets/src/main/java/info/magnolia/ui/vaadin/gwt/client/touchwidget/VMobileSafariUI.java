@@ -44,12 +44,14 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
 import com.vaadin.client.ui.VUI;
 
 /**
- * Special implementation of {@link VView} that would preinitialize mgwt
+ * Special implementation of {@link VUI} that would preinitialize mgwt
  * touch events, so that those will not interfere with native GWT touch events.
  */
 public class VMobileSafariUI extends VUI {
 
     private HandlerManager handlerManager;
+
+    private static final String TABLET_STYLENAME = "tablet";
 
     static {
         new TouchStartEvent() {
@@ -64,7 +66,7 @@ public class VMobileSafariUI extends VUI {
 
     public VMobileSafariUI() {
         super();
-        addStyleName("tablet");
+        addStyleName(TABLET_STYLENAME);
 
         Event.addNativePreviewHandler(new NativePreviewHandler() {
 
@@ -81,6 +83,12 @@ public class VMobileSafariUI extends VUI {
             com.google.gwt.event.dom.client.TouchStartHandler eh = handlerManager.getHandler(com.google.gwt.event.dom.client.TouchStartEvent.getType(), 0);
             handlerManager.removeHandler(com.google.gwt.event.dom.client.TouchStartEvent.getType(), eh);
         }
+    }
+
+    @Override
+    public void setStyleName(String style) {
+        super.setStyleName(style);
+        addStyleName(TABLET_STYLENAME);
     }
 
     @Override

@@ -141,6 +141,9 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
         addStateChangeHandler("visibleSections", visibleSectionSetChangeHandler);
         addStateChangeHandler("disabledActions", enabledActionSetChangeHandler);
         addStateChangeHandler("isOpen", collapseChangeHandler);
+        if (isDeviceTablet()) {
+            setOpened(true);
+        }
     }
 
     @Override
@@ -151,9 +154,6 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     @Override
     protected Widget createWidget() {
         this.view = new ActionbarWidgetViewImpl(eventBus, this);
-        if (isDeviceTablet()) {
-            setOpened(true);
-        }
         return this.view.asWidget();
     }
 

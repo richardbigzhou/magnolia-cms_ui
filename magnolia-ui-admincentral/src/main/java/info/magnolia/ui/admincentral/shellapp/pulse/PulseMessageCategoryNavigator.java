@@ -52,10 +52,6 @@ public class PulseMessageCategoryNavigator extends CssLayout {
     public PulseMessageCategoryNavigator() {
         super();
         setStyleName("navigator");
-        /**
-         * TODO: handle margins in CSS stylesheet.
-         * setMargin(true);
-         */
         construct();
     }
 

@@ -65,11 +65,15 @@ public class FormHeaderWidget extends FlowPanel {
 
     private boolean isDescriptionVisible = false;
 
+    private boolean hasDescription = false;
+
     private final Button helpButton = new Button("", new ClickHandler() {
         @Override
         public void onClick(ClickEvent event) {
             isDescriptionVisible = !isDescriptionVisible;
-            descriptionPanel.setVisible(isDescriptionVisible);
+            if (hasDescription) {
+                descriptionPanel.setVisible(isDescriptionVisible);
+            }
             callback.onDescriptionVisibilityChanged(isDescriptionVisible);
         }
     });
@@ -103,6 +107,7 @@ public class FormHeaderWidget extends FlowPanel {
         final Label content = new Label();
         content.setText(dialogDescription);
         descriptionPanel.insert(content, 0);
+        hasDescription = !dialogDescription.isEmpty();
     }
 
     /**
