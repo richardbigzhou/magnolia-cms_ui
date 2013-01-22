@@ -384,7 +384,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
             super();
             setElement(root);
             setStyleName("v-app-preloader v-viewport v-shell-tabsheet app");
-            
+
             navigator.addClassName("nav nav-tabs single-tab");
             tab.addClassName("clearfix active");
             tabCaption.setClassName("tab-title");

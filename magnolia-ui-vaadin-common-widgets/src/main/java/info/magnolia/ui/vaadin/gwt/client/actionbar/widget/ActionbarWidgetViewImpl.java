@@ -84,7 +84,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
 
     private int tabletColumn = 0;
 
-    private final boolean isDeviceTablet = isDeviceTablet();;
+    private final boolean isDeviceTablet = isDeviceTablet();
 
     private boolean isToggledOpen = false;
 
@@ -113,7 +113,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
      * Determine if device is tablet. Allows option to add a querystring parameter of tablet=true
      * for testing.
      * TODO: Christopher Zimmermann - there should be only one instance of this code ithe project.
-     * 
+     *
      * @return Whether device is tablet.
      */
     private boolean isDeviceTablet() {
@@ -199,9 +199,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         });
     }
 
-    /**
-     * Actualize the state of the actionbar fullscreen button.
-     */
+    /** Actualize the state of the actionbar fullscreen button. */
     private void actualizeFullScreenState(boolean isFullScreen) {
         if (isFullScreen) {
             fullScreenButtonIcon.addClassName("icon-close-fullscreen");
@@ -213,9 +211,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         presenter.changeFullScreen(isFullScreen);
     }
 
-    /**
-     * Actualize the state of the actionbar 'openness' by setting classes on html elements.
-     */
+    /** Actualize the state of the actionbar 'openness' by setting classes on html elements. */
     private void actualizeToggleState(boolean isOpen) {
         if (isOpen) {
             toggleButtonIcon.addClassName("open");// NOTE:CLZ:With icon fonts this class name will change.
@@ -272,11 +268,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         }
     }
 
-    /**
-     * For tablet mode, position these buttons at the bottom of the button stack.
-     * 
-     * @return
-     */
+    /** For tablet mode, position these buttons at the bottom of the button stack. */
     private void setToggleAndFullScreenButtonHeights(int tabletRow) {
         // Position toggleButton and fullScreenButton at bottom of stack.
         toggleButton.setStyleName(CLASSNAME_TOGGLE + " row-" + (tabletRow + 1));

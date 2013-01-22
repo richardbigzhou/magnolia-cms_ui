@@ -42,14 +42,14 @@ public interface ActionbarGroupDefinition {
 
     /**
      * Gets the group name.
-     * 
+     *
      * @return the name string
      */
     String getName();
 
     /**
      * Gets the action items within this group.
-     * 
+     *
      * @return the list of action items
      */
     List<ActionbarItemDefinition> getItems();

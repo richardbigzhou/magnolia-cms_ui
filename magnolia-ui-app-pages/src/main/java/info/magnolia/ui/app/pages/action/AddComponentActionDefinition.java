@@ -37,7 +37,7 @@ import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
  * Defines an action for adding a component in an area of the page editor.
- * 
+ *
  * Does not have a concrete action implementation, but is intercepted by the editor subapp to
  * delegate execution to PageEditorPresenter.
  */

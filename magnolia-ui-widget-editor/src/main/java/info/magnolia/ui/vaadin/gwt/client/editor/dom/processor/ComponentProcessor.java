@@ -58,8 +58,7 @@ public class ComponentProcessor extends AbstractMgnlElementProcessor {
             ComponentBar editBarWidget = new ComponentBar(getEventBus(), getMgnlElement());
             setEditBar(editBarWidget);
             attachWidget();
-        }
-        else {
+        } else {
             GWT.log("Component is inherited or not editable. Skipping..");
         }
     }

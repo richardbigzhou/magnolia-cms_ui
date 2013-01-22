@@ -37,7 +37,7 @@ import info.magnolia.ui.framework.location.Location;
 
 /**
  * Abstract implementation with default behavior suitable for most apps.
- * 
+ *
  * @see App
  */
 public abstract class AbstractApp implements App {

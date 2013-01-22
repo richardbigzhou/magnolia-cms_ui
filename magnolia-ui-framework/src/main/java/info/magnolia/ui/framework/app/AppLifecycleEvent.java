@@ -37,7 +37,7 @@ import info.magnolia.ui.framework.event.Event;
 
 /**
  * Event fired when the lifecycle of an app changes.
- * 
+ *
  * @see AppLifecycleEventHandler
  */
 public class AppLifecycleEvent implements Event<AppLifecycleEventHandler> {

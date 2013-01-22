@@ -44,7 +44,7 @@ import javax.inject.Inject;
 
 /**
  * Registers the observed managers: {@link ConfiguredAppDescriptorManager}.
- * 
+ *
  */
 public class AdminCentralModule implements ModuleLifecycle {
 

@@ -48,7 +48,7 @@ import javax.jcr.query.Query;
 
 /**
  * Changes all properties in an entire workspace that are of type {@link PropertyType#STRING} and has a certain value.
- * 
+ *
  * Note that this uses the query functionality and JCR and therefore usable only if <code>currentValue</code> is a
  * valid <code>fullTextSearchExpression</code> as defined in JCR2 6.7.19. More specifically it is not guaranteed to
  * find all properties intended to be changed if <code>currentValue</code> either:

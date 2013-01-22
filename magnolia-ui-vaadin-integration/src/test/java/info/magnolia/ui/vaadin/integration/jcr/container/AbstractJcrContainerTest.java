@@ -308,7 +308,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
         String containerItemId1 = node1.getPath();
-        boolean[] ascending = { true };
+        boolean[] ascending = {true};
         // WHEN
         jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
 
@@ -323,7 +323,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
         String containerItemId2 = node2.getPath();
-        boolean[] ascending = { false };
+        boolean[] ascending = {false};
 
         // WHEN
         jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
@@ -349,7 +349,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         assertEquals(4, jcrContainer.getCurrentOffset());
 
         // WHEN
-        jcrContainer.sort(Arrays.asList("name").toArray(), new boolean[] { true });
+        jcrContainer.sort(Arrays.asList("name").toArray(), new boolean[]{true});
 
         // THEN
         assertEquals(0, jcrContainer.getCurrentOffset());
@@ -425,7 +425,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testConstructJCRQuerySortBySortableColumn() {
         // GIVEN
-        jcrContainer.sort(new String[] { ModelConstants.JCR_NAME }, new boolean[] { true });
+        jcrContainer.sort(new String[]{ModelConstants.JCR_NAME}, new boolean[]{true});
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(true);
@@ -438,7 +438,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testConstructJCRQuerySortByNonSortableColumn() {
         // GIVEN
-        jcrContainer.sort(new String[] { colName2 }, new boolean[] { true });
+        jcrContainer.sort(new String[]{colName2}, new boolean[]{true});
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(true);
@@ -575,7 +575,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         createNode(rootNode, "QUX", NodeTypes.Content.NAME, "name", "qux");
         fooNode.getSession().save();
         String fooItemId = fooNode.getPath();
-        boolean[] ascending = { true };
+        boolean[] ascending = {true};
         // WHEN
         jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
 
@@ -583,11 +583,9 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         assertEquals(fooItemId, jcrContainer.firstItemId());
     }
 
-    /**
-     * Define the sorting criteria.
-     */
+    /** Define the sorting criteria. */
     private void setSorter(String sortingPorperty, boolean ascending) {
-        boolean[] ascendingOrder = { ascending };
+        boolean[] ascendingOrder = {ascending};
         jcrContainer.sort(Arrays.asList(sortingPorperty).toArray(), ascendingOrder);
     }
 
@@ -598,10 +596,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         return node;
     }
 
-    /**
-     * Dummy Implementation of the {AbstractJcrContainer}.
-     * 
-     */
+    /** Dummy Implementation of the {AbstractJcrContainer}. */
     public class JcrContainerTestImpl extends AbstractJcrContainer {
 
         public JcrContainerTestImpl(WorkbenchDefinition workbenchDefinition) {

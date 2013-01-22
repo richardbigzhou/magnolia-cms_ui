@@ -48,7 +48,7 @@ import javax.inject.Singleton;
 
 /**
  * Implementation of {@link ChooseDialogFactory}.
- * 
+ *
  */
 @Singleton
 public class ChooseDialogFactoryImpl implements ChooseDialogFactory {
@@ -60,8 +60,7 @@ public class ChooseDialogFactoryImpl implements ChooseDialogFactory {
     private final EventBus chooseDialogEventBus;
 
     @Inject
-    public ChooseDialogFactoryImpl(final ComponentProvider componentProvider, final DialogActionFactory actionFactory,
-            final @Named("choosedialog") EventBus chooseDialogEventBus) {
+    public ChooseDialogFactoryImpl(final ComponentProvider componentProvider, final DialogActionFactory actionFactory, final @Named("choosedialog") EventBus chooseDialogEventBus) {
         this.componentProvider = componentProvider;
         this.actionFactory = actionFactory;
         this.chooseDialogEventBus = chooseDialogEventBus;

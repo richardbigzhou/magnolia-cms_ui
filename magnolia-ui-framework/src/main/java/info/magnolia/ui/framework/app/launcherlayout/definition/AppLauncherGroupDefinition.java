@@ -37,7 +37,7 @@ import java.util.List;
 
 /**
  * Defines a a group in the layout of apps in the app launcher.
- * 
+ *
  * @see AppLauncherLayoutDefinition
  * @see AppLauncherGroupEntryDefinition
  */

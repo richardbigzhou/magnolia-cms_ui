@@ -74,9 +74,7 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
             attachAreaEndBar(endBar);
             addToModel(endBar);
 
-        }
-
-        else {
+        } else {
 
             GWT.log("Not creating areabar and area endbar for this element. Missing parameters. Will be deleted.");
 
@@ -108,8 +106,7 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
         String availableComponents = "";
         if (AreaDefinition.TYPE_NO_COMPONENT.equals(type)) {
             availableComponents = "";
-        }
-        else {
+        } else {
             availableComponents = attributes.get("availableComponents");
         }
 
@@ -150,9 +147,7 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
         // area can be deleted or created
         if (optional) {
             return true;
-        }
-
-        else if (type.equals(AreaDefinition.TYPE_SINGLE)) {
+        } else if (type.equals(AreaDefinition.TYPE_SINGLE)) {
             return true;
         }
 
@@ -175,8 +170,7 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
             if (element != null) {
                 element.appendChild(controlBar.getElement());
             }
-        }
-        else {
+        } else {
             Element element = getMgnlElement().getEndComment();
             Node parentNode = element.getParentNode();
             parentNode.insertBefore(controlBar.getElement(), element);
@@ -195,14 +189,12 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
                 if (element != null) {
                     element.appendChild(placeHolder.getElement());
                 }
-            }
-            else {
+            } else {
                 Element element = getMgnlElement().getEndComment();
                 Node parentNode = element.getParentNode();
                 parentNode.insertBefore(placeHolder.getElement(), element);
             }
-        }
-        else {
+        } else {
             parent.insertFirst(placeHolder.getElement());
         }
         placeHolder.onAttach();

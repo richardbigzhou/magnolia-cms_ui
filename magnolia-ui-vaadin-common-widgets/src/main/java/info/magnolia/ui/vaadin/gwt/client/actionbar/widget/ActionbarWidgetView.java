@@ -49,16 +49,15 @@ public interface ActionbarWidgetView extends HasWidgets, IsWidget {
 
     /**
      * Gets the section widgets inside this action bar view.
-     * 
+     *
      * @return the sections
      */
     Map<String, ActionbarSectionWidget> getSections();
 
     /**
      * Sets the presenter.
-     * 
-     * @param presenter
-     *            the new presenter
+     *
+     * @param presenter the new presenter
      */
     void setPresenter(Presenter presenter);
 
@@ -73,7 +72,6 @@ public interface ActionbarWidgetView extends HasWidgets, IsWidget {
     /**
      * Update the classes on the actions so that they are positioned correctly.
      * Necessary to handle when sections are dynamically changed like in the page editor.
-     * 
      */
     void refreshActionsPositionsTablet();
 

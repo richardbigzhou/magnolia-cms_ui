@@ -37,7 +37,7 @@ import info.magnolia.ui.framework.event.EventHandler;
 
 /**
  * Event handler interface for listening to {@link AppRegistryEvent}.
- * 
+ *
  * @see AppRegistryEvent
  * @see AppDescriptorRegistry
  */

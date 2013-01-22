@@ -98,8 +98,7 @@ public class ComponentBar extends AbstractBar {
             if (draggable) {
                 this.getElement().setDraggable(Element.DRAGGABLE_TRUE);
                 getStyle().setCursor(Cursor.MOVE);
-            }
-            else {
+            } else {
                 this.getElement().setDraggable(Element.DRAGGABLE_FALSE);
                 getStyle().setCursor(Cursor.DEFAULT);
             }

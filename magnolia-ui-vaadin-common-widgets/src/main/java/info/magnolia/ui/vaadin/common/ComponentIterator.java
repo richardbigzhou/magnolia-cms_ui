@@ -40,9 +40,8 @@ import com.vaadin.ui.Component;
 
 /**
  * ComponentIterator.
- * 
- * @param <T>
- *            type of connector.
+ *
+ * @param <T> type of connector.
  */
 public class ComponentIterator<T extends Connector> implements Iterator<Component> {
 

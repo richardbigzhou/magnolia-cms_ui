@@ -46,7 +46,7 @@ import com.google.inject.Inject;
 
 /**
  * Dummy app used for test purpose.
- * 
+ *
  * The two static fields are used to access the AppContext set by AppControler.
  * As AppContext is linked to a child GuiceComponentProvider used in AppControler
  * it's not possible in the test class to access child GuiceComponentProvider

@@ -54,5 +54,5 @@ public class BadgeIconState extends AbstractComponentState {
     public int value;
 
     public int size = 16;
-    
+
 }

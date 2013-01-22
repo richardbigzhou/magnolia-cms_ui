@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
@@ -45,17 +44,16 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
-import org.junit.Ignore;
-import org.junit.Test;
 
-/**
- * Main testcase for {@link AbstractFieldBuilder}.
- */
+/** Main testcase for {@link AbstractFieldBuilder}. */
 public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFieldDefinition> {
 
     private AbstractFieldBuilder<FieldDefinition, Object> abstractDialogField;
@@ -187,9 +185,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         return configureFieldDefinition;
     }
 
-    /**
-     * Simplified test implementation of a {@link TextFieldBuilder}.
-     */
+    /** Simplified test implementation of a {@link TextFieldBuilder}. */
     public static class TestTextFieldBuilder extends AbstractFieldBuilder<FieldDefinition, Object> {
 
         public TestTextFieldBuilder(FieldDefinition definition, Item relatedFieldItem) {
@@ -203,6 +199,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
 
         /**
          * {@link com.vaadin.data.util.converter.ConverterFactory} is bound to the {@link VaadinSession}. To get The default converters to work we need to mock the VaadinSession.
+         *
          * @see AbstractBuilderTest where we add the {@link com.vaadin.data.util.converter.DefaultConverterFactory} to the {@link info.magnolia.objectfactory.ComponentProvider}.
          */
         private class TestTextField extends TextField {

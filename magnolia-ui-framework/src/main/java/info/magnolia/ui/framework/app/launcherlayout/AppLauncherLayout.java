@@ -42,7 +42,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Describes the layout in the app launcher. Provides convenience methods for querying the layout.
- * 
+ *
  * @see AppLauncherGroup
  * @see AppLauncherGroupEntry
  * @see AppLauncherLayoutManager

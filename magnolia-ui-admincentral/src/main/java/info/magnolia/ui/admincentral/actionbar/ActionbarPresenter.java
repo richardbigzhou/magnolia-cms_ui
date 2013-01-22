@@ -92,8 +92,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
      * Initializes an actionbar with given definition and returns the view for
      * parent to add it.
      */
-    public ActionbarView start(final ActionbarDefinition definition,
-            final ActionFactory<ActionDefinition, Action> actionFactory) {
+    public ActionbarView start(final ActionbarDefinition definition, final ActionFactory<ActionDefinition, Action> actionFactory) {
         this.definition = definition;
         this.actionFactory = actionFactory;
         actionbar = ActionbarBuilder.build(definition);

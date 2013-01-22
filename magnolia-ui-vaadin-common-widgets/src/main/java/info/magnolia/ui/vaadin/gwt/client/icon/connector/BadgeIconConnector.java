@@ -47,12 +47,12 @@ public class BadgeIconConnector extends AbstractComponentConnector {
 
     @Override
     public BadgeIconState getState() {
-        return (BadgeIconState)super.getState();
+        return (BadgeIconState) super.getState();
     }
 
     @Override
     public BadgeIconWidget getWidget() {
-        return (BadgeIconWidget)super.getWidget();
+        return (BadgeIconWidget) super.getWidget();
     }
-    
+
 }

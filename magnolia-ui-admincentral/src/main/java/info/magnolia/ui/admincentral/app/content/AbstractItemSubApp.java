@@ -50,10 +50,10 @@ import javax.inject.Inject;
  * <li>{@link #onSubAppStart()}
  * <li>{@link #locationChanged(Location)}
  * </ul>
- * 
+ *
  * Currently lacking listeners for {@link info.magnolia.ui.admincentral.event.ContentChangedEvent}.
  * Currently lacking handling of locationChanged. Related to MGNLUI-154
- * 
+ *
  * @see ItemWorkbenchPresenter
  * @see WorkbenchSubAppView
  * @see ItemLocation

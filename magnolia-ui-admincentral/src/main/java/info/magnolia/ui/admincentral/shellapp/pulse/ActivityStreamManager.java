@@ -37,11 +37,11 @@ import java.util.List;
 
 /**
  * Manager for the users activity streams.
- * 
+ *
  * need persistence
- * 
+ *
  * need to clean up old entries
- * 
+ *
  * can you post to more than one user? all? by group?
  */
 public interface ActivityStreamManager {

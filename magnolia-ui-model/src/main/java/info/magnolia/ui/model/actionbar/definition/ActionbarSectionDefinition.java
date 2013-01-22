@@ -48,7 +48,7 @@ public interface ActionbarSectionDefinition {
 
     /**
      * Gets the groups within this section.
-     * 
+     *
      * @return the list of groups
      */
     List<ActionbarGroupDefinition> getGroups();

@@ -105,9 +105,7 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
         this.path = path;
     }
 
-    /**
-     * @return The represented JCR Item, or null in case of {@link RepositoryException}.
-     */
+    /** @return The represented JCR Item, or null in case of {@link RepositoryException}. */
     @Override
     public javax.jcr.Item getJcrItem() {
         try {

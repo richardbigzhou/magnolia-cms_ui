@@ -42,14 +42,14 @@ public interface ActionbarDefinition {
 
     /**
      * Gets the name of the default action.
-     * 
+     *
      * @return the default action name
      */
     String getDefaultAction();
 
     /**
      * Gets the sections within this action bar.
-     * 
+     *
      * @return the list of sections
      */
     List<ActionbarSectionDefinition> getSections();

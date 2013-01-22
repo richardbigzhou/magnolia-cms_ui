@@ -118,8 +118,7 @@ public class AreaBar extends AbstractBar {
                 removeButton.setStylePrimaryName("mgnlEditorPushButton");
                 removeButton.addStyleName("remove");
                 addSecondaryButton(removeButton);
-            }
-            else {
+            } else {
                 PushButton createbutton = new PushButton();
                 createbutton.setStylePrimaryName("mgnlEditorButton");
 
@@ -153,8 +152,7 @@ public class AreaBar extends AbstractBar {
                 });
                 addSecondaryButton(remove);
 
-            }
-            else {
+            } else {
                 final Label add = new Label();
                 add.setStyleName(ICON_CLASSNAME);
                 add.addStyleName(ADD_CLASSNAME);

@@ -49,7 +49,7 @@ import com.vaadin.shared.AbstractComponentState;
 public class ActionbarState extends AbstractComponentState {
 
     public List<String> sectionOrder = new ArrayList<String>();
-    
+
     public Map<String, ActionbarSection> sections = new HashMap<String, ActionbarSection>();
 
     public List<ActionbarSection> visibleSections = new ArrayList<ActionbarSection>();
