@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
+import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.chain.Command;
 import info.magnolia.module.activation.commands.ActivationCommand;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -44,25 +45,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * UI action that allows to activate single or recursive page (node) depending on the value of {@link ActivationActionDefinition#isRecursive()}.
+ * UI action that allows to activate a single page (node) or recursively with all its sub-nodes depending on the value of {@link ActivationActionDefinition#isRecursive()}.
  */
 public class ActivationAction extends BaseActivationAction<ActivationActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(ActivationAction.class);
 
     @Inject
-    public ActivationAction(final ActivationActionDefinition definition, final Node node) {
-        super(definition, node);
+    public ActivationAction(final ActivationActionDefinition definition, final Node node, final CommandsManager commandsManager) {
+        super(definition, node, commandsManager);
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        Command command = getCommandsManager().getCommand("activate");
+        final String commandName = getDefinition().getCommandName();
+        final Command command = getCommandsManager().getCommand(commandName);
+
         if (command == null) {
-            throw new ActionExecutionException("Could not find command activate in any catalog");
+            throw new ActionExecutionException(String.format("Could not find command [%s] in any catalog", commandName));
         }
         try {
-            ActivationCommand activationCommand = (ActivationCommand) command;
+            final ActivationCommand activationCommand = (ActivationCommand) command;
             activationCommand.setRecursive(((ActivationActionDefinition)getDefinition()).isRecursive());
 
             log.debug("Is activation recursive ? {}", activationCommand.isRecursive());

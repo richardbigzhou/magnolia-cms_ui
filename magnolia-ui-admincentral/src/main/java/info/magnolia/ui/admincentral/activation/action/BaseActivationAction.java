@@ -38,11 +38,8 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.objectfactory.Components;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.CommandActionBase;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,33 +48,24 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Base activation action supporting execution of commands.
+ * Base activation action via commands.
  * 
  * @param <D> BaseActivationActionDefinition.
- * 
  */
-public abstract class BaseActivationAction<D extends BaseActivationActionDefinition> extends ActionBase<ActionDefinition> {
-
-    private CommandsManager commandsManager;
-
-    private Map<String, Object> params;
+public abstract class BaseActivationAction<D extends BaseActivationActionDefinition> extends CommandActionBase<BaseActivationActionDefinition> {
 
     @Inject
-    public BaseActivationAction(final D definition, final Node node) {
-        super(definition);
-        this.commandsManager = Components.getComponent(CommandsManager.class);
-        this.params = buildParams(node);
+    public BaseActivationAction(final D definition, final Node node, final CommandsManager commandsManager) {
+        super(definition, node, commandsManager);
     }
 
     /**
      * Builds a map of parameters which will be passed to the (de-)activation command to perform its execution. By default it consists of three objects:
-     * 
      * <ul>
      * <li>Context.ATTRIBUTE_REPOSITORY = current node's workspace name
      * <li>Context.ATTRIBUTE_UUID = current node's identifier
      * <li>Context.ATTRIBUTE_PATH = current node's path
      * </ul>
-     * 
      * Called by the constructor.
      */
     protected Map<String, Object> buildParams(final Node node) {
@@ -100,25 +88,6 @@ public abstract class BaseActivationAction<D extends BaseActivationActionDefinit
             throw new RuntimeRepositoryException(e);
         }
         return params;
-    }
-
-    /**
-     * @return the map of parameters to be used for command execution.
-     * @see BaseActivationAction#buildParams(Node).
-     */
-    protected final Map<String, Object> getParams() {
-        return Collections.unmodifiableMap(params);
-    }
-
-    /**
-     * @return an instance of {@link CommandsManager} to be used for action execution. Typically the {@link #execute()} method will do something like
-     * <p>
-     * {@code
-     * getCommandsManager().executeCommand("someCommand", getParams());
-     * }
-     */
-    protected final CommandsManager getCommandsManager() {
-        return commandsManager;
     }
 
 }

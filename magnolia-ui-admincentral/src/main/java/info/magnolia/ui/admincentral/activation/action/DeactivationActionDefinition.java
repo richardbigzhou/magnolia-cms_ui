@@ -37,8 +37,7 @@ package info.magnolia.ui.admincentral.activation.action;
 
 /**
  * A marker interface.
- * 
  */
-public class DeactivationActionDefinition implements BaseActivationActionDefinition {
+public class DeactivationActionDefinition extends BaseActivationActionDefinition {
 
 }

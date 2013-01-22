@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,21 +33,33 @@
  */
 package info.magnolia.ui.model.action;
 
+import info.magnolia.commands.CommandsManager;
+
+
 /**
- * An {@link Action} bound to an {@link ActionDefinition}.
- * 
- * @param <D> the action definition type
+ * A basic action definition to support command execution via an action.
  */
-public abstract class ActionBase<D extends ActionDefinition> implements Action {
+public class CommandActionDefinition implements ActionDefinition {
+    private String commandName;
+    private String catalogName = CommandsManager.DEFAULT_CATALOG;
 
-    private D definition;
-
-    public ActionBase(D definition) {
-        this.definition = definition;
+    public String getCommandName() {
+        return commandName;
     }
 
-    protected D getDefinition() {
-        return definition;
+    public void setCommandName(String commandName) {
+        this.commandName = commandName;
+    }
+
+    /**
+     * @return {@link CommandsManager#DEFAULT_CATALOG} if not set otherwise.
+     */
+    public String getCatalogName() {
+        return catalogName;
+    }
+
+    public void setCatalogName(String catalogName) {
+        this.catalogName = catalogName;
     }
 
 }

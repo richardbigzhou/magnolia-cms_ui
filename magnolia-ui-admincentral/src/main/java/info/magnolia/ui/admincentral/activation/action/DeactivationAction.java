@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
+import info.magnolia.commands.CommandsManager;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
 import javax.inject.Inject;
@@ -45,14 +46,14 @@ import javax.jcr.Node;
 public class DeactivationAction extends BaseActivationAction<DeactivationActionDefinition> {
 
     @Inject
-    public DeactivationAction(final DeactivationActionDefinition definition, final Node node) {
-        super(definition, node);
+    public DeactivationAction(final DeactivationActionDefinition definition, final Node node, final CommandsManager commandsManager) {
+        super(definition, node, commandsManager);
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            getCommandsManager().executeCommand("deactivate", getParams());
+            getCommandsManager().executeCommand(getDefinition().getCommandName(), getParams());
         } catch (Exception e) {
             throw new ActionExecutionException("An exception occured during activation ", e);
         }

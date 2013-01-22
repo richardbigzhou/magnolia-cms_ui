@@ -33,12 +33,11 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.CommandActionDefinition;
 
 /**
  * BaseActivationActionDefinition.
- * 
  */
-public interface BaseActivationActionDefinition extends ActionDefinition {
+public class BaseActivationActionDefinition extends CommandActionDefinition {
 
 }
