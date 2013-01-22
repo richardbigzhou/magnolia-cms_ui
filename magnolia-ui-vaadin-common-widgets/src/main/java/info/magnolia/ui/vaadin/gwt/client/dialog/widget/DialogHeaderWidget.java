@@ -109,6 +109,7 @@ public class DialogHeaderWidget extends FlowPanel {
         final Label content = new Label();
         content.setText(description);
         descriptionPanel.insert(content, 0);
+        hasDescription = !description.isEmpty();
     }
 
     public void setDialogCaption(String caption) {
