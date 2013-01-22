@@ -53,6 +53,7 @@ public class DefaultProperty<T> extends AbstractProperty<T> {
      * Constructor which reads the type from the value.
      * Do not use this constructor. As null values are actually wanted to not propagate empty fields to jcr.
      * Resolving the class type from the value can cause problems with converters.
+     *
      * @throws IllegalArgumentException if value is null.
      */
     @Deprecated
@@ -82,7 +83,7 @@ public class DefaultProperty<T> extends AbstractProperty<T> {
             throw new ReadOnlyException("Property is readonly: Can not update value: " + String.valueOf(newValue));
         }
         if (newValue != null && !getType().isAssignableFrom(newValue.getClass())) {
-           throw new ConversionException("Cannot convert " + newValue.getClass() + " to " + getType());
+            throw new ConversionException("Cannot convert " + newValue.getClass() + " to " + getType());
         }
         value = newValue;
         fireValueChange();

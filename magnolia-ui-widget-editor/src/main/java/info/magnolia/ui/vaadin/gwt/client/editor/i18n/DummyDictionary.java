@@ -53,8 +53,7 @@ public class DummyDictionary {
     public String get(String key) {
         if (dictionary.containsKey(key)) {
             return dictionary.get(key);
-        }
-        else {
+        } else {
             return "Dummy";
         }
     }

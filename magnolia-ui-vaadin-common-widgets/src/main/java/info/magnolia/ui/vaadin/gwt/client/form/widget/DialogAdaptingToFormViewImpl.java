@@ -83,7 +83,7 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
                             .findConnectorFor(DialogAdaptingToFormViewImpl.this);
                     connector.getLayoutManager().setNeedsMeasure(connector);
                 }
-                
+
                 @Override
                 public void jumpToNextError(FormFieldWrapper lastFocused) {
                     oldPresenter.jumpToNextError(lastFocused);

@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Dialogs viewport.
- * 
+ *
  */
 public class DialogViewportWidget extends ViewportWidget {
 

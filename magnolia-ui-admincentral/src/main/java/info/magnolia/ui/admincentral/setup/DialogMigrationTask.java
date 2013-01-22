@@ -308,8 +308,6 @@ public class DialogMigrationTask extends AbstractTask {
     /**
      * Check if the extends and reference are correct. If not try to do the best
      * to found a correct path.
-     * 
-     * @throws RepositoryException
      */
     private void postProcessForExtendsAndReference() throws RepositoryException {
         for (Property p : extendsAndReferenceProperty) {
@@ -393,8 +391,7 @@ public class DialogMigrationTask extends AbstractTask {
                 String currentPath;
                 if (destParentPath.equals("/")) {
                     currentPath = "/" + src.getName();
-                }
-                else {
+                } else {
                     currentPath = destParentPath + "/" + src.getName();
                 }
                 session.move(currentPath, dest);

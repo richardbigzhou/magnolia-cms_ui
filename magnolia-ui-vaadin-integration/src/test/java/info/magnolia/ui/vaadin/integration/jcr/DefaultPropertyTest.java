@@ -33,15 +33,15 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Test;
+
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter;
-import org.junit.Test;
 
 public class DefaultPropertyTest {
 
@@ -115,8 +115,7 @@ public class DefaultPropertyTest {
         // WHEN
         try {
             property.setValue("new");
-        }
-        catch(Property.ReadOnlyException e) {
+        } catch (Property.ReadOnlyException e) {
             // ignore
         }
 
@@ -134,8 +133,7 @@ public class DefaultPropertyTest {
         // WHEN
         try {
             property.setValue(12);
-        }
-        catch(Converter.ConversionException e) {
+        } catch (Converter.ConversionException e) {
             // ignore
         }
 

@@ -47,11 +47,9 @@ public class DuplicateNodeAction extends ActionBase<DuplicateNodeActionDefinitio
 
     /**
      * Instantiates a new duplicate node action.
-     * 
-     * @param definition
-     *            the definition
-     * @param nodeToEdit
-     *            the node to edit
+     *
+     * @param definition the definition
+     * @param nodeToEdit the node to edit
      */
     public DuplicateNodeAction(DuplicateNodeActionDefinition definition, Node nodeToEdit) {
         super(definition);

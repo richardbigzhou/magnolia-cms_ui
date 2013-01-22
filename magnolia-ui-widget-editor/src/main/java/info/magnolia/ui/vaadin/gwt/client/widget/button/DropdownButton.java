@@ -52,19 +52,19 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * they are in the list or array passed in to the object's constructor. A menu item can also accept a further {@link MenuBar} as a parameter, thus enabling sub menus.
  * <p>
  * Usage sample:
- * 
+ *
  * <pre>
  *  ...
  *  // commands are defined elsewhere
  *  MenuItem one = new MenuItem("Option one", true, optionCommandOne);
  *  MenuItem two = new MenuItem("Option two", true, optionCommandTwo);
  *  MenuItem three = new MenuItem("Option three", true, optionCommandThree);
- * 
+ *
  *  List&lt;MenuItem&gt; options = new ArrayList&lt;MenuItem&gt;();
  *  options.add(one);
  *  options.add(two);
  *  options.add(three);
- * 
+ *
  *  DropdownButton dropdown = new DropdownButton("My cool caption", options);
  *  ...
  * </pre>
@@ -110,11 +110,9 @@ public class DropdownButton extends Button {
 
     /**
      * Sets the dropdown's position relative to the browser's client area.
-     * 
-     * @param left
-     *            in px
-     * @param top
-     *            in px
+     *
+     * @param left in px
+     * @param top in px
      */
     protected void setDropdownPosition(int left, int top) {
         dropdownPanel.setPopupPosition(left, top);

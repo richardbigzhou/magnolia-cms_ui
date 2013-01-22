@@ -44,9 +44,6 @@ import com.vaadin.client.ui.AbstractSingleComponentContainerConnector;
 
 /**
  * EditorLikeComponentConnector.
- * 
- * @param <U>
- * @param <T>
  */
 public abstract class EditorLikeComponentConnector<U extends EditorLikeView.Presenter, T extends EditorLikeView<U>>
         extends AbstractSingleComponentContainerConnector {

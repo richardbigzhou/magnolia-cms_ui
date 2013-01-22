@@ -80,8 +80,7 @@ public class ElementProcessor {
 
             if (isNavigation(element)) {
                 registerOnclick(element);
-            }
-            else {
+            } else {
                 disableLink(element);
                 removeHover(element);
             }
@@ -95,17 +94,11 @@ public class ElementProcessor {
 
         if (element.hasAttribute(AreaDefinition.CMS_ADD)) {
             mgnlElement.setComponentElement(element);
-        }
-
-        else if (element.hasAttribute(AreaDefinition.CMS_PLACEHOLDER)) {
+        } else if (element.hasAttribute(AreaDefinition.CMS_PLACEHOLDER)) {
             mgnlElement.setAreaElement(element);
-        }
-
-        else if (element.hasAttribute(AreaDefinition.CMS_EDIT)) {
+        } else if (element.hasAttribute(AreaDefinition.CMS_EDIT)) {
             mgnlElement.setEditElement(element);
-        }
-
-        else {
+        } else {
             if (mgnlElement.getFirstElement() == null) {
                 mgnlElement.setFirstElement(element);
             }
@@ -120,6 +113,7 @@ public class ElementProcessor {
 
     /**
      * Fires a {@link FrameNavigationEvent} to the eventBus.
+     *
      * @see info.magnolia.ui.vaadin.gwt.client.connector.PageEditorConnector#init()
      */
     private void navigate(String path) {
