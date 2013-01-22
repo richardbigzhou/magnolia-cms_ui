@@ -41,6 +41,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * EditorLikeView.
+ *
+ * @param <T> the presenter
  */
 public interface EditorLikeView<T extends EditorLikeView.Presenter> extends IsWidget, HasWidgets {
 
