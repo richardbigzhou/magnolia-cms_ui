@@ -54,5 +54,6 @@ public class LoadingIcon extends AbstractComponent {
     @Override
     protected LoadingIconState getState() {
         return (LoadingIconState) super.getState();
-    };
+    }
+
 }

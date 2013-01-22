@@ -39,9 +39,8 @@ import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidat
 
 /**
  * Builder for creating a field using only the standard properties.
- * 
- * @param <T>
- *            type of field definition
+ *
+ * @param <T> type of field definition
  * @see FieldsConfig#custom(info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition)
  */
 public class GenericFieldBuilder<T extends ConfiguredFieldDefinition> extends AbstractFieldBuilder {

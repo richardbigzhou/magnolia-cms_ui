@@ -37,7 +37,8 @@ import java.io.File;
 
 /**
  * FileFactory.
- * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on 
+ * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on
+ *
  * @link{http://code.google.com/p/easyuploads-addon/}.
  */
 public interface FileFactory {

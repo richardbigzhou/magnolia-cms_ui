@@ -75,11 +75,11 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
     private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
 
     private final Map<String, Button> actionMap = new HashMap<String, Button>();
-    
+
     private final List<FormTabWidget> formTabs = new ArrayList<FormTabWidget>();
-    
+
     private final Map<FormTabWidget, Integer> errorAmounts = new HashMap<FormTabWidget, Integer>();
-    
+
     private final Element contentEl = DOM.createDiv();
 
     private final Element footer = DOM.createDiv();
@@ -151,7 +151,7 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
                             setFieldFocusHandler(tab);
                         }
                     }
-                    
+
                 }
 
                 private void setFieldFocusHandler(FormTabWidget tab) {

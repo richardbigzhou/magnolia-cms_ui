@@ -39,7 +39,7 @@ import com.vaadin.ui.Component;
 
 /**
  * ItemView.
- * 
+ *
  * @see ItemViewImpl
  */
 public interface ItemView extends View {

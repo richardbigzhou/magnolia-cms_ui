@@ -40,7 +40,8 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 final class JQueryFunction extends JavaScriptObject {
 
-    protected JQueryFunction() {}
+    protected JQueryFunction() {
+    }
 
     public final static native JQueryFunction create(final JQueryCallback command) /*-{
         return function(jQueryWrapper) {

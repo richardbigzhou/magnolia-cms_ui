@@ -38,7 +38,6 @@ import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 
 /**
  * Dialogs viewport server side implementation.
- *
  */
 public class DialogViewport extends ShellViewport {
 

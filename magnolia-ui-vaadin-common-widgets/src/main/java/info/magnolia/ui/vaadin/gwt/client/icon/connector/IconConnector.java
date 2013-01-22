@@ -60,11 +60,11 @@ public class IconConnector extends AbstractComponentConnector {
 
     @Override
     public IconWidget getWidget() {
-        return (IconWidget)super.getWidget();
+        return (IconWidget) super.getWidget();
     }
 
     @Override
     public IconState getState() {
-        return (IconState)super.createState();
+        return (IconState) super.createState();
     }
 }

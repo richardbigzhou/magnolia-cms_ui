@@ -49,7 +49,7 @@ import com.vaadin.data.Item;
 
 /**
  * Factory for creating DialogField instances using an internal set of mappings connecting a {@link FieldDefinition} class with a {@link FieldBuilder} class.
- * 
+ *
  * @see FieldDefinition
  * @see FieldBuilder
  */

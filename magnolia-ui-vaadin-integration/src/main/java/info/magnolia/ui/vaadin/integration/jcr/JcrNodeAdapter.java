@@ -70,10 +70,9 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * <li>In this case we have to create a new Property and attach this property to the JcrNodeAdapter, i.e.
  * <p>
  * <code>property p = DefaultPropertyUtil.newDefaultProperty(...)
- *         jcrNodeAdapter.addItemProperty(...)
- *   </code>
+ * jcrNodeAdapter.addItemProperty(...)
+ * </code>
  * </ul>
- * 
  */
 public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
 

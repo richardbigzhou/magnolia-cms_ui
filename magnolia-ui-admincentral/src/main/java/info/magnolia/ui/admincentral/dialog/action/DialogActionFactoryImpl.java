@@ -56,8 +56,7 @@ public class DialogActionFactoryImpl extends FactoryBase<ActionDefinition, Actio
     public DialogActionFactoryImpl(ComponentProvider componentProvider, DialogActionRegistry dialogActionRegistry, @Named("admincentral") EventBus eventBus) {
         super(componentProvider);
         this.eventBus = eventBus;
-        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : dialogActionRegistry
-                .getDefinitionToImplementationMappings()) {
+        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : dialogActionRegistry.getDefinitionToImplementationMappings()) {
             addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
         }
     }

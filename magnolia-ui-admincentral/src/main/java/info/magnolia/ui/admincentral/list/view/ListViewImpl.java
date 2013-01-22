@@ -58,7 +58,6 @@ import com.vaadin.ui.Table;
 
 /**
  * Vaadin UI component that displays a list.
- * 
  */
 public class ListViewImpl implements ListView {
 

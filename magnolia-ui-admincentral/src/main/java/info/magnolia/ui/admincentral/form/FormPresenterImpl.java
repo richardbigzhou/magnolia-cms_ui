@@ -61,8 +61,7 @@ public class FormPresenterImpl implements FormPresenter {
     private Item item;
     private Callback callback;
 
-    public FormPresenterImpl(final FormView view, final FormBuilder formBuilder, final FieldFactory fieldFactory,
-            final FormDefinition formDefinition, EventBus eventBus, final FormActionFactory actionFactory) {
+    public FormPresenterImpl(final FormView view, final FormBuilder formBuilder, final FieldFactory fieldFactory, final FormDefinition formDefinition, EventBus eventBus, final FormActionFactory actionFactory) {
 
         this.view = view;
         this.formBuilder = formBuilder;

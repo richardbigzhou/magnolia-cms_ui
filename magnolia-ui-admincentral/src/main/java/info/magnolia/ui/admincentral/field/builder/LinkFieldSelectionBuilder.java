@@ -74,8 +74,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
     private TextAndContentViewField textContent;
 
     @Inject
-    public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem,
-            ChooseDialogContentPresenter contentPresenter, @Named("choosedialog") final EventBus eventbus) {
+    public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem, ChooseDialogContentPresenter contentPresenter, @Named("choosedialog") final EventBus eventbus) {
         super(definition, relatedFieldItem);
         this.contentPresenter = contentPresenter;
         this.appEventBus = eventbus;
@@ -103,7 +102,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
                 if (selected != null) {
                     try {
                         boolean isPropertyExisting = StringUtils.isNotBlank(propertyName)
-                                && !LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
+                            && !LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
                         textContent.setValue(isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath());
                     } catch (RepositoryException e) {
                         log.error("Not able to access the configured property. Value will not be set.", e);
@@ -124,8 +123,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
      */
     private void restoreContentSelection() {
         final String propertyValue = String.valueOf(item.getItemProperty(propertyName).getValue());
-        final String path = LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && StringUtils.isNotBlank(propertyValue) ? propertyValue
-                : contentPresenter.getRootPath();
+        final String path = LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && StringUtils.isNotBlank(propertyValue) ? propertyValue : contentPresenter.getRootPath();
         textContent.getContentView().selectPath(path);
     }
 }

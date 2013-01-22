@@ -66,8 +66,7 @@ public class FormsViewImpl implements FormsView {
          */
         // layout.setMargin(true, true, false, true);
         layout.setSizeFull();
-        layout.addComponent(new Label("The fields available in a Magnolia" +
-                " Form or Dialog. Configurable by repository or code."));
+        layout.addComponent(new Label("The fields available in a Magnolia" + " Form or Dialog. Configurable by repository or code."));
 
         layout.addComponent(new Button("View in dialog", new Button.ClickListener() {
 
@@ -82,8 +81,8 @@ public class FormsViewImpl implements FormsView {
 
     private void createComponents(Layout layout) {
         layout.addComponent(createRow("Static text",
-                new Label("Lorem ipsum dolor sit amet, consectetur adipisicing elit"))
-                );
+            new Label("Lorem ipsum dolor sit amet, consectetur adipisicing elit"))
+        );
         layout.addComponent(createRow("Commit button in a form", createSendButton()));
         layout.addComponent(createRow("Reset button in a form", createResetButton()));
         layout.addComponent(

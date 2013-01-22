@@ -38,7 +38,7 @@ import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 
 /**
  * Builder for building an item type definition.
- * 
+ *
  * @see WorkbenchBuilder
  */
 public class ItemTypeBuilder {

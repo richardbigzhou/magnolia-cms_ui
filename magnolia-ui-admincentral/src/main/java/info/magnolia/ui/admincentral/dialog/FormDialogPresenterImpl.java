@@ -87,11 +87,9 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      * <li>Delegates the building of the {@link FormDialogPresenter} to the {@link FormDialogPresenterFactory}.</li>
      * <li>Sets the created {@link info.magnolia.ui.vaadin.form.FormView} as content of the created {@link DialogView}.</li>
      * </ul>
-     * 
-     * @param item
-     *            passed on to{@link FormDialogPresenter}
-     * @param callback
-     *            registers callback functions created by caller
+     *
+     * @param item passed on to{@link FormDialogPresenter}
+     * @param callback registers callback functions created by caller
      */
     @Override
     public DialogView start(final Item item, final Callback callback) {

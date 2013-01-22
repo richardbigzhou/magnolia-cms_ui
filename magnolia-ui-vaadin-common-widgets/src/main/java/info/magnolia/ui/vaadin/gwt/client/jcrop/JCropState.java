@@ -44,13 +44,13 @@ public class JCropState extends JavaScriptExtensionState {
     public double aspectRatio;
     public int minHeight;
     public int maxHeight;
-    
+
     public int minWidth;
     public int maxWidth;
-    
+
     public String backgroundColor;
     public String backgroundOpacity;
-    
+
     public SelectionArea selection;
-   
+
 }

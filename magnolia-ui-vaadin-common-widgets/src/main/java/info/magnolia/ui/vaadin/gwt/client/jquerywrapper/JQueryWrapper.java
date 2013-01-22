@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class JQueryWrapper extends JavaScriptObject {
 
     public static final String TRANSITION_END_EVENT_ID = "transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd";
-    
+
     protected JQueryWrapper() {
     }
 
@@ -64,7 +64,7 @@ public class JQueryWrapper extends JavaScriptObject {
 
     public final static JQueryWrapper select(final Widget w) {
         return select(w.getElement());
-    };
+    }
 
     public final native void on(String eventId, Callbacks callbacks) /*-{
         //var jq = this;
@@ -211,7 +211,7 @@ public class JQueryWrapper extends JavaScriptObject {
     public final void setCss(JSONObject value) {
         final JavaScriptObject jso = value.isObject().getJavaScriptObject();
         setCss(jso);
-    };
+    }
 
     public final native void setCss(JavaScriptObject value) /*-{
           this.css(value);

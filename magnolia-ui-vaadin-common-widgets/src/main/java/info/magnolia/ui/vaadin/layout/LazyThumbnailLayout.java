@@ -49,7 +49,6 @@ import com.vaadin.ui.AbstractComponent;
 
 /**
  * Lazy layout of asset thumbnails.
- * 
  */
 public class LazyThumbnailLayout extends AbstractComponent implements Container.Viewer {
 

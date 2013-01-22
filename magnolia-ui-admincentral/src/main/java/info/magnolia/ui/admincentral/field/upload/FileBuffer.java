@@ -45,8 +45,9 @@ import java.io.OutputStream;
 
 /**
  * FileBuffer.
- * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on 
- * @link{http://code.google.com/p/easyuploads-addon/}. 
+ * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on
+ *
+ * @link{http://code.google.com/p/easyuploads-addon/}.
  */
 @SuppressWarnings("serial")
 public abstract class FileBuffer implements UploadFieldReceiver {
@@ -87,7 +88,7 @@ public abstract class FileBuffer implements UploadFieldReceiver {
 
     /**
      * Helper method for UploadField.
-     * 
+     *
      * @see org.vaadin.easyuploads.UploadFieldReceiver#getValue()
      */
     @Override
@@ -104,7 +105,7 @@ public abstract class FileBuffer implements UploadFieldReceiver {
 
         try {
             ByteArrayOutputStream bas = new ByteArrayOutputStream(
-                    (int) file.length());
+                (int) file.length());
             Streams.copy(valueAsStream, bas);
             byte[] byteArray = bas.toByteArray();
             if (getFieldType() == FieldType.BYTE_ARRAY) {
@@ -155,7 +156,7 @@ public abstract class FileBuffer implements UploadFieldReceiver {
                 InputStream is;
                 if (getFieldType() == FieldType.UTF8_STRING) {
                     is = new ByteArrayInputStream(
-                            ((String) newValue).getBytes());
+                        ((String) newValue).getBytes());
                 } else {
                     is = new ByteArrayInputStream((byte[]) newValue);
                 }
@@ -202,9 +203,8 @@ public abstract class FileBuffer implements UploadFieldReceiver {
     }
 
     /**
-     * @param deleteFiles
-     *            true if file should be deleted when setting value to null or
-     *            any other new value
+     * @param deleteFiles true if file should be deleted when setting value to null or
+     * any other new value
      */
     public void setDeleteFiles(boolean deleteFiles) {
         this.deleteFiles = deleteFiles;

@@ -67,9 +67,8 @@ public class ItemEditedEvent implements Event<ItemEditedEvent.Handler> {
 
     /**
      * Instantiates a new item edited event.
-     * 
-     * @param item
-     *            the item that has been edited.
+     *
+     * @param item the item that has been edited.
      */
     public ItemEditedEvent(Item item) {
         this.item = item;

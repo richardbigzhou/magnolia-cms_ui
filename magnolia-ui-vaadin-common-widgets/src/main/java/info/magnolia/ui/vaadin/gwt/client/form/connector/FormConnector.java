@@ -59,7 +59,7 @@ public class FormConnector extends EditorLikeComponentConnector<FormView.Present
     private final ActionFiringServerRpc actionRpc = RpcProxy.create(ActionFiringServerRpc.class, this);
 
     private final FormServerRpc focusRpc = RpcProxy.create(FormServerRpc.class, this);
-    
+
     @Override
     protected void init() {
         super.init();
@@ -93,7 +93,7 @@ public class FormConnector extends EditorLikeComponentConnector<FormView.Present
 
             @Override
             public void jumpToNextError(FormFieldWrapper fieldWrapper) {
-                ComponentConnector cc = fieldWrapper == null ? null : Util.findConnectorFor(fieldWrapper.getField()); 
+                ComponentConnector cc = fieldWrapper == null ? null : Util.findConnectorFor(fieldWrapper.getField());
                 focusRpc.focusNextProblematicField(cc);
             }
         };

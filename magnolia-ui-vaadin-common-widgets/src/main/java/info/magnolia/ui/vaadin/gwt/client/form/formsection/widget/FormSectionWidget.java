@@ -150,7 +150,7 @@ public class FormSectionWidget extends FlowPanel {
     public void focus(Widget widget) {
         scrollTo(sections.get(widget));
     }
-    
+
     private void scrollTo(final FormFieldWrapper field) {
         final int top = JQueryWrapper.select(field).position().top();
         JQueryWrapper.select((Element)getElement().getParentElement().cast())

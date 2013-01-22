@@ -43,11 +43,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A base class for implementing factories which instantiate implementations based on definition objects.
- * 
- * @param <D>
- *            definition parent type
- * @param <I>
- *            implementation parent type
+ *
+ * @param <D> definition parent type
+ * @param <I> implementation parent type
  */
 public abstract class FactoryBase<D, I> {
     private static final Logger log = LoggerFactory.getLogger(FactoryBase.class);

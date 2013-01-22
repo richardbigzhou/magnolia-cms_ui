@@ -52,12 +52,10 @@ public class FormActionFactoryImpl extends FactoryBase<ActionDefinition, Action>
     private final EventBus eventBus;
 
     @Inject
-    public FormActionFactoryImpl(ComponentProvider componentProvider, DialogActionRegistry actionRegistry,
-            @Named("admincentral") EventBus eventBus) {
+    public FormActionFactoryImpl(ComponentProvider componentProvider, DialogActionRegistry actionRegistry, @Named("admincentral") EventBus eventBus) {
         super(componentProvider);
         this.eventBus = eventBus;
-        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : actionRegistry
-                .getDefinitionToImplementationMappings()) {
+        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : actionRegistry.getDefinitionToImplementationMappings()) {
             addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
         }
     }
