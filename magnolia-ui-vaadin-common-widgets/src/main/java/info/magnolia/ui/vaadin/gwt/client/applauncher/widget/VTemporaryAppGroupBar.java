@@ -41,7 +41,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * The holder of the temporary app group tiles - the ones that expand to show the temporary app group.
- * 
  */
 public class VTemporaryAppGroupBar extends FlowPanel {
 

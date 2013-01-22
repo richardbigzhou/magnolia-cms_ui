@@ -57,7 +57,7 @@ public class PulseViewImpl implements PulseView {
             if (presenter != null) {
                 presenter.onPulseTabChanged(m.getKey(tab).toString().toLowerCase());
             }
-        };
+        }
     };
 
     private enum PulseTabType {

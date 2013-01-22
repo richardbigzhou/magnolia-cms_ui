@@ -61,7 +61,7 @@ public class WorkbenchActionRegistry implements Serializable {
     }
 
     public void setDefinitionToImplementationMappings(
-            List<DefinitionToImplementationMapping<ActionDefinition, Action>> definitionToImplementationMappings) {
+        List<DefinitionToImplementationMapping<ActionDefinition, Action>> definitionToImplementationMappings) {
         this.definitionToImplementationMappings = definitionToImplementationMappings;
     }
 

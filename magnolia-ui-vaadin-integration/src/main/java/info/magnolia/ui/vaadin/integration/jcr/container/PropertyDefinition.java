@@ -41,8 +41,7 @@ public class PropertyDefinition {
     private String propertyId;
     private Class<?> type;
 
-    public PropertyDefinition(String propertyId, Class<?> type,
-            Object defaultValue) {
+    public PropertyDefinition(String propertyId, Class<?> type, Object defaultValue) {
         setPropertyId(propertyId);
         setType(type);
         setDefaultValue(defaultValue);

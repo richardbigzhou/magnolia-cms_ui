@@ -72,9 +72,8 @@ public class SampleEditorSubApp extends AbstractSubApp implements SampleEditorVi
     /**
      * Overwrite supportsLocation to implement custom handling of subApp opening.
      * Will take care of the location change in case the current view name equals the new view name.
-     * 
-     * @param location
-     *            the new location
+     *
+     * @param location the new location
      * @return true if current SubApp should handle the location update
      */
     @Override

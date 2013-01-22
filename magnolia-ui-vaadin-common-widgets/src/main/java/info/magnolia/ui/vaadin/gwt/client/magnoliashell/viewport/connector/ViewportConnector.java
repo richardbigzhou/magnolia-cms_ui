@@ -83,7 +83,7 @@ public class ViewportConnector extends AbstractLayoutConnector {
             }
 
         });
-    };
+    }
 
     protected void alignContent(Element e, LayoutManager layoutManager) {
         if (getWidget().isVisible() && !Display.NONE.getCssName().equals(e.getStyle().getDisplay())) {

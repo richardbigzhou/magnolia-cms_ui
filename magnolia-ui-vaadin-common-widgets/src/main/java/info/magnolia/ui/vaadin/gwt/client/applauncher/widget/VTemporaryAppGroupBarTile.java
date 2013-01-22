@@ -47,7 +47,6 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * A tile representing a Temporary App Group - displayed in the Temporary App Group Bar.
- * 
  */
 public class VTemporaryAppGroupBarTile extends FlowPanel {
 

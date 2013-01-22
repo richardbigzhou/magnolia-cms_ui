@@ -113,7 +113,7 @@ public class ShellAppLauncher extends FlowPanel {
         public void setIndication(int indication) {
             indicator.setValue(indication);
         }
-    };
+    }
 
     private final Element divetWrapper = DOM.createDiv();
 

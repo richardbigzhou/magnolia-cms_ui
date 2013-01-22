@@ -50,7 +50,7 @@ import com.vaadin.data.Item;
 
 /**
  * Saves a dialog.
- * 
+ *
  * @see SaveDialogActionDefinition
  */
 public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {

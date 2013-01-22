@@ -77,12 +77,11 @@ public class ReadyStateWatch {
 
     public ReadyStateWatch(Frame iframe) {
         this.iframe = iframe;
-        addNativeReadyStateWatch(this, iframe.getElement().<IFrameElement>
-                cast());
+        addNativeReadyStateWatch(this, iframe.getElement().<IFrameElement> cast());
     }
 
     public HandlerRegistration addReadyStateChangeHandler(
-            ValueChangeHandler<ReadyState> handler) {
+        ValueChangeHandler<ReadyState> handler) {
         return iframe.addHandler(handler, ValueChangeEvent.getType());
     }
 

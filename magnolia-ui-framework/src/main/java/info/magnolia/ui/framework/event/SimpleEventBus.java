@@ -46,9 +46,9 @@ import com.google.common.collect.Multimap;
 
 /**
  * Event bus implementation.
- * 
+ *
  * Inspired by {@link com.google.gwt.event.shared.SimpleEventBus}.
- * 
+ *
  * @see EventBus
  */
 @Singleton

@@ -51,11 +51,12 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.TwinColSelect;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * GUI builder for the Role Management field.
@@ -81,7 +82,7 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
         super(definition, relatedFieldItem);
         definition.setOptions(getSelectFieldOptionDefinition());
     }
-    
+
     @Override
     protected AbstractSelect buildField() {
         super.buildField();

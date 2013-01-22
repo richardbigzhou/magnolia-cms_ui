@@ -49,6 +49,6 @@ public class TouchStartHandlerProxy implements com.google.gwt.event.dom.client.T
 
     @Override
     public void onTouchStart(com.google.gwt.event.dom.client.TouchStartEvent event) {
-        delegateHandler.onTouchStart(GwtTouchEventConverter.<TouchStartEvent> convertGWTEvent(event));
+        delegateHandler.onTouchStart(GwtTouchEventConverter.<TouchStartEvent>convertGWTEvent(event));
     }
 }

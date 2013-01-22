@@ -77,9 +77,8 @@ public class VMobileSafariUI extends VUI {
         });
 
         if (handlerManager != null &&
-                handlerManager.getHandlerCount(com.google.gwt.event.dom.client.TouchStartEvent.getType()) > 0) {
-            com.google.gwt.event.dom.client.TouchStartHandler eh =
-                    handlerManager.getHandler(com.google.gwt.event.dom.client.TouchStartEvent.getType(), 0);
+            handlerManager.getHandlerCount(com.google.gwt.event.dom.client.TouchStartEvent.getType()) > 0) {
+            com.google.gwt.event.dom.client.TouchStartHandler eh = handlerManager.getHandler(com.google.gwt.event.dom.client.TouchStartEvent.getType(), 0);
             handlerManager.removeHandler(com.google.gwt.event.dom.client.TouchStartEvent.getType(), eh);
         }
     }

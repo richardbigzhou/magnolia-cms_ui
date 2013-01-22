@@ -232,11 +232,9 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
 
     /**
      * FADE OUT TRANSITION.
-     * 
-     * @param w
-     *            the app widget
-     * @param callbacks
-     *            the callbacks
+     *
+     * @param w the app widget
+     * @param callbacks the callbacks
      */
     private void fadeOut(final Widget w, final Callbacks callbacks) {
 

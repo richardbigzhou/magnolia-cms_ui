@@ -40,7 +40,6 @@ import javax.inject.Inject;
 
 /**
  * Chooses a value from a workbench.
- * 
  */
 public class WorkbenchValueChooseDialog extends BaseDialog implements ChooseDialogView {
 

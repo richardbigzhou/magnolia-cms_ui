@@ -45,7 +45,7 @@ import javax.inject.Inject;
 
 /**
  * Factory for creating DialogField instances using an internal set of mappings connecting a {@link FieldValidatorDefinition} class with a {@link FieldValidatorBuilder} class.
- * 
+ *
  * @see info.magnolia.ui.model.field.definition.FieldDefinition
  * @see info.magnolia.ui.admincentral.field.FieldBuilder
  */

@@ -56,7 +56,6 @@ import com.vaadin.ui.VerticalLayout;
  * <li>Label.percentage
  * <li>Label.UploadexOfy
  * </ul>
- * 
  */
 public class ProgressIndicatorComponentDefaultImpl extends CustomComponent implements ProgressIndicatorComponent {
 
@@ -115,13 +114,13 @@ public class ProgressIndicatorComponentDefaultImpl extends CustomComponent imple
         // doing so won't update the progress indicator.
         progressIndicator.setValue(Float.valueOf(readBytes / (float) contentLength));
 
-        uploadFileLocation.setValue(MessagesUtil.get("field.upload.uploading.file", new String[] { fileName }));
+        uploadFileLocation.setValue(MessagesUtil.get("field.upload.uploading.file", new String[]{fileName}));
 
         uploadFileProgress.setValue(createPercentage(readBytes, contentLength));
 
         String bytesRead = FileUtils.byteCountToDisplaySize(readBytes);
         String totalBytes = FileUtils.byteCountToDisplaySize(contentLength);
-        uploadFileRatio.setValue(MessagesUtil.get("field.upload.uploaded.file", new String[] { bytesRead, totalBytes }));
+        uploadFileRatio.setValue(MessagesUtil.get("field.upload.uploaded.file", new String[]{bytesRead, totalBytes}));
     }
 
     @Override

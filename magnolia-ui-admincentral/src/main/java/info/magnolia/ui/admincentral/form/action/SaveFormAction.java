@@ -49,7 +49,7 @@ import com.vaadin.data.Item;
 
 /**
  * Action for saving Items in Forms.
- * 
+ *
  * @see SaveFormActionDefinition
  */
 public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {

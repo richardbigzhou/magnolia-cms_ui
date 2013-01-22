@@ -129,9 +129,6 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
      * Javascript hack for handling scrolling in iframes on iPad.
      * This needs to be initialized after the iframe has been loaded, otherwise the document will be null.
      * The touchscrolling boolean is used to circumvent a selection being triggered while scrolling.
-     * 
-     * @param doc
-     * @param cont
      */
     private final native void addIframeTouchMoveListener(Document doc, Element cont) /*-{
         var content = cont;

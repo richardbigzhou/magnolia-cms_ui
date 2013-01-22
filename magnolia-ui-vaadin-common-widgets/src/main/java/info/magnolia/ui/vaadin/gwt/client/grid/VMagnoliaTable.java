@@ -206,8 +206,7 @@ public class VMagnoliaTable extends VScrollTablePatched {
             }
 
             @Override
-            protected void initCellWithText(String text, char align, String style, boolean textIsHTML, boolean sorted, String description,
-                    final TableCellElement td) {
+            protected void initCellWithText(String text, char align, String style, boolean textIsHTML, boolean sorted, String description, final TableCellElement td) {
                 super.initCellWithText(text, align, style, textIsHTML, sorted, description, td);
                 insertSelectionCheckbox(td);
             }

@@ -40,7 +40,6 @@ import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Client side impl of AppLauncher.
- * 
  */
 public class VAppLauncher extends Composite implements AppLauncherView.Presenter {
 

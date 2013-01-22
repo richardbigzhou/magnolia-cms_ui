@@ -47,8 +47,7 @@ import javax.inject.Singleton;
  * SubApp for the main tab in showcase app.
  */
 @Singleton
-public class ShowcaseMainSubApp extends AbstractSubApp implements
-        ShowcaseMainView.Listener {
+public class ShowcaseMainSubApp extends AbstractSubApp implements ShowcaseMainView.Listener {
 
     private ShowcaseMainView view;
     private FormsPresenter formPresenter;

@@ -66,7 +66,7 @@ public class ViewportCloseEvent extends GwtEvent<ViewportCloseEvent.Handler> {
     @Override
     public GwtEvent.Type<Handler> getAssociatedType() {
         return TYPE;
-    };
+    }
 
     public ViewportType getViewportType() {
         return viewportType;

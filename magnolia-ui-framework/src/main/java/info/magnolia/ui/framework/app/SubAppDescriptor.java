@@ -35,7 +35,7 @@ package info.magnolia.ui.framework.app;
 
 /**
  * Describes a sub app.
- * 
+ *
  * @see SubApp
  */
 public interface SubAppDescriptor {

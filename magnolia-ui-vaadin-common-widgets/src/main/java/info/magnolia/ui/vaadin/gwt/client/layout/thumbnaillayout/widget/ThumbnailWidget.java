@@ -43,7 +43,6 @@ import com.vaadin.client.ServerConnector;
 
 /**
  * Thumbnail widget.
- * 
  */
 public class ThumbnailWidget extends Composite {
 

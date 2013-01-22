@@ -48,9 +48,8 @@ import javax.jcr.Session;
 
 /**
  * A repository operation action which saves the changes and informs the event bus.
- * 
- * @param <D>
- *            The {@link ActionDefinition} used by the action.
+ *
+ * @param <D> The {@link ActionDefinition} used by the action.
  */
 public abstract class RepositoryOperationAction<D extends ActionDefinition> extends ActionBase<D> {
 
