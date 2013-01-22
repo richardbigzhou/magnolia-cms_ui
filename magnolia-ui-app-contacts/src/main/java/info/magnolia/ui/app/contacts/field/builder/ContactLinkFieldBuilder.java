@@ -57,8 +57,7 @@ public class ContactLinkFieldBuilder extends LinkFieldBuilder<ContactLinkFieldDe
     private ImageProvider imageThumbnailProvider;
 
     @Inject
-    public ContactLinkFieldBuilder(ContactLinkFieldDefinition definition, Item relatedFieldItem, AppController appController,
-            ComponentProvider componentProvider) {
+    public ContactLinkFieldBuilder(ContactLinkFieldDefinition definition, Item relatedFieldItem, AppController appController, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem, appController);
 
         // Create an imageProviderDefinition

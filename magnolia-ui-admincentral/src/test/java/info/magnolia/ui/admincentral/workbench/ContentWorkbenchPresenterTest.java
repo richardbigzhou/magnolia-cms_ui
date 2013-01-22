@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.workbench;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes.LastModified;

@@ -44,7 +44,7 @@ import com.vaadin.ui.Image;
 public class CroppableImage extends Image {
 
     private final JCrop jcrop = new JCrop();
-    
+
     public CroppableImage() {
         addExtension(jcrop);
     }
@@ -52,15 +52,15 @@ public class CroppableImage extends Image {
     public void setAspectRatio(double aspectRatio) {
         jcrop.setAspectRatio(aspectRatio);
     }
-    
+
     public void setCropEnabled(boolean isEnabled) {
         jcrop.setCropEnabled(isEnabled);
     }
-    
+
     public void addSelectionListener(SelectionListener listener) {
         jcrop.addSelectionListener(listener);
     }
-    
+
     public void addReleaseListener(ReleaseListener listener) {
         jcrop.addReleaseListener(listener);
     }
@@ -76,5 +76,5 @@ public class CroppableImage extends Image {
     public boolean isCropEnabled() {
         return false;
     }
-    
+
 }

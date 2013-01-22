@@ -82,7 +82,7 @@ import com.vaadin.server.Resource;
  * <li>a configurable function toolbar on top of the data grid, providing operations such as switching from tree to list view or thumbnail view or performing searches on data.
  * <li>a configurable action bar on the right hand side, showing the available operations for the given workspace and the selected item.
  * </ul>
- * 
+ *
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR workspace to connect to, the columns/properties to display, the available actions and so on.
  */
@@ -190,9 +190,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         });
     }
 
-    /**
-     * @see ContentPresenter#getSelectedItemPath()
-     */
+    /** @see ContentPresenter#getSelectedItemPath() */
     public String getSelectedItemId() {
         return contentPresenter.getSelectedItemPath();
     }
@@ -205,9 +203,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         return actionbarPresenter;
     }
 
-    /**
-     * Executes the workbench's default action, as configured in the defaultAction property.
-     */
+    /** Executes the workbench's default action, as configured in the defaultAction property. */
     public void executeDefaultAction() {
         ActionDefinition defaultActionDef = actionbarPresenter.getDefaultActionDefinition();
         if (defaultActionDef != null) {

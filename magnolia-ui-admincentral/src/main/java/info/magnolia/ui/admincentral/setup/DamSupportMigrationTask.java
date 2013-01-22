@@ -39,7 +39,7 @@ import info.magnolia.module.delta.TaskExecutionException;
 
 /**
  * Migrate DAM support for version >= 5.0.
- * 
+ *
  */
 public class DamSupportMigrationTask extends AbstractTask {
 

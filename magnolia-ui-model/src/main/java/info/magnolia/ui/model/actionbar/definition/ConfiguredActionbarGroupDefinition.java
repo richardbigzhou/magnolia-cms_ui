@@ -53,9 +53,8 @@ public class ConfiguredActionbarGroupDefinition implements ActionbarGroupDefinit
 
     /**
      * Sets the group name.
-     * 
-     * @param name
-     *            the new name
+     *
+     * @param name the new name
      */
     public void setName(String name) {
         this.name = name;
@@ -72,9 +71,8 @@ public class ConfiguredActionbarGroupDefinition implements ActionbarGroupDefinit
 
     /**
      * Adds an action item to this group.
-     * 
-     * @param itemDefinition
-     *            the action item definition
+     *
+     * @param itemDefinition the action item definition
      */
     public void addItem(ActionbarItemDefinition itemDefinition) {
         items.add(itemDefinition);

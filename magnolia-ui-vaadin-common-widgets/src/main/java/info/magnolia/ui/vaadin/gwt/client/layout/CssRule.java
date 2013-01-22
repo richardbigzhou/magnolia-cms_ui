@@ -49,11 +49,8 @@ public class CssRule {
     }
 
     /**
-     * 
-     * @param selector
-     *            the CSS selector to search for in the stylesheets
-     * @param deep
-     *            should the search follow any @import statements?
+     * @param selector the CSS selector to search for in the stylesheets
+     * @param deep should the search follow any @import statements?
      */
     public CssRule(final String selector, final boolean deep) {
         this.selector = selector;
@@ -126,9 +123,8 @@ public class CssRule {
 
     /**
      * Returns a specific property value from this CSS rule.
-     * 
-     * @param propertyName
-     *            camelCase CSS property name
+     *
+     * @param propertyName camelCase CSS property name
      * @return the value of the property as a String
      */
     public native String getProperty(final String propertyName)
@@ -144,14 +140,12 @@ public class CssRule {
 
     /**
      * Sets a specific property value for this CSS rule.
-     * 
-     * @param propertyName
-     *            camelCase CSS property name
-     * @param propertyValue
-     *            the value of the property as a String
+     *
+     * @param propertyName camelCase CSS property name
+     * @param propertyValue the value of the property as a String
      */
     public native void setProperty(final String propertyName,
-            final String propertyValue)
+                                   final String propertyValue)
     /*-{
         this.@info.magnolia.ui.vaadin.gwt.client.layout.CssRule::rules[0].style[propertyName] = propertyValue;
     }-*/;

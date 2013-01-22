@@ -41,7 +41,7 @@ import javax.inject.Inject;
 
 /**
  * The Contacts app, extending base content app.
- * 
+ *
  */
 public class ContactsApp extends AbstractContentApp {
 

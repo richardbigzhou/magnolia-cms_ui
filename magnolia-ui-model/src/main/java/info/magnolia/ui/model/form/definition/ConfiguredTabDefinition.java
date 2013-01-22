@@ -40,7 +40,7 @@ import java.util.List;
 
 /**
  * Standard tab definition implementation.
- * 
+ *
  * @see TabDefinition
  */
 public class ConfiguredTabDefinition implements TabDefinition {

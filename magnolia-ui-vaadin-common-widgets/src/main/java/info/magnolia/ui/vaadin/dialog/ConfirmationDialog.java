@@ -122,7 +122,7 @@ public class ConfirmationDialog extends BaseDialog {
         static {
             try {
                 ON_CONFIRMATION = ConfirmationEvent.Handler.class.getDeclaredMethod(
-                        "onConfirmation", new Class[] { ConfirmationEvent.class });
+                        "onConfirmation", new Class[]{ConfirmationEvent.class});
             } catch (final java.lang.NoSuchMethodException e) {
                 throw new java.lang.RuntimeException(e);
             }

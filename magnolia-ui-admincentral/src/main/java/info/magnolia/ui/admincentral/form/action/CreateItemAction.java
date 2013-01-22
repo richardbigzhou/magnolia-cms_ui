@@ -48,7 +48,7 @@ import javax.jcr.RepositoryException;
  * When creating a new node, we either create it here and pass the new path to the subapp or
  * we pass all needed parameters to the location. This is less messy, but not optimal.. at all.
  * See MGNLUI-222.
- * 
+ *
  * @see CreateItemActionDefinition
  */
 public class CreateItemAction extends ActionBase<CreateItemActionDefinition> {

@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.content.view.builder;
 
 /**
  * Provides a ContentViewBuilder.
- * 
+ *
  * TODO: check whether this type should go to ui-model layer.
  */
 public interface ContentViewBuilderProvider {

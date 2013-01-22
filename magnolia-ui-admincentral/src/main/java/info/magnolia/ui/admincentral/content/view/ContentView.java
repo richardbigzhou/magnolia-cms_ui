@@ -75,8 +75,7 @@ public interface ContentView extends View {
                         return type;
                     }
                 }
-            }
-            else {
+            } else {
                 return defaultViewType();
             }
             throw new IllegalArgumentException("No view type could be found for [" + text + "]");
@@ -91,9 +90,8 @@ public interface ContentView extends View {
 
     /**
      * Selects the item with given path in the content view.
-     * 
-     * @param path
-     *            relative to the tree root, must start with '/'
+     *
+     * @param path relative to the tree root, must start with '/'
      */
     void select(String path);
 
