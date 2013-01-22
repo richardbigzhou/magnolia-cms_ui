@@ -101,20 +101,6 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
             if (!NodeUtil.getNodes(node, NodeTypes.Page.NAME).iterator().hasNext()) {
                 actionbarPresenter.disable("activateRecursive");
             }
-
-            int status = NodeTypes.Activatable.getActivationStatus(node);
-
-            switch (status) {
-            case NodeTypes.Activatable.ACTIVATION_STATUS_ACTIVATED:
-                actionbarPresenter.disable("activate");
-                break;
-            case NodeTypes.Activatable.ACTIVATION_STATUS_MODIFIED:
-                // TODO fgrilli what do we do in this case?
-                break;
-            case NodeTypes.Activatable.ACTIVATION_STATUS_NOT_ACTIVATED:
-                actionbarPresenter.disable("deactivate");
-                break;
-            }
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }

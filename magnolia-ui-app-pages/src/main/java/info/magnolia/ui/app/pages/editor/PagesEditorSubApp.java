@@ -34,7 +34,6 @@
 package info.magnolia.ui.app.pages.editor;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
@@ -275,7 +274,6 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
                     hideAllSections();
                     if (node.isNodeType(NodeTypes.Page.NAME)) {
                         actionbarPresenter.showSection("pageActions");
-                        updateActivationActions(node, actionbarPresenter);
                     } else if (node.isNodeType(NodeTypes.Area.NAME)) {
                         if (dialog == null) {
                             actionbarPresenter.showSection("areaActions");
@@ -292,27 +290,6 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
                 updateActions();
             }
         });
-    }
-
-    private void updateActivationActions(final Node node, final ActionbarPresenter actionbarPresenter) {
-        try {
-            int status = NodeTypes.Activatable.getActivationStatus(node);
-
-            switch (status) {
-            case NodeTypes.Activatable.ACTIVATION_STATUS_ACTIVATED:
-                actionbarPresenter.disable("activate");
-                break;
-            case NodeTypes.Activatable.ACTIVATION_STATUS_MODIFIED:
-                // TODO fgrilli what do we do in this case?
-                break;
-            case NodeTypes.Activatable.ACTIVATION_STATUS_NOT_ACTIVATED:
-                actionbarPresenter.disable("deactivate");
-                break;
-            }
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
-
     }
 
 }

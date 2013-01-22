@@ -156,6 +156,11 @@
 	cursor: pointer;
 }
 
+/** FIXME This is a workaround to align the publish-incl-sub icon. It's an issue with the image itself**/
+span.icon-publish-incl-sub  {
+	margin-left: 3px;
+}
+
 /****  Handling Tablet ****/
 .tablet .v-actionbar {
 	width: 70px;
