@@ -58,7 +58,7 @@ public class ActivationAction extends BaseActivationAction<ActivationActionDefin
 
     @Override
     public void execute() throws ActionExecutionException {
-        final String commandName = getDefinition().getCommandName();
+        final String commandName = getDefinition().getCommand();
         final Command command = getCommandsManager().getCommand(commandName);
 
         if (command == null) {

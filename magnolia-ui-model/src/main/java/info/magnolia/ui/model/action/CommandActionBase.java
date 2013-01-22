@@ -34,16 +34,22 @@
 package info.magnolia.ui.model.action;
 
 import info.magnolia.commands.CommandsManager;
+import info.magnolia.context.Context;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.SessionUtil;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * Base action supporting execution of commands.
- * 
+ *
  * @param <D> {@link CommandActionDefinition}.
  */
 public abstract class CommandActionBase<D extends CommandActionDefinition> extends ActionBase<D> {
@@ -61,10 +67,41 @@ public abstract class CommandActionBase<D extends CommandActionDefinition> exten
 
     /**
      * Builds a map of parameters which will be passed to the current command for execution.
-     * Called by the constructor. Default implementation returns an empty Map.
+     * Called by the constructor. Default implementation returns a map containing the parameters defined at {@link CommandActionDefinition#getParams()}.
+     * It also adds the following parameters unless already defined in the configuration
+     * *
+     * <ul>
+     * <li>Context.ATTRIBUTE_REPOSITORY = current node's workspace name
+     * <li>Context.ATTRIBUTE_UUID = current node's identifier
+     * <li>Context.ATTRIBUTE_PATH = current node's path
+     * </ul>
+     * This method is called bythe constructor.
      */
     protected Map<String, Object> buildParams(final Node node) {
-        return Collections.emptyMap();
+        Map<String, Object> params = getDefinition().getParams() == null ? new HashMap<String, Object>() : getDefinition().getParams();
+        try {
+            final String path = node.getPath();
+            final String workspace = node.getSession().getWorkspace().getName();
+            final String identifier = SessionUtil.getNode(workspace, path).getIdentifier();
+
+            if (!params.containsKey(Context.ATTRIBUTE_REPOSITORY)) {
+                params.put(Context.ATTRIBUTE_REPOSITORY, workspace);
+            }
+            if (!params.containsKey(Context.ATTRIBUTE_UUID)) {
+                // really only the uuid should be used to identify a piece of content and nothing else
+                params.put(Context.ATTRIBUTE_UUID, identifier);
+            }
+            if (!params.containsKey(Context.ATTRIBUTE_PATH)) {
+                // retrieve content again using uuid and system context to get unaltered path.
+                final String realPath = MgnlContext.getSystemContext().getJCRSession(workspace).getNodeByIdentifier(identifier).getPath();
+                params.put(Context.ATTRIBUTE_PATH, realPath);
+            }
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+
+        return params;
+
     }
 
     /**
@@ -79,7 +116,7 @@ public abstract class CommandActionBase<D extends CommandActionDefinition> exten
      * @return an instance of {@link CommandsManager} to be used for action execution. Typically the {@link #execute()} method will do something like
      * <p>
      * {@code
-     * getCommandsManager().executeCommand(getDefinition().getCatalogName(), getDefinition().getCommandName(), getParams());
+     * getCommandsManager().executeCommand(getDefinition().getCatalog(), getDefinition().getCommand(), getParams());
      * }
      */
     protected final CommandsManager getCommandsManager() {

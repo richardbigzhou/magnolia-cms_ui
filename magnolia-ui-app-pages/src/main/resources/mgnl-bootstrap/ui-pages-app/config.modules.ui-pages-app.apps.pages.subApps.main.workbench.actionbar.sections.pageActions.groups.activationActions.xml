@@ -93,7 +93,7 @@
         <sv:property sv:name="class" sv:type="String">
           <sv:value>info.magnolia.ui.admincentral.activation.action.ActivationActionDefinition</sv:value>
         </sv:property>
-        <sv:property sv:name="commandName" sv:type="String">
+        <sv:property sv:name="command" sv:type="String">
           <sv:value>activate</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
@@ -157,7 +157,7 @@
         <sv:property sv:name="class" sv:type="String">
           <sv:value>info.magnolia.ui.admincentral.activation.action.ActivationActionDefinition</sv:value>
         </sv:property>
-        <sv:property sv:name="commandName" sv:type="String">
+        <sv:property sv:name="command" sv:type="String">
           <sv:value>activate</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
@@ -224,7 +224,7 @@
         <sv:property sv:name="class" sv:type="String">
           <sv:value>info.magnolia.ui.admincentral.activation.action.DeactivationActionDefinition</sv:value>
         </sv:property>
-        <sv:property sv:name="commandName" sv:type="String">
+        <sv:property sv:name="command" sv:type="String">
           <sv:value>deactivate</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">

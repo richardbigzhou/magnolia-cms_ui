@@ -34,22 +34,14 @@
 package info.magnolia.ui.admincentral.activation.action;
 
 import info.magnolia.commands.CommandsManager;
-import info.magnolia.context.Context;
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.model.action.CommandActionBase;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 /**
  * Base activation action via commands.
- * 
+ *
  * @param <D> BaseActivationActionDefinition.
  */
 public abstract class BaseActivationAction<D extends BaseActivationActionDefinition> extends CommandActionBase<BaseActivationActionDefinition> {
@@ -57,37 +49,6 @@ public abstract class BaseActivationAction<D extends BaseActivationActionDefinit
     @Inject
     public BaseActivationAction(final D definition, final Node node, final CommandsManager commandsManager) {
         super(definition, node, commandsManager);
-    }
-
-    /**
-     * Builds a map of parameters which will be passed to the (de-)activation command to perform its execution. By default it consists of three objects:
-     * <ul>
-     * <li>Context.ATTRIBUTE_REPOSITORY = current node's workspace name
-     * <li>Context.ATTRIBUTE_UUID = current node's identifier
-     * <li>Context.ATTRIBUTE_PATH = current node's path
-     * </ul>
-     * Called by the constructor.
-     */
-    protected Map<String, Object> buildParams(final Node node) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        try {
-            final String path = node.getPath();
-            final String workspace = node.getSession().getWorkspace().getName();
-            params.put(Context.ATTRIBUTE_REPOSITORY, workspace);
-
-            if (path != null) {
-
-                final String identifier = SessionUtil.getNode(workspace, path).getIdentifier();
-                // really only the uuid should be used to identify a piece of content and nothing else
-                params.put(Context.ATTRIBUTE_UUID, identifier);
-                // retrieve content again using uuid and system context to get unaltered path.
-                final String realPath = MgnlContext.getSystemContext().getJCRSession(workspace).getNodeByIdentifier(identifier).getPath();
-                params.put(Context.ATTRIBUTE_PATH, realPath);
-            }
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
-        return params;
     }
 
 }

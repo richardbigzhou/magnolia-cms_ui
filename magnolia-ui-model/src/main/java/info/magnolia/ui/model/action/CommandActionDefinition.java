@@ -35,31 +35,50 @@ package info.magnolia.ui.model.action;
 
 import info.magnolia.commands.CommandsManager;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * A basic action definition to support command execution via an action.
  */
 public class CommandActionDefinition implements ActionDefinition {
-    private String commandName;
-    private String catalogName = CommandsManager.DEFAULT_CATALOG;
 
-    public String getCommandName() {
-        return commandName;
+    private String command;
+    private String catalog = CommandsManager.DEFAULT_CATALOG;
+
+    private Map<String, Object> params = new HashMap<String, Object>();
+
+    public String getCommand() {
+        return command;
     }
 
-    public void setCommandName(String commandName) {
-        this.commandName = commandName;
+    public void setCommand(String command) {
+        this.command = command;
     }
 
     /**
      * @return {@link CommandsManager#DEFAULT_CATALOG} if not set otherwise.
      */
-    public String getCatalogName() {
-        return catalogName;
+    public String getCatalog() {
+        return catalog;
     }
 
-    public void setCatalogName(String catalogName) {
-        this.catalogName = catalogName;
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
     }
 
+    public void setParams(Map<String, Object> params) {
+        this.params = params;
+    }
+
+    public Map<String, Object> getParams() {
+        return params;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 }

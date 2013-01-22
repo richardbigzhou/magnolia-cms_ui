@@ -53,7 +53,7 @@ public class DeactivationAction extends BaseActivationAction<DeactivationActionD
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            getCommandsManager().executeCommand(getDefinition().getCommandName(), getParams());
+            getCommandsManager().executeCommand(getDefinition().getCommand(), getParams());
         } catch (Exception e) {
             throw new ActionExecutionException("An exception occured during activation ", e);
         }
