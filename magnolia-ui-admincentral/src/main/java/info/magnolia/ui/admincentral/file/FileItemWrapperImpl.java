@@ -42,11 +42,15 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import java.util.Date;
+
+import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
+import org.apache.jackrabbit.value.ValueFactoryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
 import com.vaadin.server.Resource;
@@ -61,6 +65,7 @@ import com.vaadin.ui.Label;
  * Basic Bean containing the File informations.
  */
 public class FileItemWrapperImpl implements FileItemWrapper {
+    private static final Logger log = LoggerFactory.getLogger(FileItemWrapperImpl.class);
 
     // File Properties
     private byte[] binaryData;
@@ -108,11 +113,18 @@ public class FileItemWrapperImpl implements FileItemWrapper {
         Property<Object> data = jcrItem.getItemProperty(JcrConstants.JCR_DATA);
 
         if (binaryData != null) {
+            try {
+                data.setValue(ValueFactoryImpl.getInstance().createBinary(new ByteArrayInputStream(binaryData)));
+            } catch (RepositoryException re) {
+                log.error("Could not get Binary. Upload will not be performed", re);
+                jcrItem.getParent().removeChild(jcrItem);
+                return;
+            }
             data.setValue(new ByteArrayInputStream(binaryData));
         }
         jcrItem.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(StringUtils.substringBefore(fileName, "."));
         jcrItem.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).setValue(mimeType);
-        jcrItem.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED).setValue(new GregorianCalendar(TimeZone.getDefault()));
+        jcrItem.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED).setValue(new Date());
         jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(fileSize);
         jcrItem.getItemProperty(FileProperties.PROPERTY_EXTENSION).setValue(PathUtil.getExtension(fileName));
         if (isImage()) {
