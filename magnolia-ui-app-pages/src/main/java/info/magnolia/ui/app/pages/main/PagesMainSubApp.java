@@ -82,7 +82,10 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
             final String path = getWorkbench().getSelectedItemId();
             final String workspace = getWorkbench().getWorkspace();
             final Node page = SessionUtil.getNode(workspace, path);
-            updateActivationActions(page, actionbar);
+            // if it's a leaf recursive activation should not be available.
+            if (isLeaf(page)) {
+                actionbar.disable("activateRecursive");
+            }
         }
     }
 
@@ -96,15 +99,11 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
         dispatcher.subscribeTo(hostId);
     }
 
-    private void updateActivationActions(final Node node, final ActionbarPresenter actionbarPresenter) {
+    private boolean isLeaf(final Node node) {
         try {
-            // if it's a leaf recursive activation makes no sense
-            if (!NodeUtil.getNodes(node, NodeTypes.Page.NAME).iterator().hasNext()) {
-                actionbarPresenter.disable("activateRecursive");
-            }
+            return !NodeUtil.getNodes(node, NodeTypes.Page.NAME).iterator().hasNext();
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
-
     }
 }
