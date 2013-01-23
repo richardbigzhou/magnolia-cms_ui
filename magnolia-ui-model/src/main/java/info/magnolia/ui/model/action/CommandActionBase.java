@@ -68,8 +68,7 @@ public abstract class CommandActionBase<D extends CommandActionDefinition> exten
     /**
      * Builds a map of parameters which will be passed to the current command for execution.
      * Called by the constructor. Default implementation returns a map containing the parameters defined at {@link CommandActionDefinition#getParams()}.
-     * It also adds the following parameters unless already defined in the configuration
-     * *
+     * It also adds the following parameters with values retrieved from the passed node, unless those parameters are already defined in the {@link CommandActionDefinition} bound to this action.
      * <ul>
      * <li>Context.ATTRIBUTE_REPOSITORY = current node's workspace name
      * <li>Context.ATTRIBUTE_UUID = current node's identifier
