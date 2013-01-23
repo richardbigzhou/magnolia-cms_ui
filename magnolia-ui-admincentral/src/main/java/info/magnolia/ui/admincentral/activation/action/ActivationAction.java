@@ -37,6 +37,7 @@ import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.chain.Command;
 import info.magnolia.module.activation.commands.ActivationCommand;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.action.CommandActionBase;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -47,7 +48,7 @@ import org.slf4j.LoggerFactory;
 /**
  * UI action that allows to activate a single page (node) or recursively with all its sub-nodes depending on the value of {@link ActivationActionDefinition#isRecursive()}.
  */
-public class ActivationAction extends BaseActivationAction<ActivationActionDefinition> {
+public class ActivationAction extends CommandActionBase<ActivationActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(ActivationAction.class);
 
@@ -66,7 +67,7 @@ public class ActivationAction extends BaseActivationAction<ActivationActionDefin
         }
         try {
             final ActivationCommand activationCommand = (ActivationCommand) command;
-            activationCommand.setRecursive(((ActivationActionDefinition)getDefinition()).isRecursive());
+            activationCommand.setRecursive(getDefinition().isRecursive());
 
             log.debug("Is activation recursive ? {}", activationCommand.isRecursive());
 

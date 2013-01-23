@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.activation.action;
 
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.action.CommandActionBase;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -43,7 +44,7 @@ import javax.jcr.Node;
 /**
  * UI action that allows to deactivate a single page (node).
  */
-public class DeactivationAction extends BaseActivationAction<DeactivationActionDefinition> {
+public class DeactivationAction extends CommandActionBase<DeactivationActionDefinition> {
 
     @Inject
     public DeactivationAction(final DeactivationActionDefinition definition, final Node node, final CommandsManager commandsManager) {
