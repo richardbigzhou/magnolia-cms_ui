@@ -17,7 +17,7 @@ import java.util.Set;
  * tested/common options, or just set the options using a JavaScript/JSON string as you prefer.
  */
 public class CKEditorConfig implements java.io.Serializable {
-	private static final long serialVersionUID = -5370810062495172963L;
+	private static final long serialVersionUID = 5966138001983585432L;
 
 	// If this is set, we'll just use it and ignore everything else.
 	private String inPageConfig;
@@ -54,7 +54,6 @@ public class CKEditorConfig implements java.io.Serializable {
 	private String bodyClass = null;
 	private String skin = null;
 	private Boolean toolbarStartupExpanded = null;
-	private LinkedList<String> protectedSource = null;
 	private LinkedList<String> templates_files = null;
 	private Boolean templates_replaceContent = null;
 	
@@ -83,7 +82,10 @@ public class CKEditorConfig implements java.io.Serializable {
 	private Boolean fullPage = null;
 	
 	private String language = null;
-        
+	
+	// Sent separately since cannot make it work with inPageConfig
+	private LinkedList<String> protectedSource = null;
+
 	
 	public CKEditorConfig() {
 	}
@@ -310,17 +312,6 @@ public class CKEditorConfig implements java.io.Serializable {
 				appendJSONConfig(config, extra);
 			}
 		}
-                
-		if ( protectedSource != null ) {
-			StringBuilder buf = new StringBuilder();
-			ListIterator<String> iter = protectedSource.listIterator();
-			while( iter.hasNext() ) {
-				if ( buf.length() > 0 )
-					buf.append(" , ");
-				buf.append(iter.next());
-			}
-			appendJSONConfig(config, "protectedSource : [ " + buf.toString() + " ]");
-		}
 
 		config.append(" }");
 		return config.toString();
@@ -418,32 +409,22 @@ public class CKEditorConfig implements java.io.Serializable {
 
 	
 	/**
-	 * This enables the 'tableresize' plugin. This is generally useful, so we make it stand out compared to other 
-	 * optional extra plugins.
-	 */
-	public void enableTableResizePlugin() {
-		addToExtraPlugins("tableresize"); 
-	}
-
-	/**
 	 * Convenience method for the Open eSignForms project sponsors to set the plugins and configuration in a common way needed.
 	 */
 	public void setupForOpenESignForms(String contextPath, String ckeditorContextIdInSession, String bodyCssClass, String... extraCssFiles) {
-		addCustomToolbarLine("{ name: 'styles', items: ['Styles','Format','Bold','Italic','Underline','TextColor','BGColor'] }," +
-				             "{ name: 'fonts', items: ['Font','FontSize'] }," +
-				             "{ name: 'align', items: ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'] }");
-		addCustomToolbarLine("{ name: 'clipboard', items: ['Cut','Copy','Paste','PasteText','PasteFromWord'] }," +
-							 "{ name: 'search', items: ['Find','Replace'] }," +
-							 "{ name: 'undo', items: ['Undo','Redo'] }," +
-							 "{ name: 'lists', items: ['NumberedList','BulletedList'] }," +
-							 "{ name: 'indent', items: ['Outdent','Indent','CreateDiv'] }," +
-							 "{ name: 'table', items: ['Table','HorizontalRule','PageBreak','SpecialChar'] }," +
-							 "{ name: 'links', items: ['Image','Link'] }," +
-							 "{ name: 'source', items: ['Source','ShowBlocks'] }");
-		setToolbarCanCollapse(false);
-		
-		enableTableResizePlugin();
-		
+		addCustomToolbarLine("{ items: ['Styles','Format','Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat'] }," +
+							 "{ items: ['TextColor','BGColor'] }," +
+	                         "{ items: ['Font','FontSize'] }," +
+	             			 "{ items: ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'] }"); // all wrong icons
+		addCustomToolbarLine("{ items: ['Cut','Copy','Paste','PasteText','PasteFromWord'] }," + // paste word wrong
+				 			 "{ items: ['Find','Replace'] }," + 
+				 			 "{ items: ['Undo','Redo'] }," +
+				 			 "{ items: ['NumberedList','BulletedList'] }," + 
+				 			 "{ items: ['Outdent','Indent','CreateDiv'] }," + 
+				 			 "{ items: ['Table','HorizontalRule','PageBreak','SpecialChar'] }," +
+				 			 "{ items: ['Image','Link','Unlink'] }," +
+				 			 "{ items: ['Source','ShowBlocks'] }");
+
 		setHeight("300px");
 		setBaseFloatZIndex(32000);
 		setTabSpaces(4);
@@ -541,6 +522,7 @@ public class CKEditorConfig implements java.io.Serializable {
 
     /**
      * Possible skins:
+     * moono The default skin for CKEditor 4.x
      * kama The default skin for CKEditor 3.x
      * office2003
      * v2 
@@ -905,6 +887,14 @@ public class CKEditorConfig implements java.io.Serializable {
     	if ( ! protectedSource.contains(regex) ) {
     		protectedSource.add(regex);
     	}
+    }
+    
+    public boolean hasProtectedSource() {
+    	return protectedSource != null && protectedSource.size() > 0;
+    }
+    
+    public List<String> getProtectedSource() {
+		return protectedSource;
     }
 
 }
