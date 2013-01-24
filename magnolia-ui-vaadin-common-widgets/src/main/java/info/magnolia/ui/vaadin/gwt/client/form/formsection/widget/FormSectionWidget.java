@@ -95,12 +95,15 @@ public class FormSectionWidget extends FlowPanel {
             fieldSection = new FormFieldWrapper();
             sections.put(w, fieldSection);
             fieldSection.setField(w);
-            add(fieldSection, fieldSet);
         } else {
             fieldSection = (FormFieldWrapper) w;
         }
+
         super.insert(fieldSection, beforeIndex);
 
+        if (beforeIndex == 0) {
+            getElement().insertFirst(fieldSet);
+        }
     }
 
     @Override
