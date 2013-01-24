@@ -56,7 +56,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test case for {@link AbstractActionFactory}.
+ * Test case for CommandActionBaseTest.
  */
 public class CommandActionBaseTest {
     private String website =
@@ -139,6 +139,31 @@ public class CommandActionBaseTest {
         assertEquals("foo", params.get(Context.ATTRIBUTE_REPOSITORY));
         assertEquals("/bar", params.get(Context.ATTRIBUTE_PATH));
         assertEquals("123", params.get(Context.ATTRIBUTE_UUID));
+    }
+
+    @Test
+    public void testGetParamsReturnsOtherParamsFromDefinition() throws Exception {
+
+        // GIVEN
+        CommandActionDefinition definition = new CommandActionDefinition();
+        definition.getParams().put("abc", "bar");
+        definition.getParams().put("def", "baz");
+        definition.getParams().put("ghi", "456");
+
+        TestAction action = new TestAction(definition, session.getNode("/parent/sub"), Components.getComponent(CommandsManager.class));
+
+        // WHEN
+        Map<String, Object> params = action.getParams();
+
+        // THEN
+        assertEquals("bar", params.get("abc"));
+        assertEquals("baz", params.get("def"));
+        assertEquals("456", params.get("ghi"));
+
+        // ensure the default params are returned as well.
+        assertEquals("website", params.get(Context.ATTRIBUTE_REPOSITORY));
+        assertEquals("/parent/sub", params.get(Context.ATTRIBUTE_PATH));
+        assertEquals("2", params.get(Context.ATTRIBUTE_UUID));
     }
 
     @Test
