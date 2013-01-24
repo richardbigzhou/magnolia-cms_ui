@@ -39,7 +39,6 @@ import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.ui.admincentral.legacy.MarkNodeAsDeletedCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,13 +70,6 @@ public class AdminCentralModuleVersionHandler extends DefaultModuleVersionHandle
                 "toURI",
                 "redirect:/.magnolia/pages/adminCentral.html",
                 "redirect:/.magnolia/admincentral"));
-
-        list.add(new ChangeAllPropertiesWithCertainValueTask(
-                "",
-                "",
-                RepositoryConstants.CONFIG,
-                "info.magnolia.module.admininterface.commands.MarkNodeAsDeletedCommand",
-                MarkNodeAsDeletedCommand.class.getName()));
 
         list.add(new IsModuleInstalledOrRegistered("Replace login security pattern",
                 "Replaces old login security pattern '/.resources/loginForm' (if present) with the new one '/.resources/defaultLoginForm'.",
