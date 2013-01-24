@@ -120,7 +120,6 @@ public class FileItemWrapperImpl implements FileItemWrapper {
                 jcrItem.getParent().removeChild(jcrItem);
                 return;
             }
-            data.setValue(new ByteArrayInputStream(binaryData));
         }
         jcrItem.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(StringUtils.substringBefore(fileName, "."));
         jcrItem.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).setValue(mimeType);
