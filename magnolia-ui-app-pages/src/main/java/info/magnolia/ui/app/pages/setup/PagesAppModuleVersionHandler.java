@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,9 +34,21 @@
 package info.magnolia.ui.app.pages.setup;
 
 import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.module.delta.BootstrapConditionally;
+import info.magnolia.module.delta.DeltaBuilder;
+import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 
 /**
  * Version handler for the pages app module.
  */
 public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
+
+    public PagesAppModuleVersionHandler() {
+        super();
+        register(DeltaBuilder.update("5.0", "Configuration update for Magnolia 5.0")
+                .addTask(new IsModuleInstalledOrRegistered("", "", "adminInterface",
+                        new BootstrapConditionally("Bootstrap activation commands", "Bootstraps the default activation and deletion commands which no longer reside under adminInterface.", "config.modules.ui-pages-app.commands.xml"))));
+    }
+
+
 }
