@@ -45,6 +45,7 @@ import java.util.Map.Entry;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
@@ -151,6 +152,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
     @Override
     public Property getItemProperty(Object id) {
         Object value;
+        int type = PropertyType.STRING;
         try {
             final Node jcrNode = getNodeFromRepository();
             if (!jcrNode.hasProperty((String) id)) {
@@ -160,14 +162,16 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
                     return null;
                 }
             } else {
-                value = PropertyUtil.getPropertyValueObject(jcrNode, (String) id);
+                javax.jcr.Property property = jcrNode.getProperty(String.valueOf(id));
+                value = PropertyUtil.getValueObject(property.getValue());
+                type = property.getType();
             }
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
-        DefaultProperty property = new DefaultProperty((String) id, value);
+        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty((String) id, type, value);
         // add PropertyChange Listener
-        property.addListener(this);
+        property.addValueChangeListener(this);
         return property;
     }
 
@@ -177,7 +181,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
     protected void addListenerIfNotYetSet(Property property, Property.ValueChangeListener listener) {
         // add PropertyChange Listener
         if (!((DefaultProperty) property).getListeners(ValueChangeEvent.class).contains(listener)) {
-            ((DefaultProperty) property).addListener(listener);
+            ((DefaultProperty) property).addValueChangeListener(listener);
         }
     }
 

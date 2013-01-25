@@ -58,19 +58,26 @@ public class DefaultPropertyUtil {
     private static final Logger log = LoggerFactory.getLogger(DefaultPropertyUtil.class);
 
     /**
-     * Create a new DefaultProperty.
+     * Create a new DefaultProperty by passing the value as a String.
      * If fieldType is define, create a Typed Value.
-     * If defaultValue is defined, initialize the Field with the default value.
      * If fieldType is not defined, create a String Value.
+     * If stringValue is defined, create a typed value based ont fieldType.
      */
-    public static DefaultProperty newDefaultProperty(String name, String fieldType, String defaultValue) throws NumberFormatException {
+    public static DefaultProperty newDefaultProperty(String name, String fieldType, String stringValue) throws NumberFormatException {
         Object value = null;
         try {
-            value = createTypedValue(fieldType, defaultValue);
+            value = createTypedValue(fieldType, stringValue);
         } catch (Exception e) {
             log.error("Exception during Value creation", e);
             value = "";
         }
+        return new DefaultProperty(name, value, getFieldTypeClass(fieldType));
+    }
+
+    /**
+     * Create a DefaultProperty based on types defined in {@link PropertyType}.
+     */
+    public static DefaultProperty newDefaultProperty(String name, int fieldType, Object value) throws NumberFormatException {
         return new DefaultProperty(name, value, getFieldTypeClass(fieldType));
     }
 
@@ -86,33 +93,49 @@ public class DefaultPropertyUtil {
             return defaultValue;
         } else if (defaultValue != null) {
             int valueType = PropertyType.valueFromName(fieldType);
+
             switch (valueType) {
-            case PropertyType.STRING:
-                return defaultValue;
-            case PropertyType.BINARY:
-                return null;
-            case PropertyType.LONG:
-                return Long.decode(defaultValue);
-            case PropertyType.DOUBLE:
-                return Double.valueOf(defaultValue);
-            case PropertyType.DATE:
-                try {
-                    return new SimpleDateFormat(DateUtil.YYYY_MM_DD).parse(defaultValue);
-                } catch (ParseException e) {
-                    throw new IllegalArgumentException(e);
+                case PropertyType.STRING:
+                    return defaultValue;
+                case PropertyType.BINARY:
+                    return null;
+                case PropertyType.LONG:
+                    return Long.decode(defaultValue);
+                case PropertyType.DOUBLE:
+                    return Double.valueOf(defaultValue);
+                case PropertyType.DATE:
+                    try {
+                        return new SimpleDateFormat(DateUtil.YYYY_MM_DD).parse(defaultValue);
+                    } catch (ParseException e) {
+                        throw new IllegalArgumentException(e);
+                    }
+                case PropertyType.BOOLEAN:
+                    return BooleanUtils.toBoolean(defaultValue);
+                case PropertyType.DECIMAL:
+                    return BigDecimal.valueOf(Long.decode(defaultValue));
+                default: {
+                    String msg = "Unsupported property type " + PropertyType.nameFromValue(valueType);
+                    log.error(msg);
+                    throw new IllegalArgumentException(msg);
                 }
-            case PropertyType.BOOLEAN:
-                return BooleanUtils.toBoolean(defaultValue);
-            case PropertyType.DECIMAL:
-                return BigDecimal.valueOf(Long.decode(defaultValue));
-            default: {
-                String msg = "Unsupported property type " + PropertyType.nameFromValue(valueType);
-                log.error(msg);
-                throw new IllegalArgumentException(msg);
-            }
             }
         }
         return null;
+    }
+
+    /**
+     * Return the related Class for a desired Type by String. Using {@link PropertyType} to read the type from the String.
+     * If no fieldType is defined, the default is String.
+     *
+     * @throws IllegalArgumentException if the Type is not supported.
+     */
+    public static Class<?> getFieldTypeClass(String fieldType) {
+        if (StringUtils.isNotEmpty(fieldType)) {
+            int valueType = PropertyType.valueFromName(fieldType);
+            return getFieldTypeClass(valueType);
+        } else {
+            return String.class;
+        }
     }
 
     /**
@@ -121,10 +144,9 @@ public class DefaultPropertyUtil {
      *
      * @throws IllegalArgumentException if the Type is not supported.
      */
-    public static Class<?> getFieldTypeClass(String fieldType) {
-        if (StringUtils.isNotEmpty(fieldType)) {
-            int valueType = PropertyType.valueFromName(fieldType);
-            switch (valueType) {
+    public static Class<?> getFieldTypeClass(int fieldType) {
+        if (fieldType > 0) {
+            switch (fieldType) {
             case PropertyType.STRING:
                 return String.class;
             case PropertyType.BINARY:
@@ -141,7 +163,7 @@ public class DefaultPropertyUtil {
             case PropertyType.DECIMAL:
                 return BigDecimal.class;
             default:
-                throw new IllegalArgumentException("Unsupported property type " + PropertyType.nameFromValue(valueType));
+                throw new IllegalArgumentException("Unsupported property type " + PropertyType.nameFromValue(fieldType));
             }
         } else {
             return String.class;
