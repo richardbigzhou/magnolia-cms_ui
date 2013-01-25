@@ -71,14 +71,14 @@ public class DefaultPropertyUtil {
             log.error("Exception during Value creation", e);
             value = "";
         }
-        return new DefaultProperty(name, value, getFieldTypeClass(fieldType));
+        return new DefaultProperty(name, getFieldTypeClass(fieldType), value);
     }
 
     /**
      * Create a DefaultProperty based on types defined in {@link PropertyType}.
      */
     public static DefaultProperty newDefaultProperty(String name, int fieldType, Object value) throws NumberFormatException {
-        return new DefaultProperty(name, value, getFieldTypeClass(fieldType));
+        return new DefaultProperty(name, getFieldTypeClass(fieldType), value);
     }
 
     /**

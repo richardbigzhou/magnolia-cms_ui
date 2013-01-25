@@ -57,7 +57,7 @@ public class EnabledField extends CheckBoxFieldBuilder {
         if (old != null) {
             stringValue = old.toString();
         }
-        DefaultProperty prop = new DefaultProperty("enabled", Boolean.parseBoolean(stringValue), Boolean.class);
+        DefaultProperty prop = new DefaultProperty("enabled", Boolean.class, Boolean.parseBoolean(stringValue));
         item.removeItemProperty("enabled");
         item.addItemProperty("enabled", prop);
         return prop;

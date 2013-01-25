@@ -155,7 +155,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             Node parentNode = session.getNode(path);
 
             final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, NodeTypes.Component.NAME);
-            DefaultProperty<String> property = new DefaultProperty<String>(ModelConstants.JCR_NAME, "0", String.class);
+            DefaultProperty<String> property = new DefaultProperty<String>(ModelConstants.JCR_NAME, String.class, "0");
             item.addItemProperty(ModelConstants.JCR_NAME, property);
 
             // perform custom chaining of dialogs

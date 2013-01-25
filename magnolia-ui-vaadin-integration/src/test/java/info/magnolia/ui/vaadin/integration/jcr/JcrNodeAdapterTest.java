@@ -78,7 +78,7 @@ public class JcrNodeAdapterTest {
     public void testAddItemProperty() throws Exception {
         // GIVEN
         final Node underlyingNode = session.getRootNode().addNode("underlying");
-        DefaultProperty<String> property = new DefaultProperty<String>(propertyName, propertyValue, String.class);
+        DefaultProperty<String> property = new DefaultProperty<String>(propertyName, String.class, propertyValue);
         final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
         // WHEN
