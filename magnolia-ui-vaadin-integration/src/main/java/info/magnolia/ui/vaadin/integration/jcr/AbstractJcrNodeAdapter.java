@@ -246,6 +246,9 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
      * can refer to node property (like name, title) or node.MetaData property like
      * (MetaData/template). Also handle the specific case of node renaming. If property JCR_NAME is
      * present, Rename the node.
+     * In case the value has changed to null, it will be removed. When being called from {@link #updateProperties}
+     * we have to make sure it is removed before running in here as {@link #removeItemProperty(java.lang.Object)}
+     * is manipulating the {@link #changedProperties} list directly.
      */
     @Override
     protected void updateProperty(Item item, String propertyId, Property property) {
@@ -281,7 +284,8 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
                     log.error("Could not set JCR Property", e);
                 }
             } else {
-                log.debug("Property '{}' has a null value: Will not be stored", propertyId);
+                removeItemProperty(propertyId);
+                log.debug("Property '{}' has a null value: Will be removed", propertyId);
             }
         }
     }
