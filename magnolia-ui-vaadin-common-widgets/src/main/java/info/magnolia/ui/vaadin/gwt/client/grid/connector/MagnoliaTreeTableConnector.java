@@ -53,6 +53,7 @@ public class MagnoliaTreeTableConnector extends TreeTableConnectorPatched {
     @Override
     public void postLayout()  {
         getWidget().updateWidth();
+        getWidget().updateHeight();
         super.postLayout();
     }
 }

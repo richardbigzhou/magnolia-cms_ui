@@ -60,6 +60,7 @@ public class MagnoliaTableConnector extends TableConnectorPatched {
     @Override
     public void postLayout() {
         getWidget().updateWidth();
+        getWidget().updateHeight();
         super.postLayout();
     }
 }
