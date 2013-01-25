@@ -49,4 +49,10 @@ public class MagnoliaTreeTableConnector extends TreeTableConnectorPatched {
     public VMagnoliaTreeTable getWidget() {
         return (VMagnoliaTreeTable) super.getWidget();
     }
+    
+    @Override
+    public void postLayout()  {
+        getWidget().updateWidth();
+        super.postLayout();
+    }
 }
