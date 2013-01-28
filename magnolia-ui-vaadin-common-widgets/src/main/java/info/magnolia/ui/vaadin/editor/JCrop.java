@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.vaadin.editor;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.shared.SelectionArea;
+import info.magnolia.ui.vaadin.editor.CroppableImage.JCropReleaseEvent;
+import info.magnolia.ui.vaadin.editor.CroppableImage.JCropSelectionEvent;
 import info.magnolia.ui.vaadin.gwt.client.jcrop.JCropState;
-
-import java.lang.reflect.Method;
+import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,10 +45,8 @@ import org.json.JSONObject;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.server.AbstractJavaScriptExtension;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.JavaScriptFunction;
-import com.vaadin.util.ReflectTools;
 
 /**
  * JCropField.
@@ -57,105 +55,53 @@ import com.vaadin.util.ReflectTools;
 @StyleSheet("css/jquery.Jcrop.css")
 public class JCrop extends AbstractJavaScriptExtension {
 
-    /**
-     * JCropEvent.
-     */
-    public static class JCropEvent extends Component.Event {
-
-        private final SelectionArea area;
-
-        public JCropEvent(Component source, SelectionArea area) {
-            super(source);
-            this.area = area;
-        }
-
-        public SelectionArea getArea() {
-            return area;
-        }
-
+    @Override
+    public CroppableImage getParent() {
+        return (CroppableImage)super.getParent();
     }
-
-    /**
-     * JCropSelectionEvent.
-     */
-    public static class JCropSelectionEvent extends JCropEvent {
-        public JCropSelectionEvent(Component source, SelectionArea area) {
-            super(source, area);
-        }
-    }
-
-    /**
-     * JCropReleaseEvent.
-     */
-    public static class JCropReleaseEvent extends JCropEvent {
-        public JCropReleaseEvent(Component source, SelectionArea area) {
-            super(source, area);
-        }
-    }
-
-    /**
-     * SelectionListener.
-     */
-    public interface SelectionListener {
-        public static String EVENT_ID = "jcrop_sl";
-        public static Method EVENT_METHOD = ReflectTools.findMethod(SelectionListener.class, "onSelected", JCropSelectionEvent.class);
-
-        void onSelected(JCropSelectionEvent e);
-    }
-
-    /**
-     * ReleaseListener.
-     */
-    public interface ReleaseListener {
-        public static String EVENT_ID = "jcrop_rl";
-        public static Method EVENT_METHOD = ReflectTools.findMethod(ReleaseListener.class, "onRelease", JCropReleaseEvent.class);
-
-        void onRelease(JCropReleaseEvent e);
-    }
-
-    public void addSelectionListener(SelectionListener listener) {
-        addListener(SelectionListener.EVENT_ID, JCropSelectionEvent.class, listener, SelectionListener.EVENT_METHOD);
-    }
-
-    public void addReleaseListener(ReleaseListener listener) {
-        addListener(ReleaseListener.EVENT_ID, JCropReleaseEvent.class, listener, ReleaseListener.EVENT_METHOD);
-    }
-
-    public JCrop() {
+    
+    public JCrop(JCropHandler handler) {
         addFunction("doOnSelect", new JavaScriptFunction() {
             @Override
             public void call(JSONArray args) throws JSONException {
-                fireEvent(new JCropSelectionEvent((Component) getParent(), AreaFromJSON(args.getJSONObject(0))));
+                SelectionArea area = AreaFromJSON(args.getJSONObject(0));
+                getState(false).selection = area;
+                getParent().fireEvent(new JCropSelectionEvent(getParent(), area));
             }
         });
-
+        
         addFunction("doOnRelease", new JavaScriptFunction() {
             @Override
             public void call(JSONArray args) throws JSONException {
-                fireEvent(new JCropReleaseEvent((Component) getParent(), AreaFromJSON(args.getJSONObject(0))));
+                getParent().fireEvent(new JCropReleaseEvent(getParent()));
             }
         });
     }
-
+    
     protected SelectionArea AreaFromJSON(JSONObject json) {
         try {
-            return new SelectionArea(json.getInt("x"), json.getInt("y"), json.getInt("w"), json.getInt("w"));
+            return new SelectionArea(json.getInt("x"), json.getInt("y"), json.getInt("w"), json.getInt("h"));
         } catch (JSONException e) {
             return new SelectionArea();
         }
     }
-
+    
     @Override
     public void attach() {
         super.attach();
-        ((Component) getParent()).addStyleName("croppable" + getConnectorId());
+        getParent().addStyleName("croppable" + getConnectorId()); 
     }
 
+    @Override
+    protected JCropState getState(boolean markAsDirty) {
+        return (JCropState)super.getState(markAsDirty);
+    }
+    
     @Override
     public JCropState getState() {
         return (JCropState) super.getState();
     }
-
+    
     @Override
     protected Class<Image> getSupportedParentType() {
         return Image.class;
@@ -164,16 +110,52 @@ public class JCrop extends AbstractJavaScriptExtension {
     public void setAspectRatio(double aspectRatio) {
         getState().aspectRatio = aspectRatio;
     }
-
-    public void setCropEnabled(boolean isOn) {
-        callFunction(isOn ? "on" : "off");
+    
+    public void animateTo(SelectionArea area) {
+        callFunction("animateTo", new JSONObject(area));
     }
-
+    
+    public boolean isCropVisible() {
+        return getState().isVisible;
+    }
+    
+    public void setCropVisible(boolean isVisible) {
+        getState().isVisible = isVisible;
+    }
+    
     public void enable() {
         callFunction("enable");
     }
 
     public void disable() {
         callFunction("disable");
+    }
+
+    public void setBackgroundColor(String color) {
+        getState().backgroundColor = color;
+    }
+
+    public void setBackgroundOpacity(double opacity) {
+        getState().backgroundOpacity = opacity;
+    }
+
+    public void setMinHeight(int height) {
+        getState().minHeight = height;
+    }
+
+    public void setMaxHeight(int height) {
+        getState().maxHeight = height;
+    }
+
+    public void setMaxWidth(int width) {
+        getState().maxWidth = width;
+    }
+
+    public void setMinWidth(int width) {
+        getState().minWidth = width;
+    }
+
+    public void setEnabled(boolean enabled) {
+        getState().enabled = enabled;
     }
 }

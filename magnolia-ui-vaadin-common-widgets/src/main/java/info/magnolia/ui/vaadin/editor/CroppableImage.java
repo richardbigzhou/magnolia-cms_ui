@@ -33,48 +33,120 @@
  */
 package info.magnolia.ui.vaadin.editor;
 
-import info.magnolia.ui.vaadin.editor.JCrop.ReleaseListener;
-import info.magnolia.ui.vaadin.editor.JCrop.SelectionListener;
+import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
 
+import java.lang.reflect.Method;
+import java.util.EventObject;
+
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Image;
+import com.vaadin.util.ReflectTools;
 
 /**
  * CroppableImage.
  */
-public class CroppableImage extends Image {
-
-    private final JCrop jcrop = new JCrop();
-
+public final class CroppableImage extends Image implements JCropHandler {
+    
+    private final JCrop jcrop;
+    
     public CroppableImage() {
+        this.jcrop = new JCrop(this);
         addExtension(jcrop);
     }
-
-    public void setAspectRatio(double aspectRatio) {
-        jcrop.setAspectRatio(aspectRatio);
+    
+    public JCrop getJcrop() {
+        return jcrop;
     }
 
-    public void setCropEnabled(boolean isEnabled) {
-        jcrop.setCropEnabled(isEnabled);
+    @Override
+    public void fireEvent(EventObject event) {
+        super.fireEvent(event);
     }
-
+    
+    @Override
     public void addSelectionListener(SelectionListener listener) {
-        jcrop.addSelectionListener(listener);
+        addListener(SelectionListener.EVENT_ID, JCropSelectionEvent.class, listener, SelectionListener.EVENT_METHOD);
     }
-
+    
+    @Override
+    public void removeSelectionListener(SelectionListener listener) {
+        removeListener(SelectionListener.EVENT_ID, JCropSelectionEvent.class, listener);
+    }
+    
+    @Override
     public void addReleaseListener(ReleaseListener listener) {
-        jcrop.addReleaseListener(listener);
+        addListener(ReleaseListener.EVENT_ID, JCropReleaseEvent.class, listener, ReleaseListener.EVENT_METHOD);
+    }
+    
+    @Override
+    public void removeReleaseListener(ReleaseListener listener) {
+        removeListener(ReleaseListener.EVENT_ID, JCropReleaseEvent.class, listener);
+    }
+    
+    /**
+     * JCropEvent.
+     */
+    public static class JCropEvent extends Component.Event {
+        
+        private final SelectionArea area;
+        
+        public JCropEvent(Component source, SelectionArea area) {
+            super(source);
+            this.area = area;
+        }
+        
+        public SelectionArea getArea() {
+            return area;
+        }
+        
+    }
+    
+    /**
+     * JCropSelectionEvent.
+     */
+    public static class JCropSelectionEvent extends JCropEvent {
+        
+        public JCropSelectionEvent(Component source, SelectionArea area) {
+            super(source, area);
+        }
     }
 
-    public void enable() {
-        jcrop.enable();
+    /**
+     * JCropReleaseEvent.
+     */
+    public static class JCropReleaseEvent extends Component.Event {
+        public JCropReleaseEvent(Component source) {
+            super(source);
+        }
     }
 
-    public void disable() {
-        jcrop.disable();
+    /**
+     * SelectionListener.
+     */
+    public interface SelectionListener {
+        public static String EVENT_ID = "jcrop_sl";
+        public static Method EVENT_METHOD = 
+                ReflectTools.findMethod(SelectionListener.class, "onSelected", JCropSelectionEvent.class);
+        void onSelected(JCropSelectionEvent e);
+    }
+    
+    /**
+     * ReleaseListener.
+     */
+    public interface ReleaseListener {
+        public static String EVENT_ID = "jcrop_rl";
+        public static Method EVENT_METHOD = 
+                ReflectTools.findMethod(ReleaseListener.class, "onRelease", JCropReleaseEvent.class);
+        void onRelease(JCropReleaseEvent e);
     }
 
-    public boolean isCropEnabled() {
-        return false;
+    @Override
+    public void handleSelection(SelectionArea area) {
+        
     }
 
+    @Override
+    public void handleRelease() {
+        
+    }
 }

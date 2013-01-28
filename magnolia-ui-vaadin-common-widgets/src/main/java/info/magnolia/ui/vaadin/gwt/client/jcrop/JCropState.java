@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.jcrop;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.shared.SelectionArea;
+import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
 
 import com.vaadin.shared.JavaScriptExtensionState;
 
@@ -41,16 +41,19 @@ import com.vaadin.shared.JavaScriptExtensionState;
  * JCropState.
  */
 public class JCropState extends JavaScriptExtensionState {
-    public double aspectRatio;
-    public int minHeight;
-    public int maxHeight;
-
-    public int minWidth;
-    public int maxWidth;
-
-    public String backgroundColor;
-    public String backgroundOpacity;
-
-    public SelectionArea selection;
-
+    public double aspectRatio = -1d;
+    
+    public int minHeight = 0;
+    public int maxHeight = 0;
+    
+    public int minWidth = 0;
+    public int maxWidth = 0;
+    
+    public String backgroundColor = "black";
+    public double backgroundOpacity = 0.6d;
+    
+    public boolean isVisible = true;
+    
+    public SelectionArea selection = null;
+   
 }

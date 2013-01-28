@@ -31,33 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.connector;
+package info.magnolia.ui.vaadin.editor;
 
-import com.vaadin.shared.AbstractComponentState;
-import com.vaadin.shared.annotations.DelegateToWidget;
+import info.magnolia.ui.vaadin.editor.CroppableImage.ReleaseListener;
+import info.magnolia.ui.vaadin.editor.CroppableImage.SelectionListener;
+import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
 
 /**
- * ImageSelectorState.
+ * JCropHandler.
  */
-public class ImageSelectorState extends AbstractComponentState {
+public interface JCropHandler {
 
-    private static final int DEFAULT_MIN_DIMENSION = 200;
-
-    public boolean isCropping = false;
-
-    @DelegateToWidget
-    public int minDimension = DEFAULT_MIN_DIMENSION;
-
-    @DelegateToWidget
-    public int marginsPx = 20;
-
-    @DelegateToWidget
-    public boolean isCropAspectRatioLocked = false;
-
-    @DelegateToWidget
-    public String fileName = "";
-
-    @DelegateToWidget
-    public String mimeType = "";
-
+    void handleSelection(SelectionArea area);
+    
+    void handleRelease();
+    
+    void addReleaseListener(ReleaseListener listener);
+    
+    void addSelectionListener(SelectionListener listener);
+    
+    void removeSelectionListener(SelectionListener listener);
+    
+    void removeReleaseListener(ReleaseListener listener);
 }

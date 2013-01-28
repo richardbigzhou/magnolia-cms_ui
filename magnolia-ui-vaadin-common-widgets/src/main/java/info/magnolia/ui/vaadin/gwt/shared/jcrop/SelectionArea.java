@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.shared;
+package info.magnolia.ui.vaadin.gwt.shared.jcrop;
 
 import java.io.Serializable;
 
@@ -47,8 +47,7 @@ public class SelectionArea implements Serializable {
 
     private int height;
 
-    public SelectionArea() {
-    }
+    public SelectionArea() {}
 
     public SelectionArea(int left, int top, int width, int height) {
         this.top = top;

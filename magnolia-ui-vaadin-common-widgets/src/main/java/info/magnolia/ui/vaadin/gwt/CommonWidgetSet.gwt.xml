@@ -4,9 +4,8 @@
 	<inherits name="com.vaadin.DefaultWidgetSet" />
 
 	<!--<inherits name="org.vaadin.autoreplacefield.AutoreplacefieldWidgetset" />
-	  <inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
+	  <inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />-->
 
-	<inherits name='org.vaadin.artur.superdevmode.SuperdevmodeaddonWidgetset' />-->
     <inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
 	<inherits name='com.googlecode.mgwt.dom.DOM' />
 	<inherits name='com.googlecode.mgwt.ui.UI' />
@@ -16,8 +15,9 @@
 	<inherits name="com.google.gwt.resources.Resources" />
     <inherits name="org.vaadin.openesignforms.ckeditor.widgetset.VaadinCKEditorWidgetset" />
 
-    <stylesheet src="imageeditor/styles.css"/>
-    <stylesheet src="lightbox/lightbox.css"/>    
+    <stylesheet src="jcrop/jquery.Jcrop.css"/>
+    <stylesheet src="lightbox/lightbox.css"/>
+        
 	<replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariTouchWidgetImplProxy">
 		<when-type-is class="com.googlecode.mgwt.ui.client.widget.touch.TouchWidgetImpl" />
 		<all>
