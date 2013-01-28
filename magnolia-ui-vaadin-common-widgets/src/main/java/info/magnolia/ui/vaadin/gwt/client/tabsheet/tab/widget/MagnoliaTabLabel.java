@@ -70,8 +70,6 @@ public class MagnoliaTabLabel extends SimplePanel {
     public MagnoliaTabLabel() {
         super(DOM.createElement("li"));
 
-        getElement().addClassName("clearfix");
-
         indicatorsWrapper.addClassName("indicators-wrapper");
         textWrapper.setClassName("tab-title");
         getElement().appendChild(textWrapper);
