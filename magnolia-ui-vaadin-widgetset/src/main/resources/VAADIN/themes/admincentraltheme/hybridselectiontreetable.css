@@ -3,8 +3,8 @@
 	background:none repeat scroll 0 0 #ffffff;
 }
 
-.v-magnolia-table .v-table {
-	background-color:#ffffff;
+.v-magnolia-table .v-table-table {
+	font-family:Verdana, sans-serif;
 	font-size:12px;
 }
 
@@ -78,7 +78,7 @@
 	vertical-align: middle;
 }
 
-.v-magnolia-table .v-table-header td:FIRST-CHILD span {
+.v-magnolia-table .v-table-header td:first-child span {
 	padding-left: 30px;
 }
 
@@ -90,8 +90,9 @@
 }
 
 .v-magnolia-table tr.v-selected .v-table-cell-content {
-	background:#666666;
-	color:#ffffff;
+	background:#666;
+	color:#fff;
+	border-bottom:1px solid transparent;
 }
 
 *:focus {
@@ -125,11 +126,11 @@
 	height: 20px;
 }
 
-.v-magnolia-table .v-table-row:HOVER, .v-table-row-odd:HOVER {
+.v-magnolia-table .v-table-row:hover, .v-table-row-odd:hover {
 	background-color: #EFEFEF;
 }
 
-.v-magnolia-table .v-selected:HOVER {
+.v-magnolia-table .v-selected:hover {
 	background-color: #666666;
 }
 
