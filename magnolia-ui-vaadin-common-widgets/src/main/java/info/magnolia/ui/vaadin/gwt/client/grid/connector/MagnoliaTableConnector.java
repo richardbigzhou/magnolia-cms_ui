@@ -56,4 +56,11 @@ public class MagnoliaTableConnector extends TableConnectorPatched {
         super.updateFromUIDL(uidl, client);
         getWidget().addStyleForMobile();
     }
+
+    @Override
+    public void postLayout() {
+        getWidget().updateWidth();
+        getWidget().updateHeight();
+        super.postLayout();
+    }
 }

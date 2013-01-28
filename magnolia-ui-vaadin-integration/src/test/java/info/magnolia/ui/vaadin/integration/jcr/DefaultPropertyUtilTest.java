@@ -72,6 +72,26 @@ public class DefaultPropertyUtilTest {
     }
 
     @Test
+    public void createDefaultPropertyByPropertyType() {
+        //WHEN
+        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty("property_name", PropertyType.LONG, 123);
+
+        //THEN
+        assertEquals(123, property.getValue());
+        assertEquals(Long.class, property.getType());
+    }
+
+    @Test
+    public void createDefaultPropertyByPropertyTypeWithNullValue() {
+        //WHEN
+        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty("property_name", PropertyType.LONG, null);
+
+        //THEN
+        assertEquals(null, property.getValue());
+        assertEquals(Long.class, property.getType());
+    }
+
+    @Test
     public void testGetFieldTypeClass() {
         assertEquals(String.class, DefaultPropertyUtil.getFieldTypeClass(""));
         assertEquals(String.class, DefaultPropertyUtil.getFieldTypeClass(null));
