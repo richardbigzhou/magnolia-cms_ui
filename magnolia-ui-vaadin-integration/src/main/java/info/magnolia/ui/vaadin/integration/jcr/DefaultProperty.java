@@ -50,26 +50,13 @@ public class DefaultProperty<T> extends AbstractProperty<T> {
     private String propertyName;
 
     /**
-     * Constructor which reads the type from the value.
-     * Do not use this constructor. As null values are actually wanted to not propagate empty fields to jcr.
-     * Resolving the class type from the value can cause problems with converters.
-     *
-     * @throws IllegalArgumentException if value is null.
+     * Creates a typed DefaultProperty based on the properties name, it's type value and the actual class type.
+     * Value can be null.
      */
-    @Deprecated
-    public DefaultProperty(String propertyName, T value) {
+    public DefaultProperty(String propertyName, Class<T> type, T value) {
         this.propertyName = propertyName;
-        if (value == null) {
-            throw new IllegalArgumentException("Null value passed to wrong constructor. This has been deprecated.");
-        }
-        this.value = value;
-        this.type = (Class<T>) value.getClass();
-    }
-
-    public DefaultProperty(String propertyName, T value, Class<T> type) {
-        this.propertyName = propertyName;
-        this.value = value;
         this.type = type;
+        this.value = value;
     }
 
     @Override

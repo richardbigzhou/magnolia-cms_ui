@@ -78,7 +78,7 @@ public class JcrNodeAdapterTest {
     public void testAddItemProperty() throws Exception {
         // GIVEN
         final Node underlyingNode = session.getRootNode().addNode("underlying");
-        DefaultProperty<String> property = new DefaultProperty<String>(propertyName, propertyValue, String.class);
+        DefaultProperty<String> property = new DefaultProperty<String>(propertyName, String.class, propertyValue);
         final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
         // WHEN
@@ -499,5 +499,22 @@ public class JcrNodeAdapterTest {
         // not part of the result. New Vaadin property not changed
         assertFalse(res.hasProperty("id_6"));
         assertEquals("value_4", res.getProperty("id_4").getString());
+    }
+
+    @Test
+    public void testUpdatePropertyWithNullValue() throws Exception {
+        // GIVEN
+        Node node = session.getRootNode().addNode(nodeName);
+        node.setProperty(propertyName, propertyValue);
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+
+        // WHEN
+        Property<String> property = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, null);
+        adapter.addItemProperty(propertyName, property);
+        adapter.updateProperties();
+        // THEN
+        assertFalse(node.hasProperty(propertyName));
+        assertEquals(0, adapter.getChangedProperties().size());
+        assertEquals(1, adapter.getRemovedProperties().size());
     }
 }

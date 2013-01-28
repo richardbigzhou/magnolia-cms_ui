@@ -43,17 +43,19 @@ import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Processor for {@link com.google.gwt.user.client.DOM} {@link Element}s. This is a crucial part of the page editor as it:
- * <ul>
- * <li>Creates a mapping between the {@link Element} of the DOM and {@link MgnlElement}. Used e.g. in {@link info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel} to map elements to the right area or component.</li>
- * <li>Looks for certain markers in the attributes which will help inject the control bars at the right spot.</li>
- * <li>
- * Modifies links based on their function inside the page:
- * <ul>
- * <li>A link inside the navigation will be overwritten by an onclick method.</li>
- * <li>Normal links will simply be disabled.</li>
- * </ul>
- * </li>
- * </ul>
+ * <pre>
+ *  <ul>
+ *      <li>Creates a mapping between the {@link Element} of the DOM and {@link MgnlElement}. Used e.g. in {@link info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel} to map elements to the right area or component.</li>
+ *      <li>Looks for certain markers in the attributes which will help inject the control bars at the right spot.</li>
+ *      <li>
+ *          Modifies links based on their function inside the page:
+ *          <ul>
+ *              <li>A link inside the navigation will be overwritten by an onclick method.</li>
+ *              <li>Normal links will simply be disabled.</li>
+ *          </ul>
+ *      </li>
+ *  </ul>
+ * </pre>
  */
 public class ElementProcessor {
 
