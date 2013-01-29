@@ -104,8 +104,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     private final ImageProvider imageProvider;
 
-    private final SubAppContext subAppContext;
-
     @Inject
     public ContentWorkbenchPresenter(final SubAppContext subAppContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus,
             final @Named("subapp") EventBus subAppEventBus, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
@@ -123,7 +121,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         } else {
             this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
         }
-        this.subAppContext = subAppContext;
     }
 
     public ContentWorkbenchView start() {
