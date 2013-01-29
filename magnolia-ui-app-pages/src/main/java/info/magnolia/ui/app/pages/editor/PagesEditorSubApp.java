@@ -126,7 +126,6 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     }
 
     private void updateActions() {
-
         // actions currently always disabled
         actionbarPresenter.disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
     }

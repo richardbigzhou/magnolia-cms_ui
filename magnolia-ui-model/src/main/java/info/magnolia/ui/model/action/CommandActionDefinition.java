@@ -31,24 +31,54 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.setup;
+package info.magnolia.ui.model.action;
 
-import info.magnolia.module.DefaultModuleVersionHandler;
-import info.magnolia.module.delta.BootstrapConditionally;
-import info.magnolia.module.delta.DeltaBuilder;
-import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
+import info.magnolia.commands.CommandsManager;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
- * Version handler for the pages app module.
+ * A basic action definition to support command execution via an action.
  */
-public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
+public class CommandActionDefinition implements ActionDefinition {
 
-    public PagesAppModuleVersionHandler() {
-        super();
-        register(DeltaBuilder.update("5.0", "Configuration update for Magnolia 5.0")
-                .addTask(new IsModuleInstalledOrRegistered("", "", "adminInterface",
-                        new BootstrapConditionally("Bootstrap activation commands", "Bootstraps the default activation and deletion commands which no longer reside under adminInterface.", "config.modules.ui-pages-app.commands.xml"))));
+    private String command;
+    private String catalog = CommandsManager.DEFAULT_CATALOG;
+
+    private Map<String, Object> params = new HashMap<String, Object>();
+
+    public String getCommand() {
+        return command;
     }
 
+    public void setCommand(String command) {
+        this.command = command;
+    }
 
+    /**
+     * @return {@link CommandsManager#DEFAULT_CATALOG} if not set otherwise.
+     */
+    public String getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
+    }
+
+    public void setParams(Map<String, Object> params) {
+        this.params = params;
+    }
+
+    public Map<String, Object> getParams() {
+        return params;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 }
