@@ -31,24 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.setup;
+package info.magnolia.ui.admincentral.activation.action;
 
-import info.magnolia.module.DefaultModuleVersionHandler;
-import info.magnolia.module.delta.BootstrapConditionally;
-import info.magnolia.module.delta.DeltaBuilder;
-import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
+import info.magnolia.commands.CommandsManager;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.action.CommandActionBase;
+
+import javax.inject.Inject;
+import javax.jcr.Node;
+
 
 /**
- * Version handler for the pages app module.
+ * UI action that allows to deactivate a single page (node).
  */
-public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
+public class DeactivationAction extends CommandActionBase<DeactivationActionDefinition> {
 
-    public PagesAppModuleVersionHandler() {
-        super();
-        register(DeltaBuilder.update("5.0", "Configuration update for Magnolia 5.0")
-                .addTask(new IsModuleInstalledOrRegistered("", "", "adminInterface",
-                        new BootstrapConditionally("Bootstrap activation commands", "Bootstraps the default activation and deletion commands which no longer reside under adminInterface.", "config.modules.ui-pages-app.commands.xml"))));
+    @Inject
+    public DeactivationAction(final DeactivationActionDefinition definition, final Node node, final CommandsManager commandsManager) {
+        super(definition, node, commandsManager);
     }
 
+    @Override
+    public void execute() throws ActionExecutionException {
+        try {
+            getCommandsManager().executeCommand(getDefinition().getCommand(), getParams());
+        } catch (Exception e) {
+            throw new ActionExecutionException("An exception occured during activation ", e);
+        }
+    }
 
 }
