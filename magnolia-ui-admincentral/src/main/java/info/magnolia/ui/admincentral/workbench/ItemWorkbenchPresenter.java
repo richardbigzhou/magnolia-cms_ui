@@ -43,7 +43,6 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
@@ -102,12 +101,9 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
 
             @Override
             public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
-                try {
-                    final ActionDefinition actionDefinition = event.getActionDefinition();
-                    actionbarPresenter.createAndExecuteAction(actionDefinition, workbenchDefinition.getWorkspace(), nodePath);
-                } catch (ActionExecutionException e) {
-                    log.error("An error occurred while executing an action.", e);
-                }
+                final ActionDefinition actionDefinition = event.getActionDefinition();
+                actionbarPresenter.createAndExecuteAction(actionDefinition, workbenchDefinition.getWorkspace(), nodePath);
+
             }
         });
     }
