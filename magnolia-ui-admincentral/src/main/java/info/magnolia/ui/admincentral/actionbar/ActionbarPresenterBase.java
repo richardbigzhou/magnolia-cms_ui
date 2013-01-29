@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,13 +33,12 @@
  */
 package info.magnolia.ui.admincentral.actionbar;
 
-import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
-import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.action.ActionFactory;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
@@ -48,8 +47,6 @@ import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import javax.inject.Named;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -59,9 +56,9 @@ import com.google.inject.Inject;
 import com.vaadin.server.Resource;
 
 /**
- * Default presenter for an action bar.
+ * ActionbarPresenterBase.
  */
-public class ActionbarPresenter extends ActionbarPresenterBase {
+public abstract class ActionbarPresenterBase implements ActionbarView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarPresenter.class);
 
@@ -73,16 +70,28 @@ public class ActionbarPresenter extends ActionbarPresenterBase {
 
     private final EventBus subAppEventBus;
 
-    private final AppContext appContext;
-
+    private ActionFactory<ActionDefinition, Action> actionFactory;
+    
+    /**
+     * Instantiates a new action bar presenter.
+     */
     @Inject
-    public ActionbarPresenter(@Named("subapp") EventBus subAppEventBus, AppContext appContext) {
-        super(subAppEventBus);
+    public ActionbarPresenterBase(@Named("subapp") EventBus subAppEventBus) {
         this.subAppEventBus = subAppEventBus;
-        this.appContext = appContext;
     }
 
-    @Override
+    /**
+     * Initializes an actionbar with given definition and returns the view for
+     * parent to add it.
+     */
+    public ActionbarView start(final ActionbarDefinition definition, final ActionFactory<ActionDefinition, Action> actionFactory) {
+        this.actionFactory = actionFactory;
+        this.definition = definition;
+        actionbar = ActionbarBuilder.build(definition);
+        actionbar.setListener(this);
+        return actionbar;
+    }
+
     public void setPreview(final Resource previewResource) {
         if (previewResource != null) {
             if (!((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
@@ -98,7 +107,6 @@ public class ActionbarPresenter extends ActionbarPresenterBase {
 
     // JUST DELEGATING CONTEXT SENSITIVITY TO WIDGET
 
-    @Override
     public void enable(String... actionNames) {
         if (actionbar != null) {
             for (String action : actionNames) {
@@ -107,7 +115,6 @@ public class ActionbarPresenter extends ActionbarPresenterBase {
         }
     }
 
-    @Override
     public void disable(String... actionNames) {
         if (actionbar != null) {
             for (String action : actionNames) {
@@ -116,35 +123,30 @@ public class ActionbarPresenter extends ActionbarPresenterBase {
         }
     }
 
-    @Override
     public void enableGroup(String groupName) {
         if (actionbar != null) {
             actionbar.setGroupEnabled(groupName, true);
         }
     }
 
-    @Override
     public void disableGroup(String groupName) {
         if (actionbar != null) {
             actionbar.setGroupEnabled(groupName, false);
         }
     }
 
-    @Override
     public void enableGroup(String groupName, String sectionName) {
         if (actionbar != null) {
             actionbar.setGroupEnabled(groupName, sectionName, true);
         }
     }
 
-    @Override
     public void disableGroup(String groupName, String sectionName) {
         if (actionbar != null) {
             actionbar.setGroupEnabled(groupName, sectionName, false);
         }
     }
 
-    @Override
     public void showSection(String... sectionNames) {
         if (actionbar != null) {
             for (String section : sectionNames) {
@@ -153,7 +155,6 @@ public class ActionbarPresenter extends ActionbarPresenterBase {
         }
     }
 
-    @Override
     public void hideSection(String... sectionNames) {
         if (actionbar != null) {
             for (String section : sectionNames) {
@@ -170,7 +171,6 @@ public class ActionbarPresenter extends ActionbarPresenterBase {
             subAppEventBus.fireEvent(new ActionbarItemClickedEvent(actionDefinition));
         }
     }
-
 
     private ActionDefinition getActionDefinition(String actionToken) {
         final String[] chunks = actionToken.split(":");
@@ -204,6 +204,10 @@ public class ActionbarPresenter extends ActionbarPresenterBase {
         return null;
     }
 
+    protected ActionFactory<ActionDefinition, Action> getActionFactory() {
+        return actionFactory;
+    }
+    
     // DEFAULT ACTION
 
     /**
@@ -211,7 +215,6 @@ public class ActionbarPresenter extends ActionbarPresenterBase {
      * whose name matches the action bar definition's 'defaultAction' property,
      * and returns its actionDefinition property.
      */
-    @Override
     public ActionDefinition getDefaultActionDefinition() {
         String defaultAction = definition.getDefaultAction();
         if (StringUtils.isBlank(defaultAction)) {
@@ -243,35 +246,4 @@ public class ActionbarPresenter extends ActionbarPresenterBase {
         log.warn("No action definition found for default action [{}]. Please check actionbar definition.", defaultAction);
         return null;
     }
-
-    @Override
-    public void onChangeFullScreen(boolean isFullScreen) {
-        if (isFullScreen) {
-            appContext.enterFullScreenMode();
-        } else {
-            appContext.exitFullScreenMode();
-        }
-    }
-    
-    public void createAndExecuteAction(final ActionDefinition actionDefinition, String workspace, String absPath) throws ActionExecutionException {
-        if (actionDefinition == null || StringUtils.isBlank(workspace)) {
-            throw new ActionExecutionException("Got invalid arguments: action definition is " + actionDefinition + ", workspace is " + workspace);
-        }
-        try {
-            Session session = MgnlContext.getJCRSession(workspace);
-            if (absPath == null || !session.itemExists(absPath)) {
-                log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", absPath);
-                absPath = "/";
-            }
-            final javax.jcr.Item item = session.getItem(absPath);
-            final Action action = getActionFactory().createAction(actionDefinition, item);
-            if (action == null) {
-                throw new ActionExecutionException("Could not create action from actionDefinition. Action is null.");
-            }
-            action.execute();
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException(e);
-        }
-    }
-
 }
