@@ -54,6 +54,10 @@ public interface EditorLikeView<T extends EditorLikeView.Presenter> extends IsWi
 
     void setContent(Widget contentWidget);
 
+    void setHeader(Widget headerWidget);
+
+    void setFooter(Widget footerWidget);
+
     void setPresenter(T presenter);
 
     T getPresenter();

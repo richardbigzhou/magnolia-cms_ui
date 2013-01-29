@@ -106,4 +106,26 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
         form.setActions(actionMap);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView#setHeader(com.google.gwt.user.client.ui.Widget)
+     */
+    @Override
+    public void setHeader(Widget headerWidget) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView#setFooter(com.google.gwt.user.client.ui.Widget)
+     */
+    @Override
+    public void setFooter(Widget footerWidget) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

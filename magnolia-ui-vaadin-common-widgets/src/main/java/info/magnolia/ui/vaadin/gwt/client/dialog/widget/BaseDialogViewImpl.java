@@ -57,19 +57,26 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
 
     private static final String CLASSNAME_FOOTER = "dialog-footer";
 
+    private static final String CLASSNAME_FOOTER_TOOLBAR = "dialog-footer-toolbar";
+
     private static final String CLASSNAME_BUTTON = "btn-dialog";
 
     private final DialogHeaderWidget header = createHeader();
 
     private final Element contentEl = DOM.createDiv();
+    private final Element contentToolbarEl = DOM.createDiv();
 
     private final Element footerEl = DOM.createDiv();
+    private final Element footerToolbarEl = DOM.createDiv();
+
 
     private final Map<String, Button> actionMap = new HashMap<String, Button>();
 
     private Presenter presenter;
 
     private Widget content;
+    private Widget footerToolbar;
+    private Widget headerToolbar;
 
     public BaseDialogViewImpl() {
         final Element root = DOM.createDiv();
@@ -77,10 +84,13 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
         setElement(root);
         add(header, root);
         root.appendChild(contentEl);
-        root.appendChild(footerEl);
         setStylePrimaryName(CLASSNAME);
         contentEl.addClassName(CLASSNAME_CONTENT);
+
+        root.appendChild(footerEl);
         footerEl.addClassName(CLASSNAME_FOOTER);
+        footerEl.appendChild(footerToolbarEl);
+        footerToolbarEl.addClassName(CLASSNAME_FOOTER_TOOLBAR);
     }
 
     protected DialogHeaderWidget createHeader() {
@@ -133,6 +143,22 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
         add(contentWidget, contentEl);
     }
 
+    @Override
+    public void setHeader(Widget headerWidget) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void setFooter(Widget footerToolbar) {
+        // TODO Auto-generated method stub
+
+        if (footerToolbar != null) {
+            remove(footerToolbar);
+        }
+        this.footerToolbar = footerToolbar;
+        add(footerToolbar, footerToolbarEl);
+    }
+
     public Element getContentEl() {
         return contentEl;
     }
@@ -159,4 +185,5 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
             add(button, footerEl);
         }
     }
+
 }
