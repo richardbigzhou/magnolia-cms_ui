@@ -46,8 +46,6 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
-import javax.inject.Named;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +58,7 @@ import com.vaadin.server.Resource;
  */
 public abstract class ActionbarPresenterBase implements ActionbarView.Listener {
 
-    private static final Logger log = LoggerFactory.getLogger(ActionbarPresenter.class);
+    private static final Logger log = LoggerFactory.getLogger(ActionbarPresenterBase.class);
 
     private static final String PREVIEW_SECTION_NAME = "preview";
 
@@ -76,7 +74,7 @@ public abstract class ActionbarPresenterBase implements ActionbarView.Listener {
      * Instantiates a new action bar presenter.
      */
     @Inject
-    public ActionbarPresenterBase(@Named("subapp") EventBus subAppEventBus) {
+    public ActionbarPresenterBase(EventBus subAppEventBus) {
         this.subAppEventBus = subAppEventBus;
     }
 
