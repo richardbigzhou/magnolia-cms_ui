@@ -7,7 +7,7 @@
   </parent>
   <groupId>info.magnolia.ui</groupId>
   <artifactId>magnolia-ui-project</artifactId>
-  <version>5.0-SNAPSHOT</version>
+  <version>5.0-alpha2-2</version>
   <name>magnolia-ui-project</name>
   <packaging>pom</packaging>
   <properties>
@@ -24,29 +24,29 @@
     <connection>scm:git:http://git.magnolia-cms.com/magnolia_ui</connection>
     <developerConnection>scm:git:https://git.magnolia-cms.com/magnolia_ui</developerConnection>
     <url>http://git.magnolia-cms.com/gitweb/?p=magnolia_ui.git</url>
-    <tag>HEAD</tag>
+    <tag>magnolia-ui-5.0-alpha2-2</tag>
   </scm>
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>info.magnolia</groupId>
         <artifactId>magnolia-rendering</artifactId>
-        <version>${magnoliaVersion}</version>
+        <version>5.0-alpha2-2</version>
       </dependency>
       <dependency>
         <groupId>info.magnolia.pageexport</groupId>
         <artifactId>magnolia-module-page-export</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0-alpha1</version>
       </dependency>
       <dependency>
         <groupId>info.magnolia.activation</groupId>
         <artifactId>magnolia-module-activation</artifactId>
-        <version>${magnoliaVersion}</version>
+        <version>5.0-alpha2-2</version>
       </dependency>
       <dependency>
         <groupId>info.magnolia</groupId>
         <artifactId>magnolia-module-imaging</artifactId>
-        <version>2.3-SNAPSHOT</version>
+        <version>2.3-alpha1</version>
       </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>
