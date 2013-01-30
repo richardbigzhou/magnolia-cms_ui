@@ -9,14 +9,13 @@
 .v-actionbar-open {width:270px;}
 
 .v-actionbar-section {
-	padding-left:10px;
-	padding-bottom:10px;
+	padding:11px 0 10px 10px;
 }
 
 .v-actionbar-section > header {
 	font-size:15px;
 	height:1.2em;
-	padding:11px 0 6px 4px;
+	padding:0 0 6px 4px;
 }
 
 .v-actionbar .v-actionbar-section-title {
@@ -106,6 +105,21 @@
     cursor:pointer;
 }
 
+.v-actionbar-section.preview {
+	background-color:#333;
+	padding-top:6px;
+	padding-left:14px;
+	padding-right:14px;
+	text-align:center;
+}
+.v-actionbar .v-actionbar-section.preview {display:none;}
+.v-actionbar-open .v-actionbar-section.preview {display:block;}
+
+.v-actionbar-section.preview > header {
+	text-align:left;
+	padding-left:0;
+}
+
 /*********************** TABLET STYLES ***/
 
 .tablet .v-actionbar {
@@ -117,6 +131,7 @@
 
 .tablet .v-actionbar-section {padding:0;}
 .tablet .v-actionbar-section > header {display:none;}
+.tablet .v-actionbar-section.preview {display:none;}
 
 .tablet .v-actionbar-group {border:none;}
 
