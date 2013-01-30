@@ -177,6 +177,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                 .defaultOrder(ModelConstants.JCR_NAME)
                                                 .form(cfg.forms
                                                         .form()
+                                                        .label("Edit contact")
                                                         .description("Define the contact information")
                                                         .tabs(cfg.forms
                                                                 .tab("Personal")
@@ -229,7 +230,7 @@ public class ContactsModule implements ModuleLifecycle {
     public DialogDefinition folderDialog() {
 
         ConfiguredDialogDefinition dialog = new ConfiguredDialogDefinition();
-        dialog.setLabel("Folder");
+        dialog.setLabel("Edit folder");
         dialog.setDescription("Rename folder");
 
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
@@ -264,6 +265,7 @@ public class ContactsModule implements ModuleLifecycle {
     @Dialog("ui-contacts-app:contact")
     public void contactDialog(DialogBuilder dialog, UiConfig cfg) {
 
+        dialog.label("Edit contact");
         dialog.form(
                 cfg.forms
                         .form()

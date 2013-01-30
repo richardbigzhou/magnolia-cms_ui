@@ -127,11 +127,6 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
     }
 
     @Override
-    public void setCaption(String caption) {
-        tabSheet.setCaption(caption);
-    }
-
-    @Override
     public void setItemDataSource(Item newDataSource) {
         this.itemDataSource = newDataSource;
     }
