@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.integration.jcr;
 import info.magnolia.context.MgnlContext;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -153,13 +154,21 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     }
 
     /**
-     * Updates and removes properties on given item, based on the {@link #changedProperties} and {@link #removedProperties} maps. Read-only properties will not be updated.
+     * Updates and removes properties on given item, based on the {@link #changedProperties} and {@link #removedProperties} maps. Read-only properties will not be updated and null valued properties will get removed.
      */
     public void updateProperties(Item item) throws RepositoryException {
-        for (Entry<String, Property> entry : changedProperties.entrySet()) {
+        Iterator<Entry<String, Property>> it = changedProperties.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<String, Property> entry = it.next();
+            if (entry.getValue().getValue() == null) {
+                it.remove();
+                getRemovedProperties().put(entry.getKey(), entry.getValue());
+                continue;
+            }
             if (entry.getValue().isReadOnly()) {
                 continue;
             }
+
             updateProperty(item, entry.getKey(), entry.getValue());
         }
     }

@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-model</artifactId>
   <name>magnolia-ui-model</name>
   <properties>
-    <cloverCoverageThreshold>8</cloverCoverageThreshold>
+    <cloverCoverageThreshold>10</cloverCoverageThreshold>
   </properties>
 
 
@@ -52,6 +52,11 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jsp-api</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
