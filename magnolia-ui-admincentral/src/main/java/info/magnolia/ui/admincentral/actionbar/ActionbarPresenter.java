@@ -34,18 +34,13 @@
 package info.magnolia.ui.admincentral.actionbar;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
-import info.magnolia.ui.vaadin.actionbar.Actionbar;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import javax.inject.Named;
 import javax.jcr.RepositoryException;
@@ -56,7 +51,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
-import com.vaadin.server.Resource;
 
 /**
  * Default presenter for an action bar.
@@ -65,183 +59,12 @@ public class ActionbarPresenter extends ActionbarPresenterBase {
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarPresenter.class);
 
-    private static final String PREVIEW_SECTION_NAME = "preview";
-
-    private ActionbarDefinition definition;
-
-    private ActionbarView actionbar;
-
-    private final EventBus subAppEventBus;
-
     private final AppContext appContext;
 
     @Inject
     public ActionbarPresenter(@Named("subapp") EventBus subAppEventBus, AppContext appContext) {
         super(subAppEventBus);
-        this.subAppEventBus = subAppEventBus;
         this.appContext = appContext;
-    }
-
-    @Override
-    public void setPreview(final Resource previewResource) {
-        if (previewResource != null) {
-            if (!((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
-                actionbar.addSection(PREVIEW_SECTION_NAME, "Preview");
-            }
-            actionbar.setSectionPreview(previewResource, PREVIEW_SECTION_NAME);
-        } else {
-            if (((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
-                actionbar.removeSection(PREVIEW_SECTION_NAME);
-            }
-        }
-    }
-
-    // JUST DELEGATING CONTEXT SENSITIVITY TO WIDGET
-
-    @Override
-    public void enable(String... actionNames) {
-        if (actionbar != null) {
-            for (String action : actionNames) {
-                actionbar.setActionEnabled(action, true);
-            }
-        }
-    }
-
-    @Override
-    public void disable(String... actionNames) {
-        if (actionbar != null) {
-            for (String action : actionNames) {
-                actionbar.setActionEnabled(action, false);
-            }
-        }
-    }
-
-    @Override
-    public void enableGroup(String groupName) {
-        if (actionbar != null) {
-            actionbar.setGroupEnabled(groupName, true);
-        }
-    }
-
-    @Override
-    public void disableGroup(String groupName) {
-        if (actionbar != null) {
-            actionbar.setGroupEnabled(groupName, false);
-        }
-    }
-
-    @Override
-    public void enableGroup(String groupName, String sectionName) {
-        if (actionbar != null) {
-            actionbar.setGroupEnabled(groupName, sectionName, true);
-        }
-    }
-
-    @Override
-    public void disableGroup(String groupName, String sectionName) {
-        if (actionbar != null) {
-            actionbar.setGroupEnabled(groupName, sectionName, false);
-        }
-    }
-
-    @Override
-    public void showSection(String... sectionNames) {
-        if (actionbar != null) {
-            for (String section : sectionNames) {
-                actionbar.setSectionVisible(section, true);
-            }
-        }
-    }
-
-    @Override
-    public void hideSection(String... sectionNames) {
-        if (actionbar != null) {
-            for (String section : sectionNames) {
-                actionbar.setSectionVisible(section, false);
-            }
-        }
-    }
-
-    // WIDGET LISTENER
-    @Override
-    public void onActionbarItemClicked(String actionToken) {
-        ActionDefinition actionDefinition = getActionDefinition(actionToken);
-        if (actionDefinition != null) {
-            subAppEventBus.fireEvent(new ActionbarItemClickedEvent(actionDefinition));
-        }
-    }
-
-
-    private ActionDefinition getActionDefinition(String actionToken) {
-        final String[] chunks = actionToken.split(":");
-        if (chunks.length != 2) {
-            log.warn(
-                    "Invalid actionToken [{}]: it is expected to be in the form sectionName:actionName. ActionDefintion cannot be retrieved. Please check actionbar definition.", actionToken);
-            return null;
-        }
-        final String sectionName = chunks[0];
-        final String actionName = chunks[1];
-
-        for (ActionbarSectionDefinition section : definition.getSections()) {
-            if (sectionName.equals(section.getName())) {
-                for (ActionbarGroupDefinition group : section.getGroups()) {
-                    for (ActionbarItemDefinition action : group.getItems()) {
-                        if (actionName.equals(action.getName())) {
-                            final ActionDefinition actionDefinition = action.getActionDefinition();
-                            if (actionDefinition == null) {
-                                log.warn(
-                                        "No action definition found for actionToken [{}]. Please check actionbar definition.", actionToken);
-                            }
-                            return actionDefinition;
-                        }
-                    }
-                }
-
-                break;
-            }
-        }
-        log.warn("No action definition found for actionToken [{}]. Please check actionbar definition.", actionToken);
-        return null;
-    }
-
-    // DEFAULT ACTION
-
-    /**
-     * Gets the default action definition, i.e. finds the first action bar item
-     * whose name matches the action bar definition's 'defaultAction' property,
-     * and returns its actionDefinition property.
-     */
-    @Override
-    public ActionDefinition getDefaultActionDefinition() {
-        String defaultAction = definition.getDefaultAction();
-        if (StringUtils.isBlank(defaultAction)) {
-            log.warn("Default action is null. Please check actionbar definition.");
-            return null;
-        }
-
-        // considering actionbar item name unique, returning first match
-        if (!definition.getSections().isEmpty()) {
-            for (ActionbarSectionDefinition sectionDef : definition.getSections()) {
-                if (actionbar.isSectionVisible(sectionDef.getName()) && !sectionDef.getGroups().isEmpty()) {
-                    for (ActionbarGroupDefinition groupDef : sectionDef.getGroups()) {
-                        if (!groupDef.getItems().isEmpty()) {
-                            for (ActionbarItemDefinition action : groupDef.getItems()) {
-                                if (action.getName().equals(defaultAction)) {
-                                    final ActionDefinition actionDefinition = action.getActionDefinition();
-                                    if (actionDefinition == null) {
-                                        log.warn(
-                                                "No action definition found for default action [{}]. Please check actionbar definition.", defaultAction);
-                                    }
-                                    return actionDefinition;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        log.warn("No action definition found for default action [{}]. Please check actionbar definition.", defaultAction);
-        return null;
     }
 
     @Override
@@ -253,9 +76,10 @@ public class ActionbarPresenter extends ActionbarPresenterBase {
         }
     }
     
-    public void createAndExecuteAction(final ActionDefinition actionDefinition, String workspace, String absPath) throws ActionExecutionException {
+    public void createAndExecuteAction(final ActionDefinition actionDefinition, String workspace, String absPath) {
         if (actionDefinition == null || StringUtils.isBlank(workspace)) {
-            throw new ActionExecutionException("Got invalid arguments: action definition is " + actionDefinition + ", workspace is " + workspace);
+            Message warn = createMessage(MessageType.WARNING, "Got invalid arguments: action definition is " + actionDefinition + ", workspace is " + workspace, "");
+            appContext.sendLocalMessage(warn);
         }
         try {
             Session session = MgnlContext.getJCRSession(workspace);
@@ -266,12 +90,26 @@ public class ActionbarPresenter extends ActionbarPresenterBase {
             final javax.jcr.Item item = session.getItem(absPath);
             final Action action = getActionFactory().createAction(actionDefinition, item);
             if (action == null) {
-                throw new ActionExecutionException("Could not create action from actionDefinition. Action is null.");
+                Message warn = createMessage(MessageType.WARNING, "Could not create action from actionDefinition. Action is null.", "");
+                appContext.sendLocalMessage(warn);
             }
             action.execute();
+            appContext.showConfirmationMessage("Action executed successfully.");
         } catch (RepositoryException e) {
-            throw new ActionExecutionException(e);
+            Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            appContext.broadcastMessage(error);
+        } catch (ActionExecutionException e) {
+            Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            appContext.broadcastMessage(error);
         }
+    }
+
+    private Message createMessage(MessageType type, String subject, String message) {
+        final Message msg = new Message();
+        msg.setSubject(subject);
+        msg.setMessage(message);
+        msg.setType(type);
+        return msg;
     }
 
 }
