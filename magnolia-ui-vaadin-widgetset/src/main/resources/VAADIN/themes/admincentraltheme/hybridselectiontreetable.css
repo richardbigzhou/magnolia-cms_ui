@@ -84,7 +84,7 @@
 
 .v-magnolia-table .v-select-all {
 	position:absolute;
-	top:18px;
+	top:16px;
 	left:6px;
 	z-index:1000;
 }
@@ -92,7 +92,6 @@
 .v-magnolia-table tr.v-selected .v-table-cell-content {
 	background:#666;
 	color:#fff;
-	border-bottom:1px solid transparent;
 }
 
 *:focus {
@@ -103,19 +102,7 @@
 .v-table-focus .v-table-cell-content {border-top:none;}
 
 .v-magnolia-table .v-selection-cb {
-    display:inline-block;
-    width:11px;
-    height:11px;
-    margin:0 20px 0 1px;
-    padding:0;
-    overflow: hidden;
-    vertical-align: baseline;
-	background-color:#fff;
-}
-
-.v-magnolia-table .v-checkbox > label,
-.v-magnolia-table .gwt-CheckBox > label {
-    margin:-2px 0 0 -2px;
+    margin-left:1px;
 }
 
 .v-magnolia-table.mobile .v-table-row, .v-magnolia-table.mobile .v-table-row-odd {
