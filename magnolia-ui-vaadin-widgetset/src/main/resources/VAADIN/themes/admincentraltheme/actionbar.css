@@ -12,17 +12,13 @@
 	padding:11px 0 10px 10px;
 }
 
-.v-actionbar-section > header {
-	font-size:15px;
-	height:1.2em;
-	padding:0 0 6px 4px;
-}
-
 .v-actionbar .v-actionbar-section-title {
+	height:1.2em;
 	margin:0;
+	padding:0 0 6px 4px;
 	color:#aabf2f;
 	font-family:DINWebPro, Verdana;
-	font-size:1em;
+	font-size:15px;
 	font-weight:normal;
 }
 .v-actionbar .v-actionbar-section-title {display:none;}
@@ -115,7 +111,7 @@
 .v-actionbar .v-actionbar-section.preview {display:none;}
 .v-actionbar-open .v-actionbar-section.preview {display:block;}
 
-.v-actionbar-section.preview > header {
+.v-actionbar-section.preview .v-actionbar-section-title {
 	text-align:left;
 	padding-left:0;
 }
@@ -133,7 +129,7 @@ span.icon-publish-incl-sub {margin-left:3px;}
 }
 
 .tablet .v-actionbar-section {padding:0;}
-.tablet .v-actionbar-section > header {display:none;}
+.tablet .v-actionbar-section-title {display:none;}
 .tablet .v-actionbar-section.preview {display:none;}
 
 .tablet .v-actionbar-group {border:none;}
