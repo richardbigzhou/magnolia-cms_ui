@@ -122,26 +122,6 @@ public class CommandActionBaseTest {
     }
 
     @Test
-    public void testGetParamsReturnsBasicContextParamsFromDefinition() throws Exception {
-
-        // GIVEN
-        CommandActionDefinition definition = new CommandActionDefinition();
-        definition.getParams().put(Context.ATTRIBUTE_REPOSITORY, "foo");
-        definition.getParams().put(Context.ATTRIBUTE_PATH, "/bar");
-        definition.getParams().put(Context.ATTRIBUTE_UUID, "123");
-
-        TestAction action = new TestAction(definition, session.getNode("/parent/sub"), Components.getComponent(CommandsManager.class));
-
-        // WHEN
-        Map<String, Object> params = action.getParams();
-
-        // THEN
-        assertEquals("foo", params.get(Context.ATTRIBUTE_REPOSITORY));
-        assertEquals("/bar", params.get(Context.ATTRIBUTE_PATH));
-        assertEquals("123", params.get(Context.ATTRIBUTE_UUID));
-    }
-
-    @Test
     public void testGetParamsReturnsOtherParamsFromDefinition() throws Exception {
 
         // GIVEN
