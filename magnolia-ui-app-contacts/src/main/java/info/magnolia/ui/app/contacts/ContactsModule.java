@@ -125,7 +125,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                 .workspace("contacts")
                                                 .root("/")
                                                 .defaultOrder(ModelConstants.JCR_NAME)
-                                                .groupingItemType(cfg.workbenches.itemType("mgnl:folder").icon("icon-node-folder"))
+                                                .groupingItemType(cfg.workbenches.itemType("mgnl:folder").icon("icon-folder"))
                                                 .mainItemType(cfg.workbenches.itemType(Contact.NAME).icon("icon-node-content"))
                                                 .imageProvider(cipd)
                                                 .columns(
