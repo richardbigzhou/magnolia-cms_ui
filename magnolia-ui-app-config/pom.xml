@@ -33,7 +33,7 @@
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
       <type>test-jar</type>
-      <version>${magnoliaVersion}</version>
+      <version>5.0-alpha2-2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
