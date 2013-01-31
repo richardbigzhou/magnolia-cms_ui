@@ -84,10 +84,11 @@
 
 .v-magnolia-table .v-select-all {
 	position:absolute;
-	top:16px;
+	margin-top:-20px;
 	left:6px;
 	z-index:1000;
 }
+.tablet .v-magnolia-table .v-select-all {margin-top:-23px;}
 
 .v-magnolia-table tr.v-selected .v-table-cell-content {
 	background:#666;
@@ -113,9 +114,8 @@
 	height: 20px;
 }
 
-.v-magnolia-table .v-table-row:hover, .v-table-row-odd:hover {
-	background-color: #EFEFEF;
-}
+.v-magnolia-table .v-table-row:hover,
+.v-magnolia-table .v-table-row-odd:hover {background-color:#f2f2f2;}
 
 .v-magnolia-table .v-selected:hover {
 	background-color: #666666;
