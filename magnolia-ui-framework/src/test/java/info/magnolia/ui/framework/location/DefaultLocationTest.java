@@ -114,7 +114,7 @@ public class DefaultLocationTest {
 
     @Test
     public void testEqualsReturnsFalseOnNull() {
-        // Given
+        // GIVEN
         DefaultLocation first = new DefaultLocation("appType", "appId", "subAppId", "parameter");
 
         // WHEN
@@ -126,7 +126,7 @@ public class DefaultLocationTest {
 
     @Test
     public void testEqualsReturnsFalseOnIncompatibleType() {
-        // Given
+        // GIVEN
         DefaultLocation first = new DefaultLocation("appType", "appId", "subAppId", "parameter");
 
         // WHEN
