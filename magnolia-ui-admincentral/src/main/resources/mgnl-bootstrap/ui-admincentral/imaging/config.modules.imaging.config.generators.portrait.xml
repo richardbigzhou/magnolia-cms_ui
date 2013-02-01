@@ -162,10 +162,10 @@
         <sv:value>admin</sv:value>
       </sv:property>
       <sv:property sv:name="maxHeight" sv:type="String">
-        <sv:value>230</sv:value>
+        <sv:value>160</sv:value>
       </sv:property>
       <sv:property sv:name="maxWidth" sv:type="String">
-        <sv:value>230</sv:value>
+        <sv:value>240</sv:value>
       </sv:property>
       <sv:node sv:name="MetaData">
         <sv:property sv:name="jcr:primaryType" sv:type="Name">
