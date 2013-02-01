@@ -62,12 +62,6 @@
 
 .v-action .v-flyout-indicator {display:none;}
 
-.v-actionbar-preview .v-verticallayout-margin {
-	padding-left:8px;
-	padding-right:18px;
-	padding-bottom:8px;
-}
-
 .v-actionbar-toggle {
     position:absolute;
     top:0;
@@ -102,10 +96,17 @@
 }
 
 .v-actionbar-section.preview {
-	background-color:#333;
+    position:absolute;
+    left:0;
+    right:0;
+	bottom:40px;
+    display:block;
+    max-height:184px;
+    overflow:hidden;
 	padding-top:6px;
 	padding-left:14px;
 	padding-right:14px;
+	background-color:#333;
 	text-align:center;
 }
 .v-actionbar .v-actionbar-section.preview {display:none;}
