@@ -226,8 +226,6 @@ public class MessagesManagerImplTest {
         message.setCleared(true);
         messagesManager.sendMessage("bob", message);
 
-        assertEquals(0, messagesManager.getNumberOfUnclearedMessagesForUser("bob"));
-
         // WHEN
         // this happens when clicking on a message row in pulse
         messagesManager.clearMessage("bob", message.getId());
