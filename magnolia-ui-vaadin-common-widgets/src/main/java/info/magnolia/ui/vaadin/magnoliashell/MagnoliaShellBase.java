@@ -148,6 +148,11 @@ public abstract class MagnoliaShellBase extends AbstractComponent implements Has
 
     public void updateShellAppIndication(ShellAppType type, int increment) {
         Integer value = getState().indications.get(type);
+
+        if (value == 0 && increment < 0) {
+            return;
+        }
+
         getState().indications.put(type, increment + value);
         synchronized (UI.getCurrent()) {
             // pusher.push();
