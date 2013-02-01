@@ -97,8 +97,8 @@ public abstract class EditorLikeComponentConnector<U extends EditorLikeView.Pres
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {
         updateContent();
-        updateHeader();
-        updateFooter();
+        updateHeaderToolbar();
+        updateFooterToolbar();
     }
 
     protected void updateActionsFromState() {
@@ -112,11 +112,11 @@ public abstract class EditorLikeComponentConnector<U extends EditorLikeView.Pres
     }
 
     protected ComponentConnector getHeader() {
-        return (ComponentConnector) getState().header;
+        return (ComponentConnector) getState().headerToolbar;
     }
 
     protected ComponentConnector getFooter() {
-        return (ComponentConnector) getState().footer;
+        return (ComponentConnector) getState().footerToolbar;
     }
 
     protected void updateContent() {
@@ -126,17 +126,17 @@ public abstract class EditorLikeComponentConnector<U extends EditorLikeView.Pres
         }
     }
 
-    protected void updateHeader() {
+    protected void updateHeaderToolbar() {
         final ComponentConnector header = getHeader();
         if (header != null) {
-            this.view.setHeader(header.getWidget());
+            this.view.setHeaderToolbar(header.getWidget());
         }
     }
 
-    protected void updateFooter() {
+    protected void updateFooterToolbar() {
         final ComponentConnector footer = getFooter();
         if (footer != null) {
-            this.view.setFooter(footer.getWidget());
+            this.view.setFooterToolbar(footer.getWidget());
         }
     }
 

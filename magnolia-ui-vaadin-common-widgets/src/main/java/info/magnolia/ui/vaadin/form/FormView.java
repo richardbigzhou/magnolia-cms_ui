@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.form;
 
 import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 
 import java.util.Collection;
 
@@ -47,17 +48,10 @@ public interface FormView extends View, Item.Editor {
 
     void addField(Field<?> field);
 
-    /**
-     * Action execution callback.
-     */
-    interface FormActionListener {
-        void onActionExecuted(final String actionName);
-    }
-
     @Override
     public Form asVaadinComponent();
 
-    void addAction(String actionName, String actionLabel, FormActionListener callback);
+    void addAction(String actionName, String actionLabel, EditorLikeActionListener callback);
 
     void setFormDescription(String description);
 

@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.location;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
@@ -109,5 +110,29 @@ public class DefaultLocationTest {
         assertEquals("", DefaultLocation.extractParameter("appType:"));
         assertEquals("", DefaultLocation.extractParameter("appType"));
         assertEquals("", DefaultLocation.extractParameter(""));
+    }
+
+    @Test
+    public void testEqualsReturnsFalseOnNull() {
+        // GIVEN
+        DefaultLocation first = new DefaultLocation("appType", "appId", "subAppId", "parameter");
+
+        // WHEN
+        boolean result = first.equals(null);
+
+        // THEN
+        assertFalse(result);
+    }
+
+    @Test
+    public void testEqualsReturnsFalseOnIncompatibleType() {
+        // GIVEN
+        DefaultLocation first = new DefaultLocation("appType", "appId", "subAppId", "parameter");
+
+        // WHEN
+        boolean result = first.equals("this is a string");
+
+        // THEN
+        assertFalse(result);
     }
 }

@@ -50,7 +50,7 @@ public class EditorLikeComponentState extends AbstractLayoutState {
 
     public Connector content;
 
-    public Connector header;
+    public Connector headerToolbar;
 
-    public Connector footer;
+    public Connector footerToolbar;
 }

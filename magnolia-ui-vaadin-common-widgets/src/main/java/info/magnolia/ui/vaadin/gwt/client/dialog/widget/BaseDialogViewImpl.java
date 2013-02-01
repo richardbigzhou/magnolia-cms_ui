@@ -64,7 +64,7 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
     private final DialogHeaderWidget header = createHeader();
 
     private final Element contentEl = DOM.createDiv();
-    private final Element contentToolbarEl = DOM.createDiv();
+    // private final Element contentToolbarEl = DOM.createDiv();
 
     private final Element footerEl = DOM.createDiv();
     private final Element footerToolbarEl = DOM.createDiv();
@@ -139,24 +139,22 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
         if (content != null) {
             remove(content);
         }
-        this.content = contentWidget;
+        content = contentWidget;
         add(contentWidget, contentEl);
     }
 
     @Override
-    public void setHeader(Widget headerWidget) {
-        // TODO Auto-generated method stub
+    public void setHeaderToolbar(Widget headerToolbarWidget) {
+        // TODO Implement
     }
 
     @Override
-    public void setFooter(Widget footerToolbar) {
-        // TODO Auto-generated method stub
-
+    public void setFooterToolbar(Widget footerToolbarWidget) {
         if (footerToolbar != null) {
             remove(footerToolbar);
         }
-        this.footerToolbar = footerToolbar;
-        add(footerToolbar, footerToolbarEl);
+        footerToolbar = footerToolbarWidget;
+        add(footerToolbarWidget, footerToolbarEl);
     }
 
     public Element getContentEl() {

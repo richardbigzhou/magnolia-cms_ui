@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.dialog;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 
 import com.vaadin.data.Item;
 
@@ -59,14 +59,14 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
             }
         });
 
-        addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new DialogActionListener() {
+        addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new EditorLikeActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 closeDialog();
             }
         });
 
-        addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogActionListener() {
+        addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new EditorLikeActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 closeDialog();
@@ -82,14 +82,14 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
 
     @Override
     public void addValueChosenListener(final ValueChosenListener<Item> listener) {
-        addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogActionListener() {
+        addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new EditorLikeActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 listener.onValueChosen(currentValue);
             }
         });
 
-        addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new DialogActionListener() {
+        addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new EditorLikeActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 listener.selectionCanceled();

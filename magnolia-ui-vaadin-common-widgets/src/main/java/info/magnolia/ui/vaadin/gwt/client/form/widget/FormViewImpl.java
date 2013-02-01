@@ -70,6 +70,8 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
 
     private static final String CLASSNAME_FOOTER = "form-footer";
 
+    private static final String CLASSNAME_FOOTER_TOOLBAR = "form-footer-toolbar";
+
     private static final String CLASSNAME_BUTTON = "btn-form";
 
     private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
@@ -82,13 +84,17 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
 
     private final Element contentEl = DOM.createDiv();
 
-    private final Element footer = DOM.createDiv();
+    private final Element footerEl = DOM.createDiv();
+    private final Element footerToolbarEl = DOM.createDiv();
 
     private FormFieldWrapper lastFocused = null;
 
     private MagnoliaTabSheetView tabSheet;
 
     private Presenter presenter;
+
+    private Widget footerToolbar;
+    private Widget headerToolbar;
 
     private final FormHeaderWidget formHeader = new FormHeaderWidget(new FormHeaderWidget.FormHeaderCallback() {
 
@@ -109,11 +115,15 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
     public FormViewImpl() {
         super();
         setStylePrimaryName(CLASSNAME);
-        footer.addClassName(CLASSNAME_FOOTER);
+
         contentEl.addClassName(CLASSNAME_CONTENT);
         add(formHeader);
         getElement().appendChild(contentEl);
-        getElement().appendChild(footer);
+
+        footerEl.addClassName(CLASSNAME_FOOTER);
+        getElement().appendChild(footerEl);
+        footerEl.appendChild(footerToolbarEl);
+        footerToolbarEl.addClassName(CLASSNAME_FOOTER_TOOLBAR);
     }
 
     @Override
@@ -200,7 +210,7 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
                 }
             });
             actionMap.put(entry.getKey(), button);
-            add(button, footer);
+            add(button, footerEl);
         }
     }
 
@@ -240,25 +250,20 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
         return contentEl;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView#setHeader(com.google.gwt.user.client.ui.Widget)
-     */
+
     @Override
-    public void setHeader(Widget headerWidget) {
-        // TODO Auto-generated method stub
+    public void setHeaderToolbar(Widget headerToolbarWidget) {
+        // TODO Implement
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView#setFooter(com.google.gwt.user.client.ui.Widget)
-     */
-    @Override
-    public void setFooter(Widget footerWidget) {
-        // TODO Auto-generated method stub
 
+    @Override
+    public void setFooterToolbar(Widget footerToolbarWidget) {
+        if (footerToolbar != null) {
+            remove(footerToolbar);
+        }
+        footerToolbar = footerToolbarWidget;
+        add(footerToolbarWidget, footerToolbarEl);
     }
 }

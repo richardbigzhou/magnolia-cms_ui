@@ -149,6 +149,8 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
                 @Override
                 public void onValueChosen(Item chosenValue) {
                     if (!(chosenValue instanceof JcrItemAdapter)) {
+                                richTextEditor
+                                        .firePluginEvent(EVENT_CANCEL_LINK);
                         return;
                     }
 

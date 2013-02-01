@@ -57,12 +57,19 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
 
     @Override
     public void setDescription(String description) {
-        form.setDescription(description);
+        if (form != null) {
+            form.setDescription(description);
+        }
     }
 
     @Override
     public void setCaption(String caption) {
-        form.setCaption(caption);
+        if (caption == null) {
+            caption = "";
+        }
+        if (form != null) {
+            form.setCaption(caption);
+        }
     }
 
     @Override
@@ -103,29 +110,22 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
 
     @Override
     public void setActions(Map<String, String> actionMap) {
+        if (form == null) {
+            return;
+        }
         form.setActions(actionMap);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView#setHeader(com.google.gwt.user.client.ui.Widget)
-     */
+
     @Override
-    public void setHeader(Widget headerWidget) {
-        // TODO Auto-generated method stub
+    public void setHeaderToolbar(Widget headerToolbarWidget) {
+        form.setHeaderToolbar(headerToolbarWidget);
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView#setFooter(com.google.gwt.user.client.ui.Widget)
-     */
     @Override
-    public void setFooter(Widget footerWidget) {
-        // TODO Auto-generated method stub
-
+    public void setFooterToolbar(Widget footerToolbarWidget) {
+        form.setFooterToolbar(footerToolbarWidget);
     }
 
 }
