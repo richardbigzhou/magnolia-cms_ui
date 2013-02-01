@@ -1,12 +1,11 @@
 .v-actionbar {
 	position:relative;
-	width:50px;
 	background:#666;
 	color:#fff;
 	font-size:14px;
 }
-.v-actionbar {width:50px;}
-.v-actionbar-open {width:270px;}
+.v-actionbar {width:50px; padding-top:24px;}
+.v-actionbar-open {width:270px; padding-top:0;}
 
 .v-actionbar-section {
 	padding:11px 0 10px 10px;
@@ -127,6 +126,7 @@ span.icon-publish-incl-sub {margin-left:3px;}
 	background:none;
 	font-size:12px;
 	margin-top:18px;
+	padding-top:0;
 }
 
 .tablet .v-actionbar-section {padding:0;}
