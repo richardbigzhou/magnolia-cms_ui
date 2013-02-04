@@ -33,41 +33,7 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor.action;
 
-import info.magnolia.ui.admincentral.mediaeditor.editmode.builder.EditModeBuilder;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenter;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-
-import javax.inject.Inject;
-
 /**
- * EditModeAction.
+ * CropActionDefinition.
  */
-public class EditModeAction extends ActionBase<EditModeActionDefinition> {
-
-    private EditorPresenter editorPresenter;
-    
-    private EditModeBuilderFactory builderFactory;
-    
-    @Inject
-    public EditModeAction(EditModeActionDefinition definition, EditorPresenter presenter, EditModeBuilderFactory editModeBuilderFactory) {
-        super(definition);
-        this.editorPresenter = presenter;
-        this.builderFactory = editModeBuilderFactory;
-    }
-
-    @Override
-    protected EditModeActionDefinition getDefinition() {
-        return super.getDefinition();
-    }
-    
-    @Override
-    public void execute() throws ActionExecutionException {
-        EditModeBuilder builder = builderFactory.getBuilder(getDefinition());
-        editorPresenter.getView().setContent(builder.createMediaField());
-        editorPresenter.getView().setFooter(builder.createFooterControls());
-        editorPresenter.getView().setHeader(builder.createHeaderControls());
-        editorPresenter.updateViewData();
-    }
-}
+public class CropActionDefinition implements EditModeActionDefinition {}

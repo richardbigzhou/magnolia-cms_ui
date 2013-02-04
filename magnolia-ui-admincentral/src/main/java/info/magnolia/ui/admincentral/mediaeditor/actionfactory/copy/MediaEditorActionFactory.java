@@ -31,32 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.editmode.factory;
+package info.magnolia.ui.admincentral.mediaeditor.actionfactory.copy;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.mediaeditor.action.EditModeActionDefinition;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.builder.EditModeBuilder;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.builder.FactoryBase;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionFactory;
 
 /**
- * EditModeBuilderFactory.
+ * MediaEditorActionFactory.
  */
-@Singleton
-public class EditModeBuilderFactory extends FactoryBase<EditModeActionDefinition, EditModeBuilder> {
-
-    @Inject
-    public EditModeBuilderFactory(EditModeRegistry registry, ComponentProvider provider) {
-        super(provider);
-        for (DefinitionToImplementationMapping<EditModeActionDefinition, EditModeBuilder> definitionToImplementationMapping : registry.getDefinitionToImplementationMappings()) {
-            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
-        }
-    }
-
-    public EditModeBuilder getBuilder(EditModeActionDefinition definition, Object...parameters ) {
-        return create(definition, parameters);
-    }
-}
+public interface MediaEditorActionFactory extends ActionFactory<ActionDefinition, Action> {}

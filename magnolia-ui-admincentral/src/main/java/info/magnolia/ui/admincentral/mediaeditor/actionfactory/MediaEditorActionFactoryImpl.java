@@ -43,11 +43,13 @@ import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import java.io.Serializable;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.jcr.Item;
 
 /**
  * MediaEditorActionFactoryImpl.
  */
+@Singleton
 public class MediaEditorActionFactoryImpl extends AbstractActionFactory<ActionDefinition, Action> implements WorkbenchActionFactory, Serializable {
 
     @Inject

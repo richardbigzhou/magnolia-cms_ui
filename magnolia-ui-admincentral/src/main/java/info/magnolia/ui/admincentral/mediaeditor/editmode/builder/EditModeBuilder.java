@@ -31,37 +31,63 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.editmode.factory;
+package info.magnolia.ui.admincentral.mediaeditor.editmode.builder;
 
-import info.magnolia.ui.admincentral.mediaeditor.action.EditModeActionDefinition;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.builder.EditModeBuilder;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
+import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.ui.Component;
+
 /**
- * EditModeRegistry.
+ * EditMode.
  */
-public class EditModeRegistry implements Serializable {
+public interface EditModeBuilder {
 
-    private List<DefinitionToImplementationMapping<EditModeActionDefinition, EditModeBuilder>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<EditModeActionDefinition, EditModeBuilder>>();
-
-    public EditModeRegistry() {
-        super();
-    }
-
-    public List<DefinitionToImplementationMapping<EditModeActionDefinition, EditModeBuilder>> getDefinitionToImplementationMappings() {
-        return this.definitionToImplementationMappings;
-    }
-
-    public void setDefinitionToImplementationMappings(List<DefinitionToImplementationMapping<EditModeActionDefinition, EditModeBuilder>> definitionToImplementationMappings) {
-        this.definitionToImplementationMappings = definitionToImplementationMappings;
-    }
-
-    public void addDefinitionToImplementationMapping(DefinitionToImplementationMapping<EditModeActionDefinition, EditModeBuilder> mapping) {
-        this.definitionToImplementationMappings.add(mapping);
-    }
+    Component createMediaField();
     
+    Component createHeaderControls();
+    
+    Component createFooterControls();
+    
+    List<DialogActionContext> getActionContexts();
+    
+    /**
+     * DialogActionsContext.
+     */
+    public static class DialogActionContext {
+       
+        private String actionId;
+        
+        private String label;
+        
+        private DialogActionListener listener;
+        
+        public DialogActionContext(String id, String label, DialogActionListener listener) {
+            this.actionId = id;
+            this.label = label;
+            this.listener = listener;
+        }
+        
+        /**
+         * @return the actionId
+         */
+        public String getActionId() {
+            return actionId;
+        }
+        
+        /**
+         * @return the label
+         */
+        public String getLabel() {
+            return label;
+        }
+        
+        /**
+         * @return the listener
+         */
+        public DialogActionListener getListener() {
+            return listener;
+        }
+    }
 }

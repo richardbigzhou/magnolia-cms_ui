@@ -31,32 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.editmode.factory;
+package info.magnolia.ui.admincentral.mediaeditor.editmode.view;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.mediaeditor.action.EditModeActionDefinition;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.builder.EditModeBuilder;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.builder.FactoryBase;
+import com.vaadin.server.StreamResource;
+import com.vaadin.ui.Component;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import info.magnolia.ui.framework.view.View;
 
 /**
- * EditModeBuilderFactory.
+ * EditorView.
  */
-@Singleton
-public class EditModeBuilderFactory extends FactoryBase<EditModeActionDefinition, EditModeBuilder> {
+public interface EditorView extends View {
 
-    @Inject
-    public EditModeBuilderFactory(EditModeRegistry registry, ComponentProvider provider) {
-        super(provider);
-        for (DefinitionToImplementationMapping<EditModeActionDefinition, EditModeBuilder> definitionToImplementationMapping : registry.getDefinitionToImplementationMappings()) {
-            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
-        }
-    }
+    /**
+     * @param createMediaField
+     */
+    void setContent(Component createMediaField);
+    
+    /**
+     * @param createMediaField
+     */
+    void setFooter(Component createMediaField);
 
-    public EditModeBuilder getBuilder(EditModeActionDefinition definition, Object...parameters ) {
-        return create(definition, parameters);
-    }
+    /**
+     * @param createMediaField
+     */
+    void setHeader(Component createMediaField);
+
+    /**
+     * @param resource
+     */
+    void setResource(StreamResource streamResource);
 }

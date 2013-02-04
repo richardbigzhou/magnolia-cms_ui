@@ -31,32 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.editmode.factory;
+package info.magnolia.ui.admincentral.mediaeditor.editmode.presenter;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.mediaeditor.action.EditModeActionDefinition;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.builder.EditModeBuilder;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.builder.FactoryBase;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.view.EditorView;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import java.io.ByteArrayInputStream;
 
 /**
- * EditModeBuilderFactory.
+ * EditorPresenter.
  */
-@Singleton
-public class EditModeBuilderFactory extends FactoryBase<EditModeActionDefinition, EditModeBuilder> {
+public interface EditorPresenter {
 
-    @Inject
-    public EditModeBuilderFactory(EditModeRegistry registry, ComponentProvider provider) {
-        super(provider);
-        for (DefinitionToImplementationMapping<EditModeActionDefinition, EditModeBuilder> definitionToImplementationMapping : registry.getDefinitionToImplementationMappings()) {
-            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
-        }
-    }
+    /**
+     * 
+     */
+    void updateViewData();
+    
+    /**
+     * @param byteArrayInputStream
+     */
+    void setInputStream(ByteArrayInputStream byteArrayInputStream);
 
-    public EditModeBuilder getBuilder(EditModeActionDefinition definition, Object...parameters ) {
-        return create(definition, parameters);
-    }
+    EditorView getView();
+
 }

@@ -31,43 +31,63 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.action;
+package info.magnolia.ui.admincentral.mediaeditor.editmode.presenter;
 
-import info.magnolia.ui.admincentral.mediaeditor.editmode.builder.EditModeBuilder;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenter;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.view.EditorView;
+import info.magnolia.ui.framework.event.EventBus;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import com.vaadin.server.StreamResource;
+import com.vaadin.server.StreamResource.StreamSource;
+
 
 /**
- * EditModeAction.
+ * AbstractEditorPresenter.
  */
-public class EditModeAction extends ActionBase<EditModeActionDefinition> {
+@Singleton
+public class EditorPresenterImpl implements EditorPresenter {
 
-    private EditorPresenter editorPresenter;
+    private EventBus eventBus;
     
-    private EditModeBuilderFactory builderFactory;
+    private InputStream stream;
+    
+    private EditorView view;
     
     @Inject
-    public EditModeAction(EditModeActionDefinition definition, EditorPresenter presenter, EditModeBuilderFactory editModeBuilderFactory) {
-        super(definition);
-        this.editorPresenter = presenter;
-        this.builderFactory = editModeBuilderFactory;
+    public EditorPresenterImpl(@Named("admincentral") EventBus eventBus, EditorView view) {
+        this.eventBus = eventBus;
+        this.view = view;
+    }
+    
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     @Override
-    protected EditModeActionDefinition getDefinition() {
-        return super.getDefinition();
+    public void setInputStream(ByteArrayInputStream stream) {
+        this.stream = stream;
     }
     
     @Override
-    public void execute() throws ActionExecutionException {
-        EditModeBuilder builder = builderFactory.getBuilder(getDefinition());
-        editorPresenter.getView().setContent(builder.createMediaField());
-        editorPresenter.getView().setFooter(builder.createFooterControls());
-        editorPresenter.getView().setHeader(builder.createHeaderControls());
-        editorPresenter.updateViewData();
+    public EditorView getView() {
+        return view;
     }
+
+    @Override
+    public void updateViewData() {
+        view.setResource(new StreamResource(new StreamSource() {
+            
+            @Override
+            public InputStream getStream() {
+                return stream;
+            }
+        }, ""));
+    }
+    
 }

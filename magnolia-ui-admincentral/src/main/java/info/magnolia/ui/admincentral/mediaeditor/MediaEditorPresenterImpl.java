@@ -34,42 +34,73 @@
 package info.magnolia.ui.admincentral.mediaeditor;
 
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
-import info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter;
+import info.magnolia.ui.admincentral.mediaeditor.action.EditModeActionDefinition;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenter;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionDefinition;
+
+import java.io.ByteArrayInputStream;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.vaadin.server.StreamResource;
+import org.apache.commons.lang.ArrayUtils;
 
+import com.vaadin.data.util.converter.Converter.ConversionException;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomField;
 
 /**
  * MediaEditorPresenterImpl.
  */
-public class MediaEditorPresenterImpl implements MediaEditorPresenter {
+public class MediaEditorPresenterImpl extends CustomField<Byte[]> implements MediaEditorPresenter {
 
-    private StreamResource resource;
-    
-    @Inject
-    private MediaEditorActionbarPresenter actionbarPresenter;
-    
+    /**
+     * ActionbarEventHandler.
+     */
+    private final class ActionbarEventHandler implements ActionbarItemClickedEvent.Handler {
+        @Override
+        public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
+            final ActionDefinition actionDefinition = event.getActionDefinition();
+            dispatchActionbarEvent(actionDefinition);
+        }
+    }
+
     @Inject
     private MediaEditorView view;
     
     @Inject
-    public MediaEditorPresenterImpl(@Named("mediaeditor") EventBus eventBus) {
-        eventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarItemClickedEvent.Handler() {
+    private EditorPresenter editorPresenter;
+    
+    @Inject
+    private EditModeBuilderFactory editModeBuilderFactory;
 
-            @Override
-            public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
-                final ActionDefinition actionDefinition = event.getActionDefinition();
-            }
-        });
+    @Inject
+    public MediaEditorPresenterImpl(@Named("admincentral") EventBus eventBus) {
+        eventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarEventHandler());
+    }
+
+    protected void dispatchActionbarEvent(ActionDefinition actionDefinition) {
+        if (actionDefinition instanceof EditModeActionDefinition) {
+            editModeBuilderFactory.getBuilder((EditModeActionDefinition) actionDefinition);
+        }
+    }
+    
+    @Override
+    public Class<? extends Byte[]> getType() {
+        return Byte[].class;
     }
 
     @Override
-    public void setResource(StreamResource resource) {
-        this.resource = resource;
+    public void setValue(Byte[] value) throws ReadOnlyException, ConversionException {
+        super.setValue(value);
+        editorPresenter.setInputStream(new ByteArrayInputStream(ArrayUtils.toPrimitive(value)));
     }
+
+    @Override
+    protected Component initContent() {
+        return view.asVaadinComponent();
+    }
+
 }

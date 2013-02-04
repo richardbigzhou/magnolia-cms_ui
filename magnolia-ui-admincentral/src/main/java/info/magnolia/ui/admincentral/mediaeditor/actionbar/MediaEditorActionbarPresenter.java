@@ -39,19 +39,27 @@ import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 /**
  * MediaEditorActionbarPresenter.
  */
 public class MediaEditorActionbarPresenter extends ActionbarPresenterBase {
-
     
-    public MediaEditorActionbarPresenter(EventBus subAppEventBus) {
+    @Inject
+    public MediaEditorActionbarPresenter(@Named("admincentral") EventBus subAppEventBus) {
         super(subAppEventBus);
     }
 
     @Override
     public void onChangeFullScreen(boolean isFullScreen) {
         
+    }
+    
+    @Override
+    public void onActionbarItemClicked(String actionToken) {
+        super.onActionbarItemClicked(actionToken);
     }
     
     public void fireAction(ActionDefinition actionDef) throws ActionExecutionException {

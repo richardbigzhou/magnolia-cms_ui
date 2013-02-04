@@ -154,6 +154,53 @@
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
+    
+    <!-- MEDIA EDITOR CONFIG -->
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeRegistry</type>
+      <workspace>config</workspace>
+      <path>/modules/ui-admincentral/mediaEditorModeRegistry</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
+    </component>
+    
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterImpl</implementation>
+    </component>
+    
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorView</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.MediaEditorViewImpl</implementation>
+    </component>
+    
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter</implementation>
+    </component>
+    
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactoryImpl</implementation>
+    </component>
+    
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenterImpl</implementation>
+    </component>    
+    
+     <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.view.EditorView</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.view.EditorViewImpl</implementation>
+    </component>
+    
+    
+    <!-- ENDOF MEDIA EDITOR CONFIG -->
     <component>
       <type>info.magnolia.ui.framework.location.LocationController</type>
       <implementation>info.magnolia.ui.framework.location.LocationController</implementation>
@@ -300,7 +347,7 @@
       <implementation>info.magnolia.ui.admincentral.content.item.ItemViewImpl</implementation>
     </component>
 
-
+    
     <!-- Moved into subApp due to use of subApps EventBus  -->
     <component>
       <type>info.magnolia.ui.admincentral.form.FormPresenterFactory</type>

@@ -33,13 +33,11 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor;
 
-import com.vaadin.server.StreamResource;
+import com.vaadin.ui.Field;
 
 /**
  * MediaEditor.
  */
-public interface MediaEditorPresenter {
-
-    void setResource(StreamResource resource);
+public interface MediaEditorPresenter extends Field<Byte[]> {
     
 }

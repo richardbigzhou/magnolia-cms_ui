@@ -31,43 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.action;
+package info.magnolia.ui.admincentral.mediaeditor.editmode.view;
 
-import info.magnolia.ui.admincentral.mediaeditor.editmode.builder.EditModeBuilder;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenter;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
-import javax.inject.Inject;
+import com.vaadin.server.StreamResource;
+import com.vaadin.ui.Component;
 
 /**
- * EditModeAction.
+ * AbstractEditorView.
  */
-public class EditModeAction extends ActionBase<EditModeActionDefinition> {
+public class EditorViewImpl implements EditorView {
 
-    private EditorPresenter editorPresenter;
+    private BaseDialog dialog = new BaseDialog();
     
-    private EditModeBuilderFactory builderFactory;
-    
-    @Inject
-    public EditModeAction(EditModeActionDefinition definition, EditorPresenter presenter, EditModeBuilderFactory editModeBuilderFactory) {
-        super(definition);
-        this.editorPresenter = presenter;
-        this.builderFactory = editModeBuilderFactory;
+    @Override
+    public Component asVaadinComponent() {
+        return null;
     }
 
     @Override
-    protected EditModeActionDefinition getDefinition() {
-        return super.getDefinition();
+    public void setContent(Component content) {
+        this.dialog.setContent(content);
     }
-    
+
     @Override
-    public void execute() throws ActionExecutionException {
-        EditModeBuilder builder = builderFactory.getBuilder(getDefinition());
-        editorPresenter.getView().setContent(builder.createMediaField());
-        editorPresenter.getView().setFooter(builder.createFooterControls());
-        editorPresenter.getView().setHeader(builder.createHeaderControls());
-        editorPresenter.updateViewData();
+    public void setFooter(Component createMediaField) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setHeader(Component createMediaField) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setResource(StreamResource streamResource) {
+        // TODO Auto-generated method stub
+        
     }
 }

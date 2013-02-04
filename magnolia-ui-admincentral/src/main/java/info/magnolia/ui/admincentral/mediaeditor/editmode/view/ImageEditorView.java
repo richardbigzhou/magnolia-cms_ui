@@ -31,32 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.editmode.factory;
+package info.magnolia.ui.admincentral.mediaeditor.editmode.view;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.mediaeditor.action.EditModeActionDefinition;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.builder.EditModeBuilder;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.builder.FactoryBase;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import com.vaadin.server.StreamResource;
 
 /**
- * EditModeBuilderFactory.
+ * ImageEditorView.
  */
-@Singleton
-public class EditModeBuilderFactory extends FactoryBase<EditModeActionDefinition, EditModeBuilder> {
+public class ImageEditorView extends EditorViewImpl {
 
-    @Inject
-    public EditModeBuilderFactory(EditModeRegistry registry, ComponentProvider provider) {
-        super(provider);
-        for (DefinitionToImplementationMapping<EditModeActionDefinition, EditModeBuilder> definitionToImplementationMapping : registry.getDefinitionToImplementationMappings()) {
-            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
-        }
+    @Override
+    public void setResource(StreamResource streamResource) {
+        
     }
 
-    public EditModeBuilder getBuilder(EditModeActionDefinition definition, Object...parameters ) {
-        return create(definition, parameters);
-    }
 }
