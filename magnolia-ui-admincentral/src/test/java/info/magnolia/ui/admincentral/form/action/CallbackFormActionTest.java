@@ -39,6 +39,7 @@ import info.magnolia.ui.admincentral.form.FormItem;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
 
 import org.junit.Before;
@@ -156,7 +157,7 @@ public class CallbackFormActionTest {
         }
 
         @Override
-        public void addAction(String actionName, String actionLabel, FormView.FormActionListener callback) {
+        public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
 
         }
 
