@@ -20,10 +20,6 @@
       <implementation>info.magnolia.ui.app.pages.main.PagesMainSubApp</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.app.pages.main.PagesMainView</type>
-      <implementation>info.magnolia.ui.app.pages.main.PagesMainViewImpl</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
       <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
     </component>

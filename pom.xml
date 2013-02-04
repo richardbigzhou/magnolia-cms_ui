@@ -68,9 +68,6 @@
         <artifactId>icepush</artifactId>
         <version>3.0.1</version>
       </dependency>
-      <!-- The autoreplace addon should be used only by instant-preview app,
-        which is currently disabled. Should it be not re-enabled the dep can be removed.
-        See SCRUM-1670 -->
       <dependency>
         <groupId>org.icepush</groupId>
         <artifactId>icepush-gwt</artifactId>
@@ -86,7 +83,6 @@
         <artifactId>filters</artifactId>
         <version>2.0.235</version>
       </dependency>
-
 
       <dependency>
         <groupId>com.vaadin</groupId>
@@ -253,7 +249,6 @@
     <module>magnolia-ui-app-contacts</module>
     <module>magnolia-ui-app-messages</module>
     <module>magnolia-ui-app-pages</module>
-    <!-- temporarily disabled see SCRUM-1670 <module>magnolia-ui-app-instant-preview</module> -->
     <module>magnolia-ui-app-security</module>
   </modules>
   <distributionManagement>
