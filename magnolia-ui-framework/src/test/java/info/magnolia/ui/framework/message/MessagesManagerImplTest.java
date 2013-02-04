@@ -66,7 +66,6 @@ public class MessagesManagerImplTest {
     private Session session;
     private MessagesManagerImpl messagesManager;
 
-    @SuppressWarnings("deprecation")
     @Before
     public void setUp() throws Exception {
 
@@ -212,6 +211,28 @@ public class MessagesManagerImplTest {
         assertEquals(0, messagesManager.getNumberOfUnclearedMessagesForUser("bob"));
         verify(listener).messageSent(any(Message.class));
         assertTrue(session.getNode("/bob/0").getProperty("cleared").getBoolean());
+    }
+
+    @Test
+    public void testDoNoClearAlreadyClearedMessage() throws RepositoryException {
+        // GIVEN
+        MessagesManager.MessageListener listener = mock(MessagesManager.MessageListener.class);
+        messagesManager.registerMessagesListener("bob", listener);
+
+        Message message = new Message();
+        message.setType(MessageType.ERROR);
+        message.setSubject("subject");
+        message.setMessage("message");
+        message.setCleared(true);
+        messagesManager.sendMessage("bob", message);
+
+        // WHEN
+        // this happens when clicking on a message row in pulse
+        messagesManager.clearMessage("bob", message.getId());
+
+        // THEN
+        verify(listener, never()).messageCleared(any(Message.class));
+
     }
 
     @Test
