@@ -132,6 +132,10 @@ public class DefaultLocation implements Location {
             return true;
         }
 
+        if ((o == null) || !(o instanceof  DefaultLocation)) {
+            return false;
+        }
+
         DefaultLocation that = (DefaultLocation) o;
 
         if (appType != null ? !appType.equals(that.appType) : that.appType != null) {

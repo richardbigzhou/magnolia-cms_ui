@@ -148,6 +148,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
                 final ActionDefinition actionDefinition = event.getActionDefinition();
                 actionbarPresenter.createAndExecuteAction(actionDefinition, workbenchDefinition.getWorkspace(), getSelectedItemId());
+                view.refresh();
             }
         });
 

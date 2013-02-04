@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2011 Yozons, Inc.
+// Copyright (C) 2010-2012 Yozons, Inc.
 // CKEditor for Vaadin - Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -61,9 +61,8 @@ public class CKEditorService {
 	/*-{
 		if($wnd.CKEDITOR) {
 			return true;
-		} else {
-			return false;
-		}
+		} 
+		return false;
 	}-*/;
 	
 	/**
@@ -109,8 +108,10 @@ public class CKEditorService {
 	
 	public native static void overrideBlurToForceBlur()
 	/*-{
-		$wnd.CKEDITOR.focusManager.prototype['blur'] =  $wnd.CKEDITOR.focusManager.prototype['forceBlur'];
+		$wnd.CKEDITOR.focusManager.prototype.orig_blur = $wnd.CKEDITOR.focusManager.prototype.blur;
+		$wnd.CKEDITOR.focusManager.prototype.blur = function() { $wnd.CKEDITOR.focusManager.prototype.orig_blur.call(this,true); };
 	}-*/;
+	
 	
 	/**
 	 * Returns a javascript CKEDITOR.editor instance for given id.

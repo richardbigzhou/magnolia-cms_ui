@@ -68,7 +68,7 @@ public abstract class CommandActionBase<D extends CommandActionDefinition> exten
     /**
      * Builds a map of parameters which will be passed to the current command for execution.
      * Called by the constructor. Default implementation returns a map containing the parameters defined at {@link CommandActionDefinition#getParams()}.
-     * It also adds the following parameters with values retrieved from the passed node, unless those parameters are already defined in the {@link CommandActionDefinition} bound to this action.
+     * It also adds the following parameters with values retrieved from the passed node.
      * <ul>
      * <li>Context.ATTRIBUTE_REPOSITORY = current node's workspace name
      * <li>Context.ATTRIBUTE_UUID = current node's identifier
@@ -82,18 +82,13 @@ public abstract class CommandActionBase<D extends CommandActionDefinition> exten
             final String workspace = node.getSession().getWorkspace().getName();
             final String identifier = SessionUtil.getNode(workspace, path).getIdentifier();
 
-            if (!params.containsKey(Context.ATTRIBUTE_REPOSITORY)) {
-                params.put(Context.ATTRIBUTE_REPOSITORY, workspace);
-            }
-            if (!params.containsKey(Context.ATTRIBUTE_UUID)) {
-                // really only the uuid should be used to identify a piece of content and nothing else
-                params.put(Context.ATTRIBUTE_UUID, identifier);
-            }
-            if (!params.containsKey(Context.ATTRIBUTE_PATH)) {
-                // retrieve content again using uuid and system context to get unaltered path.
-                final String realPath = MgnlContext.getSystemContext().getJCRSession(workspace).getNodeByIdentifier(identifier).getPath();
-                params.put(Context.ATTRIBUTE_PATH, realPath);
-            }
+            params.put(Context.ATTRIBUTE_REPOSITORY, workspace);
+            // really only the uuid should be used to identify a piece of content and nothing else
+            params.put(Context.ATTRIBUTE_UUID, identifier);
+            // retrieve content again using uuid and system context to get unaltered path.
+            final String realPath = MgnlContext.getSystemContext().getJCRSession(workspace).getNodeByIdentifier(identifier).getPath();
+            params.put(Context.ATTRIBUTE_PATH, realPath);
+
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
