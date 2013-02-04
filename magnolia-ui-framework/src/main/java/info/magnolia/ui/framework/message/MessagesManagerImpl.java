@@ -115,7 +115,7 @@ public class MessagesManagerImpl implements MessagesManager {
     @Override
     public void clearMessage(final String userName, final String messageId) {
         final Message message = messageStore.findMessageById(userName, messageId);
-        if (message != null) {
+        if (message != null && !message.isCleared()) {
             message.setCleared(true);
             messageStore.saveMessage(userName, message);
             sendMessageClearedEvent(userName, message);
