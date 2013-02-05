@@ -39,7 +39,7 @@ import java.util.Map;
 import com.vaadin.shared.ui.AbstractLayoutState;
 
 /**
- * EditorLikeComponentState.
+ * Common state class for the editor components like forms and dialogs..
  */
 public class EditorLikeComponentState extends AbstractLayoutState {
 
