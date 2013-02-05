@@ -35,11 +35,12 @@ package info.magnolia.ui.admincentral.setup;
 
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
+import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
+import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.ui.admincentral.legacy.MarkNodeAsDeletedCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,16 +73,15 @@ public class AdminCentralModuleVersionHandler extends DefaultModuleVersionHandle
                 "redirect:/.magnolia/pages/adminCentral.html",
                 "redirect:/.magnolia/admincentral"));
 
-        list.add(new ChangeAllPropertiesWithCertainValueTask(
-                "",
-                "",
-                RepositoryConstants.CONFIG,
-                "info.magnolia.module.admininterface.commands.MarkNodeAsDeletedCommand",
-                MarkNodeAsDeletedCommand.class.getName()));
-
         list.add(new IsModuleInstalledOrRegistered("Replace login security pattern",
                 "Replaces old login security pattern '/.resources/loginForm' (if present) with the new one '/.resources/defaultLoginForm'.",
                 "adminInterface", replaceLoginUriPattern));
+
+        list.add(new IsModuleInstalledOrRegistered("Removes old commands", "Removes old default and website commands now provided by different modules.", "adminInterface", new ArrayDelegateTask("",
+                new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/adminInterface/commands/default/activate"),
+                new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/adminInterface/commands/default/deactivate"),
+                new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/adminInterface/commands/website/activate"),
+                new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/adminInterface/commands/website/delete"))));
 
         return list;
     }

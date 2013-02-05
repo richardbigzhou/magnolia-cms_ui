@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>info.magnolia</groupId>
@@ -18,7 +17,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <magnoliaVersion>5.0-SNAPSHOT</magnoliaVersion>
-    <vaadinVersion>7.0.0.rc1</vaadinVersion>
+    <vaadinVersion>7.0.0</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
   </properties>
   <scm>
@@ -40,15 +39,14 @@
         <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
+        <groupId>info.magnolia.activation</groupId>
+        <artifactId>magnolia-module-activation</artifactId>
+        <version>${magnoliaVersion}</version>
+      </dependency>
+      <dependency>
         <groupId>info.magnolia</groupId>
         <artifactId>magnolia-module-imaging</artifactId>
         <version>2.3-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>servlet-api</artifactId>
-        <version>2.5</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>
@@ -70,9 +68,6 @@
         <artifactId>icepush</artifactId>
         <version>3.0.1</version>
       </dependency>
-      <!-- The autoreplace addon should be used only by instant-preview app, 
-        which is currently disabled. Should it be not re-enabled the dep can be removed. 
-        See SCRUM-1670 -->
       <dependency>
         <groupId>org.icepush</groupId>
         <artifactId>icepush-gwt</artifactId>
@@ -88,7 +83,6 @@
         <artifactId>filters</artifactId>
         <version>2.0.235</version>
       </dependency>
-
 
       <dependency>
         <groupId>com.vaadin</groupId>
@@ -117,12 +111,6 @@
         <artifactId>vaadin-themes</artifactId>
         <version>${vaadinVersion}</version>
       </dependency>
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>servlet-api</artifactId>
-        <version>2.4</version>
-        <scope>provided</scope>
-      </dependency>
 
       <!-- this replaces gwt-dev.jar -->
       <dependency>
@@ -138,11 +126,23 @@
         </exclusions>
       </dependency>
 
+	   <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.5</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jsp-api</artifactId>
+        <version>2.0</version>
+        <scope>provided</scope>
+      </dependency>
 
       <dependency>
         <groupId>com.googlecode.mgwt</groupId>
         <artifactId>mgwt</artifactId>
-        <version>1.1.1</version>
+        <version>1.1.2</version>
       </dependency>
       <dependency>
         <groupId>com.google.code.gson</groupId>
@@ -205,7 +205,7 @@
         <plugin>
           <groupId>com.vaadin</groupId>
           <artifactId>vaadin-maven-plugin</artifactId>
-          <version>7.0.0.rc1</version>
+          <version>7.0.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -249,8 +249,6 @@
     <module>magnolia-ui-app-contacts</module>
     <module>magnolia-ui-app-messages</module>
     <module>magnolia-ui-app-pages</module>
-    <!-- temporarily disabled see SCRUM-1670 <module>magnolia-ui-app-instant-preview</module> -->
-    <module>magnolia-ui-app-showcase</module>
     <module>magnolia-ui-app-security</module>
   </modules>
   <distributionManagement>

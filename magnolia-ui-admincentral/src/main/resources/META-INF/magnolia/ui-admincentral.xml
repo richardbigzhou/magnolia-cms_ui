@@ -21,11 +21,6 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.framework.instantpreview.InstantPreviewLocationManager</type>
-      <implementation>info.magnolia.ui.framework.instantpreview.InstantPreviewLocationManagerImpl</implementation>
-    </component>
-
-    <component>
       <type>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</type>
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</implementation>
     </component>
@@ -227,7 +222,7 @@
       <type>info.magnolia.ui.admincentral.dialog.action.DialogActionFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.action.DialogActionFactoryImpl</implementation>
     </component>
-        
+
     <component>
       <type>info.magnolia.ui.admincentral.dialog.ChooseDialogFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.ChooseDialogFactoryImpl</implementation>

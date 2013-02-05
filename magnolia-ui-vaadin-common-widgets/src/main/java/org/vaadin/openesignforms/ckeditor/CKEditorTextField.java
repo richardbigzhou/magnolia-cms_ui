@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2011 Yozons, Inc.
+// Copyright (C) 2010-2012 Yozons, Inc.
 // CKEditor for Vaadin - Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -26,190 +26,210 @@ import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.LegacyComponent;
 
 /**
- * Server side component for the VCKEditorTextField widget.
- * 
- * Currently, this widget doesn't support being read-only because CKEditor
- * doesn't. But perhaps need the widgets to only emit a DIV with the HTML code
- * inside if it's read-only.
+ * Server side component for the VCKEditorTextField widget.  
  */
-public class CKEditorTextField extends AbstractField<String> implements FieldEvents.BlurNotifier,
-        FieldEvents.FocusNotifier, LegacyComponent {
+public class CKEditorTextField extends AbstractField<String> implements
+        FieldEvents.BlurNotifier, FieldEvents.FocusNotifier, LegacyComponent {
+	
+	private static final long serialVersionUID = -7046683247580097506L;
 
-    private static final long serialVersionUID = 2801471973845411928L;
+	private CKEditorConfig config;
+	private String version = "unknown";
+	private String insertText = null;
+	private String insertHtml = null;
+	private boolean protectedBody = false;
+	private boolean viewWithoutEditor = false;
 
-    private CKEditorConfig config;
-    private String version = "unknown";
-    private String insertText = null;
-    private String insertHtml = null;
-    private boolean protectedBody = false;
-
-    public CKEditorTextField() {
-        super.setValue("");
-        setWidth(100, UNITS_PERCENTAGE);
-        setHeight(300, UNITS_PIXELS);
+	public CKEditorTextField() {
+		super.setValue("");
+		setWidth(100,UNITS_PERCENTAGE);
+		setHeight(300,UNITS_PIXELS);
+	}
+	
+	public CKEditorTextField(CKEditorConfig config) {
+		this();
+		setConfig(config);
+	}
+	
+	public void setConfig(CKEditorConfig config) {
+		this.config = config;
+	}
+	
+	public String getVersion() {
+		return version;
+	}
+	
+	@Override
+    public void setValue(String newValue) throws Property.ReadOnlyException,
+            Converter.ConversionException {
+    	if ( newValue == null )
+    		newValue = "";
+        // super.setValue(newValue.toString(), false);
+    	requestRepaint();
     }
-
-    public CKEditorTextField(CKEditorConfig config) {
-        this();
-        setConfig(config);
-    }
-
-    public void setConfig(CKEditorConfig config) {
-        this.config = config;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    @Override
-    public void setValue(String newValue) throws Property.ReadOnlyException, Converter.ConversionException {
-        if (newValue == null)
-            newValue = "";
-        super.setValue(newValue.toString(), false);
-        requestRepaint();
-    }
-
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
+	
+	@Override
+	public void paintContent(PaintTarget target) throws PaintException {
         // super.paintContent(target);
-
-        Object currValueObject = getValue();
-        target.addVariable(this, VCKEditorTextField.VAR_TEXT, currValueObject == null ? "" : currValueObject.toString());
-
-        target.addAttribute(VCKEditorTextField.ATTR_READONLY, isReadOnly());
-
-        if (config != null) {
-            target.addAttribute(VCKEditorTextField.ATTR_INPAGECONFIG, config.getInPageConfig());
-
-            if (config.hasWriterRules()) {
-                int i = 0;
-                Set<String> tagNameSet = config.getWriterRulesTagNames();
-                for (String tagName : tagNameSet) {
-                    target.addAttribute(VCKEditorTextField.ATTR_WRITERRULES_TAGNAME + i, tagName);
-                    target.addAttribute(VCKEditorTextField.ATTR_WRITERRULES_JSRULE + i,
-                            config.getWriterRuleByTagName(tagName));
-                    ++i;
-                }
-            }
-
-            if (config.hasWriterIndentationChars()) {
-                target.addAttribute(VCKEditorTextField.ATTR_WRITER_INDENTATIONCHARS, config.getWriterIndentationChars());
-            }
-        }
-
-        target.addAttribute(VCKEditorTextField.ATTR_PROTECTED_BODY, protectedBody);
-
-        if (insertHtml != null) {
-            target.addAttribute(VCKEditorTextField.ATTR_INSERT_HTML, insertHtml);
-            insertHtml = null;
-        }
-        if (insertText != null) {
-            target.addAttribute(VCKEditorTextField.ATTR_INSERT_TEXT, insertText);
-            insertText = null;
-        }
-    }
-
+		
+		Object currValueObject = getValue();
+		String currValue = currValueObject == null ? "" : currValueObject.toString();
+		target.addVariable(this, VCKEditorTextField.VAR_TEXT, currValue);
+		
+		target.addAttribute(VCKEditorTextField.ATTR_READONLY, isReadOnly());
+		target.addAttribute(VCKEditorTextField.ATTR_VIEW_WITHOUT_EDITOR, isViewWithoutEditor());
+		//System.out.println("*** TRACE paintContent() - sending value to browser (" + currValue.length() + ") >>>" + currValue + "<<<");
+		
+		if (config != null) {
+			target.addAttribute(VCKEditorTextField.ATTR_INPAGECONFIG, config.getInPageConfig());
+			
+			if ( config.hasWriterRules() ) {
+				int i = 0;
+				Set<String> tagNameSet = config.getWriterRulesTagNames();
+				for( String tagName : tagNameSet ) {
+					target.addAttribute(VCKEditorTextField.ATTR_WRITERRULES_TAGNAME+i, tagName);
+					target.addAttribute(VCKEditorTextField.ATTR_WRITERRULES_JSRULE+i, config.getWriterRuleByTagName(tagName));
+					++i;
+				}
+			}
+			
+			if ( config.hasWriterIndentationChars() ) {
+				target.addAttribute(VCKEditorTextField.ATTR_WRITER_INDENTATIONCHARS, config.getWriterIndentationChars());
+			}
+			
+			if ( config.hasProtectedSource() ) {
+				int i = 0;
+				for( String protectedSourceRegex : config.getProtectedSource() ) {
+					target.addAttribute(VCKEditorTextField.ATTR_PROTECTED_SOURCE+i, protectedSourceRegex);
+					++i;
+				}
+			}
+		}
+		
+		target.addAttribute(VCKEditorTextField.ATTR_PROTECTED_BODY, protectedBody);
+		
+		if (insertHtml != null) {
+			target.addAttribute(VCKEditorTextField.ATTR_INSERT_HTML, insertHtml);
+			insertHtml = null;
+		}
+		if (insertText != null) {
+			target.addAttribute(VCKEditorTextField.ATTR_INSERT_TEXT, insertText);
+			insertText = null;
+		}	
+	}
+	
     @Override
     public void changeVariables(Object source, Map<String, Object> variables) {
         // super.changeVariables(source, variables);
 
+        // Sets the CKEditor version
+        if (variables.containsKey(VCKEditorTextField.VAR_VERSION)) {
+        	version = (String)variables.get(VCKEditorTextField.VAR_VERSION);
+        }
+        
+        if (variables.containsKey(FocusEvent.EVENT_ID)) {
+    		//System.out.println("*** TRACE changeVariables() - FOCUS");
+            fireEvent(new FocusEvent(this));
+        }
+        if (variables.containsKey(BlurEvent.EVENT_ID)) {
+    		//System.out.println("*** TRACE changeVariables() - BLUR");
+            fireEvent(new BlurEvent(this));
+        }
+
         // Sets the text
-        if (variables.containsKey(VCKEditorTextField.VAR_TEXT) && !isReadOnly()) {
-            // Only do the setting if the string representation of the value has
-            // been updated
-            Object newVarTextObject = variables.get(VCKEditorTextField.VAR_TEXT);
+        if (variables.containsKey(VCKEditorTextField.VAR_TEXT) && ! isReadOnly()) {
+            // Only do the setting if the string representation of the value has been updated
+        	Object newVarTextObject = variables.get(VCKEditorTextField.VAR_TEXT);
             String newValue = newVarTextObject == null ? "" : newVarTextObject.toString();
 
             Object currValueObject = getValue();
             final String oldValue = currValueObject == null ? "" : currValueObject.toString();
-            if (!newValue.equals(oldValue)) {
-                boolean wasModified = isModified();
+            if ( ! newValue.equals(oldValue) ) {
+        		//System.out.println("*** TRACE changeVariables() - new value (" + newValue.length() + ") >>>" + newValue + "<<<");
                 setValue(newValue, true);
-
-                // If the modified status changes repaint is needed after all.
-                if (wasModified != isModified()) {
-                    requestRepaint();
-                }
             }
         }
-
-        // Sets the CKEditor version
-        if (variables.containsKey(VCKEditorTextField.VAR_VERSION)) {
-            version = (String) variables.get(VCKEditorTextField.VAR_VERSION);
-        }
-
-        if (variables.containsKey(FocusEvent.EVENT_ID)) {
-            fireEvent(new FocusEvent(this));
-        }
-        if (variables.containsKey(BlurEvent.EVENT_ID)) {
-            fireEvent(new BlurEvent(this));
-        }
     }
 
-    @Override
+
+	@Override
     public Class<String> getType() {
-        return String.class;
-    }
+		return String.class;
+	}
+	
+	@Override
+	public void addListener(BlurListener listener) {
+        addListener(BlurEvent.EVENT_ID, BlurEvent.class, listener,
+                BlurListener.blurMethod);
+	}
 
-    @Override
-    public void addListener(BlurListener listener) {
-        addListener(BlurEvent.EVENT_ID, BlurEvent.class, listener, BlurListener.blurMethod);
-    }
-
-    @Override
-    public void removeListener(BlurListener listener) {
+	@Override
+	public void removeListener(BlurListener listener) {
         removeListener(BlurEvent.EVENT_ID, BlurEvent.class, listener);
-    }
+	}
 
-    @Override
-    public void addListener(FocusListener listener) {
-        addListener(FocusEvent.EVENT_ID, FocusEvent.class, listener, FocusListener.focusMethod);
-    }
+	@Override
+	public void addListener(FocusListener listener) {
+        addListener(FocusEvent.EVENT_ID, FocusEvent.class, listener,
+                FocusListener.focusMethod);
+	}
 
-    @Override
-    public void removeListener(FocusListener listener) {
+	@Override
+	public void removeListener(FocusListener listener) {
         removeListener(FocusEvent.EVENT_ID, FocusEvent.class, listener);
-    }
-
-    @Override
+	}
+	
+    // @Override
+    // public void setHeight(float height, int unit) {
+    // super.setHeight(height,unit);
+    // }
+	@Override
     public void setHeight(String height) {
-        super.setHeight(height);
-    }
+		super.setHeight(height);
+	}
 
-    @Override
-    public void detach() {
-        super.detach();
-    }
+	@Override
+	public void detach() {
+		super.detach();
+	}
+	
+	public boolean isViewWithoutEditor() {
+		return viewWithoutEditor;
+	}
+	public void setViewWithoutEditor(boolean v) {
+		viewWithoutEditor = v;
+		requestRepaint();
+	}
+	
+	public void insertHtml(String html) {
+		if (insertHtml == null) 
+			insertHtml = html;
+		else 
+			insertHtml += html;
+		requestRepaint();
+	}
+	
+	public void insertText(String text) {
+		if (insertText == null) 
+			insertText = text;
+		else 
+			insertText += text;
+		requestRepaint();
+	}
 
-    public void insertHtml(String html) {
-        if (insertHtml == null)
-            insertHtml = html;
-        else
-            insertHtml += html;
-        requestRepaint();
-    }
+	public void setProtectedBody(boolean protectedBody) {
+		this.protectedBody = protectedBody;
+		requestRepaint();
+	}
 
-    public void insertText(String text) {
-        if (insertText == null)
-            insertText = text;
-        else
-            insertText += text;
-        requestRepaint();
-    }
-
-    public void setProtectedBody(boolean protectedBody) {
-        this.protectedBody = protectedBody;
-        requestRepaint();
-    }
-
-    public boolean isProtectedBody() {
-        return protectedBody;
-    }
+	public boolean isProtectedBody() {
+		return protectedBody;
+	}
 
     @Override
     public void addFocusListener(FocusListener listener) {
-        addListener(FocusEvent.EVENT_ID, FocusEvent.class, listener, FocusListener.focusMethod);
+        addListener(FocusEvent.EVENT_ID, FocusEvent.class, listener,
+                FocusListener.focusMethod);
     }
 
     @Override
@@ -219,7 +239,8 @@ public class CKEditorTextField extends AbstractField<String> implements FieldEve
 
     @Override
     public void addBlurListener(BlurListener listener) {
-        addListener(BlurEvent.EVENT_ID, BlurEvent.class, listener, BlurListener.blurMethod);
+        addListener(BlurEvent.EVENT_ID, BlurEvent.class, listener,
+                BlurListener.blurMethod);
     }
 
     @Override

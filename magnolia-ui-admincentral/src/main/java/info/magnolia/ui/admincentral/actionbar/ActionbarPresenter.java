@@ -38,6 +38,8 @@ import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -260,9 +262,10 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         return null;
     }
 
-    public void createAndExecuteAction(final ActionDefinition actionDefinition, String workspace, String absPath) throws ActionExecutionException {
+    public void createAndExecuteAction(final ActionDefinition actionDefinition, String workspace, String absPath) {
         if (actionDefinition == null || StringUtils.isBlank(workspace)) {
-            throw new ActionExecutionException("Got invalid arguments: action definition is " + actionDefinition + ", workspace is " + workspace);
+            Message warn = createMessage(MessageType.WARNING, "Got invalid arguments: action definition is " + actionDefinition + ", workspace is " + workspace, "");
+            appContext.sendLocalMessage(warn);
         }
         try {
             Session session = MgnlContext.getJCRSession(workspace);
@@ -273,12 +276,26 @@ public class ActionbarPresenter implements ActionbarView.Listener {
             final javax.jcr.Item item = session.getItem(absPath);
             final Action action = this.actionFactory.createAction(actionDefinition, item);
             if (action == null) {
-                throw new ActionExecutionException("Could not create action from actionDefinition. Action is null.");
+                Message warn = createMessage(MessageType.WARNING, "Could not create action from actionDefinition. Action is null.", "");
+                appContext.sendLocalMessage(warn);
             }
             action.execute();
+            appContext.showConfirmationMessage("Action executed successfully.");
         } catch (RepositoryException e) {
-            throw new ActionExecutionException(e);
+            Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            appContext.broadcastMessage(error);
+        } catch (ActionExecutionException e) {
+            Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            appContext.broadcastMessage(error);
         }
+    }
+
+    private Message createMessage(MessageType type, String subject, String message) {
+        final Message msg = new Message();
+        msg.setSubject(subject);
+        msg.setMessage(message);
+        msg.setType(type);
+        return msg;
     }
 
 }

@@ -51,7 +51,6 @@ import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -126,7 +125,6 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     }
 
     private void updateActions() {
-
         // actions currently always disabled
         actionbarPresenter.disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
     }
@@ -220,38 +218,34 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
 
             @Override
             public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
-                try {
-                    ActionDefinition actionDefinition = event.getActionDefinition();
-                    if (actionDefinition instanceof EditElementActionDefinition) {
-                        pageEditorPresenter.editComponent(
-                                ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
-                                pageEditorPresenter.getSelectedElement().getPath(),
-                                pageEditorPresenter.getSelectedElement().getDialog());
-                    } else if (actionDefinition instanceof AddComponentActionDefinition) {
-                        // casting to AreaElement, because this action is only defined for areas
-                        pageEditorPresenter.newComponent(
-                                ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
-                                pageEditorPresenter.getSelectedElement().getPath(),
-                                ((AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
-                    } else if (actionDefinition instanceof DeleteItemActionDefinition) {
-                        pageEditorPresenter.deleteComponent(((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(), pageEditorPresenter
-                                .getSelectedElement()
-                                .getPath());
-                    } else if (actionDefinition instanceof PreviewPageActionDefinition || actionDefinition instanceof EditPageActionDefinition) {
-                        actionbarPresenter.createAndExecuteAction(
-                                actionDefinition,
-                                ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
-                                parameters.getNodePath());
-                    } else {
-                        actionbarPresenter.createAndExecuteAction(
-                                actionDefinition,
-                                ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
-                                pageEditorPresenter.getSelectedElement().getPath());
-                    }
-
-                } catch (ActionExecutionException e) {
-                    log.error("An error occurred while executing an action.", e);
+                ActionDefinition actionDefinition = event.getActionDefinition();
+                if (actionDefinition instanceof EditElementActionDefinition) {
+                    pageEditorPresenter.editComponent(
+                            ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
+                            pageEditorPresenter.getSelectedElement().getPath(),
+                            pageEditorPresenter.getSelectedElement().getDialog());
+                } else if (actionDefinition instanceof AddComponentActionDefinition) {
+                    // casting to AreaElement, because this action is only defined for areas
+                    pageEditorPresenter.newComponent(
+                            ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
+                            pageEditorPresenter.getSelectedElement().getPath(),
+                            ((AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
+                } else if (actionDefinition instanceof DeleteItemActionDefinition) {
+                    pageEditorPresenter.deleteComponent(((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(), pageEditorPresenter
+                            .getSelectedElement()
+                            .getPath());
+                } else if (actionDefinition instanceof PreviewPageActionDefinition || actionDefinition instanceof EditPageActionDefinition) {
+                    actionbarPresenter.createAndExecuteAction(
+                            actionDefinition,
+                            ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
+                            parameters.getNodePath());
+                } else {
+                    actionbarPresenter.createAndExecuteAction(
+                            actionDefinition,
+                            ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
+                            pageEditorPresenter.getSelectedElement().getPath());
                 }
+
             }
         });
 
