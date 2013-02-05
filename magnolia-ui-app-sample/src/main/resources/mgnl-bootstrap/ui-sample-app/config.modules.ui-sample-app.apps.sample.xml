@@ -10,7 +10,7 @@
     <sv:value>008271e7-7d83-486d-989c-504751bb893b</sv:value>
   </sv:property>
   <sv:property sv:name="appClass" sv:type="String">
-    <sv:value>info.magnolia.ui.app.sample.SampleApp</sv:value>
+    <sv:value>info.magnolia.ui.framework.app.BaseApp</sv:value>
   </sv:property>
   <sv:property sv:name="categoryName" sv:type="String">
     <sv:value>MANAGE</sv:value>
