@@ -43,7 +43,7 @@ public interface DialogView extends View {
     /**
      * Action execution callback.
      */
-    interface DialogActionListener {
+    public interface DialogActionListener {
 
         void onActionExecuted(final String actionName);
     }

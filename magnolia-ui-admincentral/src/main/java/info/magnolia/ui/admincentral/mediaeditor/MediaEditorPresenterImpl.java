@@ -42,9 +42,6 @@ import info.magnolia.ui.model.action.ActionDefinition;
 
 import java.io.ByteArrayInputStream;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.commons.lang.ArrayUtils;
 
 import com.vaadin.data.util.converter.Converter.ConversionException;
@@ -67,18 +64,18 @@ public class MediaEditorPresenterImpl extends CustomField<Byte[]> implements Med
         }
     }
 
-    @Inject
     private MediaEditorView view;
     
-    @Inject
     private EditorPresenter editorPresenter;
     
-    @Inject
     private EditModeBuilderFactory editModeBuilderFactory;
 
-    @Inject
-    public MediaEditorPresenterImpl(@Named("admincentral") EventBus eventBus) {
+    public MediaEditorPresenterImpl(EventBus eventBus, MediaEditorView view, EditorPresenter editorPresenter, 
+            EditModeBuilderFactory modeBuilderFactory) {
         eventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarEventHandler());
+        this.view = view;
+        this.editModeBuilderFactory = modeBuilderFactory;
+        this.editorPresenter = editorPresenter;
     }
 
     protected void dispatchActionbarEvent(ActionDefinition actionDefinition) {

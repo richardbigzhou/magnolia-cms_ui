@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.app.showcase.main;
 
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory;
+
 import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -69,6 +72,8 @@ public class FormsViewImpl implements FormsView {
             @Override
             public void buttonClick(ClickEvent event) {
                 listener.onViewInDialog();
+                EditModeBuilderFactory f = Components.getComponent(EditModeBuilderFactory.class);
+                System.out.println(f);
             }
         }));
 

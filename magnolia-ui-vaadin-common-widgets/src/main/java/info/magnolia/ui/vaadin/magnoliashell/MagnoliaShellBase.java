@@ -186,6 +186,11 @@ public abstract class MagnoliaShellBase extends AbstractComponent implements Has
     }
 
     @Override
+    protected MagnoliaShellState createState() {
+        return new MagnoliaShellState();
+    }
+    
+    @Override
     protected MagnoliaShellState getState() {
         return (MagnoliaShellState) super.getState();
     }

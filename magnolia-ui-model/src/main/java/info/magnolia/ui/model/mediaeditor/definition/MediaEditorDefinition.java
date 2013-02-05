@@ -31,39 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.actionfactory.copy;
+package info.magnolia.ui.model.mediaeditor.definition;
 
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Singleton;
 
 /**
- * MediaEditorActionregistry.
+ * MediaEditorDefinition.
  */
-@Singleton
-public class MediaEditorActionRegistry implements Serializable {
+public interface MediaEditorDefinition {
+    
+    String getId();
 
-    private List<DefinitionToImplementationMapping<ActionDefinition, Action>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>();
-
-    public MediaEditorActionRegistry() {
-        super();
-    }
-
-    public List<DefinitionToImplementationMapping<ActionDefinition, Action>> getDefinitionToImplementationMappings() {
-        return this.definitionToImplementationMappings;
-    }
-
-    public void setDefinitionToImplementationMappings(List<DefinitionToImplementationMapping<ActionDefinition, Action>> definitionToImplementationMappings) {
-        this.definitionToImplementationMappings = definitionToImplementationMappings;
-    }
-
-    public void addDefinitionToImplementationMapping(DefinitionToImplementationMapping<ActionDefinition, Action> mapping) {
-        this.definitionToImplementationMappings.add(mapping);
-    }
+    ActionbarDefinition getActionBarDefinition();
+    
 }

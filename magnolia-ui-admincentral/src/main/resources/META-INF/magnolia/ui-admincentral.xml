@@ -41,11 +41,32 @@
       <type>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</type>
       <implementation>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</implementation>
     </component>
+    
+    <!-- MEDIA EDITOR CONFIG HERE -->
+    <component>
+      <type>info.magnolia.ui.model.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager</type>
+      <implementation>info.magnolia.ui.model.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeRegistry</type>
+      <workspace>config</workspace>
+      <path>/modules/ui-admincentral/mediaEditorModeRegistry</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
+    </component>
+   
+
+   
+    <component>
+      <type>info.magnolia.ui.model.mediaeditor.registry.MediaEditorRegistry</type>
+      <implementation>info.magnolia.ui.model.mediaeditor.registry.MediaEditorRegistry</implementation>
+    </component>
+     
     <component>
       <type>info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry</type>
       <implementation>info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry</implementation>
     </component>
-
+    <!-- ENDOF MEDIA EDITOR CONFIG -->
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppDescriptor</type>
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
@@ -69,6 +90,10 @@
     <type-mapping>
       <type>info.magnolia.ui.model.form.definition.FormDefinition</type>
       <implementation>info.magnolia.ui.model.form.definition.ConfiguredFormDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition</type>
+      <implementation>info.magnolia.ui.model.mediaeditor.definition.ConfiguredMediaEditorDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.form.action.FormActionDefinition</type>
@@ -118,6 +143,7 @@
       <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherGroupEntryDefinition</type>
       <implementation>info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherGroupEntryDefinition</implementation>
     </type-mapping>
+  
   </components>
 
   <components>
@@ -154,53 +180,7 @@
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
-    
-    <!-- MEDIA EDITOR CONFIG -->
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeRegistry</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-admincentral/mediaEditorModeRegistry</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-    
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterImpl</implementation>
-    </component>
-    
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorView</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.MediaEditorViewImpl</implementation>
-    </component>
-    
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter</implementation>
-    </component>
-    
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactoryImpl</implementation>
-    </component>
-    
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory</implementation>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenterImpl</implementation>
-    </component>    
-    
-     <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.view.EditorView</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.view.EditorViewImpl</implementation>
-    </component>
-    
-    
-    <!-- ENDOF MEDIA EDITOR CONFIG -->
+   
     <component>
       <type>info.magnolia.ui.framework.location.LocationController</type>
       <implementation>info.magnolia.ui.framework.location.LocationController</implementation>
@@ -391,6 +371,44 @@
       <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
       <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
     </component>
+    
+    
+    <!-- Media Editor Configuration -->
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorView</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.MediaEditorViewImpl</implementation>
+    </component>
+    
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter</implementation>
+    </component>
+    
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactoryImpl</implementation>
+    </component>
+    
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenterImpl</implementation>
+    </component>    
+    
+     <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.view.EditorView</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.view.EditorViewImpl</implementation>
+    </component>
+    
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactory</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactoryImpl</implementation>
+    </component>
+    <!-- End fo Media Editor Configuration -->
   </components>
 
   <dependencies>

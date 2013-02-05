@@ -31,13 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.actionfactory.copy;
+package info.magnolia.ui.admincentral.mediaeditor;
 
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionFactory;
+import info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition;
 
 /**
- * MediaEditorActionFactory.
+ * MediaEditorPresenterFactory.
  */
-public interface MediaEditorActionFactory extends ActionFactory<ActionDefinition, Action> {}
+public interface MediaEditorPresenterFactory {
+
+    MediaEditorPresenter getPresenterById(String id);
+    
+    MediaEditorPresenter getPresenterByDefinition(MediaEditorDefinition definition);
+}

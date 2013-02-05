@@ -31,43 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.actionbar;
+package info.magnolia.ui.model.mediaeditor.definition;
 
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenterBase;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
-
-import javax.inject.Inject;
-import javax.inject.Named;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 
 /**
- * MediaEditorActionbarPresenter.
+ * ConfiguredMediaEditorDefinition.
  */
-public class MediaEditorActionbarPresenter extends ActionbarPresenterBase {
+public class ConfiguredMediaEditorDefinition implements MediaEditorDefinition {
+
+    private ActionbarDefinition actionbarDefinition;
     
-    @Inject
-    public MediaEditorActionbarPresenter(@Named("system") EventBus subAppEventBus) {
-        super(subAppEventBus);
+    private String id;
+    
+    @Override
+    public String getId() {
+        return id;
     }
 
     @Override
-    public void onChangeFullScreen(boolean isFullScreen) {
-        
+    public ActionbarDefinition getActionBarDefinition() {
+        return actionbarDefinition;
+    }
+
+    
+    public void setId(String id) {
+        this.id = id;
     }
     
-    @Override
-    public void onActionbarItemClicked(String actionToken) {
-        super.onActionbarItemClicked(actionToken);
-    }
-    
-    public void fireAction(ActionDefinition actionDef) throws ActionExecutionException {
-        final Action action = getActionFactory().createAction(actionDef);
-        if (action == null) {
-            throw new ActionExecutionException("Could not create action from actionDefinition. Action is null.");
-        }
-        action.execute();
+    public void setActionbarDefinition(ActionbarDefinition definition) {
+        this.actionbarDefinition = definition;
     }
 
 }

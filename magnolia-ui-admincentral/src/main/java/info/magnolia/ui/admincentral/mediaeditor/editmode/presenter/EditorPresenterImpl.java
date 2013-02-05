@@ -60,7 +60,7 @@ public class EditorPresenterImpl implements EditorPresenter {
     private EditorView view;
     
     @Inject
-    public EditorPresenterImpl(@Named("admincentral") EventBus eventBus, EditorView view) {
+    public EditorPresenterImpl(@Named("system") EventBus eventBus, EditorView view) {
         this.eventBus = eventBus;
         this.view = view;
     }
