@@ -35,6 +35,8 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
 
+import javax.inject.Inject;
+
 /**
  * Basic app implementation with default behavior suitable for most apps.
  *
@@ -44,6 +46,7 @@ public class BaseApp implements App {
 
     protected AppContext appContext;
 
+    @Inject
     protected BaseApp(AppContext appContext) {
         this.appContext = appContext;
     }
