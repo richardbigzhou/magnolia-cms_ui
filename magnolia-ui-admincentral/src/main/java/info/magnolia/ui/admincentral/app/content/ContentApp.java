@@ -46,7 +46,10 @@ import javax.inject.Inject;
 import com.vaadin.data.Item;
 
 /**
- * Abstract base app class for content apps.
+ * Extends the {@link BaseApp} by the ability to open a choose dialog.
+ *
+ * @see ChooseDialogFactory
+ * @see ChooseDialogPresenter
  */
 public class ContentApp extends BaseApp {
 

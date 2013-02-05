@@ -49,24 +49,31 @@ import info.magnolia.ui.framework.view.View;
 import javax.inject.Named;
 
 /**
- * Abstract class providing a sensible implementation for services shared by all content subapps.
- * Out-of-the-box it will handle the following
- * <ul>
- * <li>location updates when switching views, selecting items or performing searches: see {@link #locationChanged(Location)}
- * <li>restoring the workbench app status when i.e. coming from a bookmark: see {@link #start(Location)}
- * </ul>
+ * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.admincentral.content.view.ContentView}
+ * created by {@link info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder}.
+ * <pre>
+ *  <p>
+ *      This class Provides sensible implementation for services shared by all content subApps.
+ *      Out-of-the-box it will handle the following:
+ *  </p>
+ *
+ *  <ul>
+ *      <li>location updates when switching views, selecting items or performing searches: see {@link #locationChanged(Location)}
+ *      <li>restoring the workbench app status when i.e. coming from a bookmark: see {@link #start(Location)}
+ *  </ul>
  * In order to perform those tasks this class registers non-overridable handlers for the following events:
- * <ul>
- * <li> {@link ItemSelectedEvent}
- * <li> {@link ViewTypeChangedEvent}
- * <li> {@link SearchEvent}
- * </ul>
+ *  <ul>
+ *      <li> {@link ItemSelectedEvent}
+ *      <li> {@link ViewTypeChangedEvent}
+ *      <li> {@link SearchEvent}
+ *  </ul>
  * Subclasses can augment the default behavior and perform additional tasks by overriding the following methods:
- * <ul>
- * <li>{@link #onSubAppStart()}
- * <li>{@link #locationChanged(Location)}
- * <li>{@link #updateActionbar(ActionbarPresenter)}
- * </ul>
+ *  <ul>
+ *      <li>{@link #onSubAppStart()}
+ *      <li>{@link #locationChanged(Location)}
+ *      <li>{@link #updateActionbar(ActionbarPresenter)}
+ *  </ul>
+ * </pre>
  *
  * @see ContentWorkbenchPresenter
  * @see WorkbenchSubAppView

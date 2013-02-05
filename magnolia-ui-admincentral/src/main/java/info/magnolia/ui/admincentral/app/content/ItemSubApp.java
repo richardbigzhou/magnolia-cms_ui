@@ -43,7 +43,7 @@ import info.magnolia.ui.framework.view.View;
 import javax.inject.Inject;
 
 /**
- * Abstract class providing a sensible implementation for services shared by all item subApps.
+ * Base implementation of an item subApp. Provides sensible implementation for services shared by all item subApps.
  * Implementers of this class represent a tab for viewing and editing items typically opened from an {@link ContentSubApp}.
  * Subclasses can augment the default behavior and perform additional tasks by overriding the following methods:
  * <ul>
