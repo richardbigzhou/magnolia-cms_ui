@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15">
+<path fill="#fff" d="M12,12H3V3H12z"/>
 <path fill="#999" d="M13,13H2V2h11V13z M2,12h10V3h-9V12z"/>
 </svg>

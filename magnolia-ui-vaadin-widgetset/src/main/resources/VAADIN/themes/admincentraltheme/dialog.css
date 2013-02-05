@@ -9,14 +9,6 @@
   vertical-align: middle;
 }
 
-.dialog-header,.dialog-footer,.dialog-description {
-  padding: 12px 16px 12px 24px;
-}
-
-.dialog-description,.dialog-footer,.dialog-content {
-  border-top: 2px solid black;
-}
-
 .dialog-content {
 	height: 100%;
 	width: 100%;
@@ -30,10 +22,9 @@
 }
 
 .dialog-header span {
-  font-family: DINWebPro;
-  font-size: 18px;
-  font-weight: bold;
-  line-height: 18px;
+  font-family:DINWebPro;
+  font-size:16px;
+  font-weight:bold;
 }
 
 .dialog-description {
@@ -45,13 +36,13 @@
 }
 
 .dialog-panel {
-  background: none repeat scroll 0px 0px #E6E6E6;
-  border: none;
-  left: 50%;
-  margin: auto auto auto -360px;
-  padding: 0;
-  position: absolute;
-  width: 720px;
+  position:absolute;
+  top:2px;
+  bottom:2px;
+  left:50%;
+  width:720px;
+  margin-left:-360px;
+  padding:0;
   z-index:201; /* one more than curtain */
 }
 

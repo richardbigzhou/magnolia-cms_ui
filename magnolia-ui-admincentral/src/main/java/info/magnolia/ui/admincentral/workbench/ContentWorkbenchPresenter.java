@@ -259,6 +259,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
                 Object previewResource = imageProvider.getThumbnailResourceByPath(workspace, path, ImageProvider.PORTRAIT_GENERATOR);
                 if (previewResource instanceof Resource) {
                     actionbarPresenter.setPreview((Resource) previewResource);
+                } else {
+                    actionbarPresenter.setPreview(null);
                 }
             }
         }

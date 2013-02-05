@@ -33,7 +33,7 @@
 		</all>
 	</replace-with>
 
-	<replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.VDesktopUI">
+	<replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.VMgwtStylesUI">
 		<when-type-is class="com.vaadin.client.ui.VUI" />
 		<all>
 			<when-property-is name="mgwt.os" value="desktop" />
