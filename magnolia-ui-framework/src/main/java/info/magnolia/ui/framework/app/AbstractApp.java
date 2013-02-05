@@ -40,7 +40,7 @@ import info.magnolia.ui.framework.location.Location;
  *
  * @see App
  */
-public abstract class AbstractApp implements App {
+public class AbstractApp implements App {
 
     protected AppContext appContext;
 

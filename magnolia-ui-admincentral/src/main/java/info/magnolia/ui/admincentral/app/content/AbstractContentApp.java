@@ -48,7 +48,7 @@ import com.vaadin.data.Item;
 /**
  * Abstract base app class for content apps.
  */
-public abstract class AbstractContentApp extends AbstractApp {
+public class AbstractContentApp extends AbstractApp {
 
     private final ChooseDialogFactory chooseDialogFactory;
 

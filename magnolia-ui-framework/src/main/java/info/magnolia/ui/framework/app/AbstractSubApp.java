@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see info.magnolia.ui.framework.app.SubApp
  */
-public abstract class AbstractSubApp implements SubApp {
+public class AbstractSubApp implements SubApp {
 
     protected Location currentLocation;
     private final SubAppContext subAppContext;

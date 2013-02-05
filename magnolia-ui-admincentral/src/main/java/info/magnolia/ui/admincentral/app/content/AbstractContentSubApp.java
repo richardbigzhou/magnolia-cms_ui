@@ -73,7 +73,7 @@ import javax.inject.Named;
  * @see AbstractContentApp
  * @see ContentLocation
  */
-public abstract class AbstractContentSubApp extends AbstractSubApp {
+public class AbstractContentSubApp extends AbstractSubApp {
 
     private final ContentWorkbenchPresenter workbench;
 
@@ -144,7 +144,9 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * @see #locationChanged(Location)
      * @see ActionbarPresenter
      */
-    public abstract void updateActionbar(ActionbarPresenter actionbar);
+    public void updateActionbar(ActionbarPresenter actionbar) {
+
+    }
 
     protected final ContentWorkbenchPresenter getWorkbench() {
         return workbench;
