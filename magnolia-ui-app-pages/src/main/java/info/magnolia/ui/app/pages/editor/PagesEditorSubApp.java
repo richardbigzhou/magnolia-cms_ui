@@ -45,7 +45,7 @@ import info.magnolia.ui.app.pages.action.AddComponentActionDefinition;
 import info.magnolia.ui.app.pages.action.EditElementActionDefinition;
 import info.magnolia.ui.app.pages.action.EditPageActionDefinition;
 import info.magnolia.ui.app.pages.action.PreviewPageActionDefinition;
-import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory;
 /**
  * PagesEditorSubApp.
  */
-public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubAppView.Listener {
+public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.sample.main;
 
-import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
@@ -45,7 +45,7 @@ import javax.inject.Named;
 /**
  * SubApp for the main tab in sample app.
  */
-public class SampleMainSubApp extends AbstractSubApp implements SampleMainView.Listener {
+public class SampleMainSubApp extends BaseSubApp implements SampleMainView.Listener {
 
     private SampleMainView sampleMainView;
     private NavigationPresenter navigationPresenter;

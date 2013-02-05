@@ -40,7 +40,7 @@ import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.event.SearchEvent;
 import info.magnolia.ui.admincentral.event.ViewTypeChangedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
-import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
@@ -73,7 +73,7 @@ import javax.inject.Named;
  * @see AbstractContentApp
  * @see ContentLocation
  */
-public class AbstractContentSubApp extends AbstractSubApp {
+public class AbstractContentSubApp extends BaseSubApp {
 
     private final ContentWorkbenchPresenter workbench;
 

@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.app.content;
 
 import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
 import info.magnolia.ui.admincentral.workbench.ItemWorkbenchPresenter;
-import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
@@ -58,7 +58,7 @@ import javax.inject.Inject;
  * @see WorkbenchSubAppView
  * @see ItemLocation
  */
-public class AbstractItemSubApp extends AbstractSubApp {
+public class AbstractItemSubApp extends BaseSubApp {
 
     private final ItemWorkbenchPresenter workbench;
 

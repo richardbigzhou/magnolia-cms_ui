@@ -42,13 +42,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests for {@link AbstractSubApp}.
+ * Tests for {@link BaseSubApp}.
  */
-public class AbstractSubAppTest {
+public class BaseSubAppTest {
 
     private static final String APP_LABEL = "App label";
     private static final String SUBAPP_LABEL = "SubApp label";
-    private AbstractSubApp subApp;
+    private BaseSubApp subApp;
     private AppDescriptor appDescriptor;
     private SubAppDescriptor subAppDescriptor;
 
@@ -124,7 +124,7 @@ public class AbstractSubAppTest {
         assertEquals("", caption);
     }
 
-    private class DummySubApp extends AbstractSubApp {
+    private class DummySubApp extends BaseSubApp {
 
         public DummySubApp(SubAppContext subAppContext, View view) {
             super(subAppContext, view);

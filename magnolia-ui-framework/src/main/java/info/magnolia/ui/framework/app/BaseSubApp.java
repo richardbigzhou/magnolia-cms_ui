@@ -41,19 +41,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract implementation with default behavior suitable for most sub apps.
+ * Basic implementation of a subApp with default behavior suitable for most sub apps.
  *
- * @see info.magnolia.ui.framework.app.SubApp
+ * @see SubApp
  */
-public class AbstractSubApp implements SubApp {
+public class BaseSubApp implements SubApp {
 
     protected Location currentLocation;
     private final SubAppContext subAppContext;
     private final View view;
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractSubApp.class);
+    private static final Logger log = LoggerFactory.getLogger(BaseSubApp.class);
 
-    protected AbstractSubApp(final SubAppContext subAppContext, final View view) {
+    protected BaseSubApp(final SubAppContext subAppContext, final View view) {
         if (subAppContext == null || view == null) {
             throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", View = " + view);
         }
