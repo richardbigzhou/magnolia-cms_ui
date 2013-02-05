@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.gwt.client.editorlike.connector;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.AbstractLayoutState;
 
 /**
@@ -46,4 +47,10 @@ public class EditorLikeComponentState extends AbstractLayoutState {
     public String componentDescription = "";
 
     public Map<String, String> actions = new HashMap<String, String>();
+
+    public Connector content;
+
+    public Connector headerToolbar;
+
+    public Connector footerToolbar;
 }

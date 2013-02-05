@@ -40,7 +40,7 @@ import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
-import com.vaadin.client.ui.AbstractSingleComponentContainerConnector;
+import com.vaadin.client.ui.AbstractComponentContainerConnector;
 
 /**
  * EditorLikeComponentConnector.
@@ -48,7 +48,7 @@ import com.vaadin.client.ui.AbstractSingleComponentContainerConnector;
  * @param <T> the view
  * @param <U> the presenter
  */
-public abstract class EditorLikeComponentConnector<U extends EditorLikeView.Presenter, T extends EditorLikeView<U>> extends AbstractSingleComponentContainerConnector {
+public abstract class EditorLikeComponentConnector<U extends EditorLikeView.Presenter, T extends EditorLikeView<U>> extends AbstractComponentContainerConnector {
 
     private T view;
 
@@ -97,16 +97,46 @@ public abstract class EditorLikeComponentConnector<U extends EditorLikeView.Pres
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {
         updateContent();
+        updateHeaderToolbar();
+        updateFooterToolbar();
     }
 
     protected void updateActionsFromState() {
         view.setActions(getState().actions);
     }
 
+    // TODO: Perhaps these six methods can be refactored down to fewer more generic methods.
+    // Do we need get*() methods?
+    protected ComponentConnector getContent() {
+        return (ComponentConnector) getState().content;
+    }
+
+    protected ComponentConnector getHeader() {
+        return (ComponentConnector) getState().headerToolbar;
+    }
+
+    protected ComponentConnector getFooter() {
+        return (ComponentConnector) getState().footerToolbar;
+    }
+
     protected void updateContent() {
         final ComponentConnector content = getContent();
         if (content != null) {
             this.view.setContent(content.getWidget());
+        }
+    }
+
+    protected void updateHeaderToolbar() {
+        final ComponentConnector header = getHeader();
+        if (header != null) {
+            this.view.setHeaderToolbar(header.getWidget());
+        }
+    }
+
+    protected void updateFooterToolbar() {
+        final ComponentConnector footer = getFooter();
+        if (footer != null) {
+            this.view.setFooterToolbar(footer.getWidget());
         }
     }
 

@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.dialog;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -77,13 +77,13 @@ public class BaseDialogPresenter implements DialogPresenter {
     }
 
     @Override
-    public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
+    public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
         view.asVaadinComponent().addAction(actionName, actionLabel, callback);
 
     }
 
     @Override
-    public void addActionCallback(String actionName, DialogActionListener callback) {
+    public void addActionCallback(String actionName, EditorLikeActionListener callback) {
         view.asVaadinComponent().addActionCallback(actionName, callback);
     }
 

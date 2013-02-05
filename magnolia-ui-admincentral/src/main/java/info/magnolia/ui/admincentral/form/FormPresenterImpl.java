@@ -39,6 +39,7 @@ import info.magnolia.ui.admincentral.form.builder.FormBuilder;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.form.action.FormActionDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
 
 import com.vaadin.data.Item;
@@ -89,7 +90,7 @@ public class FormPresenterImpl implements FormPresenter {
     }
 
     @Override
-    public void addAction(String actionName, String actionLabel, FormView.FormActionListener callback) {
+    public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
         view.addAction(actionName, actionLabel, callback);
 
     }

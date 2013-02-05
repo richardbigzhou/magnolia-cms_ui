@@ -60,6 +60,10 @@
   text-align: right;
 }
 
+.dialog-footer-toolbar {
+  float:left;
+}
+
 .dialog-close,.dialog-help {
   float: right;
   margin-right: 0px;
