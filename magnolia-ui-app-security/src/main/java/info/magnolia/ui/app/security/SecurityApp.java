@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.security;
 
-import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
+import info.magnolia.ui.admincentral.app.content.ContentApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -44,7 +44,7 @@ import javax.inject.Inject;
 /**
  * The Security App, extending the base content app.
  */
-public class SecurityApp extends AbstractContentApp {
+public class SecurityApp extends ContentApp {
 
     @Inject
     public SecurityApp(AppContext appContext, ChooseDialogFactory chooseDialogFactory) {

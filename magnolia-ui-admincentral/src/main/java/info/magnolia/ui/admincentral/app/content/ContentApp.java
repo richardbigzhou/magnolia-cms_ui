@@ -48,7 +48,7 @@ import com.vaadin.data.Item;
 /**
  * Abstract base app class for content apps.
  */
-public class AbstractContentApp extends BaseApp {
+public class ContentApp extends BaseApp {
 
     private final ChooseDialogFactory chooseDialogFactory;
 
@@ -56,7 +56,7 @@ public class AbstractContentApp extends BaseApp {
     private Shell shell;
 
     @Inject
-    public AbstractContentApp(AppContext appContext, ChooseDialogFactory chooseDialogFactory) {
+    public ContentApp(AppContext appContext, ChooseDialogFactory chooseDialogFactory) {
         super(appContext);
         this.chooseDialogFactory = chooseDialogFactory;
     }

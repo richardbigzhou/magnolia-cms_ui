@@ -70,7 +70,7 @@ import javax.inject.Named;
  *
  * @see ContentWorkbenchPresenter
  * @see WorkbenchSubAppView
- * @see AbstractContentApp
+ * @see ContentApp
  * @see ContentLocation
  */
 public class AbstractContentSubApp extends BaseSubApp {

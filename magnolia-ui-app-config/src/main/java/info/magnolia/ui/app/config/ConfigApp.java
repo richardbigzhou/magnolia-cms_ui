@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.config;
 
-import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
+import info.magnolia.ui.admincentral.app.content.ContentApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.framework.app.AppContext;
 
@@ -42,7 +42,7 @@ import javax.inject.Inject;
 /**
  * The Contacts app, extending base content app.
  */
-public class ConfigApp extends AbstractContentApp {
+public class ConfigApp extends ContentApp {
 
     @Inject
     public ConfigApp(AppContext appContext, ChooseDialogFactory chooseDialogFactory) {
