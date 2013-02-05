@@ -37,7 +37,7 @@ import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenter;
-import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.shell.Shell;
 
@@ -48,7 +48,7 @@ import com.vaadin.data.Item;
 /**
  * Abstract base app class for content apps.
  */
-public class AbstractContentApp extends AbstractApp {
+public class AbstractContentApp extends BaseApp {
 
     private final ChooseDialogFactory chooseDialogFactory;
 

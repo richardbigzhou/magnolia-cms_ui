@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.sample;
 
-import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.AppContext;
 
 import javax.inject.Inject;
@@ -41,7 +41,7 @@ import javax.inject.Inject;
 /**
  * Sample app.
  */
-public class SampleApp extends AbstractApp {
+public class SampleApp extends BaseApp {
 
     @Inject
     public SampleApp(AppContext appContext) {

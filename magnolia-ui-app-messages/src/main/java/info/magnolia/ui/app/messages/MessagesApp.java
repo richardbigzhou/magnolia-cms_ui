@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.messages;
 
-import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.AppContext;
 
 import javax.inject.Inject;
@@ -41,7 +41,7 @@ import javax.inject.Inject;
 /**
  * Messages app.
  */
-public class MessagesApp extends AbstractApp {
+public class MessagesApp extends BaseApp {
 
     @Inject
     public MessagesApp(AppContext appContext) {

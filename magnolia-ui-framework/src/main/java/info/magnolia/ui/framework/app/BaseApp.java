@@ -36,15 +36,15 @@ package info.magnolia.ui.framework.app;
 import info.magnolia.ui.framework.location.Location;
 
 /**
- * Abstract implementation with default behavior suitable for most apps.
+ * Basic app implementation with default behavior suitable for most apps.
  *
  * @see App
  */
-public class AbstractApp implements App {
+public class BaseApp implements App {
 
     protected AppContext appContext;
 
-    protected AbstractApp(AppContext appContext) {
+    protected BaseApp(AppContext appContext) {
         this.appContext = appContext;
     }
 

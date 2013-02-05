@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.AppContext;
 
 import javax.inject.Inject;
@@ -41,7 +41,7 @@ import javax.inject.Inject;
 /**
  * A page app simply embeds an html page in an iframe.
  */
-public class PageApp extends AbstractApp {
+public class PageApp extends BaseApp {
 
     @Inject
     public PageApp(AppContext appContext) {
