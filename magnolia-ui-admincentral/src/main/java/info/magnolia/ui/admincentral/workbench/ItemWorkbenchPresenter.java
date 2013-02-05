@@ -55,7 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Presenter for the workbench displayed in the {@link info.magnolia.ui.admincentral.app.content.AbstractItemSubApp}.
+ * Presenter for the workbench displayed in the {@link info.magnolia.ui.admincentral.app.content.ItemSubApp}.
  * Contains the {@link ActionbarPresenter} for handling action events and the {@link ItemPresenter} for displaying the actual item.
  */
 public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {

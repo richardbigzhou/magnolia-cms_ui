@@ -58,14 +58,14 @@ import javax.inject.Inject;
  * @see WorkbenchSubAppView
  * @see ItemLocation
  */
-public class AbstractItemSubApp extends BaseSubApp {
+public class ItemSubApp extends BaseSubApp {
 
     private final ItemWorkbenchPresenter workbench;
 
     private String caption;
 
     @Inject
-    protected AbstractItemSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, ItemWorkbenchPresenter workbench) {
+    protected ItemSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, ItemWorkbenchPresenter workbench) {
         super(subAppContext, view);
         this.workbench = workbench;
     }

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.contacts.item;
 
-import info.magnolia.ui.admincentral.app.content.AbstractItemSubApp;
+import info.magnolia.ui.admincentral.app.content.ItemSubApp;
 import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 import info.magnolia.ui.admincentral.workbench.ItemWorkbenchPresenter;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -43,7 +43,7 @@ import javax.inject.Inject;
 /**
  * ContactsItemSubApp.
  */
-public class ContactsItemSubApp extends AbstractItemSubApp {
+public class ContactsItemSubApp extends ItemSubApp {
 
     @Inject
     public ContactsItemSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, final ItemWorkbenchPresenter workbench) {
