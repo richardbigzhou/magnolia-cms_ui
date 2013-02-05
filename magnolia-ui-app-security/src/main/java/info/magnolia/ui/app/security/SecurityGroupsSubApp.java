@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.security;
 
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
+import info.magnolia.ui.admincentral.app.content.ContentSubApp;
 import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Groups Sub App for the Security App.
  */
-public class SecurityGroupsSubApp extends AbstractContentSubApp {
+public class SecurityGroupsSubApp extends ContentSubApp {
     private static final Logger log = LoggerFactory.getLogger(SecurityGroupsSubApp.class);
 
     @Inject

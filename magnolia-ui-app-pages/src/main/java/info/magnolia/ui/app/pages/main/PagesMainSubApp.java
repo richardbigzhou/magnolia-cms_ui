@@ -38,7 +38,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
+import info.magnolia.ui.admincentral.app.content.ContentSubApp;
 import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -52,7 +52,7 @@ import javax.jcr.RepositoryException;
 /**
  * PagesMainSubApp.
  */
-public class PagesMainSubApp extends AbstractContentSubApp {
+public class PagesMainSubApp extends ContentSubApp {
 
     @Inject
     public PagesMainSubApp(final SubAppContext subappContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {

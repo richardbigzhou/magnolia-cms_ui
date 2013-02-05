@@ -44,7 +44,7 @@ import javax.inject.Inject;
 
 /**
  * Abstract class providing a sensible implementation for services shared by all item subApps.
- * Implementers of this class represent a tab for viewing and editing items typically opened from an {@link AbstractContentSubApp}.
+ * Implementers of this class represent a tab for viewing and editing items typically opened from an {@link ContentSubApp}.
  * Subclasses can augment the default behavior and perform additional tasks by overriding the following methods:
  * <ul>
  * <li>{@link #onSubAppStart()}

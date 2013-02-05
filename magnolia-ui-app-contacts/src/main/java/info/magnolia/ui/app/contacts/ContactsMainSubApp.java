@@ -37,7 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
+import info.magnolia.ui.admincentral.app.content.ContentSubApp;
 import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Sub app for the main tab in the contacts app.
  */
-public class ContactsMainSubApp extends AbstractContentSubApp {
+public class ContactsMainSubApp extends ContentSubApp {
 
     private static final Logger log = LoggerFactory.getLogger(ContactsMainSubApp.class);
 

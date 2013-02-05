@@ -73,11 +73,11 @@ import javax.inject.Named;
  * @see ContentApp
  * @see ContentLocation
  */
-public class AbstractContentSubApp extends BaseSubApp {
+public class ContentSubApp extends BaseSubApp {
 
     private final ContentWorkbenchPresenter workbench;
 
-    public AbstractContentSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, final ContentWorkbenchPresenter workbench, final @Named("subapp") EventBus subAppEventBus) {
+    public ContentSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, final ContentWorkbenchPresenter workbench, final @Named("subapp") EventBus subAppEventBus) {
 
         super(subAppContext, view);
         if (subAppContext == null || view == null || workbench == null || subAppEventBus == null) {
@@ -122,8 +122,8 @@ public class AbstractContentSubApp extends BaseSubApp {
      * <p>
      * then this method will select the root path, set the view type as <code>search</code>, perform a search for "qux" in the workspace used by the app and finally update the available actions.
      *
-     * @see AbstractContentSubApp#updateActionbar(ActionbarPresenter)
-     * @see AbstractContentSubApp#start(Location)
+     * @see ContentSubApp#updateActionbar(ActionbarPresenter)
+     * @see ContentSubApp#start(Location)
      * @see Location
      */
     protected final void restoreWorkbench(final ContentLocation location) {
@@ -182,7 +182,7 @@ public class AbstractContentSubApp extends BaseSubApp {
      * <li> {@link SearchEvent}
      * </ul>
      */
-    private void registerSubAppEventsHandlers(final EventBus subAppEventBus, final AbstractContentSubApp subApp) {
+    private void registerSubAppEventsHandlers(final EventBus subAppEventBus, final ContentSubApp subApp) {
         final ActionbarPresenter actionbar = subApp.getWorkbench().getActionbarPresenter();
         subAppEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
 
