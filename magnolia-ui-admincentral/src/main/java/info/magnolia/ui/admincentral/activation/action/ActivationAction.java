@@ -74,7 +74,7 @@ public class ActivationAction extends CommandActionBase<ActivationActionDefiniti
             getCommandsManager().executeCommand(activationCommand, getParams());
 
         } catch (Exception e) {
-            throw new ActionExecutionException("An exception occured during activation ", e);
+            throw new ActionExecutionException("An exception occured during activation ", e.getCause() != null ? e.getCause() : e);
         }
     }
 

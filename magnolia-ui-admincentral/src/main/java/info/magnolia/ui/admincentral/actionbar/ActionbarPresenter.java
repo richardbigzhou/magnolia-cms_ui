@@ -56,6 +56,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -276,18 +277,25 @@ public class ActionbarPresenter implements ActionbarView.Listener {
             final javax.jcr.Item item = session.getItem(absPath);
             final Action action = this.actionFactory.createAction(actionDefinition, item);
             if (action == null) {
-                Message warn = createMessage(MessageType.WARNING, "Could not create action from actionDefinition. Action is null.", "");
+                String msg = "Could not create action from actionDefinition. Action is null.";
+                Message warn = createMessage(MessageType.WARNING, "An error occurred while executing an action.", msg);
                 appContext.sendLocalMessage(warn);
             }
             action.execute();
+            // TODO see MGNLUI-640
             appContext.showConfirmationMessage("Action executed successfully.");
         } catch (RepositoryException e) {
-            Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e);
             appContext.broadcastMessage(error);
         } catch (ActionExecutionException e) {
-            Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e);
             appContext.broadcastMessage(error);
         }
+    }
+
+    private Message createMessage(MessageType type, String subject, Exception error) {
+        final Throwable cause = ExceptionUtils.getCause(error);
+        return createMessage(type, subject, cause != null ? cause.getMessage() : error.getMessage());
     }
 
     private Message createMessage(MessageType type, String subject, String message) {
@@ -297,5 +305,4 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         msg.setType(type);
         return msg;
     }
-
 }
