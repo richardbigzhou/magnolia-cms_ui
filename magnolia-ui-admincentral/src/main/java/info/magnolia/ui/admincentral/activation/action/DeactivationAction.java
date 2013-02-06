@@ -56,7 +56,7 @@ public class DeactivationAction extends CommandActionBase<DeactivationActionDefi
         try {
             getCommandsManager().executeCommand(getDefinition().getCommand(), getParams());
         } catch (Exception e) {
-            throw new ActionExecutionException("An exception occured during deactivation.", e.getCause() != null ? e.getCause() : e);
+            throw new ActionExecutionException("An exception occured during deactivation.", e);
         }
     }
 
