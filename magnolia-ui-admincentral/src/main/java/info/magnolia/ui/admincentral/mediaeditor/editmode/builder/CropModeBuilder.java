@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor.editmode.builder;
 
-import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
 import info.magnolia.ui.vaadin.editor.JCropField;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,7 @@ import com.vaadin.ui.VerticalLayout;
 public class CropModeBuilder implements EditModeBuilder {
 
     private JCropField jcropField = new JCropField();
-    
+
     @Override
     public Component createMediaField() {
         return jcropField;
@@ -68,10 +68,10 @@ public class CropModeBuilder implements EditModeBuilder {
     @Override
     public List<DialogActionContext> getActionContexts() {
         List<DialogActionContext> result = new ArrayList<DialogActionContext>();
-        result.add(new DialogActionContext("crop", "Crop", new DialogActionListener() {
+        result.add(new DialogActionContext("crop", "Crop", new EditorLikeActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
-                
+
             }
         }));
         return result;

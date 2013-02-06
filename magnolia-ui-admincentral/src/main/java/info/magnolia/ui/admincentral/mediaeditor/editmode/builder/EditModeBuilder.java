@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor.editmode.builder;
 
-import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 
 import java.util.List;
 
@@ -45,48 +45,48 @@ import com.vaadin.ui.Component;
 public interface EditModeBuilder {
 
     Component createMediaField();
-    
+
     Component createHeaderControls();
-    
+
     Component createFooterControls();
-    
+
     List<DialogActionContext> getActionContexts();
-    
+
     /**
      * DialogActionsContext.
      */
     public static class DialogActionContext {
-       
+
         private String actionId;
-        
+
         private String label;
-        
-        private DialogActionListener listener;
-        
-        public DialogActionContext(String id, String label, DialogActionListener listener) {
+
+        private EditorLikeActionListener listener;
+
+        public DialogActionContext(String id, String label, EditorLikeActionListener listener) {
             this.actionId = id;
             this.label = label;
             this.listener = listener;
         }
-        
+
         /**
          * @return the actionId
          */
         public String getActionId() {
             return actionId;
         }
-        
+
         /**
          * @return the label
          */
         public String getLabel() {
             return label;
         }
-        
+
         /**
          * @return the listener
          */
-        public DialogActionListener getListener() {
+        public EditorLikeActionListener getListener() {
             return listener;
         }
     }
