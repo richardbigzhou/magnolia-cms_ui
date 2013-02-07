@@ -53,7 +53,6 @@ import com.vaadin.shared.Connector;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HasComponents;
-import com.vaadin.ui.Label;
 
 /**
  * {@link Form}. The server side implementation of the form view. Displays the
@@ -91,11 +90,6 @@ public class Form extends EditorLike implements FormView {
         tabSheet.setSizeFull();
         tabSheet.showAllTab(true, SHOW_ALL);
         setContent((Component) tabSheet);
-
-        Label toolbar = new Label("TESTCLZ");
-        setFooterToolbar(toolbar);
-
-        setFooterToolbar(null);
 
         registerRpc(new ActionFiringServerRpc() {
 

@@ -53,6 +53,7 @@ public class WorkbenchValueChooseDialog extends BaseDialog implements ChooseDial
         this.view = view;
         addStyleName("content-view-field-wrapper");
         setContent(this.view.asVaadinComponent());
+
         addAction(CHOOSE_ACTION_NAME, "Choose");
         addAction(CANCEL_ACTION_NAME, "Cancel");
     }
