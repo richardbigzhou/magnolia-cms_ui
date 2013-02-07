@@ -18,6 +18,11 @@
     color: #AABF2F;
 }
 
+.form-header-toolbar{
+    float:right;
+    padding-right:12px;
+}
+
 .form-content {
 	top: 40px;
 	bottom: 52px;
