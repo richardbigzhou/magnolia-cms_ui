@@ -57,7 +57,7 @@ import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.AppView;
 import info.magnolia.ui.framework.view.View;
 
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -77,7 +77,7 @@ public class AppContextImpl implements AppContext{
     public static final String COMMON_SUB_APP_COMPONENTS_ID = "subapp";
     public static final String COMPONENTS_ID_PREFIX = "app-";
 
-    private Map<String, SubAppContext> subAppContexts = new HashMap<String, SubAppContext>();
+    private List<SubAppContext> subAppContexts = new LinkedList<SubAppContext>();
 
     private ComponentProvider componentProvider;
     private AppController appController;
@@ -171,7 +171,7 @@ public class AppContextImpl implements AppContext{
     @Override
     public void focusSubAppInstance(String instanceId) {
 
-        for (SubAppContext subAppContext : subAppContexts.values()) {
+        for (SubAppContext subAppContext : subAppContexts) {
             if (subAppContext.getInstanceId().equals(instanceId)) {
                 locationController.goTo(subAppContext.getLocation());
             }
@@ -232,7 +232,7 @@ public class AppContextImpl implements AppContext{
             // startSubApp
 
             subAppContext = startSubApp(location);
-            subAppContexts.put(subAppContext.getSubAppId(), subAppContext);
+            subAppContexts.add(subAppContext);
             currentSubAppContext = subAppContext;
         }
 
@@ -306,12 +306,17 @@ public class AppContextImpl implements AppContext{
     }
 
     private SubAppContext getActiveSubAppContext() {
-        return subAppContexts.get(app.getView().getActiveSubAppView());
+        for (SubAppContext subAppContext: subAppContexts) {
+            if (subAppContext.getInstanceId().equals(app.getView().getActiveSubAppView())) {
+                return subAppContext;
+            }
+        }
+        return null;
     }
 
     // Same instance?!
     private SubAppContext getSubAppContextForSubApp(SubApp subApp) {
-        for (SubAppContext subAppContext : subAppContexts.values()) {
+        for (SubAppContext subAppContext : subAppContexts) {
             if (subAppContext.getSubApp() == subApp) {
                 return subAppContext;
             }
@@ -319,12 +324,19 @@ public class AppContextImpl implements AppContext{
         return null;
     }
 
+    /**
+     * Will return a running subAppContext which will handle the current location.
+     * Only subApps with matching subAppId will be asked whether they support the location.
+     */
     private SubAppContext getSupportingSubAppContext(Location location) {
         // If the location has no subAppId defined, get default
         String subAppId = (location.getSubAppId().isEmpty()) ? getDefaultSubAppDescriptor().getName() : location.getSubAppId();
 
         SubAppContext supportingContext = null;
-        for (SubAppContext context : subAppContexts.values()) {
+        for (SubAppContext context : subAppContexts) {
+            if (!subAppId.equals(context.getSubAppId())) {
+                continue;
+            }
             if (context.getSubApp().supportsLocation(location)) {
                 supportingContext = context;
                 break;
