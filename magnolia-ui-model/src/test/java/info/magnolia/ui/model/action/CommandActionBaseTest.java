@@ -46,7 +46,6 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.After;
@@ -141,7 +140,6 @@ public class CommandActionBaseTest {
         QuxCommand quxCommand = new QuxCommand();
         when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "qux")).thenReturn(quxCommand);
         when(commandsManager.getCommand("qux")).thenReturn(quxCommand);
-        when(commandsManager.executeCommand(quxCommand, new HashMap<String, Object>())).thenReturn(false);
 
         CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(definition, MgnlContext.getJCRSession("website").getNode("/parent"), commandsManager);
 
@@ -150,7 +148,6 @@ public class CommandActionBaseTest {
 
         // THEN
         verify(commandsManager, times(1)).executeCommand(quxCommand, action.getParams());
-
     }
 
     @Test
