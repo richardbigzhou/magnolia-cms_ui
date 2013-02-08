@@ -150,17 +150,16 @@ public class CommandActionBaseTest {
         verify(commandsManager, times(1)).executeCommand(quxCommand, action.getParams());
     }
 
-    @Test
-    public void testGetCommandsManager() throws Exception {
+    @Test(expected = UnsupportedOperationException.class)
+    public void testGetParamsReturnsImmutableMap() throws Exception {
         // GIVEN
         CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(new CommandActionDefinition(), MgnlContext.getJCRSession("website").getNode("/parent/sub"), commandsManager);
+        Map<String, Object> params = action.getParams();
 
         // WHEN
-        CommandsManager manager = action.getCommandsManager();
+        params.put("foo", "bar");
 
-        // THEN
-        assertNotNull(manager);
-        assertTrue(manager instanceof CommandsManager);
+        // THEN exception
     }
 
     private static final class QuxCommand extends MgnlCommand {
