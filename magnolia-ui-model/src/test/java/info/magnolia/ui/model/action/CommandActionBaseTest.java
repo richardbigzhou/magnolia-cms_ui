@@ -49,8 +49,6 @@ import info.magnolia.test.mock.jcr.SessionTestUtil;
 
 import java.util.Map;
 
-import javax.jcr.Node;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,18 +61,6 @@ public class CommandActionBaseTest {
             "/parent.uuid=1\n" +
                     "/parent/sub.uuid=2";
     private MockSession session;
-
-    public static class TestAction extends CommandActionBase<CommandActionDefinition> {
-
-
-        public TestAction(CommandActionDefinition definition, Node node, CommandsManager commandsManager) {
-            super(definition, node, commandsManager);
-        }
-
-        @Override
-        public void execute() throws ActionExecutionException {
-        }
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -106,7 +92,7 @@ public class CommandActionBaseTest {
     public void testGetParamsReturnsBasicContextParamsFromNode() throws Exception {
 
         // GIVEN
-        TestAction action = new TestAction(new CommandActionDefinition(), session.getNode("/parent/sub"), Components.getComponent(CommandsManager.class));
+        CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(new CommandActionDefinition(), session.getNode("/parent/sub"), Components.getComponent(CommandsManager.class));
 
         // WHEN
         Map<String, Object> params = action.getParams();
@@ -130,7 +116,7 @@ public class CommandActionBaseTest {
         definition.getParams().put("def", "baz");
         definition.getParams().put("ghi", "456");
 
-        TestAction action = new TestAction(definition, session.getNode("/parent/sub"), Components.getComponent(CommandsManager.class));
+        CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(definition, session.getNode("/parent/sub"), Components.getComponent(CommandsManager.class));
 
         // WHEN
         Map<String, Object> params = action.getParams();
@@ -149,7 +135,7 @@ public class CommandActionBaseTest {
     @Test
     public void testGetCommandsManager() throws Exception {
         // GIVEN
-        TestAction action = new TestAction(new CommandActionDefinition(), session.getNode("/parent/sub"), Components.getComponent(CommandsManager.class));
+        CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(new CommandActionDefinition(), session.getNode("/parent/sub"), Components.getComponent(CommandsManager.class));
 
         // WHEN
         CommandsManager manager = action.getCommandsManager();
@@ -157,5 +143,17 @@ public class CommandActionBaseTest {
         // THEN
         assertNotNull(manager);
         assertTrue(manager instanceof CommandsManager);
+    }
+
+    @Test
+    public void testGetParamsReturnsModifiableMap() throws Exception {
+        // GIVEN
+        CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(new CommandActionDefinition(), session.getNode("/parent/sub"), Components.getComponent(CommandsManager.class));
+
+        // WHEN here we would get an UnsupportedOperationException if the map was not modifiable
+        action.getParams().put("duh", "meh");
+
+        // THEN
+        assertTrue(action.getParams().containsKey("duh"));
     }
 }

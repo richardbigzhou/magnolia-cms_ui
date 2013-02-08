@@ -34,23 +34,16 @@
 package info.magnolia.ui.admincentral.activation.action;
 
 import info.magnolia.commands.CommandsManager;
-import info.magnolia.commands.chain.Command;
-import info.magnolia.module.activation.commands.ActivationCommand;
-import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.context.Context;
 import info.magnolia.ui.model.action.CommandActionBase;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * UI action that allows to activate a single page (node) or recursively with all its sub-nodes depending on the value of {@link ActivationActionDefinition#isRecursive()}.
  */
 public class ActivationAction extends CommandActionBase<ActivationActionDefinition> {
-
-    private static final Logger log = LoggerFactory.getLogger(ActivationAction.class);
 
     @Inject
     public ActivationAction(final ActivationActionDefinition definition, final Node node, final CommandsManager commandsManager) {
@@ -58,25 +51,7 @@ public class ActivationAction extends CommandActionBase<ActivationActionDefiniti
     }
 
     @Override
-    public void execute() throws ActionExecutionException {
-        final String commandName = getDefinition().getCommand();
-        final Command command = getCommandsManager().getCommand(commandName);
-
-        if (command == null) {
-            throw new ActionExecutionException(String.format("Could not find command [%s] in any catalog", commandName));
-        }
-        try {
-            final ActivationCommand activationCommand = (ActivationCommand) command;
-            activationCommand.setRecursive(getDefinition().isRecursive());
-
-            log.debug("Is activation recursive ? {}", activationCommand.isRecursive());
-
-            getCommandsManager().executeCommand(activationCommand, getParams());
-
-        } catch (Exception e) {
-            throw new ActionExecutionException("An exception occured during activation ", e.getCause() != null ? e.getCause() : e);
-        }
+    protected void onPreExecute() {
+        getParams().put(Context.ATTRIBUTE_RECURSIVE, getDefinition().isRecursive());
     }
-
-
 }
