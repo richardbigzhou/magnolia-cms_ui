@@ -47,7 +47,6 @@ import com.vaadin.shared.Connector;
 import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -107,7 +106,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
         return c;
     }
 
-    public MagnoliaTab addTab(final String caption, final HasComponents c) {
+    public MagnoliaTab addTab(final String caption, final Component c) {
         final MagnoliaTab tab = new MagnoliaTab(caption, c);
         doAddTab(tab);
         return tab;

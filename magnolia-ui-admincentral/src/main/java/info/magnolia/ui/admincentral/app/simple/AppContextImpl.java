@@ -54,25 +54,22 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.view.AppView;
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.HashMultimap;
-import com.vaadin.ui.ComponentContainer;
 
 /**
  * Implementation of {@link AppContext}.
  *
  * See MGNLUI-379.
  */
-public class AppContextImpl implements AppContext, AppFrameView.Listener {
+public class AppContextImpl implements AppContext{
 
     private static final Logger log = LoggerFactory.getLogger(AppContextImpl.class);
 
@@ -80,7 +77,7 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     public static final String COMMON_SUB_APP_COMPONENTS_ID = "subapp";
     public static final String COMPONENTS_ID_PREFIX = "app-";
 
-    private HashMultimap<String, SubAppContext> subAppContexts = HashMultimap.create();
+    private Map<String, SubAppContext> subAppContexts = new HashMap<String, SubAppContext>();
 
     private ComponentProvider componentProvider;
     private AppController appController;
@@ -91,8 +88,6 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
 
     private SubAppContext currentSubAppContext;
     private App app;
-
-    private AppFrameView appFrameView;
 
     private ComponentProvider appComponentProvider;
     private ModuleRegistry moduleRegistry;
@@ -147,8 +142,8 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     }
 
     @Override
-    public View getView() {
-        return appFrameView;
+    public AppView getView() {
+        return app.getView();
     }
 
     /**
@@ -162,9 +157,6 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
 
         app = appComponentProvider.newInstance(appDescriptor.getAppClass());
 
-        appFrameView = new AppFrameView();
-        appFrameView.setListener(this);
-
         app.start(location);
     }
 
@@ -177,20 +169,20 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     }
 
     @Override
-    public void onActiveTabSet(MagnoliaTab tab) {
-        SubAppContext subAppContext = getSubAppContextForTab(tab);
-        if (subAppContext != null) {
-            locationController.goTo(subAppContext.getLocation());
+    public void focusSubAppInstance(String instanceId) {
+
+        for (SubAppContext subAppContext : subAppContexts.values()) {
+            if (subAppContext.getInstanceId().equals(instanceId)) {
+                locationController.goTo(subAppContext.getLocation());
+            }
         }
     }
 
     @Override
-    public void onTabClosed(MagnoliaTab tab) {
-        SubAppContext subAppContext = getSubAppContextForTab(tab);
-        if (subAppContext != null) {
-            subAppContexts.remove(subAppContext.getSubAppId(), subAppContext);
-        }
-        onActiveTabSet(this.appFrameView.getActiveTab());
+    public void stopSubAppInstance(String instanceId) {
+        subAppContexts.remove(instanceId);
+
+        focusSubAppInstance(app.getView().getActiveSubAppView());
     }
 
     @Override
@@ -231,8 +223,8 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
             subAppContext.setLocation(location);
             subAppContext.getSubApp().locationChanged(location);
 
-            if (subAppContext.getTab() != appFrameView.getActiveTab()) {
-                appFrameView.setActiveTab((MagnoliaTab) subAppContext.getTab());
+            if (subAppContext.getInstanceId() != app.getView().getActiveSubAppView()) {
+                app.getView().setActiveSubAppView(subAppContext.getInstanceId());
             }
             currentSubAppContext = subAppContext;
         } else {
@@ -265,8 +257,9 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
         subAppContext.setSubAppComponentProvider(subAppComponentProvider);
 
         View view = subApp.start(location);
-        MagnoliaTab tab = appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), subApp.getCaption(), !subAppContexts.isEmpty());
-        subAppContext.setTab(tab);
+        String instanceId = app.getView().addSubAppView(view, subApp.getCaption(), !subAppContexts.isEmpty());
+
+        subAppContext.setInstanceId(instanceId);
 
         return subAppContext;
     }
@@ -304,31 +297,21 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
 
     @Override
     public void enterFullScreenMode() {
-        appFrameView.asVaadinComponent().setFullscreen(true);
-        // shell.showFullscreen(view);
+        app.getView().setFullscreen(true);
     }
 
     @Override
     public void exitFullScreenMode() {
-        appFrameView.asVaadinComponent().setFullscreen(false);
+        app.getView().setFullscreen(false);
     }
 
     private SubAppContext getActiveSubAppContext() {
-        return getSubAppContextForTab(appFrameView.getActiveTab());
-    }
-
-    private SubAppContext getSubAppContextForTab(MagnoliaTab tab) {
-        for (SubAppContext subAppContext : subAppContexts.values()) {
-            if (subAppContext.getTab().equals(tab)) {
-                return subAppContext;
-            }
-        }
-        return null;
+        return subAppContexts.get(app.getView().getActiveSubAppView());
     }
 
     // Same instance?!
     private SubAppContext getSubAppContextForSubApp(SubApp subApp) {
-        for (SubAppContext subAppContext : getSubAppContexts(subApp.getSubAppId())) {
+        for (SubAppContext subAppContext : subAppContexts.values()) {
             if (subAppContext.getSubApp() == subApp) {
                 return subAppContext;
             }
@@ -336,17 +319,12 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
         return null;
     }
 
-    private Set<SubAppContext> getSubAppContexts(String subAppId) {
-        return subAppContexts.get(subAppId);
-    }
-
     private SubAppContext getSupportingSubAppContext(Location location) {
         // If the location has no subAppId defined, get default
         String subAppId = (location.getSubAppId().isEmpty()) ? getDefaultSubAppDescriptor().getName() : location.getSubAppId();
 
         SubAppContext supportingContext = null;
-        Set<SubAppContext> subApps = subAppContexts.get(subAppId);
-        for (SubAppContext context : subApps) {
+        for (SubAppContext context : subAppContexts.values()) {
             if (context.getSubApp().supportsLocation(location)) {
                 supportingContext = context;
                 break;

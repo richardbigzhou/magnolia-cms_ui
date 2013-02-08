@@ -38,6 +38,7 @@ import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.view.AppView;
 
 import javax.inject.Inject;
 
@@ -47,8 +48,8 @@ import javax.inject.Inject;
 public class SecurityApp extends ContentApp {
 
     @Inject
-    public SecurityApp(AppContext appContext, ChooseDialogFactory chooseDialogFactory) {
-        super(appContext, chooseDialogFactory);
+    public SecurityApp(AppContext appContext, AppView view, ChooseDialogFactory chooseDialogFactory) {
+        super(appContext, view, chooseDialogFactory);
     }
 
     @Override

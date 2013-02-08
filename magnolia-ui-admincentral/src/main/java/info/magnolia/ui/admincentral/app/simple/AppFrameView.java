@@ -33,43 +33,23 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
+import info.magnolia.ui.framework.view.AppView;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
+import com.vaadin.server.KeyMapper;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 
 /**
  * View used to give all apps a uniform look-and-feel.
  */
-public class AppFrameView implements View {
+public class AppFrameView implements AppView, View {
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
+    private KeyMapper<Component> mapper = new KeyMapper<Component>();
 
-        void onActiveTabSet(MagnoliaTab tab);
-
-        void onTabClosed(MagnoliaTab tab);
-    }
-
-    private final MagnoliaTabSheet tabsheet = new MagnoliaTabSheet() {
-
-        @Override
-        public void setActiveTab(MagnoliaTab tab) {
-            super.setActiveTab(tab);
-            listener.onActiveTabSet(tab);
-        }
-
-        @Override
-        protected void closeTab(MagnoliaTab tab) {
-            super.closeTab(tab);
-            listener.onTabClosed(tab);
-        }
-    };
-
-    private Listener listener;
+    private String focusedKey;
 
     public AppFrameView() {
         super();
@@ -77,6 +57,53 @@ public class AppFrameView implements View {
         tabsheet.addStyleName("app");
     }
 
+    private final MagnoliaTabSheet tabsheet = new MagnoliaTabSheet() {
+
+        @Override
+        public void setActiveTab(MagnoliaTab tab) {
+            super.setActiveTab(tab);
+            String key = mapper.key(tab);
+            listener.onFocus(key);
+        }
+
+        @Override
+        protected void closeTab(MagnoliaTab tab) {
+            super.closeTab(tab);
+            String key = mapper.key(tab);
+            listener.onClose(key);
+        }
+    };
+
+    @Override
+    public String addSubAppView(View view, String caption, boolean closable) {
+        String key = mapper.key(view.asVaadinComponent());
+
+        final MagnoliaTab tab = tabsheet.addTab(caption, view.asVaadinComponent());
+        tab.setClosable(closable);
+        tabsheet.setActiveTab(tab);
+        return key;
+    }
+
+    @Override
+    public void setActiveSubAppView(String instanceId) {
+        focusedKey = instanceId;
+        MagnoliaTab tab = (MagnoliaTab) mapper.get(instanceId);
+        tabsheet.setActiveTab(tab);
+    }
+
+    @Override
+    public String getActiveSubAppView() {
+        return focusedKey;
+    }
+
+    private Listener listener;
+
+    @Override
+    public void setFullscreen(boolean fullscreen) {
+        tabsheet.setFullscreen(fullscreen);
+    }
+
+    @Override
     public void setListener(Listener listener) {
         this.listener = listener;
     }
@@ -88,20 +115,8 @@ public class AppFrameView implements View {
         return tab;
     }
 
-    public void closeTab(ComponentContainer cc) {
-        tabsheet.removeComponent(cc);
-    }
-
     @Override
     public MagnoliaTabSheet asVaadinComponent() {
         return tabsheet;
-    }
-
-    public MagnoliaTab getActiveTab() {
-        return tabsheet.getActiveTab();
-    }
-
-    public void setActiveTab(MagnoliaTab tab) {
-        tabsheet.setActiveTab(tab);
     }
 }

@@ -65,4 +65,7 @@ public interface SubAppContext {
 
     void setTab(Component tab);
 
+    void setInstanceId(String instanceId);
+
+    String getInstanceId();
 }

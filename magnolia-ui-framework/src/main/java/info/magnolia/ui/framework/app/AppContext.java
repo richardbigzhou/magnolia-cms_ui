@@ -36,7 +36,7 @@ package info.magnolia.ui.framework.app;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.framework.view.AppView;
 
 /**
  * Provides functionality used by an app to interact with the Magnolia shell.
@@ -79,9 +79,13 @@ public interface AppContext {
 
     Location getCurrentLocation();
 
-    View getView();
+    AppView getView();
 
     Location getDefaultLocation();
 
     ComponentProvider createAppComponentProvider(String name, AppContext appContext);
+
+    void focusSubAppInstance(String instanceId);
+
+    void stopSubAppInstance(String instanceId);
 }

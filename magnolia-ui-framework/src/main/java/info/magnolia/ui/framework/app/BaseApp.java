@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.view.AppView;
 
 import javax.inject.Inject;
 
@@ -42,13 +43,16 @@ import javax.inject.Inject;
  *
  * @see App
  */
-public class BaseApp implements App {
+public class BaseApp implements App, AppView.Listener {
 
     protected AppContext appContext;
+    private AppView view;
 
     @Inject
-    protected BaseApp(AppContext appContext) {
+    protected BaseApp(AppContext appContext, AppView view) {
         this.appContext = appContext;
+        this.view = view;
+        view.setListener(this);
     }
 
     @Override
@@ -72,5 +76,20 @@ public class BaseApp implements App {
     @Override
     public Location getDefaultLocation() {
         return null;
+    }
+
+    @Override
+    public AppView getView() {
+        return view;
+    }
+
+    @Override
+    public void onFocus(String instanceId) {
+        appContext.focusSubAppInstance(instanceId);
+    }
+
+    @Override
+    public void onClose(String instanceId) {
+        appContext.stopSubAppInstance(instanceId);
     }
 }

@@ -50,6 +50,8 @@ public class SubAppContextImpl implements SubAppContext {
 
     private SubApp subApp;
 
+    private String instanceId;
+
     private Location location;
 
     private ComponentProvider subAppComponentProvider;
@@ -62,6 +64,7 @@ public class SubAppContextImpl implements SubAppContext {
 
     public SubAppContextImpl(SubAppDescriptor subAppDescriptor) {
         this.subAppDescriptor = subAppDescriptor;
+        this.instanceId = subAppDescriptor.getName() + System.currentTimeMillis();
     }
 
     @Override
@@ -117,5 +120,14 @@ public class SubAppContextImpl implements SubAppContext {
     @Override
     public void setTab(Component tab) {
         this.tab = tab;
+    }
+
+    public String getInstanceId() {
+        return instanceId;
+    }
+
+    @Override
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
     }
 }

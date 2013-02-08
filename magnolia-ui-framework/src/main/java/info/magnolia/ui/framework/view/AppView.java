@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
-
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.AppView;
+package info.magnolia.ui.framework.view;
 
 /**
- * Defines an app. Is called by the Magnolia shell as the user interacts with the app.
+ * AppView. Should we refer to the tabs as tab or subApp instance. Keep in mind that it is not the subAppId. There are multiple instances of the subapp.
+ *
  */
-public interface App {
+public interface AppView {
 
-    void start(Location location);
+    void setFullscreen(boolean fullscreen);
 
-    void locationChanged(Location location);
+    /**
+     * Listens to events coming from the TabSheet.
+     */
+    interface Listener {
 
-    void stop();
+        void onFocus(String instanceId);
 
-    Location getDefaultLocation();
+        void onClose(String instanceId);
 
-    AppView getView();
+    }
+
+    void setListener(Listener listener);
+
+    String addSubAppView(View view, String caption, boolean closable);
+
+    void setActiveSubAppView(String instanceId);
+
+    String getActiveSubAppView();
 }

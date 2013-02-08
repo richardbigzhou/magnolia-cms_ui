@@ -40,6 +40,7 @@ import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenter;
 import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.view.AppView;
 
 import javax.inject.Inject;
 
@@ -59,8 +60,8 @@ public class ContentApp extends BaseApp {
     private Shell shell;
 
     @Inject
-    public ContentApp(AppContext appContext, ChooseDialogFactory chooseDialogFactory) {
-        super(appContext);
+    public ContentApp(AppContext appContext, AppView view, ChooseDialogFactory chooseDialogFactory) {
+        super(appContext, view);
         this.chooseDialogFactory = chooseDialogFactory;
     }
 
