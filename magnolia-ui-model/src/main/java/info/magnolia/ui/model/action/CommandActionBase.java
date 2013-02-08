@@ -133,11 +133,11 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
 
         long start = System.currentTimeMillis();
         try {
-            log.info("Executing command [{}] from catalog [{}] with the following parameters {}...", new Object[] { commandName, catalog, getParams() });
+            log.debug("Executing command [{}] from catalog [{}] with the following parameters [{}]...", new Object[] { commandName, catalog, getParams() });
             commandsManager.executeCommand(command, getParams());
-            log.info("Command executed successfully in {} ms ", System.currentTimeMillis() - start);
+            log.debug("Command executed successfully in {} ms ", System.currentTimeMillis() - start);
         } catch (Exception e) {
-            log.info("Command execution failed after {} ms ", System.currentTimeMillis() - start);
+            log.debug("Command execution failed after {} ms ", System.currentTimeMillis() - start);
             throw new ActionExecutionException(e);
         }
     }
