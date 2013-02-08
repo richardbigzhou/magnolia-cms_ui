@@ -40,6 +40,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.SessionUtil;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,6 +80,15 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
      * <li>Context.ATTRIBUTE_UUID = current node's identifier
      * <li>Context.ATTRIBUTE_PATH = current node's path
      * </ul>
+     * Subclasses can override this method to add further parameters to the command execution. E.g.
+     * 
+     * <pre>
+     * protected Map&lt;String, Object&gt; buildParams(final Node node) {
+     *     Map&lt;String, Object&gt; params = super.buildParams(node);
+     *     params.put(Context.ATTRIBUTE_RECURSIVE, getDefinition().isRecursive());
+     *     return params;
+     * }
+     * </pre>
      */
     protected Map<String, Object> buildParams(final Node node) {
         Map<String, Object> params = getDefinition().getParams() == null ? new HashMap<String, Object>() : getDefinition().getParams();
@@ -103,21 +113,21 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
     }
 
     /**
-     * @return the map of parameters to be used for command execution.
+     * @return the <em>immutable</em> map of parameters to be used for command execution.
      * @see CommandActionBase#buildParams(Node).
      */
-    public final Map<String, Object> getParams() {
-        return params;
+    protected final Map<String, Object> getParams() {
+        return Collections.unmodifiableMap(params);
     }
 
-    public final CommandsManager getCommandsManager() {
+    protected final CommandsManager getCommandsManager() {
         return commandsManager;
     }
 
     /**
      * Handles the retrieval of the {@link Command} instance defined in the {@link CommandActionDefinition} associated with this action and then
-     * performs the actual command execution. First calls {@link #onPreExecute()} to perform additional operations subclasses might need before running the command.
-     * 
+     * performs the actual command execution.
+     *
      * @throws ActionExecutionException if no command is found or if command execution throws an exception.
      */
     @Override
@@ -131,8 +141,6 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
             throw new ActionExecutionException(String.format("Could not find command [%s] in any catalog", commandName));
         }
 
-        onPreExecute();
-
         long start = System.currentTimeMillis();
         try {
             log.debug("Executing command [{}] from catalog [{}] with the following parameters [{}]...", new Object[] { commandName, catalog, getParams() });
@@ -142,20 +150,5 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
             log.debug("Command execution failed after {} ms ", System.currentTimeMillis() - start);
             throw new ActionExecutionException(e);
         }
-    }
-
-    /**
-     * Called by {@link #execute()} before actually executing a command. Subclasses can override this method to perform some operations
-     * i.e. setting additional parameters, available only at runtime, in the context used for command execution. Default implementation is empty.
-     * <p>
-     * Usage sample
-     * 
-     * <pre>
-     * public void onPreExecute() {
-     *     getParams().put(Context.ATTRIBUTE_RECURSIVE, getDefinition().isRecursive());
-     * }
-     * </pre>
-     */
-    protected void onPreExecute() {
     }
 }

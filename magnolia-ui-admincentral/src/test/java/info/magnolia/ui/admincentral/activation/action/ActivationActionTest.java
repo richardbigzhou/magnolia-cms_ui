@@ -111,13 +111,12 @@ public class ActivationActionTest {
     }
 
     @Test
-    public void testOnPreExecuteSetsRecursiveParameter() throws Exception {
+    public void testBuildParamsSetsRecursiveParameter() throws Exception {
         // GIVEN
         definition.setRecursive(true);
-        ActivationAction action = new ActivationAction(definition, session.getNode("foo"), commandsManager);
 
         // WHEN
-        action.onPreExecute();
+        ActivationAction action = new ActivationAction(definition, session.getNode("foo"), commandsManager);
 
         // THEN
         assertTrue((Boolean) action.getParams().get(Context.ATTRIBUTE_RECURSIVE));

@@ -37,6 +37,8 @@ import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.ui.model.action.CommandActionBase;
 
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.jcr.Node;
 
@@ -51,7 +53,9 @@ public class ActivationAction extends CommandActionBase<ActivationActionDefiniti
     }
 
     @Override
-    protected void onPreExecute() {
-        getParams().put(Context.ATTRIBUTE_RECURSIVE, getDefinition().isRecursive());
+    protected Map<String, Object> buildParams(final Node node) {
+        Map<String, Object> params = super.buildParams(node);
+        params.put(Context.ATTRIBUTE_RECURSIVE, getDefinition().isRecursive());
+        return params;
     }
 }
