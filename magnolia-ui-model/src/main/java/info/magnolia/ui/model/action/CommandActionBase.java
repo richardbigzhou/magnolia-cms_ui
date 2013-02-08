@@ -131,6 +131,8 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
             throw new ActionExecutionException(String.format("Could not find command [%s] in any catalog", commandName));
         }
 
+        onPreExecute();
+
         long start = System.currentTimeMillis();
         try {
             log.debug("Executing command [{}] from catalog [{}] with the following parameters [{}]...", new Object[] { commandName, catalog, getParams() });
