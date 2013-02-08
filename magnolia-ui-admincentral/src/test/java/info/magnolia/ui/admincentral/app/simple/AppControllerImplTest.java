@@ -60,6 +60,7 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.message.MessagesManagerImpl;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.view.AppView;
 import info.magnolia.ui.framework.view.ViewPort;
 
 import java.util.ArrayList;
@@ -455,6 +456,7 @@ public class AppControllerImplTest {
         components.addTypeMapping(AppEventTestImpl.class, AppEventTestImpl.class);
         components.addTypeMapping(AppTestSubApp.class, AppTestSubApp.class);
         components.registerImplementation(AppTestView.class, AppViewTestImpl.class);
+        components.registerImplementation(AppView.class, AppFrameView.class);
 
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(components);
