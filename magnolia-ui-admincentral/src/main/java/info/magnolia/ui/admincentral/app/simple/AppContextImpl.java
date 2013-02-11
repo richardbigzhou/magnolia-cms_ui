@@ -223,9 +223,6 @@ public class AppContextImpl implements AppContext{
             subAppContext.setLocation(location);
             subAppContext.getSubApp().locationChanged(location);
 
-            if (subAppContext.getInstanceId() != app.getView().getActiveSubAppView()) {
-                app.getView().setActiveSubAppView(subAppContext.getInstanceId());
-            }
             currentSubAppContext = subAppContext;
         } else {
             // else start new subApp
@@ -235,7 +232,9 @@ public class AppContextImpl implements AppContext{
             subAppContexts.add(subAppContext);
             currentSubAppContext = subAppContext;
         }
-
+        if (subAppContext.getInstanceId() != app.getView().getActiveSubAppView()) {
+            app.getView().setActiveSubAppView(subAppContext.getInstanceId());
+        }
     }
 
     private SubAppContext startSubApp(Location location) {
