@@ -182,6 +182,9 @@ public class AppContextImpl implements AppContext, AppInstance {
 
     @Override
     public void focusSubAppInstance(String instanceId) {
+/*        if (currentSubAppContext == null || instanceId.equals(currentSubAppContext.getInstanceId())) {
+            return;
+        }*/
 
         for (SubAppContext subAppContext : subAppContexts) {
             if (subAppContext.getInstanceId().equals(instanceId)) {
@@ -236,6 +239,10 @@ public class AppContextImpl implements AppContext, AppInstance {
             subAppContext.getSubApp().locationChanged(location);
 
             currentSubAppContext = subAppContext;
+
+            if (subAppContext.getInstanceId() != app.getView().getActiveSubAppView()) {
+                app.getView().setActiveSubAppView(subAppContext.getInstanceId());
+            }
         } else {
             // else start new subApp
             // startSubApp
@@ -244,9 +251,7 @@ public class AppContextImpl implements AppContext, AppInstance {
             subAppContexts.add(subAppContext);
             currentSubAppContext = subAppContext;
         }
-        if (subAppContext.getInstanceId() != app.getView().getActiveSubAppView()) {
-            app.getView().setActiveSubAppView(subAppContext.getInstanceId());
-        }
+
     }
 
     private SubAppContext startSubApp(Location location) {

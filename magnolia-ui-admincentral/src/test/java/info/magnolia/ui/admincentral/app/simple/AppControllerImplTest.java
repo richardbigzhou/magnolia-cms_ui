@@ -56,8 +56,8 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SimpleEventBus;
-import info.magnolia.ui.framework.event.SystemEventBusConfigurer;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
@@ -77,6 +77,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
+
 /**
  * Test case for {@link info.magnolia.ui.framework.app.AppController}.
  */
@@ -90,27 +93,25 @@ public class AppControllerImplTest {
 
     private AppLauncherLayoutManager appLauncherLayoutManager = null;
     private GuiceComponentProvider componentProvider = null;
-    private AppController appController = null;
+    private AppControllerImpl appController = null;
 
     private LocationController locationController = null;
 
     private AppEventCollector eventCollector = null;
-    private ModuleRegistry moduleRegistry;
+    private EventBus eventBus;
 
     @Before
     public void setUp() throws Exception {
         setAppLayoutManager();
-        this.moduleRegistry = new ModuleRegistryImpl();
 
-        SimpleEventBus eventBus = new SimpleEventBus();
+        this.eventBus = new SimpleEventBus();
+        this.componentProvider = initComponentProvider();
+        this.locationController = componentProvider.getComponent(LocationController.class);
 
         eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        this.locationController = new LocationController(eventBus, mock(Shell.class));
-        componentProvider = initComponentProvider();
-
-        appController = componentProvider.newInstance(AppController.class);
+        appController = (AppControllerImpl) componentProvider.getComponent(AppController.class);
         appController.setViewPort(mock(ViewPort.class));
     }
 
@@ -339,7 +340,7 @@ public class AppControllerImplTest {
 
         // THEN
         assertTrue(appController.isAppStarted(APP_NAME_1 + "_name"));
-        assertEquals(location, appController.getCurrentApp().getCurrentLocation());
+        assertEquals(location, appController.getCurrentAppInstance().getCurrentLocation());
     }
 
 
@@ -398,7 +399,7 @@ public class AppControllerImplTest {
         LocationChangedEvent newLocationEvent = new LocationChangedEvent(newLocation);
 
         // WHEN
-        //appController.onLocationChanged(newLocationEvent);
+        appController.onLocationChanged(newLocationEvent);
 
         // THEN
         assertNotNull(appController.getCurrentAppInstance());
@@ -419,7 +420,7 @@ public class AppControllerImplTest {
         LocationChangedEvent newLocationEvent = new LocationChangedEvent(newLocation);
 
         // WHEN
-        //appController.onLocationChanged(newLocationEvent);
+        appController.onLocationChanged(newLocationEvent);
 
         // THEN
         assertNotNull(appController.getCurrentAppInstance());
@@ -465,7 +466,7 @@ public class AppControllerImplTest {
         when(appLauncherLayoutManager.getLayoutForCurrentUser()).thenReturn(appLauncherLayout);
     }
 
-    private GuiceComponentProvider initComponentProvider() {
+    public GuiceComponentProvider initComponentProvider() {
 
         ComponentProviderConfiguration components = new ComponentProviderConfiguration();
 
@@ -473,29 +474,39 @@ public class AppControllerImplTest {
         components.addTypeMapping(AppEventTestImpl.class, AppEventTestImpl.class);
         components.addTypeMapping(AppTestSubApp.class, AppTestSubApp.class);
         components.addTypeMapping(AppInstance.class, AppContextImpl.class);
-        components.addTypeMapping(AppController.class, AppControllerImpl.class);
 
+        components.registerImplementation(AppController.class, AppControllerImpl.class);
         components.registerImplementation(AppTestView.class, AppViewTestImpl.class);
         components.registerImplementation(AppView.class, AppFrameView.class);
-        components.registerImplementation(AppLauncherLayoutManager.class, AppLauncherLayoutManagerImpl.class);
+        components.registerImplementation(LocationController.class);
+        components.registerImplementation(ModuleRegistry.class, ModuleRegistryImpl.class);
 
-
-        Shell shell = mock(MagnoliaShell.class);
-        MessagesManager messagesManager = mock(MessagesManagerImpl.class);
-
-        components.registerInstance(ModuleRegistry.class, moduleRegistry);
-        components.registerInstance(Shell.class, shell);
-        components.registerInstance(MessagesManager.class, messagesManager);
-        components.registerInstance(LocationController.class, locationController);
+        components.registerInstance(AppLauncherLayoutManager.class, appLauncherLayoutManager);
+        components.registerInstance(Shell.class, mock(MagnoliaShell.class));
+        components.registerInstance(MessagesManager.class, mock(MessagesManagerImpl.class));
 
 
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-        AdminCentralEventBusConfigurer bla = new AdminCentralEventBusConfigurer();
-        SystemEventBusConfigurer bla1 = new SystemEventBusConfigurer();
+        TestEventBusConfigurer eventBusConfigurer = new TestEventBusConfigurer(eventBus);
 
         builder.withConfiguration(components);
         builder.exposeGlobally();
-        return builder.build(bla, bla1);
+        return builder.build(eventBusConfigurer);
+    }
+
+    private class TestEventBusConfigurer extends AdminCentralEventBusConfigurer {
+
+        private final EventBus eventBus;
+
+        private TestEventBusConfigurer(EventBus eventbus) {
+            this.eventBus = eventbus;
+        }
+
+        @Override
+        protected void configure() {
+            bind(EventBus.class).annotatedWith(Names.named("admincentral")).toProvider(Providers.of(eventBus));
+            bind(EventBus.class).annotatedWith(Names.named("system")).toProvider(Providers.of(new SimpleEventBus()));
+        }
     }
 
     /**

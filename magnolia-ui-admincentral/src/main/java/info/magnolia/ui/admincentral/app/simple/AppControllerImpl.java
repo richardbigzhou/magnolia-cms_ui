@@ -398,11 +398,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(configuration);
         builder.withParent((GuiceComponentProvider) componentProvider);
-        ComponentProvider appComponentProvder = builder.build();
+        ComponentProvider appComponentProvider = builder.build();
 
-        appInstance.setAppComponentProvider(appComponentProvder);
+        appInstance.setAppComponentProvider(appComponentProvider);
 
-        return builder.build();
+        return appComponentProvider;
     }
 
 }

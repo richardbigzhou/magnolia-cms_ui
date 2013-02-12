@@ -60,7 +60,7 @@ public class AppFrameView implements AppView, View {
     private final MagnoliaTabSheet tabsheet = new MagnoliaTabSheet() {
 
         @Override
-        public void setActiveTab(MagnoliaTab tab) {
+        public void setActiveTab(Component tab) {
             super.setActiveTab(tab);
             String key = mapper.key(tab);
             listener.onFocus(key);
@@ -87,7 +87,7 @@ public class AppFrameView implements AppView, View {
     @Override
     public void setActiveSubAppView(String instanceId) {
         focusedKey = instanceId;
-        MagnoliaTab tab = (MagnoliaTab) mapper.get(instanceId);
+        Component tab = mapper.get(instanceId);
         tabsheet.setActiveTab(tab);
     }
 

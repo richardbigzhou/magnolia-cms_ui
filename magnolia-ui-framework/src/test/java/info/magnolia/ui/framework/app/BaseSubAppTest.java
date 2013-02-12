@@ -49,21 +49,18 @@ public class BaseSubAppTest {
     private static final String APP_LABEL = "App label";
     private static final String SUBAPP_LABEL = "SubApp label";
     private BaseSubApp subApp;
-    private AppDescriptor appDescriptor;
     private SubAppDescriptor subAppDescriptor;
+    private AppContext appContext;
 
     @Before
     public void setUp() throws Exception {
         // INIT
-        appDescriptor = mock(AppDescriptor.class);
-        when(appDescriptor.getLabel()).thenReturn(APP_LABEL);
-        when(appDescriptor.getName()).thenReturn("App1");
-
         subAppDescriptor = mock(SubAppDescriptor.class);
         when(subAppDescriptor.getName()).thenReturn("SubApp1");
 
-        AppContext appContext = mock(AppContext.class);
-        when(appContext.getAppDescriptor()).thenReturn(appDescriptor);
+        this.appContext = mock(AppContext.class);
+        when(appContext.getLabel()).thenReturn(APP_LABEL);
+        when(appContext.getName()).thenReturn("App1");
 
         SubAppContext subAppContext = mock(SubAppContext.class);
         when(subAppContext.getAppContext()).thenReturn(appContext);
@@ -102,7 +99,7 @@ public class BaseSubAppTest {
     public void testGetCaptionReturnsEmptyStringIfNoConfiguredLabelValueIsFound() throws Exception {
         // GIVEN
         when(subAppDescriptor.getLabel()).thenReturn("");
-        when(appDescriptor.getLabel()).thenReturn("");
+        when(appContext.getLabel()).thenReturn("");
 
         // WHEN
         String caption = subApp.getCaption();
@@ -115,7 +112,7 @@ public class BaseSubAppTest {
     public void testGetCaptionReturnsEmptyStringIfConfiguredLabelIsNull() throws Exception {
         // GIVEN
         when(subAppDescriptor.getLabel()).thenReturn(null);
-        when(appDescriptor.getLabel()).thenReturn(null);
+        when(appContext.getLabel()).thenReturn(null);
 
         // WHEN
         String caption = subApp.getCaption();

@@ -52,7 +52,7 @@ public class PulseViewImpl implements PulseView {
 
     private final MagnoliaTabSheet tabsheet = new MagnoliaTabSheet() {
         @Override
-        public void setActiveTab(MagnoliaTab tab) {
+        public void setActiveTab(Component tab) {
             super.setActiveTab(tab);
             if (presenter != null) {
                 presenter.onPulseTabChanged(m.getKey(tab).toString().toLowerCase());

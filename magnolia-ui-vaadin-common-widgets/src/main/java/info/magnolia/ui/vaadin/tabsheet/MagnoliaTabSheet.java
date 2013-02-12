@@ -90,13 +90,10 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
 
     @Override
     public void addComponent(final Component c) {
-        if (!(c instanceof ComponentContainer)) {
-            throw new IllegalArgumentException("Content of the tab must be a ComponentContainer!");
-        }
         if (c instanceof MagnoliaTab) {
             doAddTab((MagnoliaTab) c);
         } else {
-            addTab("", (ComponentContainer) c);
+            addTab("", c);
         }
     }
 
@@ -167,7 +164,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
         }
     }
 
-    public void setActiveTab(final MagnoliaTab tab) {
+    public void setActiveTab(final Component tab) {
         Iterator<Component> it = iterator();
         while (it.hasNext()) {
             MagnoliaTab tabIt = (MagnoliaTab) it.next();

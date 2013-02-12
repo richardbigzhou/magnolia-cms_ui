@@ -60,4 +60,5 @@ public interface AppInstance {
     void start(Location location);
 
     void stop();
+
 }
