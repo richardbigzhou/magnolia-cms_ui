@@ -327,8 +327,21 @@ public class AppControllerImplTest {
         locationController.goTo(location);
         // THEN
         assertTrue(appController.isAppStarted(APP_NAME_1 + "_name"));
-
     }
+
+    @Test
+    public void testOpenSubApp() {
+        // GIVEN
+        Location location = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_1 + "_name", SUBAPP_NAME_1 + "_name");
+
+        // WHEN
+        locationController.goTo(location);
+
+        // THEN
+        assertTrue(appController.isAppStarted(APP_NAME_1 + "_name"));
+        assertEquals(location, appController.getCurrentApp().getCurrentLocation());
+    }
+
 
     @Test
     public void testOpenTwoSubApps() {
