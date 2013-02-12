@@ -201,6 +201,11 @@
       <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseDashboardView</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseDashboardViewImpl</implementation>
     </component>
+
+    <type-mapping>
+      <type>info.magnolia.ui.framework.app.AppInstance</type>
+      <implementation>info.magnolia.ui.admincentral.app.simple.AppContextImpl</implementation>
+    </type-mapping>
   </components>
 
   <components>

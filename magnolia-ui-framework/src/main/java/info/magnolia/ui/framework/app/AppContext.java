@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.view.AppView;
@@ -43,13 +42,9 @@ import info.magnolia.ui.framework.view.AppView;
  */
 public interface AppContext {
 
-    void openSubApp(Location location);
-
     void enterFullScreenMode();
 
     void exitFullScreenMode();
-
-    AppDescriptor getAppDescriptor();
 
     void sendUserMessage(String user, Message message);
 
@@ -61,31 +56,17 @@ public interface AppContext {
 
     String getName();
 
-    void setApp(App app);
-
-    App getApp();
-
-    void setSubAppLocation(SubApp subApp, Location location);
-
-    SubAppDescriptor getDefaultSubAppDescriptor();
-
-    void start(Location location);
-
-    void stop();
-
-    String mayStop();
-
-    void onLocationUpdate(Location newLocation);
-
-    Location getCurrentLocation();
+    String getLabel();
 
     AppView getView();
-
-    Location getDefaultLocation();
-
-    ComponentProvider createAppComponentProvider(String name, AppContext appContext);
 
     void focusSubAppInstance(String instanceId);
 
     void stopSubAppInstance(String instanceId);
+
+    void openSubApp(Location location);
+
+    void setSubAppLocation(SubAppContext subAppContext, Location location);
+
+    SubAppDescriptor getDefaultSubAppDescriptor();
 }

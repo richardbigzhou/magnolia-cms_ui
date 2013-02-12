@@ -43,6 +43,7 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.AppInstance;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.SubApp;
@@ -61,6 +62,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,37 +72,43 @@ import org.slf4j.LoggerFactory;
  *
  * See MGNLUI-379.
  */
-public class AppContextImpl implements AppContext{
+public class AppContextImpl implements AppContext, AppInstance {
 
     private static final Logger log = LoggerFactory.getLogger(AppContextImpl.class);
 
-    public static final String COMMON_APP_COMPONENTS_ID = "app";
-    public static final String COMMON_SUB_APP_COMPONENTS_ID = "subapp";
-    public static final String COMPONENTS_ID_PREFIX = "app-";
-
     private List<SubAppContext> subAppContexts = new LinkedList<SubAppContext>();
 
-    private ComponentProvider componentProvider;
-    private AppController appController;
-    private LocationController locationController;
-    private Shell shell;
-    private MessagesManager messagesManager;
-    private final AppDescriptor appDescriptor;
-
-    private SubAppContext currentSubAppContext;
-    private App app;
-
-    private ComponentProvider appComponentProvider;
     private ModuleRegistry moduleRegistry;
 
-    public AppContextImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppController appController, LocationController locationController, Shell shell, MessagesManager messagesManager, AppDescriptor appDescriptor) {
+    private AppController appController;
+
+    private LocationController locationController;
+
+    private Shell shell;
+
+    private MessagesManager messagesManager;
+
+    private ComponentProvider componentProvider;
+
+    private App app;
+
+    private AppDescriptor appDescriptor;
+
+    private SubAppContext currentSubAppContext;
+
+    @Inject
+    public AppContextImpl(ModuleRegistry moduleRegistry, AppController appController, LocationController locationController, Shell shell, MessagesManager messagesManager, AppDescriptor appDescriptor) {
         this.moduleRegistry = moduleRegistry;
-        this.componentProvider = componentProvider;
         this.appController = appController;
         this.locationController = locationController;
         this.shell = shell;
         this.messagesManager = messagesManager;
         this.appDescriptor = appDescriptor;
+    }
+
+    @Override
+    public void setAppComponentProvider(ComponentProvider componentProvider) {
+        this.componentProvider = componentProvider;
     }
 
     @Override
@@ -115,6 +124,11 @@ public class AppContextImpl implements AppContext{
     @Override
     public String getName() {
         return appDescriptor.getName();
+    }
+
+    @Override
+    public String getLabel() {
+        return appDescriptor.getLabel();
     }
 
     @Override
@@ -153,9 +167,7 @@ public class AppContextImpl implements AppContext{
     @Override
     public void start(Location location) {
 
-        this.appComponentProvider = createAppComponentProvider(appDescriptor.getName(), this);
-
-        app = appComponentProvider.newInstance(appDescriptor.getAppClass());
+        app = componentProvider.newInstance(appDescriptor.getAppClass());
 
         app.start(location);
     }
@@ -247,7 +259,7 @@ public class AppContextImpl implements AppContext{
         }
         SubAppContext subAppContext = new SubAppContextImpl(subAppDescriptor);
 
-        ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppContext.getSubAppId(), subAppContext, appComponentProvider);
+        ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppContext.getSubAppId(), subAppContext, componentProvider);
 
         SubApp subApp = subAppComponentProvider.newInstance(subAppDescriptor.getSubAppClass());
 
@@ -265,13 +277,10 @@ public class AppContextImpl implements AppContext{
     }
 
     @Override
-    public void setSubAppLocation(SubApp subApp, Location location) {
-        SubAppContext subAppContext = getSubAppContextForSubApp(subApp);
-        if (subAppContext != null) {
-            subAppContext.setLocation(location);
-            if (appController.getCurrentApp() == this && getActiveSubAppContext() == subAppContext) {
-                shell.setFragment(location.toString());
-            }
+    public void setSubAppLocation(SubAppContext subAppContext, Location location) {
+        subAppContext.setLocation(location);
+        if (appController.getCurrentAppInstance() == this && getActiveSubAppContext() == subAppContext) {
+            shell.setFragment(location.toString());
         }
     }
 
@@ -306,22 +315,7 @@ public class AppContextImpl implements AppContext{
     }
 
     private SubAppContext getActiveSubAppContext() {
-        for (SubAppContext subAppContext: subAppContexts) {
-            if (subAppContext.getInstanceId().equals(app.getView().getActiveSubAppView())) {
-                return subAppContext;
-            }
-        }
-        return null;
-    }
-
-    // Same instance?!
-    private SubAppContext getSubAppContextForSubApp(SubApp subApp) {
-        for (SubAppContext subAppContext : subAppContexts) {
-            if (subAppContext.getSubApp() == subApp) {
-                return subAppContext;
-            }
-        }
-        return null;
+        return currentSubAppContext;
     }
 
     /**
@@ -345,38 +339,6 @@ public class AppContextImpl implements AppContext{
         return supportingContext;
     }
 
-    /**
-     * Creates a ComponentProvider dedicated for the app with the AdminCentral ComponentProvider as its parent. This
-     * gives us the ability to inject the AppContext into App components. The components are read from module
-     * descriptors using the convention "app-" + name of the app and merged with the components defined for all apps
-     * with the id "app".
-     */
-    @Override
-    public ComponentProvider createAppComponentProvider(String name, AppContext appContext) {
-
-        ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
-        List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
-
-        // Get components common to all apps
-        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(COMMON_APP_COMPONENTS_ID, moduleDefinitions);
-
-        // Get components for this specific app
-        String componentsId = COMPONENTS_ID_PREFIX + name;
-        log.debug("Reading component configurations from module descriptors for " + componentsId);
-        ComponentProviderConfiguration appComponents = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
-
-        configuration.combine(appComponents);
-
-        // Add the AppContext instance into the component provider.
-        configuration.addComponent(InstanceConfiguration.valueOf(AppContext.class, appContext));
-
-        log.debug("Creating component provider for app " + name);
-        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-        builder.withConfiguration(configuration);
-        builder.withParent((GuiceComponentProvider) componentProvider);
-
-        return builder.build();
-    }
 
     private ComponentProvider createSubAppComponentProvider(String appName, String subAppName, SubAppContext subAppContext, ComponentProvider parent) {
 
@@ -384,10 +346,10 @@ public class AppContextImpl implements AppContext{
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
 
         // Get components common to all sub apps
-        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(COMMON_SUB_APP_COMPONENTS_ID, moduleDefinitions);
+        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(AppController.COMMON_SUB_APP_COMPONENTS_ID, moduleDefinitions);
 
         // Get components for this specific sub app
-        String componentsId = COMPONENTS_ID_PREFIX + appName + "-" + subAppName;
+        String componentsId = AppController.COMPONENTS_ID_PREFIX + appName + "-" + subAppName;
         log.debug("Reading component configurations from module descriptors for " + componentsId);
         ComponentProviderConfiguration subAppComponents = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
 

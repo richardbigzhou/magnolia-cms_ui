@@ -120,11 +120,11 @@ public class BaseSubApp implements SubApp {
         if (StringUtils.isNotBlank(label)) {
             return label;
         }
-        label = subAppContext.getAppContext().getAppDescriptor().getLabel();
+        label = subAppContext.getAppContext().getLabel();
         if (StringUtils.isNotBlank(label)) {
             return label;
         }
-        log.warn("No label could be found for subapp [{}] at app [{}]", subAppContext.getSubAppDescriptor().getName(), subAppContext.getAppContext().getAppDescriptor().getName());
+        log.warn("No label could be found for subapp [{}] at app [{}]", subAppContext.getSubAppDescriptor().getName(), subAppContext.getAppContext().getName());
         return "";
     }
 

@@ -198,7 +198,7 @@ public class ContentSubApp extends BaseSubApp {
                 ContentLocation location = getCurrentLocation();
                 location.updateNodePath(event.getPath());
                 currentLocation = location;
-                getAppContext().setSubAppLocation(subApp, location);
+                getAppContext().setSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);
             }
         });
@@ -214,7 +214,7 @@ public class ContentSubApp extends BaseSubApp {
                 }
                 location.updateViewType(event.getViewType());
                 currentLocation = location;
-                getAppContext().setSubAppLocation(subApp, currentLocation);
+                getAppContext().setSubAppLocation(getSubAppContext(), currentLocation);
                 updateActionbar(actionbar);
             }
         });
@@ -226,7 +226,7 @@ public class ContentSubApp extends BaseSubApp {
                 ContentLocation location = getCurrentLocation();
                 location.updateQuery(event.getSearchExpression());
                 currentLocation = location;
-                getAppContext().setSubAppLocation(subApp, currentLocation);
+                getAppContext().setSubAppLocation(getSubAppContext(), currentLocation);
                 updateActionbar(actionbar);
             }
         });

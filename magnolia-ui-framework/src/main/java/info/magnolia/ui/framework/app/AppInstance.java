@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,38 +33,31 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.ViewPort;
 
 /**
- * AppController manages life cycles of {@link App}s. It takes care of starting, stopping and switching to already running apps.
- * Manages apps running for a single user.
+ * AppInstance.
  */
-public interface AppController {
+public interface AppInstance {
 
-    public static final String COMMON_APP_COMPONENTS_ID = "app";
+   void setAppComponentProvider(ComponentProvider appComponentProvider);
 
-    public static final String COMPONENTS_ID_PREFIX = "app-";
+    AppDescriptor getAppDescriptor();
 
-    public static final String COMMON_SUB_APP_COMPONENTS_ID = "subapp";
+    App getApp();
 
-    AppInstance getCurrentAppInstance();
+    void setApp(App app);
 
-    App startIfNotAlreadyRunning(String name, Location location);
+    Location getCurrentLocation();
 
-    App startIfNotAlreadyRunningThenFocus(String name, Location location);
+    Location getDefaultLocation();
 
-    App getAppWithoutStarting(String appId);
+    String mayStop();
 
-    void stopApp(String name);
+    void onLocationUpdate(Location location);
 
-    void stopCurrentApp();
+    void start(Location location);
 
-    boolean isAppStarted(String name);
-
-    void setViewPort(ViewPort viewport);
-
-    void focusCurrentApp();
-
-    Location getCurrentLocation(String name);
+    void stop();
 }

@@ -34,11 +34,18 @@
 package info.magnolia.ui.admincentral.app.simple;
 
 import info.magnolia.module.ModuleRegistry;
+import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
+import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationBuilder;
+import info.magnolia.objectfactory.configuration.InstanceConfiguration;
+import info.magnolia.objectfactory.guice.GuiceComponentProvider;
+import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.AppInstance;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
@@ -48,13 +55,12 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
 import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -93,30 +99,23 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     private final LocationController locationController;
 
-    private final MessagesManager messagesManager;
-
-    private final Shell shell;
-
     private final EventBus eventBus;
 
     private ViewPort viewPort;
 
-    private final Map<String, AppContext> runningApps = new HashMap<String, AppContext>();
+    private final Map<String, AppInstance> runningApps = new HashMap<String, AppInstance>();
 
-    private final LinkedList<AppContext> appHistory = new LinkedList<AppContext>();
+    private final LinkedList<AppInstance> appHistory = new LinkedList<AppInstance>();
 
-    private AppContext currentApp;
+    private AppInstance currentAppInstance;
 
     @Inject
     public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider,
-                             AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController,
-                             MessagesManager messagesManager, Shell shell, @Named("admincentral") EventBus admincentralEventBus) {
+                             AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController, @Named("admincentral") EventBus admincentralEventBus) {
         this.moduleRegistry = moduleRegistry;
         this.componentProvider = componentProvider;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.locationController = locationController;
-        this.messagesManager = messagesManager;
-        this.shell = shell;
         this.eventBus = admincentralEventBus;
 
         admincentralEventBus.addHandler(LocationChangedEvent.class, this);
@@ -137,11 +136,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      */
     @Override
     public App getAppWithoutStarting(String appId) {
-        AppContext appContext = getAppContext(appId);
-        ComponentProvider appComponentProvider = appContext.createAppComponentProvider(appContext.getName(), appContext);
-        App app = appComponentProvider.newInstance(appContext.getAppDescriptor().getAppClass());
+        AppInstance appInstance = getAppInstance(appId);
+        ComponentProvider appComponentProvider = createAppComponentProvider(appInstance.getAppDescriptor().getName(), appInstance);
+        App app = appComponentProvider.newInstance(appInstance.getAppDescriptor().getAppClass());
 
-        appContext.setApp(app);
+        appInstance.setApp(app);
         return app;
     }
 
@@ -154,11 +153,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      */
     @Override
     public App startIfNotAlreadyRunningThenFocus(String appId, Location location) {
-        AppContext appContext = getAppContext(appId);
-        appContext = doStartIfNotAlreadyRunning(appContext, location);
-        if (appContext != null) {
-            doFocus(appContext);
-            return appContext.getApp();
+        AppInstance appInstance = getAppInstance(appId);
+        appInstance = doStartIfNotAlreadyRunning(appInstance, location);
+        if (appInstance != null) {
+            doFocus(appInstance);
+            return appInstance.getApp();
         } else {
             return null;
         }
@@ -178,25 +177,23 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     @Deprecated
     @Override
     public App startIfNotAlreadyRunning(String appId, Location location) {
-        AppContext appContext = getAppContext(appId);
+        AppInstance appInstance = getAppInstance(appId);
 
-        return doStartIfNotAlreadyRunning(appContext, location).getApp();
+        return doStartIfNotAlreadyRunning(appInstance, location).getApp();
     }
 
     @Override
     public void stopApp(String appId) {
-        AppContext appContext = runningApps.get(appId);
-        if (appContext != null) {
-            doStop(appContext);
+        AppInstance appInstance = runningApps.get(appId);
+        if (appInstance != null) {
+            doStop(appInstance);
         }
     }
 
     @Override
     public void stopCurrentApp() {
-        final AppContext appContext = appHistory.peekFirst();
-        if (appContext != null) {
-            stopApp(appContext.getName());
-        }
+        final AppInstance appInstance = appHistory.peekFirst();
+        doStop(appInstance);
     }
 
     @Override
@@ -206,58 +203,58 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Override
     public void focusCurrentApp() {
-        doFocus(currentApp);
+        doFocus(currentAppInstance);
     }
 
     @Override
     public Location getCurrentLocation(String appId) {
-        AppContext appContext = runningApps.get(appId);
-        return appContext == null ? null : appContext.getCurrentLocation();
+        AppInstance appInstance = runningApps.get(appId);
+        return appInstance == null ? null : appInstance.getCurrentLocation();
     }
 
     @Override
-    public AppContext getCurrentApp() {
-        return currentApp;
+    public AppInstance getCurrentAppInstance() {
+        return currentAppInstance;
     }
 
     /**
      * Delegates the starting of an {@link App} to the {@link AppContext}. In
      * case the app is already started, it will update its location.
      */
-    private AppContext doStartIfNotAlreadyRunning(AppContext appContext, Location location) {
-        if (isAppStarted(appContext.getName())) {
-            appContext.onLocationUpdate(location);
-            return appContext;
+    private AppInstance doStartIfNotAlreadyRunning(AppInstance appInstance, Location location) {
+        if (isAppStarted(appInstance.getAppDescriptor().getName())) {
+            appInstance.onLocationUpdate(location);
+            return appInstance;
         }
 
-        runningApps.put(appContext.getName(), appContext);
-        appContext.start(location);
-        sendEvent(AppLifecycleEventType.STARTED, appContext.getAppDescriptor());
-        return appContext;
+        runningApps.put(appInstance.getAppDescriptor().getName(), appInstance);
+        appInstance.start(location);
+        sendEvent(AppLifecycleEventType.STARTED, appInstance.getAppDescriptor());
+        return appInstance;
     }
 
     /**
      * Focuses an already running {@link App} by passing it to the
      * {@link LocationController}.
      */
-    private void doFocus(AppContext appContext) {
-        locationController.goTo(appContext.getCurrentLocation());
-        appHistory.addFirst(appContext);
-        sendEvent(AppLifecycleEventType.FOCUSED, appContext.getAppDescriptor());
+    private void doFocus(AppInstance appInstance) {
+        locationController.goTo(appInstance.getCurrentLocation());
+        appHistory.addFirst(appInstance);
+        sendEvent(AppLifecycleEventType.FOCUSED, appInstance.getAppDescriptor());
     }
 
-    private void doStop(AppContext appContext) {
-        appContext.stop();
-        while (appHistory.remove(appContext)) {
+    private void doStop(AppInstance appInstance) {
+        appInstance.stop();
+        while (appHistory.remove(appInstance)) {
             ;
         }
 
-        runningApps.remove(appContext.getName());
-        if (currentApp == appContext) {
-            currentApp = null;
+        runningApps.remove(appInstance.getAppDescriptor().getName());
+        if (currentAppInstance == appInstance) {
+            currentAppInstance = null;
             viewPort.setView(null);
         }
-        sendEvent(AppLifecycleEventType.STOPPED, appContext.getAppDescriptor());
+        sendEvent(AppLifecycleEventType.STOPPED, appInstance.getAppDescriptor());
         if (!appHistory.isEmpty()) {
             doFocus(appHistory.peekFirst());
         }
@@ -287,11 +284,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             return;
         }
 
-        if (currentApp != null) {
-            currentApp.exitFullScreenMode();
+        if (currentAppInstance != null) {
+            ((AppContext) currentAppInstance).exitFullScreenMode();
         }
 
-        AppContext nextAppContext = getAppContext(nextApp.getName());
+        AppInstance nextAppContext = getAppInstance(nextApp.getName());
 
         // update location
         Location updateLocation = updateLocation(nextAppContext, newLocation);
@@ -302,12 +299,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         nextAppContext = doStartIfNotAlreadyRunning(nextAppContext, newLocation);
 
-        if (currentApp != nextAppContext) {
+        if (currentAppInstance != nextAppContext) {
             appHistory.addFirst(nextAppContext);
         }
 
         viewPort.setView((View) nextAppContext.getApp().getView());
-        currentApp = nextAppContext;
+        currentAppInstance = nextAppContext;
         // focus on locationChanged?
         // focusCurrentApp();
     }
@@ -319,7 +316,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      * <li>Will fetch the configured default subAppId otherwise.</li>
      * </ul>
      */
-    private Location updateLocation(AppContext appContext, Location location) {
+    private Location updateLocation(AppInstance appInstance, Location location) {
         String appType = location.getAppType();
         String appId = location.getAppId();
         String subAppId = location.getSubAppId();
@@ -328,10 +325,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         if (StringUtils.isBlank(subAppId)) {
 
             if (isAppStarted(appId)) {
-                AppContext runningAppContext = runningApps.get(appId);
+                AppInstance runningAppContext = runningApps.get(appId);
                 subAppId = runningAppContext.getCurrentLocation().getSubAppId();
             } else if (StringUtils.isBlank(subAppId)) {
-                subAppId = appContext.getDefaultLocation().getSubAppId();
+                subAppId = appInstance.getDefaultLocation().getSubAppId();
 
             }
         }
@@ -340,7 +337,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
 
-    private AppContext getAppContext(String appId) {
+    private AppInstance getAppInstance(String appId) {
         if (isAppStarted(appId)) {
             return runningApps.get(appId);
         } else {
@@ -349,27 +346,63 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
                 return null;
             }
 
-            return new AppContextImpl(moduleRegistry, componentProvider, this, locationController, shell, messagesManager, descriptor);
-
+            AppInstance appInstance = componentProvider.newInstance(AppInstance.class, descriptor);
+            createAppComponentProvider(descriptor.getName(), appInstance);
+            return appInstance;
         }
     }
 
     @Override
     public void onLocationChangeRequested(LocationChangeRequestedEvent event) {
-        if (currentApp != null) {
-            final String message = currentApp.mayStop();
+        if (currentAppInstance != null) {
+            final String message = currentAppInstance.mayStop();
             if (message != null) {
                 event.setWarning(message);
             }
         }
     }
 
-    private AppDescriptor getAppForLocation(Location newLocation) {
-        return getAppDescriptor(newLocation.getAppId());
+    private AppDescriptor getAppForLocation(Location location) {
+        return getAppDescriptor(location.getAppId());
     }
 
     private AppDescriptor getAppDescriptor(String name) {
         return appLauncherLayoutManager.getLayoutForCurrentUser().getAppDescriptor(name);
+    }
+
+    /**
+     * Creates a ComponentProvider dedicated for the app with the AdminCentral ComponentProvider as its parent. This
+     * gives us the ability to inject the AppContext into App components. The components are read from module
+     * descriptors using the convention "app-" + name of the app and merged with the components defined for all apps
+     * with the id "app".
+     */
+    private ComponentProvider createAppComponentProvider(String name, AppInstance appInstance) {
+
+        ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
+        List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
+
+        // Get components common to all apps
+        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(COMMON_APP_COMPONENTS_ID, moduleDefinitions);
+
+        // Get components for this specific app
+        String componentsId = COMPONENTS_ID_PREFIX + name;
+        log.debug("Reading component configurations from module descriptors for " + componentsId);
+        ComponentProviderConfiguration appComponents = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
+
+        configuration.combine(appComponents);
+
+        // Add the AppContext instance into the component provider.
+        configuration.addComponent(InstanceConfiguration.valueOf(AppContext.class, appInstance));
+
+        log.debug("Creating component provider for app " + name);
+        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
+        builder.withConfiguration(configuration);
+        builder.withParent((GuiceComponentProvider) componentProvider);
+        ComponentProvider appComponentProvder = builder.build();
+
+        appInstance.setAppComponentProvider(appComponentProvder);
+
+        return builder.build();
     }
 
 }
