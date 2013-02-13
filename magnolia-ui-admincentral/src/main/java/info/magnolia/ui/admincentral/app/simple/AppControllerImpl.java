@@ -55,7 +55,6 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
 import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.framework.view.ViewPort;
 
 import java.util.HashMap;
@@ -303,7 +302,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             appHistory.addFirst(nextAppContext);
         }
 
-        viewPort.setView((View) nextAppContext.getApp().getView());
+        viewPort.setView(nextAppContext.getApp().getView());
         currentAppInstance = nextAppContext;
         // focus on locationChanged?
         // focusCurrentApp();

@@ -33,10 +33,7 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.location.Location;
-
-import com.vaadin.ui.Component;
 
 /**
  * Provides functionality used by a sub app to interact with the Magnolia shell.
@@ -49,8 +46,6 @@ public interface SubAppContext {
 
     Location getLocation();
 
-    Component getTab();
-
     AppContext getAppContext();
 
     SubAppDescriptor getSubAppDescriptor();
@@ -60,10 +55,6 @@ public interface SubAppContext {
     void setLocation(Location location);
 
     void setSubApp(SubApp subApp);
-
-    void setSubAppComponentProvider(ComponentProvider subAppComponentProvider);
-
-    void setTab(Component tab);
 
     void setInstanceId(String instanceId);
 

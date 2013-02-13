@@ -45,7 +45,7 @@ import com.vaadin.ui.ComponentContainer;
 /**
  * View used to give all apps a uniform look-and-feel.
  */
-public class AppFrameView implements AppView, View {
+public class AppFrameView implements AppView {
 
     private KeyMapper<Component> mapper = new KeyMapper<Component>();
 

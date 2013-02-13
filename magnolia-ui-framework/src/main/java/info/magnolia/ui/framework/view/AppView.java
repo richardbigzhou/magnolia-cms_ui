@@ -37,7 +37,7 @@ package info.magnolia.ui.framework.view;
  * AppView. Should we refer to the tabs as tab or subApp instance. Keep in mind that it is not the subAppId. There are multiple instances of the subapp.
  *
  */
-public interface AppView {
+public interface AppView extends View {
 
     void setFullscreen(boolean fullscreen);
 

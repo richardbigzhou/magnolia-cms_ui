@@ -56,7 +56,6 @@ import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.AppView;
-import info.magnolia.ui.framework.view.View;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -270,10 +269,8 @@ public class AppContextImpl implements AppContext, AppInstance {
         subAppContext.setAppContext(this);
         subAppContext.setLocation(location);
         subAppContext.setSubApp(subApp);
-        subAppContext.setSubAppComponentProvider(subAppComponentProvider);
 
-        View view = subApp.start(location);
-        String instanceId = app.getView().addSubAppView(view, subApp.getCaption(), !subAppContexts.isEmpty());
+        String instanceId = app.getView().addSubAppView(subApp.start(location), subApp.getCaption(), !subAppContexts.isEmpty());
 
         subAppContext.setInstanceId(instanceId);
 
