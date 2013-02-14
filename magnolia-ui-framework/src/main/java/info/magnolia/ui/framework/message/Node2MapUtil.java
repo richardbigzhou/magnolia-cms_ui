@@ -35,12 +35,17 @@ package info.magnolia.ui.framework.message;
 
 import info.magnolia.jcr.node2bean.Node2BeanException;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.objectfactory.Components;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
 /**
@@ -62,8 +67,9 @@ public class Node2MapUtil {
         if (node == null) {
             throw new IllegalArgumentException("Node must not be null.");
         }
+        // remove any "leftovers"
         if (node.hasNodes() || node.hasProperties()) {
-            throw new IllegalArgumentException("Node must be empty (no properties nor subnodes).");
+            emptyNode(node);
         }
         // ok, if map is not empty, transform
         if (map != null && !map.isEmpty()) {
@@ -103,6 +109,24 @@ public class Node2MapUtil {
      */
     public static Map<String, Object> node2map(Node node) throws Node2BeanException, RepositoryException {
         return (Map<String, Object>) Components.getComponent(Node2BeanProcessor.class).toBean(node);
+    }
+
+    private static void emptyNode(Node node) throws RepositoryException {
+        for (Node child : NodeUtil.getNodes(node)) {
+            child.remove();
+        }
+        PropertyIterator pi = node.getProperties();
+        List<Property> list = new ArrayList<Property>();
+        while (pi.hasNext()) {
+            // getting ConcurrentModificationException when trying to remove
+            // properties right here;
+            // so just adding them to a temporary list
+            list.add(pi.nextProperty());
+        }
+        for (Property prop : list) {
+            // and removing the properties later
+            prop.remove();
+        }
     }
 
 }

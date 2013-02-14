@@ -58,6 +58,7 @@ public class Message implements Cloneable, Map<String, Object> {
 
     public Message(long timestampInMillis) {
         setTimestamp(timestampInMillis);
+        setCleared(false);
     }
 
     public long getTimestamp() {
@@ -69,7 +70,7 @@ public class Message implements Cloneable, Map<String, Object> {
     }
 
     public String getMessage() {
-        return data.get(MESSAGE).toString();
+        return data.get(MESSAGE) != null ? data.get(MESSAGE).toString() : null;
     }
 
     public void setMessage(String message) {
@@ -77,7 +78,7 @@ public class Message implements Cloneable, Map<String, Object> {
     }
 
     public String getSubject() {
-        return data.get(SUBJECT).toString();
+        return data.get(SUBJECT) != null ? data.get(SUBJECT).toString() : null;
     }
 
     public void setSubject(String subject) {
@@ -85,7 +86,7 @@ public class Message implements Cloneable, Map<String, Object> {
     }
 
     public MessageType getType() {
-        return MessageType.valueOf(data.get(MESSAGETYPE).toString());
+        return data.get(MESSAGETYPE) != null ? MessageType.valueOf(data.get(MESSAGETYPE).toString()) : null;
     }
 
     public void setType(MessageType type) {
@@ -97,11 +98,11 @@ public class Message implements Cloneable, Map<String, Object> {
     }
 
     public String getId() {
-        return data.get(ID).toString();
+        return data.get(ID) != null ? data.get(ID).toString() : null;
     }
 
     public boolean isCleared() {
-        return (Boolean) data.get(CLEARED);
+        return data.get(CLEARED) != null && ((Boolean) data.get(CLEARED));
     }
 
     public void setCleared(boolean cleared) {

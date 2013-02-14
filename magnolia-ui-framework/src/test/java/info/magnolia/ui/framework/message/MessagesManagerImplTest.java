@@ -43,6 +43,7 @@ import info.magnolia.cms.security.UserManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
@@ -61,13 +62,15 @@ import com.google.inject.util.Providers;
 /**
  * Test case {@link MessagesManagerImpl}.
  */
-public class MessagesManagerImplTest {
+public class MessagesManagerImplTest extends MgnlTestCase {
 
     private Session session;
     private MessagesManagerImpl messagesManager;
 
+    @Override
     @Before
     public void setUp() throws Exception {
+        super.setUp();
 
         session = SessionTestUtil.createSession("messages", "/");
 
@@ -87,6 +90,7 @@ public class MessagesManagerImplTest {
         when(securitySupport.getUserManager()).thenReturn(userManager);
 
         messagesManager = new MessagesManagerImpl(Providers.of(securitySupport), messageStore);
+
     }
 
     private User createMockUser(String name) {
