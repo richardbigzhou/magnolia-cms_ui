@@ -174,6 +174,7 @@ public abstract class MagnoliaShellBase extends AbstractComponent implements Has
         ((ShellViewport) getState().viewports.get(ViewportType.DIALOG)).addComponent(dialog);
     }
 
+
     public void setActiveViewport(ShellViewport viewport) {
         final Connector currentActive = getState().activeViewport;
         if (currentActive != viewport) {

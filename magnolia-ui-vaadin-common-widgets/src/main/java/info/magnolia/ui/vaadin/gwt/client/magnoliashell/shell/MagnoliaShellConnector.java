@@ -101,6 +101,22 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             }
         });
 
+        addStateChangeHandler("modalityChild", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+
+                if (getState().modalityChild == null || getState().modalityParent == null) {
+                    // Remove the widget
+                    view.closeModalOnComponent();// childWidget, parentWidget);
+                } else {
+                    // Add the widget
+                    Widget childWidget = ((ComponentConnector) getState().modalityChild).getWidget();
+                    Widget parentWidget = ((ComponentConnector) getState().modalityParent).getWidget();
+                    view.openModalOnComponent(childWidget, parentWidget);
+                }
+            }
+        });
+
         registerRpc(ShellClientRpc.class, new ShellClientRpc() {
 
             @Override

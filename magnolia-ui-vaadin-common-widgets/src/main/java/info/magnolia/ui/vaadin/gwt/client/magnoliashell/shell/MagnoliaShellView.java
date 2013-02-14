@@ -73,6 +73,10 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
     void updateShellDivet();
 
+    void openModalOnComponent(Widget child, Widget parent);
+
+    void closeModalOnComponent();
+
     /**
      * Presenter for {@link MagnoliaShellView}.
      */

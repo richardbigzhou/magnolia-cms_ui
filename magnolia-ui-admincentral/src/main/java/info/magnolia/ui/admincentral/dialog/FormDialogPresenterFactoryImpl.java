@@ -39,6 +39,8 @@ import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.admincentral.field.builder.FieldFactory;
 import info.magnolia.ui.admincentral.form.FormPresenterFactory;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
@@ -65,11 +67,15 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
     private final FieldFactory fieldFactory;
     private final DialogDefinitionRegistry dialogDefinitionRegistry;
 
+    private final AppContext appContext;
+    private final SubAppContext subAppContext;
+
     @Inject
     public FormDialogPresenterFactoryImpl(ComponentProvider componentProvider,
                                           DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, FormPresenterFactory formPresenterFactory,
                                           FieldFactory fieldFactory, Shell shell,
-                                          @Named("admincentral") EventBus eventBus, final DialogActionFactory actionFactory) {
+            @Named("admincentral") EventBus eventBus, final DialogActionFactory actionFactory,
+            final AppContext appContext, final SubAppContext subAppContext) {
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.dialogBuilder = dialogBuilder;
         this.formPresenterFactory = formPresenterFactory;
@@ -78,6 +84,8 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
         this.eventBus = eventBus;
         this.actionFactory = actionFactory;
         this.componentProvider = componentProvider;
+        this.appContext = appContext;
+        this.subAppContext = subAppContext;
     }
 
     @Override
@@ -104,7 +112,7 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
     @Override
     public FormDialogPresenter createDialogPresenterByDefinition(DialogDefinition definition) {
         FormDialogView view = componentProvider.getComponent(FormDialogView.class);
-        return new FormDialogPresenterImpl(view, dialogBuilder, formPresenterFactory, definition, shell, eventBus, actionFactory);
+        return new FormDialogPresenterImpl(view, dialogBuilder, formPresenterFactory, definition, shell, eventBus, actionFactory, appContext, subAppContext);
 
     }
 }

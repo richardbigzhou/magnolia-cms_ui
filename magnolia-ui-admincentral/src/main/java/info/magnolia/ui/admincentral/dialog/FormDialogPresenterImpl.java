@@ -38,6 +38,8 @@ import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.FormPresenterFactory;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
@@ -46,6 +48,8 @@ import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
 
 import com.vaadin.data.Item;
+import com.vaadin.shared.Connector;
+import com.vaadin.ui.Component;
 
 /**
  * Presenter for forms opened inside dialogs.
@@ -68,7 +72,12 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     private final DialogActionFactory dialogActionFactory;
     private FormPresenter formPresenter;
 
-    public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final FormPresenterFactory formPresenterFactory, final DialogDefinition dialogDefinition, final Shell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
+    private final AppContext appContext;
+    private final SubAppContext subAppContext;
+
+    public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final FormPresenterFactory formPresenterFactory,
+            final DialogDefinition dialogDefinition, final Shell shell, EventBus eventBus, final DialogActionFactory actionFactory,
+            final AppContext appContext, final SubAppContext subAppContext) {
         super(view, eventBus);
         this.view = view;
         this.dialogBuilder = dialogBuilder;
@@ -76,6 +85,8 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         this.dialogDefinition = dialogDefinition;
         this.shell = (MagnoliaShell) shell;
         this.dialogActionFactory = actionFactory;
+        this.subAppContext = subAppContext;
+        this.appContext = appContext;
         initActions(dialogDefinition);
     }
 
@@ -100,7 +111,16 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         Dialog dialog = new Dialog(dialogDefinition);
         view.setFormView(formPresenter.start(item, dialog));
 
-        shell.openDialog(this);
+        // shell.openDialog(this);
+
+        // Test opening a dialog on this app:
+
+        // ModalComponentContainer mcc = new ModalComponentContainer(this.getView().asVaadinComponent());
+        // Open it on a subApp component.
+        Connector modalityParent = subAppContext.getTab();
+        // shell.openModal(this.getView().asVaadinComponent(), (Component) modalityParent);
+        shell.openModalWithDialog(this, (Component) modalityParent);
+
         return view;
     }
 

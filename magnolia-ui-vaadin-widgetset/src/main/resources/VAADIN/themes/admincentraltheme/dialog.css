@@ -60,6 +60,25 @@
   z-index:201; /* one more than curtain */
 }
 
+.modal-widget{
+	position: absolute; display: block; top: 0px; bottom:0px; left: 0px; right: 0px;
+}
+.modal-child{
+	z-index:51;
+}
+.modal-curtain{
+    position:absolute;
+    top:0px;
+    bottom:0px;
+    left:0px;
+    right:0px;
+
+    background-color:#FFFFFF;
+    opacity:0.6;
+    filter:alpha(opacity = 60);
+    z-index:50;
+}
+
 .dialog-footer {
   background: none repeat scroll 0px 0px #CCCCCC;
   text-align: right;

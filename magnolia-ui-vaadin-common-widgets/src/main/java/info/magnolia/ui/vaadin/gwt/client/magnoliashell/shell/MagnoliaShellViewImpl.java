@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
+import info.magnolia.ui.vaadin.gwt.client.dialog.widget.ModalWidget;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
@@ -272,6 +273,22 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         mainAppLauncher.updateDivet();
     }
 
+    /**
+     * The modal widget will be added to the Shell - but the DOM of the widget will be placed over
+     * the DOM of the specified modalityParent.
+     */
+    public void openModalOnComponent(Widget child, Widget parent){
+
+        // wrap the child widget in a modal widget to add the glass.
+        ModalWidget modal = new ModalWidget(child);
+        // insert a child widget into a parent element.
+        add(modal, parent.getElement());
+    }
+
+    public void closeModalOnComponent() {
+        // It gets removed automatically - becuase the component is no longer returned by MagnoliaShell iterator.
+    }
+
     private final ShellAppActivatedEvent.Handler navigationHandler = new ShellAppActivatedEvent.Handler() {
         @Override
         public void onShellAppActivated(final ShellAppActivatedEvent event) {
@@ -317,4 +334,5 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
             }
         }
     };
+
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,37 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
+package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
-
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.vaadin.shared.Connector;
-import com.vaadin.shared.ui.AbstractLayoutState;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * MagnoliaShellState.
+ * MagnoliaTabWidget.
  */
-public class MagnoliaShellState extends AbstractLayoutState {
+public class ModalWidget extends SimplePanel {
 
-    public List<String> runningAppNames = new ArrayList<String>();
+    private final Element legend = DOM.createElement("legend");
 
-    public List<String> registeredAppNames = new ArrayList<String>();
+    public ModalWidget(Widget child) {
+        super(child);
+        setStyleName("modal-widget");
 
-    public Map<ShellAppType, Connector> shellApps = new EnumMap<ShellAppType, Connector>(ShellAppType.class);
+        // legend.getStyle().setDisplay(Display.NONE);
+        legend.setClassName("modal-curtain");
+        getElement().appendChild(legend);
 
-    public Map<ShellAppType, Integer> indications = new HashMap<ShellAppType, Integer>();
+    }
 
-    public Map<ViewportType, Connector> viewports = new EnumMap<ViewportType, Connector>(ViewportType.class);
-
-    public Connector activeViewport = null;
-
-    public Connector modalityParent = null;
-    public Connector modalityChild = null;
 }
