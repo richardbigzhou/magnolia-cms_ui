@@ -400,10 +400,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
 
         // Get components common to all apps
-        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(COMMON_APP_COMPONENTS_ID, moduleDefinitions);
+        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(APP_PREFIX, moduleDefinitions);
 
         // Get components for this specific app
-        String componentsId = COMPONENTS_ID_PREFIX + name;
+        final String componentsId = APP_PREFIX + "-" + name;
         log.debug("Reading component configurations from module descriptors for " + componentsId);
         ComponentProviderConfiguration appComponents = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
 

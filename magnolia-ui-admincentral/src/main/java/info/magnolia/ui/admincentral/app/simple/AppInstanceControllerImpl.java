@@ -340,10 +340,10 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
 
         // Get components common to all sub apps
-        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(AppController.COMMON_SUB_APP_COMPONENTS_ID, moduleDefinitions);
+        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(AppController.SUBAPP_PREFIX, moduleDefinitions);
 
         // Get components for this specific sub app
-        String componentsId = AppController.COMPONENTS_ID_PREFIX + appName + "-" + subAppName;
+        String componentsId = AppController.APP_PREFIX + "-" + appName + "-" + subAppName;
         log.debug("Reading component configurations from module descriptors for " + componentsId);
         ComponentProviderConfiguration subAppComponents = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
 

@@ -41,11 +41,15 @@ import info.magnolia.ui.framework.view.ViewPort;
  */
 public interface AppController {
 
-    public static final String COMMON_APP_COMPONENTS_ID = "app";
+    /**
+     * Prefix for componentIds for apps.
+     */
+    public static final String APP_PREFIX = "app";
 
-    public static final String COMPONENTS_ID_PREFIX = "app-";
-
-    public static final String COMMON_SUB_APP_COMPONENTS_ID = "subapp";
+    /**
+     * Prefix for componentIds for subapps.
+     */
+    public static final String SUBAPP_PREFIX = "subapp";
 
     AppInstanceController getCurrentAppInstanceController();
 
