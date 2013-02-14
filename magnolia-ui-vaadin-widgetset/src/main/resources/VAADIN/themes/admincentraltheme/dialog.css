@@ -60,7 +60,7 @@
   z-index:201; /* one more than curtain */
 }
 
-.modal-widget{
+.modal{
 	position: absolute; display: block; top: 0px; bottom:0px; left: 0px; right: 0px;
 }
 .modal-child{

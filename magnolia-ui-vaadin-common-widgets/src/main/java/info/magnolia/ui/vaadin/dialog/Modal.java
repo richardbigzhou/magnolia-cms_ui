@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
+package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.connector.ModalConnector;
-
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.vaadin.ui.AbstractSingleComponentContainer;
+import com.vaadin.ui.Component;
 
 /**
- * MagnoliaTabWidget.
+ * A Single component container that includes a "glass" or "curtain" which dims out and prevents interaction on the elements
+ * below it. It is different then a Vaadin Window in that ONLY the component that it is attached to recieves the modal glass.
+ * It is only modal within the component that it is added to.
+ * Positioning of the glass and component depends on one of the parents having css position set to relative or absolute.
  */
-public class ModalWidget extends SimplePanel {
+public class Modal extends AbstractSingleComponentContainer {
 
-    // private final SimplePanel contentContainer = new SimplePanel();
-
-    // private final Element contentPositioner = DOM.createDiv();
-    private final Element modalityCurtain = DOM.createDiv();
-
-    public ModalWidget(ModalConnector connector) {
-        super();
-
-        setStyleName("modal");
-
-        // contentPositioner.setClassName("v-modal-component-container-positioner");
-        modalityCurtain.setClassName("modal-curtain");
-        this.getElement().appendChild(modalityCurtain);
+    public Modal(final Component content) {
+        // setSizeFull();
+        setImmediate(true);
+        setContent(content);
     }
-
-    /*
-     * private final Element legend = DOM.createElement("legend");
-     * 
-     * public ModalWidget(Widget child) {
-     * super(child);
-     * setStyleName("modal-widget");
-     * 
-     * // legend.getStyle().setDisplay(Display.NONE);
-     * legend.setClassName("modal-curtain");
-     * getElement().appendChild(legend);
-     * 
-     * }
-     */
 
 }

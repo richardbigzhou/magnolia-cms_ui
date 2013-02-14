@@ -55,6 +55,7 @@ import info.magnolia.ui.framework.view.ViewPort;
 import info.magnolia.ui.vaadin.common.ComponentIterator;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
+import info.magnolia.ui.vaadin.dialog.Modal;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
@@ -204,14 +205,23 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
     public Iterator<Component> iterator() {
 
         Iterator<Connector> viewportIterator = getState(false).viewports.values().iterator();
+        Iterator<Connector> modalIterator = getState(false).modals.iterator();
+
         ArrayList<Connector> connectors = new ArrayList<Connector>();
 
+        // Add viewports
         while (viewportIterator.hasNext()) {
             connectors.add(viewportIterator.next());
         }
 
-        if (getState().modalityChild != null) {
-            connectors.add(getState().modalityChild);
+        // Add modals
+        /*
+         * if (getState().modalityChild != null) {
+         * connectors.add(getState().modalityChild);
+         * }
+         */
+        while (modalIterator.hasNext()) {
+            connectors.add(modalIterator.next());
         }
 
         return new ComponentIterator<Connector>(connectors.iterator());
@@ -234,7 +244,11 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
             public void onClose(DialogCloseEvent event) {
                 // removeDialog(event.getView().asVaadinComponent());
                 getState().modalityParent = null;
-                getState().modalityChild = null;
+                // getState().modalityChild = null;
+                Connector dialog = event.getView().asVaadinComponent();
+                Connector modal = dialog.getParent();
+                // ToDO: Check: I think this modal is actually wrong - because we want to remove the Modal component that wrapped the dialog.
+                getState().modals.remove(modal);
 
                 event.getView().asVaadinComponent().removeDialogCloseHandler(this);
             }
@@ -244,10 +258,14 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
         openModal(modal, modalityParent);
     }
 
-    public void openModal(Component modal, Component modalityParent) {
+    public void openModal(Component child, Component modalityParent) {
+
+        Modal modal = new Modal(child);
+
         // MagnoliaShell needs a reference to parent and child.
         getState().modalityParent = modalityParent;
-        getState().modalityChild = modal;
+        // getState().modalityChild = modal;
+        getState().modals.add(modal);
 
         // dialog should have Vaadin parent of MagnoliaShell
         modal.setParent(this);

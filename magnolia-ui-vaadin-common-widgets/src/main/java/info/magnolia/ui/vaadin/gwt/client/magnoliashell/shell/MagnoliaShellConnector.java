@@ -88,7 +88,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             @Override
             public void onStateChanged(StateChangeEvent event) {
                 MagnoliaShellState state = getState();
-                Iterator<Entry<ShellAppType, Integer>> it = getState().indications.entrySet().iterator();
+                Iterator<Entry<ShellAppType, Integer>> it = state.indications.entrySet().iterator();
                 while (it.hasNext()) {
                     final Entry<ShellAppType, Integer> entry = it.next();
                     view.setShellAppIndication(entry.getKey(), entry.getValue());
@@ -101,19 +101,39 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             }
         });
 
-        addStateChangeHandler("modalityChild", new StateChangeHandler() {
+        addStateChangeHandler("modals", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
 
-                if (getState().modalityChild == null || getState().modalityParent == null) {
-                    // Remove the widget
-                    view.closeModalOnComponent();// childWidget, parentWidget);
-                } else {
-                    // Add the widget
-                    Widget childWidget = ((ComponentConnector) getState().modalityChild).getWidget();
-                    Widget parentWidget = ((ComponentConnector) getState().modalityParent).getWidget();
-                    view.openModalOnComponent(childWidget, parentWidget);
+                MagnoliaShellState state = getState();
+                Iterator<Connector> it = state.modals.iterator();
+
+                // Check for modals that have not yet been added.
+                while (it.hasNext()) {
+                    final Connector modal = it.next();
+                    // Test if modal is attached.
+                    Widget modalWidget = ((ComponentConnector) modal).getWidget();
+
+                    if (modalWidget.getParent() == null) {
+                        // Add the widget
+                        Widget parentWidget = ((ComponentConnector) getState().modalityParent).getWidget();
+                        view.openModalOnComponent(modalWidget, parentWidget);
+                    }
                 }
+
+                // Check for modals that have not yet been removed.
+
+                /*
+                 * if (getState().modalityChild == null) {
+                 * // Remove the widget
+                 * view.closeModalOnComponent();// childWidget, parentWidget);
+                 * } else {
+                 * // Add the widget
+                 * Widget childWidget = ((ComponentConnector) getState().modalityChild).getWidget();
+                 * Widget parentWidget = ((ComponentConnector) getState().modalityParent).getWidget();
+                 * view.openModalOnComponent(childWidget, parentWidget);
+                 * }
+                 */
             }
         });
 
