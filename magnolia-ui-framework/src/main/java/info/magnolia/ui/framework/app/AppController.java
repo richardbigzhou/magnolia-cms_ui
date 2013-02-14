@@ -37,15 +37,19 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.ViewPort;
 
 /**
- * Controls all {@link App}s runnig for a single user. It takes care of starting, stopping and switching to already running apps.
+ * Controls all {@link App}s running for a single user. It takes care of starting, stopping and switching to already running apps.
  */
 public interface AppController {
 
-    public static final String COMMON_APP_COMPONENTS_ID = "app";
+    /**
+     * Prefix for componentIds for apps.
+     */
+    public static final String APP_PREFIX = "app";
 
-    public static final String COMPONENTS_ID_PREFIX = "app-";
-
-    public static final String COMMON_SUB_APP_COMPONENTS_ID = "subapp";
+    /**
+     * Prefix for componentIds for subapps.
+     */
+    public static final String SUBAPP_PREFIX = "subapp";
 
     AppInstanceController getCurrentAppInstanceController();
 

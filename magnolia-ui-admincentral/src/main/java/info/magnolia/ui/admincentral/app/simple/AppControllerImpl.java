@@ -50,6 +50,7 @@ import info.magnolia.ui.framework.app.AppInstanceController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
@@ -115,7 +116,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Inject
     public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider,
-                             AppDescriptorRegistry appDescriptorRegistry, LocationController locationController, @Named("admincentral") EventBus admincentralEventBus, MessagesManager messagesManager) {
+                             AppDescriptorRegistry appDescriptorRegistry, LocationController locationController, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus admincentralEventBus, MessagesManager messagesManager) {
         this.moduleRegistry = moduleRegistry;
         this.componentProvider = componentProvider;
         this.appDescriptorRegistry = appDescriptorRegistry;
@@ -399,10 +400,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
 
         // Get components common to all apps
-        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(COMMON_APP_COMPONENTS_ID, moduleDefinitions);
+        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(APP_PREFIX, moduleDefinitions);
 
         // Get components for this specific app
-        String componentsId = COMPONENTS_ID_PREFIX + name;
+        final String componentsId = APP_PREFIX + "-" + name;
         log.debug("Reading component configurations from module descriptors for " + componentsId);
         ComponentProviderConfiguration appComponents = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
 

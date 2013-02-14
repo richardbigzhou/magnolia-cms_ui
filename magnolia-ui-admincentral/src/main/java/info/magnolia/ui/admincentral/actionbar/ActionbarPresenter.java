@@ -38,6 +38,7 @@ import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.model.action.Action;
@@ -85,7 +86,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
      * Instantiates a new action bar presenter.
      */
     @Inject
-    public ActionbarPresenter(@Named("subapp") EventBus subAppEventBus, AppContext appContext) {
+    public ActionbarPresenter(@Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, AppContext appContext) {
         this.subAppEventBus = subAppEventBus;
         this.appContext = appContext;
     }

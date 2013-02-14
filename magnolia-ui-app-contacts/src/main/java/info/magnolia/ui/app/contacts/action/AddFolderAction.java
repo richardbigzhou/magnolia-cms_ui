@@ -37,6 +37,7 @@ import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.tree.action.RepositoryOperationAction;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.event.EventBus;
 
 import javax.inject.Named;
@@ -50,7 +51,7 @@ import javax.jcr.RepositoryException;
  */
 public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDefinition> {
 
-    public AddFolderAction(AddFolderActionDefinition definition, Item item, @Named("admincentral") EventBus eventBus) {
+    public AddFolderAction(AddFolderActionDefinition definition, Item item, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus) {
         super(definition, item, eventBus);
     }
 

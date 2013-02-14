@@ -55,6 +55,7 @@ import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.SimpleEventBus;
+import info.magnolia.ui.framework.event.SystemEventBusConfigurer;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
@@ -489,8 +490,8 @@ public class AppControllerImplTest {
 
         @Override
         protected void configure() {
-            bind(EventBus.class).annotatedWith(Names.named("admincentral")).toProvider(Providers.of(eventBus));
-            bind(EventBus.class).annotatedWith(Names.named("system")).toProvider(Providers.of(new SimpleEventBus()));
+            bind(EventBus.class).annotatedWith(Names.named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME)).toProvider(Providers.of(eventBus));
+            bind(EventBus.class).annotatedWith(Names.named(SystemEventBusConfigurer.EVENT_BUS_NAME)).toProvider(Providers.of(new SimpleEventBus()));
         }
     }
 

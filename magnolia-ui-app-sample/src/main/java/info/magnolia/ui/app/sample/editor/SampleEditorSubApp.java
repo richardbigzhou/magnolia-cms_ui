@@ -37,6 +37,7 @@ import info.magnolia.ui.app.sample.editor.location.EditorLocation;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
@@ -51,7 +52,7 @@ public class SampleEditorSubApp extends BaseSubApp implements SampleEditorView.L
     private final SampleEditorView view;
 
     @Inject
-    public SampleEditorSubApp(final SubAppContext subAppContext, final SampleEditorView view, final @Named("subapp") EventBus subAppEventBus) {
+    public SampleEditorSubApp(final SubAppContext subAppContext, final SampleEditorView view, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
         super(subAppContext, view);
         this.view = view;
     }

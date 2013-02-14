@@ -58,6 +58,7 @@ import info.magnolia.ui.framework.event.AppEventBusConfigurer;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.event.InvocationCountingTestEventHandler;
 import info.magnolia.ui.framework.event.SimpleEventBus;
+import info.magnolia.ui.framework.event.SystemEventBusConfigurer;
 import info.magnolia.ui.framework.event.TestEvent;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
@@ -244,8 +245,8 @@ public class AppEventTest {
 
         @Override
         protected void configure() {
-            bind(EventBus.class).annotatedWith(Names.named("admincentral")).toProvider(Providers.of(eventBus));
-            bind(EventBus.class).annotatedWith(Names.named("system")).toProvider(Providers.of(new SimpleEventBus()));
+            bind(EventBus.class).annotatedWith(Names.named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME)).toProvider(Providers.of(eventBus));
+            bind(EventBus.class).annotatedWith(Names.named(SystemEventBusConfigurer.EVENT_BUS_NAME)).toProvider(Providers.of(new SimpleEventBus()));
         }
     }
 }

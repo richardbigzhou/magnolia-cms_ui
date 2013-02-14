@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.form.action;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionRegistry;
 import info.magnolia.ui.admincentral.form.FormPresenter;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
@@ -52,7 +53,7 @@ public class FormActionFactoryImpl extends FactoryBase<ActionDefinition, Action>
     private final EventBus eventBus;
 
     @Inject
-    public FormActionFactoryImpl(ComponentProvider componentProvider, DialogActionRegistry actionRegistry, @Named("admincentral") EventBus eventBus) {
+    public FormActionFactoryImpl(ComponentProvider componentProvider, DialogActionRegistry actionRegistry, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus) {
         super(componentProvider);
         this.eventBus = eventBus;
         for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : actionRegistry.getDefinitionToImplementationMappings()) {
