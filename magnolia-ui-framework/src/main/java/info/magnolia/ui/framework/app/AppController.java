@@ -37,7 +37,7 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.ViewPort;
 
 /**
- * Controls all {@link App}s runnig for a single user. It takes care of starting, stopping and switching to already running apps.
+ * Controls all {@link App}s running for a single user. It takes care of starting, stopping and switching to already running apps.
  */
 public interface AppController {
 
