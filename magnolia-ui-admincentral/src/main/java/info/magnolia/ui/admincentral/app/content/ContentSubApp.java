@@ -43,6 +43,7 @@ import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
@@ -84,7 +85,7 @@ public class ContentSubApp extends BaseSubApp {
 
     private final ContentWorkbenchPresenter workbench;
 
-    public ContentSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, final ContentWorkbenchPresenter workbench, final @Named("subapp") EventBus subAppEventBus) {
+    public ContentSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, final ContentWorkbenchPresenter workbench, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
 
         super(subAppContext, view);
         if (subAppContext == null || view == null || workbench == null || subAppEventBus == null) {

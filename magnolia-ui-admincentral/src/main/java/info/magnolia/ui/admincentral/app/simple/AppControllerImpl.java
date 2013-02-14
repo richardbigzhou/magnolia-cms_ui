@@ -50,6 +50,7 @@ import info.magnolia.ui.framework.app.AppInstanceController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
@@ -115,7 +116,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Inject
     public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider,
-                             AppDescriptorRegistry appDescriptorRegistry, LocationController locationController, @Named("admincentral") EventBus admincentralEventBus, MessagesManager messagesManager) {
+                             AppDescriptorRegistry appDescriptorRegistry, LocationController locationController, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus admincentralEventBus, MessagesManager messagesManager) {
         this.moduleRegistry = moduleRegistry;
         this.componentProvider = componentProvider;
         this.appDescriptorRegistry = appDescriptorRegistry;

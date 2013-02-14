@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.app.tools;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,7 +47,7 @@ import javax.inject.Named;
 public class PageMainSubApp extends BaseSubApp {
 
     @Inject
-    public PageMainSubApp(SubAppContext subAppContext, PageView pageView, final @Named("subapp") EventBus subAppEventBus) {
+    public PageMainSubApp(SubAppContext subAppContext, PageView pageView, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
         super(subAppContext, pageView);
     }
 

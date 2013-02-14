@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.event.EventBus;
 
 import javax.inject.Named;
@@ -45,7 +46,7 @@ import javax.jcr.RepositoryException;
  */
 public class AddPropertyAction extends RepositoryOperationAction<AddPropertyActionDefinition> implements TreeAction {
 
-    public AddPropertyAction(AddPropertyActionDefinition definition, Item item, @Named("admincentral") EventBus eventBus) {
+    public AddPropertyAction(AddPropertyActionDefinition definition, Item item, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus) {
         super(definition, item, eventBus);
     }
 

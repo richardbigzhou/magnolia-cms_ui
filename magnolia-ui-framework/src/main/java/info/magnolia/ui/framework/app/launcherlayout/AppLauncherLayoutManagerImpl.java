@@ -42,6 +42,7 @@ import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.app.registry.AppRegistryEvent;
 import info.magnolia.ui.framework.app.registry.AppRegistryEventHandler;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.SystemEventBusConfigurer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +70,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
     private final AtomicReference<AppLauncherLayoutDefinition> layoutDefinitionReference = new AtomicReference<AppLauncherLayoutDefinition>();
 
     @Inject
-    public AppLauncherLayoutManagerImpl(AppDescriptorRegistry appDescriptorRegistry, @Named("system") EventBus systemEventBus) {
+    public AppLauncherLayoutManagerImpl(AppDescriptorRegistry appDescriptorRegistry, @Named(SystemEventBusConfigurer.EVENT_BUS_NAME) EventBus systemEventBus) {
         this.appDescriptorRegistry = appDescriptorRegistry;
         this.systemEventBus = systemEventBus;
 

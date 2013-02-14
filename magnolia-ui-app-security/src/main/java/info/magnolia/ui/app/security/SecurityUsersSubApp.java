@@ -39,6 +39,7 @@ import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -54,7 +55,7 @@ public class SecurityUsersSubApp extends ContentSubApp {
     private static final Logger log = LoggerFactory.getLogger(SecurityUsersSubApp.class);
 
     @Inject
-    public SecurityUsersSubApp(final SubAppContext subAppContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
+    public SecurityUsersSubApp(final SubAppContext subAppContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
         super(subAppContext, view, workbench, subAppEventBus);
     }
 

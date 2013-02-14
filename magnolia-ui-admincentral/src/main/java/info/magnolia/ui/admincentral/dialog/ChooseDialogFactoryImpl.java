@@ -39,6 +39,7 @@ import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView.Listener;
+import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
@@ -59,7 +60,7 @@ public class ChooseDialogFactoryImpl implements ChooseDialogFactory {
     private final EventBus chooseDialogEventBus;
 
     @Inject
-    public ChooseDialogFactoryImpl(final ComponentProvider componentProvider, final DialogActionFactory actionFactory, final @Named("choosedialog") EventBus chooseDialogEventBus) {
+    public ChooseDialogFactoryImpl(final ComponentProvider componentProvider, final DialogActionFactory actionFactory, final @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) EventBus chooseDialogEventBus) {
         this.componentProvider = componentProvider;
         this.actionFactory = actionFactory;
         this.chooseDialogEventBus = chooseDialogEventBus;
