@@ -48,7 +48,7 @@ import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.app.simple.AppControllerImplTest.AppEventCollector;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppInstance;
+import info.magnolia.ui.framework.app.AppInstanceController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
@@ -212,7 +212,7 @@ public class AppEventTest {
         components.addTypeMapping(AppTestImpl.class, AppTestImpl.class);
         components.addTypeMapping(AppEventTestImpl.class, AppEventTestImpl.class);
         components.addTypeMapping(AppTestSubApp.class, AppTestSubApp.class);
-        components.addTypeMapping(AppInstance.class, AppContextImpl.class);
+        components.addTypeMapping(AppInstanceController.class, AppInstanceControllerImpl.class);
 
         components.registerImplementation(AppController.class, AppControllerImpl.class);
         components.registerImplementation(AppTestView.class, AppViewTestImpl.class);

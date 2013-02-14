@@ -46,7 +46,7 @@ import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppInstance;
+import info.magnolia.ui.framework.app.AppInstanceController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
@@ -337,7 +337,7 @@ public class AppControllerImplTest {
 
         // THEN
         assertTrue(appController.isAppStarted(APP_NAME_1 + "_name"));
-        assertEquals(location, appController.getCurrentAppInstance().getCurrentLocation());
+        assertEquals(location, appController.getCurrentAppInstanceController().getCurrentLocation());
     }
 
 
@@ -354,8 +354,8 @@ public class AppControllerImplTest {
 
         // THEN
         assertTrue(appController.isAppStarted(APP_NAME_1 + "_name"));
-        assertNotSame(location, appController.getCurrentAppInstance().getCurrentLocation());
-        assertEquals(location2, appController.getCurrentAppInstance().getCurrentLocation());
+        assertNotSame(location, appController.getCurrentAppInstanceController().getCurrentLocation());
+        assertEquals(location2, appController.getCurrentAppInstanceController().getCurrentLocation());
 
     }
 
@@ -379,10 +379,10 @@ public class AppControllerImplTest {
 
         // THEN
         assertTrue(appController.isAppStarted(APP_NAME_1 + "_name"));
-        assertNotSame(location, appController.getCurrentAppInstance().getCurrentLocation());
-        assertNotSame(location3, appController.getCurrentAppInstance().getCurrentLocation());
-        assertNotSame(location4, appController.getCurrentAppInstance().getCurrentLocation());
-        assertEquals(location2, appController.getCurrentAppInstance().getCurrentLocation());
+        assertNotSame(location, appController.getCurrentAppInstanceController().getCurrentLocation());
+        assertNotSame(location3, appController.getCurrentAppInstanceController().getCurrentLocation());
+        assertNotSame(location4, appController.getCurrentAppInstanceController().getCurrentLocation());
+        assertEquals(location2, appController.getCurrentAppInstanceController().getCurrentLocation());
 
     }
 
@@ -399,11 +399,11 @@ public class AppControllerImplTest {
         appController.onLocationChanged(newLocationEvent);
 
         // THEN
-        assertNotNull(appController.getCurrentAppInstance());
-        assertEquals(APP_NAME_2 + "_name", appController.getCurrentAppInstance().getAppDescriptor().getName());
-        assertNotNull(appController.getCurrentAppInstance().getCurrentLocation());
-        assertNotEquals(newLocation, appController.getCurrentAppInstance().getCurrentLocation());
-        assertNotNull(appController.getCurrentAppInstance().getCurrentLocation().getSubAppId());
+        assertNotNull(appController.getCurrentAppInstanceController());
+        assertEquals(APP_NAME_2 + "_name", appController.getCurrentAppInstanceController().getAppDescriptor().getName());
+        assertNotNull(appController.getCurrentAppInstanceController().getCurrentLocation());
+        assertNotEquals(newLocation, appController.getCurrentAppInstanceController().getCurrentLocation());
+        assertNotNull(appController.getCurrentAppInstanceController().getCurrentLocation().getSubAppId());
     }
 
     @Test
@@ -420,10 +420,10 @@ public class AppControllerImplTest {
         appController.onLocationChanged(newLocationEvent);
 
         // THEN
-        assertNotNull(appController.getCurrentAppInstance());
-        assertEquals(APP_NAME_1 + "_name", appController.getCurrentAppInstance().getAppDescriptor().getName());
-        assertNotNull(appController.getCurrentAppInstance().getCurrentLocation().getParameter());
-        assertEquals(parameter, appController.getCurrentAppInstance().getCurrentLocation().getParameter());
+        assertNotNull(appController.getCurrentAppInstanceController());
+        assertEquals(APP_NAME_1 + "_name", appController.getCurrentAppInstanceController().getAppDescriptor().getName());
+        assertNotNull(appController.getCurrentAppInstanceController().getCurrentLocation().getParameter());
+        assertEquals(parameter, appController.getCurrentAppInstanceController().getCurrentLocation().getParameter());
     }
 
     /**
@@ -458,7 +458,7 @@ public class AppControllerImplTest {
         components.addTypeMapping(AppTestImpl.class, AppTestImpl.class);
         components.addTypeMapping(AppEventTestImpl.class, AppEventTestImpl.class);
         components.addTypeMapping(AppTestSubApp.class, AppTestSubApp.class);
-        components.addTypeMapping(AppInstance.class, AppContextImpl.class);
+        components.addTypeMapping(AppInstanceController.class, AppInstanceControllerImpl.class);
 
         components.registerImplementation(AppController.class, AppControllerImpl.class);
         components.registerImplementation(AppTestView.class, AppViewTestImpl.class);

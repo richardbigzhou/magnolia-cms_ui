@@ -85,11 +85,11 @@ public class BaseApp implements App, AppView.Listener {
 
     @Override
     public void onFocus(String instanceId) {
-        appContext.focusSubAppInstance(instanceId);
+        appContext.focusSubApp(instanceId);
     }
 
     @Override
     public void onClose(String instanceId) {
-        appContext.stopSubAppInstance(instanceId);
+        appContext.stopSubApp(instanceId);
     }
 }

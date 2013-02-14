@@ -60,9 +60,9 @@ public interface AppContext {
 
     AppView getView();
 
-    void focusSubAppInstance(String instanceId);
+    void focusSubApp(String instanceId);
 
-    void stopSubAppInstance(String instanceId);
+    void stopSubApp(String instanceId);
 
     void openSubApp(Location location);
 

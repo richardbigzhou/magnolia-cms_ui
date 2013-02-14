@@ -43,7 +43,7 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppInstance;
+import info.magnolia.ui.framework.app.AppInstanceController;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.SubApp;
@@ -67,13 +67,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of {@link AppContext}.
- *
- * See MGNLUI-379.
+ * Implements both - the controlling of an app instance as well as the housekeeping of the context for an app.
  */
-public class AppContextImpl implements AppContext, AppInstance {
+public class AppInstanceControllerImpl implements AppContext, AppInstanceController {
 
-    private static final Logger log = LoggerFactory.getLogger(AppContextImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(AppInstanceControllerImpl.class);
 
     private List<SubAppContext> subAppContexts = new LinkedList<SubAppContext>();
 
@@ -96,7 +94,7 @@ public class AppContextImpl implements AppContext, AppInstance {
     private SubAppContext currentSubAppContext;
 
     @Inject
-    public AppContextImpl(ModuleRegistry moduleRegistry, AppController appController, LocationController locationController, Shell shell, MessagesManager messagesManager, AppDescriptor appDescriptor) {
+    public AppInstanceControllerImpl(ModuleRegistry moduleRegistry, AppController appController, LocationController locationController, Shell shell, MessagesManager messagesManager, AppDescriptor appDescriptor) {
         this.moduleRegistry = moduleRegistry;
         this.appController = appController;
         this.locationController = locationController;
@@ -180,7 +178,7 @@ public class AppContextImpl implements AppContext, AppInstance {
     }
 
     @Override
-    public void focusSubAppInstance(String instanceId) {
+    public void focusSubApp(String instanceId) {
 /*        if (currentSubAppContext == null || instanceId.equals(currentSubAppContext.getInstanceId())) {
             return;
         }*/
@@ -193,10 +191,10 @@ public class AppContextImpl implements AppContext, AppInstance {
     }
 
     @Override
-    public void stopSubAppInstance(String instanceId) {
+    public void stopSubApp(String instanceId) {
         subAppContexts.remove(instanceId);
 
-        focusSubAppInstance(app.getView().getActiveSubAppView());
+        focusSubApp(app.getView().getActiveSubAppView());
     }
 
     @Override
@@ -280,7 +278,7 @@ public class AppContextImpl implements AppContext, AppInstance {
     @Override
     public void setSubAppLocation(SubAppContext subAppContext, Location location) {
         subAppContext.setLocation(location);
-        if (appController.getCurrentAppInstance() == this && getActiveSubAppContext() == subAppContext) {
+        if (appController.getCurrentAppInstanceController() == this && getActiveSubAppContext() == subAppContext) {
             shell.setFragment(location.toString());
         }
     }

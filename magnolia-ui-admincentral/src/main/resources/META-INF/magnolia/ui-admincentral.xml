@@ -203,8 +203,8 @@
     </component>
 
     <type-mapping>
-      <type>info.magnolia.ui.framework.app.AppInstance</type>
-      <implementation>info.magnolia.ui.admincentral.app.simple.AppContextImpl</implementation>
+      <type>info.magnolia.ui.framework.app.AppInstanceController</type>
+      <implementation>info.magnolia.ui.admincentral.app.simple.AppInstanceControllerImpl</implementation>
     </type-mapping>
   </components>
 

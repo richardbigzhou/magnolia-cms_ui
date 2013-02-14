@@ -37,9 +37,11 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.location.Location;
 
 /**
- * AppInstance.
+ * Controller for an instance of an App.
+ *
+ * @see App
  */
-public interface AppInstance {
+public interface AppInstanceController {
 
    void setAppComponentProvider(ComponentProvider appComponentProvider);
 
