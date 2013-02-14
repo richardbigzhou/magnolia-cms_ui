@@ -43,6 +43,7 @@ import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.app.simple.AppControllerImplTest.AppEventCollector;
 import info.magnolia.ui.framework.app.AppController;
@@ -51,11 +52,7 @@ import info.magnolia.ui.framework.app.AppInstance;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl;
+import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.event.AppEventBusConfigurer;
 import info.magnolia.ui.framework.event.EventBus;
@@ -88,7 +85,6 @@ import com.google.inject.util.Providers;
  */
 public class AppEventTest {
 
-    private AppLauncherLayoutManager appLauncherLayoutManager = null;
     private GuiceComponentProvider componentProvider = null;
     private AppControllerImpl appController = null;
     private AppEventCollector eventCollector = null;
@@ -96,10 +92,11 @@ public class AppEventTest {
     private String subAppName_1 = "subApp1";
     private SimpleEventBus eventBus;
     private ModuleRegistry moduleRegistry;
+    private AppDescriptorRegistry appRegistry;
 
     @Before
     public void setUp() throws Exception {
-        setAppLayoutManager();
+        initAppRegistry();
 
         // Creates a ModuleRegistry with a single module defining a
         // AppEventBusConfigurer for components 'app'
@@ -189,25 +186,23 @@ public class AppEventTest {
     /**
      * Init a LayoutManager containing 1 group with one app.
      */
-    private void setAppLayoutManager() {
+    private void initAppRegistry() {
 
-        appLauncherLayoutManager = mock(AppLauncherLayoutManagerImpl.class);
+        this.appRegistry = mock(AppDescriptorRegistry.class);
+
         // create subapps
         Map<String, SubAppDescriptor> subApps = new HashMap<String, SubAppDescriptor>();
         subApps.put(subAppName_1, AppTestUtility.createSubAppDescriptor(
                 subAppName_1, AppTestSubApp.class, true));
 
-        // Set cat1 with App1
+
         AppDescriptor app = AppTestUtility.createAppDescriptorWithSubApps(name,
                 AppEventTestImpl.class, subApps);
-        AppLauncherGroup cat = AppTestUtility.createAppGroup("cat", app);
-        AppLauncherGroupEntry entry = new AppLauncherGroupEntry();
-        entry.setName(name);
-        entry.setAppDescriptor(app);
-        cat.addApp(entry);
-        AppLauncherLayout appLauncherLayout = new AppLauncherLayout();
-        appLauncherLayout.addGroup(cat);
-        when(appLauncherLayoutManager.getLayoutForCurrentUser()).thenReturn(appLauncherLayout);
+        try {
+            when(appRegistry.getAppDescriptor(name + "_name")).thenReturn(app);
+        } catch (RegistrationException e) {
+            // won't happen
+        }
     }
 
     public GuiceComponentProvider initComponentProvider() {
@@ -225,7 +220,7 @@ public class AppEventTest {
         components.registerImplementation(LocationController.class);
 
         components.registerInstance(ModuleRegistry.class, moduleRegistry);
-        components.registerInstance(AppLauncherLayoutManager.class, appLauncherLayoutManager);
+        components.registerInstance(AppDescriptorRegistry.class, appRegistry);
         components.registerInstance(Shell.class, mock(MagnoliaShell.class));
         components.registerInstance(MessagesManager.class, mock(MessagesManagerImpl.class));
 

@@ -41,6 +41,7 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationB
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppController;
@@ -48,13 +49,16 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.AppInstance;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
 import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.view.ViewPort;
 
 import java.util.HashMap;
@@ -94,11 +98,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     private final ComponentProvider componentProvider;
 
-    private final AppLauncherLayoutManager appLauncherLayoutManager;
+    private final AppDescriptorRegistry appDescriptorRegistry;
 
     private final LocationController locationController;
 
     private final EventBus eventBus;
+    private MessagesManager messagesManager;
 
     private ViewPort viewPort;
 
@@ -110,12 +115,13 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Inject
     public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider,
-                             AppLauncherLayoutManager appLauncherLayoutManager, LocationController locationController, @Named("admincentral") EventBus admincentralEventBus) {
+                             AppDescriptorRegistry appDescriptorRegistry, LocationController locationController, @Named("admincentral") EventBus admincentralEventBus, MessagesManager messagesManager) {
         this.moduleRegistry = moduleRegistry;
         this.componentProvider = componentProvider;
-        this.appLauncherLayoutManager = appLauncherLayoutManager;
+        this.appDescriptorRegistry = appDescriptorRegistry;
         this.locationController = locationController;
         this.eventBus = admincentralEventBus;
+        this.messagesManager = messagesManager;
 
         admincentralEventBus.addHandler(LocationChangedEvent.class, this);
         admincentralEventBus.addHandler(LocationChangeRequestedEvent.class, this);
@@ -277,6 +283,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     @Override
     public void onLocationChanged(LocationChangedEvent event) {
         Location newLocation = event.getNewLocation();
+
+        if (!newLocation.getAppType().equals(Location.LOCATION_TYPE_APP)) {
+            return;
+        }
+
         AppDescriptor nextApp = getAppForLocation(newLocation);
 
         if (nextApp == null) {
@@ -365,8 +376,19 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         return getAppDescriptor(location.getAppId());
     }
 
-    private AppDescriptor getAppDescriptor(String name) {
-        return appLauncherLayoutManager.getLayoutForCurrentUser().getAppDescriptor(name);
+    private AppDescriptor getAppDescriptor(String name) throws RuntimeException {
+        try {
+            return appDescriptorRegistry.getAppDescriptor(name);
+        } catch (RegistrationException e) {
+
+            Message errorMessage = new Message();
+            errorMessage.setType(MessageType.ERROR);
+            errorMessage.setSubject("Error occurred when trying to read App Descriptor");
+            errorMessage.setMessage("There is no app registered with name: " + name);
+
+            messagesManager.sendLocalMessage(errorMessage);
+            throw new RuntimeException(e);
+        }
     }
 
     /**
