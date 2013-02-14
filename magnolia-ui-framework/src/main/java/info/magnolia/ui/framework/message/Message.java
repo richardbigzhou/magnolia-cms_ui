@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,77 +33,158 @@
  */
 package info.magnolia.ui.framework.message;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Models a message. Except for timestamp all fields are optional.
  */
-public class Message implements Cloneable {
+public class Message implements Cloneable, Map<String, Object> {
 
-    private String id;
+    public static String ID = "id";
+    public static String TIMESTAMP = "timestamp";
+    public static String MESSAGETYPE = "messagetype";
+    public static String SUBJECT = "subject";
+    public static String MESSAGE = "message";
+    public static String CLEARED = "cleared";
 
-    private final long timestamp;
-
-    private MessageType type;
-
-    private String subject;
-
-    private String message;
-
-    private boolean cleared;
+    private Map<String, Object> data = new HashMap<String, Object>();
 
     public Message() {
         this(System.currentTimeMillis());
     }
 
     public Message(long timestampInMillis) {
-        this.timestamp = timestampInMillis;
+        setTimestamp(timestampInMillis);
     }
 
     public long getTimestamp() {
-        return timestamp;
+        return ((Long) data.get(TIMESTAMP)).longValue();
+    }
+
+    private void setTimestamp(long timestamp) {
+        data.put(TIMESTAMP, timestamp);
     }
 
     public String getMessage() {
-        return message;
+        return data.get(MESSAGE).toString();
     }
 
     public void setMessage(String message) {
-        this.message = message;
+        data.put(MESSAGE, message);
     }
 
     public String getSubject() {
-        return subject;
+        return data.get(SUBJECT).toString();
     }
 
     public void setSubject(String subject) {
-        this.subject = subject;
+        data.put(SUBJECT, subject);
     }
 
     public MessageType getType() {
-        return type;
+        return MessageType.valueOf(data.get(MESSAGETYPE).toString());
     }
 
     public void setType(MessageType type) {
-        this.type = type;
+        data.put(MESSAGETYPE, type.name());
     }
 
     public void setId(String id) {
-        this.id = id;
+        data.put(ID, id);
     }
 
     public String getId() {
-        return id;
+        return data.get(ID).toString();
     }
 
     public boolean isCleared() {
-        return cleared;
+        return (Boolean) data.get(CLEARED);
     }
 
     public void setCleared(boolean cleared) {
-        this.cleared = cleared;
+        data.put(CLEARED, cleared);
     }
 
     @Override
     protected Message clone() throws CloneNotSupportedException {
         return (Message) super.clone();
+    }
+
+    // Map methods
+
+    @Override
+    public int size() {
+        return data.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return data.isEmpty();
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return data.containsKey(key);
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        return data.containsValue(value);
+    }
+
+    @Override
+    public Object get(Object key) {
+        return data.get(key);
+    }
+
+    @Override
+    public Object put(String key, Object value) {
+        if (TIMESTAMP.equals(key)) {
+            throw new IllegalArgumentException("Cannot replace timestamp of the message.");
+        }
+        return data.put(key, value);
+    }
+
+    @Override
+    public Object remove(Object key) {
+        if (TIMESTAMP.equals(key)) {
+            throw new IllegalArgumentException("Cannot remove timestamp from the message.");
+        }
+        return data.remove(key);
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ? extends Object> m) {
+        if (m.containsKey(TIMESTAMP)) {
+            // timestamp cannot be replaced, even by "batch" operation
+            m.remove(TIMESTAMP);
+        }
+        data.putAll(m);
+    }
+
+    @Override
+    public void clear() {
+        // preserve timestamp
+        long timestamp = getTimestamp();
+        data.clear();
+        data.put(TIMESTAMP, timestamp);
+    }
+
+    @Override
+    public Set<String> keySet() {
+        return data.keySet();
+    }
+
+    @Override
+    public Collection<Object> values() {
+        return data.values();
+    }
+
+    @Override
+    public Set<java.util.Map.Entry<String, Object>> entrySet() {
+        return data.entrySet();
     }
 }
