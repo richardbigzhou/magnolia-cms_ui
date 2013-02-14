@@ -82,18 +82,16 @@ public class FormBuilder {
             tab.setParent(form);
             for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
                 final FieldBuilder formField = fieldFactory.create(fieldDefinition, item);
-                if (formField != null) {
-                    formField.setParent(tab);
-                    final Field<?> field = formField.getField();
-                    if (field instanceof AbstractComponent) {
-                        ((AbstractComponent) field).setImmediate(true);
-                    }
-                    tab.addField(field);
-                    if (StringUtils.isNotBlank(fieldDefinition.getDescription())) {
-                        tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
-                    }
-                    view.addField(field);
+                formField.setParent(tab);
+                final Field<?> field = formField.getField();
+                if (field instanceof AbstractComponent) {
+                    ((AbstractComponent) field).setImmediate(true);
                 }
+                tab.addField(field);
+                if (StringUtils.isNotBlank(fieldDefinition.getDescription())) {
+                    tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
+                }
+                view.addField(field);
             }
 
             view.addFormSection(tab.getMessage(tabDefinition.getLabel()), tab.getContainer());

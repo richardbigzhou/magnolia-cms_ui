@@ -278,8 +278,9 @@ public class ActionbarPresenter implements ActionbarView.Listener {
             if (action == null) {
                 Message warn = createMessage(MessageType.WARNING, "Could not create action from actionDefinition. Action is null.", "");
                 appContext.sendLocalMessage(warn);
+            } else {
+                action.execute();
             }
-            action.execute();
             appContext.showConfirmationMessage("Action executed successfully.");
         } catch (RepositoryException e) {
             Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());

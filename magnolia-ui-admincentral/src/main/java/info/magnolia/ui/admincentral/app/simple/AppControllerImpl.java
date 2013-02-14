@@ -160,12 +160,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     public App startIfNotAlreadyRunningThenFocus(String appId, Location location) {
         AppInstanceController appInstanceController = getAppInstance(appId);
         appInstanceController = doStartIfNotAlreadyRunning(appInstanceController, location);
-        if (appInstanceController != null) {
-            doFocus(appInstanceController);
-            return appInstanceController.getApp();
-        } else {
-            return null;
-        }
+        doFocus(appInstanceController);
+        return appInstanceController.getApp();
     }
 
     /**
