@@ -43,7 +43,7 @@ import javax.inject.Inject;
  *
  * @see App
  */
-public class BaseApp implements App, AppView.Listener {
+public class BaseApp implements App {
 
     protected AppContext appContext;
     private AppView view;
@@ -52,7 +52,7 @@ public class BaseApp implements App, AppView.Listener {
     protected BaseApp(AppContext appContext, AppView view) {
         this.appContext = appContext;
         this.view = view;
-        view.setListener(this);
+        view.setListener(appContext);
     }
 
     @Override
@@ -81,15 +81,5 @@ public class BaseApp implements App, AppView.Listener {
     @Override
     public AppView getView() {
         return view;
-    }
-
-    @Override
-    public void onFocus(String instanceId) {
-        appContext.focusSubApp(instanceId);
-    }
-
-    @Override
-    public void onClose(String instanceId) {
-        appContext.stopSubApp(instanceId);
     }
 }

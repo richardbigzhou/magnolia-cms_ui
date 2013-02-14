@@ -178,11 +178,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     }
 
     @Override
-    public void focusSubApp(String instanceId) {
-/*        if (currentSubAppContext == null || instanceId.equals(currentSubAppContext.getInstanceId())) {
-            return;
-        }*/
-
+    public void onFocus(String instanceId) {
         for (SubAppContext subAppContext : subAppContexts) {
             if (subAppContext.getInstanceId().equals(instanceId)) {
                 locationController.goTo(subAppContext.getLocation());
@@ -191,10 +187,9 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     }
 
     @Override
-    public void stopSubApp(String instanceId) {
+    public void onClose(String instanceId) {
         subAppContexts.remove(instanceId);
-
-        focusSubApp(app.getView().getActiveSubAppView());
+        onFocus(app.getView().getActiveSubAppView());
     }
 
     @Override

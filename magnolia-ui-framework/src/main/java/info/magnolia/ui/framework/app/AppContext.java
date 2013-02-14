@@ -40,7 +40,7 @@ import info.magnolia.ui.framework.view.AppView;
 /**
  * Provides functionality used by an app to interact with the Magnolia shell.
  */
-public interface AppContext {
+public interface AppContext extends AppView.Listener {
 
     void enterFullScreenMode();
 
@@ -59,10 +59,6 @@ public interface AppContext {
     String getLabel();
 
     AppView getView();
-
-    void focusSubApp(String instanceId);
-
-    void stopSubApp(String instanceId);
 
     void openSubApp(Location location);
 
