@@ -17,8 +17,9 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>info.magnolia</groupId>
-      <artifactId>magnolia-rendering</artifactId>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-framework</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
@@ -37,12 +38,6 @@
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-themes</artifactId>
     </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
 
     <dependency>
       <groupId>org.vaadin.addons</groupId>
