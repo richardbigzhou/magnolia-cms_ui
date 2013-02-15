@@ -158,7 +158,7 @@ public class MessageStore {
                     return new ArrayList<Message>();
                 } catch (Node2BeanException e) {
                     logger.error("Saving message failed for user: " + userName, e);
-                    return null;
+                    return new ArrayList<Message>();
                 }
             }
         });
@@ -194,13 +194,6 @@ public class MessageStore {
 
     void marshallMessage(Message message, Node node) throws RepositoryException {
         Node2MapUtil.map2node(node, message);
-        /*
-         * node.setProperty(TIMESTAMP, message.getTimestamp());
-         * node.setProperty(TYPE, message.getType().name());
-         * node.setProperty(SUBJECT, message.getSubject());
-         * node.setProperty(MESSAGE, message.getMessage());
-         * node.setProperty(CLEARED, message.isCleared());
-         */
     }
 
     Message unmarshallMessage(Node node) throws RepositoryException, Node2BeanException {
@@ -210,17 +203,7 @@ public class MessageStore {
         final Message message = new Message(timestamp);
         message.putAll(map);
         message.setId(node.getName());
-        /*
-         * message.setId(node.getName()); if (node.hasProperty(TYPE)) {
-         * message.setType
-         * (MessageType.valueOf(node.getProperty(TYPE).getString())); } if
-         * (node.hasProperty(SUBJECT)) {
-         * message.setSubject(node.getProperty(SUBJECT).getString()); } if
-         * (node.hasProperty(MESSAGE)) {
-         * message.setMessage(node.getProperty(MESSAGE).getString()); } if
-         * (node.hasProperty(CLEARED)) {
-         * message.setCleared(node.getProperty(CLEARED).getBoolean()); }
-         */
+
         return message;
     }
 
