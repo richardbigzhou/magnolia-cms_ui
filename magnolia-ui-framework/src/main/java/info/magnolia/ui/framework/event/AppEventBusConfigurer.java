@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.framework.event;
 
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
 import com.google.inject.name.Names;
@@ -43,8 +45,10 @@ import com.google.inject.util.Providers;
  */
 public class AppEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
+    public static final String EVENT_BUS_NAME = "app";
+
     @Override
     protected void configure() {
-        bind(EventBus.class).annotatedWith(Names.named("app")).toProvider(Providers.of(new SimpleEventBus()));
+        bind(EventBus.class).annotatedWith(Names.named(AppEventBusConfigurer.EVENT_BUS_NAME)).toProvider(Providers.of(new SimpleEventBus()));
     }
 }

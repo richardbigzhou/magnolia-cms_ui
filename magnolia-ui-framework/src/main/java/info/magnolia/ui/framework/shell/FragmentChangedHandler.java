@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.framework.shell;
 
-import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.event.EventHandler;
 
 /**
  * Called when a URI fragment of {@link Shell} has changed.

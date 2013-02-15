@@ -19,22 +19,6 @@
       <type>info.magnolia.ui.app.config.workbench.ConfigWorkbenchSubApp</type>
       <implementation>info.magnolia.ui.app.config.workbench.ConfigWorkbenchSubApp</implementation>
     </component>
-    <component>
-      <type>info.magnolia.ui.app.config.workbench.ConfigWorkbenchView</type>
-      <implementation>info.magnolia.ui.app.config.workbench.ConfigWorkbenchViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.content.view.ContentPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.content.view.ContentPresenter</implementation>
-    </component>
   </components>
 
   <dependencies>

@@ -36,8 +36,8 @@ package info.magnolia.ui.framework.location;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.ui.framework.event.HandlerRegistration;
-import info.magnolia.ui.framework.event.SimpleEventBus;
+import info.magnolia.event.HandlerRegistration;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;

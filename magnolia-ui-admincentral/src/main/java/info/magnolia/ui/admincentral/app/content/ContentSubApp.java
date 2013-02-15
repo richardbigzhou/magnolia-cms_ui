@@ -40,44 +40,52 @@ import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.event.SearchEvent;
 import info.magnolia.ui.admincentral.event.ViewTypeChangedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
-import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 
 import javax.inject.Named;
 
 /**
- * Abstract class providing a sensible implementation for services shared by all content subapps.
- * Out-of-the-box it will handle the following
- * <ul>
- * <li>location updates when switching views, selecting items or performing searches: see {@link #locationChanged(Location)}
- * <li>restoring the workbench app status when i.e. coming from a bookmark: see {@link #start(Location)}
- * </ul>
+ * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.admincentral.content.view.ContentView}
+ * created by {@link info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder}.
+ * <pre>
+ *  <p>
+ *      This class Provides sensible implementation for services shared by all content subApps.
+ *      Out-of-the-box it will handle the following:
+ *  </p>
+ *
+ *  <ul>
+ *      <li>location updates when switching views, selecting items or performing searches: see {@link #locationChanged(Location)}
+ *      <li>restoring the workbench app status when i.e. coming from a bookmark: see {@link #start(Location)}
+ *  </ul>
  * In order to perform those tasks this class registers non-overridable handlers for the following events:
- * <ul>
- * <li> {@link ItemSelectedEvent}
- * <li> {@link ViewTypeChangedEvent}
- * <li> {@link SearchEvent}
- * </ul>
+ *  <ul>
+ *      <li> {@link ItemSelectedEvent}
+ *      <li> {@link ViewTypeChangedEvent}
+ *      <li> {@link SearchEvent}
+ *  </ul>
  * Subclasses can augment the default behavior and perform additional tasks by overriding the following methods:
- * <ul>
- * <li>{@link #onSubAppStart()}
- * <li>{@link #locationChanged(Location)}
- * <li>{@link #updateActionbar(ActionbarPresenter)}
- * </ul>
+ *  <ul>
+ *      <li>{@link #onSubAppStart()}
+ *      <li>{@link #locationChanged(Location)}
+ *      <li>{@link #updateActionbar(ActionbarPresenter)}
+ *  </ul>
+ * </pre>
  *
  * @see ContentWorkbenchPresenter
  * @see WorkbenchSubAppView
- * @see AbstractContentApp
+ * @see ContentApp
  * @see ContentLocation
  */
-public abstract class AbstractContentSubApp extends AbstractSubApp {
+public class ContentSubApp extends BaseSubApp {
 
     private final ContentWorkbenchPresenter workbench;
 
-    public AbstractContentSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, final ContentWorkbenchPresenter workbench, final @Named("subapp") EventBus subAppEventBus) {
+    public ContentSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, final ContentWorkbenchPresenter workbench, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
 
         super(subAppContext, view);
         if (subAppContext == null || view == null || workbench == null || subAppEventBus == null) {
@@ -122,8 +130,8 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * <p>
      * then this method will select the root path, set the view type as <code>search</code>, perform a search for "qux" in the workspace used by the app and finally update the available actions.
      *
-     * @see AbstractContentSubApp#updateActionbar(ActionbarPresenter)
-     * @see AbstractContentSubApp#start(Location)
+     * @see ContentSubApp#updateActionbar(ActionbarPresenter)
+     * @see ContentSubApp#start(Location)
      * @see Location
      */
     protected final void restoreWorkbench(final ContentLocation location) {
@@ -144,7 +152,9 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * @see #locationChanged(Location)
      * @see ActionbarPresenter
      */
-    public abstract void updateActionbar(ActionbarPresenter actionbar);
+    public void updateActionbar(ActionbarPresenter actionbar) {
+
+    }
 
     protected final ContentWorkbenchPresenter getWorkbench() {
         return workbench;
@@ -180,7 +190,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
      * <li> {@link SearchEvent}
      * </ul>
      */
-    private void registerSubAppEventsHandlers(final EventBus subAppEventBus, final AbstractContentSubApp subApp) {
+    private void registerSubAppEventsHandlers(final EventBus subAppEventBus, final ContentSubApp subApp) {
         final ActionbarPresenter actionbar = subApp.getWorkbench().getActionbarPresenter();
         subAppEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
 
@@ -189,7 +199,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
                 ContentLocation location = getCurrentLocation();
                 location.updateNodePath(event.getPath());
                 currentLocation = location;
-                getAppContext().setSubAppLocation(subApp, location);
+                getAppContext().setSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);
             }
         });
@@ -205,7 +215,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
                 }
                 location.updateViewType(event.getViewType());
                 currentLocation = location;
-                getAppContext().setSubAppLocation(subApp, currentLocation);
+                getAppContext().setSubAppLocation(getSubAppContext(), currentLocation);
                 updateActionbar(actionbar);
             }
         });
@@ -217,7 +227,7 @@ public abstract class AbstractContentSubApp extends AbstractSubApp {
                 ContentLocation location = getCurrentLocation();
                 location.updateQuery(event.getSearchExpression());
                 currentLocation = location;
-                getAppContext().setSubAppLocation(subApp, currentLocation);
+                getAppContext().setSubAppLocation(getSubAppContext(), currentLocation);
                 updateActionbar(actionbar);
             }
         });

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.messages;
 
-import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
@@ -44,7 +44,7 @@ import javax.inject.Inject;
 /**
  * Sub app for the main tab in the message app.
  */
-public class MessagesMainSubApp extends AbstractSubApp implements MessagesView.Listener {
+public class MessagesMainSubApp extends BaseSubApp implements MessagesView.Listener {
 
     @Inject
     public MessagesMainSubApp(SubAppContext subAppContext, MessagesView view) {

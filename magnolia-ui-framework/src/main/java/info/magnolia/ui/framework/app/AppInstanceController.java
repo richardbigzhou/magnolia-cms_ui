@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
-import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
-import info.magnolia.ui.framework.app.AppContext;
-
-import javax.inject.Inject;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.framework.location.Location;
 
 /**
- * Pages app.
+ * Controller for an instance of an App.
+ *
+ * @see App
  */
-public class PagesApp extends AbstractContentApp {
+public interface AppInstanceController {
 
-    public static final String EDITOR_TOKEN = "editor";
+   void setAppComponentProvider(ComponentProvider appComponentProvider);
 
-    public static final String PREVIEW_TOKEN = "preview";
+    AppDescriptor getAppDescriptor();
 
-    @Inject
-    public PagesApp(AppContext appContext, ChooseDialogFactory chooseDialogFactory) {
-        super(appContext, chooseDialogFactory);
-    }
+    App getApp();
+
+    void setApp(App app);
+
+    Location getCurrentLocation();
+
+    Location getDefaultLocation();
+
+    String mayStop();
+
+    void onLocationUpdate(Location location);
+
+    void start(Location location);
+
+    void stop();
 
 }

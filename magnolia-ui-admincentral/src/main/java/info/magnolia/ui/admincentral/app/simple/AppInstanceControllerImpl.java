@@ -45,6 +45,7 @@ import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.AppInstanceController;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
@@ -54,57 +55,57 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
+import info.magnolia.ui.framework.view.AppView;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.HashMultimap;
-import com.vaadin.ui.ComponentContainer;
-
 /**
- * Implementation of {@link AppContext}.
- *
- * See MGNLUI-379.
+ * Implements both - the controlling of an app instance as well as the housekeeping of the context for an app.
  */
-public class AppContextImpl implements AppContext, AppFrameView.Listener {
+public class AppInstanceControllerImpl implements AppContext, AppInstanceController {
 
-    private static final Logger log = LoggerFactory.getLogger(AppContextImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(AppInstanceControllerImpl.class);
 
-    public static final String COMMON_APP_COMPONENTS_ID = "app";
-    public static final String COMMON_SUB_APP_COMPONENTS_ID = "subapp";
-    public static final String COMPONENTS_ID_PREFIX = "app-";
+    private Map<String, SubAppContext> subAppContexts = new ConcurrentHashMap<String, SubAppContext>();
 
-    private HashMultimap<String, SubAppContext> subAppContexts = HashMultimap.create();
-
-    private ComponentProvider componentProvider;
-    private AppController appController;
-    private LocationController locationController;
-    private Shell shell;
-    private MessagesManager messagesManager;
-    private final AppDescriptor appDescriptor;
-
-    private SubAppContext currentSubAppContext;
-    private App app;
-
-    private AppFrameView appFrameView;
-
-    private ComponentProvider appComponentProvider;
     private ModuleRegistry moduleRegistry;
 
-    public AppContextImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppController appController, LocationController locationController, Shell shell, MessagesManager messagesManager, AppDescriptor appDescriptor) {
+    private AppController appController;
+
+    private LocationController locationController;
+
+    private Shell shell;
+
+    private MessagesManager messagesManager;
+
+    private ComponentProvider componentProvider;
+
+    private App app;
+
+    private AppDescriptor appDescriptor;
+
+    private SubAppContext currentSubAppContext;
+
+    @Inject
+    public AppInstanceControllerImpl(ModuleRegistry moduleRegistry, AppController appController, LocationController locationController, Shell shell, MessagesManager messagesManager, AppDescriptor appDescriptor) {
         this.moduleRegistry = moduleRegistry;
-        this.componentProvider = componentProvider;
         this.appController = appController;
         this.locationController = locationController;
         this.shell = shell;
         this.messagesManager = messagesManager;
         this.appDescriptor = appDescriptor;
+    }
+
+    @Override
+    public void setAppComponentProvider(ComponentProvider componentProvider) {
+        this.componentProvider = componentProvider;
     }
 
     @Override
@@ -120,6 +121,11 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     @Override
     public String getName() {
         return appDescriptor.getName();
+    }
+
+    @Override
+    public String getLabel() {
+        return appDescriptor.getLabel();
     }
 
     @Override
@@ -147,8 +153,8 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     }
 
     @Override
-    public View getView() {
-        return appFrameView;
+    public AppView getView() {
+        return app.getView();
     }
 
     /**
@@ -158,12 +164,7 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     @Override
     public void start(Location location) {
 
-        this.appComponentProvider = createAppComponentProvider(appDescriptor.getName(), this);
-
-        app = appComponentProvider.newInstance(appDescriptor.getAppClass());
-
-        appFrameView = new AppFrameView();
-        appFrameView.setListener(this);
+        app = componentProvider.newInstance(appDescriptor.getAppClass());
 
         app.start(location);
     }
@@ -177,20 +178,17 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
     }
 
     @Override
-    public void onActiveTabSet(MagnoliaTab tab) {
-        SubAppContext subAppContext = getSubAppContextForTab(tab);
-        if (subAppContext != null) {
+    public void onFocus(String instanceId) {
+        if (subAppContexts.containsKey(instanceId)) {
+            SubAppContext subAppContext = subAppContexts.get(instanceId);
             locationController.goTo(subAppContext.getLocation());
         }
     }
 
     @Override
-    public void onTabClosed(MagnoliaTab tab) {
-        SubAppContext subAppContext = getSubAppContextForTab(tab);
-        if (subAppContext != null) {
-            subAppContexts.remove(subAppContext.getSubAppId(), subAppContext);
-        }
-        onActiveTabSet(this.appFrameView.getActiveTab());
+    public void onClose(String instanceId) {
+        stopSubAppInstance(instanceId);
+        onFocus(app.getView().getActiveSubAppView());
     }
 
     @Override
@@ -200,7 +198,17 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
 
     @Override
     public void stop() {
+        for (String instanceId : subAppContexts.keySet()) {
+            stopSubAppInstance(instanceId);
+        }
+        currentSubAppContext = null;
         app.stop();
+    }
+
+    private void stopSubAppInstance(String instanceId) {
+        SubAppContext subAppContext = subAppContexts.get(instanceId);
+        subAppContext.getSubApp().stop();
+        subAppContexts.remove(subAppContext);
     }
 
     @Override
@@ -231,18 +239,13 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
             subAppContext.setLocation(location);
             subAppContext.getSubApp().locationChanged(location);
 
-            if (subAppContext.getTab() != appFrameView.getActiveTab()) {
-                appFrameView.setActiveTab((MagnoliaTab) subAppContext.getTab());
+            if (subAppContext.getInstanceId() != app.getView().getActiveSubAppView()) {
+                app.getView().setActiveSubAppView(subAppContext.getInstanceId());
             }
-            currentSubAppContext = subAppContext;
         } else {
-            // else start new subApp
-            // startSubApp
-
             subAppContext = startSubApp(location);
-            subAppContexts.put(subAppContext.getSubAppId(), subAppContext);
-            currentSubAppContext = subAppContext;
         }
+        currentSubAppContext = subAppContext;
 
     }
 
@@ -255,30 +258,27 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
         }
         SubAppContext subAppContext = new SubAppContextImpl(subAppDescriptor);
 
-        ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppContext.getSubAppId(), subAppContext, appComponentProvider);
+        ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppContext.getSubAppId(), subAppContext, componentProvider);
 
         SubApp subApp = subAppComponentProvider.newInstance(subAppDescriptor.getSubAppClass());
 
         subAppContext.setAppContext(this);
         subAppContext.setLocation(location);
         subAppContext.setSubApp(subApp);
-        subAppContext.setSubAppComponentProvider(subAppComponentProvider);
 
-        View view = subApp.start(location);
-        MagnoliaTab tab = appFrameView.addTab((ComponentContainer) view.asVaadinComponent(), subApp.getCaption(), !subAppContexts.isEmpty());
-        subAppContext.setTab(tab);
+        String instanceId = app.getView().addSubAppView(subApp.start(location), subApp.getCaption(), !subAppContexts.isEmpty());
 
+        subAppContext.setInstanceId(instanceId);
+
+        subAppContexts.put(instanceId, subAppContext);
         return subAppContext;
     }
 
     @Override
-    public void setSubAppLocation(SubApp subApp, Location location) {
-        SubAppContext subAppContext = getSubAppContextForSubApp(subApp);
-        if (subAppContext != null) {
-            subAppContext.setLocation(location);
-            if (appController.getCurrentApp() == this && getActiveSubAppContext() == subAppContext) {
-                shell.setFragment(location.toString());
-            }
+    public void setSubAppLocation(SubAppContext subAppContext, Location location) {
+        subAppContext.setLocation(location);
+        if (appController.getCurrentApp() == getApp() && getActiveSubAppContext() == subAppContext) {
+            shell.setFragment(location.toString());
         }
     }
 
@@ -304,49 +304,31 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
 
     @Override
     public void enterFullScreenMode() {
-        appFrameView.asVaadinComponent().setFullscreen(true);
-        // shell.showFullscreen(view);
+        app.getView().setFullscreen(true);
     }
 
     @Override
     public void exitFullScreenMode() {
-        appFrameView.asVaadinComponent().setFullscreen(false);
+        app.getView().setFullscreen(false);
     }
 
     private SubAppContext getActiveSubAppContext() {
-        return getSubAppContextForTab(appFrameView.getActiveTab());
+        return currentSubAppContext;
     }
 
-    private SubAppContext getSubAppContextForTab(MagnoliaTab tab) {
-        for (SubAppContext subAppContext : subAppContexts.values()) {
-            if (subAppContext.getTab().equals(tab)) {
-                return subAppContext;
-            }
-        }
-        return null;
-    }
-
-    // Same instance?!
-    private SubAppContext getSubAppContextForSubApp(SubApp subApp) {
-        for (SubAppContext subAppContext : getSubAppContexts(subApp.getSubAppId())) {
-            if (subAppContext.getSubApp() == subApp) {
-                return subAppContext;
-            }
-        }
-        return null;
-    }
-
-    private Set<SubAppContext> getSubAppContexts(String subAppId) {
-        return subAppContexts.get(subAppId);
-    }
-
+    /**
+     * Will return a running subAppContext which will handle the current location.
+     * Only subApps with matching subAppId will be asked whether they support the location.
+     */
     private SubAppContext getSupportingSubAppContext(Location location) {
         // If the location has no subAppId defined, get default
         String subAppId = (location.getSubAppId().isEmpty()) ? getDefaultSubAppDescriptor().getName() : location.getSubAppId();
 
         SubAppContext supportingContext = null;
-        Set<SubAppContext> subApps = subAppContexts.get(subAppId);
-        for (SubAppContext context : subApps) {
+        for (SubAppContext context : subAppContexts.values()) {
+            if (!subAppId.equals(context.getSubAppId())) {
+                continue;
+            }
             if (context.getSubApp().supportsLocation(location)) {
                 supportingContext = context;
                 break;
@@ -355,38 +337,6 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
         return supportingContext;
     }
 
-    /**
-     * Creates a ComponentProvider dedicated for the app with the AdminCentral ComponentProvider as its parent. This
-     * gives us the ability to inject the AppContext into App components. The components are read from module
-     * descriptors using the convention "app-" + name of the app and merged with the components defined for all apps
-     * with the id "app".
-     */
-    @Override
-    public ComponentProvider createAppComponentProvider(String name, AppContext appContext) {
-
-        ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
-        List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
-
-        // Get components common to all apps
-        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(COMMON_APP_COMPONENTS_ID, moduleDefinitions);
-
-        // Get components for this specific app
-        String componentsId = COMPONENTS_ID_PREFIX + name;
-        log.debug("Reading component configurations from module descriptors for " + componentsId);
-        ComponentProviderConfiguration appComponents = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
-
-        configuration.combine(appComponents);
-
-        // Add the AppContext instance into the component provider.
-        configuration.addComponent(InstanceConfiguration.valueOf(AppContext.class, appContext));
-
-        log.debug("Creating component provider for app " + name);
-        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-        builder.withConfiguration(configuration);
-        builder.withParent((GuiceComponentProvider) componentProvider);
-
-        return builder.build();
-    }
 
     private ComponentProvider createSubAppComponentProvider(String appName, String subAppName, SubAppContext subAppContext, ComponentProvider parent) {
 
@@ -394,10 +344,10 @@ public class AppContextImpl implements AppContext, AppFrameView.Listener {
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
 
         // Get components common to all sub apps
-        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(COMMON_SUB_APP_COMPONENTS_ID, moduleDefinitions);
+        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(AppController.SUBAPP_PREFIX, moduleDefinitions);
 
         // Get components for this specific sub app
-        String componentsId = COMPONENTS_ID_PREFIX + appName + "-" + subAppName;
+        String componentsId = AppController.APP_PREFIX + "-" + appName + "-" + subAppName;
         log.debug("Reading component configurations from module descriptors for " + componentsId);
         ComponentProviderConfiguration subAppComponents = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
 
