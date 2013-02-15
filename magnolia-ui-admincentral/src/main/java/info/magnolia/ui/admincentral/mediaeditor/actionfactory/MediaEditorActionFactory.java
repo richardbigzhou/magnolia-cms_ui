@@ -40,4 +40,6 @@ import info.magnolia.ui.model.action.ActionFactory;
 /**
  * MediaEditorActionFactory.
  */
-public interface MediaEditorActionFactory extends ActionFactory<ActionDefinition, Action> {}
+public interface MediaEditorActionFactory extends ActionFactory<ActionDefinition, Action> {
+    Action createAction(final ActionDefinition actionDefinition);
+}

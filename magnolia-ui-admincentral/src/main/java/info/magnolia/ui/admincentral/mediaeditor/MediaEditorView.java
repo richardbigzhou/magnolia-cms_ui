@@ -33,8 +33,11 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor;
 
+import com.vaadin.ui.Component;
+
+import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.actionbar.Actionbar;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 /**
@@ -44,9 +47,16 @@ public interface MediaEditorView extends View {
     
     void setDialog(BaseDialog dialog);
     
-    void setActionBar(Actionbar actionbar);
+    void setActionBar(ActionbarView actionbar);
+    
+    void clearActions();
+    
+    void setMediaContent(MediaField currentMediaField);
     
     BaseDialog getDialog();
     
-    Actionbar getActionbar();
+    ActionbarView getActionbar();
+
+    void setToolbar(Component statusControls);
+
 }

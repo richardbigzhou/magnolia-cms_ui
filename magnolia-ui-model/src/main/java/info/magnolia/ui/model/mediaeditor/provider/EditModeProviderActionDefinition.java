@@ -31,50 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.editmode.builder;
+package info.magnolia.ui.model.mediaeditor.provider;
 
-import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
-import info.magnolia.ui.vaadin.editor.JCropField;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * CropModeBuilder.
+ * EditModeAction.
  */
-public class CropModeBuilder implements EditModeBuilder {
-
-    private JCropField jcropField = new JCropField();
-    
-    @Override
-    public Component createMediaField() {
-        return jcropField;
-    }
-
-    @Override
-    public Component createHeaderControls() {
-        return new VerticalLayout();
-    }
-
-
-    @Override
-    public Component createFooterControls() {
-        return new VerticalLayout();
-    }
-
-    @Override
-    public List<DialogActionContext> getActionContexts() {
-        List<DialogActionContext> result = new ArrayList<DialogActionContext>();
-        result.add(new DialogActionContext("crop", "Crop", new DialogActionListener() {
-            @Override
-            public void onActionExecuted(String actionName) {
-                
-            }
-        }));
-        return result;
-    }
+public interface EditModeProviderActionDefinition extends ActionDefinition {
 
 }

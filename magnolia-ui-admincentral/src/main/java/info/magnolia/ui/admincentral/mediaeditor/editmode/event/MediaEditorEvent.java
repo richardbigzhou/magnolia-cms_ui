@@ -31,13 +31,67 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.action;
+package info.magnolia.ui.admincentral.mediaeditor.editmode.event;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.framework.event.Event;
+import info.magnolia.ui.framework.event.EventHandler;
 
 /**
- * EditModeAction.
+ * MediaEditorEvent.
  */
-public interface EditModeActionDefinition extends ActionDefinition {
+public class MediaEditorEvent implements Event<MediaEditorEvent.Handler> {
 
+    /**
+     * EventType.
+     */
+    public static enum EventType {
+      APPLY,
+      SUBMIT,
+      CANCEL_LAST,
+      CANCEL_ALL;
+    };
+    
+    /**
+     * Handler.
+     */
+    public interface Handler extends EventHandler {
+        
+        void onSubmit(MediaEditorEvent e);
+        
+        void onCancelLast(MediaEditorEvent e);
+        
+        void onApply(MediaEditorEvent e);
+        
+        void onCancelAll(MediaEditorEvent e);
+    }
+
+    private EventType type;
+    
+    public MediaEditorEvent(EventType type) {
+        this.type = type;
+    }
+    
+    public EventType getType() {
+        return type;
+    }
+    
+    @Override
+    public void dispatch(Handler handler) {
+        switch (type) {
+        case SUBMIT:
+            handler.onSubmit(this);
+            break;
+        case CANCEL_LAST:
+            handler.onCancelLast(this);
+            break;
+        case APPLY:
+            handler.onApply(this);
+            break;
+        case CANCEL_ALL:
+            handler.onCancelAll(this);
+            break;
+        default:
+            break;
+        }
+    }
 }

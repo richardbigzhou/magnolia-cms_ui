@@ -33,11 +33,14 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor;
 
-import com.vaadin.ui.Field;
+import info.magnolia.ui.framework.view.View;
+
+import java.io.InputStream;
 
 /**
  * MediaEditor.
  */
-public interface MediaEditorPresenter extends Field<Byte[]> {
-    
+public interface MediaEditorPresenter {
+
+    View start(InputStream stream);
 }

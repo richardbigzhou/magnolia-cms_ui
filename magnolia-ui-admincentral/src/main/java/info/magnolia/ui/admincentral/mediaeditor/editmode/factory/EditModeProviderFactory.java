@@ -31,43 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.action;
+package info.magnolia.ui.admincentral.mediaeditor.editmode.factory;
 
-import info.magnolia.ui.admincentral.mediaeditor.editmode.builder.EditModeBuilder;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenter;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider;
+import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
+import info.magnolia.ui.model.builder.FactoryBase;
+import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
- * EditModeAction.
+ * EditModeBuilderFactory.
  */
-public class EditModeAction extends ActionBase<EditModeActionDefinition> {
+@Singleton
+public class EditModeProviderFactory extends FactoryBase<EditModeProviderActionDefinition, EditModeProvider> {
 
-    private EditorPresenter editorPresenter;
-    
-    private EditModeBuilderFactory builderFactory;
-    
     @Inject
-    public EditModeAction(EditModeActionDefinition definition, EditorPresenter presenter, EditModeBuilderFactory editModeBuilderFactory) {
-        super(definition);
-        this.editorPresenter = presenter;
-        this.builderFactory = editModeBuilderFactory;
+    public EditModeProviderFactory(EditModeRegistry registry, ComponentProvider provider) {
+        super(provider);
+        for (DefinitionToImplementationMapping<EditModeProviderActionDefinition, EditModeProvider> definitionToImplementationMapping : registry.getDefinitionToImplementationMappings()) {
+            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
+        }
     }
 
-    @Override
-    protected EditModeActionDefinition getDefinition() {
-        return super.getDefinition();
-    }
-    
-    @Override
-    public void execute() throws ActionExecutionException {
-        EditModeBuilder builder = builderFactory.getBuilder(getDefinition());
-        editorPresenter.getView().setContent(builder.createMediaField());
-        editorPresenter.getView().setFooter(builder.createFooterControls());
-        editorPresenter.getView().setHeader(builder.createHeaderControls());
-        editorPresenter.updateViewData();
+    public EditModeProvider getBuilder(EditModeProviderActionDefinition definition, Object...parameters ) {
+        return create(definition, parameters);
     }
 }

@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor.editmode.factory;
 
-import info.magnolia.ui.admincentral.mediaeditor.action.EditModeActionDefinition;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.builder.EditModeBuilder;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
+import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,21 +46,21 @@ import java.util.List;
  */
 public class EditModeRegistry implements Serializable {
 
-    private List<DefinitionToImplementationMapping<EditModeActionDefinition, EditModeBuilder>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<EditModeActionDefinition, EditModeBuilder>>();
+    private List<DefinitionToImplementationMapping<EditModeProviderActionDefinition, EditModeProvider>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<EditModeProviderActionDefinition, EditModeProvider>>();
 
     public EditModeRegistry() {
         super();
     }
 
-    public List<DefinitionToImplementationMapping<EditModeActionDefinition, EditModeBuilder>> getDefinitionToImplementationMappings() {
+    public List<DefinitionToImplementationMapping<EditModeProviderActionDefinition, EditModeProvider>> getDefinitionToImplementationMappings() {
         return this.definitionToImplementationMappings;
     }
 
-    public void setDefinitionToImplementationMappings(List<DefinitionToImplementationMapping<EditModeActionDefinition, EditModeBuilder>> definitionToImplementationMappings) {
+    public void setDefinitionToImplementationMappings(List<DefinitionToImplementationMapping<EditModeProviderActionDefinition, EditModeProvider>> definitionToImplementationMappings) {
         this.definitionToImplementationMappings = definitionToImplementationMappings;
     }
 
-    public void addDefinitionToImplementationMapping(DefinitionToImplementationMapping<EditModeActionDefinition, EditModeBuilder> mapping) {
+    public void addDefinitionToImplementationMapping(DefinitionToImplementationMapping<EditModeProviderActionDefinition, EditModeProvider> mapping) {
         this.definitionToImplementationMappings.add(mapping);
     }
     

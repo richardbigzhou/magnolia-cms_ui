@@ -35,9 +35,9 @@ package info.magnolia.ui.admincentral.mediaeditor;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenter;
+import info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter;
+import info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory;
 import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition;
@@ -52,21 +52,22 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFactory {
-
-    private ActionbarBuilder actionbarBuilder;
     
     private ComponentProvider componentProvider;
     
     private MediaEditorRegistry registry;
     
-    private EditModeBuilderFactory modeBuilderFactory;
+    private EditModeProviderFactory modeBuilderFactory;
     
     private EventBus eventBus;
     
     @Inject
-    public MediaEditorPresenterFactoryImpl(ActionbarBuilder actionbarBuilder, ComponentProvider componentProvider,
-            MediaEditorRegistry registry, @Named("system") EventBus eventBus, Shell shell, EditModeBuilderFactory builderFactory) {
-        this.actionbarBuilder = actionbarBuilder;
+    public MediaEditorPresenterFactoryImpl(
+            ComponentProvider componentProvider,
+            MediaEditorRegistry registry, 
+            @Named("subapp") EventBus eventBus, 
+            Shell shell, 
+            EditModeProviderFactory builderFactory) {
         this.componentProvider = componentProvider;
         this.modeBuilderFactory = builderFactory;
         this.eventBus = eventBus;
@@ -95,8 +96,9 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
     @Override
     public MediaEditorPresenter getPresenterByDefinition(MediaEditorDefinition definition) {
         MediaEditorView view = componentProvider.getComponent(MediaEditorView.class);
-        EditorPresenter presenter = componentProvider.getComponent(EditorPresenter.class);
-        return new MediaEditorPresenterImpl(eventBus, view, presenter, modeBuilderFactory);
+        MediaEditorActionbarPresenter actionbarPresenter = componentProvider.getComponent(MediaEditorActionbarPresenter.class);
+        MediaEditorActionFactory actionFactory = componentProvider.getComponent(MediaEditorActionFactory.class);
+        return new MediaEditorPresenterImpl(definition, eventBus, view, modeBuilderFactory, actionbarPresenter, actionFactory);
     }
 
 }
