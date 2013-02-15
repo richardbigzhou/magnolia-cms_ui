@@ -48,7 +48,7 @@ import javax.inject.Named;
 public class MediaEditorActionbarPresenter extends ActionbarPresenterBase {
     
     @Inject
-    public MediaEditorActionbarPresenter(@Named("subapp") EventBus subAppEventBus) {
+    public MediaEditorActionbarPresenter(@Named("mediaeditor") EventBus subAppEventBus) {
         super(subAppEventBus);
     }
 

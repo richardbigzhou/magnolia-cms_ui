@@ -56,7 +56,7 @@ public class GrayScaleProvider implements EditModeProvider {
     
     private GrayScaleField  field =  new GrayScaleField();
     
-    public GrayScaleProvider(@Named("subapp") EventBus eventBus) {
+    public GrayScaleProvider(@Named("mediaeditor") EventBus eventBus) {
         this.eventBus = eventBus;
     }
     

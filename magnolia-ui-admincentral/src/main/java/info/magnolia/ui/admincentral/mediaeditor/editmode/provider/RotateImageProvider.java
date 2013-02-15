@@ -70,7 +70,7 @@ public class RotateImageProvider implements EditModeProvider {
     private EventBus eventBus;
     
     @Inject
-    public RotateImageProvider(@Named("subapp") EventBus eventBus) {
+    public RotateImageProvider(@Named("mediaeditor") EventBus eventBus) {
         this.eventBus = eventBus;
     }
     

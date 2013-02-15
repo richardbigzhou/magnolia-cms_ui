@@ -59,7 +59,7 @@ public class CropImageProvider implements EditModeProvider {
     private EventBus eventBus;
     
     @Inject
-    public CropImageProvider(@Named("subapp") EventBus eventBus) {
+    public CropImageProvider(@Named("mediaeditor") EventBus eventBus) {
         this.eventBus = eventBus;
     }
     

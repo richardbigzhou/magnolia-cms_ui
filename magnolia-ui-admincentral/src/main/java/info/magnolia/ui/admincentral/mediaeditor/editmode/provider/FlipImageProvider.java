@@ -64,7 +64,7 @@ public class FlipImageProvider implements EditModeProvider {
     private FlipImageActionDefinition definition;
     
     @Inject
-    public FlipImageProvider(final @Named("subapp") EventBus eventBus, FlipImageActionDefinition def) {
+    public FlipImageProvider(final @Named("mediaeditor") EventBus eventBus, FlipImageActionDefinition def) {
         this.definition = def;
         this.eventBus = eventBus;
         flipField = new FlipField(definition.getFlipHorizontal());

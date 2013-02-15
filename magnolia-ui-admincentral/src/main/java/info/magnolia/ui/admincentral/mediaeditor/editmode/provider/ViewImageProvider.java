@@ -63,7 +63,7 @@ public class ViewImageProvider implements EditModeProvider {
     private EventBus eventBus;
     
     @Inject
-    public ViewImageProvider(@Named("subapp") EventBus eventBus) {
+    public ViewImageProvider(@Named("mediaeditor") EventBus eventBus) {
         this.eventBus = eventBus;
         viewField.addImageResizeListener(imageSizeLabel);
     }

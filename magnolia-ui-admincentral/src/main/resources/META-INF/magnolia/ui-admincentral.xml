@@ -41,8 +41,6 @@
       <type>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</type>
       <implementation>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</implementation>
     </component>
-    
-    <!-- MEDIA EDITOR CONFIG HERE -->
     <component>
       <type>info.magnolia.ui.model.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager</type>
       <implementation>info.magnolia.ui.model.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager</implementation>
@@ -54,19 +52,21 @@
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
-   
-
-   
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionRegistry</type>
+      <workspace>config</workspace>
+      <path>/modules/ui-admincentral/mediaEditorActionRegistry</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
+    </component>
     <component>
       <type>info.magnolia.ui.model.mediaeditor.registry.MediaEditorRegistry</type>
       <implementation>info.magnolia.ui.model.mediaeditor.registry.MediaEditorRegistry</implementation>
     </component>
-     
     <component>
       <type>info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry</type>
       <implementation>info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry</implementation>
     </component>
-    <!-- ENDOF MEDIA EDITOR CONFIG -->
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppDescriptor</type>
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
@@ -143,7 +143,7 @@
       <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherGroupEntryDefinition</type>
       <implementation>info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherGroupEntryDefinition</implementation>
     </type-mapping>
-  
+
   </components>
 
   <components>
@@ -180,7 +180,7 @@
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
-   
+
     <component>
       <type>info.magnolia.ui.framework.location.LocationController</type>
       <implementation>info.magnolia.ui.framework.location.LocationController</implementation>
@@ -302,7 +302,7 @@
       <type>info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView</type>
       <implementation>info.magnolia.ui.admincentral.app.content.WorkbenchSubAppViewImpl</implementation>
     </component>
-      <component>
+    <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
       <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
     </component>
@@ -310,25 +310,25 @@
       <type>info.magnolia.ui.admincentral.content.view.ContentPresenter</type>
       <implementation>info.magnolia.ui.admincentral.content.view.ContentPresenter</implementation>
     </component>
-      <component>
+    <component>
       <type>info.magnolia.ui.admincentral.workbench.ItemWorkbenchView</type>
       <implementation>info.magnolia.ui.admincentral.workbench.ItemWorkbenchViewImpl</implementation>
     </component>
-      <component>
+    <component>
       <type>info.magnolia.ui.admincentral.workbench.ItemWorkbenchPresenter</type>
       <implementation>info.magnolia.ui.admincentral.workbench.ItemWorkbenchPresenter</implementation>
     </component>
-      <component>
+    <component>
       <type>info.magnolia.ui.admincentral.content.item.ItemPresenter</type>
       <implementation>info.magnolia.ui.admincentral.content.item.ItemPresenter</implementation>
     </component>
-      <component>
+    <component>
       <type>info.magnolia.ui.admincentral.content.item.ItemView</type>
       <implementation>info.magnolia.ui.admincentral.content.item.ItemViewImpl</implementation>
     </component>
 
-    
-    <!-- Moved into subApp due to use of subApps EventBus  -->
+
+    <!-- Moved into subApp due to use of subApps EventBus -->
     <component>
       <type>info.magnolia.ui.admincentral.form.FormPresenterFactory</type>
       <implementation>info.magnolia.ui.admincentral.form.FormPresenterFactoryImpl</implementation>
@@ -365,50 +365,36 @@
       <type>info.magnolia.ui.vaadin.form.FormView</type>
       <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
-
-    <!-- Declaring page view for all apps embedding old adminCentral views in iFrame-->
+    <!-- Declaring page view for all apps embedding old adminCentral views 
+      in iFrame -->
     <component>
       <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
       <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
     </component>
-    
-    
-    <!-- Media Editor Configuration -->
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorView</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.MediaEditorViewImpl</implementation>
-    </component>
-    
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter</implementation>
-    </component>
-    
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactoryImpl</implementation>
-    </component>
-    
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory</implementation>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenterImpl</implementation>
-    </component>    
-    
-     <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.view.EditorView</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.view.EditorViewImpl</implementation>
-    </component>
-    
     <component>
       <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactory</type>
       <implementation>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactoryImpl</implementation>
     </component>
-    <!-- End fo Media Editor Configuration -->
+  </components>
+
+  <components>
+    <id>mediaeditor</id>   
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorView</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.MediaEditorViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactoryImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory</implementation>
+    </component>
   </components>
 
   <dependencies>
