@@ -116,11 +116,11 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
      * @return the <em>immutable</em> map of parameters to be used for command execution.
      * @see CommandActionBase#buildParams(Node).
      */
-    protected final Map<String, Object> getParams() {
+    public final Map<String, Object> getParams() {
         return Collections.unmodifiableMap(params);
     }
 
-    protected final CommandsManager getCommandsManager() {
+    public final CommandsManager getCommandsManager() {
         return commandsManager;
     }
 
