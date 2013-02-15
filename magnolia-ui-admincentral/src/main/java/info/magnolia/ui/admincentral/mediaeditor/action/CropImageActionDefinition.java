@@ -31,36 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.jcrop;
+package info.magnolia.ui.admincentral.mediaeditor.action;
 
-import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
-
-import com.vaadin.shared.Connector;
-import com.vaadin.shared.JavaScriptExtensionState;
+import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
 
 /**
- * JCropState.
+ * CropActionDefinition.
  */
-public class JCropState extends JavaScriptExtensionState {
-    public double aspectRatio = -1d;
-    
-    public int minHeight = 0;
-    public int maxHeight = 0;
-    
-    public int minWidth = 0;
-    public int maxWidth = 0;
-    
-    public int trueHeight = 0;
-    public int trueWidth = 0;
-    
-    public String backgroundColor = "black";
-    public double backgroundOpacity = 0.6d;
-    
-    public boolean isVisible = true;
-    
-    public SelectionArea selection = null;
+public class CropImageActionDefinition implements EditModeProviderActionDefinition {
 
-    public boolean isValid = false;
-    
-    public Connector selectionStatusComponent = null;
 }

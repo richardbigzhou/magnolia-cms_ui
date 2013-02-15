@@ -45,13 +45,14 @@ import org.json.JSONObject;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.server.AbstractJavaScriptExtension;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.JavaScriptFunction;
 
 /**
  * JCropField.
  */
-@JavaScript({"js/jquery.min.js", "js/jquery.color.js", "js/jquery.Jcrop.js", "js/jcrop_connector.js"})
+@JavaScript({"js/jquery.color.js", "js/jquery.Jcrop.js", "js/jcrop_connector.js"})
 @StyleSheet("css/jquery.Jcrop.css")
 public class JCrop extends AbstractJavaScriptExtension {
 
@@ -73,7 +74,15 @@ public class JCrop extends AbstractJavaScriptExtension {
         addFunction("doOnRelease", new JavaScriptFunction() {
             @Override
             public void call(JSONArray args) throws JSONException {
+                getState().selection = null;
                 getParent().fireEvent(new JCropReleaseEvent(getParent()));
+            }
+        });
+        
+        addFunction("onCreated", new JavaScriptFunction() {
+            @Override
+            public void call(JSONArray args) throws JSONException {
+                getState(false).isValid = true;
             }
         });
     }
@@ -89,7 +98,10 @@ public class JCrop extends AbstractJavaScriptExtension {
     @Override
     public void attach() {
         super.attach();
-        getParent().addStyleName("croppable" + getConnectorId()); 
+        getParent().addStyleName("croppable" + getConnectorId());
+        if (getState().selectionStatusComponent != null) {
+            ((Component)getState().selectionStatusComponent).addStyleName("crop-status" + getConnectorId());
+        }
     }
 
     @Override
@@ -131,6 +143,16 @@ public class JCrop extends AbstractJavaScriptExtension {
         callFunction("disable");
     }
 
+    public void setSelectionStatusComponent(Component c) {
+        if (getState().selectionStatusComponent != null) {
+            ((Component)getState().selectionStatusComponent).removeStyleName("");
+        }
+        getState().selectionStatusComponent = c;
+        if (getSession() != null) {
+            c.addStyleName("crop-status" + getConnectorId());
+        }
+    }
+    
     public void setBackgroundColor(String color) {
         getState().backgroundColor = color;
     }
@@ -157,5 +179,18 @@ public class JCrop extends AbstractJavaScriptExtension {
 
     public void setEnabled(boolean enabled) {
         getState().enabled = enabled;
+    }
+
+    public void invalidate() {
+        getState().isValid = false;
+        getState().selection = null;
+    }
+
+    public void setTrueHeight(int height) {
+        getState().trueHeight = height;
+    }
+
+    public void setTrueWidth(int width) {
+        getState().trueWidth = width;
     }
 }

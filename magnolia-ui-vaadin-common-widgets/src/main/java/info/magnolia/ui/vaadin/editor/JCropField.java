@@ -34,10 +34,14 @@
 package info.magnolia.ui.vaadin.editor;
 
 
+import info.magnolia.ui.vaadin.editor.CroppableImage.JCropReleaseEvent;
+import info.magnolia.ui.vaadin.editor.CroppableImage.JCropSelectionEvent;
 import info.magnolia.ui.vaadin.editor.CroppableImage.ReleaseListener;
 import info.magnolia.ui.vaadin.editor.CroppableImage.SelectionListener;
 import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
 
+import com.vaadin.data.Property;
+import com.vaadin.data.util.converter.Converter.ConversionException;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
@@ -49,12 +53,39 @@ public class JCropField extends CustomField<SelectionArea> {
 
     private final JCrop jcrop;
 
-    private final CroppableImage image = new CroppableImage();
+    private CroppableImage image;
 
     public JCropField() {
-        this.jcrop = image.getJcrop();
+        super();
+        this.jcrop = getContent().getJcrop();
+        setWidth("");
         setCropVisible(true);
         setEnabled(true);
+        image.addSelectionListener(new SelectionListener() {
+            @Override
+            public void onSelected(JCropSelectionEvent e) {
+                setValue(e.getArea());
+            }
+        });
+        image.addReleaseListener(new ReleaseListener() {
+            @Override
+            public void onRelease(JCropReleaseEvent e) {
+                setValue(null);
+            }
+        });
+    }
+
+    @Override
+    protected CroppableImage getContent() {
+        return (CroppableImage)super.getContent();
+    }
+
+    public void setStatusComponent(Component c) {
+        jcrop.setSelectionStatusComponent(c);
+    }
+    
+    public Resource getImageSource() {
+        return image.getSource();
     }
 
     public void setAspectRatio(double aspectRatio) {
@@ -74,6 +105,7 @@ public class JCropField extends CustomField<SelectionArea> {
     }
 
     public void setImageSource(Resource source) {
+        jcrop.invalidate();
         image.setSource(source);
     }
 
@@ -106,7 +138,30 @@ public class JCropField extends CustomField<SelectionArea> {
     }
 
     @Override
+    public void setWidth(float width, Unit unit) {
+        super.setWidth(width, unit);
+        getContent().setWidth(width, unit);
+    }
+    
+    @Override
+    public void setHeight(float height, Unit unit) {
+        super.setHeight(height, unit);
+        getContent().setHeight(height, unit);
+    }
+    
+    @Override
+    public void setValue(SelectionArea newFieldValue) throws Property.ReadOnlyException,
+            ConversionException {
+        if ((newFieldValue == null && getValue() != null) || (newFieldValue != null && !newFieldValue.equals(getValue()))) {
+            super.setValue(newFieldValue);   
+        }
+    }
+    
+    @Override
     protected Component initContent() {
+        if (image == null) {
+            image = new CroppableImage();
+        }
         return image;
     }
 
@@ -123,5 +178,13 @@ public class JCropField extends CustomField<SelectionArea> {
 
     public void animateSelection(SelectionArea selectionArea) {
         jcrop.animateTo(selectionArea);
+    }
+
+    public void setTrueHeight(int height) {
+        jcrop.setTrueHeight(height);
+    }
+
+    public void setTrueWidth(int width) {
+        jcrop.setTrueWidth(width);
     }
 }

@@ -83,6 +83,24 @@ public final class CroppableImage extends Image implements JCropHandler {
         removeListener(ReleaseListener.EVENT_ID, JCropReleaseEvent.class, listener);
     }
     
+    @Override
+    public void setWidth(float width, Unit unit) {
+        super.setWidth(width, unit);
+        jcrop.invalidate();
+    }
+    
+    @Override
+    public void setHeight(float height, Unit unit) {
+        super.setHeight(height, unit);
+        jcrop.invalidate();
+    }
+    
+    @Override
+    public void addStyleName(String style) {
+        super.addStyleName(style);
+        jcrop.invalidate();
+    }
+    
     /**
      * JCropEvent.
      */
