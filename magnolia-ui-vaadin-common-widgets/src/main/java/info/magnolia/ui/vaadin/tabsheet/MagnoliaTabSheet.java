@@ -47,7 +47,6 @@ import com.vaadin.shared.Connector;
 import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -91,13 +90,10 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
 
     @Override
     public void addComponent(final Component c) {
-        if (!(c instanceof ComponentContainer)) {
-            throw new IllegalArgumentException("Content of the tab must be a ComponentContainer!");
-        }
         if (c instanceof MagnoliaTab) {
             doAddTab((MagnoliaTab) c);
         } else {
-            addTab("", (ComponentContainer) c);
+            addTab("", c);
         }
     }
 
@@ -107,7 +103,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
         return c;
     }
 
-    public MagnoliaTab addTab(final String caption, final HasComponents c) {
+    public MagnoliaTab addTab(final String caption, final Component c) {
         final MagnoliaTab tab = new MagnoliaTab(caption, c);
         doAddTab(tab);
         return tab;
@@ -169,14 +165,14 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
     }
 
     public void setActiveTab(final MagnoliaTab tab) {
-        Iterator<Component> it = iterator();
-        while (it.hasNext()) {
-            MagnoliaTab tabIt = (MagnoliaTab) it.next();
-            if (tabIt.getContent() != null) {
-                tabIt.getContent().setVisible(tabIt == tab);
+            Iterator<Component> it = iterator();
+            while (it.hasNext()) {
+                MagnoliaTab tabIt = (MagnoliaTab) it.next();
+                if (tabIt.getContent() != null) {
+                    tabIt.getContent().setVisible(tabIt == tab);
+                }
             }
-        }
-        getState().activeTab = tab;
+            getState().activeTab = tab;
     }
 
     @Override

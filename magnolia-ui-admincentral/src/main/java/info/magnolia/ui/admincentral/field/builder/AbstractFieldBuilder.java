@@ -40,7 +40,6 @@ import info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFacto
 import info.magnolia.ui.admincentral.form.AbstractFormItem;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -139,7 +138,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
      */
     protected Property<?> getOrCreateProperty() {
         String propertyName = getPropertyName();
-        DefaultProperty property = (DefaultProperty) item.getItemProperty(propertyName);
+        Property<?> property = item.getItemProperty(propertyName);
         if (property == null) {
             property = DefaultPropertyUtil.newDefaultProperty(propertyName, getFieldType(definition).getSimpleName(), definition.getDefaultValue());
             item.addItemProperty(propertyName, property);

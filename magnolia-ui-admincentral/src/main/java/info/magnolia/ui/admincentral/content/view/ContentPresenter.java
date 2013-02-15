@@ -42,7 +42,8 @@ import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -80,7 +81,7 @@ public class ContentPresenter implements ContentView.Listener {
 
     private String selectedItemPath;
 
-    public ContentPresenter(final AppContext appContext, final ContentViewBuilder contentViewBuilder, @Named("subapp") final EventBus subAppEventBus, final Shell shell) {
+    public ContentPresenter(final AppContext appContext, final ContentViewBuilder contentViewBuilder, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) final EventBus subAppEventBus, final Shell shell) {
         this.contentViewBuilder = contentViewBuilder;
         this.subAppEventBus = subAppEventBus;
         this.shell = shell;
@@ -91,7 +92,7 @@ public class ContentPresenter implements ContentView.Listener {
     }
 
     @Inject
-    public ContentPresenter(final SubAppContext subAppContext, final ContentViewBuilder contentViewBuilder, @Named("subapp") final EventBus subAppEventBus, final Shell shell) {
+    public ContentPresenter(final SubAppContext subAppContext, final ContentViewBuilder contentViewBuilder, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) final EventBus subAppEventBus, final Shell shell) {
         this.contentViewBuilder = contentViewBuilder;
         this.subAppEventBus = subAppEventBus;
         this.shell = shell;

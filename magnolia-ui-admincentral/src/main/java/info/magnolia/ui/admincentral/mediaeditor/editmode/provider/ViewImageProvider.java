@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor.editmode.provider;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorEvent;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorEvent.EventType;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.image.ViewImageField;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.image.ViewImageField.ImageResizeEvent;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.image.ViewImageField.ImageSizeChangeListener;
-import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 
 import java.util.ArrayList;

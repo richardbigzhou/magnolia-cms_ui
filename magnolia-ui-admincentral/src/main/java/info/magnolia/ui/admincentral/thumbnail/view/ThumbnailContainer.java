@@ -53,7 +53,6 @@ import javax.jcr.query.QueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.AbstractInMemoryContainer;
@@ -62,7 +61,7 @@ import com.vaadin.data.util.AbstractProperty;
 /**
  * Container that provides thumbnails lazily.
  */
-public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object, ThumbnailItem> implements Container.Ordered {
+public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object, ThumbnailItem> {
 
     private static final Logger log = LoggerFactory.getLogger(ThumbnailContainer.class);
 

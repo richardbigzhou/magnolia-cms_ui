@@ -49,6 +49,7 @@ import org.junit.Test;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
@@ -99,7 +100,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     }
 
     @Test
-    public void propertyValueChangeTest_SaveInfo_True() throws Exception {
+    public void testPropertyValueChangeWithSaveInfoTrue() throws Exception {
         // GIVEN
         baseNode.setProperty(propertyName, "value");
         baseItem = new JcrNodeAdapter(baseNode);
@@ -122,7 +123,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     }
 
     @Test
-    public void propertyType_Double() throws Exception {
+    public void testConversionOfPropertyTypeWithDouble() throws Exception {
         // GIVEN
         // Set property Type
         definition.setType("Double");
@@ -176,6 +177,21 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         assertTrue(field.getCaption().contains("*"));
     }
 
+    @Test
+    public void testPlainBeanItemSupport() throws Exception {
+        // GIVEN
+        baseItem = new BeanItem<TestBean>(new TestBean("bar"));
+        ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
+        abstractDialogField = new TestTextFieldBuilder(def, baseItem);
+
+        // WHEN
+        Field<?> field = abstractDialogField.getField();
+
+        // THEN
+        Property<?> p = field.getPropertyDataSource();
+        assertEquals("bar", p.getValue().toString());
+    }
+
     public static ConfiguredFieldDefinition createConfiguredFieldDefinition(ConfiguredFieldDefinition configureFieldDefinition, String propertyName) {
         configureFieldDefinition.setDescription("description");
         configureFieldDefinition.setI18nBasename("i18nBasename");
@@ -215,10 +231,23 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         }
     }
 
+    public static class TestBean {
+        private String foo;
+
+        public TestBean(String foo) {
+            this.foo = foo;
+        }
+
+        public String getFoo() {
+            return foo;
+        }
+    }
+
     @Override
     protected void createConfiguredFieldDefinition() {
         ConfiguredFieldDefinition configureFieldDefinition = new ConfiguredFieldDefinition();
         this.definition = createConfiguredFieldDefinition(configureFieldDefinition, propertyName);
     }
+
 
 }

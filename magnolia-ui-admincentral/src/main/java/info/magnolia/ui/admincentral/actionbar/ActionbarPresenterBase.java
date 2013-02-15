@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral.actionbar;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
-import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionFactory;

@@ -26,10 +26,6 @@
 	clear: both;
 }
 
-.mgwt-ScrollPanel-container { 
-	overflow: auto !important;
-}
-
 .v-shell-tabsheet-scroller {
 	position: absolute;
 	top: 25px;
@@ -37,7 +33,7 @@
 	width: 100%;
 }
 
-.v-shell-tabsheet-scroller > div { 
+.v-shell-tabsheet-scroller > div {
 	height: 100%;
 }
 
@@ -60,7 +56,7 @@
     float: left;
     height: 19px;
     margin: 0;
-    padding: 3px 48px 2px 24px;
+    padding: 3px 48px 2px 20px;
     border-style: solid;
     border-width: 0 1px 0 0;
     font-size: 14px;
@@ -133,7 +129,7 @@
 .v-shell-tab-error {
 	height: 22px;
     width: 22px;
-    
+
 	background: url("img/icons/icon-error-red.png") no-repeat scroll 1px 1px transparent;
 	display: inline-block;
     z-index: 1000;
@@ -143,7 +139,7 @@
 .v-shell-tab-notification > span {
 	height: 22px;
 	width: 22px;
-	
+
     color: #FFFFFF;
     font-size: 12px;
     vertical-align: text-bottom;

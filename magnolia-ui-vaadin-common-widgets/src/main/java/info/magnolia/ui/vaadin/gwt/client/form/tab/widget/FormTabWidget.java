@@ -48,7 +48,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * FormTabWidget.
+ * An extension of {@link MagnoliaTabWidget}. Its content type is restricted to 
+ * {@link FormSectionWidget} and the FielWrappers are exposed.
  */
 public class FormTabWidget extends MagnoliaTabWidget implements HasValidationChangeHanlders {
 

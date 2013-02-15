@@ -49,7 +49,9 @@ import info.magnolia.ui.admincentral.event.SearchEvent;
 import info.magnolia.ui.admincentral.event.ViewTypeChangedEvent;
 import info.magnolia.ui.admincentral.search.view.SearchView;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
@@ -105,8 +107,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     private final ImageProvider imageProvider;
 
     @Inject
-    public ContentWorkbenchPresenter(final SubAppContext subAppContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus,
-            final @Named("subapp") EventBus subAppEventBus, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
+    public ContentWorkbenchPresenter(final SubAppContext subAppContext, final ContentWorkbenchView view, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus admincentralEventBus,
+            final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
             final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
@@ -259,6 +261,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
                 Object previewResource = imageProvider.getThumbnailResourceByPath(workspace, path, ImageProvider.PORTRAIT_GENERATOR);
                 if (previewResource instanceof Resource) {
                     actionbarPresenter.setPreview((Resource) previewResource);
+                } else {
+                    actionbarPresenter.setPreview(null);
                 }
             }
         }

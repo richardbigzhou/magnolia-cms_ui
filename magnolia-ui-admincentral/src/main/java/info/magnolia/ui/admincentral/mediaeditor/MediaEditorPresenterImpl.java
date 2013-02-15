@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorEvent;
@@ -40,7 +41,6 @@ import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProvid
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider.ActionContext;
-import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;

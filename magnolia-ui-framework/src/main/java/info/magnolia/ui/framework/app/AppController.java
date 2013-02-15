@@ -37,28 +37,39 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.ViewPort;
 
 /**
- * AppController manages life cycles of {@link App}s. It takes care of starting, stopping and switching to already running apps.
- * Manages apps running for a single user.
+ * Controls all {@link App}s running for a single user. It takes care of starting, stopping and switching to already running apps.
  */
 public interface AppController {
+
+    /**
+     * Prefix for componentIds for apps.
+     */
+    public static final String APP_PREFIX = "app";
+
+    /**
+     * Prefix for componentIds for subapps.
+     */
+    public static final String SUBAPP_PREFIX = "subapp";
 
     App startIfNotAlreadyRunning(String name, Location location);
 
     App startIfNotAlreadyRunningThenFocus(String name, Location location);
 
+    App getAppWithoutStarting(String appId);
+
+    boolean isAppStarted(String name);
+
     void stopApp(String name);
 
     void stopCurrentApp();
 
-    boolean isAppStarted(String name);
-
-    void setViewPort(ViewPort viewport);
-
     void focusCurrentApp();
 
-    Location getCurrentLocation(String name);
+    App getCurrentApp();
 
-    AppContext getCurrentApp();
+    Location getCurrentAppLocation();
 
-    App getAppWithoutStarting(String appId);
+    Location getAppLocation(String name);
+
+    void setViewPort(ViewPort viewport);
 }

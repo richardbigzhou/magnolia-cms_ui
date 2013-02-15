@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor;
 
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -46,8 +48,6 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter;
 import info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.SimpleEventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition;
 import info.magnolia.ui.model.mediaeditor.registry.MediaEditorRegistry;

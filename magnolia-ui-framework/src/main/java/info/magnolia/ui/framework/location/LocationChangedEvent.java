@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.framework.location;
 
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
 
 /**
  * Event fired when a location change occurs.

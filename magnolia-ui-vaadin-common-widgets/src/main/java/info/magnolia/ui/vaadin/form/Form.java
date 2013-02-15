@@ -52,7 +52,6 @@ import com.vaadin.data.Item;
 import com.vaadin.shared.Connector;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Label;
 
 /**
@@ -71,7 +70,7 @@ public class Form extends EditorLike implements FormView {
 
     private final MagnoliaTabSheet tabSheet = new MagnoliaTabSheet() {
         @Override
-        public MagnoliaFormTab addTab(final String caption, final HasComponents c) {
+        public MagnoliaFormTab addTab(final String caption, final Component c) {
             if (c instanceof FormSection) {
                 final FormSection section = (FormSection) c;
                 final MagnoliaFormTab tab = new MagnoliaFormTab(caption, section);
@@ -90,7 +89,7 @@ public class Form extends EditorLike implements FormView {
         // setImmediate(true);
         tabSheet.setSizeFull();
         tabSheet.showAllTab(true, SHOW_ALL);
-        setContent((Component) tabSheet);
+        setContent(tabSheet);
 
         Label toolbar = new Label("TESTCLZ");
         setFooterToolbar(toolbar);
@@ -130,7 +129,6 @@ public class Form extends EditorLike implements FormView {
             }
         });
     }
-
 
     @Override
     public void setItemDataSource(Item newDataSource) {

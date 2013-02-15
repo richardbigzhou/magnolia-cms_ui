@@ -36,14 +36,14 @@ package info.magnolia.ui.vaadin.tabsheet;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.connector.MagnoliaTabState;
 
 import com.vaadin.ui.AbstractSingleComponentContainer;
-import com.vaadin.ui.HasComponents;
+import com.vaadin.ui.Component;
 
 /**
  * A tab in the shell tabsheet.
  */
 public class MagnoliaTab extends AbstractSingleComponentContainer {
 
-    public MagnoliaTab(final String caption, final HasComponents c) {
+    public MagnoliaTab(final String caption, final Component c) {
         setSizeFull();
         setImmediate(true);
         setCaption(caption);

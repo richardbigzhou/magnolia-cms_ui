@@ -38,7 +38,8 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.connector.MagnoliaTabConn
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * MagnoliaTabWidget.
+ * Client-side implementation of the tab. It is a mere SimplePanel except that
+ * it also exposes own label for tab navigation.
  */
 public class MagnoliaTabWidget extends SimplePanel {
 

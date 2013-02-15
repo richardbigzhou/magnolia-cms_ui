@@ -11,18 +11,9 @@
   <components>
     <id>main</id>
 
-    <configurer>
-      <class>info.magnolia.ui.framework.event.SystemEventBusConfigurer</class>
-    </configurer>
-
     <component>
       <type>info.magnolia.ui.framework.message.MessagesManager</type>
       <implementation>info.magnolia.ui.framework.message.MessagesManagerImpl</implementation>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.framework.instantpreview.InstantPreviewLocationManager</type>
-      <implementation>info.magnolia.ui.framework.instantpreview.InstantPreviewLocationManagerImpl</implementation>
     </component>
 
     <component>
@@ -194,6 +185,10 @@
       <implementation>info.magnolia.ui.admincentral.app.simple.AppControllerImpl</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.framework.view.AppView</type>
+      <implementation>info.magnolia.ui.admincentral.app.simple.AppFrameView</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.app.simple.ShellAppController</type>
       <implementation>info.magnolia.ui.admincentral.app.simple.ShellAppController</implementation>
     </component>
@@ -229,6 +224,11 @@
       <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseDashboardView</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseDashboardViewImpl</implementation>
     </component>
+
+    <type-mapping>
+      <type>info.magnolia.ui.framework.app.AppInstanceController</type>
+      <implementation>info.magnolia.ui.admincentral.app.simple.AppInstanceControllerImpl</implementation>
+    </type-mapping>
   </components>
 
   <components>
@@ -438,7 +438,7 @@
   <servlets>
     <servlet>
       <name>AdminCentral</name>
-      <class>info.magnolia.ui.admincentral.AdminCentralServlet</class>
+      <class>com.vaadin.server.VaadinServlet</class>
       <mappings>
         <mapping>/.magnolia/admincentral</mapping>
         <mapping>/.magnolia/admincentral/*</mapping>

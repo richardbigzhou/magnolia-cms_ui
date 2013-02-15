@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor.editmode.provider;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorEvent;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorEvent.EventType;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.image.RotationField;
-import info.magnolia.ui.framework.event.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;

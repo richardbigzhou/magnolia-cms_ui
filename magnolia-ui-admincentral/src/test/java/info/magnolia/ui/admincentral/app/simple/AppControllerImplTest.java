@@ -36,23 +36,26 @@ package info.magnolia.ui.admincentral.app.simple;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
+import info.magnolia.event.SystemEventBusConfigurer;
+import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.ModuleRegistryImpl;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.App;
+import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.AppInstanceController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl;
-import info.magnolia.ui.framework.event.SimpleEventBus;
+import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
@@ -60,6 +63,7 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.message.MessagesManagerImpl;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.view.AppView;
 import info.magnolia.ui.framework.view.ViewPort;
 
 import java.util.ArrayList;
@@ -70,6 +74,9 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
 /**
  * Test case for {@link info.magnolia.ui.framework.app.AppController}.
@@ -82,30 +89,27 @@ public class AppControllerImplTest {
     private static final String SUBAPP_NAME_1 = "subApp1";
     private static final String SUBAPP_NAME_2 = "subApp2";
 
-    private AppLauncherLayoutManager appLauncherLayoutManager = null;
+    private AppDescriptorRegistry appRegistry = null;
     private GuiceComponentProvider componentProvider = null;
     private AppControllerImpl appController = null;
 
     private LocationController locationController = null;
 
     private AppEventCollector eventCollector = null;
+    private EventBus eventBus;
 
     @Before
     public void setUp() throws Exception {
-        setAppLayoutManager();
-        ModuleRegistryImpl moduleRegistry = new ModuleRegistryImpl();
-        componentProvider = initComponentProvider();
-        Shell shell = mock(MagnoliaShell.class);
-        MessagesManager messagesManager = mock(MessagesManagerImpl.class);
+        initAppRegistry();
 
-        SimpleEventBus eventBus = new SimpleEventBus();
+        this.eventBus = new SimpleEventBus();
+        this.componentProvider = initComponentProvider();
+        this.locationController = componentProvider.getComponent(LocationController.class);
 
         eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        this.locationController = new LocationController(eventBus, mock(Shell.class));
-
-        appController = new AppControllerImpl(moduleRegistry, componentProvider, appLauncherLayoutManager, locationController, messagesManager, shell, eventBus);
+        appController = (AppControllerImpl) componentProvider.getComponent(AppController.class);
         appController.setViewPort(mock(ViewPort.class));
     }
 
@@ -322,8 +326,21 @@ public class AppControllerImplTest {
         locationController.goTo(location);
         // THEN
         assertTrue(appController.isAppStarted(APP_NAME_1 + "_name"));
-
     }
+
+    @Test
+    public void testOpenSubApp() {
+        // GIVEN
+        Location location = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_1 + "_name", SUBAPP_NAME_1 + "_name");
+
+        // WHEN
+        locationController.goTo(location);
+
+        // THEN
+        assertTrue(appController.isAppStarted(APP_NAME_1 + "_name"));
+        assertEquals(location, appController.getCurrentAppLocation());
+    }
+
 
     @Test
     public void testOpenTwoSubApps() {
@@ -338,8 +355,8 @@ public class AppControllerImplTest {
 
         // THEN
         assertTrue(appController.isAppStarted(APP_NAME_1 + "_name"));
-        assertNotSame(location, appController.getCurrentApp().getCurrentLocation());
-        assertEquals(location2, appController.getCurrentApp().getCurrentLocation());
+        assertNotSame(location, appController.getCurrentAppLocation());
+        assertEquals(location2, appController.getCurrentAppLocation());
 
     }
 
@@ -363,10 +380,10 @@ public class AppControllerImplTest {
 
         // THEN
         assertTrue(appController.isAppStarted(APP_NAME_1 + "_name"));
-        assertNotSame(location, appController.getCurrentApp().getCurrentLocation());
-        assertNotSame(location3, appController.getCurrentApp().getCurrentLocation());
-        assertNotSame(location4, appController.getCurrentApp().getCurrentLocation());
-        assertEquals(location2, appController.getCurrentApp().getCurrentLocation());
+        assertNotSame(location, appController.getCurrentAppLocation());
+        assertNotSame(location3, appController.getCurrentAppLocation());
+        assertNotSame(location4, appController.getCurrentAppLocation());
+        assertEquals(location2, appController.getCurrentAppLocation());
 
     }
 
@@ -384,10 +401,10 @@ public class AppControllerImplTest {
 
         // THEN
         assertNotNull(appController.getCurrentApp());
-        assertEquals(APP_NAME_2 + "_name", appController.getCurrentApp().getName());
-        assertNotNull(appController.getCurrentApp().getCurrentLocation());
-        assertNotEquals(newLocation, appController.getCurrentApp().getCurrentLocation());
-        assertNotNull(appController.getCurrentApp().getCurrentLocation().getSubAppId());
+        assertEquals(APP_NAME_2 + "_name", appController.getCurrentAppLocation().getAppId());
+        assertNotNull(appController.getCurrentAppLocation());
+        assertNotEquals(newLocation, appController.getCurrentAppLocation());
+        assertNotNull(appController.getCurrentAppLocation().getSubAppId());
     }
 
     @Test
@@ -405,61 +422,77 @@ public class AppControllerImplTest {
 
         // THEN
         assertNotNull(appController.getCurrentApp());
-        assertEquals(APP_NAME_1 + "_name", appController.getCurrentApp().getName());
-        assertNotNull(appController.getCurrentApp().getCurrentLocation().getParameter());
-        assertEquals(parameter, appController.getCurrentApp().getCurrentLocation().getParameter());
+        assertEquals(APP_NAME_1 + "_name", appController.getCurrentAppLocation().getAppId());
+        assertNotNull(appController.getCurrentAppLocation().getParameter());
+        assertEquals(parameter, appController.getCurrentAppLocation().getParameter());
     }
 
     /**
      * Init a LayoutManager containing 2 groups (group1 and group2) with
      * one app each (app1 and app2) linket to {TestApp}.
      */
-    private void setAppLayoutManager() {
+    private void initAppRegistry() {
 
-        appLauncherLayoutManager = mock(AppLauncherLayoutManagerImpl.class);
+        this.appRegistry = mock(AppDescriptorRegistry.class);
 
         // create subapps
         Map<String, SubAppDescriptor> subApps = new HashMap<String, SubAppDescriptor>();
         subApps.put(SUBAPP_NAME_1, AppTestUtility.createSubAppDescriptor(SUBAPP_NAME_1, AppTestSubApp.class, true));
         subApps.put(SUBAPP_NAME_2, AppTestUtility.createSubAppDescriptor(SUBAPP_NAME_2, AppTestSubApp.class, true));
 
-        // Set group1 with App1
+
         AppDescriptor app1 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_1, AppTestImpl.class, subApps);
-        AppLauncherGroup group1 = AppTestUtility.createAppGroup("group1", app1);
-        // Set group2 with App2
-        AppDescriptor app2 = AppTestUtility.createAppDescriptorWithSubApps("app2", AppTestImpl.class, subApps);
-        AppLauncherGroup group2 = AppTestUtility.createAppGroup("group2", app2);
+        AppDescriptor app2 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_2, AppTestImpl.class, subApps);
 
-        AppLauncherGroupEntry entry1 = new AppLauncherGroupEntry();
-        entry1.setName(app1.getName());
-        entry1.setAppDescriptor(app1);
-        group1.addApp(entry1);
-
-        AppLauncherGroupEntry entry2 = new AppLauncherGroupEntry();
-        entry2.setName(app2.getName());
-        entry2.setAppDescriptor(app2);
-        group2.addApp(entry2);
-
-        AppLauncherLayout appLauncherLayout = new AppLauncherLayout();
-        appLauncherLayout.addGroup(group1);
-        appLauncherLayout.addGroup(group2);
-
-        when(appLauncherLayoutManager.getLayoutForCurrentUser()).thenReturn(appLauncherLayout);
+        try {
+            when(appRegistry.getAppDescriptor(APP_NAME_1 + "_name")).thenReturn(app1);
+            when(appRegistry.getAppDescriptor(APP_NAME_2 + "_name")).thenReturn(app2);
+        } catch (RegistrationException e) {
+            // won't happen
+        }
     }
 
-    public static GuiceComponentProvider initComponentProvider() {
+    public GuiceComponentProvider initComponentProvider() {
 
         ComponentProviderConfiguration components = new ComponentProviderConfiguration();
 
         components.addTypeMapping(AppTestImpl.class, AppTestImpl.class);
         components.addTypeMapping(AppEventTestImpl.class, AppEventTestImpl.class);
         components.addTypeMapping(AppTestSubApp.class, AppTestSubApp.class);
+        components.addTypeMapping(AppInstanceController.class, AppInstanceControllerImpl.class);
+
+        components.registerImplementation(AppController.class, AppControllerImpl.class);
         components.registerImplementation(AppTestView.class, AppViewTestImpl.class);
+        components.registerImplementation(AppView.class, AppFrameView.class);
+        components.registerImplementation(LocationController.class);
+        components.registerImplementation(ModuleRegistry.class, ModuleRegistryImpl.class);
+
+        components.registerInstance(AppDescriptorRegistry.class, appRegistry);
+        components.registerInstance(Shell.class, mock(MagnoliaShell.class));
+        components.registerInstance(MessagesManager.class, mock(MessagesManagerImpl.class));
+
 
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
+        TestEventBusConfigurer eventBusConfigurer = new TestEventBusConfigurer(eventBus);
+
         builder.withConfiguration(components);
         builder.exposeGlobally();
-        return builder.build();
+        return builder.build(eventBusConfigurer);
+    }
+
+    private class TestEventBusConfigurer extends AdminCentralEventBusConfigurer {
+
+        private final EventBus eventBus;
+
+        private TestEventBusConfigurer(EventBus eventbus) {
+            this.eventBus = eventbus;
+        }
+
+        @Override
+        protected void configure() {
+            bind(EventBus.class).annotatedWith(Names.named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME)).toProvider(Providers.of(eventBus));
+            bind(EventBus.class).annotatedWith(Names.named(SystemEventBusConfigurer.EVENT_BUS_NAME)).toProvider(Providers.of(new SimpleEventBus()));
+        }
     }
 
     /**

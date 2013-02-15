@@ -43,8 +43,7 @@ import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractComponentContainerConnector;
 
 /**
- * EditorLikeComponentConnector.
- *
+ * A common base for the editing components like forms and dialogs. 
  * @param <T> the view
  * @param <U> the presenter
  */

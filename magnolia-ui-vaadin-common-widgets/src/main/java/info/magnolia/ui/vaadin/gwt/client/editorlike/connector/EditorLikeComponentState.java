@@ -40,7 +40,7 @@ import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.AbstractLayoutState;
 
 /**
- * EditorLikeComponentState.
+ * Common state class for the editor components like forms and dialogs..
  */
 public class EditorLikeComponentState extends AbstractLayoutState {
 

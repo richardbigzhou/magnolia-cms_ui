@@ -40,8 +40,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * EditorLikeView.
- *
+ * View interface for the editor components like forms and dialogs.
  * @param <T> the presenter
  */
 public interface EditorLikeView<T extends EditorLikeView.Presenter> extends IsWidget, HasWidgets {
@@ -63,7 +62,7 @@ public interface EditorLikeView<T extends EditorLikeView.Presenter> extends IsWi
     T getPresenter();
 
     /**
-     * Presenter.
+     * Presenter interface for the editor components like forms and dialogs.
      */
     public interface Presenter {
         void fireAction(String action);

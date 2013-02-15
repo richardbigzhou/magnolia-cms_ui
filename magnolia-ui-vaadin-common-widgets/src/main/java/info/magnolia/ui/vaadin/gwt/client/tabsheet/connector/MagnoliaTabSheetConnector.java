@@ -63,7 +63,7 @@ import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * MagnoliaTabSheetConnector.
+ * Client-side connector, counter-part of {@link MagnoliaTabSheet}.
  */
 @Connect(MagnoliaTabSheet.class)
 public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnector implements MagnoliaTabSheetView.Presenter {
