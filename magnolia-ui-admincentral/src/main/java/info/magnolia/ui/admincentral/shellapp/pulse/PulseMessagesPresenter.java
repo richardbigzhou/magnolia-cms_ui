@@ -268,7 +268,7 @@ public class PulseMessagesPresenter implements Serializable {
 
                 switch (category) {
                 case WORK_ITEM:
-                    return type == MessageType.WARNING;
+                    return type == MessageType.WORKITEM;
                 case PROBLEM:
                     return type == MessageType.ERROR;
                 case INFO:
