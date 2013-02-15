@@ -39,7 +39,6 @@ import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorEvent
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.image.FlipField;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,15 +57,12 @@ import com.vaadin.ui.Component;
 public class FlipImageProvider implements EditModeProvider {
 
     private FlipField flipField;
-
-    private EventBus eventBus;
     
     private FlipImageActionDefinition definition;
     
     @Inject
     public FlipImageProvider(final @Named("mediaeditor") EventBus eventBus, FlipImageActionDefinition def) {
         this.definition = def;
-        this.eventBus = eventBus;
         flipField = new FlipField(definition.getFlipHorizontal());
         flipField.addValueChangeListener(new ValueChangeListener() {
             @Override
@@ -89,26 +85,6 @@ public class FlipImageProvider implements EditModeProvider {
 
     @Override
     public List<ActionContext> getActionContextList() {
-        
-        List<ActionContext> result = new ArrayList<ActionContext>();
-        
-        result.add(new ActionContext("cancel", "Cancel", new EditorLikeActionListener() {
-            @Override
-            public void onActionExecuted(String actionName) {
-                flipField.revertChanges();
-                eventBus.fireEvent(new MediaEditorEvent(EventType.CANCEL_LAST));
-            }
-        }));
-        
-        result.add(new ActionContext("apply", "Apply", new EditorLikeActionListener() {
-            @Override
-            public void onActionExecuted(String actionName) {
-                flipField.applyChanges();
-                eventBus.fireEvent(new MediaEditorEvent(EventType.APPLY));
-            }
-        }));
-        
-        return result;
+        return new ArrayList<ActionContext>();
     }
-
 }
