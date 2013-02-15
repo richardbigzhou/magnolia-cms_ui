@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.admincentral.components.SplitFeed;
-import info.magnolia.ui.admincentral.components.SplitFeed.FeedSection;
+import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
+import info.magnolia.ui.vaadin.splitfeed.SplitFeed.FeedSection;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

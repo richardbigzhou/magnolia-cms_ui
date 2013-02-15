@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.admincentral.components.SplitFeed;
+import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
