@@ -277,7 +277,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     @Override
     public void setSubAppLocation(SubAppContext subAppContext, Location location) {
         subAppContext.setLocation(location);
-        if (appController.getCurrentAppInstanceController() == this && getActiveSubAppContext() == subAppContext) {
+        if (appController.getCurrentApp() == getApp() && getActiveSubAppContext() == subAppContext) {
             shell.setFragment(location.toString());
         }
     }
