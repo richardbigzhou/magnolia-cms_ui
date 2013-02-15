@@ -18,8 +18,10 @@
 }
 
 .dialog-content {
-	height: 100%;
-	width: 100%;
+	top: 40px;
+	width:100%;
+	bottom: 52px;
+	position: absolute;
 }
 
 .dialog-header {
@@ -47,8 +49,6 @@
 .dialog-panel {
   background: none repeat scroll 0px 0px #E6E6E6;
   border: none;
-  left: 50%;
-  margin: auto auto auto -360px;
   padding: 0;
   position: absolute;
   width: 720px;
@@ -58,6 +58,10 @@
 .dialog-footer {
   background: none repeat scroll 0px 0px #CCCCCC;
   text-align: right;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .dialog-footer-toolbar {
@@ -116,7 +120,6 @@ button.btn-dialog-help {
 .dialog-panel .field-container {
   color: #999;
 }
-
 
 .action-dialog-help {
   background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px transparent;
