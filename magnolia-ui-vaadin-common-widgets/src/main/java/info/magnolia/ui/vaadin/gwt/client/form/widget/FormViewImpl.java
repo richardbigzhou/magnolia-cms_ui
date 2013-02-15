@@ -94,7 +94,7 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
     private Presenter presenter;
 
     private Widget footerToolbar;
-    private Widget headerToolbar;
+
 
     private final FormHeaderWidget formHeader = new FormHeaderWidget(new FormHeaderWidget.FormHeaderCallback() {
 
@@ -237,7 +237,7 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
 
     @Override
     public void setCaption(String caption) {
-        formHeader.setFormCaption(caption);
+        formHeader.setCaption(caption);
     }
 
     @Override
@@ -253,8 +253,7 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
 
     @Override
     public void setHeaderToolbar(Widget headerToolbarWidget) {
-        // TODO Implement
-
+        formHeader.setToolbar(headerToolbarWidget);
     }
 
 

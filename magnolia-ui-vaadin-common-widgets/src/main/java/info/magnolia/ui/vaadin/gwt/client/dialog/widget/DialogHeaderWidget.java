@@ -33,96 +33,54 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeHeaderWidget;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 
 /**
  * DialogHeaderWidget.
  */
-public class DialogHeaderWidget extends FlowPanel {
+public class DialogHeaderWidget extends EditorLikeHeaderWidget {
 
-    private static final String CLASSNAME_HEADER = "form-header";
-    private static final String ClASSNAME_DESCRIPTION = "form-description";
-    private static final String CLASSNAME_HELPBUTTON = "btn-form-help";
     private static final String CLASSNAME_CLOSEBUTTON = "btn-dialog-close";
+    private static final String CLASSNAME_HEADER_TOOLBAR = "dialog-header-toolbar";
 
-    protected final VDialogHeaderCallback callback;
-
-    private final FlowPanel descriptionPanel = new FlowPanel();
-
-    protected Element captionContainer = DOM.createDiv();
-
-    private final Element caption = DOM.createSpan();
-
-    private boolean isDescriptionVisible = false;
-
-    private boolean hasDescription = false;
-
-    private final Button closeButton = new Button("", new ClickHandler() {
-        @Override
-        public void onClick(ClickEvent event) {
-            callback.onCloseFired();
-        }
-    });
-
-    private final Button helpButton = new Button("", new ClickHandler() {
-        @Override
-        public void onClick(ClickEvent event) {
-            isDescriptionVisible = !isDescriptionVisible;
-            if (hasDescription) {
-                descriptionPanel.setVisible(isDescriptionVisible);
-            }
-            callback.onDescriptionVisibilityChanged(isDescriptionVisible);
-        }
-    });
-
-    public void construct() {
-        captionContainer.addClassName(CLASSNAME_HEADER);
-
-        closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
-        closeButton.addStyleName("green");
-        add(closeButton, captionContainer);
-
-        descriptionPanel.addStyleName(ClASSNAME_DESCRIPTION);
-        helpButton.setStyleName(CLASSNAME_HELPBUTTON);
-
-        getElement().appendChild(captionContainer);
-        captionContainer.appendChild(caption);
-
-        descriptionPanel.setVisible(false);
-        add(helpButton, captionContainer);
-        add(descriptionPanel);
-    }
-
-    public DialogHeaderWidget(final VDialogHeaderCallback callback) {
-        this.callback = callback;
-        callback.onDescriptionVisibilityChanged(false);
-        construct();
-    }
-
-    public void setDescription(String description) {
-        final Label content = new Label();
-        content.setText(description);
-        descriptionPanel.insert(content, 0);
-        hasDescription = !description.isEmpty();
-    }
-
-    public void setDialogCaption(String caption) {
-        this.caption.setInnerText(caption);
-    }
 
     /**
-     * Callback interface for the Dialog header.
+     * Callback interface for the EditorLike header.
      */
-    public interface VDialogHeaderCallback {
+    public interface VDialogHeaderCallback extends EditorLikeHeaderWidget.VEditorLikeHeaderCallback {
 
         void onCloseFired();
 
         void onDescriptionVisibilityChanged(boolean isVisible);
+    }
+
+    protected Button closeButton;
+
+    /**
+     * @param callback
+     */
+    public DialogHeaderWidget(VDialogHeaderCallback callback) {
+        super((VEditorLikeHeaderCallback) callback);
+    }
+
+    public void construct() {
+
+        closeButton = new Button("", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                ((VDialogHeaderCallback) callback).onCloseFired();
+            }
+        });
+
+        closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
+        closeButton.addStyleName("green");
+        add(closeButton, headerPanel);
+
+        super.construct();
+
     }
 }

@@ -29,6 +29,11 @@
   font-weight:bold;
 }
 
+.dialog-header-toolbar {
+  float:right;
+  padding-right:12px;
+}
+
 .dialog-description {
   background: none repeat scroll 0px 0px #C1D8DF;
 }

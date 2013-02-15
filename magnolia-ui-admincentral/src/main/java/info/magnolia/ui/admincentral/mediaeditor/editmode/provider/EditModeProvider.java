@@ -44,44 +44,44 @@ import com.vaadin.ui.Component;
  * EditMode.
  */
 public interface EditModeProvider {
-
+   
     MediaField getMediaField();
     
     Component getStatusControls();
     
     List<ActionContext> getActionContextList();
-    
+
     /**
-     * DialogActionsContext.
+     * ActionContext.
      */
     public static class ActionContext {
-       
+
         private String actionId;
-        
+
         private String label;
         
         private EditorLikeActionListener listener;
-        
+
         public ActionContext(String id, String label, EditorLikeActionListener listener) {
             this.actionId = id;
             this.label = label;
             this.listener = listener;
         }
-        
+
         /**
          * @return the actionId
          */
         public String getActionId() {
             return actionId;
         }
-        
+
         /**
          * @return the label
          */
         public String getLabel() {
             return label;
         }
-        
+
         /**
          * @return the listener
          */

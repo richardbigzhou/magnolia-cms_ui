@@ -16,6 +16,11 @@
     height:20px;
 }
 
+.form-header-toolbar{
+    float:right;
+    padding-right:12px;
+}
+
 .form-content {
     overflow:hidden;
 	transition-property:height;

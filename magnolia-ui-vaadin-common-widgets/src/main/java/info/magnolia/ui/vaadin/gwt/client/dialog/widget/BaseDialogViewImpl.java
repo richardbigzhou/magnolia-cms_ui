@@ -64,11 +64,8 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
     private final DialogHeaderWidget header = createHeader();
 
     private final Element contentEl = DOM.createDiv();
-    // private final Element contentToolbarEl = DOM.createDiv();
-
     private final Element footerEl = DOM.createDiv();
     private final Element footerToolbarEl = DOM.createDiv();
-
 
     private final Map<String, Button> actionMap = new HashMap<String, Button>();
 
@@ -131,7 +128,7 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
 
     @Override
     public void setCaption(String caption) {
-        header.setDialogCaption(caption);
+        header.setCaption(caption);
     }
 
     @Override
@@ -145,7 +142,7 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
 
     @Override
     public void setHeaderToolbar(Widget headerToolbarWidget) {
-        // TODO Implement
+        header.setToolbar(headerToolbarWidget);
     }
 
     @Override
