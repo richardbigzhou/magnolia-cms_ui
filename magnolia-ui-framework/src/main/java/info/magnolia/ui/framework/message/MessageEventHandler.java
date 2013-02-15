@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.framework.message;
 
-import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.event.EventHandler;
 
 /**
  * Handler of {link {@link MessageEvent}.

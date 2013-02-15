@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.framework.event;
 
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
 import com.google.inject.name.Names;

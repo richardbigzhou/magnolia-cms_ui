@@ -36,7 +36,7 @@ package info.magnolia.ui.app.sample.main;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.AppEventBusConfigurer;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 

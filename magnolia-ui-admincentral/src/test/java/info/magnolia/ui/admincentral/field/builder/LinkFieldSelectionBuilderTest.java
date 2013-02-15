@@ -39,7 +39,7 @@ import static org.mockito.Mockito.mock;
 import info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.field.TextAndContentViewField;
-import info.magnolia.ui.framework.event.SimpleEventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.ui.model.field.definition.LinkFieldSelectionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;

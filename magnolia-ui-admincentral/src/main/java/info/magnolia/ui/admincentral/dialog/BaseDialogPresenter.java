@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;

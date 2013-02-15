@@ -39,7 +39,7 @@ import info.magnolia.ui.admincentral.app.simple.ShellAppController;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;

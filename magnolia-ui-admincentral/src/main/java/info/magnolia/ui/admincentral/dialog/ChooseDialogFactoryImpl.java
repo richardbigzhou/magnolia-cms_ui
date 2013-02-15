@@ -40,7 +40,7 @@ import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView.Listener;
 import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 import javax.inject.Inject;

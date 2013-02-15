@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.message;
 
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.message.MessagesManager.MessageListener;
 
 import java.util.concurrent.BlockingQueue;

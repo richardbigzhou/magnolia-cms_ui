@@ -33,13 +33,15 @@
  */
 package info.magnolia.ui.framework.event;
 
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
 import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 
 /**
- * Configures an {@link EventBus} bound to the name <code>subapp</code>.
+ * Configures an {@link info.magnolia.event.EventBus} bound to the name <code>subapp</code>.
  */
 public class SubAppEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 

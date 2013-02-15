@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.event.Event;
+import info.magnolia.event.Event;
 
 /**
  * Event fired when the lifecycle of an app changes.

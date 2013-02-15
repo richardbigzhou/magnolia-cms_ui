@@ -34,14 +34,14 @@
 package info.magnolia.ui.admincentral;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.admincentral.app.simple.ShellAppController;
 import info.magnolia.ui.admincentral.dialog.BaseDialogPresenter;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.HandlerRegistration;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;

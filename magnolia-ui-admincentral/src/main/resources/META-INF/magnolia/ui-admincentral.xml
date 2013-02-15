@@ -11,10 +11,6 @@
   <components>
     <id>main</id>
 
-    <configurer>
-      <class>info.magnolia.ui.framework.event.SystemEventBusConfigurer</class>
-    </configurer>
-
     <component>
       <type>info.magnolia.ui.framework.message.MessagesManager</type>
       <implementation>info.magnolia.ui.framework.message.MessagesManagerImpl</implementation>

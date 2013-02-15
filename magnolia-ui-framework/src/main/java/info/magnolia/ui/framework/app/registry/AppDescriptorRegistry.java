@@ -36,8 +36,8 @@ package info.magnolia.ui.framework.app.registry;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.SystemEventBusConfigurer;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SystemEventBusConfigurer;
 
 import java.util.ArrayList;
 import java.util.Collection;

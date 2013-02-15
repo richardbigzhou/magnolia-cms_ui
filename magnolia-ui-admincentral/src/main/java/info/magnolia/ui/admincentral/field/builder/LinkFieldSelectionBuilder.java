@@ -39,7 +39,7 @@ import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.field.TextAndContentViewField;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl;
 import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.LinkFieldSelectionDefinition;
 

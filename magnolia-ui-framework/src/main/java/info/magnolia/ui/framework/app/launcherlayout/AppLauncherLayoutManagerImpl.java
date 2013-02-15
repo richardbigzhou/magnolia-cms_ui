@@ -41,8 +41,8 @@ import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayou
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.app.registry.AppRegistryEvent;
 import info.magnolia.ui.framework.app.registry.AppRegistryEventHandler;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.SystemEventBusConfigurer;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SystemEventBusConfigurer;
 
 import java.util.ArrayList;
 import java.util.List;

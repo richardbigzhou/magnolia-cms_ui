@@ -46,8 +46,8 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutChangedEve
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutChangedEventHandler;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.SystemEventBusConfigurer;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SystemEventBusConfigurer;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
