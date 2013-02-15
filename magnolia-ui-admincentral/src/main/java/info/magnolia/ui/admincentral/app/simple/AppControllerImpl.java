@@ -209,14 +209,26 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     @Override
-    public Location getCurrentLocation(String appId) {
-        AppInstanceController appInstanceController = runningApps.get(appId);
-        return appInstanceController == null ? null : appInstanceController.getCurrentLocation();
+    public App getCurrentApp() {
+        return currentAppInstanceController.getApp();
     }
 
+    /**
+     * Returns the current location of the focused app. This can differ from the actual location of the admin central, e.g. when a shell app is open.
+     * @see info.magnolia.ui.framework.location.LocationController#getWhere()
+     */
     @Override
-    public AppInstanceController getCurrentAppInstanceController() {
-        return currentAppInstanceController;
+    public Location getCurrentAppLocation() {
+        return currentAppInstanceController == null ? null : currentAppInstanceController.getCurrentLocation();
+    }
+
+    /**
+     * Returns the current location of a running app instance or null, if it is not running. The App does not have to be focused.
+     */
+    @Override
+    public Location getAppLocation(String appId) {
+        AppInstanceController appInstanceController = runningApps.get(appId);
+        return appInstanceController == null ? null : appInstanceController.getCurrentLocation();
     }
 
     /**

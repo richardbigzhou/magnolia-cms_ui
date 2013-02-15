@@ -260,7 +260,7 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
     private void restoreAppParameter(Fragment f) {
         String actualParam = f.getParameter();
         if (StringUtils.isEmpty(actualParam)) {
-            Location location = appController.getCurrentLocation(f.getAppId());
+            Location location = appController.getAppLocation(f.getAppId());
             if (location != null) {
                 f.setParameter(location.getParameter());
             }

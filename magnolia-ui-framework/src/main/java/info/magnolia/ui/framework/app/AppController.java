@@ -51,23 +51,25 @@ public interface AppController {
      */
     public static final String SUBAPP_PREFIX = "subapp";
 
-    AppInstanceController getCurrentAppInstanceController();
-
     App startIfNotAlreadyRunning(String name, Location location);
 
     App startIfNotAlreadyRunningThenFocus(String name, Location location);
 
     App getAppWithoutStarting(String appId);
 
+    boolean isAppStarted(String name);
+
     void stopApp(String name);
 
     void stopCurrentApp();
 
-    boolean isAppStarted(String name);
-
-    void setViewPort(ViewPort viewport);
-
     void focusCurrentApp();
 
-    Location getCurrentLocation(String name);
+    App getCurrentApp();
+
+    Location getCurrentAppLocation();
+
+    Location getAppLocation(String name);
+
+    void setViewPort(ViewPort viewport);
 }
