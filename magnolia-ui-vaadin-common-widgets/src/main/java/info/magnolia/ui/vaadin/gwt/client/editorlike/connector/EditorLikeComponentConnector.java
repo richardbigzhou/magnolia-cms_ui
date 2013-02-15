@@ -104,9 +104,12 @@ public abstract class EditorLikeComponentConnector<U extends EditorLikeView.Pres
     protected void updateActionsFromState() {
         view.setActions(getState().actions);
     }
+    
+    @Override
+    public boolean delegateCaptionHandling() {
+        return false;
+    }
 
-    // TODO: Perhaps these six methods can be refactored down to fewer more generic methods.
-    // Do we need get*() methods?
     protected ComponentConnector getContent() {
         return (ComponentConnector) getState().content;
     }
