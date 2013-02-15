@@ -101,6 +101,12 @@ public final class CroppableImage extends Image implements JCropHandler {
         jcrop.invalidate();
     }
     
+    @Override
+    public void removeStyleName(String style) {
+        super.removeStyleName(style);
+        jcrop.invalidate();
+    }
+    
     /**
      * JCropEvent.
      */
