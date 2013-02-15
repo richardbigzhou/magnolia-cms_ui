@@ -43,9 +43,9 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppInstanceController;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.AppInstanceController;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
@@ -57,9 +57,9 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.AppView;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 
@@ -73,7 +73,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
     private static final Logger log = LoggerFactory.getLogger(AppInstanceControllerImpl.class);
 
-    private List<SubAppContext> subAppContexts = new LinkedList<SubAppContext>();
+    private Map<String, SubAppContext> subAppContexts = new ConcurrentHashMap<String, SubAppContext>();
 
     private ModuleRegistry moduleRegistry;
 
@@ -179,16 +179,15 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
     @Override
     public void onFocus(String instanceId) {
-        for (SubAppContext subAppContext : subAppContexts) {
-            if (subAppContext.getInstanceId().equals(instanceId)) {
-                locationController.goTo(subAppContext.getLocation());
-            }
+        if (subAppContexts.containsKey(instanceId)) {
+            SubAppContext subAppContext = subAppContexts.get(instanceId);
+            locationController.goTo(subAppContext.getLocation());
         }
     }
 
     @Override
     public void onClose(String instanceId) {
-        subAppContexts.remove(instanceId);
+        stopSubAppInstance(instanceId);
         onFocus(app.getView().getActiveSubAppView());
     }
 
@@ -199,7 +198,17 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
     @Override
     public void stop() {
+        for (String instanceId : subAppContexts.keySet()) {
+            stopSubAppInstance(instanceId);
+        }
+        currentSubAppContext = null;
         app.stop();
+    }
+
+    private void stopSubAppInstance(String instanceId) {
+        SubAppContext subAppContext = subAppContexts.get(instanceId);
+        subAppContext.getSubApp().stop();
+        subAppContexts.remove(subAppContext);
     }
 
     @Override
@@ -230,19 +239,13 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
             subAppContext.setLocation(location);
             subAppContext.getSubApp().locationChanged(location);
 
-            currentSubAppContext = subAppContext;
-
             if (subAppContext.getInstanceId() != app.getView().getActiveSubAppView()) {
                 app.getView().setActiveSubAppView(subAppContext.getInstanceId());
             }
         } else {
-            // else start new subApp
-            // startSubApp
-
             subAppContext = startSubApp(location);
-            subAppContexts.add(subAppContext);
-            currentSubAppContext = subAppContext;
         }
+        currentSubAppContext = subAppContext;
 
     }
 
@@ -267,6 +270,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
         subAppContext.setInstanceId(instanceId);
 
+        subAppContexts.put(instanceId, subAppContext);
         return subAppContext;
     }
 
@@ -321,7 +325,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         String subAppId = (location.getSubAppId().isEmpty()) ? getDefaultSubAppDescriptor().getName() : location.getSubAppId();
 
         SubAppContext supportingContext = null;
-        for (SubAppContext context : subAppContexts) {
+        for (SubAppContext context : subAppContexts.values()) {
             if (!subAppId.equals(context.getSubAppId())) {
                 continue;
             }

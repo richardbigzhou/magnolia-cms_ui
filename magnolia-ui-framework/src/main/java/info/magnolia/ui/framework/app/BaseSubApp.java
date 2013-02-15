@@ -69,6 +69,11 @@ public class BaseSubApp implements SubApp {
     }
 
     @Override
+    public void stop() {
+        onSubAppStop();
+    }
+
+    @Override
     public void locationChanged(Location location) {
         currentLocation = location;
     }
@@ -89,6 +94,13 @@ public class BaseSubApp implements SubApp {
      * The default implementation does nothing.
      */
     protected void onSubAppStart() {
+    }
+
+    /**
+     * This hook-up method is called on {@link #stop()} and enables subclasses to perform additional work when stopping the subApp.
+     * The default implementation does nothing.
+     */
+    protected void onSubAppStop() {
     }
 
     public SubAppContext getSubAppContext() {
