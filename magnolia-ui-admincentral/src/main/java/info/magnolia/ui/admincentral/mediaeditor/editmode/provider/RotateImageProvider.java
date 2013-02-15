@@ -38,23 +38,16 @@ import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorEvent
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.image.RotationField;
 import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.vaadin.data.util.converter.StringToDoubleConverter;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.NativeButton;
-import com.vaadin.ui.TextField;
 
 /**
  * RotationProvider.
@@ -63,15 +56,15 @@ public class RotateImageProvider implements EditModeProvider {
     
     private RotationField rotationField = new RotationField();
     
-    private TextField angleField = new TextField();
-    
-    private NativeButton rotateButton = new NativeButton("rotate");
-    
-    private EventBus eventBus;
-    
     @Inject
-    public RotateImageProvider(@Named("mediaeditor") EventBus eventBus) {
-        this.eventBus = eventBus;
+    public RotateImageProvider(final @Named("mediaeditor") EventBus eventBus) {
+        rotationField.addValueChangeListener(new ValueChangeListener() {
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                rotationField.applyChanges();
+                eventBus.fireEvent(new MediaEditorEvent(EventType.APPLY));    
+            }
+        });
     }
     
     @Override
@@ -80,75 +73,12 @@ public class RotateImageProvider implements EditModeProvider {
     }
 
     @Override
-    public Component getStatusControls() {
-        final HorizontalLayout toolbar = new HorizontalLayout();
-        toolbar.setWidth("200px");
-        
-        NativeButton rotateRight = new NativeButton("<-", new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                rotationField.setAngle(-90);
-                rotationField.execute();
-            }
-        });
-        
-        
-        NativeButton rotateLeft = new NativeButton("->", new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                rotationField.setAngle(90);
-                rotationField.execute();
-            }
-        });
-        
-        
-        angleField.setWidth("40px");
-        angleField.setConverter(new StringToDoubleConverter());
-        rotateButton.addClickListener(new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                rotationField.setAngle(Double.valueOf(angleField.getValue()));
-                rotationField.execute();
-            }
-        });
-        
-        toolbar.setSpacing(true);
-        toolbar.addComponent(rotateRight);
-        toolbar.addComponent(rotateLeft);
-        toolbar.addComponent(angleField);
-        toolbar.addComponent(rotateButton);
-        for (Iterator<Component> it = toolbar.iterator();it.hasNext();) {
-            Component c = it.next();
-            toolbar.setExpandRatio(c, 1f);
-            toolbar.setComponentAlignment(c, Alignment.MIDDLE_RIGHT);
-        }
-        toolbar.setComponentAlignment(angleField, Alignment.MIDDLE_RIGHT);
-        toolbar.setExpandRatio(angleField, 2f);
-        
-        return toolbar;
+    public Component getStatusControls() {       
+        return null;
     }
 
     @Override
     public List<ActionContext> getActionContextList() {
-        List<ActionContext> actions = new ArrayList<EditModeProvider.ActionContext>();
-        
-        actions.add(new ActionContext("cancel", "Cancel", new EditorLikeActionListener() {
-            
-            @Override
-            public void onActionExecuted(String actionName) {
-                rotationField.revertChanges();
-                eventBus.fireEvent(new MediaEditorEvent(EventType.CANCEL_LAST));
-            }
-        }));
-
-        actions.add(new ActionContext("rotate", "Apply", new EditorLikeActionListener() {
-            
-            @Override
-            public void onActionExecuted(String actionName) {
-                rotationField.applyChanges();
-                eventBus.fireEvent(new MediaEditorEvent(EventType.APPLY));
-            }
-        }));
-        return actions;
+        return new ArrayList<EditModeProvider.ActionContext>();
     }
 }

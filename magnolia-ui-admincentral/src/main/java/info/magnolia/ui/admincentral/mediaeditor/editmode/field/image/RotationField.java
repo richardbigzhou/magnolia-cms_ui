@@ -41,6 +41,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import com.jhlabs.image.RotateFilter;
+import com.vaadin.data.Property;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Image;
 
@@ -51,17 +52,18 @@ public class RotationField extends ImageMediaField {
 
     private Image rotationImage = new Image();
 
-    private double angle;
+    private double angle = -90;
 
-    public void rotate(double angle) {
-        this.angle = angle;
-        try {
-            performRotation();
-        } catch (IOException e) {
-            log.error("I/O error occured while performing rotation: " + e.getMessage(), e);
-        }
+    public RotationField() {
+        setBuffered(true);
     }
 
+    @Override
+    public void setPropertyDataSource(@SuppressWarnings("rawtypes") Property newDataSource) {
+        super.setPropertyDataSource(newDataSource);
+        execute();
+    }
+    
     @Override
     protected Component createField() {
         return rotationImage;
@@ -72,6 +74,12 @@ public class RotationField extends ImageMediaField {
         return new RotateFilter((float)(angle * Math.PI) / 180f, true).filter(img, null);
     }
 
+    @Override
+    public void execute() {
+        super.execute();
+        commit();
+    }
+    
     @Override
     public void refreshImageSource() {
         rotationImage.setSource(createResourceFromValue());
@@ -85,9 +93,5 @@ public class RotationField extends ImageMediaField {
             log.error("Error occurred while performing rotation: " + e.getMessage(), e);
         }
         return null;
-    }
-
-    public void setAngle(double angle) {
-        this.angle = angle;
     }
 }
