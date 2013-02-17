@@ -43,7 +43,7 @@ import com.jhlabs.image.GrayscaleFilter;
 import com.vaadin.data.Property;
 
 /**
- * GrayScaleField.
+ * Provides the functionality for image gray-scaling.
  */
 public class GrayScaleField extends ViewImageField {
 

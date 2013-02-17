@@ -55,6 +55,7 @@ public class DialogHeaderWidget extends EditorLikeHeaderWidget {
 
         void onCloseFired();
 
+        @Override
         void onDescriptionVisibilityChanged(boolean isVisible);
     }
 
@@ -64,9 +65,10 @@ public class DialogHeaderWidget extends EditorLikeHeaderWidget {
      * @param callback
      */
     public DialogHeaderWidget(VDialogHeaderCallback callback) {
-        super((VEditorLikeHeaderCallback) callback);
+        super(callback);
     }
 
+    @Override
     public void construct() {
 
         closeButton = new Button("", new ClickHandler() {

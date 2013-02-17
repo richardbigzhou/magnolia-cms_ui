@@ -50,7 +50,7 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.JavaScriptFunction;
 
 /**
- * JCropField.
+ * An {@link Image} extension that operates JCrop JQuery plugin ({@link http://deepliquid.com/content/Jcrop.html}). 
  */
 @JavaScript({"js/jquery.color.js", "js/jquery.Jcrop.js", "js/jcrop_connector.js"})
 @StyleSheet("css/jquery.Jcrop.css")

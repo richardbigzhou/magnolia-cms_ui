@@ -38,7 +38,7 @@ import info.magnolia.ui.model.mediaeditor.features.ConfiguredMediaEditorFeatureD
 
 
 /**
- * ScaleToFitActionDefinition.
+ * Definition of {@link info.magnolia.ui.admincentral.mediaeditor.action.feature.ScaleToFitAction}.
  */
 public class ScaleToFitActionDefinition extends ConfiguredMediaEditorFeatureDefinition {
     

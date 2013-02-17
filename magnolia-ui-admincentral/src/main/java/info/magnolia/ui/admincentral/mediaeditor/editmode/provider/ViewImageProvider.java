@@ -52,7 +52,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 
 /**
- * ImageViewProvider.
+ * Provides UI and necessary logic for simple image previewing operation.
  */
 public class ViewImageProvider implements EditModeProvider {
 

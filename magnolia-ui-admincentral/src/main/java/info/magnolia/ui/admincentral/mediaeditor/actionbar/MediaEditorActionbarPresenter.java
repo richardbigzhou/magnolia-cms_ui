@@ -43,7 +43,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * MediaEditorActionbarPresenter.
+ * Actionbar presenter bound to the scope of media editor.
  */
 public class MediaEditorActionbarPresenter extends ActionbarPresenterBase {
     

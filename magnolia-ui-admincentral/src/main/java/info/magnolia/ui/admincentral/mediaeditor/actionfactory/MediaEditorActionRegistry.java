@@ -44,7 +44,7 @@ import java.util.List;
 import javax.inject.Singleton;
 
 /**
- * MediaEditorActionregistry.
+ * Mapping between the definitions and action possible to perform with media editor.
  */
 @Singleton
 public class MediaEditorActionRegistry implements Serializable {

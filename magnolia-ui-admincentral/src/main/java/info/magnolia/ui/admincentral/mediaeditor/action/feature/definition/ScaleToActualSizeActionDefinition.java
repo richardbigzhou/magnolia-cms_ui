@@ -38,7 +38,7 @@ import info.magnolia.ui.model.mediaeditor.features.ConfiguredMediaEditorFeatureD
 
 
 /**
- * ScaleToActualSizeActionDefinition.
+ * Definition of {@link info.magnolia.ui.admincentral.mediaeditor.action.feature.ScaleToActualSizeAction}.
  */
 public class ScaleToActualSizeActionDefinition extends ConfiguredMediaEditorFeatureDefinition {
     

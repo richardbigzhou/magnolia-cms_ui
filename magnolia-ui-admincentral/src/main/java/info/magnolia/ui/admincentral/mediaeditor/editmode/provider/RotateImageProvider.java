@@ -50,7 +50,7 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Component;
 
 /**
- * RotationProvider.
+ * Provides UI and necessary logic for image rotation operation.
  */
 public class RotateImageProvider implements EditModeProvider {
     

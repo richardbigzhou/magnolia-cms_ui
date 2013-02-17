@@ -41,7 +41,7 @@ import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 /**
- * MediaEditorView.
+ * Interface of media editor view.
  */
 public interface MediaEditorView extends View {
     

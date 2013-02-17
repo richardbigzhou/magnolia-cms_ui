@@ -43,7 +43,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * EditModeBuilderFactory.
+ * Creates an {@link EditModeProvider} corresponding to the {@link EditModeProviderActionDefinition}.
+ * Used in media editor to dynamically switch between editing modes. 
+ * @see MediaEditorPresenter.
  */
 @Singleton
 public class EditModeProviderFactory extends FactoryBase<EditModeProviderActionDefinition, EditModeProvider> {

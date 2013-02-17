@@ -48,7 +48,7 @@ import javax.inject.Named;
 import com.vaadin.ui.Component;
 
 /**
- * GrayScaleProvider.
+ * Provides UI and necessary logic for image gray-scaling operation.
  */
 public class GrayScaleProvider implements EditModeProvider {
 

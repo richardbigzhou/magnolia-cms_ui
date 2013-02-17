@@ -47,7 +47,7 @@ import com.vaadin.data.Property;
 import com.vaadin.ui.Component;
 
 /**
- * CropField.
+ * Provides the functionality for image crop.
  */
 public class CropField extends ImageMediaField {
     

@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.mediaeditor;
 import info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition;
 
 /**
- * MediaEditorPresenterFactory.
+ * Creates an {@link MediaEditorPresenter} instance by either name or definition. 
  */
 public interface MediaEditorPresenterFactory {
 

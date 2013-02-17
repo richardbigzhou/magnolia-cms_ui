@@ -43,7 +43,7 @@ import com.vaadin.ui.Image;
 import com.vaadin.util.ReflectTools;
 
 /**
- * CroppableImage.
+ * Image extended with {@link JCrop}.
  */
 public final class CroppableImage extends Image implements JCropHandler {
     

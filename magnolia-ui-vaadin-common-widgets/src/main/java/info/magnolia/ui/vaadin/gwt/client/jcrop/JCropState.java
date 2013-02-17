@@ -39,7 +39,7 @@ import com.vaadin.shared.Connector;
 import com.vaadin.shared.JavaScriptExtensionState;
 
 /**
- * JCropState.
+ * Shared state of {@link info.magnolia.ui.vaadin.editor.JCrop} extension.
  */
 public class JCropState extends JavaScriptExtensionState {
     public double aspectRatio = -1d;

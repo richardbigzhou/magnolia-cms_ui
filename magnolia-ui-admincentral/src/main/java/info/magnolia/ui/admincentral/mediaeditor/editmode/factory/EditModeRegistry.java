@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * EditModeRegistry.
+ * The mapping between the {@link EditModeProviderActionDefinition}s and  {@link EditModeProvider}s.
  */
 public class EditModeRegistry implements Serializable {
 

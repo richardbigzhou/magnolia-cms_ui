@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.mediaeditor.action.feature;
 
 /**
- * Scalable.
+ * Implemented by all the UI-fields that want to provide support for scaling the content.
  */
 public interface Scalable {
 

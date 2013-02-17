@@ -38,7 +38,7 @@ import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
 /**
- * ScaleToFitAction.
+ * Forces an instance of {@link Scalable} to scale to fit the available space.
  */
 public class ScaleToFitAction extends ActionBase<ScaleToFitActionDefinition> {
 

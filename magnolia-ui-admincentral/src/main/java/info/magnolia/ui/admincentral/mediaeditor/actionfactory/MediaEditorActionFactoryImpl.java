@@ -45,7 +45,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * MediaEditorActionFactoryImpl.
+ * Implementation of {@link MediaEditorActionFactory}.
  */
 @Singleton
 public class MediaEditorActionFactoryImpl extends AbstractActionFactory<ActionDefinition, Action> implements 

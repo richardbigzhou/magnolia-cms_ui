@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.mediaeditor.editmode.field;
 import com.vaadin.ui.Field;
 
 /**
- * MediaField.
+ * Base interface for media editor fields.  
  */
 public interface MediaField extends Field<byte[]> {
     

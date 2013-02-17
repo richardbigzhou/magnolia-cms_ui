@@ -43,7 +43,7 @@ import com.jhlabs.image.FlipFilter;
 import com.vaadin.data.Property;
 
 /**
- * FlipField.
+ * Provides the functionality for image flip.
  */
 public class FlipField extends ViewImageField {
 

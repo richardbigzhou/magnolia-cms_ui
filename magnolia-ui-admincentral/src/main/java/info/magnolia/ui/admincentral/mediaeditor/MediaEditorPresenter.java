@@ -38,7 +38,7 @@ import info.magnolia.ui.framework.view.View;
 import java.io.InputStream;
 
 /**
- * MediaEditor.
+ * Media editor presenter.
  */
 public interface MediaEditorPresenter {
 

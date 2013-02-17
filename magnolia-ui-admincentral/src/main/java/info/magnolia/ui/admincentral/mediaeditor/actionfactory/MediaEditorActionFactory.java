@@ -38,7 +38,9 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionFactory;
 
 /**
- * MediaEditorActionFactory.
+ * Used by {@link info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter} in order to either 
+ * switch an edit mode (in case of {@link info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition}) 
+ * or to perform an action on the UI (in case of {@link info.magnolia.ui.model.mediaeditor.features.MediaEditorFeatureDefinition}).
  */
 public interface MediaEditorActionFactory extends ActionFactory<ActionDefinition, Action> {
     Action createAction(final ActionDefinition actionDefinition);

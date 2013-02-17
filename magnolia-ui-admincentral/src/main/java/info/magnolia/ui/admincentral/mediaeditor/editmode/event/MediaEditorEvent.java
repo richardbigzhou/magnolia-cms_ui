@@ -37,12 +37,13 @@ import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
 
 /**
- * MediaEditorEvent.
+ * Fired by the UI-fields, instructs the {@link info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenter} 
+ * to manage transaction (rollback, commit, etc). 
  */
 public class MediaEditorEvent implements Event<MediaEditorEvent.Handler> {
 
     /**
-     * EventType.
+     * Type of possible action to be performed in a handler of event.
      */
     public static enum EventType {
       APPLY,

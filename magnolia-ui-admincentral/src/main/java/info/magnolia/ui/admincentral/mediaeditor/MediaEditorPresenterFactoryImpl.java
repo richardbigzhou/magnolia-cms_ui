@@ -63,7 +63,7 @@ import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 
 /**
- * MediaEditorPresenterFactoryImpl.
+ * Implementation of {@link MediaEditorActionFactory}.
  */
 @Singleton
 public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFactory {

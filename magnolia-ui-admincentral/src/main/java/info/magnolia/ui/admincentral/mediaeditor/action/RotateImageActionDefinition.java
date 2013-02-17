@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.mediaeditor.action;
 import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
 
 /**
- * RotateActionDefinition.
+ * Definition paired with {@link info.magnolia.ui.admincentral.mediaeditor.editmode.provider.RotateImageProvider}.
  */
 public class RotateImageActionDefinition implements EditModeProviderActionDefinition {
 

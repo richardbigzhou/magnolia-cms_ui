@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.mediaeditor.action;
 import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
 
 /**
- * FlipActionDefinition.
+ * Definition paired with {@link info.magnolia.ui.admincentral.mediaeditor.editmode.provider.FlipImageProvider}.
  */
 public class FlipImageActionDefinition implements EditModeProviderActionDefinition {
 

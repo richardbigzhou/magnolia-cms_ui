@@ -46,7 +46,7 @@ import com.vaadin.ui.Image;
 import com.vaadin.util.ReflectTools;
 
 /**
- * ViewField.
+ * Provides the functionality for simple image view.
  */
 public class ViewImageField extends ImageMediaField {
     

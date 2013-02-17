@@ -62,7 +62,7 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.TransactionalPropertyWrapper;
 
 /**
- * MediaEditorPresenterImpl.
+ * Implementation of {@link MediaEditorPresenter}.
  */
 public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEditorEvent.Handler {
 

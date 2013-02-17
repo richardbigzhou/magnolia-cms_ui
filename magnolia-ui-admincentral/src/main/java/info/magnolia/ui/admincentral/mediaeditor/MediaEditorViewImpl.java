@@ -42,7 +42,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 
 /**
- * MediaEditorViewImpl.
+ * Skeleton implementation of the media editor UI. Contains an actionbar and a dialog laid out horizontally.
  */
 public class MediaEditorViewImpl extends CustomComponent implements MediaEditorView {
     

@@ -41,7 +41,7 @@ import java.util.List;
 import com.vaadin.ui.Component;
 
 /**
- * EditMode.
+ * Provides UI and logic for some kind of image editing.
  */
 public interface EditModeProvider {
    

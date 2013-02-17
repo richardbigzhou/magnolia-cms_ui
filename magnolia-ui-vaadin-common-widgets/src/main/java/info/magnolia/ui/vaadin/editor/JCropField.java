@@ -47,7 +47,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 
 /**
- * JCropField.
+ * Field that wraps A {@link CroppableImage}, manages the {@link SelectionArea} as a value.
  */
 public class JCropField extends CustomField<SelectionArea> {
 

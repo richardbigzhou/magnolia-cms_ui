@@ -46,7 +46,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Image;
 
 /**
- * RotationField.
+ * Provides the functionality for image rotation.
  */
 public class RotationField extends ImageMediaField {
 

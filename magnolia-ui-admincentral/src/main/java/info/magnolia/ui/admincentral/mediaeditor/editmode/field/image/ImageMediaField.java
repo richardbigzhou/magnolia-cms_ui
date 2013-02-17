@@ -60,7 +60,7 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * ImageField.
+ * Base class for image-editing fields.
  */
 public abstract class ImageMediaField extends CustomField<byte[]> implements MediaField, Scalable {
 

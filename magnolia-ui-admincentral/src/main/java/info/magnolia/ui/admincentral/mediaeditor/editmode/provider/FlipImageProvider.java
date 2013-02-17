@@ -52,7 +52,7 @@ import com.vaadin.ui.Component;
 
 
 /**
- * FlipImageProvider.
+ * Provides UI and necessary logic for image flip operation.
  */
 public class FlipImageProvider implements EditModeProvider {
 

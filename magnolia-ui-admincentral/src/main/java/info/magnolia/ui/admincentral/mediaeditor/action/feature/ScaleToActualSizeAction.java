@@ -38,7 +38,7 @@ import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
 /**
- * ScaleToActualSizeAction.
+ * Forces an instance of {@link Scalable} to scale to its natural size.
  */
 public class ScaleToActualSizeAction extends ActionBase<ScaleToActualSizeActionDefinition> {
 

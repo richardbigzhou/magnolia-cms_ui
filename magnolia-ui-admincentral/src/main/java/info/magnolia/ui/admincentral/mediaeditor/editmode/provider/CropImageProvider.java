@@ -50,7 +50,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 
 /**
- * CropModeBuilder.
+ * Provides UI and necessary logic for crop operation.
  */
 public class CropImageProvider implements EditModeProvider {
 
