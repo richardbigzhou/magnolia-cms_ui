@@ -316,12 +316,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             return;
         }
 
-        currentAppInstanceController = nextAppContext;
-        nextAppContext = doStartIfNotAlreadyRunning(nextAppContext, newLocation);
-
         if (currentAppInstanceController != nextAppContext) {
             appHistory.addFirst(nextAppContext);
         }
+        currentAppInstanceController = nextAppContext;
+        nextAppContext = doStartIfNotAlreadyRunning(nextAppContext, newLocation);
+
 
         viewPort.setView(nextAppContext.getApp().getView());
         // focus on locationChanged?
