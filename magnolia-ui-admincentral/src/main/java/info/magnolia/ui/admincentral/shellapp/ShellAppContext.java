@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.admincentral.shellapp;
 
 import info.magnolia.ui.framework.location.Location;
 

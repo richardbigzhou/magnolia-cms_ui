@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.app.simple.DefaultLocationHistoryMapper;
-import info.magnolia.ui.admincentral.app.simple.ShellAppController;
+import info.magnolia.ui.admincentral.shellapp.ShellAppController;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherShellApp;
 import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesShellApp;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseShellApp;

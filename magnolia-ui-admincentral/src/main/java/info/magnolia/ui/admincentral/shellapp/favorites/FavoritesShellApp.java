@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.framework.app.ShellApp;
-import info.magnolia.ui.framework.app.ShellAppContext;
+import info.magnolia.ui.admincentral.shellapp.ShellApp;
+import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.vaadin.view.View;
 

@@ -31,12 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.admincentral.shellapp;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.ShellImpl;
-import info.magnolia.ui.framework.app.ShellApp;
-import info.magnolia.ui.framework.app.ShellAppContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.location.DefaultLocation;

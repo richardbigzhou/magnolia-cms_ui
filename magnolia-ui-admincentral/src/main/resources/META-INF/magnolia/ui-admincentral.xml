@@ -162,8 +162,8 @@
       <implementation>info.magnolia.ui.admincentral.app.simple.AppFrameView</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.app.simple.ShellAppController</type>
-      <implementation>info.magnolia.ui.admincentral.app.simple.ShellAppController</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.ShellAppController</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.ShellAppController</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherView</type>
