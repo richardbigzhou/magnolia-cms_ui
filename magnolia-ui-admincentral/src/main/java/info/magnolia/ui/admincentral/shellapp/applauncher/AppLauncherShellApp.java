@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.ShellImpl;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
@@ -82,7 +82,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
         this.shell = shell;
         this.appController = appController;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
-        ((MagnoliaShell) shell).registerShellApp(ShellAppType.APPLAUNCHER, view.asVaadinComponent());
+        ((ShellImpl) shell).registerShellApp(ShellAppType.APPLAUNCHER, view.asVaadinComponent());
         // Init view
         initView(appLauncherLayoutManager.getLayoutForCurrentUser());
         /**

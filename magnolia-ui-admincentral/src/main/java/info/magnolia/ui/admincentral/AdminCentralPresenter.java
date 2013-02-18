@@ -52,18 +52,18 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Presenter meant to bootstrap the MagnoliaShell.
+ * Presenter which starts up the components that make up Admincentral.
  */
 public class AdmincentralPresenter {
 
-    private final MagnoliaShell shell;
+    private final ShellImpl shell;
 
     @Inject
-    public AdmincentralPresenter(final MagnoliaShell shell, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
+    public AdmincentralPresenter(final ShellImpl shell, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
         this.shell = shell;
 
-        shellAppController.setViewPort(this.shell.getShellAppViewport());
-        appController.setViewPort(shell.getAppViewport());
+        shellAppController.setViewport(this.shell.getShellAppViewport());
+        appController.setViewport(shell.getAppViewport());
 
         DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLauncherLayoutManager);
         LocationHistoryHandler locationHistoryHandler = new LocationHistoryHandler(locationHistoryMapper, shell);

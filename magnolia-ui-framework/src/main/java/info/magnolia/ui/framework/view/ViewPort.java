@@ -38,7 +38,7 @@ package info.magnolia.ui.framework.view;
  *
  * @see View
  */
-public interface ViewPort {
+public interface Viewport {
 
     /**
      * Set the only component of the receiver, replacing the previous view if there was one.

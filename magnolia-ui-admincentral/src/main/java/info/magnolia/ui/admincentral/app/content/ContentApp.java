@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.ShellImpl;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenter;
@@ -71,7 +71,7 @@ public class ContentApp extends BaseApp {
 
     public ChooseDialogPresenter<Item> openChooseDialog(String defaultPath) {
         final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogFactory.createWorkbenchChooseDialog(defaultPath);
-        ((MagnoliaShell) shell).openDialog(workbenchChooseDialogPresenter);
+        ((ShellImpl) shell).openDialog(workbenchChooseDialogPresenter);
         return workbenchChooseDialogPresenter;
     }
 

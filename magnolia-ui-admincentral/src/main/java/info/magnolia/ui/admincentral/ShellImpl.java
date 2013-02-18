@@ -76,7 +76,7 @@ import org.apache.commons.lang.StringUtils;
  * Admin shell.
  */
 @Singleton
-public class MagnoliaShell implements Shell, MessageEventHandler {
+public class ShellImpl implements Shell, MessageEventHandler {
 
     private final EventBus admincentralEventBus;
 
@@ -91,7 +91,7 @@ public class MagnoliaShell implements Shell, MessageEventHandler {
     private final EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
 
     @Inject
-    public MagnoliaShell(@Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider, final AppController appController, final MessagesManager messagesManager) {
+    public ShellImpl(@Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider, final AppController appController, final MessagesManager messagesManager) {
         super();
         this.messagesManager = messagesManager;
         this.admincentralEventBus = admincentralEventBus;
@@ -127,27 +127,27 @@ public class MagnoliaShell implements Shell, MessageEventHandler {
 
             @Override
             public void stopCurrentShellApp() {
-                MagnoliaShell.this.stopCurrentShellApp();
+                ShellImpl.this.stopCurrentShellApp();
             }
 
             @Override
             public void stopCurrentApp() {
-                MagnoliaShell.this.stopCurrentApp();
+                ShellImpl.this.stopCurrentApp();
             }
 
             @Override
             public void removeMessage(String messageId) {
-                MagnoliaShell.this.removeMessage(messageId);
+                ShellImpl.this.removeMessage(messageId);
             }
 
             @Override
             public void goToApp(Fragment fragment) {
-                MagnoliaShell.this.goToApp(fragment);
+                ShellImpl.this.goToApp(fragment);
             }
 
             @Override
             public void goToShellApp(Fragment fragment) {
-                MagnoliaShell.this.goToShellApp(fragment);
+                ShellImpl.this.goToShellApp(fragment);
             }
         });
     }
@@ -331,14 +331,17 @@ public class MagnoliaShell implements Shell, MessageEventHandler {
         magnoliaShellBase.hideAllMessages();
     }
 
+    @Override
     public void showInfo(Message message) {
         magnoliaShellBase.showInfo(message.getId(), message.getSubject(), message.getMessage());
     }
 
+    @Override
     public void showError(Message message) {
         magnoliaShellBase.showError(message.getId(), message.getSubject(), message.getMessage());
     }
 
+    @Override
     public void showWarning(Message message) {
         magnoliaShellBase.showWarning(message.getId(), message.getSubject(), message.getMessage());
     }

@@ -44,7 +44,7 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.ShellImpl;
 import info.magnolia.ui.admincentral.app.simple.AppControllerImplTest.AppEventCollector;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
@@ -222,7 +222,7 @@ public class AppEventTest {
 
         components.registerInstance(ModuleRegistry.class, moduleRegistry);
         components.registerInstance(AppDescriptorRegistry.class, appRegistry);
-        components.registerInstance(Shell.class, mock(MagnoliaShell.class));
+        components.registerInstance(Shell.class, mock(ShellImpl.class));
         components.registerInstance(MessagesManager.class, mock(MessagesManagerImpl.class));
 
 

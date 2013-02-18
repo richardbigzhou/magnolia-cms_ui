@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.ShellImpl;
 import info.magnolia.ui.framework.app.ShellApp;
 import info.magnolia.ui.framework.app.ShellAppContext;
 import info.magnolia.ui.framework.location.Location;
@@ -50,12 +50,12 @@ public class FavoritesShellApp implements ShellApp {
 
     private FavoritesView favoritesView;
 
-    private MagnoliaShell shell;
+    private ShellImpl shell;
 
     @Inject
     public FavoritesShellApp(FavoritesView favoritesView, Shell shell) {
         this.favoritesView = favoritesView;
-        this.shell = (MagnoliaShell) shell;
+        this.shell = (ShellImpl) shell;
         this.shell.registerShellApp(ShellAppType.FAVORITE, favoritesView.asVaadinComponent());
     }
 
