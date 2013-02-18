@@ -205,12 +205,14 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Override
     public void focusCurrentApp() {
-        doFocus(currentAppInstanceController);
+        if (currentAppInstanceController != null) {
+            doFocus(currentAppInstanceController);
+        }
     }
 
     @Override
     public App getCurrentApp() {
-        return currentAppInstanceController.getApp();
+        return currentAppInstanceController == null ? null : currentAppInstanceController.getApp();
     }
 
     /**
@@ -297,8 +299,11 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             return;
         }
 
-        AppDescriptor nextApp = getAppForLocation(newLocation);
+        if(newLocation.equals(getCurrentAppLocation())) {
+            return;
+        }
 
+        AppDescriptor nextApp = getAppForLocation(newLocation);
         if (nextApp == null) {
             return;
         }
@@ -318,14 +323,14 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         if (currentAppInstanceController != nextAppContext) {
             appHistory.addFirst(nextAppContext);
+            currentAppInstanceController = nextAppContext;
         }
-        currentAppInstanceController = nextAppContext;
+
         nextAppContext = doStartIfNotAlreadyRunning(nextAppContext, newLocation);
-
-
         viewPort.setView(nextAppContext.getApp().getView());
+
         // focus on locationChanged?
-        // focusCurrentApp();
+        //focusCurrentApp();
     }
 
     /**
