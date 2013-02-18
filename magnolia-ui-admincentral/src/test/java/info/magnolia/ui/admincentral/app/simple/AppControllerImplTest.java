@@ -64,7 +64,7 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.message.MessagesManagerImpl;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.AppView;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.framework.view.Viewport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,7 +110,7 @@ public class AppControllerImplTest {
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
         appController = (AppControllerImpl) componentProvider.getComponent(AppController.class);
-        appController.setViewPort(mock(ViewPort.class));
+        appController.setViewport(mock(Viewport.class));
     }
 
     @After

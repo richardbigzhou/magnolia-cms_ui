@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.framework.view.Viewport;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ViewportState;
 import info.magnolia.ui.vaadin.magnoliashell.DeckLayout;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
@@ -45,7 +45,7 @@ import com.vaadin.ui.Component;
  * The server side implementation of the shell viewport. MagnoliaShell is capable of holding of such for the shell apps,
  * one - for the regular apps.
  */
-public class ShellViewport extends DeckLayout implements ViewPort {
+public class ShellViewport extends DeckLayout implements Viewport {
 
     private MagnoliaShellBase parentShell;
 

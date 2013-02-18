@@ -47,7 +47,7 @@ import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.framework.view.Viewport;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -68,7 +68,7 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
 
     private final Shell shell;
 
-    private ViewPort viewPort;
+    private Viewport viewport;
 
     @Inject
     public ShellAppController(ComponentProvider componentProvider, Shell shell, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus admincentralEventBus) {
@@ -90,8 +90,8 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
         contexts.put(name, appContext);
     }
 
-    public void setViewPort(ViewPort viewPort) {
-        this.viewPort = viewPort;
+    public void setViewport(Viewport viewport) {
+        this.viewport = viewport;
     }
 
     @Override
@@ -103,18 +103,18 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
 
         Location newLocation = event.getNewLocation();
         if (!newLocation.getAppType().equals(Location.LOCATION_TYPE_SHELL_APP)) {
-            viewPort.setView(null);
+            viewport.setView(null);
             return;
         }
 
         ShellAppContextImpl nextContext = contexts.get(newLocation.getAppId());
         if (nextContext == null) {
-            viewPort.setView(null);
+            viewport.setView(null);
             return;
         }
 
         nextContext.onLocationUpdate(newLocation);
-        viewPort.setView(nextContext.getView());
+        viewport.setView(nextContext.getView());
     }
 
     public Location getCurrentLocation(String name) {
