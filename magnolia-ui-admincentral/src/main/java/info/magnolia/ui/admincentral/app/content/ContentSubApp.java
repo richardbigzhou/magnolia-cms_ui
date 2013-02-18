@@ -84,6 +84,7 @@ import javax.inject.Named;
 public class ContentSubApp extends BaseSubApp {
 
     private final ContentWorkbenchPresenter workbench;
+    private final EventBus subAppEventBus;
 
     public ContentSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, final ContentWorkbenchPresenter workbench, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
 
@@ -92,7 +93,7 @@ public class ContentSubApp extends BaseSubApp {
             throw new IllegalArgumentException("Constructor does not allow for null args. Found AppContext = " + subAppContext + ", WorkbenchSubAppView = " + view + ", ContentWorkbenchPresenter = " + workbench + ", EventBus = " + subAppEventBus);
         }
         this.workbench = workbench;
-        registerSubAppEventsHandlers(subAppEventBus, this);
+        this.subAppEventBus = subAppEventBus;
     }
 
     /**
@@ -111,6 +112,8 @@ public class ContentSubApp extends BaseSubApp {
         super.start(l);
         getView().setWorkbenchView(workbench.start());
         restoreWorkbench(l);
+        registerSubAppEventsHandlers(subAppEventBus, this);
+
         return getView();
     }
 
@@ -198,7 +201,6 @@ public class ContentSubApp extends BaseSubApp {
             public void onItemSelected(ItemSelectedEvent event) {
                 ContentLocation location = getCurrentLocation();
                 location.updateNodePath(event.getPath());
-                currentLocation = location;
                 getAppContext().setSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);
             }
@@ -214,8 +216,7 @@ public class ContentSubApp extends BaseSubApp {
                     location.updateQuery("");
                 }
                 location.updateViewType(event.getViewType());
-                currentLocation = location;
-                getAppContext().setSubAppLocation(getSubAppContext(), currentLocation);
+                getAppContext().setSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);
             }
         });
@@ -226,8 +227,7 @@ public class ContentSubApp extends BaseSubApp {
             public void onSearch(SearchEvent event) {
                 ContentLocation location = getCurrentLocation();
                 location.updateQuery(event.getSearchExpression());
-                currentLocation = location;
-                getAppContext().setSubAppLocation(getSubAppContext(), currentLocation);
+                getAppContext().setSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);
             }
         });
