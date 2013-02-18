@@ -73,6 +73,6 @@ public class AdmincentralPresenter {
     }
 
     public View start() {
-        return shell.getMagnoliaShellBase();
+        return shell.getMagnoliaShell();
     }
 }
