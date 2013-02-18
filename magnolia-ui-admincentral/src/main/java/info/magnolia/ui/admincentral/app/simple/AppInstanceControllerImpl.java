@@ -236,8 +236,10 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         // launch running subapp
         SubAppContext subAppContext = getSupportingSubAppContext(location);
         if (subAppContext != null) {
-            subAppContext.setLocation(location);
-            subAppContext.getSubApp().locationChanged(location);
+            if (!location.equals(subAppContext.getLocation())) {
+                subAppContext.setLocation(location);
+                subAppContext.getSubApp().locationChanged(location);
+            }
 
             if (subAppContext.getInstanceId() != app.getView().getActiveSubAppView()) {
                 app.getView().setActiveSubAppView(subAppContext.getInstanceId());
