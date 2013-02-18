@@ -316,6 +316,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             return;
         }
 
+        currentAppInstanceController = nextAppContext;
         nextAppContext = doStartIfNotAlreadyRunning(nextAppContext, newLocation);
 
         if (currentAppInstanceController != nextAppContext) {
@@ -323,7 +324,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         viewPort.setView(nextAppContext.getApp().getView());
-        currentAppInstanceController = nextAppContext;
         // focus on locationChanged?
         // focusCurrentApp();
     }
