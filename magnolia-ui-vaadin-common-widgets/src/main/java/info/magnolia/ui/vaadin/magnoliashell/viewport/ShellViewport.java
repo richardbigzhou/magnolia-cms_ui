@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
+import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.view.Viewport;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ViewportState;
 import info.magnolia.ui.vaadin.magnoliashell.DeckLayout;
-import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 
 import com.vaadin.ui.Component;
 
@@ -47,11 +47,11 @@ import com.vaadin.ui.Component;
  */
 public class ShellViewport extends DeckLayout implements Viewport {
 
-    private MagnoliaShellBase parentShell;
+    private MagnoliaShell parentShell;
 
     private View view;
 
-    public ShellViewport(MagnoliaShellBase shell) {
+    public ShellViewport(MagnoliaShell shell) {
         super();
         display(null);
         this.parentShell = shell;

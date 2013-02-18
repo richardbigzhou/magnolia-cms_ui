@@ -61,7 +61,7 @@ import com.vaadin.ui.UI;
  * Server side implementation of the MagnoliaShell container.
  */
 @JavaScript({"jquery-1.7.2.min.js", "jquery.transition.js"})
-public class MagnoliaShellBase extends AbstractComponent implements HasComponents, View {
+public class MagnoliaShell extends AbstractComponent implements HasComponents, View {
 
     /**
      * Listener for events.
@@ -85,7 +85,7 @@ public class MagnoliaShellBase extends AbstractComponent implements HasComponent
 
     // private final ICEPush pusher = new ICEPush();
 
-    public MagnoliaShellBase() {
+    public MagnoliaShell() {
         setImmediate(true);
         setSizeFull();
         registerRpc(new MagnoliaShellRpcDelegate(this));
@@ -105,9 +105,9 @@ public class MagnoliaShellBase extends AbstractComponent implements HasComponent
     }
 
     private void initializeViewports() {
-        final ShellAppsViewport shellAppsViewport = new ShellAppsViewport(MagnoliaShellBase.this);
-        final AppsViewport appsViewport = new AppsViewport(MagnoliaShellBase.this);
-        final DialogViewport dialogViewport = new DialogViewport(MagnoliaShellBase.this);
+        final ShellAppsViewport shellAppsViewport = new ShellAppsViewport(MagnoliaShell.this);
+        final AppsViewport appsViewport = new AppsViewport(MagnoliaShell.this);
+        final DialogViewport dialogViewport = new DialogViewport(MagnoliaShell.this);
 
         getState().viewports.put(ViewportType.SHELL_APP, shellAppsViewport);
         getState().viewports.put(ViewportType.APP, appsViewport);
