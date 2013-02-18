@@ -34,9 +34,13 @@
 package info.magnolia.ui.admincentral.mediaeditor;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorEvent;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent.CompletionType;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent.Handler;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorInternalEvent;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider;
@@ -51,8 +55,10 @@ import info.magnolia.ui.model.mediaeditor.features.MediaEditorFeatureDefinition;
 import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -64,7 +70,7 @@ import com.vaadin.data.util.TransactionalPropertyWrapper;
 /**
  * Implementation of {@link MediaEditorPresenter}.
  */
-public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEditorEvent.Handler {
+public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEditorInternalEvent.Handler {
 
     private Logger log = Logger.getLogger(getClass());
     
@@ -94,6 +100,8 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEdit
     private ObjectProperty<byte[]> dataSource;
     
     private Transactional<byte[]> transactionHandler;
+
+    private EventBus eventBus;
     
     public MediaEditorPresenterImpl(
             MediaEditorDefinition definition, 
@@ -103,12 +111,13 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEdit
             MediaEditorActionbarPresenter actionbarPresenter, 
             ActionFactory<ActionDefinition, Action> actionFactory) {
         eventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarEventHandler());
+        this.eventBus = eventBus;
         this.view = view;
         this.actionFactory = actionFactory;
         this.editModeBuilderFactory = modeBuilderFactory;
         this.actionbarPresenter = actionbarPresenter;
         this.definition = definition;
-        eventBus.addHandler(MediaEditorEvent.class, this);
+        eventBus.addHandler(MediaEditorInternalEvent.class, this);
     }
 
     @Override
@@ -148,24 +157,37 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEdit
     }
 
     @Override
-    public void onSubmit(MediaEditorEvent e) {
+    public void onSubmit(MediaEditorInternalEvent event) {
         transactionHandler.commit();
+        try {
+            OutputStream stream = new ByteArrayOutputStream();
+            stream.write(transactionHandler.getValue());
+            eventBus.fireEvent(new MediaEditorCompletedEvent(CompletionType.SUBMIT, stream));
+        } catch (IOException e) {
+            log.error("Error occured while producing the output stream: " + e.getMessage(), e);
+        }
     }
 
     @Override
-    public void onCancelAll(MediaEditorEvent e) {
+    public void onCancelAll(MediaEditorInternalEvent event) {
         transactionHandler.rollback();
         transactionHandler.startTransaction();
+        try {
+            OutputStream stream = new ByteArrayOutputStream();
+            stream.write(transactionHandler.getValue());
+            eventBus.fireEvent(new MediaEditorCompletedEvent(CompletionType.CANCEL, stream));
+        } catch (IOException e) {
+            log.error("Error occured while producing the output stream: " + e.getMessage(), e);
+        }
+    }
+    
+    @Override
+    public void onCancelLast(MediaEditorInternalEvent e) {
         switchToDefaultMode();
     }
     
     @Override
-    public void onCancelLast(MediaEditorEvent e) {
-        switchToDefaultMode();
-    }
-    
-    @Override
-    public void onApply(MediaEditorEvent e) {
+    public void onApply(MediaEditorInternalEvent e) {
         switchToDefaultMode();
     }
     
@@ -198,5 +220,10 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEdit
 
     private void switchToDefaultMode() {
         switchEditMode(definition.getDefaultEditModeProvider());
+    }
+
+    @Override
+    public HandlerRegistration addCompletionHandler(Handler handler) {
+        return eventBus.addHandler(MediaEditorCompletedEvent.class, handler);
     }
 }

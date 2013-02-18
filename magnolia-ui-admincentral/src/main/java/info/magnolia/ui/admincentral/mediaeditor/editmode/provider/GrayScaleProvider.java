@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.mediaeditor.editmode.provider;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorEvent;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorEvent.EventType;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorInternalEvent;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorInternalEvent.EventType;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.image.GrayScaleField;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
@@ -77,7 +77,7 @@ public class GrayScaleProvider implements EditModeProvider {
             @Override
             public void onActionExecuted(String actionName) {
                 field.revertChanges();
-                eventBus.fireEvent(new MediaEditorEvent(EventType.CANCEL_LAST));
+                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.CANCEL_LAST));
             }
         }));
         
@@ -85,7 +85,7 @@ public class GrayScaleProvider implements EditModeProvider {
             @Override
             public void onActionExecuted(String actionName) {
                 field.applyChanges();
-                eventBus.fireEvent(new MediaEditorEvent(EventType.APPLY));
+                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.APPLY));
             }
         }));
         return result;

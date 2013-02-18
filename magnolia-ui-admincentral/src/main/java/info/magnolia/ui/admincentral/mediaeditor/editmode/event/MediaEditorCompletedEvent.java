@@ -33,65 +33,60 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor.editmode.event;
 
+import java.io.OutputStream;
+
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
 
 /**
- * Fired by the UI-fields, instructs the {@link info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenter} 
- * to manage transaction (rollback, commit, etc). 
+ * MediaEditorCompletedEvent.
  */
-public class MediaEditorEvent implements Event<MediaEditorEvent.Handler> {
+public class MediaEditorCompletedEvent implements Event<MediaEditorCompletedEvent.Handler>{
 
     /**
-     * Type of possible action to be performed in a handler of event.
+     * CompletionType.
      */
-    public static enum EventType {
-      APPLY,
-      SUBMIT,
-      CANCEL_LAST,
-      CANCEL_ALL;
+    public enum CompletionType {  
+        SUBMIT,
+        CANCEL;
     };
     
-    /**
+    private CompletionType type;
+    
+    private OutputStream stream;
+    
+    public MediaEditorCompletedEvent(CompletionType type, OutputStream stream) {
+        this.stream = stream;
+        this.type = type;
+    }
+    
+    public OutputStream getStream() {
+        return stream;
+    }
+    
+    public CompletionType getType() {
+        return type;
+    }
+    
+    /** 
      * Handler.
      */
     public interface Handler extends EventHandler {
         
-        void onSubmit(MediaEditorEvent e);
+        void onSubmit(MediaEditorCompletedEvent event);
         
-        void onCancelLast(MediaEditorEvent e);
+        void onCancel(MediaEditorCompletedEvent event);
         
-        void onApply(MediaEditorEvent e);
-        
-        void onCancelAll(MediaEditorEvent e);
     }
 
-    private EventType type;
-    
-    public MediaEditorEvent(EventType type) {
-        this.type = type;
-    }
-    
-    public EventType getType() {
-        return type;
-    }
-    
     @Override
     public void dispatch(Handler handler) {
         switch (type) {
         case SUBMIT:
             handler.onSubmit(this);
             break;
-        case CANCEL_LAST:
-            handler.onCancelLast(this);
-            break;
-        case APPLY:
-            handler.onApply(this);
-            break;
-        case CANCEL_ALL:
-            handler.onCancelAll(this);
-            break;
-        default:
+        case CANCEL:
+            handler.onCancel(this);
             break;
         }
     }

@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor;
 
+import info.magnolia.event.HandlerRegistration;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent;
 import info.magnolia.ui.framework.view.View;
 
 import java.io.InputStream;
@@ -43,4 +45,7 @@ import java.io.InputStream;
 public interface MediaEditorPresenter {
 
     View start(InputStream stream);
+    
+    HandlerRegistration addCompletionHandler(MediaEditorCompletedEvent.Handler handler);
+    
 }

@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.mediaeditor.editmode.provider;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorEvent;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorEvent.EventType;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorInternalEvent;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorInternalEvent.EventType;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.image.ViewImageField;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.image.ViewImageField.ImageResizeEvent;
@@ -84,14 +84,14 @@ public class ViewImageProvider implements EditModeProvider {
         result.add(new ActionContext("cancel", "Cancel", new EditorLikeActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
-                eventBus.fireEvent(new MediaEditorEvent(EventType.CANCEL_ALL));
+                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.CANCEL_ALL));
             }
         }));
         
         result.add(new ActionContext("save", "Save", new EditorLikeActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
-                eventBus.fireEvent(new MediaEditorEvent(EventType.SUBMIT));
+                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.SUBMIT));
             }
         }));
         return result;
