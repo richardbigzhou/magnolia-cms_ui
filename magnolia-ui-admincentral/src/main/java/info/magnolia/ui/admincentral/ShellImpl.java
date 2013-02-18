@@ -54,7 +54,7 @@ import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.Viewport;
+import info.magnolia.ui.vaadin.view.Viewport;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;

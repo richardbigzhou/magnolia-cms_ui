@@ -46,8 +46,8 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.framework.view.Viewport;
+import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.vaadin.view.Viewport;
 
 import java.util.HashMap;
 import java.util.Map;

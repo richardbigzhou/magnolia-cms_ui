@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.common.ComponentIterator;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellState;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc;

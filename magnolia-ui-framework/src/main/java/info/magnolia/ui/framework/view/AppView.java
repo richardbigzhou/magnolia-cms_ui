@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.framework.view;
 
+import info.magnolia.ui.vaadin.view.View;
+
 /**
  * AppView. Should we refer to the tabs as tab or subApp instance. Keep in mind that it is not the subAppId. There are multiple instances of the subapp.
  *

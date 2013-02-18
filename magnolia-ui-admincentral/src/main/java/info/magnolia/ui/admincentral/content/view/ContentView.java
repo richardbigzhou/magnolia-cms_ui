@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.content.view;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 
 import com.vaadin.data.Item;

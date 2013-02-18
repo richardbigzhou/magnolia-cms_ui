@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.view;
+package info.magnolia.ui.vaadin.view;
 
 import java.io.Serializable;
 

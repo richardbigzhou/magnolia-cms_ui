@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.app.simple;
 
 import info.magnolia.ui.framework.view.AppView;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.view;
+package info.magnolia.ui.vaadin.view;
 
 /**
  * Implemented by displays that can be given an {@link View} to show.

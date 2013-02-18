@@ -50,7 +50,7 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;

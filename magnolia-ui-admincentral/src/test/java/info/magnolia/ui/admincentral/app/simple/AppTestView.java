@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.view.View;
 
 /**
  * app test view interface.
