@@ -178,12 +178,8 @@
       <implementation>info.magnolia.ui.admincentral.shellapp.favorites.FavoritesViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.MagnoliaShellView</type>
-      <implementation>info.magnolia.ui.admincentral.MagnoliaShellViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.MagnoliaShellPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.MagnoliaShellPresenter</implementation>
+      <type>info.magnolia.ui.admincentral.AdmincentralPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.AdmincentralPresenter</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesView</type>
@@ -395,7 +391,7 @@
       <params>
         <param>
           <name>UI</name>
-          <value>info.magnolia.ui.admincentral.AdminCentralUI</value>
+          <value>info.magnolia.ui.admincentral.AdmincentralUI</value>
         </param>
         <param>
           <name>widgetset</name>

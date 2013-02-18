@@ -33,10 +33,7 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell;
 
-import info.magnolia.event.EventHandlerCollection;
-import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.shell.FragmentChangedEvent;
-import info.magnolia.ui.framework.shell.FragmentChangedHandler;
+import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.common.ComponentIterator;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellState;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc;
@@ -64,23 +61,48 @@ import com.vaadin.ui.UI;
  * Server side implementation of the MagnoliaShell container.
  */
 @JavaScript({"jquery-1.7.2.min.js", "jquery.transition.js"})
-public abstract class MagnoliaShellBase extends AbstractComponent implements HasComponents {
+public class MagnoliaShellBase extends AbstractComponent implements HasComponents, View {
 
-    private final EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
+    /**
+     * Listener for events.
+     */
+    public interface Listener {
+
+        void onFragmentChanged(String fragment);
+
+        void stopCurrentShellApp();
+
+        void stopCurrentApp();
+
+        void removeMessage(String messageId);
+
+        void goToApp(Fragment fragment);
+
+        void goToShellApp(Fragment fragment);
+    }
+
+    private Listener listener;
 
     // private final ICEPush pusher = new ICEPush();
 
     public MagnoliaShellBase() {
         setImmediate(true);
+        setSizeFull();
         registerRpc(new MagnoliaShellRpcDelegate(this));
         initializeViewports();
     }
 
-    public abstract void stopCurrentShellApp();
+    public void stopCurrentShellApp() {
+        listener.stopCurrentShellApp();
+    }
 
-    public abstract void stopCurrentApp();
+    public void stopCurrentApp() {
+        listener.stopCurrentApp();
+    }
 
-    public abstract void removeMessage(String messageId);
+    public void removeMessage(String messageId) {
+        listener.removeMessage(messageId);
+    }
 
     private void initializeViewports() {
         final ShellAppsViewport shellAppsViewport = new ShellAppsViewport(MagnoliaShellBase.this);
@@ -105,11 +127,11 @@ public abstract class MagnoliaShellBase extends AbstractComponent implements Has
     }
 
     public void goToApp(Fragment fragment) {
-        doNavigate(appViewport(), fragment);
+        listener.goToApp(fragment);
     }
 
     public void goToShellApp(Fragment fragment) {
-        doNavigate(shellAppViewport(), fragment);
+        listener.goToShellApp(fragment);
     }
 
     public void doNavigate(final ShellViewport viewport, Fragment fragment) {
@@ -118,23 +140,23 @@ public abstract class MagnoliaShellBase extends AbstractComponent implements Has
         notifyOnFragmentChanged(fragment.toFragment());
     }
 
-    public void showInfo(Message message) {
+    public void showInfo(String id, String subject, String message) {
         synchronized (UI.getCurrent()) {
-            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.INFO.name(), message.getSubject(), message.getMessage(), message.getId());
+            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.INFO.name(), subject, message, id);
             // pusher.push();
         }
     }
 
-    public void showError(Message message) {
+    public void showError(String id, String subject, String message) {
         synchronized (UI.getCurrent()) {
-            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.ERROR.name(), message.getSubject(), message.getMessage(), message.getId());
+            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.ERROR.name(), subject, message, id);
             // pusher.push();
         }
     }
 
-    public void showWarning(Message message) {
+    public void showWarning(String id, String subject, String message) {
         synchronized (UI.getCurrent()) {
-            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.WARNING.name(), message.getSubject(), message.getMessage(), message.getId());
+            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.WARNING.name(), subject, message, id);
             // pusher.push();
         }
     }
@@ -196,15 +218,11 @@ public abstract class MagnoliaShellBase extends AbstractComponent implements Has
     }
 
     private void notifyOnFragmentChanged(String fragment) {
-        handlers.dispatch(new FragmentChangedEvent(fragment));
+        listener.onFragmentChanged(fragment);
     }
 
-    public void addFragmentChangedHanlder(FragmentChangedHandler handler) {
-        handlers.add(handler);
-    }
-
-    public void removeFragmentChangedHanlder(FragmentChangedHandler handler) {
-        handlers.remove(handler);
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     /*
@@ -213,17 +231,17 @@ public abstract class MagnoliaShellBase extends AbstractComponent implements Has
      * }
      */
 
-    protected void doRegisterApps(List<String> appNames) {
+    public void doRegisterApps(List<String> appNames) {
         getState().registeredAppNames = appNames;
     }
 
-    protected void onAppStarted(String appName) {
+    public void onAppStarted(String appName) {
         if (!getState().runningAppNames.contains(appName)) {
             getState().runningAppNames.add(appName);
         }
     }
 
-    protected void onAppStopped(String appName) {
+    public void onAppStopped(String appName) {
         getState().runningAppNames.remove(appName);
     }
 
@@ -236,15 +254,20 @@ public abstract class MagnoliaShellBase extends AbstractComponent implements Has
         return new ComponentIterator<Connector>(getState(false).viewports.values().iterator());
     }
 
-    public ShellViewport appViewport() {
+    public ShellViewport getAppViewport() {
         return (ShellViewport) getState(false).viewports.get(ViewportType.APP);
     }
 
-    public ShellViewport shellAppViewport() {
+    public ShellViewport getShellAppViewport() {
         return (ShellViewport) getState(false).viewports.get(ViewportType.SHELL_APP);
     }
 
-    public ShellViewport dialogViewport() {
+    public ShellViewport getDialogViewport() {
         return (ShellViewport) getState(false).viewports.get(ViewportType.DIALOG);
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return this;
     }
 }

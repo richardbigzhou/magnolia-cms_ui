@@ -54,27 +54,25 @@ import javax.inject.Named;
 /**
  * Presenter meant to bootstrap the MagnoliaShell.
  */
-public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
+public class AdmincentralPresenter {
 
-    private final MagnoliaShellView view;
+    private final MagnoliaShell shell;
 
     @Inject
-    public MagnoliaShellPresenter(final MagnoliaShellView view, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
-        this.view = view;
-        this.view.setPresenter(this);
+    public AdmincentralPresenter(final MagnoliaShell shell, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
+        this.shell = shell;
 
-        MagnoliaShell shell = view.asVaadinComponent();
-        shellAppController.setViewPort(shell.getShellAppViewport());
+        shellAppController.setViewPort(this.shell.getShellAppViewport());
         appController.setViewPort(shell.getAppViewport());
 
         DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLauncherLayoutManager);
         LocationHistoryHandler locationHistoryHandler = new LocationHistoryHandler(locationHistoryMapper, shell);
         locationHistoryHandler.register(locationController, eventBus, new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, "applauncher", "", ""));
+
         messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), messageDispatcher);
     }
 
     public View start() {
-        view.asVaadinComponent().setSizeFull();
-        return view;
+        return shell.getMagnoliaShellBase();
     }
 }
