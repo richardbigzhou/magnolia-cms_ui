@@ -41,4 +41,8 @@ import info.magnolia.ui.framework.location.Location;
 public interface ShellAppContext {
 
     void setAppLocation(Location location);
+
+    void updateIndication(int incrementOrDecrement);
+
+    void setIndication(int indication);
 }

@@ -36,6 +36,9 @@ package info.magnolia.ui.admincentral;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.app.simple.DefaultLocationHistoryMapper;
 import info.magnolia.ui.admincentral.app.simple.ShellAppController;
+import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherShellApp;
+import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesShellApp;
+import info.magnolia.ui.admincentral.shellapp.pulse.PulseShellApp;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
@@ -63,6 +66,10 @@ public class AdmincentralPresenter {
         this.shell = shell;
 
         shellAppController.setViewport(this.shell.getShellAppViewport());
+        shellAppController.addShellApp("applauncher", AppLauncherShellApp.class);
+        shellAppController.addShellApp("pulse", PulseShellApp.class);
+        shellAppController.addShellApp("favorite", FavoritesShellApp.class);
+
         appController.setViewport(shell.getAppViewport());
 
         DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLauncherLayoutManager);

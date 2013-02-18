@@ -37,7 +37,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventHandlerCollection;
 import info.magnolia.event.HandlerRegistration;
-import info.magnolia.ui.admincentral.app.simple.ShellAppController;
 import info.magnolia.ui.admincentral.dialog.BaseDialogPresenter;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
@@ -66,7 +65,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import com.vaadin.ui.Component;
@@ -78,11 +76,17 @@ import org.apache.commons.lang.StringUtils;
 @Singleton
 public class ShellImpl implements Shell, MessageEventHandler {
 
+    /**
+     * Provides the current location of shell apps.
+     */
+    public interface ShellAppLocationProvider {
+
+        Location getShellAppLocation(String name);
+    }
+
     private final EventBus admincentralEventBus;
 
     private final AppController appController;
-
-    private final Provider<ShellAppController> shellAppControllerProvider;
 
     private final MessagesManager messagesManager;
 
@@ -90,13 +94,14 @@ public class ShellImpl implements Shell, MessageEventHandler {
 
     private final EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
 
+    private ShellAppLocationProvider shellAppLocationProvider;
+
     @Inject
-    public ShellImpl(@Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider, final AppController appController, final MessagesManager messagesManager) {
+    public ShellImpl(@Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus admincentralEventBus, final AppController appController, final MessagesManager messagesManager) {
         super();
         this.messagesManager = messagesManager;
         this.admincentralEventBus = admincentralEventBus;
         this.appController = appController;
-        this.shellAppControllerProvider = shellAppControllerProvider;
         this.admincentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
             @Override
@@ -150,6 +155,10 @@ public class ShellImpl implements Shell, MessageEventHandler {
                 ShellImpl.this.goToShellApp(fragment);
             }
         });
+    }
+
+    public void setShellAppLocationProvider(ShellAppLocationProvider shellAppLocationProvider) {
+        this.shellAppLocationProvider = shellAppLocationProvider;
     }
 
     private void stopCurrentApp() {
@@ -300,7 +309,7 @@ public class ShellImpl implements Shell, MessageEventHandler {
     private void restoreShellAppParameter(Fragment f) {
         String actualParam = f.getParameter();
         if (StringUtils.isEmpty(actualParam)) {
-            Location location = shellAppControllerProvider.get().getCurrentLocation(f.getAppId());
+            Location location = shellAppLocationProvider.getShellAppLocation(f.getAppId());
             if (location != null) {
                 f.setParameter(location.getParameter());
             }

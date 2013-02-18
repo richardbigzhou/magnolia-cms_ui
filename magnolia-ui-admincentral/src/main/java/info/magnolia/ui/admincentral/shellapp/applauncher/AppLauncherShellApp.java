@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.ui.admincentral.ShellImpl;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
@@ -51,7 +50,6 @@ import info.magnolia.event.SystemEventBusConfigurer;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.view.View;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -82,7 +80,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
         this.shell = shell;
         this.appController = appController;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
-        ((ShellImpl) shell).registerShellApp(ShellAppType.APPLAUNCHER, view.asVaadinComponent());
+
         // Init view
         initView(appLauncherLayoutManager.getLayoutForCurrentUser());
         /**

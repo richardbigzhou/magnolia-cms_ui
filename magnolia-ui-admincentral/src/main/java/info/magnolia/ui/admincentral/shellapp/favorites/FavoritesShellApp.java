@@ -33,13 +33,10 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.admincentral.ShellImpl;
 import info.magnolia.ui.framework.app.ShellApp;
 import info.magnolia.ui.framework.app.ShellAppContext;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.view.View;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import javax.inject.Inject;
 
@@ -50,13 +47,9 @@ public class FavoritesShellApp implements ShellApp {
 
     private FavoritesView favoritesView;
 
-    private ShellImpl shell;
-
     @Inject
-    public FavoritesShellApp(FavoritesView favoritesView, Shell shell) {
+    public FavoritesShellApp(FavoritesView favoritesView) {
         this.favoritesView = favoritesView;
-        this.shell = (ShellImpl) shell;
-        this.shell.registerShellApp(ShellAppType.FAVORITE, favoritesView.asVaadinComponent());
     }
 
     @Override

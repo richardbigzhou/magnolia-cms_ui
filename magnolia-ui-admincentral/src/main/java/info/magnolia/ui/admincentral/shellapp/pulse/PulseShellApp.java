@@ -39,7 +39,6 @@ import info.magnolia.ui.framework.app.ShellAppContext;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.vaadin.view.View;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +60,6 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
     public PulseShellApp(PulseView pulseView, ShellImpl shell) {
         this.pulseView = pulseView;
         this.shell = shell;
-        shell.registerShellApp(ShellAppType.PULSE, pulseView.asVaadinComponent());
     }
 
     @Override
