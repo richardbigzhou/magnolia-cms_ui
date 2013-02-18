@@ -52,8 +52,6 @@ public class ActionbarSectionWidget extends FlowPanel {
 
     public static final String TITLE_TAGNAME = "h3";
 
-    private final Element header = DOM.createElement("header");
-
     private final Element heading = DOM.createElement("h3");
 
     private final ActionbarSection data;
@@ -70,9 +68,8 @@ public class ActionbarSectionWidget extends FlowPanel {
     public ActionbarSectionWidget(ActionbarSection data) {
         this.data = data;
         setStyleName(CLASSNAME);
-        getElement().appendChild(header);
         heading.addClassName("v-actionbar-section-title");
-        header.appendChild(heading);
+        getElement().appendChild(heading);
         update();
     }
 

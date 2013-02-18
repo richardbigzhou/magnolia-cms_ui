@@ -99,7 +99,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     }
 
     @Test
-    public void propertyValueChangeTest_SaveInfo_True() throws Exception {
+    public void testPropertyValueChangeWithSaveInfoTrue() throws Exception {
         // GIVEN
         baseNode.setProperty(propertyName, "value");
         baseItem = new JcrNodeAdapter(baseNode);
@@ -122,7 +122,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
     }
 
     @Test
-    public void propertyType_Double() throws Exception {
+    public void testConversionOfPropertyTypeWithDouble() throws Exception {
         // GIVEN
         // Set property Type
         definition.setType("Double");

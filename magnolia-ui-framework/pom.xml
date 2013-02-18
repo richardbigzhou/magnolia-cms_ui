@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-framework</artifactId>
   <name>magnolia-ui-framework</name>
   <properties>
-    <cloverCoverageThreshold>72</cloverCoverageThreshold>
+    <cloverCoverageThreshold>71</cloverCoverageThreshold>
   </properties>
   <build>
     <plugins>
@@ -39,7 +39,7 @@
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-server</artifactId> 
+      <artifactId>vaadin-server</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

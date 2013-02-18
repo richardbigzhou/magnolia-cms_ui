@@ -3,8 +3,9 @@
 	<!-- WS Compiler: manually edited -->
 	<inherits name="com.vaadin.DefaultWidgetSet" />
 
-	<!--<inherits name="org.vaadin.autoreplacefield.AutoreplacefieldWidgetset" />
-	  <inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />-->
+	<!--<inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
+	<inherits name='org.vaadin.artur.superdevmode.SuperdevmodeaddonWidgetset' />-->
+
 
     <inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
 	<inherits name='com.googlecode.mgwt.dom.DOM' />
@@ -32,7 +33,7 @@
 		</all>
 	</replace-with>
 
-	<replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.VDesktopUI">
+	<replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.VMgwtStylesUI">
 		<when-type-is class="com.vaadin.client.ui.VUI" />
 		<all>
 			<when-property-is name="mgwt.os" value="desktop" />

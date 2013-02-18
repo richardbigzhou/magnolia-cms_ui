@@ -43,8 +43,7 @@ import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractComponentContainerConnector;
 
 /**
- * EditorLikeComponentConnector.
- *
+ * A common base for the editing components like forms and dialogs. 
  * @param <T> the view
  * @param <U> the presenter
  */
@@ -87,6 +86,11 @@ public abstract class EditorLikeComponentConnector<U extends EditorLikeView.Pres
     @Override
     public EditorLikeComponentState getState() {
         return (EditorLikeComponentState) super.getState();
+    }
+
+    @Override
+    public boolean delegateCaptionHandling() {
+        return false;
     }
 
     @Override

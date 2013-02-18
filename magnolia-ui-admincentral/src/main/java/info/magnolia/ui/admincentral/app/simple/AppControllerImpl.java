@@ -128,7 +128,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
-     * This method is called to create an instant of an app independent from the {@link LocationController} and the {@link AppController} handling.
+     * This method is called to create an instance of an app independent from the {@link LocationController} and the {@link AppController} handling.
      * It will not open in the {@link ViewPort} and will not register itself to the running apps.
      * This is e.g. used to pass the {@link App} into a dialog and obtain app-specific information from outside the app.
      *

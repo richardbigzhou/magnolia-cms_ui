@@ -55,19 +55,6 @@
       unit errors during gwt compilation -->
   </dependencies>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <id>vaadin-snapshots</id>
-      <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-
   <build>
     <plugins>
       <!-- Compile custom GWT components or widget dependencies with the
