@@ -75,25 +75,14 @@ public class Node2MapUtil {
         if (map != null && !map.isEmpty()) {
             for (String key : map.keySet()) {
                 Object value = map.get(key);
-                try {
+                if (value instanceof Map) {
+                    // if value is Map, then create subnode
+                    Node subnode = node.addNode(key);
+                    // and recursive call
+                    Node2MapUtil.map2node(subnode, (Map<String, Object>) value);
+                } else {
                     // try to set as a primitive value
                     PropertyUtil.setProperty(node, key, value);
-                } catch (IllegalArgumentException iae) {
-                    // on error, check whether the value is a non-empty Map
-                    boolean rethrow = true;
-                    if (value instanceof Map && !((Map) value).isEmpty()) {
-                        // check, whether the Map is Map<String,Object>
-                        Object innerKey = ((Map) value).keySet().iterator().next();
-                        if (innerKey instanceof String) {
-                            // ok, create subnode
-                            rethrow = false;
-                            Node subnode = node.addNode(key);
-                            subnode = Node2MapUtil.map2node(subnode, (Map<String, Object>) value);
-                        }
-                    }
-                    if (rethrow) {
-                        throw new IllegalArgumentException("Value is not a primitive value nor Map<String,Object>.", iae);
-                    }
                 }
             }
         }
