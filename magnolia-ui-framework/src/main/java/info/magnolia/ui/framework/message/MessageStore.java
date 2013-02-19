@@ -61,13 +61,6 @@ public class MessageStore {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    /*
-     * public static final String TIMESTAMP = "timestamp"; public static final
-     * String SUBJECT = "subject"; public static final String TYPE = "type";
-     * public static final String MESSAGE = "message"; public static final
-     * String CLEARED = "cleared";
-     */
-
     static final String MESSAGE_NODE_TYPE = "mgnl:systemMessage";
 
     private static final String WORKSPACE_NAME = "messages";
