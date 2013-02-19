@@ -52,7 +52,6 @@ import com.vaadin.data.Item;
 import com.vaadin.shared.Connector;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.HasComponents;
 
 /**
  * {@link Form}. The server side implementation of the form view. Displays the
@@ -70,7 +69,7 @@ public class Form extends EditorLike implements FormView {
 
     private final MagnoliaTabSheet tabSheet = new MagnoliaTabSheet() {
         @Override
-        public MagnoliaFormTab addTab(final String caption, final HasComponents c) {
+        public MagnoliaFormTab addTab(final String caption, final Component c) {
             if (c instanceof FormSection) {
                 final FormSection section = (FormSection) c;
                 final MagnoliaFormTab tab = new MagnoliaFormTab(caption, section);

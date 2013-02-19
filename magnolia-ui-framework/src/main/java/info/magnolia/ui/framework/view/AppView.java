@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.config.workbench;
-
-import info.magnolia.ui.framework.view.View;
-
-import com.vaadin.ui.Component;
+package info.magnolia.ui.framework.view;
 
 /**
- * View implementation for the Configuration Workbench SubApp.
+ * AppView. Should we refer to the tabs as tab or subApp instance. Keep in mind that it is not the subAppId. There are multiple instances of the subapp.
+ *
  */
-public class ConfigWorkbenchViewImpl implements ConfigWorkbenchView {
+public interface AppView extends View {
 
-    private View workbenchView;
+    void setFullscreen(boolean fullscreen);
 
-    @Override
-    public Component asVaadinComponent() {
-        return workbenchView.asVaadinComponent();
+    /**
+     * Listens to events coming from the TabSheet.
+     */
+    interface Listener {
+
+        void onFocus(String instanceId);
+
+        void onClose(String instanceId);
+
     }
 
-    @Override
-    public void setWorkbenchView(View workbenchView) {
-        this.workbenchView = workbenchView;
-    }
+    void setListener(Listener listener);
+
+    String addSubAppView(View view, String caption, boolean closable);
+
+    void setActiveSubAppView(String instanceId);
+
+    String getActiveSubAppView();
 }

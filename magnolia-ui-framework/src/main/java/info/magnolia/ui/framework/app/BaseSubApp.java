@@ -41,19 +41,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract implementation with default behavior suitable for most sub apps.
+ * Basic implementation of a subApp with default behavior suitable for most sub apps.
  *
- * @see info.magnolia.ui.framework.app.SubApp
+ * @see SubApp
  */
-public abstract class AbstractSubApp implements SubApp {
+public class BaseSubApp implements SubApp {
 
-    protected Location currentLocation;
     private final SubAppContext subAppContext;
     private final View view;
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractSubApp.class);
+    private static final Logger log = LoggerFactory.getLogger(BaseSubApp.class);
 
-    protected AbstractSubApp(final SubAppContext subAppContext, final View view) {
+    protected BaseSubApp(final SubAppContext subAppContext, final View view) {
         if (subAppContext == null || view == null) {
             throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", View = " + view);
         }
@@ -63,14 +62,17 @@ public abstract class AbstractSubApp implements SubApp {
 
     @Override
     public View start(Location location) {
-        currentLocation = location;
         onSubAppStart();
         return view;
     }
 
     @Override
+    public void stop() {
+        onSubAppStop();
+    }
+
+    @Override
     public void locationChanged(Location location) {
-        currentLocation = location;
     }
 
     /**
@@ -89,6 +91,13 @@ public abstract class AbstractSubApp implements SubApp {
      * The default implementation does nothing.
      */
     protected void onSubAppStart() {
+    }
+
+    /**
+     * This hook-up method is called on {@link #stop()} and enables subclasses to perform additional work when stopping the subApp.
+     * The default implementation does nothing.
+     */
+    protected void onSubAppStop() {
     }
 
     public SubAppContext getSubAppContext() {
@@ -120,16 +129,16 @@ public abstract class AbstractSubApp implements SubApp {
         if (StringUtils.isNotBlank(label)) {
             return label;
         }
-        label = subAppContext.getAppContext().getAppDescriptor().getLabel();
+        label = subAppContext.getAppContext().getLabel();
         if (StringUtils.isNotBlank(label)) {
             return label;
         }
-        log.warn("No label could be found for subapp [{}] at app [{}]", subAppContext.getSubAppDescriptor().getName(), subAppContext.getAppContext().getAppDescriptor().getName());
+        log.warn("No label could be found for subapp [{}] at app [{}]", subAppContext.getSubAppDescriptor().getName(), subAppContext.getAppContext().getName());
         return "";
     }
 
     protected Location getCurrentLocation() {
-        return currentLocation;
+        return getSubAppContext().getLocation();
     }
 
 }

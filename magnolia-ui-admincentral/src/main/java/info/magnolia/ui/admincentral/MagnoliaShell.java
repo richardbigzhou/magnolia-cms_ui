@@ -34,13 +34,14 @@
 package info.magnolia.ui.admincentral;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.admincentral.app.simple.ShellAppController;
 import info.magnolia.ui.admincentral.dialog.BaseDialogPresenter;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.HandlerRegistration;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
@@ -91,7 +92,7 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
 
 
     @Inject
-    public MagnoliaShell(@Named("admincentral") EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider, AppController appController, MessagesManager messagesManager) {
+    public MagnoliaShell(@Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider, AppController appController, MessagesManager messagesManager) {
         super();
         this.messagesManager = messagesManager;
         this.admincentralEventBus = admincentralEventBus;
@@ -347,7 +348,7 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
     private void restoreAppParameter(Fragment f) {
         String actualParam = f.getParameter();
         if (StringUtils.isEmpty(actualParam)) {
-            Location location = appController.getCurrentLocation(f.getAppId());
+            Location location = appController.getAppLocation(f.getAppId());
             if (location != null) {
                 f.setParameter(location.getParameter());
             }

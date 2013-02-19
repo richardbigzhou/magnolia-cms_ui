@@ -33,14 +33,15 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.FormPresenterFactory;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
@@ -117,7 +118,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
         // ModalComponentContainer mcc = new ModalComponentContainer(this.getView().asVaadinComponent());
         // Open it on a subApp component.
-        Connector modalityParent = subAppContext.getTab();
+        Connector modalityParent = (Connector) ((BaseSubApp) subAppContext.getSubApp()).getView();
         // shell.openModal(this.getView().asVaadinComponent(), (Component) modalityParent);
         shell.openModalWithDialog(this, (Component) modalityParent);
 

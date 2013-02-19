@@ -31,56 +31,55 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.framework.app;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.view.AppView;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.inject.Inject;
 
 /**
- * Simple thread safe collection of handlers for a specific event.
+ * Basic app implementation with default behavior suitable for most apps.
  *
- * @param <H> type of the event handler
+ * @see App
  */
-public class EventHandlerCollection<H extends EventHandler> {
+public class BaseApp implements App {
 
-    private static final Logger log = LoggerFactory.getLogger(EventHandlerCollection.class);
+    protected AppContext appContext;
+    private AppView view;
 
-    private final List<H> handlers = new CopyOnWriteArrayList<H>();
-
-    public HandlerRegistration add(final H handler) {
-        handlers.add(handler);
-        return new HandlerRegistration() {
-
-            @Override
-            public void removeHandler() {
-                remove(handler);
-            }
-        };
+    @Inject
+    protected BaseApp(AppContext appContext, AppView view) {
+        this.appContext = appContext;
+        this.view = view;
+        view.setListener(appContext);
     }
 
-    public void remove(H handler) {
-        handlers.remove(handler);
+    @Override
+    public void locationChanged(Location location) {
+        appContext.openSubApp(location);
     }
 
-    public void dispatch(Event<H> event) {
-        for (H eventHandler : handlers) {
-            log.debug("Dispatching event {} with handler {}", event, eventHandler);
-            try {
-                event.dispatch(eventHandler);
-            } catch (RuntimeException e) {
-                log.warn("Exception caught when dispatching event: " + e.getMessage(), e);
-            }
-        }
+    @Override
+    public void start(Location location) {
+        appContext.openSubApp(location);
     }
 
-    public int size() {
-        return handlers.size();
+    public AppContext getAppContext() {
+        return appContext;
     }
 
-    public boolean isEmpty() {
-        return handlers.isEmpty();
+    @Override
+    public void stop() {
+    }
+
+    @Override
+    public Location getDefaultLocation() {
+        return null;
+    }
+
+    @Override
+    public AppView getView() {
+        return view;
     }
 }

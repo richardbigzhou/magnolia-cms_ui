@@ -38,7 +38,8 @@ import info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.field.TextAndContentViewField;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.LinkFieldSelectionDefinition;
 
@@ -74,7 +75,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
     private TextAndContentViewField textContent;
 
     @Inject
-    public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem, ChooseDialogContentPresenter contentPresenter, @Named("choosedialog") final EventBus eventbus) {
+    public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem, ChooseDialogContentPresenter contentPresenter, @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) final EventBus eventbus) {
         super(definition, relatedFieldItem);
         this.contentPresenter = contentPresenter;
         this.appEventBus = eventbus;

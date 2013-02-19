@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
+import info.magnolia.ui.admincentral.app.content.ContentApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
 import info.magnolia.ui.framework.app.App;
@@ -142,8 +142,8 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
     private void openLinkDialog(String path) {
         // Get the property name to propagate.
         App targetApp = appController.getAppWithoutStarting("pages");
-        if (targetApp != null && targetApp instanceof AbstractContentApp) {
-            ChooseDialogPresenter<Item> chooseDialogPresenter = ((AbstractContentApp) targetApp).openChooseDialog(path);
+        if (targetApp != null && targetApp instanceof ContentApp) {
+            ChooseDialogPresenter<Item> chooseDialogPresenter = ((ContentApp) targetApp).openChooseDialog(path);
             chooseDialogPresenter.getView().setCaption("Select a page");
             chooseDialogPresenter.addValueChosenListener(new ValueChosenListener<Item>() {
                 @Override

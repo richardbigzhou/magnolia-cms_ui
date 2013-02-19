@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.framework.location;
 
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.HandlerRegistration;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
