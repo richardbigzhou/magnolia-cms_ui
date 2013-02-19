@@ -560,13 +560,13 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * @param the optional <code>ORDER BY</code> is added if this parameter is <code>true</code>. Sorting options can be configured in the {@link WorkbenchDefinition}.
+     * @param considerSorting an optional <code>ORDER BY</code> is added if this parameter is <code>true</code>. Sorting options can be configured in the {@link WorkbenchDefinition}.
      * @return a string representing a JCR statement to retrieve this container's items.
      *         It creates a JCR query in the form {@code select * from [mainItemType] as selector [WHERE] [ORDER BY]"}.
      *         <p>
      *         Subclasses can customize the optional <code>WHERE</code> clause by overriding {@link #getQueryWhereClause()}.
      *         <p>
-     *         The main item type (as configured in the {@link WorkbenchDefinition}) in the <code>SELECT</code> statement can be changed to something different by calling {@link #getSelectStatement(String)}
+     *         The main item type (as configured in the {@link WorkbenchDefinition}) in the <code>SELECT</code> statement can be changed to something different by calling {@link #getQuerySelectStatement()}
      * @see AbstractJcrContainer#getQuerySelectStatement()
      * @see AbstractJcrContainer#getQueryWhereClause()
      * @see AbstractJcrContainer#getQueryWhereClauseWorkspacePath()
