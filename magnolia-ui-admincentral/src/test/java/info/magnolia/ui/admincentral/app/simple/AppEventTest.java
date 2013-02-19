@@ -66,7 +66,7 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.message.MessagesManagerImpl;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.AppView;
+import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.view.Viewport;
 
 import java.util.ArrayList;

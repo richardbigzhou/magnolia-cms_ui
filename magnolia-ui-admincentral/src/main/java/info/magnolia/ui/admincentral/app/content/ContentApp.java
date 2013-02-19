@@ -40,7 +40,7 @@ import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenter;
 import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.AppView;
+import info.magnolia.ui.framework.app.AppView;
 
 import javax.inject.Inject;
 

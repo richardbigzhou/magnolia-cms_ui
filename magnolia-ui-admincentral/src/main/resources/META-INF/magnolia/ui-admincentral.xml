@@ -158,7 +158,7 @@
       <implementation>info.magnolia.ui.admincentral.app.simple.AppControllerImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.framework.view.AppView</type>
+      <type>info.magnolia.ui.framework.app.AppView</type>
       <implementation>info.magnolia.ui.admincentral.app.simple.AppFrameView</implementation>
     </component>
     <component>

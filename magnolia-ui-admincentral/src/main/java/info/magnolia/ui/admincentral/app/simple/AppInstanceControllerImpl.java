@@ -55,7 +55,7 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.AppView;
+import info.magnolia.ui.framework.app.AppView;
 
 import java.util.List;
 import java.util.Map;
