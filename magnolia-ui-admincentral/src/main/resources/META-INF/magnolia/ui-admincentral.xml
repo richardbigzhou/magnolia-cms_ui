@@ -155,11 +155,11 @@
     </component>
     <component>
       <type>info.magnolia.ui.framework.app.AppController</type>
-      <implementation>info.magnolia.ui.admincentral.app.simple.AppControllerImpl</implementation>
+      <implementation>info.magnolia.ui.framework.app.AppControllerImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.framework.app.AppView</type>
-      <implementation>info.magnolia.ui.admincentral.app.simple.AppFrameView</implementation>
+      <implementation>info.magnolia.ui.framework.app.AppFrameView</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.ShellAppController</type>
@@ -196,7 +196,7 @@
 
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppInstanceController</type>
-      <implementation>info.magnolia.ui.admincentral.app.simple.AppInstanceControllerImpl</implementation>
+      <implementation>info.magnolia.ui.framework.app.AppInstanceControllerImpl</implementation>
     </type-mapping>
   </components>
 

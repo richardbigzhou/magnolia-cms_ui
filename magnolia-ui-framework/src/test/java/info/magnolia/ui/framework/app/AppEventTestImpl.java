@@ -31,20 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.framework.app;
 
-import com.vaadin.ui.Component;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.InvocationCountingTestEventHandler;
+import info.magnolia.event.TestEvent;
+import info.magnolia.ui.framework.event.AppEventBusConfigurer;
+
+import javax.inject.Named;
+
+import com.google.inject.Inject;
 
 /**
- * Stupid PagesView Test class.
+ * AppEventTestImpl.
  */
-public class AppViewTestImpl implements AppTestView {
+public class AppEventTestImpl extends AppTestImpl {
 
-    public AppViewTestImpl() {
+    public EventBus eventBus;
+
+    public InvocationCountingTestEventHandler handler;
+
+    @Inject
+    public AppEventTestImpl(AppContext ctx, AppView view, @Named(AppEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus) {
+        super(ctx, view);
+        this.eventBus = eventBus;
+
+        // Register
+        handler = new InvocationCountingTestEventHandler();
+        eventBus.addHandler(TestEvent.class, handler);
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return null;
-    }
 }

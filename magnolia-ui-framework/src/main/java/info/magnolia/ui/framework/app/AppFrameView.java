@@ -31,9 +31,8 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;

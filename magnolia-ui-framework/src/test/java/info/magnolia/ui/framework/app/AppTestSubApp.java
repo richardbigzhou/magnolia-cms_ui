@@ -31,12 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.vaadin.view.View;
+import javax.inject.Inject;
 
 /**
- * app test view interface.
+ * sub app test.
  */
-public interface AppTestView extends View {
+public class AppTestSubApp extends BaseSubApp {
+
+    @Inject
+    public AppTestSubApp(SubAppContext subAppContext, AppTestView view) {
+        super(subAppContext, view);
+    }
+
 }

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.framework.app;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.module.ModuleRegistry;
@@ -43,13 +43,6 @@ import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.framework.app.App;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppInstanceController;
-import info.magnolia.ui.framework.app.AppLifecycleEvent;
-import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.location.DefaultLocation;

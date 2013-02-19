@@ -44,7 +44,7 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
 import info.magnolia.ui.admincentral.app.content.builder.ContentSubAppBuilder;
-import info.magnolia.ui.admincentral.app.simple.SubAppContextImpl;
+import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
 import info.magnolia.ui.admincentral.event.ItemEditedEvent;
 import info.magnolia.ui.framework.app.SubAppContext;

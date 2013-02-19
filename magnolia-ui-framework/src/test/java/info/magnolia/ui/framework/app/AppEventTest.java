@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.framework.app;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -44,14 +44,7 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.ShellImpl;
-import info.magnolia.ui.admincentral.app.simple.AppControllerImplTest.AppEventCollector;
-import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppInstanceController;
-import info.magnolia.ui.framework.app.AppLifecycleEvent;
-import info.magnolia.ui.framework.app.AppLifecycleEventType;
-import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.framework.app.AppControllerImplTest.AppEventCollector;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.InvocationCountingTestEventHandler;
@@ -66,7 +59,6 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.message.MessagesManagerImpl;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.view.Viewport;
 
 import java.util.ArrayList;
@@ -222,7 +214,7 @@ public class AppEventTest {
 
         components.registerInstance(ModuleRegistry.class, moduleRegistry);
         components.registerInstance(AppDescriptorRegistry.class, appRegistry);
-        components.registerInstance(Shell.class, mock(ShellImpl.class));
+        components.registerInstance(Shell.class, mock(Shell.class));
         components.registerInstance(MessagesManager.class, mock(MessagesManagerImpl.class));
 
 

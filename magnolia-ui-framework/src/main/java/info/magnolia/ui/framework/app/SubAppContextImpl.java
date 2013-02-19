@@ -31,12 +31,8 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.location.Location;
 
 /**
