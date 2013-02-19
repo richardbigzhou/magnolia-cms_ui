@@ -52,7 +52,6 @@ import info.magnolia.event.SimpleEventBus;
 import info.magnolia.event.SystemEventBusConfigurer;
 import info.magnolia.event.TestEvent;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
-import info.magnolia.ui.framework.event.AppEventBusConfigurer;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;

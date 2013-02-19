@@ -41,7 +41,7 @@ import info.magnolia.ui.admincentral.content.item.ItemView;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
+import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;

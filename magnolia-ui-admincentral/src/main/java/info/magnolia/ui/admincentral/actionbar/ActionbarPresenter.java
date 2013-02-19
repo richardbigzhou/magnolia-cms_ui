@@ -38,7 +38,7 @@ import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
+import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.model.action.Action;

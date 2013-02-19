@@ -36,7 +36,6 @@ package info.magnolia.ui.framework.app;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.InvocationCountingTestEventHandler;
 import info.magnolia.event.TestEvent;
-import info.magnolia.ui.framework.event.AppEventBusConfigurer;
 
 import javax.inject.Named;
 

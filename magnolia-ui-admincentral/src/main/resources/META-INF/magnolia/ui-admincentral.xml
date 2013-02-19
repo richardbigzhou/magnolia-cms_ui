@@ -203,7 +203,7 @@
   <components>
     <id>app</id>
     <configurer>
-      <class>info.magnolia.ui.framework.event.AppEventBusConfigurer</class>
+      <class>info.magnolia.ui.framework.app.AppEventBusConfigurer</class>
     </configurer>
     <configurer>
       <class>info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer</class>
@@ -265,7 +265,7 @@
   <components>
     <id>subapp</id>
     <configurer>
-      <class>info.magnolia.ui.framework.event.SubAppEventBusConfigurer</class>
+      <class>info.magnolia.ui.framework.app.SubAppEventBusConfigurer</class>
     </configurer>
     <component>
       <type>info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView</type>
