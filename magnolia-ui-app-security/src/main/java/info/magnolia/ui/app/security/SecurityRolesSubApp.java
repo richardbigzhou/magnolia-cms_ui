@@ -34,11 +34,12 @@
 package info.magnolia.ui.app.security;
 
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
+import info.magnolia.ui.admincentral.app.content.ContentSubApp;
 import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -49,11 +50,11 @@ import org.slf4j.LoggerFactory;
 /**
  * Roles subapp for the Security App.
  */
-public class SecurityRolesSubApp extends AbstractContentSubApp {
+public class SecurityRolesSubApp extends ContentSubApp {
     private static final Logger log = LoggerFactory.getLogger(SecurityRolesSubApp.class);
 
     @Inject
-    public SecurityRolesSubApp(final SubAppContext subAppContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus) {
+    public SecurityRolesSubApp(final SubAppContext subAppContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
         super(subAppContext, view, workbench, subAppEventBus);
     }
 

@@ -35,16 +35,16 @@ package info.magnolia.ui.vaadin.magnoliashell.rpc;
 
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
-import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
+import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 
 /**
  * MagnoliaShellRpcDelegate.
  */
 public class MagnoliaShellRpcDelegate implements ShellServerRpc {
 
-    private MagnoliaShellBase shell;
+    private MagnoliaShell shell;
 
-    public MagnoliaShellRpcDelegate(MagnoliaShellBase shell) {
+    public MagnoliaShellRpcDelegate(MagnoliaShell shell) {
         this.shell = shell;
     }
 

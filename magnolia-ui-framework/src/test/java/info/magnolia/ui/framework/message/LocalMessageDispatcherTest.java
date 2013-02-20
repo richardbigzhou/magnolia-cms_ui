@@ -35,8 +35,8 @@ package info.magnolia.ui.framework.message;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.SimpleEventBus;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 
 import java.util.ArrayList;
 import java.util.List;

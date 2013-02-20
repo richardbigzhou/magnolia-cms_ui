@@ -35,7 +35,8 @@ package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.event.EventBus;
 
 import javax.inject.Named;
 import javax.jcr.Item;
@@ -49,7 +50,7 @@ import javax.jcr.RepositoryException;
  */
 public class AddNodeAction extends RepositoryOperationAction<AddNodeActionDefinition> implements TreeAction {
 
-    public AddNodeAction(AddNodeActionDefinition definition, Item item, @Named("admincentral") EventBus eventBus) {
+    public AddNodeAction(AddNodeActionDefinition definition, Item item, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus) {
         super(definition, item, eventBus);
     }
 

@@ -39,7 +39,7 @@ import static org.mockito.Mockito.mock;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
 
 import javax.jcr.Node;
 

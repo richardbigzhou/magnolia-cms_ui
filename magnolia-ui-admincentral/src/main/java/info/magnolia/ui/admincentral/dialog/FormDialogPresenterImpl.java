@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.ShellImpl;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.FormPresenterFactory;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
@@ -59,7 +59,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private final DialogDefinition dialogDefinition;
 
-    private final MagnoliaShell shell;
+    private final ShellImpl shell;
 
     private final FormDialogView view;
 
@@ -74,7 +74,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         this.dialogBuilder = dialogBuilder;
         this.formPresenterFactory = formPresenterFactory;
         this.dialogDefinition = dialogDefinition;
-        this.shell = (MagnoliaShell) shell;
+        this.shell = (ShellImpl) shell;
         this.dialogActionFactory = actionFactory;
         initActions(dialogDefinition);
     }

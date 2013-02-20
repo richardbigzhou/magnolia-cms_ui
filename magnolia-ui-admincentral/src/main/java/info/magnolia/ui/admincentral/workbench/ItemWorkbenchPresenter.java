@@ -40,8 +40,9 @@ import info.magnolia.ui.admincentral.content.item.ItemPresenter;
 import info.magnolia.ui.admincentral.content.item.ItemView;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
+import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -55,7 +56,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Presenter for the workbench displayed in the {@link info.magnolia.ui.admincentral.app.content.AbstractItemSubApp}.
+ * Presenter for the workbench displayed in the {@link info.magnolia.ui.admincentral.app.content.ItemSubApp}.
  * Contains the {@link ActionbarPresenter} for handling action events and the {@link ItemPresenter} for displaying the actual item.
  */
 public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
@@ -71,7 +72,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
     private String nodePath;
 
     @Inject
-    public ItemWorkbenchPresenter(final SubAppContext subAppContext, final ItemWorkbenchView view, final @Named("subapp") EventBus subAppEventBus, final ItemPresenter itemPresenter, final WorkbenchActionFactory actionFactory, final ActionbarPresenter actionbarPresenter) {
+    public ItemWorkbenchPresenter(final SubAppContext subAppContext, final ItemWorkbenchView view, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final ItemPresenter itemPresenter, final WorkbenchActionFactory actionFactory, final ActionbarPresenter actionbarPresenter) {
         this.view = view;
         this.subAppEventBus = subAppEventBus;
         this.itemPresenter = itemPresenter;

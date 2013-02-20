@@ -32,7 +32,7 @@
       <sv:value>2046ce4f-e9ab-43c4-97cd-bbde08188efd</sv:value>
     </sv:property>
     <sv:property sv:name="appClass" sv:type="String">
-      <sv:value>info.magnolia.ui.app.config.ConfigApp</sv:value>
+      <sv:value>info.magnolia.ui.framework.app.BaseApp</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
       <sv:value>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</sv:value>
@@ -834,7 +834,7 @@
               <sv:value>3ede7e65-23a8-4da1-9035-135f13691453</sv:value>
             </sv:property>
             <sv:property sv:name="icon" sv:type="String">
-              <sv:value>icon-node-folder</sv:value>
+              <sv:value>icon-folder</sv:value>
             </sv:property>
             <sv:property sv:name="itemType" sv:type="String">
               <sv:value>mgnl:content</sv:value>

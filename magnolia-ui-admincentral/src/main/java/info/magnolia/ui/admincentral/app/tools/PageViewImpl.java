@@ -55,7 +55,7 @@ public class PageViewImpl implements PageView {
     public PageViewImpl(final Shell shell, final AppContext appContext) {
         layout.setSizeFull();
 
-        final String sourceURL = ((PageSubAppDescriptor) appContext.getAppDescriptor().getSubApps().get("main")).getUrl();
+        final String sourceURL = ((PageSubAppDescriptor) appContext.getDefaultSubAppDescriptor()).getUrl();
         final String path = String.format("%s/.magnolia/pages/%s", MgnlContext.getContextPath(), sourceURL);
         final BrowserFrame page = new BrowserFrame("", new ExternalResource(path));
         page.setSizeFull();

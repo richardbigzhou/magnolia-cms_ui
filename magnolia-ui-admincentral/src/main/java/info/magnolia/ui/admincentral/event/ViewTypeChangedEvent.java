@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.event;
 
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
 
 /**
  * This event is fired when switching views, i.e. from tree view to list view.

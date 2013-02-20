@@ -38,7 +38,7 @@ import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
 /**
- * ItemLocation used in implementers of {@link info.magnolia.ui.admincentral.app.content.AbstractItemSubApp}.
+ * ItemLocation used in implementers of {@link info.magnolia.ui.admincentral.app.content.ItemSubApp}.
  * Extends the Default Location by adding fields for the nodePath and {@link ItemView.ViewType}.
  */
 public class ItemLocation extends DefaultLocation {

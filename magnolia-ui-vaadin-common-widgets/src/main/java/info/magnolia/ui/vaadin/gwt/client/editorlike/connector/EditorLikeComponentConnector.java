@@ -89,6 +89,11 @@ public abstract class EditorLikeComponentConnector<U extends EditorLikeView.Pres
     }
 
     @Override
+    public boolean delegateCaptionHandling() {
+        return false;
+    }
+
+    @Override
     public void updateCaption(ComponentConnector connector) {
         view.setCaption(connector.getState().caption);
     }

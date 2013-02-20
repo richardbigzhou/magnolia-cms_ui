@@ -46,7 +46,8 @@ import info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinitio
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.app.pages.field.TemplateSelectorField;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.dialog.builder.DialogBuilder;
 import info.magnolia.ui.model.dialog.builder.DialogConfig;
@@ -93,7 +94,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     private AbstractElement selectedElement;
 
     @Inject
-    public PageEditorPresenter(PageEditorView view, @Named("subapp") EventBus eventBus, FormDialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
+    public PageEditorPresenter(PageEditorView view, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, FormDialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
         this.view = view;
         this.eventBus = eventBus;
         this.dialogPresenterFactory = dialogPresenterFactory;

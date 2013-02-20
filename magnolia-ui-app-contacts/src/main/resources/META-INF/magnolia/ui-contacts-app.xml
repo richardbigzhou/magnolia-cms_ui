@@ -18,17 +18,13 @@
   <components>
     <id>app-contacts-main</id>
     <component>
-      <type>info.magnolia.ui.app.contacts.ContactsMainSubApp</type>
-      <implementation>info.magnolia.ui.app.contacts.ContactsMainSubApp</implementation>
+      <type>info.magnolia.ui.app.contacts.main.ContactsMainSubApp</type>
+      <implementation>info.magnolia.ui.app.contacts.main.ContactsMainSubApp</implementation>
     </component>
   </components>
 
   <components>
     <id>app-contacts-item</id>
-    <component>
-      <type>info.magnolia.ui.app.contacts.item.ContactsItemSubApp</type>
-      <implementation>info.magnolia.ui.app.contacts.item.ContactsItemSubApp</implementation>
-    </component>
   </components>
 
   <dependencies>

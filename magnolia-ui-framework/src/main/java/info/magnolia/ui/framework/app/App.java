@@ -47,4 +47,6 @@ public interface App {
     void stop();
 
     Location getDefaultLocation();
+
+    AppView getView();
 }

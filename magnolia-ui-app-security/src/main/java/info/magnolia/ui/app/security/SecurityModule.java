@@ -116,7 +116,7 @@ public class SecurityModule implements ModuleLifecycle {
                         userSubApp(app, cfg, "systemUsers", "/system").label("System users"),
                         app.subApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
                                 .workbench(cfg.workbenches.workbench().workspace("usergroups").root("/").defaultOrder(ModelConstants.JCR_NAME)
-                                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder"))
+                                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                         .mainItemType(cfg.workbenches.itemType(NodeTypes.Group.NAME).icon("icon-user-group"))
                                         .imageProvider(cipd)
                                         .columns(
@@ -140,7 +140,7 @@ public class SecurityModule implements ModuleLifecycle {
                                 ),
                         app.subApp("roles").subAppClass(SecurityRolesSubApp.class).label("Roles")
                                 .workbench(cfg.workbenches.workbench().workspace("userroles").root("/").defaultOrder(ModelConstants.JCR_NAME)
-                                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder"))
+                                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                         .mainItemType(cfg.workbenches.itemType(NodeTypes.Role.NAME).icon("icon-user-role"))
                                         .imageProvider(cipd)
                                         .columns(
@@ -182,7 +182,7 @@ public class SecurityModule implements ModuleLifecycle {
 
         return app.subApp(name).subAppClass(SecurityUsersSubApp.class)
                 .workbench(cfg.workbenches.workbench().workspace("users").root(root).defaultOrder(ModelConstants.JCR_NAME)
-                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-node-folder")) // see MGNLPUR-77
+                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-folder")) // see MGNLPUR-77
                         .mainItemType(cfg.workbenches.itemType(NodeTypes.User.NAME).icon("icon-user-magnolia"))
                         .imageProvider(cipd)
                         .columns(

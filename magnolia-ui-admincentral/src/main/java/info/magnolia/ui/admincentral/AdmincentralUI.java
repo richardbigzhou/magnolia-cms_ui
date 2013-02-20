@@ -41,6 +41,7 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationB
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.ui.vaadin.view.View;
 
 import java.util.List;
 
@@ -84,9 +85,11 @@ public class AdmincentralUI extends UI {
         builder.withConfiguration(configuration);
         builder.withParent((GuiceComponentProvider) Components.getComponentProvider());
         GuiceComponentProvider componentProvider = builder.build();
-        final MagnoliaShellPresenter presenter = componentProvider.newInstance(MagnoliaShellPresenter.class);
 
         getPage().setTitle("Magnolia 5.0");
-        setContent(((MagnoliaShellView) presenter.start()).asVaadinComponent());
+
+        AdmincentralPresenter presenter = componentProvider.newInstance(AdmincentralPresenter.class);
+        View view = presenter.start();
+        setContent(view.asVaadinComponent());
     }
 }

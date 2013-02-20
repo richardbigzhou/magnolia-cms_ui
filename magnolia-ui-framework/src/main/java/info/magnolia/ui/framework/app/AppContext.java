@@ -33,23 +33,17 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.view.View;
 
 /**
  * Provides functionality used by an app to interact with the Magnolia shell.
  */
-public interface AppContext {
-
-    void openSubApp(Location location);
+public interface AppContext extends AppView.Listener {
 
     void enterFullScreenMode();
 
     void exitFullScreenMode();
-
-    AppDescriptor getAppDescriptor();
 
     void sendUserMessage(String user, Message message);
 
@@ -61,27 +55,13 @@ public interface AppContext {
 
     String getName();
 
-    void setApp(App app);
+    String getLabel();
 
-    App getApp();
+    AppView getView();
 
-    void setSubAppLocation(SubApp subApp, Location location);
+    void openSubApp(Location location);
+
+    void setSubAppLocation(SubAppContext subAppContext, Location location);
 
     SubAppDescriptor getDefaultSubAppDescriptor();
-
-    void start(Location location);
-
-    void stop();
-
-    String mayStop();
-
-    void onLocationUpdate(Location newLocation);
-
-    Location getCurrentLocation();
-
-    View getView();
-
-    Location getDefaultLocation();
-
-    ComponentProvider createAppComponentProvider(String name, AppContext appContext);
 }
