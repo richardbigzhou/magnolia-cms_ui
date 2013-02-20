@@ -82,8 +82,8 @@ public class WorkbenchBuilder {
         return this;
     }
 
-    public WorkbenchBuilder itemType(ItemTypeBuilder itemType) {
-        definition.addItemType(itemType.exec());
+    public WorkbenchBuilder nodeType(NodeTypeBuilder nodeTypeBuilder) {
+        definition.addNodeType(nodeTypeBuilder.exec());
         return this;
     }
 

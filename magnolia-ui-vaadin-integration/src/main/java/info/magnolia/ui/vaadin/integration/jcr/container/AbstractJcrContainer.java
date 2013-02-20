@@ -38,7 +38,7 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
-import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
+import info.magnolia.ui.model.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -564,7 +564,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * @param considerSorting an optional <code>ORDER BY</code> is added if this parameter is <code>true</code>. Sorting options can be configured in the {@link WorkbenchDefinition}.
      * @return a string representing a JCR statement to retrieve this container's items.
-     *         It creates a JCR query in the form {@code select * from [itemType] as selector [WHERE] [ORDER BY]"}.
+     *         It creates a JCR query in the form {@code select * from [nodeType] as selector [WHERE] [ORDER BY]"}.
      *         <p>
      *         Subclasses can customize the optional <code>WHERE</code> clause by overriding {@link #getQueryWhereClause()}.
      *         <p>
@@ -641,12 +641,15 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * @return a <code>SELECT</code> statement with the main item type as configured in the {@link WorkbenchDefinition}. Can be customized by subclasses to utilize other item types, i.e. {@code select * from [my:fancytype]}. Used internally by {@link #constructJCRQuery(boolean)}.
      */
     protected String getQuerySelectStatement() {
-        return String.format(SELECT_TEMPLATE, getMainItemType());
+        return String.format(SELECT_TEMPLATE, getMainNodeType());
     }
 
-    protected String getMainItemType() {
-        final List<ItemTypeDefinition> itemTypes = workbenchDefinition.getItemTypes();
-        return itemTypes.isEmpty() ? DEFAULT_MAIN_ITEM_TYPE : itemTypes.get(0).getItemType();
+    /**
+     * @return the main NodeType to be used with this container. This is the type that will be used for querying e.g. when populating the list view.
+     */
+    protected String getMainNodeType() {
+        final List<NodeTypeDefinition> nodeTypes = workbenchDefinition.getNodeTypes();
+        return nodeTypes.isEmpty() ? DEFAULT_MAIN_ITEM_TYPE : nodeTypes.get(0).getName();
     }
 
     /**

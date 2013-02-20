@@ -45,7 +45,7 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
+import info.magnolia.ui.model.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -190,10 +190,10 @@ public class ContentPresenter implements ContentView.Listener {
         if (item instanceof JcrNodeAdapter) {
             JcrNodeAdapter node = (JcrNodeAdapter) item;
             String typeName = node.getPrimaryNodeTypeName();
-            List<ItemTypeDefinition> itemTypes = workbenchDefinition.getItemTypes();
-            for (ItemTypeDefinition currentItemType: itemTypes) {
-                if (currentItemType.getItemType().equals(typeName)) {
-                    return currentItemType.getIcon();
+            List<NodeTypeDefinition> nodeTypes = workbenchDefinition.getNodeTypes();
+            for (NodeTypeDefinition currentNodeType: nodeTypes) {
+                if (currentNodeType.getName().equals(typeName)) {
+                    return currentNodeType.getIcon();
                 }
             }
         }

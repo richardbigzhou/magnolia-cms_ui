@@ -791,7 +791,7 @@
               </sv:node>
             </sv:node>
           </sv:node>
-          <sv:node sv:name="itemTypes">
+          <sv:node sv:name="nodeTypes">
             <sv:property sv:name="jcr:primaryType" sv:type="Name">
               <sv:value>mgnl:contentNode</sv:value>
             </sv:property>
@@ -813,7 +813,7 @@
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
-            <sv:node sv:name="mainItemType">
+            <sv:node sv:name="mainNodeType">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
                 <sv:value>mgnl:contentNode</sv:value>
               </sv:property>
@@ -826,7 +826,7 @@
               <sv:property sv:name="icon" sv:type="String">
                 <sv:value>icon-node-content</sv:value>
               </sv:property>
-              <sv:property sv:name="itemType" sv:type="String">
+              <sv:property sv:name="name" sv:type="String">
                 <sv:value>mgnl:contentNode</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
@@ -845,7 +845,7 @@
                 <sv:value>superuser</sv:value>
               </sv:property>
             </sv:node>
-            <sv:node sv:name="folderItemType">
+            <sv:node sv:name="folderNodeType">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
                 <sv:value>mgnl:contentNode</sv:value>
               </sv:property>
@@ -858,7 +858,7 @@
               <sv:property sv:name="icon" sv:type="String">
                 <sv:value>icon-folder</sv:value>
               </sv:property>
-              <sv:property sv:name="itemType" sv:type="String">
+              <sv:property sv:name="name" sv:type="String">
                 <sv:value>mgnl:content</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">

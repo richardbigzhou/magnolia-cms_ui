@@ -54,9 +54,9 @@ public interface WorkbenchDefinition extends Serializable {
     String getPath();
 
     /**
-     * @return the ItemTypes used in the tree view.
+     * @return all configured NodeTypes.
      */
-    List<ItemTypeDefinition> getItemTypes();
+    List<NodeTypeDefinition> getNodeTypes();
 
     /**
      * @return whether properties should be displayed as well (or just nodes)

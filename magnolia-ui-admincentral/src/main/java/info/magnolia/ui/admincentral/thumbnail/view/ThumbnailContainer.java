@@ -37,7 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailContainer.ThumbnailItem;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
-import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
+import info.magnolia.ui.model.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
 
@@ -110,13 +110,13 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
     /**
      * Hint: could be dropped once this type bases on AbstractJcrContainer as well (BL-153).
      */
-    protected String getMainItemType() {
-        final List<ItemTypeDefinition> itemTypes = workbenchDefinition.getItemTypes();
-        return itemTypes.isEmpty() ? AbstractJcrContainer.DEFAULT_MAIN_ITEM_TYPE : itemTypes.get(0).getItemType();
+    protected String getMainNodeType() {
+        final List<NodeTypeDefinition> nodeTypes = workbenchDefinition.getNodeTypes();
+        return nodeTypes.isEmpty() ? AbstractJcrContainer.DEFAULT_MAIN_ITEM_TYPE : nodeTypes.get(0).getName();
     }
 
     protected String prepareSelectQueryStatement() {
-        return String.format("select * from ['%s'] as t ", getMainItemType());
+        return String.format("select * from ['%s'] as t ", getMainNodeType());
     }
 
     protected String prepareFilterQueryStatement() {
