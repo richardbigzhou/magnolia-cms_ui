@@ -451,10 +451,10 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         workbenchDefinition.addItemType(defWithoutItemType);
 
         // WHEN
-        //final String result = jcrContainer.getMainItemTypeAsString();
+        final String result = jcrContainer.getMainItemType();
 
         // THEN
-        //assertEquals(AbstractJcrContainer.DEFAULT_MAIN_ITEM_TYPE, result);
+        assertEquals(AbstractJcrContainer.DEFAULT_MAIN_ITEM_TYPE, result);
     }
 
     @Test
@@ -463,13 +463,17 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         final String testItemType = "mgnl:test";
         ConfiguredItemTypeDefinition def = new ConfiguredItemTypeDefinition();
         def.setItemType(testItemType);
+
+        // we cannot use default jcrContainer from setUp here - it already has a different NodeType as main NodeType (first in nodeTypes).
+        workbenchDefinition = new ConfiguredWorkbenchDefinition();
         workbenchDefinition.addItemType(def);
+        jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
 
         // WHEN
-        //final String result = jcrContainer.getMainItemTypeAsString();
+        final String result = jcrContainer.getMainItemType();
 
         // THEN
-        //assertEquals(testItemType, result);
+        assertEquals(testItemType, result);
     }
 
     @Test
