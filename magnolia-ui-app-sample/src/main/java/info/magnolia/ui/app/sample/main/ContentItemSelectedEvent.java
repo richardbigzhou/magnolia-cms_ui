@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.app.sample.main;
 
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
 
 /**
  * Event fired when an item is selected in the navigation view.

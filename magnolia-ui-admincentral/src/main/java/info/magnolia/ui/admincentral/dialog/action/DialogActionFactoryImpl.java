@@ -35,7 +35,8 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.dialog.DialogPresenter;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
@@ -53,7 +54,7 @@ public class DialogActionFactoryImpl extends FactoryBase<ActionDefinition, Actio
     private final EventBus eventBus;
 
     @Inject
-    public DialogActionFactoryImpl(ComponentProvider componentProvider, DialogActionRegistry dialogActionRegistry, @Named("admincentral") EventBus eventBus) {
+    public DialogActionFactoryImpl(ComponentProvider componentProvider, DialogActionRegistry dialogActionRegistry, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus) {
         super(componentProvider);
         this.eventBus = eventBus;
         for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : dialogActionRegistry.getDefinitionToImplementationMappings()) {

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 
 import javax.inject.Inject;
@@ -41,7 +41,7 @@ import javax.inject.Inject;
 /**
  * sub app test.
  */
-public class AppTestSubApp extends AbstractSubApp {
+public class AppTestSubApp extends BaseSubApp {
 
     @Inject
     public AppTestSubApp(SubAppContext subAppContext, AppTestView view) {

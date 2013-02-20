@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.app.content;
 
 import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
 import info.magnolia.ui.admincentral.workbench.ItemWorkbenchPresenter;
-import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
@@ -43,8 +43,8 @@ import info.magnolia.ui.framework.view.View;
 import javax.inject.Inject;
 
 /**
- * Abstract class providing a sensible implementation for services shared by all item subApps.
- * Implementers of this class represent a tab for viewing and editing items typically opened from an {@link AbstractContentSubApp}.
+ * Base implementation of an item subApp. Provides sensible implementation for services shared by all item subApps.
+ * Implementers of this class represent a tab for viewing and editing items typically opened from an {@link ContentSubApp}.
  * Subclasses can augment the default behavior and perform additional tasks by overriding the following methods:
  * <ul>
  * <li>{@link #onSubAppStart()}
@@ -58,14 +58,14 @@ import javax.inject.Inject;
  * @see WorkbenchSubAppView
  * @see ItemLocation
  */
-public class AbstractItemSubApp extends AbstractSubApp {
+public class ItemSubApp extends BaseSubApp {
 
     private final ItemWorkbenchPresenter workbench;
 
     private String caption;
 
     @Inject
-    protected AbstractItemSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, ItemWorkbenchPresenter workbench) {
+    protected ItemSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, ItemWorkbenchPresenter workbench) {
         super(subAppContext, view);
         this.workbench = workbench;
     }

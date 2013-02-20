@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
+import info.magnolia.ui.admincentral.app.content.ContentApp;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
@@ -112,8 +112,8 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                 // Get the property name to propagate.
                 App targetApp = appController.getAppWithoutStarting(appName);
                 if (targetApp != null) {
-                    if (targetApp instanceof AbstractContentApp) {
-                        ChooseDialogPresenter<Item> chooseDialogPresenter = ((AbstractContentApp) targetApp).openChooseDialog();
+                    if (targetApp instanceof ContentApp) {
+                        ChooseDialogPresenter<Item> chooseDialogPresenter = ((ContentApp) targetApp).openChooseDialog();
                         chooseDialogPresenter.addValueChosenListener(new ValueChosenListener<Item>() {
                             @Override
                             public void onValueChosen(final Item chosenValue) {

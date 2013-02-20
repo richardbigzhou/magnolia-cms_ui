@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.framework.app.launcherlayout;
 
-import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.event.EventHandler;
 
 /**
  * Event handler for receiving events when the launcher layout changes.

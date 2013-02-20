@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.components;
+package info.magnolia.ui.vaadin.splitfeed;
 
 import java.util.Iterator;
 

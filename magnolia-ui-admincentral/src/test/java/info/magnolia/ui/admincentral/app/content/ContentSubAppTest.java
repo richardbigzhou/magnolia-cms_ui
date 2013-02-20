@@ -39,14 +39,14 @@ import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
 
 import org.junit.Before;
 
 /**
- * AbstractContentSubAppTest.
+ * ContentSubAppTest.
  */
-public class AbstractContentSubAppTest {
+public class ContentSubAppTest {
 
     private static final String DUMMY_APPNAME = "dummy";
     private static final String path = "/foo/bar";
@@ -74,7 +74,7 @@ public class AbstractContentSubAppTest {
         this.subApp = new DummyContentSubApp(subAppContext, view, workbench, subAppEventBus);
     }
 
-    private class DummyContentSubApp extends AbstractContentSubApp {
+    private class DummyContentSubApp extends ContentSubApp {
         public int foo = 0;
 
         public DummyContentSubApp(SubAppContext subAppContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, EventBus subAppEventBus) {

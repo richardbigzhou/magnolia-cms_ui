@@ -41,7 +41,7 @@ import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
 import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;

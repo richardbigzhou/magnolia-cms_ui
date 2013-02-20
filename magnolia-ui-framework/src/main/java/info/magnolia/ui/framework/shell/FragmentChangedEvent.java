@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.framework.shell;
 
-import info.magnolia.ui.framework.event.Event;
+import info.magnolia.event.Event;
 
 /**
  * Fired when a URI fragment has changed.

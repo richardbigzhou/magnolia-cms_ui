@@ -31,22 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts;
+package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.admincentral.app.content.AbstractContentApp;
+import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
+import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenter;
+import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.view.AppView;
 
 import javax.inject.Inject;
 
+import com.vaadin.data.Item;
+
 /**
- * The Contacts app, extending base content app.
+ * Extends the {@link BaseApp} by the ability to open a choose dialog.
+ *
+ * @see ChooseDialogFactory
+ * @see ChooseDialogPresenter
  */
-public class ContactsApp extends AbstractContentApp {
+public class ContentApp extends BaseApp {
+
+    private final ChooseDialogFactory chooseDialogFactory;
 
     @Inject
-    public ContactsApp(AppContext appContext, ChooseDialogFactory chooseDialogFactory) {
-        super(appContext, chooseDialogFactory);
+    private Shell shell;
+
+    @Inject
+    public ContentApp(AppContext appContext, AppView view, ChooseDialogFactory chooseDialogFactory) {
+        super(appContext, view);
+        this.chooseDialogFactory = chooseDialogFactory;
+    }
+
+    public ChooseDialogPresenter<Item> openChooseDialog() {
+        return openChooseDialog(null);
+    }
+
+    public ChooseDialogPresenter<Item> openChooseDialog(String defaultPath) {
+        final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogFactory.createWorkbenchChooseDialog(defaultPath);
+        ((MagnoliaShell) shell).openDialog(workbenchChooseDialogPresenter);
+        return workbenchChooseDialogPresenter;
     }
 
 }
