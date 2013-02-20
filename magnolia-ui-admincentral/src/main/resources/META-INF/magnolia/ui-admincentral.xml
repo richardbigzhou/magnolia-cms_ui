@@ -50,8 +50,8 @@
       <implementation>info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.workbench.definition.ItemTypeDefinition</type>
-      <implementation>info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition</implementation>
+      <type>info.magnolia.ui.model.workbench.definition.NodeTypeDefinition</type>
+      <implementation>info.magnolia.ui.model.workbench.definition.ConfiguredNodeTypeDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarDefinition</type>

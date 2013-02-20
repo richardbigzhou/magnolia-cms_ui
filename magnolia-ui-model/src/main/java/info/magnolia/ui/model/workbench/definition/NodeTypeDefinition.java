@@ -34,34 +34,13 @@
 package info.magnolia.ui.model.workbench.definition;
 
 /**
- * Configuration for inclusion of a certain item type in a tree.
+ * Defines an item type. e.g. used for inclusion of a certain node type in a tree.
  *
- * @see info.magnolia.cms.core.ItemType
+ * @see info.magnolia.jcr.util.NodeTypes
  */
-public class ConfiguredItemTypeDefinition implements ItemTypeDefinition {
+public interface NodeTypeDefinition {
 
-    /**
-     * The system name of the item type or 'nodeData' if it describes node data.
-     */
-    private String itemType;
+    String getName();
 
-    private String icon;
-
-    @Override
-    public String getItemType() {
-        return itemType;
-    }
-
-    public void setItemType(String itemType) {
-        this.itemType = itemType;
-    }
-
-    @Override
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
+    String getIcon();
 }

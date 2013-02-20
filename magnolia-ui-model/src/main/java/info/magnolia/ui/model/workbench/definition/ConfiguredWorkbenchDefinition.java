@@ -55,9 +55,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private String defaultOrder;
 
-    private ItemTypeDefinition mainItemType;
-
-    private ItemTypeDefinition groupingItemType;
+    private List<NodeTypeDefinition> nodeTypes = new ArrayList<NodeTypeDefinition>();
 
     private List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
 
@@ -85,8 +83,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     }
 
     @Override
-    public ItemTypeDefinition getMainItemType() {
-        return mainItemType;
+    public List<NodeTypeDefinition> getNodeTypes() {
+        return nodeTypes;
     }
 
     @Override
@@ -98,17 +96,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         this.includeProperties = includeProperties;
     }
 
-    public void setMainItemType(ItemTypeDefinition mainItemType) {
-        this.mainItemType = mainItemType;
-    }
-
-    @Override
-    public ItemTypeDefinition getGroupingItemType() {
-        return groupingItemType;
-    }
-
-    public void setGroupingItemType(ItemTypeDefinition groupingItemType) {
-        this.groupingItemType = groupingItemType;
+    public void addNodeType(NodeTypeDefinition nodeTypeDefinition) {
+        nodeTypes.add(nodeTypeDefinition);
     }
 
     @Override

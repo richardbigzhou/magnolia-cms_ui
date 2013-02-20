@@ -54,7 +54,7 @@ import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry;
-import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
+import info.magnolia.ui.model.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 
 import java.util.ArrayList;
@@ -90,9 +90,9 @@ public class ConfiguredContentViewBuilderTest {
         workbenchDef.setPath("/");
         workbenchDef.setImageProvider(imageProvider);
 
-        final ConfiguredItemTypeDefinition itemTypeDefinition = new ConfiguredItemTypeDefinition();
-        itemTypeDefinition.setItemType("qux");
-        workbenchDef.setMainItemType(itemTypeDefinition);
+        final ConfiguredNodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
+        nodeTypeDefinition.setName("qux");
+        workbenchDef.addNodeType(nodeTypeDefinition);
         final LabelColumnDefinition def = new LabelColumnDefinition();
         def.setName("foo");
         workbenchDef.addColumn(def);
