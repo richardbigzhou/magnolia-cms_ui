@@ -31,35 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral;
+package info.magnolia.ui.admincentral.shellapp;
 
-import javax.inject.Inject;
+import info.magnolia.ui.framework.location.Location;
 
 /**
- * Implementation of MagnoliaShellView.
+ * Defines functionality used by a shell app to interact with the Magnolia shell.
  */
-public class MagnoliaShellViewImpl implements MagnoliaShellView {
+public interface ShellAppContext {
 
-    private Presenter presenter;
+    void setAppLocation(Location location);
 
-    private final MagnoliaShell shell;
+    void updateIndication(int incrementOrDecrement);
 
-    @Inject
-    public MagnoliaShellViewImpl(MagnoliaShell shell) {
-        this.shell = shell;
-    }
-
-    @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    public Presenter getPresenter() {
-        return presenter;
-    }
-
-    @Override
-    public MagnoliaShell asVaadinComponent() {
-        return shell;
-    }
+    void setIndication(int indication);
 }

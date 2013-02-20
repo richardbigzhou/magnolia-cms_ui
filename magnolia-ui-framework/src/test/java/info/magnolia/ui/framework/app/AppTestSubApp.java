@@ -31,20 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.framework.app;
 
-import com.vaadin.ui.Component;
+import javax.inject.Inject;
 
 /**
- * Stupid PagesView Test class.
+ * sub app test.
  */
-public class AppViewTestImpl implements AppTestView {
+public class AppTestSubApp extends BaseSubApp {
 
-    public AppViewTestImpl() {
+    @Inject
+    public AppTestSubApp(SubAppContext subAppContext, AppTestView view) {
+        super(subAppContext, view);
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return null;
-    }
 }

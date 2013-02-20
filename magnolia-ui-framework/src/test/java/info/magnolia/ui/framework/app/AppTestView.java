@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.view;
+package info.magnolia.ui.framework.app;
+
+import info.magnolia.ui.vaadin.view.View;
 
 /**
- * AppView. Should we refer to the tabs as tab or subApp instance. Keep in mind that it is not the subAppId. There are multiple instances of the subapp.
- *
+ * app test view interface.
  */
-public interface AppView extends View {
-
-    void setFullscreen(boolean fullscreen);
-
-    /**
-     * Listens to events coming from the TabSheet.
-     */
-    interface Listener {
-
-        void onFocus(String instanceId);
-
-        void onClose(String instanceId);
-
-    }
-
-    void setListener(Listener listener);
-
-    String addSubAppView(View view, String caption, boolean closable);
-
-    void setActiveSubAppView(String instanceId);
-
-    String getActiveSubAppView();
+public interface AppTestView extends View {
 }

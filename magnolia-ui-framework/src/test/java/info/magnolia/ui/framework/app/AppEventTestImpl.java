@@ -31,14 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.InvocationCountingTestEventHandler;
 import info.magnolia.event.TestEvent;
-import info.magnolia.ui.framework.event.AppEventBusConfigurer;
-import info.magnolia.ui.framework.view.AppView;
 
 import javax.inject.Named;
 

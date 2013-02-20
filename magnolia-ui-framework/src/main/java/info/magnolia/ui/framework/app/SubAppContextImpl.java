@@ -36,9 +36,73 @@ package info.magnolia.ui.framework.app;
 import info.magnolia.ui.framework.location.Location;
 
 /**
- * Defines functionality used by a shell app to interact with the Magnolia shell.
+ * Implementation of {@link SubAppContext}.
+ * See MGNLUI-379.
  */
-public interface ShellAppContext {
+public class SubAppContextImpl implements SubAppContext {
 
-    void setAppLocation(Location location);
+    private SubApp subApp;
+
+    private String instanceId;
+
+    private Location location;
+
+    private SubAppDescriptor subAppDescriptor;
+
+    private AppContext appContext;
+
+    public SubAppContextImpl(SubAppDescriptor subAppDescriptor) {
+        this.subAppDescriptor = subAppDescriptor;
+        this.instanceId = subAppDescriptor.getName() + System.currentTimeMillis();
+    }
+
+    @Override
+    public SubAppDescriptor getSubAppDescriptor() {
+        return subAppDescriptor;
+    }
+
+    @Override
+    public AppContext getAppContext() {
+        return appContext;
+    }
+
+    @Override
+    public void setAppContext(AppContext appContext) {
+        this.appContext = appContext;
+    }
+
+    @Override
+    public SubApp getSubApp() {
+        return subApp;
+    }
+
+    @Override
+    public void setSubApp(SubApp subApp) {
+        this.subApp = subApp;
+    }
+
+    @Override
+    public String getSubAppId() {
+        return subAppDescriptor.getName();
+    }
+
+    @Override
+    public Location getLocation() {
+        return location;
+    }
+
+    @Override
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    @Override
+    public String getInstanceId() {
+        return instanceId;
+    }
+
+    @Override
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
+    }
 }

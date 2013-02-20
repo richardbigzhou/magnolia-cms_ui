@@ -34,7 +34,6 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.AppView;
 
 /**
  * Defines an app. Is called by the Magnolia shell as the user interacts with the app.

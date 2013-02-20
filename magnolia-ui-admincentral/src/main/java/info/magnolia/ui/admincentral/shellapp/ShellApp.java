@@ -31,24 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.admincentral.shellapp;
 
-import info.magnolia.event.EventBus;
-import info.magnolia.event.SimpleEventBus;
-import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
-
-import com.google.inject.name.Names;
-import com.google.inject.util.Providers;
+import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.vaadin.view.View;
 
 /**
- * Configures an {@link info.magnolia.event.EventBus} bound to the name <code>subapp</code>.
+ * Defines a shell app.
  */
-public class SubAppEventBusConfigurer extends AbstractGuiceComponentConfigurer {
+public interface ShellApp {
 
-    public static final String EVENT_BUS_NAME = "subapp";
+    View start(ShellAppContext context);
 
-    @Override
-    protected void configure() {
-        bind(EventBus.class).annotatedWith(Names.named(EVENT_BUS_NAME)).toProvider(Providers.of(new SimpleEventBus()));
-    }
+    void locationChanged(Location location);
 }

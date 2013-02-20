@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,12 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.vaadin.view;
 
-import info.magnolia.ui.framework.view.View;
+import java.io.Serializable;
+
+import com.vaadin.ui.Component;
 
 /**
- * app test view interface.
+ * Marker interface for views. Extends {@link Serializable} because all Vaadin components need to be serializable.
+ *
+ * @see Viewport
  */
-public interface AppTestView extends View {
+public interface View extends Serializable {
+
+    /**
+     * Returns the Vaadin component representing this view.
+     */
+    Component asVaadinComponent();
 }

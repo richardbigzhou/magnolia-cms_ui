@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.framework.app;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.module.ModuleRegistry;
@@ -43,13 +43,6 @@ import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.framework.app.App;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.AppInstanceController;
-import info.magnolia.ui.framework.app.AppLifecycleEvent;
-import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -60,7 +53,7 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.vaadin.view.Viewport;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -106,7 +99,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private final EventBus eventBus;
     private MessagesManager messagesManager;
 
-    private ViewPort viewPort;
+    private Viewport viewport;
 
     private final Map<String, AppInstanceController> runningApps = new HashMap<String, AppInstanceController>();
 
@@ -129,13 +122,13 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     @Override
-    public void setViewPort(ViewPort viewPort) {
-        this.viewPort = viewPort;
+    public void setViewport(Viewport viewport) {
+        this.viewport = viewport;
     }
 
     /**
      * This method is called to create an instance of an app independent from the {@link LocationController} and the {@link AppController} handling.
-     * It will not open in the {@link ViewPort} and will not register itself to the running apps.
+     * It will not open in the {@link info.magnolia.ui.vaadin.view.Viewport} and will not register itself to the running apps.
      * This is e.g. used to pass the {@link App} into a dialog and obtain app-specific information from outside the app.
      *
      * @param appId of the {@link App} to instantiate.
@@ -167,7 +160,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     /**
      * This method is called to launch an app independent from the {@link LocationController}.
-     * It will not open in the {@link ViewPort}.
+     * It will not open in the {@link info.magnolia.ui.vaadin.view.Viewport}.
      * This is e.g. used to pass the {@link App} into a dialog and obtain app-specific information from outside the app.
      *
      * See MGNLUI-379.
@@ -268,7 +261,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         runningApps.remove(appInstanceController.getAppDescriptor().getName());
         if (currentAppInstanceController == appInstanceController) {
             currentAppInstanceController = null;
-            viewPort.setView(null);
+            viewport.setView(null);
         }
         sendEvent(AppLifecycleEventType.STOPPED, appInstanceController.getAppDescriptor());
         if (!appHistory.isEmpty()) {
@@ -288,7 +281,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      * <li>Updating the {@Link Location} and redirecting in case of missing subAppId.</li>
      * <li>Starting the App.</li>
      * <li>Adding the {@link AppContext} to the appHistory.</li>
-     * <li>Setting the viewPort and updating the current running app.</li>
+     * <li>Setting the viewport and updating the current running app.</li>
      * </ul>
      */
     @Override
@@ -327,7 +320,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         }
 
         nextAppContext = doStartIfNotAlreadyRunning(nextAppContext, newLocation);
-        viewPort.setView(nextAppContext.getApp().getView());
+        viewport.setView(nextAppContext.getApp().getView());
 
         // focus on locationChanged?
         //focusCurrentApp();

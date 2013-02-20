@@ -35,7 +35,10 @@ package info.magnolia.ui.admincentral;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.app.simple.DefaultLocationHistoryMapper;
-import info.magnolia.ui.admincentral.app.simple.ShellAppController;
+import info.magnolia.ui.admincentral.shellapp.ShellAppController;
+import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherShellApp;
+import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesShellApp;
+import info.magnolia.ui.admincentral.shellapp.pulse.PulseShellApp;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
@@ -46,35 +49,37 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.location.LocationHistoryHandler;
 import info.magnolia.ui.framework.message.LocalMessageDispatcher;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Presenter meant to bootstrap the MagnoliaShell.
+ * Presenter which starts up the components that make up Admincentral.
  */
-public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
+public class AdmincentralPresenter {
 
-    private final MagnoliaShellView view;
+    private final ShellImpl shell;
 
     @Inject
-    public MagnoliaShellPresenter(final MagnoliaShellView view, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
-        this.view = view;
-        this.view.setPresenter(this);
+    public AdmincentralPresenter(final ShellImpl shell, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
+        this.shell = shell;
 
-        MagnoliaShell shell = view.asVaadinComponent();
-        shellAppController.setViewPort(shell.getShellAppViewport());
-        appController.setViewPort(shell.getAppViewport());
+        shellAppController.setViewport(this.shell.getShellAppViewport());
+        shellAppController.addShellApp("applauncher", AppLauncherShellApp.class);
+        shellAppController.addShellApp("pulse", PulseShellApp.class);
+        shellAppController.addShellApp("favorite", FavoritesShellApp.class);
+
+        appController.setViewport(shell.getAppViewport());
 
         DefaultLocationHistoryMapper locationHistoryMapper = new DefaultLocationHistoryMapper(appLauncherLayoutManager);
         LocationHistoryHandler locationHistoryHandler = new LocationHistoryHandler(locationHistoryMapper, shell);
         locationHistoryHandler.register(locationController, eventBus, new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, "applauncher", "", ""));
+
         messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), messageDispatcher);
     }
 
     public View start() {
-        view.asVaadinComponent().setSizeFull();
-        return view;
+        return shell.getMagnoliaShell();
     }
 }

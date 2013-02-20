@@ -33,15 +33,18 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.View;
+import com.vaadin.ui.Component;
 
 /**
- * Defines a shell app.
+ * Stupid PagesView Test class.
  */
-public interface ShellApp {
+public class AppViewTestImpl implements AppTestView {
 
-    View start(ShellAppContext context);
+    public AppViewTestImpl() {
+    }
 
-    void locationChanged(Location location);
+    @Override
+    public Component asVaadinComponent() {
+        return null;
+    }
 }

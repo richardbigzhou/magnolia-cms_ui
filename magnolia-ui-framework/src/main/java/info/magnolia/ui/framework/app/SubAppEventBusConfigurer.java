@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.view;
+package info.magnolia.ui.framework.app;
 
-import java.io.Serializable;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 
-import com.vaadin.ui.Component;
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
 /**
- * Marker interface for views. Extends {@link Serializable} because all Vaadin components need to be serializable.
- *
- * @see ViewPort
+ * Configures an {@link info.magnolia.event.EventBus} bound to the name <code>subapp</code>.
  */
-public interface View extends Serializable {
+public class SubAppEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
-    /**
-     * Returns the Vaadin component representing this view.
-     */
-    Component asVaadinComponent();
+    public static final String EVENT_BUS_NAME = "subapp";
+
+    @Override
+    protected void configure() {
+        bind(EventBus.class).annotatedWith(Names.named(EVENT_BUS_NAME)).toProvider(Providers.of(new SimpleEventBus()));
+    }
 }

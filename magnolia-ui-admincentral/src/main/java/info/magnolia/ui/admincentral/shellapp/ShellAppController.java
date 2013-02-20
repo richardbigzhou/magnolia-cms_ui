@@ -31,14 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.admincentral.shellapp;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherShellApp;
-import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesShellApp;
-import info.magnolia.ui.admincentral.shellapp.pulse.PulseShellApp;
-import info.magnolia.ui.framework.app.ShellApp;
-import info.magnolia.ui.framework.app.ShellAppContext;
+import info.magnolia.ui.admincentral.ShellImpl;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -46,8 +42,9 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
+import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.vaadin.view.Viewport;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,32 +63,36 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
 
     private final ComponentProvider componentProvider;
 
-    private final Shell shell;
+    private final ShellImpl shell;
 
-    private ViewPort viewPort;
+    private Viewport viewport;
 
     @Inject
     public ShellAppController(ComponentProvider componentProvider, Shell shell, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus admincentralEventBus) {
         this.componentProvider = componentProvider;
-        this.shell = shell;
+        this.shell = (ShellImpl) shell;
+        this.shell.setShellAppLocationProvider(new ShellImpl.ShellAppLocationProvider() {
 
-        addShellApp("applauncher", AppLauncherShellApp.class);
-        addShellApp("pulse", PulseShellApp.class);
-        addShellApp("favorite", FavoritesShellApp.class);
+            @Override
+            public Location getShellAppLocation(String name) {
+                ShellAppContextImpl context = contexts.get(name);
+                return context != null ? context.getCurrentLocation() : null;
+            }
+        });
 
         admincentralEventBus.addHandler(LocationChangedEvent.class, this);
         admincentralEventBus.addHandler(LocationChangeRequestedEvent.class, this);
     }
 
-    private void addShellApp(String name, Class<? extends ShellApp> clazz) {
+    public void addShellApp(String name, Class<? extends ShellApp> clazz) {
         ShellAppContextImpl appContext = new ShellAppContextImpl(name);
         appContext.setAppClass(clazz);
         appContext.start();
         contexts.put(name, appContext);
     }
 
-    public void setViewPort(ViewPort viewPort) {
-        this.viewPort = viewPort;
+    public void setViewport(Viewport viewport) {
+        this.viewport = viewport;
     }
 
     @Override
@@ -103,23 +104,18 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
 
         Location newLocation = event.getNewLocation();
         if (!newLocation.getAppType().equals(Location.LOCATION_TYPE_SHELL_APP)) {
-            viewPort.setView(null);
+            viewport.setView(null);
             return;
         }
 
         ShellAppContextImpl nextContext = contexts.get(newLocation.getAppId());
         if (nextContext == null) {
-            viewPort.setView(null);
+            viewport.setView(null);
             return;
         }
 
         nextContext.onLocationUpdate(newLocation);
-        viewPort.setView(nextContext.getView());
-    }
-
-    public Location getCurrentLocation(String name) {
-        ShellAppContextImpl context = contexts.get(name);
-        return context != null ? context.getCurrentLocation() : null;
+        viewport.setView(nextContext.getView());
     }
 
     private class ShellAppContextImpl implements ShellAppContext {
@@ -160,10 +156,21 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
         public void start() {
             shellApp = componentProvider.newInstance(appClass);
             view = shellApp.start(this);
+            shell.registerShellApp(ShellAppType.valueOf(name.toUpperCase()), view.asVaadinComponent());
         }
 
         public void onLocationUpdate(Location newLocation) {
             shellApp.locationChanged(newLocation);
+        }
+
+        @Override
+        public void updateIndication(int incrementOrDecrement) {
+            shell.updateShellAppIndication(ShellAppType.valueOf(name.toUpperCase()), incrementOrDecrement);
+        }
+
+        @Override
+        public void setIndication(int indication) {
+            shell.setIndication(ShellAppType.valueOf(name.toUpperCase()), indication);
         }
     }
 }

@@ -31,12 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.simple;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.app.BaseApp;
-import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.AppView;
 
 import java.util.ArrayList;
 import java.util.HashMap;

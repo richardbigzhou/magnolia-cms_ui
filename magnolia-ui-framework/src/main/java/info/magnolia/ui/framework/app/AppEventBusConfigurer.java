@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.view;
+package info.magnolia.ui.framework.app;
+
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
+
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
 /**
- * Implemented by displays that can be given an {@link View} to show.
- *
- * @see View
+ * Configures an {@link EventBus} bound to the name <code>app</code>.
  */
-public interface ViewPort {
+public class AppEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
-    /**
-     * Set the only component of the receiver, replacing the previous view if there was one.
-     */
-    void setView(View view);
+    public static final String EVENT_BUS_NAME = "app";
 
+    @Override
+    protected void configure() {
+        bind(EventBus.class).annotatedWith(Names.named(AppEventBusConfigurer.EVENT_BUS_NAME)).toProvider(Providers.of(new SimpleEventBus()));
+    }
 }

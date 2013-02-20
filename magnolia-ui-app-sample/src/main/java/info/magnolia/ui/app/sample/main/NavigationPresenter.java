@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.sample.main;
 
-import info.magnolia.ui.framework.event.AppEventBusConfigurer;
+import info.magnolia.ui.framework.app.AppEventBusConfigurer;
 import info.magnolia.event.EventBus;
 
 import javax.inject.Inject;

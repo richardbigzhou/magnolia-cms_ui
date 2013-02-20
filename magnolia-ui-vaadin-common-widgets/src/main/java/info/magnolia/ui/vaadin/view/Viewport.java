@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral;
-
-import info.magnolia.ui.framework.view.View;
+package info.magnolia.ui.vaadin.view;
 
 /**
- * Interface of the main MagnoliaShell view.
+ * Implemented by displays that can be given an {@link View} to show.
+ *
+ * @see View
  */
-public interface MagnoliaShellView extends View {
-
-    void setPresenter(Presenter presenter);
-
-    @Override
-    public MagnoliaShell asVaadinComponent();
+public interface Viewport {
 
     /**
-     * Presenter interface that interacts with MagnoliaShell view.
+     * Set the only component of the receiver, replacing the previous view if there was one.
      */
-    public interface Presenter {
+    void setView(View view);
 
-    }
 }

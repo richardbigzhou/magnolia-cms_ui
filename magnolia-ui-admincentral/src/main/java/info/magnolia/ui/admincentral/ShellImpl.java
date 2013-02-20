@@ -35,8 +35,8 @@ package info.magnolia.ui.admincentral;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.event.EventHandlerCollection;
 import info.magnolia.event.HandlerRegistration;
-import info.magnolia.ui.admincentral.app.simple.ShellAppController;
 import info.magnolia.ui.admincentral.dialog.BaseDialogPresenter;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
@@ -50,72 +50,121 @@ import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
+import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
+import info.magnolia.ui.vaadin.view.Viewport;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
-import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
 
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Provider;
 import javax.inject.Singleton;
 
+import com.vaadin.ui.Component;
 import org.apache.commons.lang.StringUtils;
 
 /**
  * Admin shell.
  */
 @Singleton
-public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEventHandler {
+public class ShellImpl implements Shell, MessageEventHandler {
+
+    /**
+     * Provides the current location of shell apps.
+     */
+    public interface ShellAppLocationProvider {
+
+        Location getShellAppLocation(String name);
+    }
 
     private final EventBus admincentralEventBus;
 
     private final AppController appController;
 
-    private final Provider<ShellAppController> shellAppControllerProvider;
-
     private final MessagesManager messagesManager;
 
+    private final MagnoliaShell magnoliaShell;
+
+    private final EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
+
+    private ShellAppLocationProvider shellAppLocationProvider;
+
     @Inject
-    public MagnoliaShell(@Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus admincentralEventBus, Provider<ShellAppController> shellAppControllerProvider, AppController appController, MessagesManager messagesManager) {
+    public ShellImpl(@Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus admincentralEventBus, final AppController appController, final MessagesManager messagesManager) {
         super();
         this.messagesManager = messagesManager;
         this.admincentralEventBus = admincentralEventBus;
         this.appController = appController;
-        this.shellAppControllerProvider = shellAppControllerProvider;
         this.admincentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
             @Override
             public void onAppFocused(AppLifecycleEvent event) {
-                setActiveViewport(appViewport());
+                magnoliaShell.setActiveViewport(magnoliaShell.getAppViewport());
             }
 
             @Override
             public void onAppStarted(AppLifecycleEvent event) {
-                MagnoliaShell.this.onAppStarted(event.getAppDescriptor().getName());
+                magnoliaShell.onAppStarted(event.getAppDescriptor().getName());
             }
 
             @Override
             public void onAppStopped(AppLifecycleEvent event) {
-                MagnoliaShell.this.onAppStopped(event.getAppDescriptor().getName());
+                magnoliaShell.onAppStopped(event.getAppDescriptor().getName());
             }
         });
 
         this.admincentralEventBus.addHandler(MessageEvent.class, this);
+
+        this.magnoliaShell = new MagnoliaShell();
+        this.magnoliaShell.setListener(new MagnoliaShell.Listener() {
+
+            @Override
+            public void onFragmentChanged(String fragment) {
+                handlers.dispatch(new FragmentChangedEvent(fragment));
+            }
+
+            @Override
+            public void stopCurrentShellApp() {
+                ShellImpl.this.stopCurrentShellApp();
+            }
+
+            @Override
+            public void stopCurrentApp() {
+                ShellImpl.this.stopCurrentApp();
+            }
+
+            @Override
+            public void removeMessage(String messageId) {
+                ShellImpl.this.removeMessage(messageId);
+            }
+
+            @Override
+            public void goToApp(Fragment fragment) {
+                ShellImpl.this.goToApp(fragment);
+            }
+
+            @Override
+            public void goToShellApp(Fragment fragment) {
+                ShellImpl.this.goToShellApp(fragment);
+            }
+        });
     }
 
-    @Override
-    public void stopCurrentApp() {
-        appViewport().pop();
+    public void setShellAppLocationProvider(ShellAppLocationProvider shellAppLocationProvider) {
+        this.shellAppLocationProvider = shellAppLocationProvider;
+    }
+
+    private void stopCurrentApp() {
+        magnoliaShell.getAppViewport().pop();
         appController.stopCurrentApp();
-        if (appViewport().isEmpty()) {
+        if (magnoliaShell.getAppViewport().isEmpty()) {
             goToShellApp(Fragment.fromString("shell:applauncher"));
         }
     }
@@ -143,7 +192,7 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
 
     @Override
     public String getFragment() {
-        return getActiveViewport().getCurrentShellFragment();
+        return magnoliaShell.getActiveViewport().getCurrentShellFragment();
     }
 
     @Override
@@ -153,23 +202,16 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
         f.setSubAppId(DefaultLocation.extractSubAppId(fragment));
         f.setParameter(DefaultLocation.extractParameter(fragment));
 
-        getActiveViewport().setCurrentShellFragment(f.toFragment());
-        propagateFragmentToClient(f);
+        magnoliaShell.getActiveViewport().setCurrentShellFragment(f.toFragment());
+        magnoliaShell.propagateFragmentToClient(f);
     }
 
     @Override
     public HandlerRegistration addFragmentChangedHandler(final FragmentChangedHandler handler) {
-        super.addFragmentChangedHanlder(handler);
-        return new HandlerRegistration() {
-            @Override
-            public void removeHandler() {
-                removeFragmentChangedHanlder(handler);
-            }
-        };
+        return handlers.add(handler);
     }
 
-    @Override
-    public void removeMessage(String messageId) {
+    private void removeMessage(String messageId) {
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
 
@@ -181,11 +223,11 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
                 event.getView().asVaadinComponent().removeDialogCloseHandler(this);
             }
         });
-        addDialog(dialogPresenter.getView().asVaadinComponent());
+        magnoliaShell.addDialog(dialogPresenter.getView().asVaadinComponent());
     }
 
     public void removeDialog(BaseDialog dialog) {
-        super.removeDialog(dialog.asVaadinComponent());
+        magnoliaShell.removeDialog(dialog.asVaadinComponent());
     }
 
     @Override
@@ -193,13 +235,13 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
         final Message message = event.getMessage();
         switch (message.getType()) {
         case WARNING:
-            showWarning(message);
+            magnoliaShell.showWarning(message.getId(), message.getSubject(), message.getMessage());
             break;
         case ERROR:
-            showError(message);
+            magnoliaShell.showError(message.getId(), message.getSubject(), message.getMessage());
             break;
         case INFO:
-            showInfo(message);
+            magnoliaShell.showInfo(message.getId(), message.getSubject(), message.getMessage());
         default:
             break;
         }
@@ -211,34 +253,31 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
 
     @Override
     public void registerApps(List<String> appNames) {
-        doRegisterApps(appNames);
+        magnoliaShell.doRegisterApps(appNames);
     }
 
-    @Override
-    public void goToApp(Fragment f) {
-        restoreAppParameter(f);
-        super.goToApp(f);
+    private void goToApp(Fragment fragment) {
+        restoreAppParameter(fragment);
+        magnoliaShell.doNavigate(magnoliaShell.getAppViewport(), fragment);
     }
 
-    @Override
-    public void goToShellApp(Fragment f) {
-        restoreShellAppParameter(f);
-        super.goToShellApp(f);
+    private void goToShellApp(Fragment fragment) {
+        restoreShellAppParameter(fragment);
+        magnoliaShell.doNavigate(magnoliaShell.getShellAppViewport(), fragment);
     }
 
-    @Override
-    public void stopCurrentShellApp() {
-        ShellViewport appViewport = appViewport();
+    private void stopCurrentShellApp() {
+        ShellViewport appViewport = magnoliaShell.getAppViewport();
         if (!appViewport.isEmpty()) {
             // An app is open.
-            setActiveViewport(appViewport);
+            magnoliaShell.setActiveViewport(appViewport);
             appController.focusCurrentApp();
         } else {
             // No apps are open.
             String appLauncherNameLower = ShellAppType.APPLAUNCHER.name().toLowerCase();
             // Only navigate if the requested location is not the applauncher
-            if (getActiveViewport() != null) {
-                String fragmentCurrent = getActiveViewport().getCurrentShellFragment();
+            if (magnoliaShell.getActiveViewport() != null) {
+                String fragmentCurrent = magnoliaShell.getActiveViewport().getCurrentShellFragment();
                 if (fragmentCurrent != null && !fragmentCurrent.startsWith(appLauncherNameLower)) {
                     goToShellApp(Fragment.fromString("shell:applauncher"));
                 }
@@ -254,7 +293,7 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
     }
 
     /**
-     * Shell's client side doesn't remeber the parameter of an app,
+     * Shell's client side doesn't remember the parameter of an app,
      * so we need to restore it from the framework internals.
      */
     private void restoreAppParameter(Fragment f) {
@@ -270,18 +309,53 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
     private void restoreShellAppParameter(Fragment f) {
         String actualParam = f.getParameter();
         if (StringUtils.isEmpty(actualParam)) {
-            Location location = shellAppControllerProvider.get().getCurrentLocation(f.getAppId());
+            Location location = shellAppLocationProvider.getShellAppLocation(f.getAppId());
             if (location != null) {
                 f.setParameter(location.getParameter());
             }
         }
     }
 
-    public ViewPort getShellAppViewport() {
-        return shellAppViewport();
+    public Viewport getShellAppViewport() {
+        return magnoliaShell.getShellAppViewport();
     }
 
-    public ViewPort getAppViewport() {
-        return appViewport();
+    public Viewport getAppViewport() {
+        return magnoliaShell.getAppViewport();
+    }
+
+    public void setIndication(ShellAppType type, int indication) {
+        magnoliaShell.setIndication(type, indication);
+    }
+
+    public void updateShellAppIndication(ShellAppType type, int incrementOrDecrement) {
+        magnoliaShell.updateShellAppIndication(type, incrementOrDecrement);
+    }
+
+    public void registerShellApp(ShellAppType type, Component component) {
+        magnoliaShell.registerShellApp(type, component);
+    }
+
+    public void hideAllMessages() {
+        magnoliaShell.hideAllMessages();
+    }
+
+    @Override
+    public void showInfo(Message message) {
+        magnoliaShell.showInfo(message.getId(), message.getSubject(), message.getMessage());
+    }
+
+    @Override
+    public void showError(Message message) {
+        magnoliaShell.showError(message.getId(), message.getSubject(), message.getMessage());
+    }
+
+    @Override
+    public void showWarning(Message message) {
+        magnoliaShell.showWarning(message.getId(), message.getSubject(), message.getMessage());
+    }
+
+    public MagnoliaShell getMagnoliaShell() {
+        return magnoliaShell;
     }
 }

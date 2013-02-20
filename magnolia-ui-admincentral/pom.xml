@@ -10,13 +10,18 @@
   <packaging>jar</packaging>
   <name>magnolia-ui-admincentral</name>
   <properties>
-    <cloverCoverageThreshold>28</cloverCoverageThreshold>
+    <cloverCoverageThreshold>24</cloverCoverageThreshold>
   </properties>
   <dependencies>
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
       <version>${magnoliaVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-framework</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>
