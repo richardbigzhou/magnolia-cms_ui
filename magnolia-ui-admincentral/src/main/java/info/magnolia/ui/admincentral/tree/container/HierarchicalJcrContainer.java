@@ -37,6 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainer;
@@ -176,25 +177,22 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
         ArrayList<Item> items = new ArrayList<Item>();
 
-        ArrayList<Node> mainItemTypeNodes = new ArrayList<Node>();
-        ArrayList<Node> groupingItemTypeNodes = new ArrayList<Node>();
+        ArrayList<Node> nodesWithMatchingItemTypes = new ArrayList<Node>();
         NodeIterator iterator = node.getNodes();
-        final String mainItemTypeName = getMainItemTypeAsString();
-        final String groupingItemTypeName = getWorkbenchDefinition().getGroupingItemType() == null ? null : getWorkbenchDefinition().getGroupingItemType().getItemType();
+        final List<ItemTypeDefinition> itemTypes = getWorkbenchDefinition().getItemTypes();
         String currentNodeTypeName;
         while (iterator.hasNext()) {
             Node next = iterator.nextNode();
             currentNodeTypeName = next.getPrimaryNodeType().getName();
-            if (mainItemTypeName.equals(currentNodeTypeName)) {
-                mainItemTypeNodes.add(next);
-            }
-            if (groupingItemTypeName != null && groupingItemTypeName.equals(currentNodeTypeName)) {
-                groupingItemTypeNodes.add(next);
+            for (ItemTypeDefinition current: itemTypes) {
+                if (current.getItemType().equals(currentNodeTypeName)) {
+                    nodesWithMatchingItemTypes.add(next);
+                    break;
+                }
             }
         }
 
-        items.addAll(groupingItemTypeNodes);
-        items.addAll(mainItemTypeNodes);
+        items.addAll(nodesWithMatchingItemTypes);
 
         if (getWorkbenchDefinition().includeProperties()) {
             ArrayList<Property> properties = new ArrayList<Property>();

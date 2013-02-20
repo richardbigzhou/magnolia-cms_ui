@@ -109,7 +109,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         ItemTypeDefinition itemType = new ConfiguredItemTypeDefinition();
         ((ConfiguredItemTypeDefinition) itemType).setItemType(NodeTypes.Content.NAME);
-        configuredWorkbench.setMainItemType(itemType);
+        configuredWorkbench.addItemType(itemType);
 
         workbenchDefinition = configuredWorkbench;
 
@@ -355,7 +355,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         node1.getSession().save();
         ConfiguredItemTypeDefinition type1 = new ConfiguredItemTypeDefinition();
         type1.setItemType(NodeTypes.Content.NAME);
-        workbenchDefinition.setMainItemType(type1);
+        workbenchDefinition.addItemType(type1);
         workbenchDefinition.setIncludeProperties(true);
 
         // WHEN
@@ -409,7 +409,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         rootNode.getSession().save();
         ConfiguredItemTypeDefinition type1 = new ConfiguredItemTypeDefinition();
         type1.setItemType(NodeTypes.Content.NAME);
-        workbenchDefinition.setMainItemType(type1);
+        workbenchDefinition.addItemType(type1);
         workbenchDefinition.setIncludeProperties(true);
 
         // WHEN
@@ -417,7 +417,6 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertEquals(3, res.size());
-
     }
 
     @Test
@@ -425,7 +424,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         // GIVEN
         ConfiguredItemTypeDefinition itemTypeDef = new ConfiguredItemTypeDefinition();
         itemTypeDef.setItemType(NodeTypes.ContentNode.NAME);
-        workbenchDefinition.setMainItemType(itemTypeDef);
+        workbenchDefinition.addItemType(itemTypeDef);
         workbenchDefinition.setIncludeProperties(true);
         Session session = SessionTestUtil.createSession("config", "/server/filters/zzz", "/server/filters/abc", "/server/filters/aaa", "/server/filters/foo", "/server/filters/qux");
 
@@ -440,5 +439,4 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         assertEquals("/server/filters/foo", items[3].getPath());
         assertEquals("/server/filters/qux", items[4].getPath());
     }
-
 }

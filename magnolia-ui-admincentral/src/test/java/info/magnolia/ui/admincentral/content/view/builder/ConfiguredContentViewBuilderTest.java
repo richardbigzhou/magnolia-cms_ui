@@ -92,7 +92,7 @@ public class ConfiguredContentViewBuilderTest {
 
         final ConfiguredItemTypeDefinition itemTypeDefinition = new ConfiguredItemTypeDefinition();
         itemTypeDefinition.setItemType("qux");
-        workbenchDef.setMainItemType(itemTypeDefinition);
+        workbenchDef.addItemType(itemTypeDefinition);
         final LabelColumnDefinition def = new LabelColumnDefinition();
         def.setName("foo");
         workbenchDef.addColumn(def);

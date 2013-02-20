@@ -82,13 +82,8 @@ public class WorkbenchBuilder {
         return this;
     }
 
-    public WorkbenchBuilder groupingItemType(ItemTypeBuilder itemType) {
-        definition.setGroupingItemType(itemType.exec());
-        return this;
-    }
-
-    public WorkbenchBuilder mainItemType(ItemTypeBuilder itemType) {
-        definition.setMainItemType(itemType.exec());
+    public WorkbenchBuilder itemType(ItemTypeBuilder itemType) {
+        definition.addItemType(itemType.exec());
         return this;
     }
 

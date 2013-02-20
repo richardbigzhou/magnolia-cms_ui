@@ -51,6 +51,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -188,13 +190,11 @@ public class ContentPresenter implements ContentView.Listener {
         if (item instanceof JcrNodeAdapter) {
             JcrNodeAdapter node = (JcrNodeAdapter) item;
             String typeName = node.getPrimaryNodeTypeName();
-            ItemTypeDefinition groupingType = workbenchDefinition.getGroupingItemType();
-            ItemTypeDefinition mainType = workbenchDefinition.getMainItemType();
-
-            if (groupingType != null && groupingType.getItemType().equals(typeName)) {
-                return groupingType.getIcon();
-            } else if (mainType != null && mainType.getItemType().equals(typeName)) {
-                return mainType.getIcon();
+            List<ItemTypeDefinition> itemTypes = workbenchDefinition.getItemTypes();
+            for (ItemTypeDefinition currentItemType: itemTypes) {
+                if (currentItemType.getItemType().equals(typeName)) {
+                    return currentItemType.getIcon();
+                }
             }
         }
 

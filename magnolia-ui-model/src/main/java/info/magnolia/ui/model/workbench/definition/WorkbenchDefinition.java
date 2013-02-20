@@ -54,14 +54,9 @@ public interface WorkbenchDefinition extends Serializable {
     String getPath();
 
     /**
-     * @return the grouping ItemType used in the tree view.
+     * @return the ItemTypes used in the tree view.
      */
-    ItemTypeDefinition getGroupingItemType();
-
-    /**
-     * @return the main ItemType. Used in all views.
-     */
-    ItemTypeDefinition getMainItemType();
+    List<ItemTypeDefinition> getItemTypes();
 
     /**
      * @return whether properties should be displayed as well (or just nodes)
