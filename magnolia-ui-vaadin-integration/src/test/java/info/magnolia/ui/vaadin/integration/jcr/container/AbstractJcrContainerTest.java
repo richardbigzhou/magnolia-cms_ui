@@ -57,10 +57,6 @@ import java.util.Arrays;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.ValueFormatException;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.version.VersionException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -217,7 +213,6 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         final Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         final Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
-        final String containerItemId1 = node1.getPath();
         final String containerItemId2 = node2.getPath();
         setSorter("name", true);
 
@@ -590,8 +585,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         jcrContainer.sort(Arrays.asList(sortingPorperty).toArray(), ascendingOrder);
     }
 
-    public static Node createNode(Node rootNode, String nodename, String nodeType, String nodePropertyName, String nodePropertyValue)
-            throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public static Node createNode(Node rootNode, String nodename, String nodeType, String nodePropertyName, String nodePropertyValue) throws RepositoryException {
         Node node = rootNode.addNode(nodename, nodeType);
         node.setProperty(nodePropertyName, nodePropertyValue);
         return node;
@@ -606,48 +600,20 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
             super(workbenchDefinition);
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.vaadin.data.Container.ItemSetChangeNotifier#addItemSetChangeListener(com.vaadin.data.Container.ItemSetChangeListener)
-         */
         @Override
         public void addItemSetChangeListener(ItemSetChangeListener listener) {
-            // TODO Auto-generated method stub
-
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.vaadin.data.Container.ItemSetChangeNotifier#removeItemSetChangeListener(com.vaadin.data.Container.ItemSetChangeListener)
-         */
         @Override
         public void removeItemSetChangeListener(ItemSetChangeListener listener) {
-            // TODO Auto-generated method stub
-
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.vaadin.data.Container.PropertySetChangeNotifier#addPropertySetChangeListener(com.vaadin.data.Container.PropertySetChangeListener)
-         */
         @Override
         public void addPropertySetChangeListener(PropertySetChangeListener listener) {
-            // TODO Auto-generated method stub
-
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.vaadin.data.Container.PropertySetChangeNotifier#removePropertySetChangeListener(com.vaadin.data.Container.PropertySetChangeListener)
-         */
         @Override
         public void removePropertySetChangeListener(PropertySetChangeListener listener) {
-            // TODO Auto-generated method stub
-
         }
     }
 }
