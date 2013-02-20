@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.model.workbench.definition;
 
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
@@ -62,8 +61,6 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     private List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
 
     private ActionbarDefinition actionbar;
-
-    private ComponentProviderConfiguration components;
 
     private boolean dialogWorkbench = false;
 
@@ -149,15 +146,6 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     public void setActionbar(ActionbarDefinition actionbar) {
         this.actionbar = actionbar;
-    }
-
-    @Override
-    public ComponentProviderConfiguration getComponents() {
-        return components;
-    }
-
-    public void setComponents(ComponentProviderConfiguration components) {
-        this.components = components;
     }
 
     @Override
