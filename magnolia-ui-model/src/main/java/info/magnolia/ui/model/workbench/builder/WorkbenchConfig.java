@@ -42,7 +42,7 @@ public class WorkbenchConfig {
         return new WorkbenchBuilder();
     }
 
-    public ItemTypeBuilder itemType(String itemType) {
-        return new ItemTypeBuilder(itemType);
+    public NodeTypeBuilder nodeType(String nodeType) {
+        return new NodeTypeBuilder(nodeType);
     }
 }

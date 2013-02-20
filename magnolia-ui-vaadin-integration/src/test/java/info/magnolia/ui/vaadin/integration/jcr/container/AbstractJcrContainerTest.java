@@ -40,7 +40,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
-import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
+import info.magnolia.ui.model.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
@@ -51,10 +51,6 @@ import java.util.Arrays;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.ValueFormatException;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.version.VersionException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +58,7 @@ import org.junit.Test;
 import com.vaadin.data.Property;
 
 /**
- * Tests for AbstractJcrContainer.
+ * Tests.
  */
 public class AbstractJcrContainerTest extends RepositoryTestCase {
 
@@ -91,9 +87,9 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench.setWorkspace(workspace);
         configuredWorkbench.setPath("/");
 
-        ConfiguredItemTypeDefinition mainItemType = new ConfiguredItemTypeDefinition();
-        mainItemType.setItemType(NodeTypes.Content.NAME);
-        configuredWorkbench.setMainItemType(mainItemType);
+        ConfiguredNodeTypeDefinition mainNodeTypeDefinition = new ConfiguredNodeTypeDefinition();
+        mainNodeTypeDefinition.setName(NodeTypes.Content.NAME);
+        configuredWorkbench.addNodeType(mainNodeTypeDefinition);
 
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);
@@ -207,7 +203,6 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         final Node node1 = createNode(rootNode, "node1", NodeTypes.Content.NAME, "name", "name1");
         final Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
-        final String containerItemId1 = node1.getPath();
         final String containerItemId2 = node2.getPath();
         setSorter("name", true);
 
@@ -435,31 +430,35 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetMainItemTypeWhenNotDefinedProperly() {
+    public void testGetMainNodeTypeWhenNoNodeTypeIsDefined() {
         // GIVEN
-        ConfiguredItemTypeDefinition defWithoutItemType = new ConfiguredItemTypeDefinition();
-        workbenchDefinition.setMainItemType(defWithoutItemType);
+        // we cannot use default jcrContainer from setUp here - it already has a different NodeType as main NodeType (first in nodeTypes).
+        workbenchDefinition = new ConfiguredWorkbenchDefinition();
+        jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
 
         // WHEN
-        final String result = jcrContainer.getMainItemTypeAsString();
+        final String result = jcrContainer.getMainNodeType();
 
         // THEN
         assertEquals(AbstractJcrContainer.DEFAULT_MAIN_ITEM_TYPE, result);
     }
 
     @Test
-    public void testGetMainItemType() {
+    public void testGetMainNodeType() {
         // GIVEN
-        final String testItemType = "mgnl:test";
-        ConfiguredItemTypeDefinition def = new ConfiguredItemTypeDefinition();
-        def.setItemType(testItemType);
-        workbenchDefinition.setMainItemType(def);
+        final String testNodeType = "mgnl:test";
+        ConfiguredNodeTypeDefinition def = new ConfiguredNodeTypeDefinition();
+        def.setName(testNodeType);
+        // we cannot use default jcrContainer from setUp here - it already has a different NodeType as main NodeType (first in nodeTypes).
+        workbenchDefinition = new ConfiguredWorkbenchDefinition();
+        workbenchDefinition.addNodeType(def);
+        jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
 
         // WHEN
-        final String result = jcrContainer.getMainItemTypeAsString();
+        final String result = jcrContainer.getMainNodeType();
 
         // THEN
-        assertEquals(testItemType, result);
+        assertEquals(testNodeType, result);
     }
 
     @Test
@@ -542,8 +541,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testConstructJCRQueryReturnDefaultSelectStatement() {
         // GIVEN
-        // default mainItemType used by constructJCRQuery() is mgnl:content
-
+        // default nodeType used by constructJCRQuery() is mgnl:content
         final String expected = String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME);
 
         // WHEN
@@ -577,8 +575,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         jcrContainer.sort(Arrays.asList(sortingPorperty).toArray(), ascendingOrder);
     }
 
-    public static Node createNode(Node rootNode, String nodename, String nodeType, String nodePropertyName, String nodePropertyValue)
-            throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public static Node createNode(Node rootNode, String nodename, String nodeType, String nodePropertyName, String nodePropertyValue) throws RepositoryException {
         Node node = rootNode.addNode(nodename, nodeType);
         node.setProperty(nodePropertyName, nodePropertyValue);
         return node;
@@ -593,48 +590,20 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
             super(workbenchDefinition);
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see com.vaadin.data.Container.ItemSetChangeNotifier#addItemSetChangeListener(com.vaadin.data.Container.ItemSetChangeListener)
-         */
         @Override
         public void addItemSetChangeListener(ItemSetChangeListener listener) {
-            // TODO Auto-generated method stub
-
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see com.vaadin.data.Container.ItemSetChangeNotifier#removeItemSetChangeListener(com.vaadin.data.Container.ItemSetChangeListener)
-         */
         @Override
         public void removeItemSetChangeListener(ItemSetChangeListener listener) {
-            // TODO Auto-generated method stub
-
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see com.vaadin.data.Container.PropertySetChangeNotifier#addPropertySetChangeListener(com.vaadin.data.Container.PropertySetChangeListener)
-         */
         @Override
         public void addPropertySetChangeListener(PropertySetChangeListener listener) {
-            // TODO Auto-generated method stub
-
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see com.vaadin.data.Container.PropertySetChangeNotifier#removePropertySetChangeListener(com.vaadin.data.Container.PropertySetChangeListener)
-         */
         @Override
         public void removePropertySetChangeListener(PropertySetChangeListener listener) {
-            // TODO Auto-generated method stub
-
         }
     }
 }

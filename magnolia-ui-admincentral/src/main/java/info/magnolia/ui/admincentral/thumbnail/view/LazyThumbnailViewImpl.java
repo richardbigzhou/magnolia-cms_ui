@@ -131,12 +131,6 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         return margin;
     }
 
-    private String prepareJcrSQL2Query() {
-        final String itemType = workbenchDefinition.getMainItemType().getItemType();
-        return "select * from [" + itemType + "] as t order by name(t)";
-
-    }
-
     private JcrNodeAdapter getThumbnailNodeAdapterByIdentifier(final String thumbnailId) {
         try {
             Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());

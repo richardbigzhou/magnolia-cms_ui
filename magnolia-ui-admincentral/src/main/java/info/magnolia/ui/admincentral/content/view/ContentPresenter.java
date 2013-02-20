@@ -45,11 +45,13 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
+import info.magnolia.ui.model.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -188,13 +190,11 @@ public class ContentPresenter implements ContentView.Listener {
         if (item instanceof JcrNodeAdapter) {
             JcrNodeAdapter node = (JcrNodeAdapter) item;
             String typeName = node.getPrimaryNodeTypeName();
-            ItemTypeDefinition groupingType = workbenchDefinition.getGroupingItemType();
-            ItemTypeDefinition mainType = workbenchDefinition.getMainItemType();
-
-            if (groupingType != null && groupingType.getItemType().equals(typeName)) {
-                return groupingType.getIcon();
-            } else if (mainType != null && mainType.getItemType().equals(typeName)) {
-                return mainType.getIcon();
+            List<NodeTypeDefinition> nodeTypes = workbenchDefinition.getNodeTypes();
+            for (NodeTypeDefinition currentNodeType: nodeTypes) {
+                if (currentNodeType.getName().equals(typeName)) {
+                    return currentNodeType.getIcon();
+                }
             }
         }
 

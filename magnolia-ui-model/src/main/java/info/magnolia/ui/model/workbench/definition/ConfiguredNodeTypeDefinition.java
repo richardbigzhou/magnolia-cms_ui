@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.workbench.builder;
-
-import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
-import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
+package info.magnolia.ui.model.workbench.definition;
 
 /**
- * Builder for building an item type definition.
+ * Configuration for a definition of a NodeType. e.g. used for inclusion in a tree.
  *
- * @see WorkbenchBuilder
+ * @see info.magnolia.jcr.util.NodeTypes
  */
-public class ItemTypeBuilder {
+public class ConfiguredNodeTypeDefinition implements NodeTypeDefinition {
 
-    private ConfiguredItemTypeDefinition definition = new ConfiguredItemTypeDefinition();
+    private String name;
 
-    public ItemTypeBuilder(String itemType) {
-        definition.setItemType(itemType);
+    private String icon;
+
+    @Override
+    public String getName() {
+        return name;
     }
 
-    public ItemTypeBuilder icon(String icon) {
-        definition.setIcon(icon);
-        return this;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public ItemTypeDefinition exec() {
-        return definition;
+    @Override
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }
