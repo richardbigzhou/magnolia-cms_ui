@@ -57,9 +57,9 @@ import com.vaadin.ui.UI;
  */
 @Theme("admincentraltheme")
 @PreserveOnRefresh
-public class AdminCentralUI extends UI {
+public class AdmincentralUI extends UI {
 
-    private static final Logger log = LoggerFactory.getLogger(AdminCentralUI.class);
+    private static final Logger log = LoggerFactory.getLogger(AdmincentralUI.class);
 
     private static final Boolean isDeviceOverrideTablet = true;
 
