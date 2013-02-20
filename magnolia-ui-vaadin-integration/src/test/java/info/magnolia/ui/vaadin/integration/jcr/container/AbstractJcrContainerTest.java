@@ -160,7 +160,6 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         String containerItemId1 = node1.getPath();
         String containerItemId2 = node2.getPath();
         setSorter("name", true);
-        jcrContainer.getItem(containerItemId1);
 
         // WHEN
         String containerItemId2Res = (String) jcrContainer.nextItemId(containerItemId1);
@@ -179,7 +178,6 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         String containerItemId1 = node1.getPath();
         String containerItemId2 = node2.getPath();
         setSorter("name", true);
-        jcrContainer.getItem(containerItemId1);
         // WHEN
         String containerItemId1Res = (String) jcrContainer.prevItemId(containerItemId2);
 
@@ -195,7 +193,6 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         node1.getSession().save();
         String containerItemId1 = node1.getPath();
         setSorter("name", true);
-        jcrContainer.getItem(containerItemId1);
 
         // WHEN
         String containerItemRes = (String) jcrContainer.firstItemId();
@@ -232,7 +229,6 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         String containerItemId1 = node1.getPath();
         String containerItemId2 = node2.getPath();
         setSorter("name", true);
-        jcrContainer.getItem(containerItemId1);
 
         // WHEN
         boolean containerItemRes1 = jcrContainer.isFirstId(containerItemId1);
