@@ -47,7 +47,10 @@ import org.junit.Test;
 public class AbstractActionFactoryTest {
 
     public static class TestActionDefinition implements ActionDefinition {
-
+        @Override
+        public Class<? extends Action> getImplementationClass() {
+            return TestAction.class;
+        }
     }
 
     public static class TestAction extends ActionBase<ActionDefinition> {

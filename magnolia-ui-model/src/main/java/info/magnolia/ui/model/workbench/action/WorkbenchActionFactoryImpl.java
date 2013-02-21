@@ -37,7 +37,6 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.model.action.AbstractActionFactory;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 
 import java.io.Serializable;
 
@@ -52,12 +51,8 @@ import javax.jcr.Item;
 public class WorkbenchActionFactoryImpl extends AbstractActionFactory<ActionDefinition, Action> implements WorkbenchActionFactory, Serializable {
 
     @Inject
-    public WorkbenchActionFactoryImpl(ComponentProvider componentProvider, WorkbenchActionRegistry workbenchActionRegistry) {
+    public WorkbenchActionFactoryImpl(ComponentProvider componentProvider) {
         super(componentProvider);
-
-        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : workbenchActionRegistry.getDefinitionToImplementationMappings()) {
-            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
-        }
     }
 
     @Override
