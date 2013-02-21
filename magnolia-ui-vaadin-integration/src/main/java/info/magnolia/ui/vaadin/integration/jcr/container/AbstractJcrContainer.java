@@ -116,10 +116,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     private static final Long LONG_ZERO = Long.valueOf(0);
 
     /**
-     * Item type to use if no other is properly defined.
-     * TODO dlipp rename!
+     * Node type to use if none is configured.
      */
-    public static final String DEFAULT_MAIN_ITEM_TYPE = NodeTypes.Content.NAME;
+    public static final String DEFAULT_NODE_TYPE = NodeTypes.Content.NAME;
 
     private static final String QUERY_LANGUAGE = Query.JCR_JQOM;
 
@@ -649,7 +648,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
     protected String getMainNodeType() {
         final List<NodeTypeDefinition> nodeTypes = workbenchDefinition.getNodeTypes();
-        return nodeTypes.isEmpty() ? DEFAULT_MAIN_ITEM_TYPE : nodeTypes.get(0).getName();
+        return nodeTypes.isEmpty() ? DEFAULT_NODE_TYPE : nodeTypes.get(0).getName();
     }
 
     /**
@@ -658,9 +657,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     public final void updateSize() {
         try {
             final String stmt = constructJCRQuery(false);
-            if (stmt == null) {
-                return;
-            }
             // query for all items in order to get the size
             final QueryResult queryResult = executeQuery(stmt, QUERY_LANGUAGE, 0, 0);
 

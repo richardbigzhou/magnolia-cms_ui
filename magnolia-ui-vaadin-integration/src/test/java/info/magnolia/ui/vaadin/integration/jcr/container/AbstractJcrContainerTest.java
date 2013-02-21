@@ -450,7 +450,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         final String result = jcrContainer.getMainNodeType();
 
         // THEN
-        assertEquals(AbstractJcrContainer.DEFAULT_MAIN_ITEM_TYPE, result);
+        assertEquals(AbstractJcrContainer.DEFAULT_NODE_TYPE, result);
     }
 
     @Test

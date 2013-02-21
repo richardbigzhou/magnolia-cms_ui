@@ -112,7 +112,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
      */
     protected String getMainNodeType() {
         final List<NodeTypeDefinition> nodeTypes = workbenchDefinition.getNodeTypes();
-        return nodeTypes.isEmpty() ? AbstractJcrContainer.DEFAULT_MAIN_ITEM_TYPE : nodeTypes.get(0).getName();
+        return nodeTypes.isEmpty() ? AbstractJcrContainer.DEFAULT_NODE_TYPE : nodeTypes.get(0).getName();
     }
 
     protected String prepareSelectQueryStatement() {
