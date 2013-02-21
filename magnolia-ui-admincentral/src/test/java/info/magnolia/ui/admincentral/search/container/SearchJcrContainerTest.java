@@ -34,20 +34,13 @@
 package info.magnolia.ui.admincentral.search.container;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
-
-import java.util.ArrayList;
 
 import javax.jcr.Session;
 
@@ -73,9 +66,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench.setWorkspace(workspace);
         configuredWorkbench.setPath("/");
         // Init workBench
-        WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
-        when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>());
-        WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl(null, workbenchActionRegistry);
+        WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl(null);
         // Init col
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);

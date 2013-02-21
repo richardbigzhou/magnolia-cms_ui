@@ -34,8 +34,7 @@
 package info.magnolia.ui.admincentral.content.view.builder;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
-
+import static org.mockito.Mockito.mock;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.test.mock.MockUtil;
@@ -46,18 +45,12 @@ import info.magnolia.ui.admincentral.list.view.ListView;
 import info.magnolia.ui.admincentral.search.view.SearchView;
 import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailView;
 import info.magnolia.ui.admincentral.tree.view.TreeView;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.column.definition.LabelColumnDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry;
 import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
-
-import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.Before;
@@ -79,10 +72,8 @@ public class ConfiguredContentViewBuilderTest {
         final String workspace = "website";
         final MockSession session = new MockSession(workspace);
         MockUtil.setSessionAndHierarchyManager(session);
-        WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
-        when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>());
 
-        componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl(null, workbenchActionRegistry));
+        componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl(null));
         final ImageProviderDefinition imageProvider = mock(ImageProviderDefinition.class);
         componentProvider.setInstance(ImageProviderDefinition.class, imageProvider);
 
