@@ -43,7 +43,8 @@ import info.magnolia.ui.model.builder.FactoryBase;
  * @param <I> implementation parent type
  * @see FactoryBase
  */
-public abstract class AbstractActionFactory<D extends ActionDefinition, I extends Action> extends FactoryBase<D, I> implements ActionFactory<D, I> {
+public abstract class AbstractActionFactory<D extends ActionDefinition, I extends Action> 
+    extends FactoryBase<D, I> implements ActionFactory<D, I> {
 
     public AbstractActionFactory(ComponentProvider componentProvider) {
         super(componentProvider);
@@ -51,11 +52,17 @@ public abstract class AbstractActionFactory<D extends ActionDefinition, I extend
 
     @Override
     public void addMapping(Class<? extends D> definitionClass, Class<? extends I> implementationClass) {
-        super.addMapping(definitionClass, implementationClass);
+        super.addMapping(definitionClass, null);
     }
 
     @Override
     public I createAction(D definition, Object... parameters) {
         return super.create(definition, parameters);
     }
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Class<? extends I> resolveImplementationClass(D definition) {
+        return (Class<? extends I>)definition.getImplementationClass();
+    };
 }

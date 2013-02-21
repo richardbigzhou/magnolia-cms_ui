@@ -33,11 +33,17 @@
  */
 package info.magnolia.ui.app.pages.action;
 
+import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
  * Definition interface for the preview page action.
  */
 public class PreviewPageActionDefinition implements ActionDefinition {
+    
+    @Override
+    public Class<? extends ActionBase<?>> getImplementationClass() {
+        return PreviewPageAction.class;
+    }
 
 }

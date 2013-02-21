@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.form.action;
 
+import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
@@ -79,4 +80,8 @@ public class CreateItemActionDefinition implements ActionDefinition {
         this.nodeType = nodeType;
     }
 
+    @Override
+    public Class<? extends ActionBase<?>> getImplementationClass() {
+        return CreateItemAction.class;
+    }
 }

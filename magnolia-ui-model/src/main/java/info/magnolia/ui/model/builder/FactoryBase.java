@@ -84,7 +84,7 @@ public abstract class FactoryBase<D, I> {
         return null;
     }
 
-    private Class<? extends I> resolveImplementationClass(D definition) {
+    protected Class<? extends I> resolveImplementationClass(D definition) {
         final Class<?> definitionClass = definition.getClass();
         if (mapping.containsKey(definitionClass)) {
             return mapping.get(definitionClass);

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.pages.action;
 
+import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
@@ -40,4 +41,8 @@ import info.magnolia.ui.model.action.ActionDefinition;
  */
 public class EditPageActionDefinition implements ActionDefinition {
 
+    @Override
+    public Class<? extends ActionBase<?>> getImplementationClass() {
+        return EditPageAction.class;
+    }
 }

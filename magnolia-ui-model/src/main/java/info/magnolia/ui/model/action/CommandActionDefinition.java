@@ -81,4 +81,9 @@ public class CommandActionDefinition implements ActionDefinition {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
+
+    @Override
+    public Class<? extends Action> getImplementationClass() {
+        return null;
+    }
 }

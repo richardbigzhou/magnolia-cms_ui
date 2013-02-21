@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
+import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.CommandActionDefinition;
 
 
@@ -40,6 +41,7 @@ import info.magnolia.ui.model.action.CommandActionDefinition;
  * Activation action definition. By default performs a non-recursive activation.
  */
 public class ActivationActionDefinition extends CommandActionDefinition {
+    
     private boolean recursive = false;
 
     public void setRecursive(boolean recursive) {
@@ -48,5 +50,10 @@ public class ActivationActionDefinition extends CommandActionDefinition {
 
     public boolean isRecursive() {
         return recursive;
+    }
+    
+    @Override
+    public Class<? extends ActionBase<?>> getImplementationClass() {
+        return ActivationAction.class;
     }
 }
