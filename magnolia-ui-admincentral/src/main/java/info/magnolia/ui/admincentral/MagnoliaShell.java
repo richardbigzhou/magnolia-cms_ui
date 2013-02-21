@@ -248,7 +248,6 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
                 // getState().modalityChild = null;
                 Connector dialog = event.getView().asVaadinComponent();
                 Connector modal = dialog.getParent();
-                // ToDO: Check: I think this modal is actually wrong - because we want to remove the Modal component that wrapped the dialog.
                 getState().modals.remove(modal);
 
                 event.getView().asVaadinComponent().removeDialogCloseHandler(this);

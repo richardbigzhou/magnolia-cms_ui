@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor.editmode.presenter;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.view.EditorView;
-import info.magnolia.ui.framework.event.EventBus;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -54,17 +54,17 @@ import com.vaadin.server.StreamResource.StreamSource;
 public class EditorPresenterImpl implements EditorPresenter {
 
     private EventBus eventBus;
-    
+
     private InputStream stream;
-    
+
     private EditorView view;
-    
+
     @Inject
     public EditorPresenterImpl(@Named("system") EventBus eventBus, EditorView view) {
         this.eventBus = eventBus;
         this.view = view;
     }
-    
+
     public EventBus getEventBus() {
         return eventBus;
     }
@@ -73,7 +73,7 @@ public class EditorPresenterImpl implements EditorPresenter {
     public void setInputStream(ByteArrayInputStream stream) {
         this.stream = stream;
     }
-    
+
     @Override
     public EditorView getView() {
         return view;
@@ -82,12 +82,12 @@ public class EditorPresenterImpl implements EditorPresenter {
     @Override
     public void updateViewData() {
         view.setResource(new StreamResource(new StreamSource() {
-            
+
             @Override
             public InputStream getStream() {
                 return stream;
             }
         }, ""));
     }
-    
+
 }

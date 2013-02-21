@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenter;
-import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition;
 import info.magnolia.ui.model.mediaeditor.registry.MediaEditorRegistry;
@@ -54,15 +54,15 @@ import javax.inject.Singleton;
 public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFactory {
 
     private ActionbarBuilder actionbarBuilder;
-    
+
     private ComponentProvider componentProvider;
-    
+
     private MediaEditorRegistry registry;
-    
+
     private EditModeBuilderFactory modeBuilderFactory;
-    
+
     private EventBus eventBus;
-    
+
     @Inject
     public MediaEditorPresenterFactoryImpl(ActionbarBuilder actionbarBuilder, ComponentProvider componentProvider,
             MediaEditorRegistry registry, @Named("system") EventBus eventBus, Shell shell, EditModeBuilderFactory builderFactory) {
@@ -72,7 +72,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         this.eventBus = eventBus;
         this.registry = registry;
     }
-    
+
     @Override
     public MediaEditorPresenter getPresenterById(String id) {
         return getPresenterByDefinition(createDefinition(id));

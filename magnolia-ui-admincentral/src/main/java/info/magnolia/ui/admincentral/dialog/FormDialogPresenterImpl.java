@@ -118,7 +118,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
         // ModalComponentContainer mcc = new ModalComponentContainer(this.getView().asVaadinComponent());
         // Open it on a subApp component.
-        Connector modalityParent = (Connector) ((BaseSubApp) subAppContext.getSubApp()).getView();
+        Connector modalityParent = (Connector) ((BaseSubApp) subAppContext.getSubApp()).getView().asVaadinComponent();
         // shell.openModal(this.getView().asVaadinComponent(), (Component) modalityParent);
         shell.openModalWithDialog(this, (Component) modalityParent);
 

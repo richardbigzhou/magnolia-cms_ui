@@ -57,6 +57,7 @@ public class ModalWidget extends SimplePanel {
         // contentPositioner.setClassName("v-modal-component-container-positioner");
         modalityCurtain.setClassName("modal-curtain");
         this.getElement().appendChild(modalityCurtain);
+
     }
 
     /*

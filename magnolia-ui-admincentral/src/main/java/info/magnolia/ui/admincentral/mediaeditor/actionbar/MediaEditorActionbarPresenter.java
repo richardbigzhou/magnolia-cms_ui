@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor.actionbar;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenterBase;
-import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -46,7 +46,7 @@ import javax.inject.Named;
  * MediaEditorActionbarPresenter.
  */
 public class MediaEditorActionbarPresenter extends ActionbarPresenterBase {
-    
+
     @Inject
     public MediaEditorActionbarPresenter(@Named("system") EventBus subAppEventBus) {
         super(subAppEventBus);
@@ -54,14 +54,14 @@ public class MediaEditorActionbarPresenter extends ActionbarPresenterBase {
 
     @Override
     public void onChangeFullScreen(boolean isFullScreen) {
-        
+
     }
-    
+
     @Override
     public void onActionbarItemClicked(String actionToken) {
         super.onActionbarItemClicked(actionToken);
     }
-    
+
     public void fireAction(ActionDefinition actionDef) throws ActionExecutionException {
         final Action action = getActionFactory().createAction(actionDef);
         if (action == null) {

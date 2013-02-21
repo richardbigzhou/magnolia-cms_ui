@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.mediaeditor.action.EditModeActionDefinition;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenter;
-import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.ActionDefinition;
 
 import java.io.ByteArrayInputStream;
@@ -65,12 +65,12 @@ public class MediaEditorPresenterImpl extends CustomField<Byte[]> implements Med
     }
 
     private MediaEditorView view;
-    
+
     private EditorPresenter editorPresenter;
-    
+
     private EditModeBuilderFactory editModeBuilderFactory;
 
-    public MediaEditorPresenterImpl(EventBus eventBus, MediaEditorView view, EditorPresenter editorPresenter, 
+    public MediaEditorPresenterImpl(EventBus eventBus, MediaEditorView view, EditorPresenter editorPresenter,
             EditModeBuilderFactory modeBuilderFactory) {
         eventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarEventHandler());
         this.view = view;
@@ -83,7 +83,7 @@ public class MediaEditorPresenterImpl extends CustomField<Byte[]> implements Med
             editModeBuilderFactory.getBuilder((EditModeActionDefinition) actionDefinition);
         }
     }
-    
+
     @Override
     public Class<? extends Byte[]> getType() {
         return Byte[].class;
