@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.message.Message;
@@ -42,7 +43,7 @@ import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
+import info.magnolia.ui.model.builder.FactoryBase;
 
 import javax.inject.Inject;
 
@@ -52,14 +53,16 @@ import javax.inject.Inject;
 public class ContentActionExecutor implements ActionExecutor {
 
     private MessagesManager messagesManager;
-    private WorkbenchActionFactory actionFactory;
+    
     private SubAppDescriptor subAppDescriptor;
-
+    
+    private ActionFactory factory;
+    
     @Inject
-    public ContentActionExecutor(MessagesManager messagesManager, final WorkbenchActionFactory actionFactory, final SubAppContext subAppContext) {
+    public ContentActionExecutor(MessagesManager messagesManager, final ComponentProvider componentProvider, final SubAppContext subAppContext) {
         this.messagesManager = messagesManager;
-        this.actionFactory = actionFactory;
         this.subAppDescriptor = subAppContext.getSubAppDescriptor();
+        this.factory = new ActionFactory(componentProvider);
     }
 
     @Override
@@ -71,14 +74,33 @@ public class ContentActionExecutor implements ActionExecutor {
         message.setType(MessageType.INFO);
 
         messagesManager.sendLocalMessage(message);
-        ActionDefinition actionDefinition = getActionDefinition(actionName);
-        Action action = actionFactory.createAction(actionDefinition, args);
-
+        Action action = createAction(actionName, args);
         action.execute();
+    }
 
+    private Action createAction(String actionName, Object... args) {
+        return factory.create(getActionDefinition(actionName), args);
     }
 
     private ActionDefinition getActionDefinition(String actionName) {
         return subAppDescriptor.getActions().get(actionName);
+    }
+    
+    private static class ActionFactory extends FactoryBase<ActionDefinition, Action> {
+
+        protected ActionFactory(ComponentProvider componentProvider) {
+            super(componentProvider);
+        }
+
+        @Override
+        protected Class<? extends Action> resolveImplementationClass(ActionDefinition definition) {
+            return definition.getImplementationClass();
+        }
+        
+        @Override
+        public Action create(ActionDefinition definition, Object... args) {
+            return super.create(definition, args);
+        }
+        
     }
 }
