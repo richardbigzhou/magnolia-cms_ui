@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,28 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.builder;
+package info.magnolia.ui.model.action.builder;
 
-import info.magnolia.ui.model.action.builder.ActionConfig;
-import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
-import info.magnolia.ui.model.column.builder.ColumnConfig;
-import info.magnolia.ui.model.dialog.builder.DialogConfig;
-import info.magnolia.ui.model.field.builder.ValidatorConfig;
-import info.magnolia.ui.model.form.builder.FieldsConfig;
-import info.magnolia.ui.model.form.builder.FormConfig;
-import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
+import info.magnolia.ui.model.action.Action;
 
 /**
- * Main config object for creating UI definitions.
+ * ActionBuilder.
  */
-public class UiConfig {
+public class ActionBuilder {
 
-    public final WorkbenchConfig workbenches = new WorkbenchConfig();
-    public final ActionbarConfig actionbars = new ActionbarConfig();
-    public final FormConfig forms = new FormConfig();
-    public final DialogConfig dialogs = new DialogConfig();
-    public final ActionConfig actions = new ActionConfig();
-    public final FieldsConfig fields = new FieldsConfig();
-    public final ColumnConfig columns = new ColumnConfig();
-    public final ValidatorConfig validators = new ValidatorConfig();
+    private ConfiguredActionDefinition definition = new ConfiguredActionDefinition();
+
+    public ActionBuilder(String name) {
+        this.definition.setName(name);
+    }
+
+    public ActionBuilder setImplementationClass(Class<? extends Action> subAppClass) {
+        definition.setImplementationClass(subAppClass);
+        return this;
+    }
+
+    public ConfiguredActionDefinition exec() {
+        return definition;
+    }
+
+    public String getName() {
+        return definition.getName();
+    }
+
 }

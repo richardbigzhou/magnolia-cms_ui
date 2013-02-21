@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,28 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.builder;
-
-import info.magnolia.ui.model.action.builder.ActionConfig;
-import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
-import info.magnolia.ui.model.column.builder.ColumnConfig;
-import info.magnolia.ui.model.dialog.builder.DialogConfig;
-import info.magnolia.ui.model.field.builder.ValidatorConfig;
-import info.magnolia.ui.model.form.builder.FieldsConfig;
-import info.magnolia.ui.model.form.builder.FormConfig;
-import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
+package info.magnolia.ui.model.action;
 
 /**
- * Main config object for creating UI definitions.
+ * ConfiguredActionDefinition.
  */
-public class UiConfig {
+public class ConfiguredActionDefinition implements ActionDefinition {
+    private String name;
+    private Class<? extends Action> implementationClass;
 
-    public final WorkbenchConfig workbenches = new WorkbenchConfig();
-    public final ActionbarConfig actionbars = new ActionbarConfig();
-    public final FormConfig forms = new FormConfig();
-    public final DialogConfig dialogs = new DialogConfig();
-    public final ActionConfig actions = new ActionConfig();
-    public final FieldsConfig fields = new FieldsConfig();
-    public final ColumnConfig columns = new ColumnConfig();
-    public final ValidatorConfig validators = new ValidatorConfig();
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setImplementationClass(Class<? extends Action> implementationClass) {
+        this.implementationClass = implementationClass;
+    }
+
+    public Class<? extends Action> getImplementationClass() {
+        return implementationClass;
+    }
 }
