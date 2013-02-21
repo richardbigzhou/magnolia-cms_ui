@@ -118,13 +118,6 @@
       <class>info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer</class>
     </configurer>
     <component>
-      <type>info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-admincentral/workbenchActionRegistry</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-    <component>
       <type>info.magnolia.ui.admincentral.dialog.action.DialogActionRegistry</type>
       <workspace>config</workspace>
       <path>/modules/ui-admincentral/dialogActionRegistry</path>
