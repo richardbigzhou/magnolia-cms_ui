@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,31 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
-
-import info.magnolia.ui.model.action.ActionDefinition;
-
-import java.util.Map;
+package info.magnolia.ui.model.action;
 
 /**
- * Describes a sub app.
- *
- * @see SubApp
+ * ActionExecutor is responsible for creating and executing actions.
  */
-public interface SubAppDescriptor {
+public interface ActionExecutor {
 
-    String getName();
+    void execute(String actionName, Object ... args) throws ActionExecutionException;
 
-    String getLabel();
+    /**
+     * Listener interface for the ActionExecutor.
+     */
+    public interface Listener {
 
-    boolean isEnabled();
-
-    boolean isDefault();
-
-    String getIcon();
-
-    Map<String, ActionDefinition> getActions();
-
-    Class<? extends SubApp> getSubAppClass();
-
+        void onExecute(String actionName);
+    }
 }

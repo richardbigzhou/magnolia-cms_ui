@@ -67,7 +67,7 @@ public class ContentSubAppTest {
         view = mock(WorkbenchSubAppView.class);
         workbench = mock(ContentWorkbenchPresenter.class);
 
-        ActionbarPresenter actionbar = new ActionbarPresenter(subAppEventBus, appContext);
+        ActionbarPresenter actionbar = new ActionbarPresenter(appContext);
         when(workbench.getActionbarPresenter()).thenReturn(actionbar);
 
         subAppEventBus = mock(EventBus.class);

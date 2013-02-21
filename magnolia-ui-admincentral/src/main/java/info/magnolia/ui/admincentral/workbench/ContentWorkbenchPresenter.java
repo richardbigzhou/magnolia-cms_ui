@@ -34,13 +34,13 @@
 package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
-import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.admincentral.event.ItemEditedEvent;
@@ -49,10 +49,10 @@ import info.magnolia.ui.admincentral.event.SearchEvent;
 import info.magnolia.ui.admincentral.event.ViewTypeChangedEvent;
 import info.magnolia.ui.admincentral.search.view.SearchView;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
@@ -86,11 +86,13 @@ import com.vaadin.server.Resource;
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR workspace to connect to, the columns/properties to display, the available actions and so on.
  */
-public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener {
+public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener, ActionExecutor.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchPresenter.class);
 
     private final WorkbenchDefinition workbenchDefinition;
+
+    private ActionExecutor actionExecutor;
 
     private final ContentWorkbenchView view;
 
@@ -107,9 +109,10 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     private final ImageProvider imageProvider;
 
     @Inject
-    public ContentWorkbenchPresenter(final SubAppContext subAppContext, final ContentWorkbenchView view, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus admincentralEventBus,
+    public ContentWorkbenchPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentWorkbenchView view, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus admincentralEventBus,
             final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
             final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
+        this.actionExecutor = actionExecutor;
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
@@ -128,6 +131,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     public ContentWorkbenchView start() {
         view.setListener(this);
         contentPresenter.initContentView(view);
+        actionbarPresenter.setListener(this);
+
         ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar(), actionFactory);
         view.setActionbarView(actionbar);
         bindHandlers();
@@ -144,16 +149,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             }
         });
 
-        subAppEventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarItemClickedEvent.Handler() {
-
-            @Override
-            public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
-                final ActionDefinition actionDefinition = event.getActionDefinition();
-                actionbarPresenter.createAndExecuteAction(actionDefinition, workbenchDefinition.getWorkspace(), getSelectedItemId());
-                view.refresh();
-            }
-        });
-
         subAppEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
 
             @Override
@@ -166,7 +161,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
             @Override
             public void onItemDoubleClicked(ItemDoubleClickedEvent event) {
-                executeDefaultAction();
+                actionbarPresenter.executeDefaultAction();
             }
         });
 
@@ -204,16 +199,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     public String getWorkspace() {
         return workbenchDefinition.getWorkspace();
-    }
-
-    /**
-     * Executes the workbench's default action, as configured in the defaultAction property.
-     */
-    public void executeDefaultAction() {
-        ActionDefinition defaultActionDef = actionbarPresenter.getDefaultActionDefinition();
-        if (defaultActionDef != null) {
-            actionbarPresenter.createAndExecuteAction(defaultActionDef, workbenchDefinition.getWorkspace(), getSelectedItemId());
-        }
     }
 
     @Override
@@ -322,4 +307,13 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
         }
     }
 
+    @Override
+    public void onExecute(String actionName) {
+        try {
+            actionExecutor.execute(actionName, getSelectedItemId(), getWorkspace());
+            view.refresh();
+        } catch (ActionExecutionException e) {
+            throw new RuntimeException("Error executing action: " + actionName, e);
+        }
+    }
 }

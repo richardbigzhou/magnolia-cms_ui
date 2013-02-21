@@ -271,7 +271,11 @@
       <type>info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView</type>
       <implementation>info.magnolia.ui.admincentral.app.content.WorkbenchSubAppViewImpl</implementation>
     </component>
-      <component>
+    <component>
+      <type>info.magnolia.ui.model.action.ActionExecutor</type>
+      <implementation>info.magnolia.ui.admincentral.app.content.ContentActionExecutor</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
       <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
     </component>
