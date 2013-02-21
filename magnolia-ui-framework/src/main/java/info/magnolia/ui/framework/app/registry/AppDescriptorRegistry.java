@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
+import info.magnolia.event.SystemEventBus;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.event.EventBus;
-import info.magnolia.event.SystemEventBusConfigurer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,7 +71,7 @@ public class AppDescriptorRegistry {
     private EventBus systemEventBus;
 
     @Inject
-    public AppDescriptorRegistry(@Named(SystemEventBusConfigurer.EVENT_BUS_NAME) EventBus systemEventBus) {
+    public AppDescriptorRegistry(@Named(SystemEventBus.NAME) EventBus systemEventBus) {
         this.systemEventBus = systemEventBus;
     }
 
