@@ -31,14 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.event;
+package info.magnolia.ui.framework.event;
 
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
 
 /**
- * Global event fired if content was changed, deleted, added.
- * FIXME introduce more granular events
+ * Event fired when content is changed, deleted or added.
  */
 public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
 

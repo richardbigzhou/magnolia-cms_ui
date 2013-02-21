@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.content.item;
 
-import info.magnolia.ui.admincentral.event.ContentChangedEvent;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.FormPresenterFactory;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;

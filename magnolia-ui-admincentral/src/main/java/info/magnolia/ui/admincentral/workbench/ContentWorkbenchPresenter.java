@@ -41,7 +41,7 @@ import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
-import info.magnolia.ui.admincentral.event.ContentChangedEvent;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.admincentral.event.ItemEditedEvent;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
