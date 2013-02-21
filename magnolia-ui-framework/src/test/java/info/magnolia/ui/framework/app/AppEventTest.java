@@ -36,6 +36,7 @@ package info.magnolia.ui.framework.app;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.event.SystemEventBus;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ComponentsDefinition;
 import info.magnolia.module.model.ConfigurerDefinition;
@@ -49,7 +50,6 @@ import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.InvocationCountingTestEventHandler;
 import info.magnolia.event.SimpleEventBus;
-import info.magnolia.event.SystemEventBusConfigurer;
 import info.magnolia.event.TestEvent;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -237,7 +237,7 @@ public class AppEventTest {
         @Override
         protected void configure() {
             bind(EventBus.class).annotatedWith(Names.named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME)).toProvider(Providers.of(eventBus));
-            bind(EventBus.class).annotatedWith(Names.named(SystemEventBusConfigurer.EVENT_BUS_NAME)).toProvider(Providers.of(new SimpleEventBus()));
+            bind(EventBus.class).annotatedWith(Names.named(SystemEventBus.NAME)).toProvider(Providers.of(new SimpleEventBus()));
         }
     }
 }
