@@ -34,10 +34,6 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>
-      <artifactId>magnolia-rendering</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia</groupId>
       <artifactId>magnolia-module-imaging</artifactId>
     </dependency>
     <dependency>

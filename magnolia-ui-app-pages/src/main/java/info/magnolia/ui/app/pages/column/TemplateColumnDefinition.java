@@ -31,12 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.column.definition;
+package info.magnolia.ui.app.pages.column;
+
+import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 
 /**
- * Definition for TemplateColumns.
+ * Definition for a template column.
  */
 public class TemplateColumnDefinition extends AbstractColumnDefinition {
 
-    // No specific implementation.
 }
