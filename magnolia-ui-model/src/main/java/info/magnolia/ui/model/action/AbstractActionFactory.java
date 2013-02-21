@@ -43,7 +43,7 @@ import info.magnolia.ui.model.builder.FactoryBase;
  * @param <I> implementation parent type
  * @see FactoryBase
  */
-public abstract class AbstractActionFactory<D extends ActionDefinition, I extends Action> 
+public abstract class AbstractActionFactory<D extends ActionDefinition, I extends Action>
     extends FactoryBase<D, I> implements ActionFactory<D, I> {
 
     public AbstractActionFactory(ComponentProvider componentProvider) {

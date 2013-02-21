@@ -52,6 +52,7 @@ public class ConfiguredActionDefinition implements ActionDefinition {
         this.implementationClass = implementationClass;
     }
 
+    @Override
     public Class<? extends Action> getImplementationClass() {
         return implementationClass;
     }
