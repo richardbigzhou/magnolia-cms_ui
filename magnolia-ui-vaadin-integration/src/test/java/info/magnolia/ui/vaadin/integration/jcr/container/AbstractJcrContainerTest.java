@@ -34,24 +34,18 @@
 package info.magnolia.ui.vaadin.integration.jcr.container;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.model.ModelConstants;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry;
 import info.magnolia.ui.model.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.jcr.Node;
@@ -96,10 +90,6 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         ConfiguredNodeTypeDefinition mainNodeTypeDefinition = new ConfiguredNodeTypeDefinition();
         mainNodeTypeDefinition.setName(NodeTypes.Content.NAME);
         configuredWorkbench.addNodeType(mainNodeTypeDefinition);
-
-        WorkbenchActionRegistry workbenchActionRegistry = mock(WorkbenchActionRegistry.class);
-        when(workbenchActionRegistry.getDefinitionToImplementationMappings()).thenReturn(
-                new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>());
 
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);
