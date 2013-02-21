@@ -49,4 +49,9 @@ public class EditDialogActionDefinition implements ActionDefinition {
     public void setDialogName(String dialogName) {
         this.dialogName = dialogName;
     }
+    
+    @Override
+    public Class<EditDialogAction> getImplementationClass() {
+        return EditDialogAction.class;
+    }
 }

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
@@ -57,5 +58,10 @@ public class SaveDialogActionDefinition implements ActionDefinition {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    @Override
+    public Class<? extends ActionBase<?>> getImplementationClass() {
+        return SaveDialogAction.class;
     }
 }

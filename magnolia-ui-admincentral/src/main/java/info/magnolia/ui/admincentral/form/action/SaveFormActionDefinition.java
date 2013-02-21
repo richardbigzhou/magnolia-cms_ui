@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.form.action;
 
+import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
@@ -58,5 +59,10 @@ public class SaveFormActionDefinition implements ActionDefinition {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    @Override
+    public Class<? extends ActionBase<?>> getImplementationClass() {
+        return SaveFormAction.class;
     }
 }

@@ -33,10 +33,16 @@
  */
 package info.magnolia.ui.admincentral.form.action;
 
+import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
  * CancelFormActionDefinition.
  */
 public class CancelFormActionDefinition implements ActionDefinition {
+    
+    @Override
+    public Class<? extends ActionBase<?>> getImplementationClass() {
+        return CancelFormAction.class;
+    }
 }

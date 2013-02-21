@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.content.action;
 
+import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
@@ -60,5 +61,10 @@ public class EditItemActionDefinition implements ActionDefinition {
 
     public void setSubAppId(String subAppId) {
         this.subAppId = subAppId;
+    }
+    
+    @Override
+    public Class<? extends ActionBase<?>> getImplementationClass() {
+        return EditItemAction.class;
     }
 }

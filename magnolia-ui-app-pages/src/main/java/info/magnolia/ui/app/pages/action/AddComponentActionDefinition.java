@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.pages.action;
 
+import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
@@ -43,4 +44,8 @@ import info.magnolia.ui.model.action.ActionDefinition;
  */
 public class AddComponentActionDefinition implements ActionDefinition {
 
+    @Override
+    public Class<? extends Action> getImplementationClass() {
+        return null;
+    }
 }

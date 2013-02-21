@@ -40,5 +40,7 @@ package info.magnolia.ui.model.action;
  * place controller. Implementations are expected to provide correct {@link Object#equals(Object)} and {@link Object#hashCode()} methods.
  */
 public interface ActionDefinition {
+    
+    Class<? extends Action> getImplementationClass();
 
 }

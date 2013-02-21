@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
@@ -63,5 +64,10 @@ public class CreateDialogActionDefinition implements ActionDefinition {
 
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
+    }
+    
+    @Override
+    public Class<? extends ActionBase<?>> getImplementationClass() {
+        return CreateDialogAction.class;
     }
 }
