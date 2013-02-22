@@ -43,7 +43,6 @@ import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
-import info.magnolia.ui.model.builder.FactoryBase;
 
 import javax.inject.Inject;
 
@@ -56,13 +55,13 @@ public class ContentActionExecutor implements ActionExecutor {
     
     private SubAppDescriptor subAppDescriptor;
     
-    private ActionFactory factory;
+    private ComponentProvider componentProvider;
     
     @Inject
     public ContentActionExecutor(MessagesManager messagesManager, final ComponentProvider componentProvider, final SubAppContext subAppContext) {
         this.messagesManager = messagesManager;
         this.subAppDescriptor = subAppContext.getSubAppDescriptor();
-        this.factory = new ActionFactory(componentProvider);
+        this.componentProvider = componentProvider;
     }
 
     @Override
@@ -79,28 +78,20 @@ public class ContentActionExecutor implements ActionExecutor {
     }
 
     private Action createAction(String actionName, Object... args) {
-        return factory.create(getActionDefinition(actionName), args);
+        final ActionDefinition actionDefinition = getActionDefinition(actionName);
+        Class<? extends Action> implementationClass = actionDefinition.getImplementationClass();
+        if (implementationClass != null) {
+            Object[] combinedParameters = new Object[args.length + 1];
+            combinedParameters[0] = actionDefinition;
+            System.arraycopy(args, 0, combinedParameters, 1, args.length);
+
+            return componentProvider.newInstance(implementationClass, combinedParameters);
+        }
+        return null;
     }
 
     private ActionDefinition getActionDefinition(String actionName) {
         return subAppDescriptor.getActions().get(actionName);
     }
-    
-    private static class ActionFactory extends FactoryBase<ActionDefinition, Action> {
-
-        protected ActionFactory(ComponentProvider componentProvider) {
-            super(componentProvider);
-        }
-
-        @Override
-        protected Class<? extends Action> resolveImplementationClass(ActionDefinition definition) {
-            return definition.getImplementationClass();
-        }
-        
-        @Override
-        public Action create(ActionDefinition definition, Object... args) {
-            return super.create(definition, args);
-        }
-        
-    }
+   
 }
