@@ -74,10 +74,6 @@
       <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition</type>
-      <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarItemDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
       <type>info.magnolia.ui.model.dialog.definition.DialogDefinition</type>
       <implementation>info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition</implementation>
     </type-mapping>
