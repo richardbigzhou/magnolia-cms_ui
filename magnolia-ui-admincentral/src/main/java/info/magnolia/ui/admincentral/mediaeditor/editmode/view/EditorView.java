@@ -33,10 +33,11 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor.editmode.view;
 
+import info.magnolia.ui.vaadin.view.View;
+
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.Component;
 
-import info.magnolia.ui.framework.view.View;
 
 /**
  * EditorView.
@@ -47,7 +48,7 @@ public interface EditorView extends View {
      * @param createMediaField
      */
     void setContent(Component createMediaField);
-    
+
     /**
      * @param createMediaField
      */

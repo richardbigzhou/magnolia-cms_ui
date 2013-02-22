@@ -33,20 +33,21 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor;
 
-import info.magnolia.ui.framework.view.View;
+
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.view.View;
 
 /**
  * MediaEditorView.
  */
 public interface MediaEditorView extends View {
-    
+
     void setDialog(BaseDialog dialog);
-    
+
     void setActionBar(Actionbar actionbar);
-    
+
     BaseDialog getDialog();
-    
+
     Actionbar getActionbar();
 }
