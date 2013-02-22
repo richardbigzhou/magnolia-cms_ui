@@ -33,17 +33,21 @@
  */
 package info.magnolia.ui.admincentral.actionbar.builder;
 
+import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vaadin.server.ThemeResource;
 
 /**
  * Basic builder for an action bar widget based on an action bar definition.
@@ -52,7 +56,7 @@ public class ActionbarBuilder {
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarBuilder.class);
 
-    public static ActionbarView build(ActionbarDefinition definition) {
+    public static ActionbarView build(ActionbarDefinition definition, Map<String, ActionDefinition> actions) {
         Actionbar actionbar = new Actionbar();
         if (definition == null) {
             log.warn("No actionbar definition found. This will result in an empty action bar. Is that intended?");
@@ -61,19 +65,16 @@ public class ActionbarBuilder {
 
             for (ActionbarSectionDefinition section : definition.getSections()) {
                 actionbar.addSection(section.getName(), section.getLabel());
-                List<String> actionNames = new ArrayList<String>();
 
                 for (ActionbarGroupDefinition group : section.getGroups()) {
                     // standalone groups make no sense
-
+                    log.info("Group actions: " + group.getActions());
                     for (String item : group.getActions()) {
-                        /*if (actionNames.contains(item.getName())) {
-                            log.warn("Action was not added: an action with name '" + item.getName() + "' already exists in section '" + section.getName() + "'.");
+                        if (!actions.containsKey(item)) {
+                            log.warn("Action was not added: an action with name '" + item + "' already exists in section '" + section.getName() + "'.");
                             continue;
                         }
-
-                        actionNames.add(item.getName());
-                        addItemFromDefinition(item, actionbar, group.getName(), section.getName());*/
+                        addItemFromDefinition(actions.get(item), actionbar, group.getName(), section.getName());
                     }
                 }
             }
@@ -81,23 +82,23 @@ public class ActionbarBuilder {
         return actionbar;
     }
 
-    /*public static void addItemFromDefinition(ActionbarItemDefinition item, Actionbar actionBar, String groupName, String sectionName) {
+    public static void addItemFromDefinition(ActionDefinition def, Actionbar actionBar, String groupName, String sectionName) {
         ActionbarItem entry = null;
-        if (StringUtils.isNotBlank(item.getIcon())) {
-            if (item.getIcon().startsWith("icon-")) {
-                entry = new ActionbarItem(item.getName(), item.getLabel(), item.getIcon(), groupName);
+        if (StringUtils.isNotBlank(def.getIcon())) {
+            if (def.getIcon().startsWith("icon-")) {
+                entry = new ActionbarItem(def.getName(), def.getLabel(), def.getIcon(), groupName);
             } else {
                 try {
-                    actionBar.registerActionIconResource(item.getName(), new ThemeResource(item.getIcon()));
+                    actionBar.registerActionIconResource(def.getName(), new ThemeResource(def.getIcon()));
                 } catch (NullPointerException e) {
-                    log.warn("Icon resource not found for Actionbar item '" + item.getName() + "'.");
+                    log.warn("Icon resource not found for Actionbar item '" + def.getName() + "'.");
                 } finally {
-                    entry = new ActionbarItem(item.getName(), item.getLabel(), null, groupName);
+                    entry = new ActionbarItem(def.getName(), def.getLabel(), null, groupName);
                 }
             }
         } else {
-            entry = new ActionbarItem(item.getName(), item.getLabel(), null, groupName);
+            entry = new ActionbarItem(def.getName(), def.getLabel(), null, groupName);
         }
         actionBar.addAction(entry, sectionName);
-    }*/
+    }
 }

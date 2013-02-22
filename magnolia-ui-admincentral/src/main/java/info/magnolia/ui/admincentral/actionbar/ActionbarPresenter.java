@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.actionbar;
 
 import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
-import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
@@ -60,7 +60,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     private ActionbarView actionbar;
 
-    private final AppContext appContext;
+    private final SubAppContext subAppContext;
 
     private ActionExecutor.Listener listener;
 
@@ -68,8 +68,8 @@ public class ActionbarPresenter implements ActionbarView.Listener {
      * Instantiates a new action bar presenter.
      */
     @Inject
-    public ActionbarPresenter(AppContext appContext) {
-        this.appContext = appContext;
+    public ActionbarPresenter(SubAppContext appContext) {
+        this.subAppContext = appContext;
     }
 
     /**
@@ -78,7 +78,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
      */
     public ActionbarView start(final ActionbarDefinition definition) {
         this.definition = definition;
-        actionbar = ActionbarBuilder.build(definition);
+        actionbar = ActionbarBuilder.build(definition, subAppContext.getSubAppDescriptor().getActions());
         actionbar.setListener(this);
         return actionbar;
     }
@@ -164,9 +164,9 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     @Override
     public void onChangeFullScreen(boolean isFullScreen) {
         if (isFullScreen) {
-            appContext.enterFullScreenMode();
+            subAppContext.getAppContext().enterFullScreenMode();
         } else {
-            appContext.exitFullScreenMode();
+            subAppContext.getAppContext().exitFullScreenMode();
         }
     }
 

@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.actionbar.builder;
 
 import static org.junit.Assert.*;
+import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition;
@@ -45,6 +46,7 @@ import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +92,7 @@ public class ActionbarBuilderTest {
         int bActionCount = getActionsCount(bSection);
 
         // WHEN
-        ActionbarView actionbar = ActionbarBuilder.build(def);
+        ActionbarView actionbar = ActionbarBuilder.build(def, new HashMap<String, ActionDefinition>());
 
         // THEN
         Map<String, ActionbarSection> sections = ((Actionbar) actionbar).getSections();
@@ -123,7 +125,7 @@ public class ActionbarBuilderTest {
         int actionCount = getActionsCount(sectionDef);
 
         // WHEN
-        ActionbarView actionbar = ActionbarBuilder.build(def);
+        ActionbarView actionbar = ActionbarBuilder.build(def, new HashMap<String, ActionDefinition>());
 
         // THEN
         Map<String, ActionbarItem> actions = ((Actionbar) actionbar).getSections().get(SECTION_A).getActions();
@@ -158,7 +160,7 @@ public class ActionbarBuilderTest {
         int bActionCount = getActionsCount(bSection);
 
         // WHEN
-        ActionbarView actionbar = ActionbarBuilder.build(def);
+        ActionbarView actionbar = ActionbarBuilder.build(def, new HashMap<String, ActionDefinition>());
 
         // THEN
         Map<String, ActionbarItem> aActions = ((Actionbar) actionbar).getSections().get(SECTION_A).getActions();
