@@ -33,21 +33,12 @@
  */
 package info.magnolia.ui.admincentral.actionbar;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -205,43 +196,6 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         else {
             log.warn("Default action is null. Please check actionbar definition.");
         }
-    }
-
-    public void createAndExecuteAction(final ActionDefinition actionDefinition, String workspace, String absPath) {
-        if (actionDefinition == null || StringUtils.isBlank(workspace)) {
-            Message warn = createMessage(MessageType.WARNING, "Got invalid arguments: action definition is " + actionDefinition + ", workspace is " + workspace, "");
-            appContext.sendLocalMessage(warn);
-        }
-        try {
-            Session session = MgnlContext.getJCRSession(workspace);
-            if (absPath == null || !session.itemExists(absPath)) {
-                log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", absPath);
-                absPath = "/";
-            }
-            final javax.jcr.Item item = session.getItem(absPath);
-            final Action action = null;// this.actionFactory.createAction(actionDefinition, item);
-            if (action == null) {
-                Message warn = createMessage(MessageType.WARNING, "Could not create action from actionDefinition. Action is null.", "");
-                appContext.sendLocalMessage(warn);
-            } else {
-                action.execute();
-            }
-            appContext.showConfirmationMessage("Action executed successfully.");
-        } catch (RepositoryException e) {
-            Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
-            appContext.broadcastMessage(error);
-        } catch (ActionExecutionException e) {
-            Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
-            appContext.broadcastMessage(error);
-        }
-    }
-
-    private Message createMessage(MessageType type, String subject, String message) {
-        final Message msg = new Message();
-        msg.setSubject(subject);
-        msg.setMessage(message);
-        msg.setType(type);
-        return msg;
     }
 
     public void setListener(ActionExecutor.Listener listener) {

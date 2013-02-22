@@ -36,13 +36,14 @@ package info.magnolia.ui.admincentral.workbench;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.app.content.ContentActionExecutor;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.item.ItemPresenter;
 import info.magnolia.ui.admincentral.content.item.ItemView;
-import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -58,12 +59,12 @@ import org.slf4j.LoggerFactory;
  * Presenter for the workbench displayed in the {@link info.magnolia.ui.admincentral.app.content.ItemSubApp}.
  * Contains the {@link ActionbarPresenter} for handling action events and the {@link ItemPresenter} for displaying the actual item.
  */
-public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
+public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, ActionExecutor.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ItemWorkbenchPresenter.class);
 
+    private ContentActionExecutor actionExecutor;
     private final ItemWorkbenchView view;
-    private final EventBus subAppEventBus;
     private final ItemPresenter itemPresenter;
     private final ActionbarPresenter actionbarPresenter;
     private final WorkbenchDefinition workbenchDefinition;
@@ -72,7 +73,6 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
     @Inject
     public ItemWorkbenchPresenter(final SubAppContext subAppContext, final ItemWorkbenchView view, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final ItemPresenter itemPresenter, final ActionbarPresenter actionbarPresenter) {
         this.view = view;
-        this.subAppEventBus = subAppEventBus;
         this.itemPresenter = itemPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.workbenchDefinition = ((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench();
@@ -90,20 +90,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
         ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar());
         view.setActionbarView(actionbar);
 
-        bindHandlers();
         return view;
-    }
-
-    private void bindHandlers() {
-        subAppEventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarItemClickedEvent.Handler() {
-
-            @Override
-            public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
-                final ActionDefinition actionDefinition = event.getActionDefinition();
-                actionbarPresenter.createAndExecuteAction(actionDefinition, workbenchDefinition.getWorkspace(), nodePath);
-
-            }
-        });
     }
 
     public String getNodePath() {
@@ -119,4 +106,12 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
         // eventBus.fireEvent(new ViewTypeChangedEvent(viewType));
     }
 
+    @Override
+    public void onExecute(String actionName) {
+        try {
+            actionExecutor.execute(actionName, workbenchDefinition.getWorkspace(), nodePath);
+        } catch (ActionExecutionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 }
