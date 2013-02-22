@@ -47,6 +47,7 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.vaadin.view.View;
 
 import java.util.List;
 import java.util.Map;
@@ -146,6 +147,11 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     @Override
     public AppView getView() {
         return app.getView();
+    }
+
+    @Override
+    public Shell.ShellDialog openDialog(View view) {
+        return shell.openDialog(view);
     }
 
     /**

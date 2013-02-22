@@ -35,6 +35,8 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.vaadin.view.View;
 
 /**
  * Provides functionality used by an app to interact with the Magnolia shell.
@@ -64,4 +66,6 @@ public interface AppContext extends AppView.Listener {
     void setSubAppLocation(SubAppContext subAppContext, Location location);
 
     SubAppDescriptor getDefaultSubAppDescriptor();
+
+    Shell.ShellDialog openDialog(View view);
 }
