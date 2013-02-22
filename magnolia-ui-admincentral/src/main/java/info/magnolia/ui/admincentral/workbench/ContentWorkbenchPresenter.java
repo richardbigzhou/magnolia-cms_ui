@@ -55,7 +55,6 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
@@ -100,7 +99,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
 
     private final EventBus subAppEventBus;
 
-    private final WorkbenchActionFactory actionFactory;
 
     private final ContentPresenter contentPresenter;
 
@@ -110,13 +108,12 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
 
     @Inject
     public ContentWorkbenchPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentWorkbenchView view, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus admincentralEventBus,
-            final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
+            final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final ContentPresenter contentPresenter,
             final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
         this.actionExecutor = actionExecutor;
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
-        this.actionFactory = actionFactory;
         this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.workbenchDefinition = ((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench();
@@ -133,7 +130,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
         contentPresenter.initContentView(view);
         actionbarPresenter.setListener(this);
 
-        ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar(), actionFactory);
+        ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar());
         view.setActionbarView(actionbar);
         bindHandlers();
         return view;
