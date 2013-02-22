@@ -37,11 +37,9 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.app.content.ContentActionExecutor;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
 import info.magnolia.ui.admincentral.content.item.ItemView;
-import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
@@ -70,7 +68,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
-    private ContentActionExecutor actionExecutor;
+    private ActionExecutor actionExecutor;
     private final PagesEditorSubAppView view;
 
     private final EventBus eventBus;
@@ -86,8 +84,9 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private WorkbenchDefinition workbenchDefinition;
 
     @Inject
-    public PagesEditorSubApp(final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter) {
+    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter) {
         super(subAppContext, view);
+        this.actionExecutor = actionExecutor;
         this.view = view;
         this.view.setListener(this);
         this.eventBus = eventBus;
@@ -209,41 +208,6 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     private void bindHandlers() {
 
-        eventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarItemClickedEvent.Handler() {
-
-            @Override
-            public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
-/*                ActionDefinition actionDefinition = event.getActionDefinition();
-                if (actionDefinition instanceof EditElementActionDefinition) {
-                    pageEditorPresenter.editComponent(
-                            ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
-                            pageEditorPresenter.getSelectedElement().getPath(),
-                            pageEditorPresenter.getSelectedElement().getDialog());
-                } else if (actionDefinition instanceof AddComponentActionDefinition) {
-                    // casting to AreaElement, because this action is only defined for areas
-                    pageEditorPresenter.newComponent(
-                            ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
-                            pageEditorPresenter.getSelectedElement().getPath(),
-                            ((AreaElement) pageEditorPresenter.getSelectedElement()).getAvailableComponents());
-                } else if (actionDefinition instanceof DeleteItemActionDefinition) {
-                    pageEditorPresenter.deleteComponent(((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(), pageEditorPresenter
-                            .getSelectedElement()
-                            .getPath());
-                } else if (actionDefinition instanceof PreviewPageActionDefinition || actionDefinition instanceof EditPageActionDefinition) {
-                    actionbarPresenter.createAndExecuteAction(
-                            actionDefinition,
-                            ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
-                            parameters.getNodePath());
-                } else {
-                    actionbarPresenter.createAndExecuteAction(
-                            actionDefinition,
-                            ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
-                            pageEditorPresenter.getSelectedElement().getPath());
-                }*/
-
-            }
-        });
-
         eventBus.addHandler(NodeSelectedEvent.class, new NodeSelectedEvent.Handler() {
 
             @Override
@@ -287,7 +251,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
         if (actionName.equals("editElement")) {
             pageEditorPresenter.editComponent(
-                    ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
+                    workspace,
                     pageEditorPresenter.getSelectedElement().getPath(),
                     pageEditorPresenter.getSelectedElement().getDialog());
         }
@@ -298,14 +262,18 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                     pageEditorPresenter.getSelectedElement().getDialog());
         }
         else if (actionName.equals("deleteItem")) {
-            pageEditorPresenter.deleteComponent(((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(), pageEditorPresenter
-                    .getSelectedElement()
-                    .getPath());
+            pageEditorPresenter.deleteComponent(workspace, pageEditorPresenter.getSelectedElement().getPath());
         }
 
         else {
             try {
-                actionExecutor.execute(actionName, workspace, parameters.getNodePath());
+                Session session = MgnlContext.getJCRSession(workspace);
+                final javax.jcr.Item item = session.getItem(parameters.getNodePath());
+
+                actionExecutor.execute(actionName, item);
+
+            } catch (RepositoryException e) {
+                throw new RuntimeException("Could not get item: " + parameters.getNodePath(), e);
             } catch (ActionExecutionException e) {
                 throw new RuntimeException("Could not execute the action: " + actionName, e);
             }
