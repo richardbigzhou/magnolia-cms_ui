@@ -38,7 +38,7 @@ import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.AppView;
+import info.magnolia.ui.framework.app.AppView;
 
 import javax.inject.Inject;
 

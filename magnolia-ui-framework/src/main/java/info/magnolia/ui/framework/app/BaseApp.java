@@ -34,7 +34,6 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.AppView;
 
 import javax.inject.Inject;
 

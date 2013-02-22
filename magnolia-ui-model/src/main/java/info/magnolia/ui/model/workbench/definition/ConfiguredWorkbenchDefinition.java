@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.model.workbench.definition;
 
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
@@ -55,15 +54,11 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private String defaultOrder;
 
-    private ItemTypeDefinition mainItemType;
-
-    private ItemTypeDefinition groupingItemType;
+    private List<NodeTypeDefinition> nodeTypes = new ArrayList<NodeTypeDefinition>();
 
     private List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
 
     private ActionbarDefinition actionbar;
-
-    private ComponentProviderConfiguration components;
 
     private boolean dialogWorkbench = false;
 
@@ -85,8 +80,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     }
 
     @Override
-    public ItemTypeDefinition getMainItemType() {
-        return mainItemType;
+    public List<NodeTypeDefinition> getNodeTypes() {
+        return nodeTypes;
     }
 
     @Override
@@ -98,17 +93,8 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         this.includeProperties = includeProperties;
     }
 
-    public void setMainItemType(ItemTypeDefinition mainItemType) {
-        this.mainItemType = mainItemType;
-    }
-
-    @Override
-    public ItemTypeDefinition getGroupingItemType() {
-        return groupingItemType;
-    }
-
-    public void setGroupingItemType(ItemTypeDefinition groupingItemType) {
-        this.groupingItemType = groupingItemType;
+    public void addNodeType(NodeTypeDefinition nodeTypeDefinition) {
+        nodeTypes.add(nodeTypeDefinition);
     }
 
     @Override
@@ -149,15 +135,6 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     public void setActionbar(ActionbarDefinition actionbar) {
         this.actionbar = actionbar;
-    }
-
-    @Override
-    public ComponentProviderConfiguration getComponents() {
-        return components;
-    }
-
-    public void setComponents(ComponentProviderConfiguration components) {
-        this.components = components;
     }
 
     @Override

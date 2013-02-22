@@ -10,13 +10,18 @@
   <packaging>jar</packaging>
   <name>magnolia-ui-admincentral</name>
   <properties>
-    <cloverCoverageThreshold>28</cloverCoverageThreshold>
+    <cloverCoverageThreshold>24</cloverCoverageThreshold>
   </properties>
   <dependencies>
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
       <version>${magnoliaVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-framework</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>
@@ -26,10 +31,6 @@
     <dependency>
       <groupId>info.magnolia.activation</groupId>
       <artifactId>magnolia-module-activation</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia</groupId>
-      <artifactId>magnolia-rendering</artifactId>
     </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>
@@ -73,13 +74,6 @@
       <artifactId>magnolia-core</artifactId>
       <type>test-jar</type>
       <version>${magnoliaVersion}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-framework</artifactId>
-      <type>test-jar</type>
-      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

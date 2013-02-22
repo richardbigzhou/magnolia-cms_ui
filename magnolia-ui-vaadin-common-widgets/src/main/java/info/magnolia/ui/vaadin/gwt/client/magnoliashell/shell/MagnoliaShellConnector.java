@@ -43,7 +43,7 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsView
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
-import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
+import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 
 import java.util.Iterator;
 import java.util.List;
@@ -72,7 +72,7 @@ import com.vaadin.ui.Component;
 /**
  * MagnoliaShellConnector.
  */
-@Connect(MagnoliaShellBase.class)
+@Connect(MagnoliaShell.class)
 public class MagnoliaShellConnector extends AbstractLayoutConnector implements MagnoliaShellView.Presenter {
 
     private ShellServerRpc rpc = RpcProxy.create(ShellServerRpc.class, this);

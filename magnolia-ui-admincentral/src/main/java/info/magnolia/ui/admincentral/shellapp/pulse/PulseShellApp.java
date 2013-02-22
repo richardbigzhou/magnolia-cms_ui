@@ -33,13 +33,12 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.admincentral.MagnoliaShell;
-import info.magnolia.ui.framework.app.ShellApp;
-import info.magnolia.ui.framework.app.ShellAppContext;
+import info.magnolia.ui.admincentral.ShellImpl;
+import info.magnolia.ui.admincentral.shellapp.ShellApp;
+import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.View;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
+import info.magnolia.ui.vaadin.view.View;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,13 +54,12 @@ public class PulseShellApp implements ShellApp, PulseView.Presenter {
     private PulseView pulseView;
 
     private ShellAppContext context;
-    private MagnoliaShell shell;
+    private ShellImpl shell;
 
     @Inject
-    public PulseShellApp(PulseView pulseView, MagnoliaShell shell) {
+    public PulseShellApp(PulseView pulseView, ShellImpl shell) {
         this.pulseView = pulseView;
         this.shell = shell;
-        shell.registerShellApp(ShellAppType.PULSE, pulseView.asVaadinComponent());
     }
 
     @Override

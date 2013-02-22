@@ -38,7 +38,7 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
-import info.magnolia.ui.admincentral.event.ContentChangedEvent;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;

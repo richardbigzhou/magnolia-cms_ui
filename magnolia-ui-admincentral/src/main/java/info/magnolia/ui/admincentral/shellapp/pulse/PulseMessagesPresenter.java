@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.admincentral.ShellImpl;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategory;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
@@ -68,13 +68,13 @@ public class PulseMessagesPresenter implements Serializable {
 
     private final MessagesManager messagesManager;
 
-    private final MagnoliaShell shell;
+    private final ShellImpl shell;
 
     private boolean grouping = false;
 
     @Inject
-    public PulseMessagesPresenter(final MagnoliaShell magnoliaShell, final MessagesManager messagesManager) {
-        this.shell = magnoliaShell;
+    public PulseMessagesPresenter(final ShellImpl shellImpl, final MessagesManager messagesManager) {
+        this.shell = shellImpl;
         this.messagesManager = messagesManager;
 
         messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), new MessagesManager.MessageListener() {

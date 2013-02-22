@@ -33,8 +33,9 @@
  */
 package info.magnolia.ui.vaadin.form;
 
-import info.magnolia.ui.framework.view.View;
+
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.view.View;
 
 import java.util.Collection;
 

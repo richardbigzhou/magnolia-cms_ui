@@ -38,7 +38,7 @@ import info.magnolia.ui.admincentral.workbench.ItemWorkbenchPresenter;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
 
@@ -51,7 +51,7 @@ import javax.inject.Inject;
  * <li>{@link #locationChanged(Location)}
  * </ul>
  *
- * Currently lacking listeners for {@link info.magnolia.ui.admincentral.event.ContentChangedEvent}.
+ * Currently lacking listeners for {@link info.magnolia.ui.framework.event.ContentChangedEvent}.
  * Currently lacking handling of locationChanged. Related to MGNLUI-154
  *
  * @see ItemWorkbenchPresenter

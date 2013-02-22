@@ -16,6 +16,10 @@
           <artifactId>magnolia-module-page-export</artifactId>
       </dependency>
     <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-rendering</artifactId>
+    </dependency>
+    <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-admincentral</artifactId>
       <version>${project.version}</version>

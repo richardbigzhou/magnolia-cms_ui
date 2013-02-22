@@ -38,6 +38,7 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
+import info.magnolia.ui.model.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -115,9 +116,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     private static final Long LONG_ZERO = Long.valueOf(0);
 
     /**
-     * Item type to use if no other is properly defined. *
+     * Node type to use if none is configured.
      */
-    protected static final String DEFAULT_MAIN_ITEM_TYPE = NodeTypes.Content.NAME;
+    public static final String DEFAULT_NODE_TYPE = NodeTypes.Content.NAME;
 
     private static final String QUERY_LANGUAGE = Query.JCR_JQOM;
 
@@ -560,13 +561,13 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * @param the optional <code>ORDER BY</code> is added if this parameter is <code>true</code>. Sorting options can be configured in the {@link WorkbenchDefinition}.
+     * @param considerSorting an optional <code>ORDER BY</code> is added if this parameter is <code>true</code>. Sorting options can be configured in the {@link WorkbenchDefinition}.
      * @return a string representing a JCR statement to retrieve this container's items.
-     *         It creates a JCR query in the form {@code select * from [mainItemType] as selector [WHERE] [ORDER BY]"}.
+     *         It creates a JCR query in the form {@code select * from [nodeType] as selector [WHERE] [ORDER BY]"}.
      *         <p>
      *         Subclasses can customize the optional <code>WHERE</code> clause by overriding {@link #getQueryWhereClause()}.
      *         <p>
-     *         The main item type (as configured in the {@link WorkbenchDefinition}) in the <code>SELECT</code> statement can be changed to something different by calling {@link #getSelectStatement(String)}
+     *         The main item type (as configured in the {@link WorkbenchDefinition}) in the <code>SELECT</code> statement can be changed to something different by calling {@link #getQuerySelectStatement()}
      * @see AbstractJcrContainer#getQuerySelectStatement()
      * @see AbstractJcrContainer#getQueryWhereClause()
      * @see AbstractJcrContainer#getQueryWhereClauseWorkspacePath()
@@ -607,20 +608,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * @return the mainItemType as String - in case it's not properly configured we'll report via log and use a default
-     */
-    protected String getMainItemTypeAsString() {
-        String mainItemType = DEFAULT_MAIN_ITEM_TYPE;
-        if (workbenchDefinition.getMainItemType() != null && StringUtils.isNotBlank(workbenchDefinition.getMainItemType().getItemType())) {
-            mainItemType = workbenchDefinition.getMainItemType().getItemType();
-        } else {
-            log.warn("WorkbenchDefinition {} does not properly define a MainItemType - hence we'll use the default value '{}'.",
-                    workbenchDefinition.getName(), DEFAULT_MAIN_ITEM_TYPE);
-        }
-        return mainItemType;
-    }
-
-    /**
      * @return the JCR query clause to select only nodes with the path configured in the workspace as String - in case
      *         it's not configured return a blank string so that all nodes are considered. Internally calls {@link #getQueryWhereClauseWorkspacePath()} to determine
      *         the path under which to perform the search.
@@ -653,7 +640,15 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * @return a <code>SELECT</code> statement with the main item type as configured in the {@link WorkbenchDefinition}. Can be customized by subclasses to utilize other item types, i.e. {@code select * from [my:fancytype]}. Used internally by {@link #constructJCRQuery(boolean)}.
      */
     protected String getQuerySelectStatement() {
-        return String.format(SELECT_TEMPLATE, getMainItemTypeAsString());
+        return String.format(SELECT_TEMPLATE, getMainNodeType());
+    }
+
+    /**
+     * @return the main NodeType to be used with this container. This is the type that will be used for querying e.g. when populating the list view.
+     */
+    protected String getMainNodeType() {
+        final List<NodeTypeDefinition> nodeTypes = workbenchDefinition.getNodeTypes();
+        return nodeTypes.isEmpty() ? DEFAULT_NODE_TYPE : nodeTypes.get(0).getName();
     }
 
     /**
@@ -662,9 +657,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     public final void updateSize() {
         try {
             final String stmt = constructJCRQuery(false);
-            if (stmt == null) {
-                return;
-            }
             // query for all items in order to get the size
             final QueryResult queryResult = executeQuery(stmt, QUERY_LANGUAGE, 0, 0);
 
