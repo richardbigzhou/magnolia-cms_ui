@@ -77,41 +77,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrContainer.class);
 
-    private Set<ItemSetChangeListener> itemSetChangeListeners;
-
-    private Set<PropertySetChangeListener> propertySetChangeListeners;
-
-    private int size = Integer.MIN_VALUE;
-
-    /**
-     * Page length = number of items contained in one page.
-     */
-    private int pageLength = DEFAULT_PAGE_LENGTH;
-
     public static final int DEFAULT_PAGE_LENGTH = 30;
 
-    /**
-     * Number of items to cache = cacheRatio x pageLength.
-     */
-    private int cacheRatio = DEFAULT_CACHE_RATIO;
-
     public static final int DEFAULT_CACHE_RATIO = 2;
-
-    /**
-     * Item and index caches.
-     */
-    private final Map<Long, String> itemIndexes = new HashMap<Long, String>();
-
-    private final List<String> sortableProperties = new ArrayList<String>();
-
-    private final List<OrderBy> sorters = new ArrayList<OrderBy>();
-
-    private final WorkbenchDefinition workbenchDefinition;
-
-    /**
-     * Starting row number of the currently fetched page.
-     */
-    private int currentOffset;
 
     private static final Long LONG_ZERO = Long.valueOf(0);
 
@@ -136,6 +104,39 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String JCR_NAME_FUNCTION = "lower(name(" + SELECTOR_NAME + "))";
 
+    /**
+     * Item and index caches.
+     */
+    private final Map<Long, String> itemIndexes = new HashMap<Long, String>();
+
+    private final List<String> sortableProperties = new ArrayList<String>();
+
+    private final List<OrderBy> sorters = new ArrayList<OrderBy>();
+
+    private final WorkbenchDefinition workbenchDefinition;
+
+    private int size = Integer.MIN_VALUE;
+
+    /**
+     * Page length = number of items contained in one page.
+     */
+    private int pageLength = DEFAULT_PAGE_LENGTH;
+
+    /**
+     * Number of items to cache = cacheRatio x pageLength.
+     */
+    private int cacheRatio = DEFAULT_CACHE_RATIO;
+
+    private Set<ItemSetChangeListener> itemSetChangeListeners;
+
+    private Set<PropertySetChangeListener> propertySetChangeListeners;
+
+    /**
+     * Starting row number of the currently fetched page.
+     */
+    private int currentOffset;
+
+
     public AbstractJcrContainer(WorkbenchDefinition workbenchDefinition) {
         this.workbenchDefinition = workbenchDefinition;
 
@@ -148,8 +149,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
                 if (StringUtils.isBlank(propertyName)) {
                     propertyName = columnDefinition.getName();
-                    log.debug(
-                            "Column {} is sortable but no propertyName has been defined. Defaulting to column name (sorting may not work as expected).", columnDefinition.getName());
+                    log.debug("Column {} is sortable but no propertyName has been defined. Defaulting to column name (sorting may not work as expected).", columnDefinition.getName());
                 }
 
                 sortableProperties.add(propertyName);
@@ -383,7 +383,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         log.debug("item id {} not found in cache. Need to update offset, fetch new item ids from jcr repo and put them in cache.", index);
         updateOffsetAndCache(index);
         return itemIndexes.get(idx);
-
     }
 
     /**********************************************/
@@ -514,13 +513,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * Fetches a page from the data source based on the values of pageLength and currentOffset. Internally it executes
-     * the following methods in this order:
-     * <ul>
-     * <li> {@link #constructJCRQuery(boolean)}
-     * <li> {@link #executeQuery(String, String, long, long)}
-     * <li> {@link #updateItems(QueryResult)}
-     * </ul>
+     * Fetches a page from the data source based on the values of pageLength, cacheRatio and currentOffset.
      */
     private final void getPage() {
 
@@ -537,7 +530,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         } catch (RepositoryException re) {
             throw new RuntimeRepositoryException(re);
         }
-
     }
 
     /**
@@ -568,11 +560,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      *         Subclasses can customize the optional <code>WHERE</code> clause by overriding {@link #getQueryWhereClause()}.
      *         <p>
      *         The main item type (as configured in the {@link WorkbenchDefinition}) in the <code>SELECT</code> statement can be changed to something different by calling {@link #getQuerySelectStatement()}
-     * @see AbstractJcrContainer#getQuerySelectStatement()
-     * @see AbstractJcrContainer#getQueryWhereClause()
-     * @see AbstractJcrContainer#getQueryWhereClauseWorkspacePath()
-     * @see AbstractJcrContainer#getPage()
-     * @see OrderBy
      */
     protected final String constructJCRQuery(final boolean considerSorting) {
         final String select = getQuerySelectStatement();
@@ -661,7 +648,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             final QueryResult queryResult = executeQuery(stmt, QUERY_LANGUAGE, 0, 0);
 
             final long pageSize = queryResult.getRows().getSize();
-            log.debug("Query resultset contains {} items", pageSize);
+            log.debug("Query result set contains {} items", pageSize);
 
             updateCount((int) pageSize);
         } catch (RepositoryException e) {
@@ -711,8 +698,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             if (offset >= 0) {
                 query.setOffset(offset);
             }
-            log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{getWorkspace(),
-                    statement, limit, offset});
+            log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{getWorkspace(), statement, limit, offset});
             long start = System.currentTimeMillis();
             final QueryResult result = query.execute();
             log.debug("Query execution took {} ms", System.currentTimeMillis() - start);
