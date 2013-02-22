@@ -88,10 +88,10 @@ public class ContentPresenterTest {
 
     @Test
     public void testOnItemSelectionFiresOnEventBus() {
-        // GIVEN see setUp
+        // GIVEN
+        final ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
 
         // WHEN
-        final ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
         presenter.onItemSelection(item);
 
         // THEN
@@ -103,10 +103,10 @@ public class ContentPresenterTest {
 
     @Test
     public void testOnDoubleClickFiresOnEventBus() {
-        // GIVEN see setUp
+        // GIVEN
+        final ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
 
         // WHEN
-        final ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
         presenter.onDoubleClick(item);
 
         // THEN
@@ -118,10 +118,10 @@ public class ContentPresenterTest {
 
     @Test
     public void testOnItemSelectionWithNullItemSetSelectedPath() {
-        // GIVEN see setUp
+        // GIVEN
+        ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
 
         // WHEN
-        ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
         presenter.onItemSelection(null);
 
         // THEN
