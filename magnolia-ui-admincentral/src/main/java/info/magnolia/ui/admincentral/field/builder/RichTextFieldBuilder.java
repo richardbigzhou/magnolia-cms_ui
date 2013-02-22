@@ -33,11 +33,8 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.admincentral.app.content.ContentApp;
-import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
-import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
-import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppController;
+import info.magnolia.ui.framework.app.ItemChosenListener;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -140,14 +137,11 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
     }
 
     private void openLinkDialog(String path) {
-        // Get the property name to propagate.
-        App targetApp = appController.getAppWithoutStarting("pages");
-        if (targetApp != null && targetApp instanceof ContentApp) {
-            ChooseDialogPresenter<Item> chooseDialogPresenter = ((ContentApp) targetApp).openChooseDialog(path);
-            chooseDialogPresenter.getView().setCaption("Select a page");
-            chooseDialogPresenter.addValueChosenListener(new ValueChosenListener<Item>() {
+
+        appController.openChooseDialog("pages", path, new ItemChosenListener() {
+
                 @Override
-                public void onValueChosen(Item chosenValue) {
+                public void onItemChosen(Item chosenValue) {
                     if (!(chosenValue instanceof JcrItemAdapter)) {
                                 richTextEditor
                                         .firePluginEvent(EVENT_CANCEL_LINK);
@@ -183,11 +177,10 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
                 }
 
                 @Override
-                public void selectionCanceled() {
+                public void onChooseCanceled() {
                     richTextEditor.firePluginEvent(EVENT_CANCEL_LINK);
                 }
             });
-        }
     }
 
     private static class MagnoliaLink {

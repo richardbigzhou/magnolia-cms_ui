@@ -81,4 +81,8 @@ public class BaseApp implements App {
     public AppView getView() {
         return view;
     }
+
+    @Override
+    public void openChooseDialog(String path, ItemChosenListener listener) {
+    }
 }

@@ -34,30 +34,24 @@
 package info.magnolia.ui.admincentral.app.content;
 
 import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
-import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog;
 import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.ItemChosenListener;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.dialog.DialogView;
 
 import javax.inject.Inject;
 
-import com.vaadin.data.Item;
-
 /**
  * Extends the {@link BaseApp} by the ability to open a choose dialog.
- *
- * @see ChooseDialogFactory
- * @see ChooseDialogPresenter
  */
 public class ContentApp extends BaseApp {
 
     private final ChooseDialogFactory chooseDialogFactory;
-
-    @Inject
-    private Shell shell;
 
     @Inject
     public ContentApp(AppContext appContext, AppView view, ChooseDialogFactory chooseDialogFactory) {
@@ -65,14 +59,26 @@ public class ContentApp extends BaseApp {
         this.chooseDialogFactory = chooseDialogFactory;
     }
 
-    public ChooseDialogPresenter<Item> openChooseDialog() {
-        return openChooseDialog(null);
-    }
+    @Override
+    public void openChooseDialog(String path, final ItemChosenListener listener) {
 
-    public ChooseDialogPresenter<Item> openChooseDialog(String defaultPath) {
-        final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogFactory.createWorkbenchChooseDialog(defaultPath);
+        final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogFactory.createWorkbenchChooseDialog(path);
 
-        final Shell.ShellDialog shellDialog = shell.openDialog(workbenchChooseDialogPresenter.getView());
+        final Shell.ShellDialog shellDialog = appContext.openDialog(workbenchChooseDialogPresenter.getView());
+
+        workbenchChooseDialogPresenter.addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogView.DialogActionListener() {
+            @Override
+            public void onActionExecuted(final String actionName) {
+                listener.onItemChosen(workbenchChooseDialogPresenter.getValue());
+            }
+        });
+
+        workbenchChooseDialogPresenter.addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new DialogView.DialogActionListener() {
+            @Override
+            public void onActionExecuted(final String actionName) {
+                listener.onChooseCanceled();
+            }
+        });
 
         workbenchChooseDialogPresenter.addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
             @Override
@@ -81,8 +87,5 @@ public class ContentApp extends BaseApp {
                 event.getView().asVaadinComponent().removeDialogCloseHandler(this);
             }
         });
-
-        return workbenchChooseDialogPresenter;
     }
-
 }

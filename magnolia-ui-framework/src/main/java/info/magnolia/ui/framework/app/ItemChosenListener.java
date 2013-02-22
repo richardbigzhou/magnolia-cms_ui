@@ -31,27 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.framework.app;
+
+import com.vaadin.data.Item;
 
 /**
- * Interface for value selection providers.
+ * Listener for the outcome of a choose dialog.
  *
- * @param <VT> Value Type.
+ * @see AppController
  */
-public interface ValueChosenListener<VT> {
+public interface ItemChosenListener {
 
-    void onValueChosen(VT chosenValue);
+    void onItemChosen(Item item);
 
-    void selectionCanceled();
-
-    /**
-     * Indicates that the implementor can accept {@link ValueChosenListener}.
-     */
-    interface HasValueChosenListener<VT> {
-
-        void addValueChosenListener(final ValueChosenListener<VT> listener);
-
-        void removeValueChosenListener(final ValueChosenListener<VT> listener);
-    }
-
+    void onChooseCanceled();
 }
