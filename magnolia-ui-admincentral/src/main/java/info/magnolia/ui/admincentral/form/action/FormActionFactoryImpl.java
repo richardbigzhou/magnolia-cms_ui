@@ -41,7 +41,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.builder.FactoryBase;
+import info.magnolia.ui.model.builder.MappingFactoryBase;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -49,7 +49,7 @@ import javax.inject.Named;
 /**
  * FormActionFactoryImpl.
  */
-public class FormActionFactoryImpl extends FactoryBase<ActionDefinition, Action> implements FormActionFactory {
+public class FormActionFactoryImpl extends MappingFactoryBase<ActionDefinition, Action> implements FormActionFactory {
     private final EventBus eventBus;
 
     @Inject

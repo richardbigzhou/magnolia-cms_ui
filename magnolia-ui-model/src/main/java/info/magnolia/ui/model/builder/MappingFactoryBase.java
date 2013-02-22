@@ -31,18 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.workbench.action;
+package info.magnolia.ui.model.builder;
 
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionFactory;
+import info.magnolia.objectfactory.ComponentProvider;
 
-import javax.jcr.Item;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Creates an action based on an {@link ActionDefinition}.
+ * A base class for implementing factories which instantiate implementations based on definition objects.
+ *
+ * @param <D> definition parent type
+ * @param <I> implementation parent type
  */
-public interface WorkbenchActionFactory extends ActionFactory<ActionDefinition, Action> {
+public abstract class MappingFactoryBase<D, I> extends FactoryBase<D, I> {
 
-    Action createAction(final ActionDefinition actionDefinition, final Item item);
+    private Map<Class<? extends D>, Class<? extends I>> mapping = new HashMap<Class<? extends D>, Class<? extends I>>();
+
+    protected MappingFactoryBase(ComponentProvider componentProvider) {
+        super(componentProvider);
+        this.componentProvider = componentProvider;
+    }
+
+    protected void addMapping(Class<? extends D> definitionClass, Class<? extends I> implementationClass) {
+        mapping.put(definitionClass, implementationClass);
+    }
+
+    @Override
+    protected Class<? extends I> resolveImplementationClass(D definition) {
+        final Class<?> definitionClass = definition.getClass();
+        if (mapping.containsKey(definitionClass)) {
+            return mapping.get(definitionClass);
+        }
+        for (Class<? extends D> keyClass : mapping.keySet()) {
+            if (keyClass.isInstance(definition)) {
+                return mapping.get(keyClass);
+            }
+        }
+        return null;
+    }
+
 }
