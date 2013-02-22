@@ -123,7 +123,6 @@ public class ContentPresenter implements ContentView.Listener {
         }
 
         selectedItemPath = StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
-        parentView.setViewType(ViewType.TREE);
     }
 
     @Override
