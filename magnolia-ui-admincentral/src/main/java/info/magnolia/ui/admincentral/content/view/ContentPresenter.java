@@ -93,17 +93,6 @@ public class ContentPresenter implements ContentView.Listener {
         this.workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
     }
 
-    @Inject
-    public ContentPresenter(final SubAppContext subAppContext, final ContentViewBuilder contentViewBuilder, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) final EventBus subAppEventBus, final Shell shell) {
-        this.contentViewBuilder = contentViewBuilder;
-        this.subAppEventBus = subAppEventBus;
-        this.shell = shell;
-
-        final ContentSubAppDescriptor subAppDescriptor = (ContentSubAppDescriptor) subAppContext.getSubAppDescriptor();
-        this.workbenchDefinition = subAppDescriptor.getWorkbench();
-        this.workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
-    }
-
     public void initContentView(ContentWorkbenchView parentView) {
         if (workbenchDefinition == null) {
             throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
@@ -113,7 +102,6 @@ public class ContentPresenter implements ContentView.Listener {
         for (final ViewType type : ViewType.values()) {
             final ContentView contentView = contentViewBuilder.build(workbenchDefinition, type);
             contentView.setListener(this);
-            // contentView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
             contentView.select("/");
             parentView.addContentView(type, contentView);
         }
@@ -176,7 +164,7 @@ public class ContentPresenter implements ContentView.Listener {
                 log.warn("Null item edited");
             }
         } catch (Exception e) {
-            shell.showError("An error occured while editing an item in data grid", e);
+            shell.showError("An error occurred while editing an item in data grid", e);
         }
     }
 
