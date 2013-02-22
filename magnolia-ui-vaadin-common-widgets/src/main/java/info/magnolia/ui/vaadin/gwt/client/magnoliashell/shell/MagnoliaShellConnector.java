@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
+import info.magnolia.ui.vaadin.dialog.Modal;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppActivatedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellServerRpc;
@@ -66,6 +67,7 @@ import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.communication.SharedState;
 import com.vaadin.shared.ui.Connect;
+import com.vaadin.ui.Component;
 
 /**
  * MagnoliaShellConnector.
@@ -116,7 +118,8 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
 
                     if (modalWidget.getParent() == null) {
                         // Add the widget
-                        Widget parentWidget = ((ComponentConnector) getState().modalityParent).getWidget();
+                        Component modalityParent = ((Modal) modal).getModalityParent();
+                        Widget parentWidget = ((ComponentConnector) modalityParent).getWidget();
                         view.openModalOnComponent(modalWidget, parentWidget);
                     }
                 }

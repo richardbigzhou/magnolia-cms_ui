@@ -33,17 +33,24 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
+import info.magnolia.ui.admincentral.MagnoliaShell;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.AppView;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
+import javax.inject.Inject;
+
 import com.vaadin.server.KeyMapper;
+import com.vaadin.ui.Component;
 
 /**
  * View used to give all apps a uniform look-and-feel.
  */
 public class AppFrameView implements AppView {
+
+    private final MagnoliaShell shell;
 
     private Listener listener;
 
@@ -67,8 +74,10 @@ public class AppFrameView implements AppView {
         }
     };
 
-    public AppFrameView() {
+    @Inject
+    public AppFrameView(final Shell shell) {
         super();
+        this.shell = (MagnoliaShell) shell;
         tabsheet.setSizeFull();
         tabsheet.addStyleName("app");
     }
@@ -107,5 +116,23 @@ public class AppFrameView implements AppView {
     @Override
     public MagnoliaTabSheet asVaadinComponent() {
         return tabsheet;
+    }
+
+    @Override
+    public void setModalOnActiveSubApp(Component modalComponent) {
+        Component modalityParent = tabsheet.getActiveTab();
+        shell.openModal(modalComponent, modalityParent);
+
+    }
+
+    @Override
+    public void setModal(Component modalComponent) {
+        Component modalityParent = tabsheet;
+        shell.openModal(modalComponent, modalityParent);
+    }
+
+    @Override
+    public void clearModal(Component modalComponent) {
+        shell.closeModal(modalComponent);
     }
 }

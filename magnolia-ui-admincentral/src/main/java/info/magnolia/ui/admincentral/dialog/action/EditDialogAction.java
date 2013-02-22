@@ -33,15 +33,16 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
@@ -82,7 +83,7 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
         final String parentNodePath = tempParentNodePath;
 
         final JcrNodeAdapter item = new JcrNodeAdapter(nodeToEdit);
-        dialogPresenter.start(item, new FormDialogPresenter.Callback() {
+        dialogPresenter.start(item, ModalityLevel.APP, new FormDialogPresenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {

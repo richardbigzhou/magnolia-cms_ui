@@ -239,36 +239,19 @@ public class MagnoliaShell extends MagnoliaShellBase implements Shell, MessageEv
         addDialog(dialogPresenter.getView().asVaadinComponent());
     }
 
-    public void openModalWithDialog(final BaseDialogPresenter dialogPresenter, Component modalityParent) {
-        dialogPresenter.addDialogCloseHandler(new DialogCloseEvent.Handler() {
-            @Override
-            public void onClose(DialogCloseEvent event) {
-                // removeDialog(event.getView().asVaadinComponent());
-                getState().modalityParent = null;
-                // getState().modalityChild = null;
-                Connector dialog = event.getView().asVaadinComponent();
-                Connector modal = dialog.getParent();
-                getState().modals.remove(modal);
 
-                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
-            }
-        });
+    public void openModal(Component modalComponent, Component modalityParent) {
 
-        Component modal = dialogPresenter.getView().asVaadinComponent();
-        openModal(modal, modalityParent);
-    }
-
-    public void openModal(Component child, Component modalityParent) {
-
-        Modal modal = new Modal(child);
-
-        // MagnoliaShell needs a reference to parent and child.
-        getState().modalityParent = modalityParent;
-        // getState().modalityChild = modal;
+        Modal modal = new Modal(modalComponent, modalityParent);
         getState().modals.add(modal);
 
         // dialog should have Vaadin parent of MagnoliaShell
         modal.setParent(this);
+    }
+
+    public void closeModal(Component modalComponent) {
+        Modal modal = (Modal) modalComponent.getParent();
+        getState().modals.remove(modal);
     }
 
     public void removeDialog(BaseDialog dialog) {

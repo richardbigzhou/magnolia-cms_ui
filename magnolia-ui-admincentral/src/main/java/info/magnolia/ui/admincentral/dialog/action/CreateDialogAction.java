@@ -33,12 +33,13 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -67,7 +68,7 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
 
         final EventBus eventBus = dialogPresenter.getEventBus();
         final JcrNodeAdapter item = new JcrNewNodeAdapter(parent, getDefinition().getNodeType());
-        dialogPresenter.start(new JcrNewNodeAdapter(parent, getDefinition().getNodeType()), new FormDialogPresenter.Callback() {
+        dialogPresenter.start(new JcrNewNodeAdapter(parent, getDefinition().getNodeType()), ModalityLevel.SUB_APP, new FormDialogPresenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {

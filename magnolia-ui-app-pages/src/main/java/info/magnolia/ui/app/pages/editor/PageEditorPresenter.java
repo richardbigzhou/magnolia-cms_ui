@@ -34,6 +34,7 @@
 package info.magnolia.ui.app.pages.editor;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
@@ -46,7 +47,6 @@ import info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinitio
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.event.ContentChangedEvent;
 import info.magnolia.ui.app.pages.field.TemplateSelectorField;
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
 import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.dialog.builder.DialogBuilder;
@@ -58,6 +58,7 @@ import info.magnolia.ui.model.form.builder.FormConfig;
 import info.magnolia.ui.model.form.builder.OptionBuilder;
 import info.magnolia.ui.model.form.builder.SelectFieldBuilder;
 import info.magnolia.ui.model.form.builder.TabBuilder;
+import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
@@ -160,7 +161,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             item.addItemProperty(ModelConstants.JCR_NAME, property);
 
             // perform custom chaining of dialogs
-            dialogPresenter.start(item, new FormDialogPresenter.Callback() {
+            dialogPresenter.start(item, ModalityLevel.SUB_APP, new FormDialogPresenter.Callback() {
 
                 @Override
                 public void onSuccess(String actionName) {
@@ -193,7 +194,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
      * Create a Dialog and define the call back actions.
      */
     private void createDialogAction(final JcrNodeAdapter item, final FormDialogPresenter dialogPresenter) {
-        dialogPresenter.start(item, new FormDialogPresenter.Callback() {
+        dialogPresenter.start(item, ModalityLevel.SUB_APP, new FormDialogPresenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {

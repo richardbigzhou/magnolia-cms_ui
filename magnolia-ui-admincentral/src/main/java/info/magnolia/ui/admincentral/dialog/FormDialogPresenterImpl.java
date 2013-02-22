@@ -40,16 +40,16 @@ import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.FormPresenterFactory;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
+import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 
 import com.vaadin.data.Item;
-import com.vaadin.shared.Connector;
 import com.vaadin.ui.Component;
 
 /**
@@ -103,7 +103,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      * @param callback registers callback functions created by caller
      */
     @Override
-    public DialogView start(final Item item, final Callback callback) {
+    public DialogView start(final Item item, final ModalityLevel modalityLevel, final Callback callback) {
         this.callback = callback;
         dialogBuilder.buildFormDialog(dialogDefinition, view);
         this.formPresenter = formPresenterFactory.createFormPresenterByDefinition(dialogDefinition.getFormDefinition());
@@ -114,13 +114,27 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
         // shell.openDialog(this);
 
-        // Test opening a dialog on this app:
+        this.addDialogCloseHandler(new DialogCloseEvent.Handler() {
+            @Override
+            public void onClose(DialogCloseEvent event) {
+                appContext.getView().clearModal(FormDialogPresenterImpl.this.getView().asVaadinComponent());
+                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
+            }
+        });
 
-        // ModalComponentContainer mcc = new ModalComponentContainer(this.getView().asVaadinComponent());
-        // Open it on a subApp component.
-        Connector modalityParent = (Connector) ((BaseSubApp) subAppContext.getSubApp()).getView().asVaadinComponent();
-        // shell.openModal(this.getView().asVaadinComponent(), (Component) modalityParent);
-        shell.openModalWithDialog(this, (Component) modalityParent);
+        Component modalComponent = this.getView().asVaadinComponent();
+        switch (modalityLevel) {
+        case SUB_APP:
+
+            appContext.getView().setModalOnActiveSubApp(modalComponent);
+            break;
+        case APP:
+            appContext.getView().setModal(modalComponent);
+            break;
+        case ENTIRE_INTERFACE:
+            // shell.openModal(modalComponent, shell.as);
+            break;
+        }
 
         return view;
     }

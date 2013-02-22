@@ -44,10 +44,29 @@ import com.vaadin.ui.Component;
  */
 public class Modal extends AbstractSingleComponentContainer {
 
-    public Modal(final Component content) {
+    /**
+     * 
+     * The available levels of modality for opening a modal.
+     * Represents what will be blocked by the opened modal.
+     */
+    public static enum ModalityLevel {
+        NONE,
+        SUB_APP,
+        APP,
+        ENTIRE_INTERFACE
+    }
+
+    private Component modalityParent;
+
+    public Modal(final Component content, final Component modalityParent) {
         // setSizeFull();
         setImmediate(true);
         setContent(content);
+        this.modalityParent = modalityParent;
+    }
+
+    public Component getModalityParent() {
+        return modalityParent;
     }
 
 }
