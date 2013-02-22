@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
@@ -40,14 +41,12 @@ import info.magnolia.ui.admincentral.content.item.ItemPresenter;
 import info.magnolia.ui.admincentral.content.item.ItemView;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
-import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -66,17 +65,15 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
     private final ItemWorkbenchView view;
     private final EventBus subAppEventBus;
     private final ItemPresenter itemPresenter;
-    private final WorkbenchActionFactory actionFactory;
     private final ActionbarPresenter actionbarPresenter;
     private final WorkbenchDefinition workbenchDefinition;
     private String nodePath;
 
     @Inject
-    public ItemWorkbenchPresenter(final SubAppContext subAppContext, final ItemWorkbenchView view, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final ItemPresenter itemPresenter, final WorkbenchActionFactory actionFactory, final ActionbarPresenter actionbarPresenter) {
+    public ItemWorkbenchPresenter(final SubAppContext subAppContext, final ItemWorkbenchView view, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final ItemPresenter itemPresenter, final ActionbarPresenter actionbarPresenter) {
         this.view = view;
         this.subAppEventBus = subAppEventBus;
         this.itemPresenter = itemPresenter;
-        this.actionFactory = actionFactory;
         this.actionbarPresenter = actionbarPresenter;
         this.workbenchDefinition = ((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench();
 
@@ -90,7 +87,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
 
         view.setItemView(itemView);
 
-        ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar(), actionFactory);
+        ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar());
         view.setActionbarView(actionbar);
 
         bindHandlers();

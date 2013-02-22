@@ -38,8 +38,6 @@ import static org.junit.Assert.assertEquals;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 
 import javax.jcr.Session;
@@ -65,8 +63,6 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench = new ConfiguredWorkbenchDefinition();
         configuredWorkbench.setWorkspace(workspace);
         configuredWorkbench.setPath("/");
-        // Init workBench
-        WorkbenchActionFactory workbenchActionFactory = new WorkbenchActionFactoryImpl(null);
         // Init col
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);

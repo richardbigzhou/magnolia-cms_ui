@@ -42,7 +42,6 @@ import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
-import info.magnolia.ui.model.action.ActionFactory;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
@@ -72,8 +71,6 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     private final AppContext appContext;
 
-    private ActionFactory<ActionDefinition, Action> actionFactory;
-
     private ActionExecutor.Listener listener;
 
     /**
@@ -88,9 +85,8 @@ public class ActionbarPresenter implements ActionbarView.Listener {
      * Initializes an actionbar with given definition and returns the view for
      * parent to add it.
      */
-    public ActionbarView start(final ActionbarDefinition definition, final ActionFactory<ActionDefinition, Action> actionFactory) {
+    public ActionbarView start(final ActionbarDefinition definition) {
         this.definition = definition;
-        this.actionFactory = actionFactory;
         actionbar = ActionbarBuilder.build(definition);
         actionbar.setListener(this);
         return actionbar;
@@ -223,7 +219,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
                 absPath = "/";
             }
             final javax.jcr.Item item = session.getItem(absPath);
-            final Action action = this.actionFactory.createAction(actionDefinition, item);
+            final Action action = null;// this.actionFactory.createAction(actionDefinition, item);
             if (action == null) {
                 Message warn = createMessage(MessageType.WARNING, "Could not create action from actionDefinition. Action is null.", "");
                 appContext.sendLocalMessage(warn);

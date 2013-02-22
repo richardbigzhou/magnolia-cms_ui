@@ -47,8 +47,6 @@ import info.magnolia.ui.admincentral.thumbnail.view.ThumbnailView;
 import info.magnolia.ui.admincentral.tree.view.TreeView;
 import info.magnolia.ui.model.column.definition.LabelColumnDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl;
 import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
 
@@ -73,7 +71,6 @@ public class ConfiguredContentViewBuilderTest {
         final MockSession session = new MockSession(workspace);
         MockUtil.setSessionAndHierarchyManager(session);
 
-        componentProvider.setInstance(WorkbenchActionFactory.class, new WorkbenchActionFactoryImpl(null));
         final ImageProviderDefinition imageProvider = mock(ImageProviderDefinition.class);
         componentProvider.setInstance(ImageProviderDefinition.class, imageProvider);
 
