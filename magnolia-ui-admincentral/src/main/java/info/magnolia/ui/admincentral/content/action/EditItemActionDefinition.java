@@ -34,14 +34,14 @@
 package info.magnolia.ui.admincentral.content.action;
 
 import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * ActionDefinition used for editing Items.
  * Provides appId and subAppId to determine the correct app and subApp to edit item.
  * see MGNLUI-229.
  */
-public class EditItemActionDefinition implements ActionDefinition {
+public class EditItemActionDefinition extends ConfiguredActionDefinition {
 
     private String appId;
 

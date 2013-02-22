@@ -37,13 +37,24 @@ package info.magnolia.ui.model.action;
  * ConfiguredActionDefinition.
  */
 public class ConfiguredActionDefinition implements ActionDefinition {
+    
     private String name;
+    
     private Class<? extends Action> implementationClass;
 
+    private String label;
+    
+    private String icon;
+    
+    private String i18nBasename;
+    
+    private String description;
+    
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -55,5 +66,41 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     @Override
     public Class<? extends Action> getImplementationClass() {
         return implementationClass;
+    }
+
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @Override
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    @Override
+    public String getI18nBasename() {
+        return i18nBasename;
+    }
+
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

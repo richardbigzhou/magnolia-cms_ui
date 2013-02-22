@@ -34,12 +34,12 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Delete an {@link javax.jcr.Item}.
  */
-public class DeleteItemActionDefinition implements ActionDefinition {
+public class DeleteItemActionDefinition extends ConfiguredActionDefinition {
 
     @Override
     public Class<? extends ActionBase<?>> getImplementationClass() {

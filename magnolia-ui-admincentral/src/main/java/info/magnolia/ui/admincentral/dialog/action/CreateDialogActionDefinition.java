@@ -34,12 +34,12 @@
 package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Defines a dialog action that opens a dialog for adding a new node.
  */
-public class CreateDialogActionDefinition implements ActionDefinition {
+public class CreateDialogActionDefinition extends ConfiguredActionDefinition {
 
     private String dialogName;
 

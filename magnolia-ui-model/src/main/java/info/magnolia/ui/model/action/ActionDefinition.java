@@ -42,5 +42,15 @@ package info.magnolia.ui.model.action;
 public interface ActionDefinition {
     
     Class<? extends Action> getImplementationClass();
+    
+    String getName();
+
+    String getLabel();
+
+    String getI18nBasename();
+
+    String getIcon();
+
+    String getDescription();
 
 }

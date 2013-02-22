@@ -34,32 +34,14 @@
 package info.magnolia.ui.admincentral.form.action;
 
 import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Generic Action Definition for saving items in form.
  * Used as a mapper for {@link SaveFormAction}.
  * see MGNLUI-229.
  */
-public class SaveFormActionDefinition implements ActionDefinition {
-    private String label;
-    private String name;
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+public class SaveFormActionDefinition extends ConfiguredActionDefinition {
     
     @Override
     public Class<? extends ActionBase<?>> getImplementationClass() {

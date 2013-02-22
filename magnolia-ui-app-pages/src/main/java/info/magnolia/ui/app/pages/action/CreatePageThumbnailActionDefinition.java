@@ -34,12 +34,12 @@
 package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * CreatePageThumbnailActionDefinition.
  */
-public class CreatePageThumbnailActionDefinition implements ActionDefinition {
+public class CreatePageThumbnailActionDefinition extends ConfiguredActionDefinition {
 
     private String exportType;
 

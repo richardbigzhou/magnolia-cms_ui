@@ -34,12 +34,12 @@
 package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Definition interface for the preview page action.
  */
-public class PreviewPageActionDefinition implements ActionDefinition {
+public class PreviewPageActionDefinition extends ConfiguredActionDefinition {
     
     @Override
     public Class<? extends ActionBase<?>> getImplementationClass() {

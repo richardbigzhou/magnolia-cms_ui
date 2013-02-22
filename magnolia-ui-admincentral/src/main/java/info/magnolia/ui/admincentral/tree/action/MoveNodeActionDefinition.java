@@ -34,12 +34,12 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * The Class MoveNodeActionDefinition.
  */
-public class MoveNodeActionDefinition implements ActionDefinition {
+public class MoveNodeActionDefinition extends ConfiguredActionDefinition {
 
     @Override
     public Class<? extends ActionBase<?>> getImplementationClass() {

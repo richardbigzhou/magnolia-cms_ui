@@ -34,12 +34,12 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Add a property to a node.
  */
-public class AddPropertyActionDefinition implements ActionDefinition {
+public class AddPropertyActionDefinition extends ConfiguredActionDefinition {
 
     @Override
     public Class<? extends Action> getImplementationClass() {

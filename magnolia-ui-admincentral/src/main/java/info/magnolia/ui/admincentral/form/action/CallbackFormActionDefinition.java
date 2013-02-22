@@ -34,40 +34,25 @@
 package info.magnolia.ui.admincentral.form.action;
 
 import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * CallbackFormActionDefinition.
  */
-public class CallbackFormActionDefinition implements ActionDefinition {
-    private String name;
-    private String label;
+public class CallbackFormActionDefinition extends ConfiguredActionDefinition {
+    
     private boolean callSuccess = true;
+    
     private String successActionName = "success";
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
 
     public boolean isCallSuccess() {
         return this.callSuccess;
     }
 
     /**
-     * @param callSuccess true (default) call Callback.onSuccess(String action).
-     * false call Callback.onCancel()
+     * @param callSuccess
+     *            true (default) call Callback.onSuccess(String action). false
+     *            call Callback.onCancel()
      */
     public void setCallSuccess(boolean callSuccess) {
         this.callSuccess = callSuccess;
@@ -78,13 +63,14 @@ public class CallbackFormActionDefinition implements ActionDefinition {
     }
 
     /**
-     * @param successActionName will be passed as parameter to Callback.onSuccess(String successActionName)
-     * in case of callSuccess = true.
+     * @param successActionName
+     *            will be passed as parameter to Callback.onSuccess(String
+     *            successActionName) in case of callSuccess = true.
      */
     public void setSuccessActionName(String successActionName) {
         this.successActionName = successActionName;
     }
-    
+
     @Override
     public Class<? extends ActionBase<?>> getImplementationClass() {
         return CallbackFormAction.class;

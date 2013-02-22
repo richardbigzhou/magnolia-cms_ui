@@ -35,12 +35,12 @@ package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Defines the {@link #nodeType} of the new node. Defaults to {@link NodeTypes.Content#NAME} if not set.
  */
-public class AddNodeActionDefinition implements ActionDefinition {
+public class AddNodeActionDefinition extends ConfiguredActionDefinition {
 
     private String nodeType = NodeTypes.Content.NAME;
 
