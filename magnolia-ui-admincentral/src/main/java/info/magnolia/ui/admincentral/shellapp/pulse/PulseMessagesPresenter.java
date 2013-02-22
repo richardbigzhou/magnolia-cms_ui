@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.admincentral.ShellImpl;
+import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategory;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
