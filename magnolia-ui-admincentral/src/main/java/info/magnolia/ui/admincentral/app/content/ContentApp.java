@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.admincentral.ShellImpl;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenter;
@@ -41,6 +40,7 @@ import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 import javax.inject.Inject;
 
@@ -71,7 +71,17 @@ public class ContentApp extends BaseApp {
 
     public ChooseDialogPresenter<Item> openChooseDialog(String defaultPath) {
         final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogFactory.createWorkbenchChooseDialog(defaultPath);
-        ((ShellImpl) shell).openDialog(workbenchChooseDialogPresenter);
+
+        final Shell.ShellDialog shellDialog = shell.openDialog(workbenchChooseDialogPresenter.getView());
+
+        workbenchChooseDialogPresenter.addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
+            @Override
+            public void onClose(BaseDialog.DialogCloseEvent event) {
+                shellDialog.close();
+                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
+            }
+        });
+
         return workbenchChooseDialogPresenter;
     }
 

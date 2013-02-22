@@ -37,7 +37,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventHandlerCollection;
 import info.magnolia.event.HandlerRegistration;
-import info.magnolia.ui.admincentral.dialog.BaseDialogPresenter;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
@@ -54,9 +53,8 @@ import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
+import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.view.Viewport;
-import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
@@ -215,19 +213,15 @@ public class ShellImpl implements Shell, MessageEventHandler {
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
 
-    public void openDialog(final BaseDialogPresenter dialogPresenter) {
-        dialogPresenter.addDialogCloseHandler(new DialogCloseEvent.Handler() {
+    public ShellDialog openDialog(final View view) {
+        final Component component = view.asVaadinComponent();
+        magnoliaShell.addDialog(component);
+        return new ShellDialog() {
             @Override
-            public void onClose(DialogCloseEvent event) {
-                removeDialog(event.getView().asVaadinComponent());
-                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
+            public void close() {
+                magnoliaShell.removeDialog(component);
             }
-        });
-        magnoliaShell.addDialog(dialogPresenter.getView().asVaadinComponent());
-    }
-
-    public void removeDialog(BaseDialog dialog) {
-        magnoliaShell.removeDialog(dialog.asVaadinComponent());
+        };
     }
 
     @Override
