@@ -33,15 +33,13 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import info.magnolia.event.EventBus;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.app.content.ContentActionExecutor;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.item.ItemPresenter;
 import info.magnolia.ui.admincentral.content.item.ItemView;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -50,7 +48,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
-import javax.inject.Named;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +62,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
 
     private static final Logger log = LoggerFactory.getLogger(ItemWorkbenchPresenter.class);
 
-    private ContentActionExecutor actionExecutor;
+    private ActionExecutor actionExecutor;
     private final ItemWorkbenchView view;
     private final ItemPresenter itemPresenter;
     private final ActionbarPresenter actionbarPresenter;
@@ -71,7 +70,8 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
     private String nodePath;
 
     @Inject
-    public ItemWorkbenchPresenter(final SubAppContext subAppContext, final ItemWorkbenchView view, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final ItemPresenter itemPresenter, final ActionbarPresenter actionbarPresenter) {
+    public ItemWorkbenchPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final ItemWorkbenchView view,final ItemPresenter itemPresenter, final ActionbarPresenter actionbarPresenter) {
+        this.actionExecutor = actionExecutor;
         this.view = view;
         this.itemPresenter = itemPresenter;
         this.actionbarPresenter = actionbarPresenter;
@@ -109,9 +109,15 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
     @Override
     public void onExecute(String actionName) {
         try {
-            actionExecutor.execute(actionName, workbenchDefinition.getWorkspace(), nodePath);
+            Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+            final javax.jcr.Item item = session.getItem(nodePath);
+
+            actionExecutor.execute(actionName, item);
+
+        } catch (RepositoryException e) {
+            throw new RuntimeException("Could not get item: " + nodePath, e);
         } catch (ActionExecutionException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            throw new RuntimeException("Could not execute the action: " + actionName, e);
         }
     }
 }
