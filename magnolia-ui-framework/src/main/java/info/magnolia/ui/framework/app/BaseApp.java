@@ -73,11 +73,6 @@ public class BaseApp implements App {
     }
 
     @Override
-    public Location getDefaultLocation() {
-        return null;
-    }
-
-    @Override
     public AppView getView() {
         return view;
     }

@@ -46,8 +46,6 @@ public interface App {
 
     void stop();
 
-    Location getDefaultLocation();
-
     AppView getView();
 
     void openChooseDialog(String path, ItemChosenListener listener);
