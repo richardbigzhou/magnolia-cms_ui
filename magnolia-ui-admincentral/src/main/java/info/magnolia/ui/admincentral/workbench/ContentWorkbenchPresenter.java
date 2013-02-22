@@ -66,6 +66,7 @@ import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -306,10 +307,15 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
     @Override
     public void onExecute(String actionName) {
         try {
-            actionExecutor.execute(actionName, getSelectedItemId(), getWorkspace());
-            view.refresh();
+            Session session = MgnlContext.getJCRSession(getWorkspace());
+            final javax.jcr.Item item = session.getItem(getSelectedItemId());
+
+            actionExecutor.execute(actionName, item);
+
+        } catch (RepositoryException e) {
+            throw new RuntimeException("Could not get item: " + getSelectedItemId(), e);
         } catch (ActionExecutionException e) {
-            throw new RuntimeException("Error executing action: " + actionName, e);
+            throw new RuntimeException("Could not execute the action: " + actionName, e);
         }
     }
 }
