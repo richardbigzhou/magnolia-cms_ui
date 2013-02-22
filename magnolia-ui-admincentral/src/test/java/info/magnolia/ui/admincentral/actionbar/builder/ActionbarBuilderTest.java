@@ -34,19 +34,17 @@
 package info.magnolia.ui.admincentral.actionbar.builder;
 
 import static org.junit.Assert.*;
-
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -68,21 +66,21 @@ public class ActionbarBuilderTest {
 
         // common group
         ActionbarGroupDefinition previewGroup = buildGroup("0",
-                buildItem("0.0"));
+                    "0.0");
 
         // sections
         ActionbarSectionDefinition aSection = buildSection(SECTION_A,
                 previewGroup,
                 buildGroup("1",
-                        buildItem("1.0"),
-                        buildItem("1.1")));
+                            "1.0",
+                            "1.1"));
         ActionbarSectionDefinition bSection = buildSection(SECTION_B,
                 previewGroup,
                 buildGroup("1",
-                        buildItem("1.0"),
-                        buildItem("1.1")),
+                            "1.0",
+                            "1.1"),
                 buildGroup("2",
-                        buildItem("2.0")));
+                            "2.0"));
 
         def.addSection(aSection);
         def.addSection(bSection);
@@ -119,8 +117,8 @@ public class ActionbarBuilderTest {
         ActionbarSectionDefinition sectionDef = buildSection(SECTION_A,
                 buildGroup("0"),
                 buildGroup("1",
-                        buildItem("1.0"),
-                        buildItem("1.1")));
+                            "1.0",
+                            "1.1"));
         def.addSection(sectionDef);
         int actionCount = getActionsCount(sectionDef);
 
@@ -141,17 +139,17 @@ public class ActionbarBuilderTest {
         ConfiguredActionbarDefinition def = new ConfiguredActionbarDefinition();
         ActionbarSectionDefinition aSection = buildSection(SECTION_A,
                 buildGroup("0",
-                        buildItem("0.0"),
-                        buildItem("0.1"),
-                        buildItem("0.1"),
-                        buildItem("0.2"),
-                        buildItem("0.3")),
+                            "0.0",
+                            "0.1",
+                            "0.1",
+                            "0.2",
+                            "0.3"),
                 buildGroup("1",
-                        buildItem("1.0"),
-                        buildItem("0.2")));
+                            "1.0",
+                            "0.2"));
         ActionbarSectionDefinition bSection = buildSection(SECTION_B,
                 buildGroup("0",
-                        buildItem("0.3")));
+                            "0.3"));
         def.addSection(aSection);
         def.addSection(bSection);
 
@@ -184,25 +182,17 @@ public class ActionbarBuilderTest {
         return section;
     }
 
-    private ActionbarGroupDefinition buildGroup(String name, ActionbarItemDefinition... items) {
+    private ActionbarGroupDefinition buildGroup(String name, String...actions) {
         ConfiguredActionbarGroupDefinition group = new ConfiguredActionbarGroupDefinition();
         group.setName(name);
-        for (ActionbarItemDefinition item : items) {
-            group.addItem(item);
-        }
+        group.setActions(Arrays.asList(actions));
         return group;
-    }
-
-    private ActionbarItemDefinition buildItem(String name) {
-        ConfiguredActionbarItemDefinition item = new ConfiguredActionbarItemDefinition();
-        item.setName(name);
-        return item;
     }
 
     private int getActionsCount(ActionbarSectionDefinition section) {
         int count = 0;
         for (ActionbarGroupDefinition group : section.getGroups()) {
-            count += group.getItems().size();
+            count += group.getActions().size();
         }
         return count;
     }

@@ -35,20 +35,15 @@ package info.magnolia.ui.admincentral.actionbar.builder;
 
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.server.ThemeResource;
 
 /**
  * Basic builder for an action bar widget based on an action bar definition.
@@ -71,14 +66,14 @@ public class ActionbarBuilder {
                 for (ActionbarGroupDefinition group : section.getGroups()) {
                     // standalone groups make no sense
 
-                    for (ActionbarItemDefinition item : group.getItems()) {
-                        if (actionNames.contains(item.getName())) {
+                    for (String item : group.getActions()) {
+                        /*if (actionNames.contains(item.getName())) {
                             log.warn("Action was not added: an action with name '" + item.getName() + "' already exists in section '" + section.getName() + "'.");
                             continue;
                         }
 
                         actionNames.add(item.getName());
-                        addItemFromDefinition(item, actionbar, group.getName(), section.getName());
+                        addItemFromDefinition(item, actionbar, group.getName(), section.getName());*/
                     }
                 }
             }
@@ -86,7 +81,7 @@ public class ActionbarBuilder {
         return actionbar;
     }
 
-    public static void addItemFromDefinition(ActionbarItemDefinition item, Actionbar actionBar, String groupName, String sectionName) {
+    /*public static void addItemFromDefinition(ActionbarItemDefinition item, Actionbar actionBar, String groupName, String sectionName) {
         ActionbarItem entry = null;
         if (StringUtils.isNotBlank(item.getIcon())) {
             if (item.getIcon().startsWith("icon-")) {
@@ -104,5 +99,5 @@ public class ActionbarBuilder {
             entry = new ActionbarItem(item.getName(), item.getLabel(), null, groupName);
         }
         actionBar.addAction(entry, sectionName);
-    }
+    }*/
 }

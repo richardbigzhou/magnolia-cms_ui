@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.model.actionbar.builder;
 
+import java.util.Arrays;
+
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition;
 
@@ -51,10 +53,8 @@ public class ActionbarGroupBuilder {
         return definition;
     }
 
-    public ActionbarGroupBuilder items(ActionbarItemBuilder... items) {
-        for (ActionbarItemBuilder item : items) {
-            definition.addItem(item.exec());
-        }
+    public ActionbarGroupBuilder actions(String... actions) {
+        definition.setActions(Arrays.asList(actions));
         return this;
     }
 }
