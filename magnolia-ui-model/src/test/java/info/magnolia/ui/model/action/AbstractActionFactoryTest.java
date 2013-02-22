@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.model.action;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.objectfactory.ComponentProvider;
@@ -50,6 +50,31 @@ public class AbstractActionFactoryTest {
         @Override
         public Class<? extends Action> getImplementationClass() {
             return TestAction.class;
+        }
+
+        @Override
+        public String getName() {
+            return null;
+        }
+
+        @Override
+        public String getLabel() {
+            return null;
+        }
+
+        @Override
+        public String getI18nBasename() {
+            return null;
+        }
+
+        @Override
+        public String getIcon() {
+            return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return null;
         }
     }
 
