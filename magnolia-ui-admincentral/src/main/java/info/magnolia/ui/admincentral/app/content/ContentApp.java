@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
+import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenterFactory;
 import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenter;
-import info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog;
+import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogView;
 import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.ItemChosenListener;
@@ -51,29 +51,29 @@ import javax.inject.Inject;
  */
 public class ContentApp extends BaseApp {
 
-    private final ChooseDialogFactory chooseDialogFactory;
+    private final ChooseDialogPresenterFactory chooseDialogPresenterFactory;
 
     @Inject
-    public ContentApp(AppContext appContext, AppView view, ChooseDialogFactory chooseDialogFactory) {
+    public ContentApp(AppContext appContext, AppView view, ChooseDialogPresenterFactory chooseDialogPresenterFactory) {
         super(appContext, view);
-        this.chooseDialogFactory = chooseDialogFactory;
+        this.chooseDialogPresenterFactory = chooseDialogPresenterFactory;
     }
 
     @Override
     public void openChooseDialog(String path, final ItemChosenListener listener) {
 
-        final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogFactory.createWorkbenchChooseDialog(path);
+        final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogPresenterFactory.createWorkbenchChooseDialog(path);
 
         final Shell.ShellDialog shellDialog = appContext.openDialog(workbenchChooseDialogPresenter.getView());
 
-        workbenchChooseDialogPresenter.addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogView.DialogActionListener() {
+        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.CHOOSE_ACTION_NAME, new DialogView.DialogActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 listener.onItemChosen(workbenchChooseDialogPresenter.getValue());
             }
         });
 
-        workbenchChooseDialogPresenter.addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new DialogView.DialogActionListener() {
+        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.CANCEL_ACTION_NAME, new DialogView.DialogActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 listener.onChooseCanceled();

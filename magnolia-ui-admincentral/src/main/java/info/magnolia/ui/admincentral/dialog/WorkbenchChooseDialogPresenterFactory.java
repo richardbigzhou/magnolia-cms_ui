@@ -48,10 +48,10 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
- * Implementation of {@link ChooseDialogFactory}.
+ * Implementation of {@link ChooseDialogPresenterFactory}.
  */
 @Singleton
-public class ChooseDialogFactoryImpl implements ChooseDialogFactory {
+public class WorkbenchChooseDialogPresenterFactory implements ChooseDialogPresenterFactory {
 
     private final ComponentProvider componentProvider;
 
@@ -60,14 +60,14 @@ public class ChooseDialogFactoryImpl implements ChooseDialogFactory {
     private final EventBus chooseDialogEventBus;
 
     @Inject
-    public ChooseDialogFactoryImpl(final ComponentProvider componentProvider, final DialogActionFactory actionFactory, final @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) EventBus chooseDialogEventBus) {
+    public WorkbenchChooseDialogPresenterFactory(final ComponentProvider componentProvider, final DialogActionFactory actionFactory, final @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) EventBus chooseDialogEventBus) {
         this.componentProvider = componentProvider;
         this.actionFactory = actionFactory;
         this.chooseDialogEventBus = chooseDialogEventBus;
     }
 
     @Override
-    public WorkbenchChooseDialogPresenter createWorkbenchChooseDialog(String defaultPath) {
+    public WorkbenchChooseDialogPresenter createWorkbenchChooseDialog(String path) {
         final ChooseDialogView selectionDialogView = componentProvider.getComponent(ChooseDialogView.class);
         final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = new WorkbenchChooseDialogPresenter(actionFactory, selectionDialogView, chooseDialogEventBus);
 
@@ -89,8 +89,8 @@ public class ChooseDialogFactoryImpl implements ChooseDialogFactory {
         presenter.initContentView((ContentWorkbenchView) dialog.getContent());
         dialog.setHeight("500px");
 
-        if (defaultPath != null && !defaultPath.isEmpty()) {
-            ((ContentWorkbenchView) dialog.getContent()).selectPath(defaultPath);
+        if (path != null && !path.isEmpty()) {
+            ((ContentWorkbenchView) dialog.getContent()).selectPath(path);
         }
         return workbenchChooseDialogPresenter;
     }
