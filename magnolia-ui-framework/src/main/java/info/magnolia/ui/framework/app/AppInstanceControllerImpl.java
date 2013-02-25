@@ -205,7 +205,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     private void stopSubAppInstance(String instanceId) {
         SubAppContext subAppContext = subAppContexts.get(instanceId);
         subAppContext.getSubApp().stop();
-        subAppContexts.remove(subAppContext);
+        subAppContexts.remove(instanceId);
     }
 
     @Override
