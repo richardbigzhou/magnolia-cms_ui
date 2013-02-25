@@ -27,11 +27,6 @@
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-themes</artifactId>
     </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
     <!-- this replaces gwt-dev.jar -->
     <dependency>
@@ -39,7 +34,6 @@
       <artifactId>vaadin-client-compiler</artifactId>
       <scope>provided</scope>
     </dependency>
-
 
     <dependency>
       <groupId>info.magnolia.ui</groupId>
