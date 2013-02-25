@@ -60,7 +60,7 @@ import info.magnolia.ui.app.security.dialog.field.validator.UniqueUserIdValidato
 import info.magnolia.ui.framework.app.builder.App;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.model.ModelConstants;
-import info.magnolia.ui.model.builder.UiConfig;
+import info.magnolia.ui.framework.config.UiConfig;
 import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
 import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
 import info.magnolia.ui.model.dialog.builder.Dialog;

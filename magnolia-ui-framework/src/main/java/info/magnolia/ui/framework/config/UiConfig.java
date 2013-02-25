@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.builder;
+package info.magnolia.ui.framework.config;
 
 import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
 import info.magnolia.ui.model.column.builder.ColumnConfig;

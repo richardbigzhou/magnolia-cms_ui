@@ -41,7 +41,7 @@ import info.magnolia.ui.framework.app.builder.AppBuilder;
 import info.magnolia.ui.framework.app.registry.AppDescriptorProvider;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
-import info.magnolia.ui.model.builder.UiConfig;
+import info.magnolia.ui.framework.config.UiConfig;
 import info.magnolia.ui.model.dialog.builder.Dialog;
 import info.magnolia.ui.model.dialog.builder.DialogBuilder;
 import info.magnolia.ui.model.dialog.builder.DialogConfig;
