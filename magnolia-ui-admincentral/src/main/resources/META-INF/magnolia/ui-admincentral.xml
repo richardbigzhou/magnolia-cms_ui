@@ -210,11 +210,6 @@
     </configurer>
 
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.ChooseDialogFactory</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.ChooseDialogFactoryImpl</implementation>
-    </component>
-
-    <component>
       <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
       <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
     </component>
@@ -225,8 +220,8 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.ChooseDialogFactory</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.ChooseDialogFactoryImpl</implementation>
+      <type>info.magnolia.ui.admincentral.dialog.ChooseDialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenterFactory</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder</type>
@@ -241,16 +236,12 @@
       <implementation>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</implementation>
+      <type>info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogView</type>
+      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogView</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.dialog.ChooseDialogView</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</implementation>
+      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogView</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition</type>

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,10 +33,25 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-/**
- * Factory interface for creating choose dialogs.
- */
-public interface ChooseDialogFactory {
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
-    public WorkbenchChooseDialogPresenter createWorkbenchChooseDialog(String defaultPath);
+import javax.inject.Inject;
+
+/**
+ * Chooses an item from a workbench.
+ */
+public class WorkbenchChooseDialogView extends BaseDialog implements ChooseDialogView {
+
+    public static final String CHOOSE_ACTION_NAME = "commit";
+    public static final String CANCEL_ACTION_NAME = "cancel";
+
+    @Inject
+    public WorkbenchChooseDialogView(ContentWorkbenchView view) {
+        addStyleName("content-view-field-wrapper");
+        setContent(view.asVaadinComponent());
+        addAction(CHOOSE_ACTION_NAME, "Choose");
+        addAction(CANCEL_ACTION_NAME, "Cancel");
+    }
+
 }

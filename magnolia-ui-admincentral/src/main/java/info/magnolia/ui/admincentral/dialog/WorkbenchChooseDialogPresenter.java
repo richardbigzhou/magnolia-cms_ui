@@ -33,23 +33,26 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
+import info.magnolia.ui.vaadin.view.View;
 
 import com.vaadin.data.Item;
 
 /**
- * WorkbenchChooseDialogPresenter.
+ * Factory for creating workbench choose dialog presenters.
  */
-public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implements ChooseDialogPresenter<Item> {
+public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implements ChooseDialogPresenter {
 
     private Item currentValue = null;
 
+    private Listener listener;
+
     private final ChooseDialogView chooseDialogView;
 
-    public WorkbenchChooseDialogPresenter(DialogActionFactory actionFactory, ChooseDialogView view, EventBus workbenchEventBus) {
+    public WorkbenchChooseDialogPresenter(ChooseDialogView view, EventBus workbenchEventBus) {
         super(view, workbenchEventBus);
         this.chooseDialogView = view;
         workbenchEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
@@ -59,24 +62,36 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
             }
         });
 
-        addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new DialogActionListener() {
+        addActionCallback(WorkbenchChooseDialogView.CANCEL_ACTION_NAME, new DialogActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 closeDialog();
             }
         });
 
-        addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogActionListener() {
+        addActionCallback(WorkbenchChooseDialogView.CHOOSE_ACTION_NAME, new DialogActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 closeDialog();
             }
         });
 
+        addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
+            @Override
+            public void onClose(BaseDialog.DialogCloseEvent event) {
+                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
+                listener.onClose();
+            }
+        });
     }
 
     @Override
-    public ChooseDialogView getView() {
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public View start() {
         return chooseDialogView;
     }
 
