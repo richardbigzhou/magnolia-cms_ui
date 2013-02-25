@@ -46,7 +46,7 @@ import javax.jcr.RepositoryException;
 /**
  * Action for saving contacts.
  * We currently can't rename the node on change.
- * This must be properly solved by passing the node identifier to {@link info.magnolia.ui.admincentral.event.ContentChangedEvent}.
+ * This must be properly solved by passing the node identifier to {@link info.magnolia.ui.framework.event.ContentChangedEvent}.
  *
  * See MGNLUI-226.
  *

@@ -47,6 +47,7 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.vaadin.view.View;
 
 import java.util.List;
 import java.util.Map;
@@ -148,6 +149,11 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         return app.getView();
     }
 
+    @Override
+    public Shell.ShellDialog openDialog(View view) {
+        return shell.openDialog(view);
+    }
+
     /**
      * Called when the app is launched from the app launcher OR a location change event triggers
      * it to start.
@@ -199,7 +205,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     private void stopSubAppInstance(String instanceId) {
         SubAppContext subAppContext = subAppContexts.get(instanceId);
         subAppContext.getSubApp().stop();
-        subAppContexts.remove(subAppContext);
+        subAppContexts.remove(instanceId);
     }
 
     @Override

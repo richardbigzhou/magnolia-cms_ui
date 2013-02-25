@@ -38,7 +38,7 @@ import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
- * Defines the {@link #nodeType} of the new node. Defaults to {@link NodeTypes.Content#NAME} if not set.
+ * Defines the type of the new node. Defaults to {@link NodeTypes.Content#NAME} if not set.
  */
 public class AddNodeActionDefinition extends ConfiguredActionDefinition {
 

@@ -81,28 +81,6 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
     }
 
     @Override
-    public void addValueChosenListener(final ValueChosenListener<Item> listener) {
-        addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new DialogActionListener() {
-            @Override
-            public void onActionExecuted(final String actionName) {
-                listener.onValueChosen(currentValue);
-            }
-        });
-
-        addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new DialogActionListener() {
-            @Override
-            public void onActionExecuted(final String actionName) {
-                listener.selectionCanceled();
-            }
-        });
-    }
-
-    @Override
-    public void removeValueChosenListener(ValueChosenListener<Item> listener) {
-        // FIXME implement or remove forever!
-    }
-
-    @Override
     public Item getValue() {
         return currentValue;
     }

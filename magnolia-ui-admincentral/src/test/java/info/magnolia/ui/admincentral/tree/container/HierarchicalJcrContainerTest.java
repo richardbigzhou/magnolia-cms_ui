@@ -39,9 +39,9 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition;
-import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
+import info.magnolia.ui.model.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
-import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
+import info.magnolia.ui.model.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.container.AbstractJcrContainerTest;
 
@@ -98,9 +98,9 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench.addColumn(colDef1);
         configuredWorkbench.addColumn(colDef2);
 
-        ItemTypeDefinition itemType = new ConfiguredItemTypeDefinition();
-        ((ConfiguredItemTypeDefinition) itemType).setItemType(NodeTypes.Content.NAME);
-        configuredWorkbench.setMainItemType(itemType);
+        NodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
+        ((ConfiguredNodeTypeDefinition) nodeTypeDefinition).setName(NodeTypes.Content.NAME);
+        configuredWorkbench.addNodeType(nodeTypeDefinition);
 
         workbenchDefinition = configuredWorkbench;
 
@@ -344,9 +344,9 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         rootNode.setProperty("jcr:name", "excluded");
         rootNode.setProperty(PROPERTY_1, "included");
         node1.getSession().save();
-        ConfiguredItemTypeDefinition type1 = new ConfiguredItemTypeDefinition();
-        type1.setItemType(NodeTypes.Content.NAME);
-        workbenchDefinition.setMainItemType(type1);
+        ConfiguredNodeTypeDefinition type1 = new ConfiguredNodeTypeDefinition();
+        type1.setName(NodeTypes.Content.NAME);
+        workbenchDefinition.addNodeType(type1);
         workbenchDefinition.setIncludeProperties(true);
 
         // WHEN
@@ -398,9 +398,9 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         node1.setProperty("foo", "meh");
         node1.setProperty("bar", "duh");
         rootNode.getSession().save();
-        ConfiguredItemTypeDefinition type1 = new ConfiguredItemTypeDefinition();
-        type1.setItemType(NodeTypes.Content.NAME);
-        workbenchDefinition.setMainItemType(type1);
+        ConfiguredNodeTypeDefinition type1 = new ConfiguredNodeTypeDefinition();
+        type1.setName(NodeTypes.Content.NAME);
+        workbenchDefinition.addNodeType(type1);
         workbenchDefinition.setIncludeProperties(true);
 
         // WHEN
@@ -408,15 +408,14 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertEquals(3, res.size());
-
     }
 
     @Test
     public void testGetChildrenRetainsJcrOrder() throws RepositoryException, IOException {
         // GIVEN
-        ConfiguredItemTypeDefinition itemTypeDef = new ConfiguredItemTypeDefinition();
-        itemTypeDef.setItemType(NodeTypes.ContentNode.NAME);
-        workbenchDefinition.setMainItemType(itemTypeDef);
+        ConfiguredNodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
+        nodeTypeDefinition.setName(NodeTypes.ContentNode.NAME);
+        workbenchDefinition.addNodeType(nodeTypeDefinition);
         workbenchDefinition.setIncludeProperties(true);
         Session session = SessionTestUtil.createSession("config", "/server/filters/zzz", "/server/filters/abc", "/server/filters/aaa", "/server/filters/foo", "/server/filters/qux");
 
@@ -431,5 +430,4 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         assertEquals("/server/filters/foo", items[3].getPath());
         assertEquals("/server/filters/qux", items[4].getPath());
     }
-
 }

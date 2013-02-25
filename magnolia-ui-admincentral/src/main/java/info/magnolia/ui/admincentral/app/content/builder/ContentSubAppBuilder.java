@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.app.content.builder;
 import info.magnolia.ui.admincentral.app.content.ConfiguredContentSubAppDescriptor;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.builder.ActionBuilder;
 import info.magnolia.ui.model.workbench.builder.WorkbenchBuilder;
 
@@ -73,6 +74,13 @@ public class ContentSubAppBuilder {
     public ContentSubAppBuilder actions(ActionBuilder... builders) {
         for (ActionBuilder builder : builders) {
             descriptor.getActions().put(builder.getName(), builder.exec());
+        }
+        return this;
+    }
+
+    public ContentSubAppBuilder actions(ActionDefinition... definitions) {
+        for (ActionDefinition definition : definitions) {
+            descriptor.getActions().put(definition.getName(), definition);
         }
         return this;
     }

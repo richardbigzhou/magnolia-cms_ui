@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,12 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.column.definition;
+package info.magnolia.ui.framework.event;
 
 /**
- * Definition for TemplateColumns.
+ * Defines constants for names of event buses used within the UI.
  */
-public class TemplateColumnDefinition extends AbstractColumnDefinition {
+public interface EventBusNames {
 
-    // No specific implementation.
+    public static final String ADMINCENTRAL = "admincentral";
+
+    public static final String APP = "app";
+
+    public static final String SUB_APP = "subapp";
+
+    public static final String CHOOSE_DIALOG = "choosedialog";
 }

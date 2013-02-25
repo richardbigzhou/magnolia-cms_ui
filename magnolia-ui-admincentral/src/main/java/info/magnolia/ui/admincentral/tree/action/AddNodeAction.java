@@ -44,25 +44,22 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Action for adding a new folder.
+ * Action for adding a new node.
  *
- * TODO: add support for configuring supported itemTypes, maybe in base class where no config means all
+ * @see AddNodeActionDefinition
  */
-public class AddNodeAction extends RepositoryOperationAction<AddNodeActionDefinition> implements TreeAction {
+public class AddNodeAction extends RepositoryOperationAction<AddNodeActionDefinition> {
+
+    private static final String DEFAULT_NODE_NAME = "untitled";
 
     public AddNodeAction(AddNodeActionDefinition definition, Item item, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus) {
         super(definition, item, eventBus);
     }
 
     @Override
-    public boolean isAvailable(Item item) throws RepositoryException {
-        return item.isNode();
-    }
-
-    @Override
     protected void onExecute(Item item) throws RepositoryException {
         Node node = (Node) item;
-        String name = Path.getUniqueLabel(item.getSession(), item.getPath(), "untitled");
+        String name = Path.getUniqueLabel(item.getSession(), item.getPath(), DEFAULT_NODE_NAME);
         Node newNode = node.addNode(name, getDefinition().getNodeType());
         NodeTypes.Created.set(newNode);
     }

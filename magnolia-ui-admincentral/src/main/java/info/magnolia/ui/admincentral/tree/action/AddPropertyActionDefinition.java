@@ -37,7 +37,7 @@ import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
- * Add a property to a node.
+ * Adds a property to a node.
  */
 public class AddPropertyActionDefinition extends ConfiguredActionDefinition {
 

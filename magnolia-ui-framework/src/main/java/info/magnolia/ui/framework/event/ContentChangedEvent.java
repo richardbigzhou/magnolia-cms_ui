@@ -31,15 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.framework.event;
 
-import javax.jcr.Item;
-import javax.jcr.RepositoryException;
+import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
 
 /**
- * Interface to be implemented by actions that provide additional hints about their capabilities.
+ * Event fired when content is changed, deleted or added.
  */
-public interface TreeAction {
+public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
 
-    boolean isAvailable(Item item) throws RepositoryException;
+    /**
+     * Handles {@link ContentChangedEvent} events.
+     */
+    public interface Handler extends EventHandler {
+
+        void onContentChanged(ContentChangedEvent event);
+    }
+
+    private String workspace;
+
+    private String path;
+
+    public ContentChangedEvent(String workspace, String path) {
+        this.workspace = workspace;
+        this.path = path;
+    }
+
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onContentChanged(this);
+    }
 }

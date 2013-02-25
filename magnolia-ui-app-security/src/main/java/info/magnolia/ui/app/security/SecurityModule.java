@@ -91,18 +91,42 @@ public class SecurityModule implements ModuleLifecycle {
 
         // group
         CreateDialogActionDefinition addGroupAction = new CreateDialogActionDefinition();
+        addGroupAction.setName("addGroup");
+        addGroupAction.setLabel("New group");
+        addGroupAction.setIcon("icon-add-item");
         addGroupAction.setNodeType(NodeTypes.Group.NAME);
         addGroupAction.setDialogName("ui-security-app:groupAdd");
 
         EditDialogActionDefinition editGroupAction = new EditDialogActionDefinition();
+        editGroupAction.setName("editGroup");
+        editGroupAction.setLabel("Edit group");
+        editGroupAction.setIcon("icon-edit");
         editGroupAction.setDialogName("ui-security-app:groupEdit");
+
+        // delete group
+        DeleteItemActionDefinition deleteGroupActionDefinition = new DeleteItemActionDefinition();
+        deleteGroupActionDefinition.setName("deleteGroup");
+        deleteGroupActionDefinition.setLabel("Delete group");
+        deleteGroupActionDefinition.setIcon("icon-delete");
+
+        // delete role
+        DeleteItemActionDefinition deleteRoleActionDefinition = new DeleteItemActionDefinition();
+        deleteRoleActionDefinition.setName("deleteRole");
+        deleteRoleActionDefinition.setLabel("Delete role");
+        deleteRoleActionDefinition.setIcon("icon-delete");
 
         // role
         CreateDialogActionDefinition addRoleAction = new CreateDialogActionDefinition();
+        addRoleAction.setName("addRole");
+        addRoleAction.setLabel("New role");
+        addRoleAction.setIcon("icon-add-item");
         addRoleAction.setNodeType(NodeTypes.Role.NAME);
         addRoleAction.setDialogName("ui-security-app:roleAdd");
 
         EditDialogActionDefinition editRoleAction = new EditDialogActionDefinition();
+        editRoleAction.setName("editRole");
+        editRoleAction.setLabel("Edit role");
+        editRoleAction.setIcon("icon-edit");
         editRoleAction.setDialogName("ui-security-app:roleEdit");
 
         // Configure ImageProvider
@@ -116,8 +140,8 @@ public class SecurityModule implements ModuleLifecycle {
                         userSubApp(app, cfg, "systemUsers", "/system").label("System users"),
                         app.subApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
                                 .workbench(cfg.workbenches.workbench().workspace("usergroups").root("/").defaultOrder(ModelConstants.JCR_NAME)
-                                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-folder"))
-                                        .mainItemType(cfg.workbenches.itemType(NodeTypes.Group.NAME).icon("icon-user-group"))
+                                        .nodeType(cfg.workbenches.nodeType(NodeTypes.Group.NAME).icon("icon-user-group"))
+                                        .nodeType(cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                         .imageProvider(cipd)
                                         .columns(
                                                 cfg.columns.property(ModelConstants.JCR_NAME, "Group name").sortable(true).expandRatio(2),
@@ -129,19 +153,16 @@ public class SecurityModule implements ModuleLifecycle {
                                                 .sections(
                                                         cfg.actionbars.section("groupActions").label("Groups")
                                                                 .groups(
-                                                                        cfg.actionbars.group("addActions").items(
-                                                                                cfg.actionbars.item("addGroup").label("New group").icon("icon-add-item").action(addGroupAction)),
-                                                                        cfg.actionbars.group("editActions").items(
-                                                                                cfg.actionbars.item("edit").label("Edit group").icon("icon-edit").action(editGroupAction),
-                                                                                cfg.actionbars.item("delete").label("Delete group").icon("icon-delete").action(new DeleteItemActionDefinition()))
+                                                                        cfg.actionbars.group("addActions").actions(addGroupAction.getName()),
+                                                                        cfg.actionbars.group("editActions").actions(editGroupAction.getName(), deleteGroupActionDefinition.getName())
                                                                 )
                                                 )
                                         )
                                 ),
                         app.subApp("roles").subAppClass(SecurityRolesSubApp.class).label("Roles")
                                 .workbench(cfg.workbenches.workbench().workspace("userroles").root("/").defaultOrder(ModelConstants.JCR_NAME)
-                                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-folder"))
-                                        .mainItemType(cfg.workbenches.itemType(NodeTypes.Role.NAME).icon("icon-user-role"))
+                                        .nodeType(cfg.workbenches.nodeType(NodeTypes.Role.NAME).icon("icon-user-role"))
+                                        .nodeType(cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                         .imageProvider(cipd)
                                         .columns(
                                                 cfg.columns.property(ModelConstants.JCR_NAME, "Role name").sortable(true).expandRatio(2),
@@ -153,11 +174,8 @@ public class SecurityModule implements ModuleLifecycle {
                                                 .sections(
                                                         cfg.actionbars.section("roleActions").label("Roles")
                                                                 .groups(
-                                                                        cfg.actionbars.group("addActions").items(
-                                                                                cfg.actionbars.item("addRole").label("New role").icon("icon-add-item").action(addRoleAction)),
-                                                                        cfg.actionbars.group("editActions").items(
-                                                                                cfg.actionbars.item("edit").label("Edit role").icon("icon-edit").action(editRoleAction),
-                                                                                cfg.actionbars.item("delete").label("Delete role").icon("icon-delete").action(new DeleteItemActionDefinition()))
+                                                                        cfg.actionbars.group("addActions").actions(addRoleAction.getName()),
+                                                                        cfg.actionbars.group("editActions").actions(editRoleAction.getName(),deleteRoleActionDefinition.getName())
                                                                 )
                                                 )
                                         )
@@ -169,11 +187,22 @@ public class SecurityModule implements ModuleLifecycle {
     protected ContentSubAppBuilder userSubApp(ContentAppBuilder app, UiConfig cfg, String name, String root) {
         // user
         CreateDialogActionDefinition addUserAction = new CreateDialogActionDefinition();
+        addUserAction.setName("addUser");
+        addUserAction.setLabel("New user");
+        addUserAction.setIcon("icon-add-item");
         addUserAction.setNodeType(NodeTypes.User.NAME);
         addUserAction.setDialogName("ui-security-app:userAdd");
 
         EditDialogActionDefinition editUserAction = new EditDialogActionDefinition();
+        editUserAction.setName("edit");
+        editUserAction.setLabel("Edit user");
+        editUserAction.setIcon("icon-edit");
         editUserAction.setDialogName("ui-security-app:userEdit");
+
+        DeleteItemActionDefinition deleteUserActionDefinition = new DeleteItemActionDefinition();
+        deleteUserActionDefinition.setName("delete");
+        deleteUserActionDefinition.setLabel("Delete user");
+        deleteUserActionDefinition.setIcon("icon-delete");
 
         // Configure ImageProvider
         ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
@@ -182,8 +211,8 @@ public class SecurityModule implements ModuleLifecycle {
 
         return app.subApp(name).subAppClass(SecurityUsersSubApp.class)
                 .workbench(cfg.workbenches.workbench().workspace("users").root(root).defaultOrder(ModelConstants.JCR_NAME)
-                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-folder")) // see MGNLPUR-77
-                        .mainItemType(cfg.workbenches.itemType(NodeTypes.User.NAME).icon("icon-user-magnolia"))
+                        .nodeType(cfg.workbenches.nodeType(NodeTypes.User.NAME).icon("icon-user-magnolia"))
+                        .nodeType(cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder")) // see MGNLPUR-77
                         .imageProvider(cipd)
                         .columns(
                                 cfg.columns.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME).formatterClass(UserNameColumnFormatter.class).expandRatio(2),
@@ -196,11 +225,8 @@ public class SecurityModule implements ModuleLifecycle {
                                 .sections(
                                         cfg.actionbars.section("usersActions").label("Users")
                                                 .groups(
-                                                        cfg.actionbars.group("addActions").items(
-                                                                cfg.actionbars.item("addUser").label("New user").icon("icon-add-item").action(addUserAction)),
-                                                        cfg.actionbars.group("editActions").items(
-                                                                cfg.actionbars.item("edit").label("Edit user").icon("icon-edit").action(editUserAction),
-                                                                cfg.actionbars.item("delete").label("Delete user").icon("icon-delete").action(new DeleteItemActionDefinition()))
+                                                        cfg.actionbars.group("addActions").actions(addUserAction.getName()),
+                                                        cfg.actionbars.group("editActions").actions(editUserAction.getName(), deleteUserActionDefinition.getName())
                                                 )
                                 )
                         )

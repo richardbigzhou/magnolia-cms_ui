@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.model.workbench.definition;
 
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.column.definition.ColumnDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
@@ -54,14 +53,9 @@ public interface WorkbenchDefinition extends Serializable {
     String getPath();
 
     /**
-     * @return the grouping ItemType used in the tree view.
+     * @return all configured NodeTypes.
      */
-    ItemTypeDefinition getGroupingItemType();
-
-    /**
-     * @return the main ItemType. Used in all views.
-     */
-    ItemTypeDefinition getMainItemType();
+    List<NodeTypeDefinition> getNodeTypes();
 
     /**
      * @return whether properties should be displayed as well (or just nodes)
@@ -74,8 +68,6 @@ public interface WorkbenchDefinition extends Serializable {
      * Gets the definition for the action bar related to this workbench.
      */
     ActionbarDefinition getActionbar();
-
-    ComponentProviderConfiguration getComponents();
 
     ImageProviderDefinition getImageProvider();
 
