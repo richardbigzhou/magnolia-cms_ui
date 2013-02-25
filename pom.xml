@@ -245,6 +245,7 @@
     <module>magnolia-ui-app-messages</module>
     <module>magnolia-ui-app-pages</module>
     <module>magnolia-ui-app-security</module>
+    <module>magnolia-ui-vaadin-theme</module>
   </modules>
   <distributionManagement>
     <site>

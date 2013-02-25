@@ -1,0 +1,37 @@
+@charset "UTF-8";
+@import "../base/base.scss";
+@import "colors.scss";
+@import "button.scss";
+
+@mixin magnolia {
+  @include base;
+  @include button;
+
+  .v-ui {
+    font-family: Verdana, sans-serif;
+  }
+
+  .v-caption {
+  	font-size: 12px;
+  }
+
+  .v-formlayout-captioncell .v-caption {
+  	color: $c02;
+  }
+
+  .v-textfield, .v-filterselect-input {
+  	padding: 3px 3px 4px 6px !important;
+    border: 1px solid $c02;
+    background-color: $c21;
+    color: $c22;
+    font-family: Verdana, sans-serif;
+    font-size: 12px;
+
+    &:focus, &.focus {
+      margin: -1px;
+      border-width: 2px;
+      border-color: $c06;
+    }
+  }
+
+}
