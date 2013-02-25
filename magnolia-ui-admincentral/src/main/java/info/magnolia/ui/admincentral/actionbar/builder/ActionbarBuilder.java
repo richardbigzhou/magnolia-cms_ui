@@ -41,6 +41,8 @@ import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -65,16 +67,23 @@ public class ActionbarBuilder {
 
             for (ActionbarSectionDefinition section : definition.getSections()) {
                 actionbar.addSection(section.getName(), section.getLabel());
-
+                List<String> actionNames = new ArrayList<String>();
                 for (ActionbarGroupDefinition group : section.getGroups()) {
                     // standalone groups make no sense
                     log.info("Group actions: " + group.getActions());
-                    for (String item : group.getActions()) {
-                        if (!actions.containsKey(item)) {
-                            log.warn("Action was not added: an action with name '" + item + "' already exists in section '" + section.getName() + "'.");
+                    for (String action : group.getActions()) {
+                        if (!actions.containsKey(action)) {
+                            log.warn("Action was not added: an action with name " + action + " action definition is missing.");
                             continue;
                         }
-                        addItemFromDefinition(actions.get(item), actionbar, group.getName(), section.getName());
+                        
+                        if (actionNames.contains(action)) {
+                            log.warn("Action was not added: an action with name " + action + "': was already added to the section" + section.getName() + ".");
+                            continue;
+                        }
+                        
+                        actionNames.add(action);
+                        addItemFromDefinition(actions.get(action), actionbar, group.getName(), section.getName());
                     }
                 }
             }
@@ -91,7 +100,7 @@ public class ActionbarBuilder {
                 try {
                     actionBar.registerActionIconResource(def.getName(), new ThemeResource(def.getIcon()));
                 } catch (NullPointerException e) {
-                    log.warn("Icon resource not found for Actionbar item '" + def.getName() + "'.");
+                    log.warn("Icon resource not found for Actionbar item " + def.getName() + "'.");
                 } finally {
                     entry = new ActionbarItem(def.getName(), def.getLabel(), null, groupName);
                 }
