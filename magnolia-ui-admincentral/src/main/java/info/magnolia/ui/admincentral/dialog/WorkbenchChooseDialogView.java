@@ -39,32 +39,19 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import javax.inject.Inject;
 
 /**
- * Chooses a value from a workbench.
+ * Chooses an item from a workbench.
  */
 public class WorkbenchChooseDialogView extends BaseDialog implements ChooseDialogView {
 
     public static final String CHOOSE_ACTION_NAME = "commit";
     public static final String CANCEL_ACTION_NAME = "cancel";
 
-    private final ContentWorkbenchView view;
-
     @Inject
     public WorkbenchChooseDialogView(ContentWorkbenchView view) {
-        this.view = view;
         addStyleName("content-view-field-wrapper");
-        setContent(this.view.asVaadinComponent());
+        setContent(view.asVaadinComponent());
         addAction(CHOOSE_ACTION_NAME, "Choose");
         addAction(CANCEL_ACTION_NAME, "Cancel");
-    }
-
-    @Override
-    public void setCancelActionLabel(String newLabel) {
-        setActionLabel(CANCEL_ACTION_NAME, newLabel);
-    }
-
-    @Override
-    public void setSelectionActionLabel(String newLabel) {
-        setActionLabel(CANCEL_ACTION_NAME, newLabel);
     }
 
 }

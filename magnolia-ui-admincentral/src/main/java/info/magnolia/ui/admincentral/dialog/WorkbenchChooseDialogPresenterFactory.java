@@ -36,12 +36,13 @@ package info.magnolia.ui.admincentral.dialog;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter;
 import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
-import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView.Listener;
+import info.magnolia.ui.framework.app.ItemChosenListener;
 import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.dialog.DialogView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -55,21 +56,18 @@ public class WorkbenchChooseDialogPresenterFactory implements ChooseDialogPresen
 
     private final ComponentProvider componentProvider;
 
-    private final DialogActionFactory actionFactory;
-
     private final EventBus chooseDialogEventBus;
 
     @Inject
-    public WorkbenchChooseDialogPresenterFactory(final ComponentProvider componentProvider, final DialogActionFactory actionFactory, final @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) EventBus chooseDialogEventBus) {
+    public WorkbenchChooseDialogPresenterFactory(final ComponentProvider componentProvider, final @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) EventBus chooseDialogEventBus) {
         this.componentProvider = componentProvider;
-        this.actionFactory = actionFactory;
         this.chooseDialogEventBus = chooseDialogEventBus;
     }
 
     @Override
-    public WorkbenchChooseDialogPresenter createWorkbenchChooseDialog(String path) {
+    public WorkbenchChooseDialogPresenter createChooseDialogPresenter(String path, final ItemChosenListener listener) {
         final ChooseDialogView selectionDialogView = componentProvider.getComponent(ChooseDialogView.class);
-        final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = new WorkbenchChooseDialogPresenter(actionFactory, selectionDialogView, chooseDialogEventBus);
+        final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = new WorkbenchChooseDialogPresenter(selectionDialogView, chooseDialogEventBus);
 
         final ChooseDialogContentPresenter presenter = componentProvider.getComponent(ChooseDialogContentPresenter.class);
         final BaseDialog dialog = (BaseDialog) workbenchChooseDialogPresenter.getView();
@@ -92,6 +90,21 @@ public class WorkbenchChooseDialogPresenterFactory implements ChooseDialogPresen
         if (path != null && !path.isEmpty()) {
             ((ContentWorkbenchView) dialog.getContent()).selectPath(path);
         }
+
+        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.CHOOSE_ACTION_NAME, new DialogView.DialogActionListener() {
+            @Override
+            public void onActionExecuted(final String actionName) {
+                listener.onItemChosen(workbenchChooseDialogPresenter.getValue());
+            }
+        });
+
+        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.CANCEL_ACTION_NAME, new DialogView.DialogActionListener() {
+            @Override
+            public void onActionExecuted(final String actionName) {
+                listener.onChooseCanceled();
+            }
+        });
+
         return workbenchChooseDialogPresenter;
     }
 

@@ -33,16 +33,13 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
+import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenterFactory;
-import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenter;
-import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogView;
 import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.ItemChosenListener;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.vaadin.dialog.DialogView;
 
 import javax.inject.Inject;
 
@@ -62,29 +59,15 @@ public class ContentApp extends BaseApp {
     @Override
     public void openChooseDialog(String path, final ItemChosenListener listener) {
 
-        final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogPresenterFactory.createWorkbenchChooseDialog(path);
+        final ChooseDialogPresenter chooseDialogPresenter = chooseDialogPresenterFactory.createChooseDialogPresenter(path, listener);
 
-        final Shell.ShellDialog shellDialog = appContext.openDialog(workbenchChooseDialogPresenter.getView());
+        final Shell.ShellDialog shellDialog = appContext.openDialog(chooseDialogPresenter.start());
 
-        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.CHOOSE_ACTION_NAME, new DialogView.DialogActionListener() {
+        chooseDialogPresenter.setListener(new ChooseDialogPresenter.Listener() {
+
             @Override
-            public void onActionExecuted(final String actionName) {
-                listener.onItemChosen(workbenchChooseDialogPresenter.getValue());
-            }
-        });
-
-        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.CANCEL_ACTION_NAME, new DialogView.DialogActionListener() {
-            @Override
-            public void onActionExecuted(final String actionName) {
-                listener.onChooseCanceled();
-            }
-        });
-
-        workbenchChooseDialogPresenter.addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
-            @Override
-            public void onClose(BaseDialog.DialogCloseEvent event) {
+            public void onClose() {
                 shellDialog.close();
-                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
             }
         });
     }
