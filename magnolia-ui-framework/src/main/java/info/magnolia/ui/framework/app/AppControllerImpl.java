@@ -133,8 +133,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      *
      * @param appId of the {@link App} to instantiate.
      */
-    @Override
-    public App getAppWithoutStarting(String appId) {
+    private App getAppWithoutStarting(String appId) {
         AppInstanceController appInstanceController = getAppInstance(appId);
         ComponentProvider appComponentProvider = createAppComponentProvider(appInstanceController.getAppDescriptor().getName(), appInstanceController);
         App app = appComponentProvider.newInstance(appInstanceController.getAppDescriptor().getAppClass());
@@ -376,6 +375,14 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             if (message != null) {
                 event.setWarning(message);
             }
+        }
+    }
+
+    @Override
+    public void openChooseDialog(String appName, String path, ItemChosenListener listener) {
+        App targetApp = getAppWithoutStarting(appName);
+        if (targetApp != null) {
+            targetApp.openChooseDialog(path, listener);
         }
     }
 

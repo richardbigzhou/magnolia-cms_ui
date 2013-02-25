@@ -73,12 +73,11 @@ public class BaseApp implements App {
     }
 
     @Override
-    public Location getDefaultLocation() {
-        return null;
+    public AppView getView() {
+        return view;
     }
 
     @Override
-    public AppView getView() {
-        return view;
+    public void openChooseDialog(String path, ItemChosenListener listener) {
     }
 }

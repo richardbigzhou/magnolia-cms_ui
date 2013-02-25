@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,44 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.event;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.event.Event;
-import info.magnolia.event.EventHandler;
+import com.vaadin.data.Item;
 
 /**
- * Global event fired if content was changed, deleted, added.
- * FIXME introduce more granular events
+ * Listener for the outcome of a choose dialog.
+ *
+ * @see AppController
  */
-public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
+public interface ItemChosenListener {
 
-    /**
-     * Handles {@link ContentChangedEvent} events.
-     */
-    public interface Handler extends EventHandler {
+    void onItemChosen(Item item);
 
-        void onContentChanged(ContentChangedEvent event);
-    }
-
-    private String workspace;
-
-    private String path;
-
-    public ContentChangedEvent(String workspace, String path) {
-        this.workspace = workspace;
-        this.path = path;
-    }
-
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onContentChanged(this);
-    }
+    void onChooseCanceled();
 }

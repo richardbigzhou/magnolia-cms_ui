@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.model.workbench.definition;
 
 /**
- * Interface for value selection providers.
+ * Configuration for a definition of a NodeType. e.g. used for inclusion in a tree.
  *
- * @param <VT> Value Type.
+ * @see info.magnolia.jcr.util.NodeTypes
  */
-public interface ValueChosenListener<VT> {
+public class ConfiguredNodeTypeDefinition implements NodeTypeDefinition {
 
-    void onValueChosen(VT chosenValue);
+    private String name;
 
-    void selectionCanceled();
+    private String icon;
 
-    /**
-     * Indicates that the implementor can accept {@link ValueChosenListener}.
-     */
-    interface HasValueChosenListener<VT> {
-
-        void addValueChosenListener(final ValueChosenListener<VT> listener);
-
-        void removeValueChosenListener(final ValueChosenListener<VT> listener);
+    @Override
+    public String getName() {
+        return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 }

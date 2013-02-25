@@ -160,8 +160,8 @@ public class ContactsModule implements ModuleLifecycle {
                                                 .workspace("contacts")
                                                 .root("/")
                                                 .defaultOrder(ModelConstants.JCR_NAME)
-                                                .groupingItemType(cfg.workbenches.itemType("mgnl:folder").icon("icon-folder"))
-                                                .mainItemType(cfg.workbenches.itemType(Contact.NAME).icon("icon-node-content"))
+                                                .nodeType(cfg.workbenches.nodeType(Contact.NAME).icon("icon-node-content"))
+                                                .nodeType(cfg.workbenches.nodeType("mgnl:folder").icon("icon-folder"))
                                                 .imageProvider(cipd)
                                                 .columns(
                                                         cfg.columns.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME)

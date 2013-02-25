@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.workbench.builder;
+package info.magnolia.ui.app.pages.column;
 
-import info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition;
-import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
+import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
 
 /**
- * Builder for building an item type definition.
- *
- * @see WorkbenchBuilder
+ * Definition for a template column.
  */
-public class ItemTypeBuilder {
+public class TemplateColumnDefinition extends AbstractColumnDefinition {
 
-    private ConfiguredItemTypeDefinition definition = new ConfiguredItemTypeDefinition();
-
-    public ItemTypeBuilder(String itemType) {
-        definition.setItemType(itemType);
-    }
-
-    public ItemTypeBuilder icon(String icon) {
-        definition.setIcon(icon);
-        return this;
-    }
-
-    public ItemTypeDefinition exec() {
-        return definition;
-    }
 }
