@@ -44,6 +44,7 @@ import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
@@ -278,5 +279,17 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 throw new RuntimeException("Could not execute the action: " + actionName, e);
             }
         }
+    }
+
+    @Override
+    public String getLabel(String actionName) {
+        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
+        return actionDefinition.getLabel();
+    }
+
+    @Override
+    public String getIcon(String actionName) {
+        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
+        return actionDefinition.getIcon();
     }
 }

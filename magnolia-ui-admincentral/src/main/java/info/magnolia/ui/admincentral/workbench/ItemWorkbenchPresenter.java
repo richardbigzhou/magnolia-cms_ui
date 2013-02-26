@@ -40,6 +40,7 @@ import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.item.ItemPresenter;
 import info.magnolia.ui.admincentral.content.item.ItemView;
 import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
@@ -120,4 +121,17 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
             throw new RuntimeException("Could not execute the action: " + actionName, e);
         }
     }
+
+    @Override
+    public String getLabel(String actionName) {
+        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
+        return actionDefinition.getLabel();
+    }
+
+    @Override
+    public String getIcon(String actionName) {
+        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
+        return actionDefinition.getIcon();
+    }
+
 }

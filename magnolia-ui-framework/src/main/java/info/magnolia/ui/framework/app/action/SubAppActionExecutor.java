@@ -77,7 +77,7 @@ public class SubAppActionExecutor implements ActionExecutor {
      * object given is also available for injection.
      */
     private Action createAction(String actionName, Object... args) throws ConfigurationException {
-        final ActionDefinition actionDefinition = subAppDescriptor.getActions().get(actionName);
+        final ActionDefinition actionDefinition = getActionDefinition(actionName);
         if (actionDefinition != null) {
             Class<? extends Action> implementationClass = actionDefinition.getImplementationClass();
             if (implementationClass != null) {
@@ -91,5 +91,10 @@ public class SubAppActionExecutor implements ActionExecutor {
 
         throw new ConfigurationException("Could not create action: " + actionName);
     }
-   
+
+    @Override
+    public ActionDefinition getActionDefinition(String actionName) {
+        return subAppDescriptor.getActions().get(actionName);
+    }
+
 }

@@ -40,11 +40,18 @@ public interface ActionExecutor {
 
     void execute(String actionName, Object ... args) throws ActionExecutionException;
 
+    ActionDefinition getActionDefinition(String actionName);
+
     /**
      * Listener interface for the ActionExecutor.
      */
     public interface Listener {
 
         void onExecute(String actionName);
+
+        String getLabel(String actionName);
+
+        String getIcon(String actionName);
+
     }
 }

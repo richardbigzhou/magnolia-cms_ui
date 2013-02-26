@@ -78,7 +78,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
      */
     public ActionbarView start(final ActionbarDefinition definition) {
         this.definition = definition;
-        actionbar = ActionbarBuilder.build(definition, subAppContext.getSubAppDescriptor().getActions());
+        actionbar = ActionbarBuilder.build(definition, listener);
         actionbar.setListener(this);
         return actionbar;
     }
