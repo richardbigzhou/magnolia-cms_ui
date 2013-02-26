@@ -31,14 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.content;
+package info.magnolia.ui.framework.app.action;
 
+import info.magnolia.cms.beans.config.ConfigurationException;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
-import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -47,51 +45,51 @@ import info.magnolia.ui.model.action.ActionExecutor;
 import javax.inject.Inject;
 
 /**
- * ContentActionExecutor.
+ * {@link ActionExecutor} used in the scope of sub apps. Reads the {@link ActionDefinition} from the {@link SubAppDescriptor} bound to the current {@link SubAppContext}.
+ * Creates the {@link Action} from the implementation class using componentProvider and binds the ActionDefinition to the Action.
  */
-public class ContentActionExecutor implements ActionExecutor {
+public class SubAppActionExecutor implements ActionExecutor {
 
-    private MessagesManager messagesManager;
-    
     private SubAppDescriptor subAppDescriptor;
     
     private ComponentProvider componentProvider;
     
     @Inject
-    public ContentActionExecutor(MessagesManager messagesManager, final ComponentProvider componentProvider, final SubAppContext subAppContext) {
-        this.messagesManager = messagesManager;
+    public SubAppActionExecutor(final ComponentProvider componentProvider, final SubAppContext subAppContext) {
         this.subAppDescriptor = subAppContext.getSubAppDescriptor();
         this.componentProvider = componentProvider;
     }
 
     @Override
     public void execute(String actionName, Object... args) throws ActionExecutionException {
-
-        Message message = new Message();
-        message.setSubject("Action execute");
-        message.setMessage(actionName);
-        message.setType(MessageType.INFO);
-
-        messagesManager.sendLocalMessage(message);
-        Action action = createAction(actionName, args);
-        action.execute();
-    }
-
-    private Action createAction(String actionName, Object... args) {
-        final ActionDefinition actionDefinition = getActionDefinition(actionName);
-        Class<? extends Action> implementationClass = actionDefinition.getImplementationClass();
-        if (implementationClass != null) {
-            Object[] combinedParameters = new Object[args.length + 1];
-            combinedParameters[0] = actionDefinition;
-            System.arraycopy(args, 0, combinedParameters, 1, args.length);
-
-            return componentProvider.newInstance(implementationClass, combinedParameters);
+        try {
+            Action action = createAction(actionName, args);
+            action.execute();
         }
-        return null;
+        catch (ConfigurationException e) {
+            throw new ActionExecutionException(e);
+        }
     }
 
-    private ActionDefinition getActionDefinition(String actionName) {
-        return subAppDescriptor.getActions().get(actionName);
+    /**
+     * Creates an action using the implementation configured for the given action definition. The
+     * parameters are made available for injection when the instance is created. The definition
+     * object given is also available for injection.
+     */
+    private Action createAction(String actionName, Object... args) throws ConfigurationException {
+        final ActionDefinition actionDefinition = subAppDescriptor.getActions().get(actionName);
+        if (actionDefinition != null) {
+            Class<? extends Action> implementationClass = actionDefinition.getImplementationClass();
+            if (implementationClass != null) {
+                Object[] combinedParameters = new Object[args.length + 1];
+                combinedParameters[0] = actionDefinition;
+                System.arraycopy(args, 0, combinedParameters, 1, args.length);
+
+                return componentProvider.newInstance(implementationClass, combinedParameters);
+            }
+        }
+
+        throw new ConfigurationException("Could not create action: " + actionName);
     }
    
 }

@@ -262,7 +262,7 @@
     </component>
     <component>
       <type>info.magnolia.ui.model.action.ActionExecutor</type>
-      <implementation>info.magnolia.ui.admincentral.app.content.ContentActionExecutor</implementation>
+      <implementation>info.magnolia.ui.framework.app.action.SubAppActionExecutor</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
