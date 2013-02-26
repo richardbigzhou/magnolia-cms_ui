@@ -306,8 +306,8 @@
       <implementation>info.magnolia.ui.admincentral.form.action.FormActionFactoryImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.model.action.WorkbenchActionFactory</type>
-      <implementation>info.magnolia.ui.model.action.WorkbenchActionFactoryImpl</implementation>
+      <type>info.magnolia.ui.model.workbench.action.WorkbenchActionFactory</type>
+      <implementation>info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition</type>
