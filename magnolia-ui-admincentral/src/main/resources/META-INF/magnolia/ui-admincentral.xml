@@ -248,8 +248,8 @@
       <implementation>info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.workbench.ContentWorkbenchView</type>
-      <implementation>info.magnolia.ui.workbench.ContentWorkbenchViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
+      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
     </component>
   </components>
 
