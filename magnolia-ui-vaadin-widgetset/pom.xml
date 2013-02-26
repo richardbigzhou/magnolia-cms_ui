@@ -86,6 +86,33 @@
           <skip>true</skip>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- <phase>prepare-package</phase> -->
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source>
+                import com.vaadin.sass.SassCompiler
+
+                new File("../").eachFileRecurse{
+                  if(it.path =~ /\/target\/.*\/VAADIN\/.*\.scss$/) {                                            
+                      def sassFile = it.path
+                      def cssFile = it.path.replaceAll(".scss", ".css")
+                      println "Compiling Sass file " + sassFile + " -> " + cssFile
+                      SassCompiler.main([sassFile, cssFile] as String[])
+                  }                
+                }
+              </source>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   <profiles>

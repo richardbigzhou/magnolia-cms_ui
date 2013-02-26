@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security;
+package info.magnolia.ui.admincentral.theme;
 
-import info.magnolia.ui.admincentral.app.content.ContentApp;
-import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenterFactory;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.app.theme.AppThemer;
 import info.magnolia.ui.framework.app.theme.ThemedApp;
 
-import javax.inject.Inject;
+import org.vaadin.cssinject.CSSInject;
+
+import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinService;
+import com.vaadin.ui.Component;
 
 /**
- * The Security App, extending the base content app.
+ * Add theme to an App.
  */
-@ThemedApp("security")
-public class SecurityApp extends ContentApp {
+public class AppThemerImpl implements AppThemer {
 
-    @Inject
-    public SecurityApp(AppContext appContext, AppView view, ChooseDialogPresenterFactory chooseDialogPresenterFactory) {
-        super(appContext, view, chooseDialogPresenterFactory);
+    private CSSInject cssInject = null;
+
+    public AppThemerImpl() {
+        this.cssInject = new CSSInject(VaadinService.getCurrent().findUI(
+                VaadinService.getCurrentRequest()));
     }
 
     @Override
-    public void start(Location location) {
-        super.start(location);
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "systemUsers", "/system"));
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "groups", ""));
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "roles", ""));
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "users", "/admin"));
+    public void themeAnnotated(App app) {
+        if (app.getClass().isAnnotationPresent(ThemedApp.class)) {
+            ThemedApp themeAnnotation = app.getClass().getAnnotation(
+                    ThemedApp.class);
+            setTheme(app.getView(), themeAnnotation.value());
+        }
     }
 
+    @Override
+    public void setTheme(AppView view, String themeName) {
+        String stylename = String.format("app-%s", themeName);
+        Component vaadinComponent = view.asVaadinComponent();
+        vaadinComponent.addStyleName(stylename);
+
+        String themeUrl = String.format("../%s/styles.css", themeName);
+        ThemeResource res = new ThemeResource(themeUrl);
+        this.cssInject.addStyleSheet(res);
+    }
 }

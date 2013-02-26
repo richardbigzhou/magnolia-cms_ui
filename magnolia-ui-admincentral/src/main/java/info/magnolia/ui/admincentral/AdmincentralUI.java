@@ -87,8 +87,8 @@ public class AdmincentralUI extends UI {
         GuiceComponentProvider componentProvider = builder.build();
 
         getPage().setTitle("Magnolia 5.0");
-
-        AdmincentralPresenter presenter = componentProvider.newInstance(AdmincentralPresenter.class);
+        AdmincentralPresenter presenter = componentProvider
+                .newInstance(AdmincentralPresenter.class);
         View view = presenter.start();
         setContent(view.asVaadinComponent());
     }

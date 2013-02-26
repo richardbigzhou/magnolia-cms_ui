@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,60 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.framework.app.theme;
 
-import info.magnolia.ui.framework.app.theme.AppThemer;
-import info.magnolia.ui.framework.location.Location;
-
-import javax.inject.Inject;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Basic app implementation with default behavior suitable for most apps.
- *
- * @see App
+ * Annotate an App to be themed.
  */
-public class BaseApp implements App {
-
-    protected AppContext appContext;
-    private AppView view;
-
-    @Inject
-    private AppThemer themer;
-
-    @Inject
-    protected BaseApp(AppContext appContext, AppView view) {
-        this.appContext = appContext;
-        this.view = view;
-        view.setListener(appContext);
-    }
-
-    @Override
-    public void locationChanged(Location location) {
-        appContext.openSubApp(location);
-    }
-
-    @Override
-    public void start(Location location) {
-        if (this.themer != null) {
-            this.themer.themeAnnotated(this);
-        }
-        appContext.openSubApp(location);
-    }
-
-    public AppContext getAppContext() {
-        return appContext;
-    }
-
-    @Override
-    public void stop() {
-    }
-
-    @Override
-    public AppView getView() {
-        return view;
-    }
-
-    @Override
-    public void openChooseDialog(String path, ItemChosenListener listener) {
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface ThemedApp {
+    public String value();
 }

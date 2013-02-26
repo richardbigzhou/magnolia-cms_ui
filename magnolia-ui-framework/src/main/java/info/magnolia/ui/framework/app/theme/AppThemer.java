@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security;
+package info.magnolia.ui.framework.app.theme;
 
-import info.magnolia.ui.admincentral.app.content.ContentApp;
-import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenterFactory;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.framework.app.theme.ThemedApp;
-
-import javax.inject.Inject;
 
 /**
- * The Security App, extending the base content app.
+ * Implementor of this class will apply a theme for an App.
  */
-@ThemedApp("security")
-public class SecurityApp extends ContentApp {
+public interface AppThemer {
 
-    @Inject
-    public SecurityApp(AppContext appContext, AppView view, ChooseDialogPresenterFactory chooseDialogPresenterFactory) {
-        super(appContext, view, chooseDialogPresenterFactory);
-    }
+    /**
+     * Apply theme if ThemedApp annotation is found.
+     * 
+     * @param app
+     */
+    public void themeAnnotated(App app);
 
-    @Override
-    public void start(Location location) {
-        super.start(location);
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "systemUsers", "/system"));
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "groups", ""));
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "roles", ""));
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "users", "/admin"));
-    }
+    /**
+     * Apply theme for AppView provided.
+     * 
+     * @param view
+     * @param themeName
+     */
+    public void setTheme(AppView view, String themeName);
 
 }
