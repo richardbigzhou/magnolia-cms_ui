@@ -49,4 +49,6 @@ public interface App {
     Location getDefaultLocation();
 
     AppView getView();
+
+    AppContext getAppContext();
 }

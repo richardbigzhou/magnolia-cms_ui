@@ -35,6 +35,8 @@ package info.magnolia.ui.framework.shell;
 
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.vaadin.dialog.Modal;
+import info.magnolia.ui.vaadin.view.View;
 
 import java.util.List;
 
@@ -64,4 +66,8 @@ public interface Shell {
     void showError(Message message);
 
     void showWarning(Message message);
+
+    void openModal(View modalView, Modal.ModalityLevel modalityLevel);
+
+    void closeModal(View modalComponent);
 }

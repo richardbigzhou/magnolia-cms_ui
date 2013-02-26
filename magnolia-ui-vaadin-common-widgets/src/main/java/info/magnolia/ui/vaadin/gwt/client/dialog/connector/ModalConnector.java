@@ -68,13 +68,6 @@ public class ModalConnector extends AbstractSingleComponentContainerConnector {
     }
 
     /*
-     * @Override
-     * public MagnoliaTabState getState() {
-     * return (MagnoliaTabState) super.getState();
-     * }
-     */
-
-    /*
      * (non-Javadoc)
      * 
      * @see com.vaadin.client.ui.AbstractComponentConnector#onUnregister()
@@ -120,5 +113,10 @@ public class ModalConnector extends AbstractSingleComponentContainerConnector {
         if (getContent() != null) {
             getWidget().setWidget(getContent().getWidget());
         }
+    }
+
+    @Override
+    public ModalState getState() {
+        return (ModalState) super.getState();
     }
 }

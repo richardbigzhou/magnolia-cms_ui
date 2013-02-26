@@ -44,9 +44,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public class ModalWidget extends SimplePanel {
 
-    // private final SimplePanel contentContainer = new SimplePanel();
-
-    // private final Element contentPositioner = DOM.createDiv();
     private final Element modalityCurtain = DOM.createDiv();
 
     public ModalWidget(ModalConnector connector) {
@@ -54,24 +51,8 @@ public class ModalWidget extends SimplePanel {
 
         setStyleName("modal");
 
-        // contentPositioner.setClassName("v-modal-component-container-positioner");
         modalityCurtain.setClassName("modal-curtain");
         this.getElement().appendChild(modalityCurtain);
-
     }
-
-    /*
-     * private final Element legend = DOM.createElement("legend");
-     * 
-     * public ModalWidget(Widget child) {
-     * super(child);
-     * setStyleName("modal-widget");
-     * 
-     * // legend.getStyle().setDisplay(Display.NONE);
-     * legend.setClassName("modal-curtain");
-     * getElement().appendChild(legend);
-     * 
-     * }
-     */
 
 }

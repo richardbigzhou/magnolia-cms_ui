@@ -48,9 +48,9 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
 import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
+import info.magnolia.ui.vaadin.view.View;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.Component;
 
 /**
  * Presenter for forms opened inside dialogs.
@@ -117,24 +117,14 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         this.addDialogCloseHandler(new DialogCloseEvent.Handler() {
             @Override
             public void onClose(DialogCloseEvent event) {
-                appContext.getView().clearModal(FormDialogPresenterImpl.this.getView().asVaadinComponent());
+                // appContext.getView().clearModal(FormDialogPresenterImpl.this.getView());
+                shell.closeModal(FormDialogPresenterImpl.this.getView());
                 event.getView().asVaadinComponent().removeDialogCloseHandler(this);
             }
         });
 
-        Component modalComponent = this.getView().asVaadinComponent();
-        switch (modalityLevel) {
-        case SUB_APP:
-
-            appContext.getView().setModalOnActiveSubApp(modalComponent);
-            break;
-        case APP:
-            appContext.getView().setModal(modalComponent);
-            break;
-        case ENTIRE_INTERFACE:
-            // shell.openModal(modalComponent, shell.as);
-            break;
-        }
+        View modalView = this.getView();
+        shell.openModal(modalView, modalityLevel);
 
         return view;
     }

@@ -64,6 +64,7 @@ public class BaseApp implements App {
         appContext.openSubApp(location);
     }
 
+    @Override
     public AppContext getAppContext() {
         return appContext;
     }

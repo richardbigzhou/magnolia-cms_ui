@@ -35,8 +35,6 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.vaadin.view.View;
 
-import com.vaadin.ui.Component;
-
 /**
  * AppView. Should we refer to the tabs as tab or subApp instance. Keep in mind that it is not the subAppId. There are multiple instances of the subapp.
  *
@@ -63,10 +61,11 @@ public interface AppView extends View {
     void setActiveSubAppView(String instanceId);
 
     String getActiveSubAppView();
-
-    void setModal(Component modalComponent);
-
-    void clearModal(Component modalComponent);
-
-    void setModalOnActiveSubApp(Component modalComponent);
+    /*
+     * void setModal(Component modalComponent);
+     * 
+     * void clearModal(Component modalComponent);
+     * 
+     * void setModalOnActiveSubApp(Component modalComponent);
+     */
 }

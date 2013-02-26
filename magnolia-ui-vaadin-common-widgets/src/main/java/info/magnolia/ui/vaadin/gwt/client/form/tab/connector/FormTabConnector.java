@@ -43,7 +43,7 @@ import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * Client-side connector, counter-part for {@link MagnoliaFormTab}.
+ * FormTabConnector.
  */
 @Connect(MagnoliaFormTab.class)
 public class FormTabConnector extends MagnoliaTabConnector {

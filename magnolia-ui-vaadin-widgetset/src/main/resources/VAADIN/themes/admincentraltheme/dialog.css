@@ -48,14 +48,18 @@
   width:720px;
   margin-left:-360px;
   padding:0;
-  z-index:201; /* one more than curtain */
 }
 
 .modal{
-	position: absolute; display: block; top: 0px; bottom:0px; left: 0px; right: 0px;
+	position: absolute;
+	display: block;
+	top: 0px;
+	bottom:0px;
+	left: 0px;
+	right: 0px;
 }
 .modal-child{
-	z-index:51;
+    /* nothing now */
 }
 .modal-curtain{
     position:absolute;
@@ -64,11 +68,23 @@
     left:0px;
     right:0px;
 
-    background-color:#FFFFFF;
-    opacity:0.6;
-    filter:alpha(opacity = 60);
+    background-color:#000;
+    opacity:0.8;
+    filter:alpha(opacity = 80);
+}
+
+/* Set proper stacking for modals */
+.modal.app,
+.modal.sub-app{
     z-index:50;
 }
+.modal.shell{
+	z-index:500;
+}
+.modal.shell .modal-child{
+    top:60px;
+}
+
 
 .dialog-footer {
   background: none repeat scroll 0px 0px #CCCCCC;

@@ -33,14 +33,18 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.admincentral.ShellImpl;
+
 import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenter;
-import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.framework.app.BaseApp;
+import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
+import info.magnolia.ui.vaadin.dialog.Modal;
+import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
+import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
 
@@ -66,12 +70,29 @@ public class ContentApp extends BaseApp {
     }
 
     public ChooseDialogPresenter<Item> openChooseDialog() {
+
         return openChooseDialog(null);
     }
 
     public ChooseDialogPresenter<Item> openChooseDialog(String defaultPath) {
         final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogFactory.createWorkbenchChooseDialog(defaultPath);
-        ((ShellImpl) shell).openDialog(workbenchChooseDialogPresenter);
+
+        final ModalityLevel modalityLevel = Modal.ModalityLevel.SUB_APP;
+
+        // ((ShellImpl) shell).openDialog(workbenchChooseDialogPresenter);
+
+        workbenchChooseDialogPresenter.addDialogCloseHandler(new DialogCloseEvent.Handler() {
+            @Override
+            public void onClose(DialogCloseEvent event) {
+                // appContext.getView().clearModal(FormDialogPresenterImpl.this.getView());
+                shell.closeModal(workbenchChooseDialogPresenter.getView());
+                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
+            }
+        });
+
+        View modalView = workbenchChooseDialogPresenter.getView();
+        shell.openModal(modalView, modalityLevel);
+
         return workbenchChooseDialogPresenter;
     }
 

@@ -198,17 +198,16 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         ((ShellViewport) getState().viewports.get(ViewportType.DIALOG)).addComponent(dialog);
     }
 
-
-    public void openModal(Component modalComponent, Component modalityParent) {
-        Modal modal = new Modal(modalComponent, modalityParent);
+    public void openModalWithComponents(Component modalComponent, Component modalityParent, Modal.ModalityLevel modalityLevel) {
+        Modal modal = new Modal(modalComponent, modalityParent, modalityLevel);
         getState().modals.add(modal);
 
-        // dialog should have Vaadin parent of MagnoliaShell
+        // modal has Vaadin parent of MagnoliaShell
         modal.setParent(this);
     }
 
-    public void closeModal(Component modalComponent) {
-        Modal modal = (Modal) modalComponent.getParent();
+    public void closeModal(View modalComponent) {
+        Modal modal = (Modal) modalComponent.asVaadinComponent().getParent();
         getState().modals.remove(modal);
     }
 

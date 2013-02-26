@@ -64,4 +64,6 @@ public interface AppContext extends AppView.Listener {
     void setSubAppLocation(SubAppContext subAppContext, Location location);
 
     SubAppDescriptor getDefaultSubAppDescriptor();
+
+    SubAppContext getActiveSubAppContext();
 }

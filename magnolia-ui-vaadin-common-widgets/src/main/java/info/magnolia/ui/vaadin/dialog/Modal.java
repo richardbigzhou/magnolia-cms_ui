@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
+import info.magnolia.ui.vaadin.gwt.client.dialog.connector.ModalState;
+
 import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
 
@@ -45,7 +47,7 @@ import com.vaadin.ui.Component;
 public class Modal extends AbstractSingleComponentContainer {
 
     /**
-     * 
+     *
      * The available levels of modality for opening a modal.
      * Represents what will be blocked by the opened modal.
      */
@@ -56,17 +58,36 @@ public class Modal extends AbstractSingleComponentContainer {
         ENTIRE_INTERFACE
     }
 
-    private Component modalityParent;
+    final Modal.ModalityLevel modalityLevel;
 
-    public Modal(final Component content, final Component modalityParent) {
+    public Modal(final Component content, final Component modalityParent, Modal.ModalityLevel modalityLevel) {
         // setSizeFull();
         setImmediate(true);
+
+        content.addStyleName("modal-child");
         setContent(content);
-        this.modalityParent = modalityParent;
+
+        this.modalityLevel = modalityLevel;
+        getState().modalityParent = modalityParent;
+
+        // Set style
+        String cssClass = "";
+        switch (modalityLevel) {
+        case SUB_APP:
+            cssClass="sub-app";
+            break;
+        case APP:
+            cssClass="app";
+            break;
+        case ENTIRE_INTERFACE:
+            cssClass="shell";
+            break;
+        }
+        this.setStyleName(cssClass);
     }
 
-    public Component getModalityParent() {
-        return modalityParent;
+    @Override
+    protected ModalState getState() {
+        return (ModalState) super.getState();
     }
-
 }

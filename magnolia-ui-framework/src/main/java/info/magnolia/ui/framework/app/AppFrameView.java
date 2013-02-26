@@ -35,7 +35,6 @@ package info.magnolia.ui.framework.app;
 
 
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 import info.magnolia.ui.vaadin.view.View;
@@ -43,14 +42,13 @@ import info.magnolia.ui.vaadin.view.View;
 import javax.inject.Inject;
 
 import com.vaadin.server.KeyMapper;
-import com.vaadin.ui.Component;
 
 /**
  * View used to give all apps a uniform look-and-feel.
  */
 public class AppFrameView implements AppView {
 
-    private final MagnoliaShell shell;
+    private final Shell shell;
 
     private Listener listener;
 
@@ -77,7 +75,7 @@ public class AppFrameView implements AppView {
     @Inject
     public AppFrameView(final Shell shell) {
         super();
-        this.shell = (MagnoliaShell) shell;
+        this.shell = shell;
         tabsheet.setSizeFull();
         tabsheet.addStyleName("app");
     }
@@ -118,20 +116,22 @@ public class AppFrameView implements AppView {
         return tabsheet;
     }
 
-    @Override
-    public void setModalOnActiveSubApp(Component modalComponent) {
-        Component modalityParent = tabsheet.getActiveTab();
-        shell.openModal(modalComponent, modalityParent);
-    }
-
-    @Override
-    public void setModal(Component modalComponent) {
-        Component modalityParent = tabsheet;
-        shell.openModal(modalComponent, modalityParent);
-    }
-
-    @Override
-    public void clearModal(Component modalComponent) {
-        shell.closeModal(modalComponent);
-    }
+    /*
+     * @Override
+     * public void setModalOnActiveSubApp(View modalComponent) {
+     * View modalityParent = tabsheet.getActiveTab();
+     * shell.openModal(modalComponent, modalityParent);
+     * }
+     * 
+     * @Override
+     * public void setModal(View modalComponent) {
+     * Component modalityParent = tabsheet;
+     * shell.openModal(modalComponent, modalityParent);
+     * }
+     * 
+     * @Override
+     * public void clearModal(View modalComponent) {
+     * shell.closeModal(modalComponent);
+     * }
+     */
 }

@@ -305,7 +305,8 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         app.getView().setFullscreen(false);
     }
 
-    private SubAppContext getActiveSubAppContext() {
+    @Override
+    public SubAppContext getActiveSubAppContext() {
         return currentSubAppContext;
     }
 

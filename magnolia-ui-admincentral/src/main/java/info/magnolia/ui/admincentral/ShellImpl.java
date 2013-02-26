@@ -37,7 +37,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventHandlerCollection;
 import info.magnolia.event.HandlerRegistration;
-import info.magnolia.ui.admincentral.dialog.BaseDialogPresenter;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
@@ -53,12 +52,12 @@ import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
+import info.magnolia.ui.vaadin.dialog.Modal;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
+import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.view.Viewport;
 
 import java.util.List;
@@ -92,7 +91,6 @@ public class ShellImpl implements Shell, MessageEventHandler {
 
     private final MessagesManager messagesManager;
 
-
     private final MagnoliaShell magnoliaShell;
 
     private final EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
@@ -105,7 +103,6 @@ public class ShellImpl implements Shell, MessageEventHandler {
         this.messagesManager = messagesManager;
         this.admincentralEventBus = admincentralEventBus;
         this.appController = appController;
-
         this.admincentralEventBus.addHandler(AppLifecycleEvent.class, new AppLifecycleEventHandler.Adapter() {
 
             @Override
@@ -219,42 +216,32 @@ public class ShellImpl implements Shell, MessageEventHandler {
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
 
-    /*
-     * public void openModalOnSubApp(Component modal) {
-     * // ((ShellViewport) getState().viewports.get(ViewportType.DIALOG)).addComponent(dialog);
-     * // Component modalityParent = (Component)subAppContext.getTab();
-     *
-     * // MagnoliaShell needs a reference to parent and child.
-     * getState().modalityParent = subAppContextProvider.get().getTab();
-     * getState().modalityChild = modal;
-     *
-     * // dialog should have Vaadin parent of MagnoliaShell
-     * modal.setParent(this);
-     *
-     * }
-     */
+    @Override
+    public void openModal(View modalView, Modal.ModalityLevel modalityLevel) {
 
+        // Determine the correct modalityParent.
+        Component modalityParent = null;
 
-    public void openDialog(final BaseDialogPresenter dialogPresenter) {
-        dialogPresenter.addDialogCloseHandler(new DialogCloseEvent.Handler() {
-            @Override
-            public void onClose(DialogCloseEvent event) {
-                removeDialog(event.getView().asVaadinComponent());
-                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
-            }
-        });
-        magnoliaShell.addDialog(dialogPresenter.getView().asVaadinComponent());
+        switch (modalityLevel) {
+        case SUB_APP:
+            View subAppView = appController.getCurrentApp().getAppContext().getActiveSubAppContext().getSubApp().getView();
+            // For subApp we must retrieve the tab.
+            modalityParent = subAppView.asVaadinComponent().getParent();
+            break;
+        case APP:
+            modalityParent = appController.getCurrentApp().getView().asVaadinComponent();
+            break;
+        case ENTIRE_INTERFACE:
+            modalityParent = magnoliaShell.asVaadinComponent();
+            break;
+        }
+
+        magnoliaShell.openModalWithComponents(modalView.asVaadinComponent(), modalityParent, modalityLevel);
+
     }
 
-    public void removeDialog(BaseDialog dialog) {
-        magnoliaShell.removeDialog(dialog.asVaadinComponent());
-    }
-
-    public void openModal(Component modalComponent, Component modalityParent) {
-        magnoliaShell.openModal(modalComponent, modalityParent);
-    }
-
-    public void closeModal(Component modalComponent) {
+    @Override
+    public void closeModal(View modalComponent) {
         magnoliaShell.closeModal(modalComponent);
     }
 

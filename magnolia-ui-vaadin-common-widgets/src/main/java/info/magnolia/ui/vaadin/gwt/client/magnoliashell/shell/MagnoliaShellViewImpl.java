@@ -278,8 +278,6 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
      */
     public void openModalOnComponent(Widget child, Widget parent){
 
-        // wrap the child widget in a modal widget to add the glass.
-        // ModalWidget modal = new ModalWidget(child);
         // insert a child widget into a parent element.
         add(child, parent.getElement());
     }
