@@ -36,12 +36,8 @@ package info.magnolia.ui.admincentral.dialog;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 
 /**
- * View interface of Value Selection Dialog.
+ * View interface for choose dialog views.
  */
 public interface ChooseDialogView extends DialogView {
-
-    void setCancelActionLabel(final String caption);
-
-    void setSelectionActionLabel(final String caption);
 
 }

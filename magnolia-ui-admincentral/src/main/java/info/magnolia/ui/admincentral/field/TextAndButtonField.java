@@ -118,6 +118,7 @@ public class TextAndButtonField extends CustomField<String> {
         }
         textField.setPropertyDataSource(newDataSource);
         setButtonCaption(newDataSource.toString());
+        super.setPropertyDataSource(newDataSource);
     }
 
     @Override

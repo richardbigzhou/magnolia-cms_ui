@@ -238,6 +238,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
                     node.getProperty(entry.getKey()).remove();
                 }
             }
+            getRemovedProperties().clear();
         }
     }
 
@@ -270,13 +271,9 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
                 }
             }
         } else if (propertyId != null && !propertyId.isEmpty()) {
-            if (property.getValue() != null) {
+            if (property.getValue() != null && StringUtils.isNotEmpty(property.getValue().toString())) {
                 try {
                     if (!node.hasProperty(propertyId)) {
-                        if (StringUtils.isEmpty(property.getValue().toString())) {
-                            log.debug("Property '{}' is a new property and has a null value: Will not be stored", propertyId);
-                            return;
-                        }
                         addListenerIfNotYetSet(property, this);
                     }
                     PropertyUtil.setProperty(node, propertyId, property.getValue());

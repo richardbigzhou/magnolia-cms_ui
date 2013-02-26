@@ -36,9 +36,9 @@ package info.magnolia.ui.admincentral.app.content.builder;
 import info.magnolia.ui.admincentral.app.content.ConfiguredContentSubAppDescriptor;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.workbench.builder.WorkbenchBuilder;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.builder.ActionBuilder;
-import info.magnolia.ui.model.workbench.builder.WorkbenchBuilder;
 
 /**
  * Builder used to build a sub app descriptor.
