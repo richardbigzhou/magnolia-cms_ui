@@ -32,7 +32,6 @@
  *
  */
 package info.magnolia.ui.admincentral.dialog;
-
 import info.magnolia.ui.framework.app.ItemChosenListener;
 
 /**

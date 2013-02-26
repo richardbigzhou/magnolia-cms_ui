@@ -36,14 +36,14 @@ package info.magnolia.ui.admincentral.field.builder;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
-import info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter;
-import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
-import info.magnolia.ui.admincentral.field.TextAndContentViewField;
 import info.magnolia.event.SimpleEventBus;
-import info.magnolia.ui.model.field.definition.LinkFieldSelectionDefinition;
+import info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter;
+import info.magnolia.ui.admincentral.field.TextAndContentViewField;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.model.field.definition.LinkFieldSelectionDefinition;
 
 import javax.jcr.RepositoryException;
 
@@ -52,7 +52,7 @@ import org.junit.Test;
 import com.vaadin.ui.Field;
 
 /**
- * Main testcase for {@link LinkFieldSelectionBuilder}.
+ * Tests.
  */
 public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkFieldSelectionDefinition> {
 

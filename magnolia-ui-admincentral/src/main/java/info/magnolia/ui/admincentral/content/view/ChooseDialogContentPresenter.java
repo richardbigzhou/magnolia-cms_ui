@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.admincentral.content.view;
 
-import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.workbench.ContentViewBuilder;
+import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
 import javax.inject.Inject;
 import javax.inject.Named;

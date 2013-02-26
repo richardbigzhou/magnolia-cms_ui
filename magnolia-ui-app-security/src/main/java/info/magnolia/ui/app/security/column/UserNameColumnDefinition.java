@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.security.column;
 
-import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
+import info.magnolia.ui.workbench.column.definition.AbstractColumnDefinition;
 
 /**
  * Definition of a column that displays name of the user. Used in the Users sub-app.

@@ -234,6 +234,7 @@
   <modules>
     <module>magnolia-ui-framework</module>
     <module>magnolia-ui-model</module>
+    <module>magnolia-ui-workbench</module>
     <module>magnolia-ui-vaadin-integration</module>
     <module>magnolia-ui-vaadin-common-widgets</module>
     <module>magnolia-ui-widget-editor</module>
