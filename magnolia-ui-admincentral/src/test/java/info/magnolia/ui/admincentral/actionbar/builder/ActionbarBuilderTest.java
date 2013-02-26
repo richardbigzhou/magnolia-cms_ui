@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.actionbar.builder;
 
 import static org.junit.Assert.*;
 import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition;
@@ -64,6 +65,12 @@ public class ActionbarBuilderTest {
     public void testBuildingActionbar() {
 
         // GIVEN
+        Map<String, ActionDefinition> actionDefs = new HashMap<String, ActionDefinition>();
+        actionDefs.put("0.0", new TestActionDefinition("0.0"));
+        actionDefs.put("1.0", new TestActionDefinition("1.0"));
+        actionDefs.put("1.1", new TestActionDefinition("1.1"));
+        actionDefs.put("2.0", new TestActionDefinition("2.0"));
+        
         ConfiguredActionbarDefinition def = new ConfiguredActionbarDefinition();
 
         // common group
@@ -92,7 +99,7 @@ public class ActionbarBuilderTest {
         int bActionCount = getActionsCount(bSection);
 
         // WHEN
-        ActionbarView actionbar = ActionbarBuilder.build(def, new HashMap<String, ActionDefinition>());
+        ActionbarView actionbar = ActionbarBuilder.build(def, actionDefs);
 
         // THEN
         Map<String, ActionbarSection> sections = ((Actionbar) actionbar).getSections();
@@ -115,6 +122,9 @@ public class ActionbarBuilderTest {
     @Test
     public void testBuildingActionbarWithEmptyGroup() {
         // GIVEN
+        Map<String, ActionDefinition> actionDefs = new HashMap<String, ActionDefinition>();
+        actionDefs.put("1.0", new TestActionDefinition("1.0"));
+        actionDefs.put("1.1", new TestActionDefinition("1.1"));
         ConfiguredActionbarDefinition def = new ConfiguredActionbarDefinition();
         ActionbarSectionDefinition sectionDef = buildSection(SECTION_A,
                 buildGroup("0"),
@@ -125,7 +135,7 @@ public class ActionbarBuilderTest {
         int actionCount = getActionsCount(sectionDef);
 
         // WHEN
-        ActionbarView actionbar = ActionbarBuilder.build(def, new HashMap<String, ActionDefinition>());
+        ActionbarView actionbar = ActionbarBuilder.build(def, actionDefs);
 
         // THEN
         Map<String, ActionbarItem> actions = ((Actionbar) actionbar).getSections().get(SECTION_A).getActions();
@@ -135,9 +145,28 @@ public class ActionbarBuilderTest {
         }
     }
 
+    private static class TestActionDefinition extends ConfiguredActionDefinition {
+
+        public TestActionDefinition(String id) {
+            setName(id);
+            setIcon("test");
+            setDescription("");
+            setI18nBasename("");
+            setImplementationClass(null);
+            setLabel("");
+        }
+    }
+    
     @Test
     public void testBuildingActionbarWithDuplicateAction() {
         // GIVEN
+        Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
+        actions.put("0.0", new TestActionDefinition("0.0"));
+        actions.put("0.1", new TestActionDefinition("0.1"));
+        actions.put("0.2", new TestActionDefinition("0.2"));
+        actions.put("0.3", new TestActionDefinition("0.3"));
+        actions.put("1.0", new TestActionDefinition("1.0"));
+        
         ConfiguredActionbarDefinition def = new ConfiguredActionbarDefinition();
         ActionbarSectionDefinition aSection = buildSection(SECTION_A,
                 buildGroup("0",
@@ -159,8 +188,9 @@ public class ActionbarBuilderTest {
         int aActionCount = getActionsCount(aSection);
         int bActionCount = getActionsCount(bSection);
 
+        
         // WHEN
-        ActionbarView actionbar = ActionbarBuilder.build(def, new HashMap<String, ActionDefinition>());
+        ActionbarView actionbar = ActionbarBuilder.build(def, actions);
 
         // THEN
         Map<String, ActionbarItem> aActions = ((Actionbar) actionbar).getSections().get(SECTION_A).getActions();
