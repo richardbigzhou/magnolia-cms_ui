@@ -31,40 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.content.view;
-
-import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.workbench.ContentViewBuilder;
-import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.rits.cloning.Cloner;
+package info.magnolia.ui.workbench.container;
 
 /**
- * ChooseDialog ContentPresenter.
- * Used to inject a specific EventBus, and to handle specific ChooseDialog logic.
+ * Represents a sorting rule to be applied to a query.
  */
-public class ChooseDialogContentPresenter extends ContentPresenter {
+public class OrderBy {
 
-    @Inject
-    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, Shell shell) {
-        super(context, contentViewBuilder, subAppEventBus, shell);
-        workbenchDefinition = new Cloner().deepClone(workbenchDefinition);
-        ((ConfiguredWorkbenchDefinition) workbenchDefinition).setDialogWorkbench(true);
+    private String property;
+    private boolean isAscending;
+
+    public OrderBy(String property, boolean isAscending) {
+        this.property = property;
+        this.isAscending = isAscending;
     }
 
-    /**
-     * Return the Root path.
-     */
-    public String getRootPath() {
-        return StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
+    public String getProperty() {
+        return property;
     }
 
+    public boolean isAscending() {
+        return isAscending;
+    }
 }

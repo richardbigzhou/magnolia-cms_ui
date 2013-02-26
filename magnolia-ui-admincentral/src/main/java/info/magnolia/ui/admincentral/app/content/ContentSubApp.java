@@ -43,15 +43,15 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.vaadin.view.View;
-import info.magnolia.ui.workbench.content.view.ContentView.ViewType;
+import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 
 import javax.inject.Named;
 
 /**
- * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.workbench.content.view.ContentView}
- * created by {@link info.magnolia.ui.workbench.content.view.builder.ContentViewBuilder}.
+ * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.workbench.ContentView}
+ * created by {@link info.magnolia.ui.workbench.ContentViewBuilder}.
  * <pre>
  *  <p>
  *      This class Provides sensible implementation for services shared by all content subApps.

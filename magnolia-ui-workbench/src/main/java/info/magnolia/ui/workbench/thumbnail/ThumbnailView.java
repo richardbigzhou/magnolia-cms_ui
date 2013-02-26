@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,55 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench;
+package info.magnolia.ui.workbench.thumbnail;
 
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.workbench.ContentView;
-import info.magnolia.ui.workbench.ContentView.ViewType;
-
-import com.vaadin.ui.ComponentContainer;
 
 /**
- * Implementations of this interface are responsible for building a workbench and handling the UI
- * actions associated with it.
+ * Thumbnail view interface.
  */
-public interface ContentWorkbenchView extends ComponentContainer, View {
-    /**
-     * Listener interface for events concerning the workbench.
-     */
-    interface Listener {
+public interface ThumbnailView extends ContentView {
 
-        void onSearch(String searchExpression);
-
-        void onViewTypeChanged(ViewType viewType);
-    }
-
-    void setListener(Listener listener);
-
-    void setViewType(ContentView.ViewType type);
-
-    /**
-     * Updates the search box with given search query.
-     */
-    void setSearchQuery(String query);
-
-    /**
-     * Refreshes the current view.
-     */
-    void refresh();
-
-    /**
-     * Use this method to add sub views hosted by this view.
-     */
-    void addContentView(ViewType type, ContentView view);
-
-    /**
-     * Use this method to add an action bar to this sub app view.
-     */
-    void setActionbarView(ActionbarView actionbar);
-
-    void selectPath(String path);
-
-    ContentView getSelectedView();
 }

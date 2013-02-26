@@ -31,40 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.content.view;
+package info.magnolia.ui.workbench.list;
 
-import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.workbench.ContentViewBuilder;
-import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.rits.cloning.Cloner;
+import info.magnolia.ui.workbench.container.AbstractJcrContainer;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 /**
- * ChooseDialog ContentPresenter.
- * Used to inject a specific EventBus, and to handle specific ChooseDialog logic.
+ * A flat implementation of {@link info.magnolia.ui.workbench.container.AbstractJcrContainer} where relationships are not taken into account.
  */
-public class ChooseDialogContentPresenter extends ContentPresenter {
-
-    @Inject
-    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, Shell shell) {
-        super(context, contentViewBuilder, subAppEventBus, shell);
-        workbenchDefinition = new Cloner().deepClone(workbenchDefinition);
-        ((ConfiguredWorkbenchDefinition) workbenchDefinition).setDialogWorkbench(true);
-    }
-
+public class FlatJcrContainer extends AbstractJcrContainer {
     /**
-     * Return the Root path.
+     * Constructor for {@link FlatJcrContainer}.
      */
-    public String getRootPath() {
-        return StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
+    public FlatJcrContainer(WorkbenchDefinition workbenchDefinition) {
+        super(workbenchDefinition);
     }
-
 }

@@ -31,55 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.workbench;
+package info.magnolia.ui.workbench.search;
 
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.view.View;
-import info.magnolia.ui.workbench.ContentView;
-import info.magnolia.ui.workbench.ContentView.ViewType;
-
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.list.ListViewImpl;
 
 /**
- * Implementations of this interface are responsible for building a workbench and handling the UI
- * actions associated with it.
+ * Search view implementation is just a special case of list view.
  */
-public interface ContentWorkbenchView extends ComponentContainer, View {
-    /**
-     * Listener interface for events concerning the workbench.
-     */
-    interface Listener {
+public class SearchViewImpl extends ListViewImpl implements SearchView {
 
-        void onSearch(String searchExpression);
-
-        void onViewTypeChanged(ViewType viewType);
+    public SearchViewImpl(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider, SearchJcrContainer container) {
+        super(workbenchDefinition, componentProvider, container);
     }
 
-    void setListener(Listener listener);
+    @Override
+    public void search(String fulltextExpr) {
+        SearchJcrContainer container = ((SearchJcrContainer) getContainer());
+        container.setFullTextExpression(fulltextExpr);
+        refresh();
+    }
 
-    void setViewType(ContentView.ViewType type);
+    @Override
+    public void clear() {
+        SearchJcrContainer container = ((SearchJcrContainer) getContainer());
+        container.setFullTextExpression(null);
+        refresh();
+    }
 
-    /**
-     * Updates the search box with given search query.
-     */
-    void setSearchQuery(String query);
-
-    /**
-     * Refreshes the current view.
-     */
-    void refresh();
-
-    /**
-     * Use this method to add sub views hosted by this view.
-     */
-    void addContentView(ViewType type, ContentView view);
-
-    /**
-     * Use this method to add an action bar to this sub app view.
-     */
-    void setActionbarView(ActionbarView actionbar);
-
-    void selectPath(String path);
-
-    ContentView getSelectedView();
+    @Override
+    public ViewType getViewType() {
+        return ViewType.SEARCH;
+    }
 }

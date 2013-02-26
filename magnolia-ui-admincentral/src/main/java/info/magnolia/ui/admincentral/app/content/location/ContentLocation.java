@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.app.content.location;
 
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.workbench.content.view.ContentView;
+import info.magnolia.ui.workbench.ContentView;
 
 /**
  * ContentLocation used in ContentSubApps. Extends the Default Location by adding fields for the nodePath, viewType and query.

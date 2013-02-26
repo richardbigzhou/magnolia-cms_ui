@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.event;
-
-import info.magnolia.ui.workbench.ContentView.ViewType;
-import info.magnolia.event.Event;
-import info.magnolia.event.EventHandler;
+package info.magnolia.ui.workbench.container;
 
 /**
- * This event is fired when switching views, i.e. from tree view to list view.
+ * Definition for Properties.
  */
-public class ViewTypeChangedEvent implements Event<ViewTypeChangedEvent.Handler> {
+public class PropertyDefinition {
+    private Object defaultValue;
+    private String propertyId;
+    private Class<?> type;
 
-    /**
-     * Handles {@link ViewTypeChangedEvent} events.
-     */
-    public interface Handler extends EventHandler {
-
-        void onViewChanged(ViewTypeChangedEvent event);
+    public PropertyDefinition(String propertyId, Class<?> type, Object defaultValue) {
+        setPropertyId(propertyId);
+        setType(type);
+        setDefaultValue(defaultValue);
     }
 
-    private ViewType viewType;
-
-    public ViewTypeChangedEvent(ViewType viewType) {
-        this.viewType = viewType;
+    public Object getDefaultValue() {
+        return defaultValue;
     }
 
-    public ViewType getViewType() {
-        return viewType;
+    public String getPropertyId() {
+        return propertyId;
     }
 
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onViewChanged(this);
+    public Class<?> getType() {
+        return type;
     }
 
+    public void setDefaultValue(Object defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public void setPropertyId(String propertyId) {
+        this.propertyId = propertyId;
+    }
+
+    public void setType(Class<?> type) {
+        this.type = type;
+    }
 }

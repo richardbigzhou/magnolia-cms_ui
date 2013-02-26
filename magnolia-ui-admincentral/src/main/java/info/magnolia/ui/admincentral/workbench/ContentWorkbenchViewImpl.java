@@ -35,8 +35,8 @@ package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.workbench.content.view.ContentView;
-import info.magnolia.ui.workbench.content.view.ContentView.ViewType;
+import info.magnolia.ui.workbench.ContentView;
+import info.magnolia.ui.workbench.ContentView.ViewType;
 
 import java.util.EnumMap;
 import java.util.Map;

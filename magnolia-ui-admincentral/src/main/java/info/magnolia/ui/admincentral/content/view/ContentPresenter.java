@@ -34,9 +34,9 @@
 package info.magnolia.ui.admincentral.content.view;
 
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
-import info.magnolia.ui.workbench.content.view.ContentView;
-import info.magnolia.ui.workbench.content.view.ContentView.ViewType;
-import info.magnolia.ui.workbench.content.view.builder.ContentViewBuilder;
+import info.magnolia.ui.workbench.ContentView;
+import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.ContentViewBuilder;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;

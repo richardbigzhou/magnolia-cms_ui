@@ -54,13 +54,13 @@ import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.content.view.ContentView.ViewType;
+import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
-import info.magnolia.ui.workbench.search.view.SearchView;
+import info.magnolia.ui.workbench.search.SearchView;
 
 import javax.inject.Inject;
 import javax.inject.Named;

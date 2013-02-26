@@ -42,7 +42,7 @@ import info.magnolia.ui.framework.app.ItemChosenListener;
 import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.workbench.content.view.ContentView.ViewType;
+import info.magnolia.ui.workbench.ContentView.ViewType;
 
 import javax.inject.Inject;
 import javax.inject.Named;
