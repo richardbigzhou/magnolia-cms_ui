@@ -224,8 +224,8 @@
       <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenterFactory</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder</type>
-      <implementation>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderImpl</implementation>
+      <type>info.magnolia.ui.workbench.ContentViewBuilder</type>
+      <implementation>info.magnolia.ui.workbench.ContentViewBuilderImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</type>
