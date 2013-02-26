@@ -39,6 +39,7 @@ import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +60,7 @@ public class ThumbnailField extends CustomField<String> {
     private static final Logger log = LoggerFactory.getLogger(ThumbnailField.class);
     private HorizontalLayout layout;
     private Label label;
-    private Image embedded = new Image();
+    protected Image embedded = new Image();
 
     private ImageProvider imageThumbnailProvider;
     private String workspace;
@@ -69,19 +70,20 @@ public class ThumbnailField extends CustomField<String> {
     public ThumbnailField(ImageProvider imageThumbnailProvider, String workspace) {
         this.imageThumbnailProvider = imageThumbnailProvider;
         this.workspace = workspace;
+        this.layout = new HorizontalLayout();
 
         label = new Label("", ContentMode.HTML);
         label.addStyleName("thumbnail-info");
 
         addStyleName("thumbnail-field");
         setSizeUndefined();
+
     }
 
     @Override
     protected Component initContent() {
-        layout = new HorizontalLayout();
-        layout.addComponent(embedded);
         layout.addComponent(label);
+        layout.addComponent(embedded);
         return layout;
     }
 
@@ -97,24 +99,36 @@ public class ThumbnailField extends CustomField<String> {
         field.addValueChangeListener(new ValueChangeListener() {
             @Override
             public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-                try {
-                    Node parentNode = MgnlContext.getJCRSession(workspace).getNode(event.getProperty().getValue().toString());
-                    String uuid = parentNode.getIdentifier();
-
-                    if (!currentIdentifier.equals(uuid)) {
-                        // Set Text info
-                        label.setValue(createFieldDetail(parentNode));
-                        // Set Thumbnail
-                        String path = imageThumbnailProvider.getPortraitPath(workspace, parentNode.getPath());
-                        layout.removeComponent(embedded);
-                        embedded = path != null ? new Image("", new ExternalResource(path)) : new Image(null);
-                        layout.addComponent(embedded);
-                    }
-                } catch (RepositoryException e) {
-                    log.warn("Not able to refresh the Thumbnail Field view for the following Node path: {}", event.getProperty().getValue(), e);
-                }
+                setLabelAndImage(event.getProperty().getValue().toString());
             }
         });
+    }
+
+    /**
+     * Set the Label And Image.
+     */
+    public void setLabelAndImage(String nodePath) {
+        try {
+            if (StringUtils.isEmpty(nodePath)) {
+                return;
+            }
+            Node parentNode = MgnlContext.getJCRSession(workspace).getNode(nodePath);
+            String uuid = parentNode.getIdentifier();
+
+            if (!currentIdentifier.equals(uuid)) {
+                // Set Text info
+                label.setValue(createFieldDetail(parentNode));
+                // Set Thumbnail
+                String path = imageThumbnailProvider.getPortraitPath(workspace, parentNode.getPath());
+                if (layout.getComponentIndex(embedded) != -1) {
+                    layout.removeComponent(embedded);
+                }
+                embedded = path != null ? new Image("", new ExternalResource(path)) : new Image(null);
+                layout.addComponent(embedded);
+            }
+        } catch (RepositoryException e) {
+            log.warn("Not able to refresh the Thumbnail Field view for the following Node path: {}", nodePath, e);
+        }
     }
 
     /**

@@ -203,7 +203,7 @@ public class JcrNodeAdapterTest {
 
         // THEN
         assertTrue(res);
-        assertEquals(0, adapter.getItemPropertyIds().size());
+        assertEquals(1, adapter.getItemPropertyIds().size());
     }
 
     @Test
@@ -222,7 +222,7 @@ public class JcrNodeAdapterTest {
 
         // THEN
         assertTrue(res);
-        assertEquals(0, adapter.getItemPropertyIds().size());
+        assertEquals(1, adapter.getItemPropertyIds().size());
     }
 
     @Test
@@ -241,7 +241,7 @@ public class JcrNodeAdapterTest {
 
         // THEN
         assertTrue(res);
-        assertEquals(0, adapter.getItemPropertyIds().size());
+        assertEquals(1, adapter.getItemPropertyIds().size());
     }
 
     @Test
@@ -514,7 +514,7 @@ public class JcrNodeAdapterTest {
         adapter.updateProperties();
         // THEN
         assertFalse(node.hasProperty(propertyName));
-        assertEquals(0, adapter.getChangedProperties().size());
-        assertEquals(1, adapter.getRemovedProperties().size());
+        assertEquals(1, adapter.getChangedProperties().size());
+        assertEquals(0, adapter.getRemovedProperties().size());
     }
 }

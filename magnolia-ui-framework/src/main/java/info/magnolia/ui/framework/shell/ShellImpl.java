@@ -48,12 +48,12 @@ import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
-import info.magnolia.ui.vaadin.view.View;
-import info.magnolia.ui.vaadin.view.Viewport;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
+import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
+import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.vaadin.view.Viewport;
 
 import java.util.List;
 
@@ -61,8 +61,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.vaadin.ui.Component;
 import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.ui.Component;
 
 /**
  * Admin shell.
@@ -209,6 +210,7 @@ public class ShellImpl implements Shell, MessageEventHandler {
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
 
+    @Override
     public ShellDialog openDialog(final View view) {
         final Component component = view.asVaadinComponent();
         magnoliaShell.addDialog(component);

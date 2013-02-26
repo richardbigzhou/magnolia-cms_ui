@@ -32,11 +32,12 @@
  *
  */
 package info.magnolia.ui.admincentral.dialog;
+import info.magnolia.ui.framework.app.ItemChosenListener;
 
 /**
- * Factory interface for creating choose dialogs.
+ * Factory interface for creating choose dialog presenters.
  */
-public interface ChooseDialogFactory {
+public interface ChooseDialogPresenterFactory {
 
-    public WorkbenchChooseDialogPresenter createWorkbenchChooseDialog(String defaultPath);
+    ChooseDialogPresenter createChooseDialogPresenter(String path, ItemChosenListener listener);
 }

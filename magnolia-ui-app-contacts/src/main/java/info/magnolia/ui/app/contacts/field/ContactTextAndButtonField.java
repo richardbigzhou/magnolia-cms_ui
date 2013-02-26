@@ -33,15 +33,20 @@
  */
 package info.magnolia.ui.app.contacts.field;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
+
+import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter.ConversionException;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Specific Contact TextAndButtonField field that add a Thumbnail before the select action and field
@@ -50,18 +55,20 @@ import com.vaadin.ui.HorizontalLayout;
 public class ContactTextAndButtonField extends CustomField<String> {
 
     private TextAndButtonField textAndButtonField;
-
+    private String workspace;
     private ContactThumbnailField thumbnail;
+
 
     public ContactTextAndButtonField(TextAndButtonField textAndButtonField, ImageProvider imageThumbnailProvider, String workspace) {
         // used to set the correct property and values
         this.textAndButtonField = textAndButtonField;
+        this.workspace = workspace;
         this.thumbnail = new ContactThumbnailField(imageThumbnailProvider, workspace);
     }
 
     @Override
     protected Component initContent() {
-        HorizontalLayout layout = new HorizontalLayout();
+        VerticalLayout layout = new VerticalLayout();
         // Add Thumbnail Field
         thumbnail.ValueChangeListener(textAndButtonField.getTextField());
         layout.addComponent(thumbnail);
@@ -92,6 +99,22 @@ public class ContactTextAndButtonField extends CustomField<String> {
     @SuppressWarnings("rawtypes")
     public void setPropertyDataSource(Property newDataSource) {
         textAndButtonField.setPropertyDataSource(newDataSource);
+        super.setPropertyDataSource(newDataSource);
+        thumbnail.setLabelAndImage(getPathFromIdentifier(newDataSource.getValue().toString()));
+    }
+
+    /**
+     * For initialization. Change Identifier to Path.
+     */
+    private String getPathFromIdentifier(String identifier) {
+        if (StringUtils.isNotBlank(identifier)) {
+            try {
+                return MgnlContext.getJCRSession(workspace).getNodeByIdentifier(identifier).getPath();
+            } catch (RepositoryException re) {
+                return null;
+            }
+        }
+        return null;
     }
 
     @Override

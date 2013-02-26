@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.contacts.form.action;
 
-import info.magnolia.jcr.util.MetaDataUtil;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.action.SaveFormAction;
@@ -69,8 +69,7 @@ public class SaveContactFormAction extends SaveFormAction {
 
                 // Can't use this anymore, breaks when renaming node, ContentChangedEvent is still using the old path
                 // generateUniqueNodeNameForContact(node);
-
-                MetaDataUtil.updateMetaData(node);
+                NodeTypes.LastModified.update(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
