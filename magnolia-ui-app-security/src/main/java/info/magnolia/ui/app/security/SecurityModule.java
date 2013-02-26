@@ -194,13 +194,13 @@ public class SecurityModule implements ModuleLifecycle {
         addUserAction.setDialogName("ui-security-app:userAdd");
 
         EditDialogActionDefinition editUserAction = new EditDialogActionDefinition();
-        editUserAction.setName("edit");
+        editUserAction.setName("editUser");
         editUserAction.setLabel("Edit user");
         editUserAction.setIcon("icon-edit");
         editUserAction.setDialogName("ui-security-app:userEdit");
 
         DeleteItemActionDefinition deleteUserActionDefinition = new DeleteItemActionDefinition();
-        deleteUserActionDefinition.setName("delete");
+        deleteUserActionDefinition.setName("deleteUser");
         deleteUserActionDefinition.setLabel("Delete user");
         deleteUserActionDefinition.setIcon("icon-delete");
 
