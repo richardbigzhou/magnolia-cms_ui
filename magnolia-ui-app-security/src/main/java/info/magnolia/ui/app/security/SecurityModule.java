@@ -139,6 +139,7 @@ public class SecurityModule implements ModuleLifecycle {
                         userSubApp(app, cfg, "users", "/admin").defaultSubApp().label("Users"),
                         userSubApp(app, cfg, "systemUsers", "/system").label("System users"),
                         app.subApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
+                                .actions(addGroupAction, editGroupAction, deleteGroupActionDefinition)
                                 .workbench(cfg.workbenches.workbench().workspace("usergroups").root("/").defaultOrder(ModelConstants.JCR_NAME)
                                         .nodeType(cfg.workbenches.nodeType(NodeTypes.Group.NAME).icon("icon-user-group"))
                                         .nodeType(cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
@@ -160,6 +161,7 @@ public class SecurityModule implements ModuleLifecycle {
                                         )
                                 ),
                         app.subApp("roles").subAppClass(SecurityRolesSubApp.class).label("Roles")
+                                .actions(addRoleAction, editRoleAction, deleteRoleActionDefinition)
                                 .workbench(cfg.workbenches.workbench().workspace("userroles").root("/").defaultOrder(ModelConstants.JCR_NAME)
                                         .nodeType(cfg.workbenches.nodeType(NodeTypes.Role.NAME).icon("icon-user-role"))
                                         .nodeType(cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
@@ -210,6 +212,7 @@ public class SecurityModule implements ModuleLifecycle {
         cipd.setImageProviderClass(DefaultImageProvider.class);
 
         return app.subApp(name).subAppClass(SecurityUsersSubApp.class)
+                .actions(addUserAction, editUserAction, deleteUserActionDefinition)
                 .workbench(cfg.workbenches.workbench().workspace("users").root(root).defaultOrder(ModelConstants.JCR_NAME)
                         .nodeType(cfg.workbenches.nodeType(NodeTypes.User.NAME).icon("icon-user-magnolia"))
                         .nodeType(cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder")) // see MGNLPUR-77
