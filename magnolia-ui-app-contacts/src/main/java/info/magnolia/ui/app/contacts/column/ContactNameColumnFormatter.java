@@ -35,7 +35,7 @@ package info.magnolia.ui.app.contacts.column;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.admincentral.column.AbstractColumnFormatter;
+import info.magnolia.ui.workbench.column.AbstractColumnFormatter;
 import info.magnolia.ui.app.contacts.ContactNodeType;
 
 import javax.jcr.Item;

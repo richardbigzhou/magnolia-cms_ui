@@ -76,7 +76,7 @@
         <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.builder.TextFieldBuilder</sv:value>
+        <sv:value>info.magnolia.ui.model.field.builder.TextFieldBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>

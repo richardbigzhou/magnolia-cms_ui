@@ -135,7 +135,7 @@
           <sv:value>f25757b8-69fc-4140-b683-fce473f5a62e</sv:value>
         </sv:property>
         <sv:property sv:name="class" sv:type="String">
-          <sv:value>info.magnolia.ui.model.column.definition.PropertyColumnDefinition</sv:value>
+          <sv:value>info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition</sv:value>
         </sv:property>
         <sv:property sv:name="expandRatio" sv:type="Double">
           <sv:value>2.0</sv:value>
@@ -176,7 +176,7 @@
           <sv:value>3e56b101-64df-463c-a05c-38e23e5e23ae</sv:value>
         </sv:property>
         <sv:property sv:name="class" sv:type="String">
-          <sv:value>info.magnolia.ui.model.column.definition.PropertyColumnDefinition</sv:value>
+          <sv:value>info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition</sv:value>
         </sv:property>
         <sv:property sv:name="expandRatio" sv:type="Double">
           <sv:value>2.0</sv:value>
@@ -264,13 +264,13 @@
           <sv:value>721787db-7518-429b-b6ef-f5948dc71de0</sv:value>
         </sv:property>
         <sv:property sv:name="class" sv:type="String">
-          <sv:value>info.magnolia.ui.model.column.definition.StatusColumnDefinition</sv:value>
+          <sv:value>info.magnolia.ui.workbench.column.definition.StatusColumnDefinition</sv:value>
         </sv:property>
         <sv:property sv:name="displayInDialog" sv:type="Boolean">
           <sv:value>false</sv:value>
         </sv:property>
         <sv:property sv:name="formatterClass" sv:type="String">
-          <sv:value>info.magnolia.ui.admincentral.column.StatusColumnFormatter</sv:value>
+          <sv:value>info.magnolia.ui.workbench.column.StatusColumnFormatter</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
@@ -305,13 +305,13 @@
           <sv:value>2f4937cd-0f2d-4107-87f2-d73906d1050d</sv:value>
         </sv:property>
         <sv:property sv:name="class" sv:type="String">
-          <sv:value>info.magnolia.ui.model.column.definition.MetaDataColumnDefinition</sv:value>
+          <sv:value>info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition</sv:value>
         </sv:property>
         <sv:property sv:name="displayInDialog" sv:type="Boolean">
           <sv:value>false</sv:value>
         </sv:property>
         <sv:property sv:name="formatterClass" sv:type="String">
-          <sv:value>info.magnolia.ui.admincentral.column.DateColumnFormatter</sv:value>
+          <sv:value>info.magnolia.ui.workbench.column.DateColumnFormatter</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>

@@ -33,25 +33,25 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.location.ContentLocation;
-import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
-import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.event.SearchEvent;
-import info.magnolia.ui.admincentral.event.ViewTypeChangedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.workbench.content.view.ContentView.ViewType;
+import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 
 import javax.inject.Named;
 
 /**
- * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.admincentral.content.view.ContentView}
- * created by {@link info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder}.
+ * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.workbench.content.view.ContentView}
+ * created by {@link info.magnolia.ui.workbench.content.view.builder.ContentViewBuilder}.
  * <pre>
  *  <p>
  *      This class Provides sensible implementation for services shared by all content subApps.

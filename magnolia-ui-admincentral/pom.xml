@@ -24,6 +24,11 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-workbench</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-module-admininterface</artifactId>
       <version>4.5.7</version>

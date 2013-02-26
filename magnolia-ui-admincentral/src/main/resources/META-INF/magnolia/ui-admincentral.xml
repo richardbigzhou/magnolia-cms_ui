@@ -46,12 +46,12 @@
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.workbench.definition.WorkbenchDefinition</type>
-      <implementation>info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
+      <type>info.magnolia.ui.workbench.definition.WorkbenchDefinition</type>
+      <implementation>info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.workbench.definition.NodeTypeDefinition</type>
-      <implementation>info.magnolia.ui.model.workbench.definition.ConfiguredNodeTypeDefinition</implementation>
+      <type>info.magnolia.ui.workbench.definition.NodeTypeDefinition</type>
+      <implementation>info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarDefinition</type>
@@ -257,8 +257,8 @@
       <implementation>info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
+      <type>info.magnolia.ui.workbench.ContentWorkbenchView</type>
+      <implementation>info.magnolia.ui.workbench.ContentWorkbenchViewImpl</implementation>
     </component>
   </components>
 
@@ -272,20 +272,20 @@
       <implementation>info.magnolia.ui.admincentral.app.content.WorkbenchSubAppViewImpl</implementation>
     </component>
       <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
+      <type>info.magnolia.ui.workbench.ContentWorkbenchPresenter</type>
+      <implementation>info.magnolia.ui.workbench.ContentWorkbenchPresenter</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.content.view.ContentPresenter</type>
       <implementation>info.magnolia.ui.admincentral.content.view.ContentPresenter</implementation>
     </component>
       <component>
-      <type>info.magnolia.ui.admincentral.workbench.ItemWorkbenchView</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ItemWorkbenchViewImpl</implementation>
+      <type>info.magnolia.ui.workbench.ItemWorkbenchView</type>
+      <implementation>info.magnolia.ui.workbench.ItemWorkbenchViewImpl</implementation>
     </component>
       <component>
-      <type>info.magnolia.ui.admincentral.workbench.ItemWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ItemWorkbenchPresenter</implementation>
+      <type>info.magnolia.ui.workbench.ItemWorkbenchPresenter</type>
+      <implementation>info.magnolia.ui.workbench.ItemWorkbenchPresenter</implementation>
     </component>
       <component>
       <type>info.magnolia.ui.admincentral.content.item.ItemPresenter</type>
@@ -315,8 +315,8 @@
       <implementation>info.magnolia.ui.admincentral.form.action.FormActionFactoryImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.model.workbench.action.WorkbenchActionFactory</type>
-      <implementation>info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl</implementation>
+      <type>info.magnolia.ui.model.action.WorkbenchActionFactory</type>
+      <implementation>info.magnolia.ui.model.action.WorkbenchActionFactoryImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition</type>

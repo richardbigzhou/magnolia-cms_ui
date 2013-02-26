@@ -34,9 +34,9 @@
 package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.admincentral.content.view.ContentView;
-import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.workbench.content.view.ContentView;
+import info.magnolia.ui.workbench.content.view.ContentView.ViewType;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -63,7 +63,6 @@ import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * Implementation of {@link ContentWorkbenchView}.
- * TODO: consider restoring CustomComponent implementation here.
  */
 public class ContentWorkbenchViewImpl extends HorizontalLayout implements ContentWorkbenchView {
 

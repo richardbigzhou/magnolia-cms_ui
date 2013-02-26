@@ -193,7 +193,7 @@
                 <sv:value>1fcb735a-4e9b-4370-8d8a-8f5fc8bfac11</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.column.definition.PropertyColumnDefinition</sv:value>
+                <sv:value>info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="editable" sv:type="String">
                 <sv:value>true</sv:value>
@@ -237,7 +237,7 @@
                 <sv:value>8896da4a-7d8a-42ac-8bd8-ac8ca3f53e86</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.column.definition.PropertyValueColumnDefinition</sv:value>
+                <sv:value>info.magnolia.ui.workbench.column.definition.PropertyValueColumnDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="editable" sv:type="String">
                 <sv:value>true</sv:value>
@@ -278,7 +278,7 @@
                 <sv:value>b7ba97ec-95b5-44ef-b906-fec8032604ee</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition</sv:value>
+                <sv:value>info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="editable" sv:type="String">
                 <sv:value>true</sv:value>
@@ -316,13 +316,13 @@
                 <sv:value>449eb9ff-ec90-484d-a716-4b36d030f3df</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.column.definition.StatusColumnDefinition</sv:value>
+                <sv:value>info.magnolia.ui.workbench.column.definition.StatusColumnDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="displayInDialog" sv:type="Boolean">
                 <sv:value>false</sv:value>
               </sv:property>
               <sv:property sv:name="formatterClass" sv:type="String">
-                <sv:value>info.magnolia.ui.admincentral.column.StatusColumnFormatter</sv:value>
+                <sv:value>info.magnolia.ui.workbench.column.StatusColumnFormatter</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
@@ -357,13 +357,13 @@
                 <sv:value>069bd3f8-cb19-418f-a6cc-06d71ef3bad1</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.column.definition.MetaDataColumnDefinition</sv:value>
+                <sv:value>info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="displayInDialog" sv:type="Boolean">
                 <sv:value>false</sv:value>
               </sv:property>
               <sv:property sv:name="formatterClass" sv:type="String">
-                <sv:value>info.magnolia.ui.admincentral.column.DateColumnFormatter</sv:value>
+                <sv:value>info.magnolia.ui.workbench.column.DateColumnFormatter</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>

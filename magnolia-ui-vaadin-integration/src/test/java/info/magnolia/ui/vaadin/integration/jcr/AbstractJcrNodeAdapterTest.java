@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;

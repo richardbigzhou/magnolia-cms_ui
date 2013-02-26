@@ -34,12 +34,12 @@
 package info.magnolia.ui.framework.config;
 
 import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
-import info.magnolia.ui.model.column.builder.ColumnConfig;
 import info.magnolia.ui.model.dialog.builder.DialogConfig;
 import info.magnolia.ui.model.field.builder.ValidatorConfig;
 import info.magnolia.ui.model.form.builder.FieldsConfig;
 import info.magnolia.ui.model.form.builder.FormConfig;
-import info.magnolia.ui.model.workbench.builder.WorkbenchConfig;
+import info.magnolia.ui.workbench.builder.WorkbenchConfig;
+import info.magnolia.ui.workbench.column.builder.ColumnConfig;
 
 /**
  * Main config object for creating UI definitions.

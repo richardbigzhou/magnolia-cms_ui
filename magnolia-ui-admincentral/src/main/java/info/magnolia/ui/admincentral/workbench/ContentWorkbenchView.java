@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
-import info.magnolia.ui.admincentral.content.view.ContentView;
-import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
-import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.workbench.content.view.ContentView;
+import info.magnolia.ui.workbench.content.view.ContentView.ViewType;
 
 import com.vaadin.ui.ComponentContainer;
 
