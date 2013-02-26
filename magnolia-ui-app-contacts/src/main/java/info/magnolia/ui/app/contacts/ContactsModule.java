@@ -137,6 +137,7 @@ public class ContactsModule implements ModuleLifecycle {
 
 
         EditDialogActionDefinition editFolderAction = new EditDialogActionDefinition();
+        editFolderAction.setName("editFolder");
         editFolderAction.setLabel("Edit folder in Dialog");
         editFolderAction.setIcon("icon-edit");
         editFolderAction.setDialogName("ui-contacts-app:folder");
@@ -153,7 +154,7 @@ public class ContactsModule implements ModuleLifecycle {
                         app.subApp("main")
                                 .subAppClass(ContactsMainSubApp.class)
                                 .defaultSubApp()
-                                .actions(addFolderAction, editContactAction, deleteItemAction, deleteFolderAction, editContactActionInDialog)
+                                .actions(addContactAction, editContactAction, editContactActionInDialog, deleteItemAction, addFolderAction, editFolderAction, deleteFolderAction)
                                 .workbench(
                                         cfg.workbenches
                                                 .workbench()
