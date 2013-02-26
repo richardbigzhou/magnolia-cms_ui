@@ -284,12 +284,12 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     @Override
     public String getLabel(String actionName) {
         ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return actionDefinition.getLabel();
+        return (actionDefinition != null) ? actionDefinition.getLabel() : null;
     }
 
     @Override
     public String getIcon(String actionName) {
         ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return actionDefinition.getIcon();
+        return (actionDefinition != null) ? actionDefinition.getIcon() : null;
     }
 }

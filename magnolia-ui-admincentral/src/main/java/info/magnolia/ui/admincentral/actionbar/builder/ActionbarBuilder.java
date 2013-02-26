@@ -90,6 +90,9 @@ public class ActionbarBuilder {
         ActionbarItem entry;
         String icon = listener.getIcon(actionName);
         String label = listener.getLabel(actionName);
+        if (StringUtils.isBlank(label)) {
+            return;
+        }
         if (StringUtils.isNotBlank(icon)) {
             if (icon.startsWith("icon-")) {
                 entry = new ActionbarItem(actionName, label, icon, groupName);
