@@ -57,6 +57,10 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.cssinject.CSSInject;
+
+import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.Component;
 
 /**
  * Implements both - the controlling of an app instance as well as the housekeeping of the context for an app.
@@ -162,8 +166,33 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     public void start(Location location) {
 
         app = componentProvider.newInstance(appDescriptor.getAppClass());
-
         app.start(location);
+
+        if (isThemedApp(app)) {
+            AppTheme themeAnnotation = app.getClass().getAnnotation(AppTheme.class);
+            setThemeForApp(app.getView(), themeAnnotation.value());
+        }
+    }
+
+    private boolean isThemedApp(App app) {
+        if (app.getClass().isAnnotationPresent(AppTheme.class)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void setThemeForApp(AppView view, String themeName) {
+        String stylename = String.format("app-%s", themeName);
+        Component vaadinComponent = view.asVaadinComponent();
+        vaadinComponent.addStyleName(stylename);
+
+        if (vaadinComponent.getUI() != null) {
+            String themeUrl = String.format("../%s/styles.css", themeName);
+            ThemeResource res = new ThemeResource(themeUrl);
+            CSSInject cssInject = new CSSInject(vaadinComponent.getUI());
+            cssInject.addStyleSheet(res);
+        }
     }
 
     /**

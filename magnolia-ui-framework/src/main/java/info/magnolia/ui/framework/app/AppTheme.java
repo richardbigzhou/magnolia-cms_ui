@@ -31,29 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.theme;
+package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.app.App;
-import info.magnolia.ui.framework.app.AppView;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Implementor of this class will apply a theme for an App.
+ * Annotate an App to be themed.
  */
-public interface AppThemer {
-
-    /**
-     * Apply theme if ThemedApp annotation is found.
-     * 
-     * @param app
-     */
-    public void themeAnnotated(App app);
-
-    /**
-     * Apply theme for AppView provided.
-     * 
-     * @param view
-     * @param themeName
-     */
-    public void setTheme(AppView view, String themeName);
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Inherited
+public @interface AppTheme {
+    public String value();
 }

@@ -193,11 +193,6 @@
       <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseDashboardView</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseDashboardViewImpl</implementation>
     </component>
-        
-    <component>
-      <type>info.magnolia.ui.framework.app.theme.AppThemer</type>
-      <implementation>info.magnolia.ui.admincentral.theme.AppThemerImpl</implementation>
-    </component>
 
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppInstanceController</type>

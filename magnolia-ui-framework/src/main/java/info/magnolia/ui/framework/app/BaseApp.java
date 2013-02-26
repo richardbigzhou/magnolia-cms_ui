@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.app.theme.AppThemer;
 import info.magnolia.ui.framework.location.Location;
 
 import javax.inject.Inject;
@@ -49,9 +48,6 @@ public class BaseApp implements App {
     private AppView view;
 
     @Inject
-    private AppThemer themer;
-
-    @Inject
     protected BaseApp(AppContext appContext, AppView view) {
         this.appContext = appContext;
         this.view = view;
@@ -65,9 +61,6 @@ public class BaseApp implements App {
 
     @Override
     public void start(Location location) {
-        if (this.themer != null) {
-            this.themer.themeAnnotated(this);
-        }
         appContext.openSubApp(location);
     }
 

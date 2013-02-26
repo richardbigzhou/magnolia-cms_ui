@@ -67,6 +67,7 @@ import org.junit.Test;
 
 import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
+import com.vaadin.server.VaadinService;
 
 /**
  * Test case for {@link info.magnolia.ui.framework.app.AppController}.
@@ -75,6 +76,7 @@ public class AppControllerImplTest {
 
     private static final String APP_NAME_1 = "app1";
     private static final String APP_NAME_2 = "app2";
+    private static final String APP_NAME_THEMED = "appThemed";
 
     private static final String SUBAPP_NAME_1 = "subApp1";
     private static final String SUBAPP_NAME_2 = "subApp2";
@@ -417,6 +419,18 @@ public class AppControllerImplTest {
         assertEquals(parameter, appController.getCurrentAppLocation().getParameter());
     }
 
+    @Test
+    public void testStartThemedApp() {
+        // GIVEN
+        String appName = APP_NAME_THEMED + "_name";
+
+        // WHEN
+        appController.startIfNotAlreadyRunningThenFocus(appName, new DefaultLocation(Location.LOCATION_TYPE_APP, appName, "", ""));
+
+        // THEN
+        assertTrue(appController.getCurrentApp().getView().asVaadinComponent().getStyleName().contains("testtheme"));
+    }
+
     /**
      * Init a LayoutManager containing 2 groups (group1 and group2) with
      * one app each (app1 and app2) linket to {TestApp}.
@@ -433,10 +447,12 @@ public class AppControllerImplTest {
 
         AppDescriptor app1 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_1, AppTestImpl.class, subApps);
         AppDescriptor app2 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_2, AppTestImpl.class, subApps);
+        AppDescriptor appThemed = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_THEMED, ThemedAppTestImpl.class, subApps);
 
         try {
             when(appRegistry.getAppDescriptor(APP_NAME_1 + "_name")).thenReturn(app1);
             when(appRegistry.getAppDescriptor(APP_NAME_2 + "_name")).thenReturn(app2);
+            when(appRegistry.getAppDescriptor(APP_NAME_THEMED + "_name")).thenReturn(appThemed);
         } catch (RegistrationException e) {
             // won't happen
         }

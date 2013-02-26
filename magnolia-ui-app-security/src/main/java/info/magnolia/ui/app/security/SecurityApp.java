@@ -39,14 +39,12 @@ import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.app.AppView;
-import info.magnolia.ui.framework.app.theme.ThemedApp;
 
 import javax.inject.Inject;
 
 /**
  * The Security App, extending the base content app.
  */
-@ThemedApp("security")
 public class SecurityApp extends ContentApp {
 
     @Inject
