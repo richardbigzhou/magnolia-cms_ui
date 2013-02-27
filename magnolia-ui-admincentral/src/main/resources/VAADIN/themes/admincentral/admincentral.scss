@@ -1,11 +1,12 @@
 @charset "UTF-8";
+@import url(../admincentraltheme/styles.css);
+
 @import "../magnolia/magnolia.scss";
-@import "../admincentraltheme/styles.css";
 
 @include magnolia;
 
 @mixin admincentral {
-
-
-
+	.v-ui {
+		background-color: blue;
+	}
 }
