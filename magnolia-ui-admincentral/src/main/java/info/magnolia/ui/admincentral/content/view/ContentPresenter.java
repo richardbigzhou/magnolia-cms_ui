@@ -34,22 +34,25 @@
 package info.magnolia.ui.admincentral.content.view;
 
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
-import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
-import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
-import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
-import info.magnolia.ui.admincentral.event.ItemEditedEvent;
-import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.ContentView;
+import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.ContentViewBuilder;
+import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
+import info.magnolia.ui.workbench.event.ItemEditedEvent;
+import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
+import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.workbench.definition.ItemTypeDefinition;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -81,25 +84,22 @@ public class ContentPresenter implements ContentView.Listener {
 
     private String selectedItemPath;
 
-    public ContentPresenter(final AppContext appContext, final ContentViewBuilder contentViewBuilder, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) final EventBus subAppEventBus, final Shell shell) {
+    protected ContentPresenter(final ContentSubAppDescriptor contentSubAppDescriptor, final ContentViewBuilder contentViewBuilder, final EventBus subAppEventBus, final Shell shell) {
         this.contentViewBuilder = contentViewBuilder;
         this.subAppEventBus = subAppEventBus;
         this.shell = shell;
 
-        final ContentSubAppDescriptor subAppDescriptor = (ContentSubAppDescriptor) appContext.getDefaultSubAppDescriptor();
-        this.workbenchDefinition = subAppDescriptor.getWorkbench();
-        this.workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
+        this.workbenchDefinition = contentSubAppDescriptor.getWorkbench();
+        this.workspaceName = contentSubAppDescriptor.getWorkbench().getWorkspace();
+    }
+
+    public ContentPresenter(final AppContext appContext, final ContentViewBuilder contentViewBuilder, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) final EventBus subAppEventBus, final Shell shell) {
+        this((ContentSubAppDescriptor) appContext.getDefaultSubAppDescriptor(), contentViewBuilder, subAppEventBus, shell);
     }
 
     @Inject
     public ContentPresenter(final SubAppContext subAppContext, final ContentViewBuilder contentViewBuilder, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) final EventBus subAppEventBus, final Shell shell) {
-        this.contentViewBuilder = contentViewBuilder;
-        this.subAppEventBus = subAppEventBus;
-        this.shell = shell;
-
-        final ContentSubAppDescriptor subAppDescriptor = (ContentSubAppDescriptor) subAppContext.getSubAppDescriptor();
-        this.workbenchDefinition = subAppDescriptor.getWorkbench();
-        this.workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
+        this((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor(), contentViewBuilder, subAppEventBus, shell);
     }
 
     public void initContentView(ContentWorkbenchView parentView) {
@@ -111,7 +111,6 @@ public class ContentPresenter implements ContentView.Listener {
         for (final ViewType type : ViewType.values()) {
             final ContentView contentView = contentViewBuilder.build(workbenchDefinition, type);
             contentView.setListener(this);
-            // contentView.select(StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/"));
             contentView.select("/");
             parentView.addContentView(type, contentView);
         }
@@ -188,13 +187,11 @@ public class ContentPresenter implements ContentView.Listener {
         if (item instanceof JcrNodeAdapter) {
             JcrNodeAdapter node = (JcrNodeAdapter) item;
             String typeName = node.getPrimaryNodeTypeName();
-            ItemTypeDefinition groupingType = workbenchDefinition.getGroupingItemType();
-            ItemTypeDefinition mainType = workbenchDefinition.getMainItemType();
-
-            if (groupingType != null && groupingType.getItemType().equals(typeName)) {
-                return groupingType.getIcon();
-            } else if (mainType != null && mainType.getItemType().equals(typeName)) {
-                return mainType.getIcon();
+            List<NodeTypeDefinition> nodeTypes = workbenchDefinition.getNodeTypes();
+            for (NodeTypeDefinition currentNodeType: nodeTypes) {
+                if (currentNodeType.getName().equals(typeName)) {
+                    return currentNodeType.getIcon();
+                }
             }
         }
 

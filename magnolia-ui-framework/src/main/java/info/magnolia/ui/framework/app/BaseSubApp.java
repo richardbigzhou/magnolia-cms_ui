@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.view.View;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
  */
 public class BaseSubApp implements SubApp {
 
-    protected Location currentLocation;
     private final SubAppContext subAppContext;
     private final View view;
 
@@ -63,7 +62,6 @@ public class BaseSubApp implements SubApp {
 
     @Override
     public View start(Location location) {
-        currentLocation = location;
         onSubAppStart();
         return view;
     }
@@ -75,7 +73,6 @@ public class BaseSubApp implements SubApp {
 
     @Override
     public void locationChanged(Location location) {
-        currentLocation = location;
     }
 
     /**
@@ -141,7 +138,7 @@ public class BaseSubApp implements SubApp {
     }
 
     protected Location getCurrentLocation() {
-        return currentLocation;
+        return getSubAppContext().getLocation();
     }
 
 }

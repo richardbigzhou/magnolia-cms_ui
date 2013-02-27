@@ -46,12 +46,12 @@
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.workbench.definition.WorkbenchDefinition</type>
-      <implementation>info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
+      <type>info.magnolia.ui.workbench.definition.WorkbenchDefinition</type>
+      <implementation>info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.workbench.definition.ItemTypeDefinition</type>
-      <implementation>info.magnolia.ui.model.workbench.definition.ConfiguredItemTypeDefinition</implementation>
+      <type>info.magnolia.ui.workbench.definition.NodeTypeDefinition</type>
+      <implementation>info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarDefinition</type>
@@ -151,19 +151,19 @@
     </component>
     <component>
       <type>info.magnolia.ui.framework.shell.Shell</type>
-      <implementation>info.magnolia.ui.admincentral.MagnoliaShell</implementation>
+      <implementation>info.magnolia.ui.framework.shell.ShellImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.framework.app.AppController</type>
-      <implementation>info.magnolia.ui.admincentral.app.simple.AppControllerImpl</implementation>
+      <implementation>info.magnolia.ui.framework.app.AppControllerImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.framework.view.AppView</type>
-      <implementation>info.magnolia.ui.admincentral.app.simple.AppFrameView</implementation>
+      <type>info.magnolia.ui.framework.app.AppView</type>
+      <implementation>info.magnolia.ui.framework.app.AppFrameView</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.app.simple.ShellAppController</type>
-      <implementation>info.magnolia.ui.admincentral.app.simple.ShellAppController</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.ShellAppController</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.ShellAppController</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherView</type>
@@ -178,12 +178,8 @@
       <implementation>info.magnolia.ui.admincentral.shellapp.favorites.FavoritesViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.MagnoliaShellView</type>
-      <implementation>info.magnolia.ui.admincentral.MagnoliaShellViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.MagnoliaShellPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.MagnoliaShellPresenter</implementation>
+      <type>info.magnolia.ui.admincentral.AdmincentralPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.AdmincentralPresenter</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesView</type>
@@ -200,23 +196,18 @@
 
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppInstanceController</type>
-      <implementation>info.magnolia.ui.admincentral.app.simple.AppInstanceControllerImpl</implementation>
+      <implementation>info.magnolia.ui.framework.app.AppInstanceControllerImpl</implementation>
     </type-mapping>
   </components>
 
   <components>
     <id>app</id>
     <configurer>
-      <class>info.magnolia.ui.framework.event.AppEventBusConfigurer</class>
+      <class>info.magnolia.ui.framework.app.AppEventBusConfigurer</class>
     </configurer>
     <configurer>
       <class>info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer</class>
     </configurer>
-
-    <component>
-      <type>info.magnolia.ui.admincentral.dialog.ChooseDialogFactory</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.ChooseDialogFactoryImpl</implementation>
-    </component>
 
     <component>
       <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
@@ -229,12 +220,12 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.ChooseDialogFactory</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.ChooseDialogFactoryImpl</implementation>
+      <type>info.magnolia.ui.admincentral.dialog.ChooseDialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenterFactory</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder</type>
-      <implementation>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderImpl</implementation>
+      <type>info.magnolia.ui.workbench.ContentViewBuilder</type>
+      <implementation>info.magnolia.ui.workbench.ContentViewBuilderImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</type>
@@ -245,16 +236,12 @@
       <implementation>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</implementation>
+      <type>info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogView</type>
+      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogView</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.dialog.ChooseDialogView</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchValueChooseDialog</implementation>
+      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogView</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition</type>
@@ -269,7 +256,7 @@
   <components>
     <id>subapp</id>
     <configurer>
-      <class>info.magnolia.ui.framework.event.SubAppEventBusConfigurer</class>
+      <class>info.magnolia.ui.framework.app.SubAppEventBusConfigurer</class>
     </configurer>
     <component>
       <type>info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView</type>
@@ -395,7 +382,7 @@
       <params>
         <param>
           <name>UI</name>
-          <value>info.magnolia.ui.admincentral.AdminCentralUI</value>
+          <value>info.magnolia.ui.admincentral.AdmincentralUI</value>
         </param>
         <param>
           <name>widgetset</name>

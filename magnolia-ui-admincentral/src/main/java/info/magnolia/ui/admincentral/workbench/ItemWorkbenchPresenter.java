@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
@@ -40,14 +41,13 @@ import info.magnolia.ui.admincentral.content.item.ItemPresenter;
 import info.magnolia.ui.admincentral.content.item.ItemView;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import javax.inject.Inject;
 import javax.inject.Named;

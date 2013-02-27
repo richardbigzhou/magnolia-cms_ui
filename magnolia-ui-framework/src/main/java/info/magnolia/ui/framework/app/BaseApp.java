@@ -34,7 +34,6 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.AppView;
 
 import javax.inject.Inject;
 
@@ -74,12 +73,11 @@ public class BaseApp implements App {
     }
 
     @Override
-    public Location getDefaultLocation() {
-        return null;
+    public AppView getView() {
+        return view;
     }
 
     @Override
-    public AppView getView() {
-        return view;
+    public void openChooseDialog(String path, ItemChosenListener listener) {
     }
 }

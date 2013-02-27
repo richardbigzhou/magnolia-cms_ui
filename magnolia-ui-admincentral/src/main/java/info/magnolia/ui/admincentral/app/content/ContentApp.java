@@ -33,46 +33,42 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.admincentral.MagnoliaShell;
-import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
-import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenterFactory;
 import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.ItemChosenListener;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.view.AppView;
+import info.magnolia.ui.framework.app.AppView;
 
 import javax.inject.Inject;
 
-import com.vaadin.data.Item;
-
 /**
  * Extends the {@link BaseApp} by the ability to open a choose dialog.
- *
- * @see ChooseDialogFactory
- * @see ChooseDialogPresenter
  */
 public class ContentApp extends BaseApp {
 
-    private final ChooseDialogFactory chooseDialogFactory;
+    private final ChooseDialogPresenterFactory chooseDialogPresenterFactory;
 
     @Inject
-    private Shell shell;
-
-    @Inject
-    public ContentApp(AppContext appContext, AppView view, ChooseDialogFactory chooseDialogFactory) {
+    public ContentApp(AppContext appContext, AppView view, ChooseDialogPresenterFactory chooseDialogPresenterFactory) {
         super(appContext, view);
-        this.chooseDialogFactory = chooseDialogFactory;
+        this.chooseDialogPresenterFactory = chooseDialogPresenterFactory;
     }
 
-    public ChooseDialogPresenter<Item> openChooseDialog() {
-        return openChooseDialog(null);
-    }
+    @Override
+    public void openChooseDialog(String path, final ItemChosenListener listener) {
 
-    public ChooseDialogPresenter<Item> openChooseDialog(String defaultPath) {
-        final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogFactory.createWorkbenchChooseDialog(defaultPath);
-        ((MagnoliaShell) shell).openDialog(workbenchChooseDialogPresenter);
-        return workbenchChooseDialogPresenter;
-    }
+        final ChooseDialogPresenter chooseDialogPresenter = chooseDialogPresenterFactory.createChooseDialogPresenter(path, listener);
 
+        final Shell.ShellDialog shellDialog = appContext.openDialog(chooseDialogPresenter.start());
+
+        chooseDialogPresenter.setListener(new ChooseDialogPresenter.Listener() {
+
+            @Override
+            public void onClose() {
+                shellDialog.close();
+            }
+        });
+    }
 }

@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.ViewPort;
+import info.magnolia.ui.vaadin.view.Viewport;
 
 /**
  * Controls all {@link App}s running for a single user. It takes care of starting, stopping and switching to already running apps.
@@ -55,8 +55,6 @@ public interface AppController {
 
     App startIfNotAlreadyRunningThenFocus(String name, Location location);
 
-    App getAppWithoutStarting(String appId);
-
     boolean isAppStarted(String name);
 
     void stopApp(String name);
@@ -71,5 +69,7 @@ public interface AppController {
 
     Location getAppLocation(String name);
 
-    void setViewPort(ViewPort viewport);
+    void setViewport(Viewport viewport);
+
+    void openChooseDialog(String appName, String path, ItemChosenListener listener);
 }

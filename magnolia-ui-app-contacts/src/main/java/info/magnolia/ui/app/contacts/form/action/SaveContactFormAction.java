@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.contacts.form.action;
 
-import info.magnolia.jcr.util.MetaDataUtil;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.action.SaveFormAction;
@@ -46,7 +46,7 @@ import javax.jcr.RepositoryException;
 /**
  * Action for saving contacts.
  * We currently can't rename the node on change.
- * This must be properly solved by passing the node identifier to {@link info.magnolia.ui.admincentral.event.ContentChangedEvent}.
+ * This must be properly solved by passing the node identifier to {@link info.magnolia.ui.framework.event.ContentChangedEvent}.
  *
  * See MGNLUI-226.
  *
@@ -69,8 +69,7 @@ public class SaveContactFormAction extends SaveFormAction {
 
                 // Can't use this anymore, breaks when renaming node, ContentChangedEvent is still using the old path
                 // generateUniqueNodeNameForContact(node);
-
-                MetaDataUtil.updateMetaData(node);
+                NodeTypes.LastModified.update(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);

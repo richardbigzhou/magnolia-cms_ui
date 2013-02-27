@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-framework</artifactId>
   <name>magnolia-ui-framework</name>
   <properties>
-    <cloverCoverageThreshold>71</cloverCoverageThreshold>
+    <cloverCoverageThreshold>70</cloverCoverageThreshold>
   </properties>
   <build>
     <plugins>
@@ -32,6 +32,16 @@
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
       <version>${magnoliaVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-workbench</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
