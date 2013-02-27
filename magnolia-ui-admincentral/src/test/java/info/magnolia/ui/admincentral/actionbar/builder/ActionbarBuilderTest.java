@@ -34,8 +34,9 @@
 package info.magnolia.ui.admincentral.actionbar.builder;
 
 import static org.junit.Assert.*;
+
+import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
@@ -158,7 +159,7 @@ public class ActionbarBuilderTest {
             setDescription("");
             setI18nBasename("");
             setImplementationClass(null);
-            setLabel("");
+            setLabel("label");
         }
     }
     
@@ -247,7 +248,7 @@ public class ActionbarBuilderTest {
         return false;
     }
 
-    private class ActionbarListener implements ActionExecutor.Listener {
+    private class ActionbarListener implements ActionbarPresenter.Listener {
 
         private Map<String, ActionDefinition> actionDefinitions;
 
@@ -268,6 +269,11 @@ public class ActionbarBuilderTest {
         @Override
         public String getIcon(String actionName) {
             return actionDefinitions.get(actionName).getLabel();
+        }
+
+        @Override
+        public void setFullScreen(boolean fullscreen) {
+
         }
     }
 

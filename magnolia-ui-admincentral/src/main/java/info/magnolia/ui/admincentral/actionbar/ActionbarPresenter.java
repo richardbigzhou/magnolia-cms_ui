@@ -34,8 +34,6 @@
 package info.magnolia.ui.admincentral.actionbar;
 
 import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
@@ -44,7 +42,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
 import com.vaadin.server.Resource;
 
 /**
@@ -60,17 +57,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     private ActionbarView actionbar;
 
-    private final SubAppContext subAppContext;
-
-    private ActionExecutor.Listener listener;
-
-    /**
-     * Instantiates a new action bar presenter.
-     */
-    @Inject
-    public ActionbarPresenter(SubAppContext appContext) {
-        this.subAppContext = appContext;
-    }
+    private Listener listener;
 
     /**
      * Initializes an actionbar with given definition and returns the view for
@@ -163,11 +150,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     @Override
     public void onChangeFullScreen(boolean isFullScreen) {
-        if (isFullScreen) {
-            subAppContext.getAppContext().enterFullScreenMode();
-        } else {
-            subAppContext.getAppContext().exitFullScreenMode();
-        }
+        listener.setFullScreen(isFullScreen);
     }
 
     private String getActionName(String actionToken) {
@@ -198,7 +181,22 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         }
     }
 
-    public void setListener(ActionExecutor.Listener listener) {
+    public void setListener(Listener listener) {
         this.listener = listener;
+    }
+
+    /**
+     *  Listener interface for the Actionbar.
+     */
+    public interface Listener {
+
+        void onExecute(String actionName);
+
+        String getLabel(String actionName);
+
+        String getIcon(String actionName);
+
+        void setFullScreen(boolean fullscreen);
+
     }
 }

@@ -39,6 +39,7 @@ import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.item.ItemPresenter;
 import info.magnolia.ui.admincentral.content.item.ItemView;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -59,11 +60,12 @@ import org.slf4j.LoggerFactory;
  * Presenter for the workbench displayed in the {@link info.magnolia.ui.admincentral.app.content.ItemSubApp}.
  * Contains the {@link ActionbarPresenter} for handling action events and the {@link ItemPresenter} for displaying the actual item.
  */
-public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, ActionExecutor.Listener {
+public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, ActionbarPresenter.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ItemWorkbenchPresenter.class);
 
-    private ActionExecutor actionExecutor;
+    private final ActionExecutor actionExecutor;
+    private final AppContext appContext;
     private final ItemWorkbenchView view;
     private final ItemPresenter itemPresenter;
     private final ActionbarPresenter actionbarPresenter;
@@ -76,6 +78,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
         this.view = view;
         this.itemPresenter = itemPresenter;
         this.actionbarPresenter = actionbarPresenter;
+        this.appContext = subAppContext.getAppContext();
         this.workbenchDefinition = ((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench();
 
     }
@@ -132,6 +135,15 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
     public String getIcon(String actionName) {
         ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
         return actionDefinition != null ? actionDefinition.getIcon() : null;
+    }
+
+    @Override
+    public void setFullScreen(boolean fullScreen) {
+        if (fullScreen) {
+            appContext.enterFullScreenMode();
+        } else {
+            appContext.exitFullScreenMode();
+        }
     }
 
 }

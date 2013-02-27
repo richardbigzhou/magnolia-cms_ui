@@ -41,6 +41,7 @@ import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
 import info.magnolia.ui.admincentral.event.SearchEvent;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
@@ -87,13 +88,13 @@ import com.vaadin.server.Resource;
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR workspace to connect to, the columns/properties to display, the available actions and so on.
  */
-public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener, ActionExecutor.Listener {
+public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener, ActionbarPresenter.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchPresenter.class);
 
     private final WorkbenchDefinition workbenchDefinition;
 
-    private ActionExecutor actionExecutor;
+    private final ActionExecutor actionExecutor;
 
     private final ContentWorkbenchView view;
 
@@ -106,12 +107,14 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
     private final ActionbarPresenter actionbarPresenter;
 
     private final ImageProvider imageProvider;
+    private final AppContext appContext;
 
     @Inject
     public ContentWorkbenchPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentWorkbenchView view, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus admincentralEventBus,
             final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final ContentPresenter contentPresenter,
             final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
         this.actionExecutor = actionExecutor;
+        this.appContext = subAppContext.getAppContext();
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
@@ -330,6 +333,16 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
     public String getIcon(String actionName) {
         ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
         return actionDefinition != null ? actionDefinition.getIcon() : null;
+    }
+
+
+    @Override
+    public void setFullScreen(boolean fullScreen) {
+        if (fullScreen) {
+            appContext.enterFullScreenMode();
+        } else {
+            appContext.exitFullScreenMode();
+        }
     }
 
 }

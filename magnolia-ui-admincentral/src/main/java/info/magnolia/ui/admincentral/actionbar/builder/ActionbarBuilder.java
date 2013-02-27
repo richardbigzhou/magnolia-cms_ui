@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.actionbar.builder;
 
-import info.magnolia.ui.model.action.ActionExecutor;
+import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
@@ -57,7 +57,7 @@ public class ActionbarBuilder {
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarBuilder.class);
 
-    public static ActionbarView build(ActionbarDefinition definition, ActionExecutor.Listener listener) {
+    public static ActionbarView build(ActionbarDefinition definition, ActionbarPresenter.Listener listener) {
         Actionbar actionbar = new Actionbar();
         if (definition == null) {
             log.warn("No actionbar definition found. This will result in an empty action bar. Is that intended?");
@@ -86,7 +86,7 @@ public class ActionbarBuilder {
         return actionbar;
     }
 
-    public static void addItemFromDefinition(ActionExecutor.Listener listener, Actionbar actionBar, String groupName, String sectionName, String actionName) {
+    public static void addItemFromDefinition(ActionbarPresenter.Listener listener, Actionbar actionBar, String groupName, String sectionName, String actionName) {
         ActionbarItem entry;
         String icon = listener.getIcon(actionName);
         String label = listener.getLabel(actionName);

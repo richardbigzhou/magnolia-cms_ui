@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
 /**
  * PagesEditorSubApp.
  */
-public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppView.Listener, ActionExecutor.Listener {
+public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppView.Listener, ActionbarPresenter.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
@@ -291,5 +291,14 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     public String getIcon(String actionName) {
         ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
         return (actionDefinition != null) ? actionDefinition.getIcon() : null;
+    }
+
+    @Override
+    public void setFullScreen(boolean fullScreen) {
+        if (fullScreen) {
+            getSubAppContext().getAppContext().enterFullScreenMode();
+        } else {
+            getSubAppContext().getAppContext().exitFullScreenMode();
+        }
     }
 }
