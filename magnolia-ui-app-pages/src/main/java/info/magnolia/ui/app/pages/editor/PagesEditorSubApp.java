@@ -250,7 +250,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     public void onExecute(String actionName) {
         String workspace = ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace();
 
-        if (actionName.equals("editElement")) {
+        if (actionName.equals("editProperties") || actionName.equals("editComponent") || actionName.equals("editArea")) {
             pageEditorPresenter.editComponent(
                     workspace,
                     pageEditorPresenter.getSelectedElement().getPath(),
