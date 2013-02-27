@@ -597,13 +597,5 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         @Override
         public void removeItemSetChangeListener(ItemSetChangeListener listener) {
         }
-
-        @Override
-        public void addPropertySetChangeListener(PropertySetChangeListener listener) {
-        }
-
-        @Override
-        public void removePropertySetChangeListener(PropertySetChangeListener listener) {
-        }
     }
 }

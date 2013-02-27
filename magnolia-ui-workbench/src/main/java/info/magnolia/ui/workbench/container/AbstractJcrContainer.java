@@ -73,7 +73,7 @@ import com.vaadin.data.Property;
  * Vaadin container that reads its items from a JCR repository. Implements a simple mechanism for lazy loading items
  * from a JCR repository and a cache for items and item ids.
  */
-public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
+public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrContainer.class);
 
@@ -128,8 +128,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     private int cacheRatio = DEFAULT_CACHE_RATIO;
 
     private Set<ItemSetChangeListener> itemSetChangeListeners;
-
-    private Set<PropertySetChangeListener> propertySetChangeListeners;
 
     /**
      * Starting row number of the currently fetched page.
@@ -189,34 +187,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         removeItemSetChangeListener(listener);
     }
 
-    @Override
-    public void addPropertySetChangeListener(PropertySetChangeListener listener) {
-        if (propertySetChangeListeners == null) {
-            propertySetChangeListeners = new LinkedHashSet<PropertySetChangeListener>();
-        }
-        propertySetChangeListeners.add(listener);
-    }
-
-    @Override
-    public void addListener(PropertySetChangeListener listener) {
-        addPropertySetChangeListener(listener);
-    }
-
-    @Override
-    public void removePropertySetChangeListener(PropertySetChangeListener listener) {
-        if (propertySetChangeListeners != null) {
-            propertySetChangeListeners.remove(listener);
-            if (propertySetChangeListeners.isEmpty()) {
-                propertySetChangeListeners = null;
-            }
-        }
-    }
-
-    @Override
-    public void removeListener(PropertySetChangeListener listener) {
-        removePropertySetChangeListener(listener);
-    }
-
     public void fireItemSetChange() {
         log.debug("Firing item set changed");
         if (itemSetChangeListeners != null && !itemSetChangeListeners.isEmpty()) {
@@ -225,18 +195,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             for (Object anArray : array) {
                 ItemSetChangeListener listener = (ItemSetChangeListener) anArray;
                 listener.containerItemSetChange(event);
-            }
-        }
-    }
-
-    public void firePropertySetChange() {
-        log.debug("Firing property set changed");
-        if (propertySetChangeListeners != null && !propertySetChangeListeners.isEmpty()) {
-            final Container.PropertySetChangeEvent event = new AbstractContainer.PropertySetChangeEvent();
-            Object[] array = propertySetChangeListeners.toArray();
-            for (Object anArray : array) {
-                PropertySetChangeListener listener = (PropertySetChangeListener) anArray;
-                listener.containerPropertySetChange(event);
             }
         }
     }
