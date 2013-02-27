@@ -54,11 +54,6 @@ public class SubAppBuilder {
         return this;
     }
 
-    public SubAppBuilder defaultSubApp() {
-        descriptor.setDefault(true);
-        return this;
-    }
-
     public SubAppBuilder actions(ActionBuilder... builders) {
         for (ActionBuilder builder : builders) {
             descriptor.getActions().put(builder.getName(), builder.exec());

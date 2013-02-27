@@ -56,11 +56,6 @@ public class ContentSubAppBuilder {
         return this;
     }
 
-    public ContentSubAppBuilder defaultSubApp() {
-        descriptor.setDefault(true);
-        return this;
-    }
-
     public ContentSubAppBuilder workbench(WorkbenchBuilder builder) {
         descriptor.setWorkbench(builder.exec());
         return this;

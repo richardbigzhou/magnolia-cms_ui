@@ -60,8 +60,6 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
 
     private Class<? extends SubApp> subAppClass;
 
-    private boolean isDefault;
-
     @Override
     public String getName() {
         return name;
@@ -75,11 +73,6 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
     @Override
     public boolean isEnabled() {
         return enabled;
-    }
-
-    @Override
-    public boolean isDefault() {
-        return isDefault;
     }
 
     @Override
@@ -107,10 +100,6 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public void setDefault(boolean isDefault) {
-        this.isDefault = isDefault;
     }
 
     public void setIcon(String icon) {

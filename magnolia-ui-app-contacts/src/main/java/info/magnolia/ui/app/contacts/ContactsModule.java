@@ -153,7 +153,6 @@ public class ContactsModule implements ModuleLifecycle {
                 .subApps(
                         app.subApp("main")
                                 .subAppClass(ContactsMainSubApp.class)
-                                .defaultSubApp()
                                 .actions(addContactAction, editContactAction, editContactActionInDialog, deleteItemAction, addFolderAction, editFolderAction, deleteFolderAction)
                                 .workbench(
                                         cfg.workbenches

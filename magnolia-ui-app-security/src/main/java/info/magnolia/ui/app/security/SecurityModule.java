@@ -136,7 +136,7 @@ public class SecurityModule implements ModuleLifecycle {
 
         app.label("Security").icon("icon-security-app").appClass(SecurityApp.class) // .categoryName("MANAGE")
                 .subApps(
-                        userSubApp(app, cfg, "users", "/admin").defaultSubApp().label("Users"),
+                        userSubApp(app, cfg, "users", "/admin").label("Users"),
                         userSubApp(app, cfg, "systemUsers", "/system").label("System users"),
                         app.subApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
                                 .actions(addGroupAction, editGroupAction, deleteGroupActionDefinition)

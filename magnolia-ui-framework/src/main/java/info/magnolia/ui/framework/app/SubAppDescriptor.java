@@ -50,12 +50,9 @@ public interface SubAppDescriptor {
 
     boolean isEnabled();
 
-    boolean isDefault();
-
     String getIcon();
 
     Map<String, ActionDefinition> getActions();
 
     Class<? extends SubApp> getSubAppClass();
-
 }
