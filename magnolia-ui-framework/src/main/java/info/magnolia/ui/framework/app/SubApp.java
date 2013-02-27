@@ -56,4 +56,5 @@ public interface SubApp {
     boolean supportsLocation(Location location);
 
     View getView();
+
 }

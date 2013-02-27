@@ -47,6 +47,9 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.vaadin.dialog.Modal;
+import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.view.View;
 
 import java.util.List;
 import java.util.Map;
@@ -148,6 +151,12 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         return app.getView();
     }
 
+    @Override
+    public ModalCloser openModal(View view) {
+        View modalityParent = getView();
+        return shell.openModalOnView(view, modalityParent, Modal.ModalityLevel.APP);
+    }
+
     /**
      * Called when the app is launched from the app launcher OR a location change event triggers
      * it to start.
@@ -199,7 +208,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     private void stopSubAppInstance(String instanceId) {
         SubAppContext subAppContext = subAppContexts.get(instanceId);
         subAppContext.getSubApp().stop();
-        subAppContexts.remove(subAppContext);
+        subAppContexts.remove(instanceId);
     }
 
     @Override
@@ -249,7 +258,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         if (subAppDescriptor == null) {
             subAppDescriptor = getDefaultSubAppDescriptor();
         }
-        SubAppContext subAppContext = new SubAppContextImpl(subAppDescriptor);
+        SubAppContext subAppContext = new SubAppContextImpl(subAppDescriptor, shell);
 
         ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppContext.getSubAppId(), subAppContext, componentProvider);
 

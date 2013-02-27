@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral;
+package info.magnolia.ui.framework.shell;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
@@ -48,15 +48,13 @@ import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.framework.shell.ConfirmationHandler;
-import info.magnolia.ui.framework.shell.FragmentChangedEvent;
-import info.magnolia.ui.framework.shell.FragmentChangedHandler;
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.dialog.Modal;
+import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
+import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.view.Viewport;
 
@@ -217,32 +215,13 @@ public class ShellImpl implements Shell, MessageEventHandler {
     }
 
     @Override
-    public void openModal(View modalView, Modal.ModalityLevel modalityLevel) {
-
-        // Determine the correct modalityParent.
-        Component modalityParent = null;
-
-        switch (modalityLevel) {
-        case SUB_APP:
-            View subAppView = appController.getCurrentApp().getAppContext().getActiveSubAppContext().getSubApp().getView();
-            // For subApp we must retrieve the tab.
-            modalityParent = subAppView.asVaadinComponent().getParent();
-            break;
-        case APP:
-            modalityParent = appController.getCurrentApp().getView().asVaadinComponent();
-            break;
-        case ENTIRE_INTERFACE:
-            modalityParent = magnoliaShell.asVaadinComponent();
-            break;
-        }
-
-        magnoliaShell.openModalWithComponents(modalView.asVaadinComponent(), modalityParent, modalityLevel);
-
+    public ModalCloser openModal(final View view) {
+        return magnoliaShell.openModal(view, magnoliaShell, Modal.ModalityLevel.SHELL);
     }
 
     @Override
-    public void closeModal(View modalComponent) {
-        magnoliaShell.closeModal(modalComponent);
+    public ModalCloser openModalOnView(View view, View parent, ModalityLevel modalityLevel) {
+        return magnoliaShell.openModal(view, parent, modalityLevel);
     }
 
     @Override
@@ -373,4 +352,5 @@ public class ShellImpl implements Shell, MessageEventHandler {
     public MagnoliaShell getMagnoliaShell() {
         return magnoliaShell;
     }
+
 }

@@ -33,13 +33,11 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.admincentral.app.content.ContentApp;
-import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
-import info.magnolia.ui.admincentral.dialog.ValueChosenListener;
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
 import info.magnolia.ui.admincentral.field.translator.IdentifierToPathTranslator;
-import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppController;
+import info.magnolia.ui.framework.app.ItemChosenListener;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -72,10 +70,13 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
 
     private final AppController appController;
 
+    private final SubAppContext subAppContext;
+
     @Inject
-    public LinkFieldBuilder(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController) {
+    public LinkFieldBuilder(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController, SubAppContext subAppContext) {
         super(definition, relatedFieldItem);
         this.appController = appController;
+        this.subAppContext = subAppContext;
     }
 
     @Override
@@ -109,35 +110,29 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
         return new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                // Get the property name to propagate.
-                App targetApp = appController.getAppWithoutStarting(appName);
-                if (targetApp != null) {
-                    if (targetApp instanceof ContentApp) {
-                        ChooseDialogPresenter<Item> chooseDialogPresenter = ((ContentApp) targetApp).openChooseDialog();
-                        chooseDialogPresenter.addValueChosenListener(new ValueChosenListener<Item>() {
-                            @Override
-                            public void onValueChosen(final Item chosenValue) {
-                                String propertyName = getPropertyName();
-                                javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
-                                if (jcrItem.isNode()) {
-                                    final Node selected = (Node) jcrItem;
-                                    try {
-                                        boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && !PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
-                                        textButton.setValue(isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath());
-                                    } catch (RepositoryException e) {
-                                        log.error("Not able to access the configured property. Value will not be set.", e);
-                                    }
-                                }
+
+                appController.openChooseDialog(appName, "/", subAppContext, new ItemChosenListener() {
+                    @Override
+                    public void onItemChosen(final Item chosenValue) {
+                        String propertyName = getPropertyName();
+                        javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
+                        if (jcrItem.isNode()) {
+                            final Node selected = (Node) jcrItem;
+                            try {
+                                boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && !PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
+                                textButton.setValue(isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath());
+                            } catch (RepositoryException e) {
+                                log.error("Not able to access the configured property. Value will not be set.", e);
                             }
-
-                            @Override
-                            public void selectionCanceled() {
-
-                            }
-
-                        });
+                        }
                     }
-                }
+
+                    @Override
+                    public void onChooseCanceled() {
+
+                    }
+
+                });
             }
         };
     }

@@ -272,18 +272,10 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         mainAppLauncher.updateDivet();
     }
 
-    /**
-     * The modal widget will be added to the Shell - but the DOM of the widget will be placed over
-     * the DOM of the specified modalityParent.
-     */
-    public void openModalOnComponent(Widget child, Widget parent){
-
-        // insert a child widget into a parent element.
-        add(child, parent.getElement());
-    }
-
-    public void closeModalOnComponent() {
-        // It gets removed automatically - becuase the component is no longer returned by MagnoliaShell iterator.
+    @Override
+    public void openModalOnWidget(Widget modalWidget, Widget modalityParent) {
+        // Insert a child widget into a parent element.
+        add(modalWidget, modalityParent.getElement());
     }
 
     private final ShellAppActivatedEvent.Handler navigationHandler = new ShellAppActivatedEvent.Handler() {

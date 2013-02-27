@@ -39,10 +39,10 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.form.FormItem;
 import info.magnolia.ui.admincentral.form.FormPresenter;
+import info.magnolia.ui.framework.shell.ModalLayer;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
-import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
 
@@ -216,7 +216,7 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public FormDialogView start(Item item, ModalityLevel modalityLevel, Callback callback) {
+        public FormDialogView start(Item item, ModalLayer modalLayer, Callback callback) {
             return null;
         }
 

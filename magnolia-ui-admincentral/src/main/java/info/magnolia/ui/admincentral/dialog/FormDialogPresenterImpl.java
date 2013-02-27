@@ -34,21 +34,18 @@
 package info.magnolia.ui.admincentral.dialog;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.admincentral.ShellImpl;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.FormPresenterFactory;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.shell.ModalLayer;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
-import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.vaadin.view.ModalCloser;
 
 import com.vaadin.data.Item;
 
@@ -64,7 +61,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private final DialogDefinition dialogDefinition;
 
-    private final ShellImpl shell;
+    private final Shell shell;
 
     private final FormDialogView view;
 
@@ -73,21 +70,16 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     private final DialogActionFactory dialogActionFactory;
     private FormPresenter formPresenter;
 
-    private final AppContext appContext;
-    private final SubAppContext subAppContext;
 
     public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final FormPresenterFactory formPresenterFactory,
-            final DialogDefinition dialogDefinition, final Shell shell, EventBus eventBus, final DialogActionFactory actionFactory,
-            final AppContext appContext, final SubAppContext subAppContext) {
+            final DialogDefinition dialogDefinition, final Shell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
         super(view, eventBus);
         this.view = view;
         this.dialogBuilder = dialogBuilder;
         this.formPresenterFactory = formPresenterFactory;
         this.dialogDefinition = dialogDefinition;
-        this.shell = (ShellImpl) shell;
+        this.shell = shell;
         this.dialogActionFactory = actionFactory;
-        this.subAppContext = subAppContext;
-        this.appContext = appContext;
         initActions(dialogDefinition);
     }
 
@@ -103,28 +95,25 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      * @param callback registers callback functions created by caller
      */
     @Override
-    public DialogView start(final Item item, final ModalityLevel modalityLevel, final Callback callback) {
+    public DialogView start(final Item item, final ModalLayer modalLayer, final Callback callback) {
         this.callback = callback;
         dialogBuilder.buildFormDialog(dialogDefinition, view);
         this.formPresenter = formPresenterFactory.createFormPresenterByDefinition(dialogDefinition.getFormDefinition());
 
-        // This is needed to acces properties from the parent. Currently only the i18basename.
+        // This is needed to access properties from the parent. Currently only the i18basename.
         Dialog dialog = new Dialog(dialogDefinition);
         view.setFormView(formPresenter.start(item, dialog));
 
-        // shell.openDialog(this);
+        final ModalCloser modalCloser = modalLayer.openModal(view);
 
-        this.addDialogCloseHandler(new DialogCloseEvent.Handler() {
-            @Override
-            public void onClose(DialogCloseEvent event) {
-                // appContext.getView().clearModal(FormDialogPresenterImpl.this.getView());
-                shell.closeModal(FormDialogPresenterImpl.this.getView());
-                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
-            }
-        });
+         addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
+             @Override
+             public void onClose(BaseDialog.DialogCloseEvent event) {
+                modalCloser.close();
 
-        View modalView = this.getView();
-        shell.openModal(modalView, modalityLevel);
+                 event.getView().asVaadinComponent().removeDialogCloseHandler(this);
+             }
+         });
 
         return view;
     }

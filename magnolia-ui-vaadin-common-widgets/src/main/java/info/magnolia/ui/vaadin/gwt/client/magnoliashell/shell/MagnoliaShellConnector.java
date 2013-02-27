@@ -120,7 +120,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                         ComponentConnector modalityParent = (ComponentConnector) (((ModalConnector) modal).getState().modalityParent);
 
                         Widget parentWidget = modalityParent.getWidget();
-                        view.openModalOnComponent(modalWidget, parentWidget);
+                        view.openModalOnWidget(modalWidget, parentWidget);
                     }
                 }
 

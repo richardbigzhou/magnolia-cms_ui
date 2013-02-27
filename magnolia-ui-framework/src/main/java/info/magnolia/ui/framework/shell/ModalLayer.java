@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,49 +33,20 @@
  */
 package info.magnolia.ui.framework.shell;
 
-import info.magnolia.event.HandlerRegistration;
-import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.vaadin.dialog.Modal;
 import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
 
-import java.util.List;
-
 /**
- * Decouples the presenters and the Vaadin application. Provides methods to show messages and configuration dialogs.
+ * Implementers can open modal views over their display area.
  */
-public interface Shell extends ModalLayer {
-
-    void askForConfirmation(String message, ConfirmationHandler listener);
-
-    void showNotification(String message);
-
-    void showError(String message, Exception e);
-
-    String getFragment();
-
-    void setFragment(String fragment);
-
-    HandlerRegistration addFragmentChangedHandler(FragmentChangedHandler handler);
-
-    void registerApps(List<String> appNames);
-
-    void pushToClient();
-
-    void showInfo(Message message);
-
-    void showError(Message message);
-
-    void showWarning(Message message);
+public interface ModalLayer {
 
     /**
-     * Open a Modal on top of a specific View.
+     * Open a Modal on top of the ModalLayer implementer.
      * 
      * @param view
      *            View to be displayed modally.
-     * @param parent
-     *            The View to open the Modal on top of.
      */
-    ModalCloser openModalOnView(View view, View parent, Modal.ModalityLevel modalityLevel);
+    ModalCloser openModal(View view);
 
 }

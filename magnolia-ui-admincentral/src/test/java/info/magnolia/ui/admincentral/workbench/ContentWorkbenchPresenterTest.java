@@ -38,18 +38,19 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
 import info.magnolia.ui.admincentral.app.content.builder.ContentSubAppBuilder;
-import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
 import info.magnolia.ui.admincentral.event.ItemEditedEvent;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.event.EventBus;
-import info.magnolia.event.SimpleEventBus;
+import info.magnolia.ui.framework.app.SubAppContextImpl;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.workbench.builder.WorkbenchBuilder;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -105,7 +106,8 @@ public class ContentWorkbenchPresenterTest {
         // initialize test instance
         ContentSubAppBuilder subAppBuilder = new ContentAppBuilder(APP_NAME).subApp(SUB_APP_NAME);
         subAppBuilder.workbench(new WorkbenchBuilder().workspace(WORKSPACE).root(ROOT_PATH));
-        SubAppContext subAppContext = new SubAppContextImpl(subAppBuilder.exec());
+        Shell mockShell = mock(Shell.class);
+        SubAppContext subAppContext = new SubAppContextImpl(subAppBuilder.exec(), mockShell);
 
         ContentWorkbenchView mockView = mock(ContentWorkbenchView.class);
         subAppEventBus = new SimpleEventBus();

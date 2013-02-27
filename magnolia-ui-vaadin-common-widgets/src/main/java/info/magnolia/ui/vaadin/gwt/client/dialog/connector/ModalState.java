@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,29 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
 
-import com.vaadin.data.Item;
-
-import info.magnolia.ui.vaadin.view.View;
+import com.vaadin.shared.AbstractComponentState;
+import com.vaadin.shared.Connector;
 
 /**
- * Dialog presenter for a dialog that allows for choosing an item.
+ * BaseDialogState.
  */
-public interface ChooseDialogPresenter {
-
-    /**
-     * Listener for {@link ChooseDialogPresenter}.
-     */
-    interface Listener {
-
-        void onClose();
-    }
-
-    void setListener(Listener listener);
-
-    View start();
-
-    Item getValue();
-
+public class ModalState extends AbstractComponentState {
+    public Connector modalityParent = null;
 }

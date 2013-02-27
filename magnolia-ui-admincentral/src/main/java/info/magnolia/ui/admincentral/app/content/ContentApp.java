@@ -34,66 +34,74 @@
 package info.magnolia.ui.admincentral.app.content;
 
 
-import info.magnolia.ui.admincentral.dialog.ChooseDialogFactory;
 import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenter;
-import info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenter;
+import info.magnolia.ui.admincentral.dialog.ChooseDialogPresenterFactory;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.app.BaseApp;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.vaadin.dialog.Modal;
-import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.framework.app.ItemChosenListener;
+import info.magnolia.ui.framework.shell.ModalLayer;
+import info.magnolia.ui.vaadin.view.ModalCloser;
 
 import javax.inject.Inject;
 
-import com.vaadin.data.Item;
-
 /**
  * Extends the {@link BaseApp} by the ability to open a choose dialog.
- *
- * @see ChooseDialogFactory
- * @see ChooseDialogPresenter
  */
 public class ContentApp extends BaseApp {
 
-    private final ChooseDialogFactory chooseDialogFactory;
+    private final ChooseDialogPresenterFactory chooseDialogPresenterFactory;
 
     @Inject
-    private Shell shell;
-
-    @Inject
-    public ContentApp(AppContext appContext, AppView view, ChooseDialogFactory chooseDialogFactory) {
+    public ContentApp(AppContext appContext, AppView view, ChooseDialogPresenterFactory chooseDialogPresenterFactory) {
         super(appContext, view);
-        this.chooseDialogFactory = chooseDialogFactory;
+        this.chooseDialogPresenterFactory = chooseDialogPresenterFactory;
     }
 
-    public ChooseDialogPresenter<Item> openChooseDialog() {
+    /*
+     * <<<<<<< HEAD
+     * public ChooseDialogPresenter<Item> openChooseDialog() {
+     * 
+     * return openChooseDialog(null);
+     * }
+     * 
+     * public ChooseDialogPresenter<Item> openChooseDialog(String defaultPath) {
+     * final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogFactory.createWorkbenchChooseDialog(defaultPath);
+     * 
+     * final ModalityLevel modalityLevel = Modal.ModalityLevel.SUB_APP;
+     * 
+     * // ((ShellImpl) shell).openDialog(workbenchChooseDialogPresenter);
+     * 
+     * workbenchChooseDialogPresenter.addDialogCloseHandler(new DialogCloseEvent.Handler() {
+     * 
+     * @Override
+     * public void onClose(DialogCloseEvent event) {
+     * // appContext.getView().clearModal(FormDialogPresenterImpl.this.getView());
+     * shell.closeModal(workbenchChooseDialogPresenter.getView());
+     * event.getView().asVaadinComponent().removeDialogCloseHandler(this);
+     * }
+     * });
+     * 
+     * View modalView = workbenchChooseDialogPresenter.getView();
+     * shell.openModal(modalView, modalityLevel);
+     * 
+     * return workbenchChooseDialogPresenter;
+     * }
+     * =======
+     */
+    @Override
+    public void openChooseDialog(String path, ModalLayer modalLayer, final ItemChosenListener listener) {
 
-        return openChooseDialog(null);
-    }
+        final ChooseDialogPresenter chooseDialogPresenter = chooseDialogPresenterFactory.createChooseDialogPresenter(path, listener);
 
-    public ChooseDialogPresenter<Item> openChooseDialog(String defaultPath) {
-        final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogFactory.createWorkbenchChooseDialog(defaultPath);
+        final ModalCloser modalCloser = modalLayer.openModal(chooseDialogPresenter.start());
 
-        final ModalityLevel modalityLevel = Modal.ModalityLevel.SUB_APP;
+        chooseDialogPresenter.setListener(new ChooseDialogPresenter.Listener() {
 
-        // ((ShellImpl) shell).openDialog(workbenchChooseDialogPresenter);
-
-        workbenchChooseDialogPresenter.addDialogCloseHandler(new DialogCloseEvent.Handler() {
             @Override
-            public void onClose(DialogCloseEvent event) {
-                // appContext.getView().clearModal(FormDialogPresenterImpl.this.getView());
-                shell.closeModal(workbenchChooseDialogPresenter.getView());
-                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
+            public void onClose() {
+                modalCloser.close();
             }
         });
-
-        View modalView = workbenchChooseDialogPresenter.getView();
-        shell.openModal(modalView, modalityLevel);
-
-        return workbenchChooseDialogPresenter;
     }
-
 }

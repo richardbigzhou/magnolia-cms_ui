@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.admincentral.ShellImpl;
+import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.admincentral.shellapp.ShellApp;
 import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
 import info.magnolia.ui.framework.location.DefaultLocation;

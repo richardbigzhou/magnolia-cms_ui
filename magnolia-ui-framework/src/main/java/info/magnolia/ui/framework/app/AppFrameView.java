@@ -42,6 +42,7 @@ import info.magnolia.ui.vaadin.view.View;
 import javax.inject.Inject;
 
 import com.vaadin.server.KeyMapper;
+import com.vaadin.ui.Component;
 
 /**
  * View used to give all apps a uniform look-and-feel.
@@ -116,22 +117,17 @@ public class AppFrameView implements AppView {
         return tabsheet;
     }
 
-    /*
-     * @Override
-     * public void setModalOnActiveSubApp(View modalComponent) {
-     * View modalityParent = tabsheet.getActiveTab();
-     * shell.openModal(modalComponent, modalityParent);
-     * }
-     * 
-     * @Override
-     * public void setModal(View modalComponent) {
-     * Component modalityParent = tabsheet;
-     * shell.openModal(modalComponent, modalityParent);
-     * }
-     * 
-     * @Override
-     * public void clearModal(View modalComponent) {
-     * shell.closeModal(modalComponent);
-     * }
-     */
+    @Override
+    public View getSubAppViewContainer(final String instanceId) {
+
+        return new View(){
+
+            @Override
+            public Component asVaadinComponent() {
+                return mapper.get(instanceId);
+            }
+
+        };
+    }
+
 }

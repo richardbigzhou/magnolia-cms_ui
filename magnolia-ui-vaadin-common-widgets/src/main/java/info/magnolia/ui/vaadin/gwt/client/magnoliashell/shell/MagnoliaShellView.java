@@ -73,9 +73,14 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
     void updateShellDivet();
 
-    void openModalOnComponent(Widget child, Widget parent);
-
-    void closeModalOnComponent();
+    /**
+     * Add the modalWidget to the Shell - but the DOM of the widget will be placed over
+     * the DOM of the specified modalityParent.
+     * 
+     * The modalWidget gets removed automatically -
+     * because the component is no longer returned by MagnoliaShell iterator.
+     */
+    void openModalOnWidget(Widget modalWidget, Widget modalityParent);
 
     /**
      * Presenter for {@link MagnoliaShellView}.

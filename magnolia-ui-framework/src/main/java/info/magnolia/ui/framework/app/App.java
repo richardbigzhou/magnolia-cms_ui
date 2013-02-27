@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.shell.ModalLayer;
 
 /**
  * Defines an app. Is called by the Magnolia shell as the user interacts with the app.
@@ -46,9 +47,9 @@ public interface App {
 
     void stop();
 
-    Location getDefaultLocation();
-
     AppView getView();
 
     AppContext getAppContext();
+
+    void openChooseDialog(String path, ModalLayer modalLayer, ItemChosenListener listener);
 }

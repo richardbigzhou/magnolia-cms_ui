@@ -33,27 +33,25 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import com.vaadin.data.Item;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
-import info.magnolia.ui.vaadin.view.View;
+import javax.inject.Inject;
 
 /**
- * Dialog presenter for a dialog that allows for choosing an item.
+ * Chooses an item from a workbench.
  */
-public interface ChooseDialogPresenter {
+public class WorkbenchChooseDialogView extends BaseDialog implements ChooseDialogView {
 
-    /**
-     * Listener for {@link ChooseDialogPresenter}.
-     */
-    interface Listener {
+    public static final String CHOOSE_ACTION_NAME = "commit";
+    public static final String CANCEL_ACTION_NAME = "cancel";
 
-        void onClose();
+    @Inject
+    public WorkbenchChooseDialogView(ContentWorkbenchView view) {
+        addStyleName("content-view-field-wrapper");
+        setContent(view.asVaadinComponent());
+        addAction(CHOOSE_ACTION_NAME, "Choose");
+        addAction(CANCEL_ACTION_NAME, "Cancel");
     }
-
-    void setListener(Listener listener);
-
-    View start();
-
-    Item getValue();
 
 }

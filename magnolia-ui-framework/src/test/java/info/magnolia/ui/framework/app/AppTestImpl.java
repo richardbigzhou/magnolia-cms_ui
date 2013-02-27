@@ -82,10 +82,4 @@ public class AppTestImpl extends BaseApp {
         events.add("stop() ");
     }
 
-    @Override
-    public Location getDefaultLocation() {
-        events.add("getDefaultLocation() ");
-        return currentLocation;
-    }
-
 }

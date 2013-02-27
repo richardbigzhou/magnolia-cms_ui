@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.shellapp;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.ShellImpl;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -42,6 +41,7 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.view.Viewport;

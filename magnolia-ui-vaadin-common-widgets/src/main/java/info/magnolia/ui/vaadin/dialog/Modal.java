@@ -47,15 +47,24 @@ import com.vaadin.ui.Component;
 public class Modal extends AbstractSingleComponentContainer {
 
     /**
-     *
      * The available levels of modality for opening a modal.
      * Represents what will be blocked by the opened modal.
      */
     public static enum ModalityLevel {
-        NONE,
-        SUB_APP,
-        APP,
-        ENTIRE_INTERFACE
+        SUB_APP("sub-app"),
+        APP("app"),
+        SHELL("shell");
+
+        private String cssClass;
+
+        private ModalityLevel(String cssClass) {
+            this.cssClass = cssClass;
+        }
+
+        public String getCssClass() {
+            return cssClass;
+        }
+
     }
 
     final Modal.ModalityLevel modalityLevel;
@@ -70,19 +79,21 @@ public class Modal extends AbstractSingleComponentContainer {
         this.modalityLevel = modalityLevel;
         getState().modalityParent = modalityParent;
 
-        // Set style
-        String cssClass = "";
-        switch (modalityLevel) {
-        case SUB_APP:
-            cssClass="sub-app";
-            break;
-        case APP:
-            cssClass="app";
-            break;
-        case ENTIRE_INTERFACE:
-            cssClass="shell";
-            break;
-        }
+        // Set css class of Modal
+        String cssClass = modalityLevel.getCssClass();
+        /*
+         * switch (modalityLevel) {
+         * case SUB_APP:
+         * cssClass="sub-app";
+         * break;
+         * case APP:
+         * cssClass="app";
+         * break;
+         * case SHELL:
+         * cssClass="shell";
+         * break;
+         * }
+         */
         this.setStyleName(cssClass);
     }
 

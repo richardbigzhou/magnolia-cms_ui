@@ -36,10 +36,11 @@ package info.magnolia.ui.admincentral.dialog.action;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.framework.shell.ModalLayer;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -56,10 +57,13 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
 
     private final Node parent;
 
-    public CreateDialogAction(CreateDialogActionDefinition definition, Node parent, FormDialogPresenterFactory dialogPresenterFactory) {
+    private final ModalLayer modalLayer;
+
+    public CreateDialogAction(CreateDialogActionDefinition definition, Node parent, FormDialogPresenterFactory dialogPresenterFactory, final SubAppContext subAppContext) {
         super(definition);
         this.parent = parent;
         this.dialogPresenterFactory = dialogPresenterFactory;
+        this.modalLayer = subAppContext;
     }
 
     @Override
@@ -68,7 +72,7 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
 
         final EventBus eventBus = dialogPresenter.getEventBus();
         final JcrNodeAdapter item = new JcrNewNodeAdapter(parent, getDefinition().getNodeType());
-        dialogPresenter.start(new JcrNewNodeAdapter(parent, getDefinition().getNodeType()), ModalityLevel.SUB_APP, new FormDialogPresenter.Callback() {
+        dialogPresenter.start(new JcrNewNodeAdapter(parent, getDefinition().getNodeType()), modalLayer, new FormDialogPresenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {

@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.shell.ModalLayer;
 import info.magnolia.ui.vaadin.view.Viewport;
 
 /**
@@ -55,8 +56,6 @@ public interface AppController {
 
     App startIfNotAlreadyRunningThenFocus(String name, Location location);
 
-    App getAppWithoutStarting(String appId);
-
     boolean isAppStarted(String name);
 
     void stopApp(String name);
@@ -72,4 +71,6 @@ public interface AppController {
     Location getAppLocation(String name);
 
     void setViewport(Viewport viewport);
+
+    void openChooseDialog(String appName, String path, ModalLayer modalLayer, ItemChosenListener listener);
 }

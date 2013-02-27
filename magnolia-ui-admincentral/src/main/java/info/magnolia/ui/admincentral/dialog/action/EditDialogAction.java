@@ -38,13 +38,15 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.framework.shell.ModalLayer;
 import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -62,10 +64,14 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
     private final Node nodeToEdit;
 
-    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, FormDialogPresenterFactory dialogPresenterFactory) {
+    private final ModalLayer modalLayer;
+
+    @Inject
+    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, FormDialogPresenterFactory dialogPresenterFactory, final SubAppContext subAppContext) {
         super(definition);
         this.nodeToEdit = nodeToEdit;
         this.dialogPresenterFactory = dialogPresenterFactory;
+        this.modalLayer = subAppContext;
     }
 
     @Override
@@ -83,7 +89,7 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
         final String parentNodePath = tempParentNodePath;
 
         final JcrNodeAdapter item = new JcrNodeAdapter(nodeToEdit);
-        dialogPresenter.start(item, ModalityLevel.APP, new FormDialogPresenter.Callback() {
+        dialogPresenter.start(item, modalLayer, new FormDialogPresenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {

@@ -46,6 +46,7 @@ import info.magnolia.ui.vaadin.magnoliashell.viewport.AppsViewport;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.DialogViewport;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellAppsViewport;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
+import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
 
 import java.util.ArrayList;
@@ -198,16 +199,31 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         ((ShellViewport) getState().viewports.get(ViewportType.DIALOG)).addComponent(dialog);
     }
 
-    public void openModalWithComponents(Component modalComponent, Component modalityParent, Modal.ModalityLevel modalityLevel) {
-        Modal modal = new Modal(modalComponent, modalityParent, modalityLevel);
+    /**
+     * Open a Modal on top of a specific View.
+     * 
+     * @param view
+     *            View to be displayed modally.
+     * @param parent
+     *            The View to open the Modal on top of.
+     */
+    public ModalCloser openModal(final View child, View parent, Modal.ModalityLevel modalityLevel) {
+        Modal modal = new Modal(child.asVaadinComponent(), parent.asVaadinComponent(), modalityLevel);
         getState().modals.add(modal);
 
         // modal has Vaadin parent of MagnoliaShell
         modal.setParent(this);
+
+        return new ModalCloser() {
+            @Override
+            public void close() {
+                MagnoliaShell.this.closeModal(child.asVaadinComponent());
+            }
+        };
     }
 
-    public void closeModal(View modalComponent) {
-        Modal modal = (Modal) modalComponent.asVaadinComponent().getParent();
+    public void closeModal(Component modalComponent) {
+        Modal modal = (Modal) modalComponent.getParent();
         getState().modals.remove(modal);
     }
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,12 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.vaadin.view;
 
 /**
- * Factory interface for creating choose dialogs.
+ * Callback for closing a dialog.
  */
-public interface ChooseDialogFactory {
+public interface ModalCloser {
 
-    public WorkbenchChooseDialogPresenter createWorkbenchChooseDialog(String defaultPath);
+    void close();
+
 }
