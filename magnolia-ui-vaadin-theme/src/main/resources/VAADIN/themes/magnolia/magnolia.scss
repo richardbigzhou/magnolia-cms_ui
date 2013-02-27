@@ -1,11 +1,9 @@
 @charset "UTF-8";
 @import "fonts.scss";
-@import "../base/base.scss";
 @import "colors.scss";
 @import "button.scss";
 
 @mixin magnolia {
-  @include base;
   @include button;
 
   .v-ui {
