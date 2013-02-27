@@ -90,8 +90,9 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
         ItemView itemView = itemPresenter.start(workbenchDefinition.getFormDefinition(), item, viewType);
 
         view.setItemView(itemView);
-
+        actionbarPresenter.setListener(this);
         ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar());
+
         view.setActionbarView(actionbar);
 
         return view;
