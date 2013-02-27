@@ -39,6 +39,7 @@ import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
+import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition;
@@ -48,7 +49,6 @@ import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -225,14 +225,17 @@ public class ActionbarBuilderTest {
     private ActionbarGroupDefinition buildGroup(String name, String...actions) {
         ConfiguredActionbarGroupDefinition group = new ConfiguredActionbarGroupDefinition();
         group.setName(name);
-        group.setActions(Arrays.asList(actions));
+        for (String action : actions) {
+            ActionbarItemDefinition def = new ActionbarItemDefinition(action);
+            group.addItem(new ActionbarItemDefinition(action));
+        }
         return group;
     }
 
     private int getActionsCount(ActionbarSectionDefinition section) {
         int count = 0;
         for (ActionbarGroupDefinition group : section.getGroups()) {
-            count += group.getActions().size();
+            count += group.getItems().size();
         }
         return count;
     }

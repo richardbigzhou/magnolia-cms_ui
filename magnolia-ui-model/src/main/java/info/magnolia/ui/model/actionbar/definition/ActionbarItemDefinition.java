@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,49 +33,25 @@
  */
 package info.magnolia.ui.model.actionbar.definition;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
- * Simple implementation for {@link ActionbarGroupDefinition}.
+ * A simple item definition used inside {@link ActionbarGroupDefinition}. The name
  */
-public class ConfiguredActionbarGroupDefinition implements ActionbarGroupDefinition {
+public class ActionbarItemDefinition {
 
     private String name;
 
-    private List<ActionbarItemDefinition> items = new ArrayList<ActionbarItemDefinition>();
+    public ActionbarItemDefinition() {
+    }
 
-    @Override
+    public ActionbarItemDefinition(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the group name.
-     *
-     * @param name the new name
-     */
     public void setName(String name) {
         this.name = name;
     }
-
-    @Override
-    public List<ActionbarItemDefinition> getItems() {
-        return Collections.unmodifiableList(items);
-    }
-
-    public void setItems(List<ActionbarItemDefinition> items) {
-        this.items = items;
-    }
-
-    /**
-     * Adds an action item to this group.
-     *
-     * @param itemDefinition the item definition
-     */
-    public void addItem(ActionbarItemDefinition itemDefinition) {
-        items.add(itemDefinition);
-    }
-
 }

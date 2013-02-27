@@ -52,5 +52,5 @@ public interface ActionbarGroupDefinition {
      *
      * @return the list of action items
      */
-    List<String> getActions();
+    List<ActionbarItemDefinition> getItems();
 }

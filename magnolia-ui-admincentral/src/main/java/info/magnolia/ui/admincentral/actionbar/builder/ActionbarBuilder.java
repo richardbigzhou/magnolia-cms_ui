@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.actionbar.builder;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
+import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
@@ -69,16 +70,16 @@ public class ActionbarBuilder {
                 List<String> actionNames = new ArrayList<String>();
                 for (ActionbarGroupDefinition group : section.getGroups()) {
                     // standalone groups make no sense
-                    log.info("Group actions: " + group.getActions());
-                    for (String action : group.getActions()) {
+                    log.info("Group actions: " + group.getItems());
+                    for (ActionbarItemDefinition action : group.getItems()) {
 
                         if (actionNames.contains(action)) {
                             log.warn("Action was not added: an action with name " + action + "': was already added to the section" + section.getName() + ".");
                             continue;
                         }
                         
-                        actionNames.add(action);
-                        addItemFromDefinition(listener, actionbar, group.getName(), section.getName(), action);
+                        actionNames.add(action.getName());
+                        addItemFromDefinition(listener, actionbar, group.getName(), section.getName(), action.getName());
                     }
                 }
             }
