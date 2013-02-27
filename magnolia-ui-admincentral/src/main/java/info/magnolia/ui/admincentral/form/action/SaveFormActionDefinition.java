@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.form.action;
 
-import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
@@ -42,9 +41,9 @@ import info.magnolia.ui.model.action.ConfiguredActionDefinition;
  * see MGNLUI-229.
  */
 public class SaveFormActionDefinition extends ConfiguredActionDefinition {
-    
-    @Override
-    public Class<? extends ActionBase<?>> getImplementationClass() {
-        return SaveFormAction.class;
+
+    public SaveFormActionDefinition() {
+        setImplementationClass(SaveFormAction.class);
     }
+
 }

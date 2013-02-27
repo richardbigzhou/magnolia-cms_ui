@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
@@ -44,6 +43,10 @@ public class AddNodeActionDefinition extends ConfiguredActionDefinition {
 
     private String nodeType = NodeTypes.Content.NAME;
 
+    public AddNodeActionDefinition() {
+        setImplementationClass(AddNodeAction.class);
+    }
+
     public String getNodeType() {
         return nodeType;
     }
@@ -51,9 +54,5 @@ public class AddNodeActionDefinition extends ConfiguredActionDefinition {
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
     }
-    
-    @Override
-    public Class<? extends ActionBase<?>> getImplementationClass() {
-        return AddNodeAction.class;
-    }
+
 }

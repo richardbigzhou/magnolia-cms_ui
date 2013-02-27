@@ -82,8 +82,4 @@ public class CommandActionDefinition extends ConfiguredActionDefinition {
         return ToStringBuilder.reflectionToString(this);
     }
 
-    @Override
-    public Class<? extends Action> getImplementationClass() {
-        return null;
-    }
 }

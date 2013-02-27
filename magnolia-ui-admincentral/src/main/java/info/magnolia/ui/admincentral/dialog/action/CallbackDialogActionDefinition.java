@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
@@ -43,6 +42,10 @@ public class CallbackDialogActionDefinition extends ConfiguredActionDefinition {
 
     private boolean callSuccess = true;
     private String successActionName = "success";
+
+    public CallbackDialogActionDefinition() {
+        setImplementationClass(CallbackDialogAction.class);
+    }
 
     public boolean isCallSuccess() {
         return this.callSuccess;
@@ -68,11 +71,6 @@ public class CallbackDialogActionDefinition extends ConfiguredActionDefinition {
      */
     public void setSuccessActionName(String successActionName) {
         this.successActionName = successActionName;
-    }
-
-    @Override
-    public Class<? extends ActionBase<?>> getImplementationClass() {
-        return CallbackDialogAction.class;
     }
 
 }

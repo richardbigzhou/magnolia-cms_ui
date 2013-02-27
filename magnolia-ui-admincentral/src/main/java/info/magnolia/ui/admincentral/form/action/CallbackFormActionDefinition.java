@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.form.action;
 
-import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
@@ -42,8 +41,12 @@ import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 public class CallbackFormActionDefinition extends ConfiguredActionDefinition {
     
     private boolean callSuccess = true;
-    
+
     private String successActionName = "success";
+
+    public CallbackFormActionDefinition() {
+        setImplementationClass(CallbackFormAction.class);
+    }
 
     public boolean isCallSuccess() {
         return this.callSuccess;
@@ -69,10 +72,5 @@ public class CallbackFormActionDefinition extends ConfiguredActionDefinition {
      */
     public void setSuccessActionName(String successActionName) {
         this.successActionName = successActionName;
-    }
-
-    @Override
-    public Class<? extends ActionBase<?>> getImplementationClass() {
-        return CallbackFormAction.class;
     }
 }

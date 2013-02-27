@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
@@ -41,9 +40,8 @@ import info.magnolia.ui.model.action.ConfiguredActionDefinition;
  */
 public class AddPropertyActionDefinition extends ConfiguredActionDefinition {
 
-    @Override
-    public Class<? extends Action> getImplementationClass() {
-        return AddPropertyAction.class;
+    public AddPropertyActionDefinition() {
+        setImplementationClass(AddPropertyAction.class);
     }
-    
+
 }

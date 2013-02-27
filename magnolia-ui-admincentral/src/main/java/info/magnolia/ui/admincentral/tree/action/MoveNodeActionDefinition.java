@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
@@ -41,8 +40,8 @@ import info.magnolia.ui.model.action.ConfiguredActionDefinition;
  */
 public class MoveNodeActionDefinition extends ConfiguredActionDefinition {
 
-    @Override
-    public Class<? extends ActionBase<?>> getImplementationClass() {
-        return MoveNodeAction.class;
+    public MoveNodeActionDefinition() {
+        setImplementationClass(MoveNodeAction.class);
     }
+
 }

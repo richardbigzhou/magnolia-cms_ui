@@ -33,16 +33,14 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Defines a dialog action for canceling a dialog.
  */
 public class CancelDialogActionDefinition extends ConfiguredActionDefinition {
-    
-    @Override
-    public Class<? extends ActionBase<?>> getImplementationClass() {
-        return CancelDialogAction.class;
+
+    public CancelDialogActionDefinition() {
+        setImplementationClass(CancelDialogAction.class);
     }
 }

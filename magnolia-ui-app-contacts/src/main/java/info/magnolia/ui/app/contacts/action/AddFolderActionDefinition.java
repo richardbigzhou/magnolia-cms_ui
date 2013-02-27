@@ -33,16 +33,15 @@
  */
 package info.magnolia.ui.app.contacts.action;
 
-import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Definition for an action that creates a new folder.
  */
 public class AddFolderActionDefinition extends ConfiguredActionDefinition {
-    
-    @Override
-    public Class<? extends ActionBase<?>> getImplementationClass() {
-        return AddFolderAction.class;
+
+    public AddFolderActionDefinition() {
+        setImplementationClass(AddFolderAction.class);
     }
+
 }

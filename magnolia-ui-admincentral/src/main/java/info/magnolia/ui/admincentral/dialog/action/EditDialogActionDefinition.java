@@ -42,6 +42,10 @@ public class EditDialogActionDefinition extends ConfiguredActionDefinition {
 
     private String dialogName;
 
+    public EditDialogActionDefinition() {
+        setImplementationClass(EditDialogAction.class);
+    }
+
     public String getDialogName() {
         return dialogName;
     }
@@ -49,9 +53,5 @@ public class EditDialogActionDefinition extends ConfiguredActionDefinition {
     public void setDialogName(String dialogName) {
         this.dialogName = dialogName;
     }
-    
-    @Override
-    public Class<EditDialogAction> getImplementationClass() {
-        return EditDialogAction.class;
-    }
+
 }

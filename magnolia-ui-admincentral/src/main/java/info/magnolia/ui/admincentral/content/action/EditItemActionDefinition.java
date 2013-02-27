@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.content.action;
 
-import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
@@ -46,6 +45,10 @@ public class EditItemActionDefinition extends ConfiguredActionDefinition {
     private String appId;
 
     private String subAppId;
+
+    public EditItemActionDefinition() {
+        setImplementationClass(EditItemAction.class);
+    }
 
     public String getAppId() {
         return appId;
@@ -62,9 +65,5 @@ public class EditItemActionDefinition extends ConfiguredActionDefinition {
     public void setSubAppId(String subAppId) {
         this.subAppId = subAppId;
     }
-    
-    @Override
-    public Class<? extends ActionBase<?>> getImplementationClass() {
-        return EditItemAction.class;
-    }
+
 }

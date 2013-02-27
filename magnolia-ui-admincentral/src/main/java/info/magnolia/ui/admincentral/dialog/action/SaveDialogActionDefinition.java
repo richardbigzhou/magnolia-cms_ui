@@ -33,16 +33,15 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Defines an action for saving a dialog.
  */
 public class SaveDialogActionDefinition extends ConfiguredActionDefinition {
-    
-    @Override
-    public Class<? extends ActionBase<?>> getImplementationClass() {
-        return SaveDialogAction.class;
+
+    public SaveDialogActionDefinition() {
+        setImplementationClass(SaveDialogAction.class);
     }
+
 }

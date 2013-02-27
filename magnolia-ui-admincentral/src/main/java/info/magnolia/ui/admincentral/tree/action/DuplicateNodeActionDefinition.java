@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
@@ -41,8 +40,7 @@ import info.magnolia.ui.model.action.ConfiguredActionDefinition;
  */
 public class DuplicateNodeActionDefinition extends ConfiguredActionDefinition {
 
-    @Override
-    public Class<? extends ActionBase<?>> getImplementationClass() {
-        return DuplicateNodeAction.class;
+    public DuplicateNodeActionDefinition() {
+        setImplementationClass(DuplicateNodeAction.class);
     }
 }

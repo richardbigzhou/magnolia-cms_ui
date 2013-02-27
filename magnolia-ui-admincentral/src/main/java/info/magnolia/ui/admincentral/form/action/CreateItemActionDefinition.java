@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.form.action;
 
-import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
@@ -46,6 +45,10 @@ public class CreateItemActionDefinition extends ConfiguredActionDefinition {
     private String nodeType;
     private String appId;
     private String subAppId;
+
+    public CreateItemActionDefinition() {
+        setImplementationClass(CreateItemAction.class);
+    }
 
     public String getAppId() {
         return appId;
@@ -80,8 +83,4 @@ public class CreateItemActionDefinition extends ConfiguredActionDefinition {
         this.nodeType = nodeType;
     }
 
-    @Override
-    public Class<? extends ActionBase<?>> getImplementationClass() {
-        return CreateItemAction.class;
-    }
 }

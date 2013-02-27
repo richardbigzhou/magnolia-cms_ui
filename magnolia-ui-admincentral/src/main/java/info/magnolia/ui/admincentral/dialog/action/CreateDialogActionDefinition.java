@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
@@ -50,6 +49,10 @@ public class CreateDialogActionDefinition extends ConfiguredActionDefinition {
      */
     private String nodeType;
 
+    public CreateDialogActionDefinition() {
+        setImplementationClass(CreateDialogAction.class);
+    }
+
     public String getDialogName() {
         return dialogName;
     }
@@ -65,9 +68,5 @@ public class CreateDialogActionDefinition extends ConfiguredActionDefinition {
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
     }
-    
-    @Override
-    public Class<? extends ActionBase<?>> getImplementationClass() {
-        return CreateDialogAction.class;
-    }
+
 }
