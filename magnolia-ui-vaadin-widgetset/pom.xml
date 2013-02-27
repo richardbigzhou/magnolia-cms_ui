@@ -42,6 +42,12 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-vaadin-theme</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-widget-editor</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -96,6 +102,12 @@
               <goal>execute</goal>
             </goals>
             <configuration>
+              <classpath>
+                <element>
+                  <groupId>info.magnolia.ui</groupId>
+                  <artifactId>magnolia-ui-vaadin-theme</artifactId>
+                </element>
+              </classpath>
               <source>
                 import com.vaadin.sass.SassCompiler
 
