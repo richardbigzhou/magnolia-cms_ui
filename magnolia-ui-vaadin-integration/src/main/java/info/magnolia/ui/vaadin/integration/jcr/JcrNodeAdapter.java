@@ -130,7 +130,7 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
     public boolean removeItemProperty(Object id) {
         boolean res = false;
         if (getChangedProperties().containsKey(id)) {
-            getRemovedProperties().put((String) id, getChangedProperties().remove(id));
+            getRemovedProperties().put((String) id, getChangedProperties().get(id));
             res = true;
         } else if (jcrItemHasProperty((String) id)) {
             getRemovedProperties().put((String) id, super.getItemProperty(id));

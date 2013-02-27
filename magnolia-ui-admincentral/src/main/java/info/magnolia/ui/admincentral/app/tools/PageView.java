@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.view.View;
 
 /**
  * Marker interface for the page App's view.

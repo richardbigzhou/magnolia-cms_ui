@@ -32,7 +32,7 @@
       <sv:value>2046ce4f-e9ab-43c4-97cd-bbde08188efd</sv:value>
     </sv:property>
     <sv:property sv:name="appClass" sv:type="String">
-      <sv:value>info.magnolia.ui.app.config.ConfigApp</sv:value>
+      <sv:value>info.magnolia.ui.framework.app.BaseApp</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
       <sv:value>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</sv:value>
@@ -193,7 +193,7 @@
                 <sv:value>1fcb735a-4e9b-4370-8d8a-8f5fc8bfac11</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.column.definition.PropertyColumnDefinition</sv:value>
+                <sv:value>info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="editable" sv:type="String">
                 <sv:value>true</sv:value>
@@ -237,7 +237,7 @@
                 <sv:value>8896da4a-7d8a-42ac-8bd8-ac8ca3f53e86</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.column.definition.PropertyValueColumnDefinition</sv:value>
+                <sv:value>info.magnolia.ui.workbench.column.definition.PropertyValueColumnDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="editable" sv:type="String">
                 <sv:value>true</sv:value>
@@ -278,7 +278,7 @@
                 <sv:value>b7ba97ec-95b5-44ef-b906-fec8032604ee</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.column.definition.PropertyTypeColumnDefinition</sv:value>
+                <sv:value>info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="editable" sv:type="String">
                 <sv:value>true</sv:value>
@@ -316,13 +316,13 @@
                 <sv:value>449eb9ff-ec90-484d-a716-4b36d030f3df</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.column.definition.StatusColumnDefinition</sv:value>
+                <sv:value>info.magnolia.ui.workbench.column.definition.StatusColumnDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="displayInDialog" sv:type="Boolean">
                 <sv:value>false</sv:value>
               </sv:property>
               <sv:property sv:name="formatterClass" sv:type="String">
-                <sv:value>info.magnolia.ui.admincentral.column.StatusColumnFormatter</sv:value>
+                <sv:value>info.magnolia.ui.workbench.column.StatusColumnFormatter</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
@@ -357,13 +357,13 @@
                 <sv:value>069bd3f8-cb19-418f-a6cc-06d71ef3bad1</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.model.column.definition.MetaDataColumnDefinition</sv:value>
+                <sv:value>info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="displayInDialog" sv:type="Boolean">
                 <sv:value>false</sv:value>
               </sv:property>
               <sv:property sv:name="formatterClass" sv:type="String">
-                <sv:value>info.magnolia.ui.admincentral.column.DateColumnFormatter</sv:value>
+                <sv:value>info.magnolia.ui.workbench.column.DateColumnFormatter</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
@@ -393,38 +393,6 @@
                 <sv:value>160</sv:value>
               </sv:property>
             </sv:node>
-          </sv:node>
-          <sv:node sv:name="mainItemType">
-            <sv:property sv:name="jcr:primaryType" sv:type="Name">
-              <sv:value>mgnl:contentNode</sv:value>
-            </sv:property>
-            <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
-              <sv:value>mix:lockable</sv:value>
-            </sv:property>
-            <sv:property sv:name="jcr:uuid" sv:type="String">
-              <sv:value>344e0bd4-941a-44e8-8b06-05fa9735fbbd</sv:value>
-            </sv:property>
-            <sv:property sv:name="icon" sv:type="String">
-              <sv:value>icon-node-content</sv:value>
-            </sv:property>
-            <sv:property sv:name="itemType" sv:type="String">
-              <sv:value>mgnl:contentNode</sv:value>
-            </sv:property>
-            <sv:property sv:name="jcr:createdBy" sv:type="String">
-              <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
-              <sv:value>false</sv:value>
-            </sv:property>
-            <sv:property sv:name="mgnl:created" sv:type="Date">
-              <sv:value>2010-09-08T11:43:28.310+02:00</sv:value>
-            </sv:property>
-            <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2012-11-27T18:48:44.292+01:00</sv:value>
-            </sv:property>
-            <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
-              <sv:value>superuser</sv:value>
-            </sv:property>
           </sv:node>
           <sv:node sv:name="actionbar">
             <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -823,7 +791,7 @@
               </sv:node>
             </sv:node>
           </sv:node>
-          <sv:node sv:name="groupingItemType">
+          <sv:node sv:name="nodeTypes">
             <sv:property sv:name="jcr:primaryType" sv:type="Name">
               <sv:value>mgnl:contentNode</sv:value>
             </sv:property>
@@ -831,29 +799,84 @@
               <sv:value>mix:lockable</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:uuid" sv:type="String">
-              <sv:value>3ede7e65-23a8-4da1-9035-135f13691453</sv:value>
-            </sv:property>
-            <sv:property sv:name="icon" sv:type="String">
-              <sv:value>icon-folder</sv:value>
-            </sv:property>
-            <sv:property sv:name="itemType" sv:type="String">
-              <sv:value>mgnl:content</sv:value>
+              <sv:value>a32aeb07-8cd0-4b8a-b50c-f2b3af3eefa1</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
-            <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
-              <sv:value>false</sv:value>
-            </sv:property>
             <sv:property sv:name="mgnl:created" sv:type="Date">
-              <sv:value>2010-09-08T11:43:28.310+02:00</sv:value>
+              <sv:value>2013-02-19T15:21:54.243+01:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2012-11-27T18:48:44.300+01:00</sv:value>
+              <sv:value>2013-02-19T15:21:59.071+01:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
+            <sv:node sv:name="mainNodeType">
+              <sv:property sv:name="jcr:primaryType" sv:type="Name">
+                <sv:value>mgnl:contentNode</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+                <sv:value>mix:lockable</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:uuid" sv:type="String">
+                <sv:value>344e0bd4-941a-44e8-8b06-05fa9735fbbd</sv:value>
+              </sv:property>
+              <sv:property sv:name="icon" sv:type="String">
+                <sv:value>icon-node-content</sv:value>
+              </sv:property>
+              <sv:property sv:name="name" sv:type="String">
+                <sv:value>mgnl:contentNode</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:createdBy" sv:type="String">
+                <sv:value>admin</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
+                <sv:value>false</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:created" sv:type="Date">
+                <sv:value>2010-09-08T11:43:28.310+02:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+                <sv:value>2013-02-19T15:22:03.449+01:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+                <sv:value>superuser</sv:value>
+              </sv:property>
+            </sv:node>
+            <sv:node sv:name="folderNodeType">
+              <sv:property sv:name="jcr:primaryType" sv:type="Name">
+                <sv:value>mgnl:contentNode</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+                <sv:value>mix:lockable</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:uuid" sv:type="String">
+                <sv:value>3ede7e65-23a8-4da1-9035-135f13691453</sv:value>
+              </sv:property>
+              <sv:property sv:name="icon" sv:type="String">
+                <sv:value>icon-folder</sv:value>
+              </sv:property>
+              <sv:property sv:name="name" sv:type="String">
+                <sv:value>mgnl:content</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:createdBy" sv:type="String">
+                <sv:value>admin</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
+                <sv:value>false</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:created" sv:type="Date">
+                <sv:value>2010-09-08T11:43:28.310+02:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+                <sv:value>2013-02-19T15:22:15.703+01:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+                <sv:value>superuser</sv:value>
+              </sv:property>
+            </sv:node>
           </sv:node>
         </sv:node>
       </sv:node>

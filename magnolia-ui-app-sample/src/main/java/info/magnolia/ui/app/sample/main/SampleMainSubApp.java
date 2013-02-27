@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.app.sample.main;
 
-import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.app.AppEventBusConfigurer;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -45,14 +46,14 @@ import javax.inject.Named;
 /**
  * SubApp for the main tab in sample app.
  */
-public class SampleMainSubApp extends AbstractSubApp implements SampleMainView.Listener {
+public class SampleMainSubApp extends BaseSubApp implements SampleMainView.Listener {
 
     private SampleMainView sampleMainView;
     private NavigationPresenter navigationPresenter;
     private ContentDisplayPresenter contentDisplayPresenter;
 
     @Inject
-    public SampleMainSubApp(final SubAppContext subAppContext, @Named("app") EventBus appEventBus, SampleMainView sampleMainView, NavigationPresenter navigationPresenter, final ContentDisplayPresenter contentDisplayPresenter) {
+    public SampleMainSubApp(final SubAppContext subAppContext, @Named(AppEventBusConfigurer.EVENT_BUS_NAME) EventBus appEventBus, SampleMainView sampleMainView, NavigationPresenter navigationPresenter, final ContentDisplayPresenter contentDisplayPresenter) {
         super(subAppContext, sampleMainView);
         this.sampleMainView = sampleMainView;
         this.contentDisplayPresenter = contentDisplayPresenter;

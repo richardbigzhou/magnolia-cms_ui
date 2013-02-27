@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.view.View;
 
 /**
  * Sub apps represents a view open in a tab within an app.
@@ -46,6 +46,8 @@ public interface SubApp {
     String getCaption();
 
     View start(Location location);
+
+    void stop();
 
     void locationChanged(Location location);
 

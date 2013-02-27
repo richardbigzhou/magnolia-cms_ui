@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.app.registry;
 
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.event.Event;
+import info.magnolia.event.Event;
 
 /**
  * Event fired by {@link AppDescriptorRegistry} when changes are made to the apps it manages.

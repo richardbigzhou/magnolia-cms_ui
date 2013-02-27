@@ -33,10 +33,11 @@
  */
 package info.magnolia.ui.admincentral.content.item;
 
-import info.magnolia.ui.admincentral.event.ContentChangedEvent;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.FormPresenterFactory;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -61,7 +62,7 @@ public class ItemPresenter {
     private JcrNodeAdapter item;
 
     @Inject
-    public ItemPresenter(final @Named("admincentral") EventBus eventBus, ItemView view, FormPresenterFactory formPresenterFactory) {
+    public ItemPresenter(final @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, ItemView view, FormPresenterFactory formPresenterFactory) {
         this.eventBus = eventBus;
         this.view = view;
         this.formPresenterFactory = formPresenterFactory;

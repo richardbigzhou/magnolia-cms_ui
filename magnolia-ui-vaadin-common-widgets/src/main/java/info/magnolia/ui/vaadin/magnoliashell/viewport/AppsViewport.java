@@ -34,14 +34,14 @@
 package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
-import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShellBase;
+import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 
 /**
  * Apps viewport.
  */
 public class AppsViewport extends ShellViewport {
 
-    public AppsViewport(MagnoliaShellBase shell) {
+    public AppsViewport(MagnoliaShell shell) {
         super(shell);
         addStyleName("apps");
         getState().type = ViewportType.APP;

@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.admincentral.form;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.field.builder.FieldFactory;
 import info.magnolia.ui.admincentral.form.action.FormActionFactory;
 import info.magnolia.ui.admincentral.form.builder.FormBuilder;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
 
@@ -56,7 +57,7 @@ public class FormPresenterFactoryImpl implements FormPresenterFactory {
     private final FormActionFactory actionFactory;
 
     @Inject
-    public FormPresenterFactoryImpl(ComponentProvider componentProvider, FormBuilder formBuilder, FieldFactory fieldFactory, @Named("admincentral") EventBus eventBus, final FormActionFactory actionFactory) {
+    public FormPresenterFactoryImpl(ComponentProvider componentProvider, FormBuilder formBuilder, FieldFactory fieldFactory, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, final FormActionFactory actionFactory) {
         this.componentProvider = componentProvider;
         this.formBuilder = formBuilder;
         this.fieldFactory = fieldFactory;

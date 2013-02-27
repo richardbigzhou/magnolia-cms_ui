@@ -35,7 +35,7 @@ package info.magnolia.ui.app.messages;
 
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.view.View;
 
 /**
  * View for the Messages app.

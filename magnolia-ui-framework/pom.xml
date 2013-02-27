@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-framework</artifactId>
   <name>magnolia-ui-framework</name>
   <properties>
-    <cloverCoverageThreshold>71</cloverCoverageThreshold>
+    <cloverCoverageThreshold>70</cloverCoverageThreshold>
   </properties>
   <build>
     <plugins>
@@ -34,8 +34,14 @@
       <version>${magnoliaVersion}</version>
     </dependency>
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-workbench</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>

@@ -39,7 +39,8 @@ import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.admincentral.field.builder.FieldFactory;
 import info.magnolia.ui.admincentral.form.FormPresenterFactory;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
@@ -69,7 +70,7 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
     public FormDialogPresenterFactoryImpl(ComponentProvider componentProvider,
                                           DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, FormPresenterFactory formPresenterFactory,
                                           FieldFactory fieldFactory, Shell shell,
-                                          @Named("admincentral") EventBus eventBus, final DialogActionFactory actionFactory) {
+                                          @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, final DialogActionFactory actionFactory) {
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.dialogBuilder = dialogBuilder;
         this.formPresenterFactory = formPresenterFactory;

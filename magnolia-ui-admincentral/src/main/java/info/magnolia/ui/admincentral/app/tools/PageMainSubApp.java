@@ -33,9 +33,10 @@
  */
 package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -43,10 +44,10 @@ import javax.inject.Named;
 /**
  * Sub app for the main tab in a page app.
  */
-public class PageMainSubApp extends AbstractSubApp {
+public class PageMainSubApp extends BaseSubApp {
 
     @Inject
-    public PageMainSubApp(SubAppContext subAppContext, PageView pageView, final @Named("subapp") EventBus subAppEventBus) {
+    public PageMainSubApp(SubAppContext subAppContext, PageView pageView, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
         super(subAppContext, pageView);
     }
 

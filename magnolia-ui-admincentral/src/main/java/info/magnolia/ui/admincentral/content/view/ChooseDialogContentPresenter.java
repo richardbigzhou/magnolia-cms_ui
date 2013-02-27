@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.admincentral.content.view;
 
-import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.workbench.ContentViewBuilder;
+import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -53,7 +54,7 @@ import com.rits.cloning.Cloner;
 public class ChooseDialogContentPresenter extends ContentPresenter {
 
     @Inject
-    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named("choosedialog") EventBus subAppEventBus, Shell shell) {
+    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, Shell shell) {
         super(context, contentViewBuilder, subAppEventBus, shell);
         workbenchDefinition = new Cloner().deepClone(workbenchDefinition);
         ((ConfiguredWorkbenchDefinition) workbenchDefinition).setDialogWorkbench(true);

@@ -34,31 +34,33 @@
 package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
-import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
-import info.magnolia.ui.admincentral.event.ContentChangedEvent;
-import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
-import info.magnolia.ui.admincentral.event.ItemEditedEvent;
-import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.event.SearchEvent;
-import info.magnolia.ui.admincentral.event.ViewTypeChangedEvent;
-import info.magnolia.ui.admincentral.search.view.SearchView;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
+import info.magnolia.ui.workbench.event.ItemEditedEvent;
+import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
+import info.magnolia.ui.workbench.search.SearchView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -105,8 +107,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     private final ImageProvider imageProvider;
 
     @Inject
-    public ContentWorkbenchPresenter(final SubAppContext subAppContext, final ContentWorkbenchView view, @Named("admincentral") final EventBus admincentralEventBus,
-            final @Named("subapp") EventBus subAppEventBus, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
+    public ContentWorkbenchPresenter(final SubAppContext subAppContext, final ContentWorkbenchView view, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus admincentralEventBus,
+            final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
             final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;

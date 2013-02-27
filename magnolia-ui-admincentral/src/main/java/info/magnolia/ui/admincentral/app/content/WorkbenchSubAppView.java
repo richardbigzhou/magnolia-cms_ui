@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.content;
 
-import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.vaadin.view.View;
 
 /**
  * Interface for {@link WorkbenchSubAppViewImpl}.

@@ -38,7 +38,7 @@ import static org.junit.Assert.assertEquals;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.form.FormItem;
 import info.magnolia.ui.admincentral.form.FormPresenter;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;

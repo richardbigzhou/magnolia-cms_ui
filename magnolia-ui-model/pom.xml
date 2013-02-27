@@ -10,9 +10,8 @@
   <artifactId>magnolia-ui-model</artifactId>
   <name>magnolia-ui-model</name>
   <properties>
-    <cloverCoverageThreshold>10</cloverCoverageThreshold>
+    <cloverCoverageThreshold>11</cloverCoverageThreshold>
   </properties>
-
 
   <dependencies>
     <dependency>
@@ -20,10 +19,9 @@
       <artifactId>magnolia-core</artifactId>
       <version>${magnoliaVersion}</version>
     </dependency>
-        <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-framework</artifactId>
-      <version>${project.version}</version>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-server</artifactId>
     </dependency>
 
     <dependency>
@@ -43,12 +41,6 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-server</artifactId>
-    </dependency>
-
-    <!-- needed by some tests -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>

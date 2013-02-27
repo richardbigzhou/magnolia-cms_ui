@@ -36,15 +36,15 @@ package info.magnolia.ui.admincentral.content.view;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
-import info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder;
-import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
-import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.workbench.ContentViewBuilder;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
+import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -88,10 +88,10 @@ public class ContentPresenterTest {
 
     @Test
     public void testOnItemSelectionFiresOnEventBus() {
-        // GIVEN see setUp
+        // GIVEN
+        final ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
 
         // WHEN
-        final ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
         presenter.onItemSelection(item);
 
         // THEN
@@ -103,10 +103,10 @@ public class ContentPresenterTest {
 
     @Test
     public void testOnDoubleClickFiresOnEventBus() {
-        // GIVEN see setUp
+        // GIVEN
+        final ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
 
         // WHEN
-        final ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
         presenter.onDoubleClick(item);
 
         // THEN
@@ -118,10 +118,10 @@ public class ContentPresenterTest {
 
     @Test
     public void testOnItemSelectionWithNullItemSetSelectedPath() {
-        // GIVEN see setUp
+        // GIVEN
+        ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
 
         // WHEN
-        ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
         presenter.onItemSelection(null);
 
         // THEN

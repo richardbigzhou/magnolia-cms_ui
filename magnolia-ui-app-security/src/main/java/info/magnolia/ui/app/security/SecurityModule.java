@@ -39,8 +39,8 @@ import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.admincentral.app.CodeConfigurationUtils;
 import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
 import info.magnolia.ui.admincentral.app.content.builder.ContentSubAppBuilder;
-import info.magnolia.ui.admincentral.column.DateColumnFormatter;
-import info.magnolia.ui.admincentral.column.StatusColumnFormatter;
+import info.magnolia.ui.workbench.column.DateColumnFormatter;
+import info.magnolia.ui.workbench.column.StatusColumnFormatter;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
@@ -60,9 +60,9 @@ import info.magnolia.ui.app.security.dialog.field.validator.UniqueUserIdValidato
 import info.magnolia.ui.framework.app.builder.App;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.model.ModelConstants;
-import info.magnolia.ui.model.builder.UiConfig;
-import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
-import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
+import info.magnolia.ui.framework.config.UiConfig;
+import info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition;
+import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
 import info.magnolia.ui.model.dialog.builder.Dialog;
 import info.magnolia.ui.model.dialog.builder.DialogBuilder;
 import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
@@ -116,8 +116,8 @@ public class SecurityModule implements ModuleLifecycle {
                         userSubApp(app, cfg, "systemUsers", "/system").label("System users"),
                         app.subApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
                                 .workbench(cfg.workbenches.workbench().workspace("usergroups").root("/").defaultOrder(ModelConstants.JCR_NAME)
-                                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-folder"))
-                                        .mainItemType(cfg.workbenches.itemType(NodeTypes.Group.NAME).icon("icon-user-group"))
+                                        .nodeType(cfg.workbenches.nodeType(NodeTypes.Group.NAME).icon("icon-user-group"))
+                                        .nodeType(cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                         .imageProvider(cipd)
                                         .columns(
                                                 cfg.columns.property(ModelConstants.JCR_NAME, "Group name").sortable(true).expandRatio(2),
@@ -140,8 +140,8 @@ public class SecurityModule implements ModuleLifecycle {
                                 ),
                         app.subApp("roles").subAppClass(SecurityRolesSubApp.class).label("Roles")
                                 .workbench(cfg.workbenches.workbench().workspace("userroles").root("/").defaultOrder(ModelConstants.JCR_NAME)
-                                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-folder"))
-                                        .mainItemType(cfg.workbenches.itemType(NodeTypes.Role.NAME).icon("icon-user-role"))
+                                        .nodeType(cfg.workbenches.nodeType(NodeTypes.Role.NAME).icon("icon-user-role"))
+                                        .nodeType(cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                         .imageProvider(cipd)
                                         .columns(
                                                 cfg.columns.property(ModelConstants.JCR_NAME, "Role name").sortable(true).expandRatio(2),
@@ -182,8 +182,8 @@ public class SecurityModule implements ModuleLifecycle {
 
         return app.subApp(name).subAppClass(SecurityUsersSubApp.class)
                 .workbench(cfg.workbenches.workbench().workspace("users").root(root).defaultOrder(ModelConstants.JCR_NAME)
-                        .groupingItemType(cfg.workbenches.itemType(NodeTypes.Folder.NAME).icon("icon-folder")) // see MGNLPUR-77
-                        .mainItemType(cfg.workbenches.itemType(NodeTypes.User.NAME).icon("icon-user-magnolia"))
+                        .nodeType(cfg.workbenches.nodeType(NodeTypes.User.NAME).icon("icon-user-magnolia"))
+                        .nodeType(cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder")) // see MGNLPUR-77
                         .imageProvider(cipd)
                         .columns(
                                 cfg.columns.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME).formatterClass(UserNameColumnFormatter.class).expandRatio(2),

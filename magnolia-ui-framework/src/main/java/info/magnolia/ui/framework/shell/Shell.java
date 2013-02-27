@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.framework.shell;
 
-import info.magnolia.ui.framework.event.HandlerRegistration;
+import info.magnolia.event.HandlerRegistration;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.vaadin.view.View;
 
 import java.util.List;
 
@@ -58,4 +60,19 @@ public interface Shell {
 
     void pushToClient();
 
+    void showInfo(Message message);
+
+    void showError(Message message);
+
+    void showWarning(Message message);
+
+    /**
+     * Callback for closing a dialog.
+     */
+    public interface ShellDialog {
+
+        void close();
+    }
+
+    ShellDialog openDialog(View view);
 }

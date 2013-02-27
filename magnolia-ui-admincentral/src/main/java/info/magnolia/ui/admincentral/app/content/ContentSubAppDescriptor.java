@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.app.content;
 
 import info.magnolia.ui.framework.app.SubAppDescriptor;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 /**
  * ContentSubAppDescriptor.

@@ -33,15 +33,15 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.FormPresenterFactory;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
 
@@ -59,7 +59,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private final DialogDefinition dialogDefinition;
 
-    private final MagnoliaShell shell;
+    private final Shell shell;
 
     private final FormDialogView view;
 
@@ -74,7 +74,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         this.dialogBuilder = dialogBuilder;
         this.formPresenterFactory = formPresenterFactory;
         this.dialogDefinition = dialogDefinition;
-        this.shell = (MagnoliaShell) shell;
+        this.shell = shell;
         this.dialogActionFactory = actionFactory;
         initActions(dialogDefinition);
     }
@@ -96,11 +96,20 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         dialogBuilder.buildFormDialog(dialogDefinition, view);
         this.formPresenter = formPresenterFactory.createFormPresenterByDefinition(dialogDefinition.getFormDefinition());
 
-        // This is needed to acces properties from the parent. Currently only the i18basename.
+        // This is needed to access properties from the parent. Currently only the i18basename.
         Dialog dialog = new Dialog(dialogDefinition);
         view.setFormView(formPresenter.start(item, dialog));
 
-        shell.openDialog(this);
+        final Shell.ShellDialog shellDialog = shell.openDialog(view);
+
+        addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
+            @Override
+            public void onClose(BaseDialog.DialogCloseEvent event) {
+                shellDialog.close();
+                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
+            }
+        });
+
         return view;
     }
 

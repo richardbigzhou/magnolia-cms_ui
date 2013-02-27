@@ -33,18 +33,27 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.dialog.ValueChosenListener.HasValueChosenListener;
+import com.vaadin.data.Item;
+
+import info.magnolia.ui.vaadin.view.View;
 
 /**
- * Base dialog that allows for choosing a value.
- *
- * @param <T> Value type
+ * Dialog presenter for a dialog that allows for choosing an item.
  */
-public interface ChooseDialogPresenter<T> extends DialogPresenter, HasValueChosenListener<T> {
+public interface ChooseDialogPresenter {
 
-    public T getValue();
+    /**
+     * Listener for {@link ChooseDialogPresenter}.
+     */
+    interface Listener {
 
-    @Override
-    public ChooseDialogView getView();
+        void onClose();
+    }
+
+    void setListener(Listener listener);
+
+    View start();
+
+    Item getValue();
 
 }

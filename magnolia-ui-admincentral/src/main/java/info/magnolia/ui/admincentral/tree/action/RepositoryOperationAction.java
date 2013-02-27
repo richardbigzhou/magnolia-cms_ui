@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.cms.core.Path;
-import info.magnolia.ui.admincentral.event.ContentChangedEvent;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;

@@ -44,7 +44,7 @@ import javax.jcr.RepositoryException;
 
 /**
  * Action for creating a new item.
- * The {@link info.magnolia.ui.admincentral.app.content.AbstractItemSubApp} only gets a location containing nodePath and {@link ItemView.ViewType}.
+ * The {@link info.magnolia.ui.admincentral.app.content.ItemSubApp} only gets a location containing nodePath and {@link ItemView.ViewType}.
  * When creating a new node, we either create it here and pass the new path to the subapp or
  * we pass all needed parameters to the location. This is less messy, but not optimal.. at all.
  * See MGNLUI-222.
