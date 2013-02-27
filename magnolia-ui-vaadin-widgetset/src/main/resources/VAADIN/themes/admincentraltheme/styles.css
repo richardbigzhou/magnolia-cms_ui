@@ -14,7 +14,6 @@
 @import url(favorites.css);
 @import url(shell.css);
 @import url(fonts.css);
-@import url(css-conditional/fonts-default.css);
 @import url(uploadfield.css);
 @import url(thumbnail_layout.css);
 
@@ -114,7 +113,6 @@ button.btn-dialog-selectCallBack {
      cursor: pointer;
      font-family: DINWebPro;
      font-size: 12px;
-     font-weight: bold;
      height: 25px;
      width: 55px;
      margin-bottom: 3px;

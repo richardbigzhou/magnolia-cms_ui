@@ -73,7 +73,6 @@
 .form-header span {
     color:#aabf2f;
     font-family:DINWebPro;
-    font-weight:bold;
 }
 
 .form-description {
@@ -100,7 +99,6 @@ button.btn-form {
     color:#fff;
     font-family:DINWebPro;
     font-size:12px;
-    font-weight:bold;
     line-height:1;
     text-transform:uppercase;
     background:none repeat scroll 0px 0px #666666;
@@ -114,7 +112,6 @@ button.btn-form-select {
 .btn-form-select span {
     font-family: DINWebPro !important;
     font-size: 12px !important;
-    font-weight: bold !important;
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;

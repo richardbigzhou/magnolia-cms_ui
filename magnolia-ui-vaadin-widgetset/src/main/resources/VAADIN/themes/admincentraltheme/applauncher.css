@@ -51,7 +51,6 @@
     margin-right: auto;
     position: absolute;
     right: 0;
-    font-weight: bold;
     line-height:11px;
 
 }
@@ -74,7 +73,6 @@
     padding-left: 10px;
     padding-top: 10px;
     display: block;
-    font-weight: bold;
 	text-transform:uppercase;
 }
 
@@ -99,10 +97,4 @@
 	background-image: url("img/applauncher/style-appslauncher-group-triangle-open.png");
     background-position: bottom center;
     background-repeat: no-repeat;
-}
-
-/* Animation for tiles */
-.app-list{
-    -moz-perspective:500px;
-    -webkit-perspective:500px;
 }

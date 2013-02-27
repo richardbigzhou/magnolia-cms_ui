@@ -24,7 +24,6 @@
 .dialog-header span {
   font-family:DINWebPro;
   font-size:16px;
-  font-weight:bold;
 }
 
 .dialog-description {
@@ -59,7 +58,6 @@
 button.btn-dialog {
   font-family: DINWebPro;
   font-size: 12px;
-  font-weight: bold;
   background: none repeat scroll 0px 0px #666666;
   border: none;
   color: #FFF;

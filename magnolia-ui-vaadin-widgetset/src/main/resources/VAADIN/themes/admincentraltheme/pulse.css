@@ -82,13 +82,11 @@
 
 .v-pulse .category-separator, .v-pulse .recent-pages th {
     color:#000000;
-    font-family:Arial,Helvetica,sans-serif;
-    font-size:15px;
+    font-family:Verdana,sans-serif;
     font-weight:bold;
 }
 
 .v-pulse .recent-pages {
-	font-size:15px;
 	width:100%;
 }
 
@@ -111,7 +109,7 @@
     font-size: 20px;
 }
 
-.v-pulse .navigator {padding:13px 0 20px 4px;}
+.v-pulse .navigator {padding:13px 0 20px;}
 .v-pulse .navigator-button {
 	height:12px;
 	border-right:1px solid #ccc;
@@ -119,7 +117,6 @@
 	color:#ccc;
 	font-family:DINWebPro, sans-serif;
 	font-size:14px;
-	font-weight:bold;
 	line-height:1;
 	text-transform:uppercase;
 }
