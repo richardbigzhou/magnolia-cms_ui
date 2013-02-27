@@ -67,7 +67,6 @@ import org.junit.Test;
 
 import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
-import com.vaadin.server.VaadinService;
 
 /**
  * Test case for {@link info.magnolia.ui.framework.app.AppController}.
