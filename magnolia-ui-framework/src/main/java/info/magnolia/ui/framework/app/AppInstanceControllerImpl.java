@@ -257,12 +257,11 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         }
         SubAppContext subAppContext = new SubAppContextImpl(subAppDescriptor);
 
-        ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppContext.getSubAppId(), subAppContext, componentProvider);
-
-        SubApp subApp = subAppComponentProvider.newInstance(subAppDescriptor.getSubAppClass());
-
         subAppContext.setAppContext(this);
         subAppContext.setLocation(location);
+
+        ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppContext.getSubAppId(), subAppContext, componentProvider);
+        SubApp subApp = subAppComponentProvider.newInstance(subAppDescriptor.getSubAppClass());
         subAppContext.setSubApp(subApp);
 
         String instanceId = app.getView().addSubAppView(subApp.start(location), subApp.getCaption(), !subAppContexts.isEmpty());
