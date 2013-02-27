@@ -96,13 +96,12 @@ public class VMobileSafariUI extends VMgwtStylesUI {
     }
 
     /**
-     * Checks if event target is within a v-scrollable view. The root view is also a v-scrollable so there needs to be
-     * at least two v-scrollable ancestors to allow touch scrolling.
+     * Checks if event target is within a v-scrollable view.
      */
     private static native void lockPageScroll(Object e)
     /*-{
        jq = e.target.ownerDocument.defaultView.jQuery;
-       if (jq(e.target).parents(".v-scrollable").length <= 1) {
+       if (jq(e.target).parents(".v-scrollable").length < 1) {
            e.preventDefault();
        }
     }-*/;

@@ -66,7 +66,7 @@ import com.vaadin.client.ui.VUI;
  * Special {@link VUI} extension to prevent MGWT from injecting its theme styles, which would otherwise potentially
  * override some essential styles in AdminCentral.
  */
-public class VMgwtStylesUI extends VUI {
+public class VMgwtStylesUI extends VNonScrollableUI {
 
     public VMgwtStylesUI() {
         MGWTStyle.setTheme(new MGWTTheme() {
