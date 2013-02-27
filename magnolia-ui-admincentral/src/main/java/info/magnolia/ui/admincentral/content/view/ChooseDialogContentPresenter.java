@@ -34,9 +34,11 @@
 package info.magnolia.ui.admincentral.content.view;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.ContentViewBuilder;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
@@ -67,4 +69,9 @@ public class ChooseDialogContentPresenter extends ContentPresenter {
         return StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
     }
 
+    @Override
+    public void initContentView(ContentWorkbenchView parentView) {
+        super.initContentView(parentView);
+        parentView.setViewType(ContentView.ViewType.TREE);
+    }
 }
