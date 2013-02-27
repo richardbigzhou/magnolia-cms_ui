@@ -35,6 +35,7 @@ package info.magnolia.ui.framework.message;
 
 import info.magnolia.jcr.node2bean.Node2BeanException;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.objectfactory.Components;
@@ -110,7 +111,10 @@ public class Node2MapUtil {
             // getting ConcurrentModificationException when trying to remove
             // properties right here;
             // so just adding them to a temporary list
-            list.add(pi.nextProperty());
+            Property prop = pi.nextProperty();
+            if (!prop.getName().startsWith(NodeTypes.JCR_PREFIX)) {
+                list.add(prop);
+            }
         }
         for (Property prop : list) {
             // and removing the properties later
