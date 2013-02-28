@@ -35,6 +35,7 @@ package info.magnolia.ui.framework.message;
 
 import static org.junit.Assert.assertEquals;
 
+import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.jcr.MockNode;
 
 import org.junit.Test;
@@ -42,7 +43,7 @@ import org.junit.Test;
 /**
  * Tests.
  */
-public class MessageStoreTest {
+public class MessageStoreTest extends MgnlTestCase {
 
     @Test
     public void testMarshall() throws Exception {
@@ -64,9 +65,9 @@ public class MessageStoreTest {
         store.marshallMessage(message, messageNode);
 
         // THEN
-        assertEquals(subject, messageNode.getProperty(MessageStore.SUBJECT).getString());
-        assertEquals(messageText, messageNode.getProperty(MessageStore.MESSAGE).getString());
-        assertEquals(type.name(), messageNode.getProperty(MessageStore.TYPE).getString());
+        assertEquals(subject, messageNode.getProperty(Message.SUBJECT).getString());
+        assertEquals(messageText, messageNode.getProperty(Message.MESSAGE).getString());
+        assertEquals(type.name(), messageNode.getProperty(Message.MESSAGETYPE).getString());
     }
 
     @Test
@@ -80,10 +81,10 @@ public class MessageStoreTest {
         final MessageType type = MessageType.WARNING;
 
         messageNode.setName(id);
-        messageNode.setProperty(MessageStore.TIMESTAMP, now);
-        messageNode.setProperty(MessageStore.SUBJECT, subject);
-        messageNode.setProperty(MessageStore.MESSAGE, messageText);
-        messageNode.setProperty(MessageStore.TYPE, type.name());
+        messageNode.setProperty(Message.TIMESTAMP, now);
+        messageNode.setProperty(Message.SUBJECT, subject);
+        messageNode.setProperty(Message.MESSAGE, messageText);
+        messageNode.setProperty(Message.MESSAGETYPE, type.name());
 
         MessageStore store = new MessageStore();
 
@@ -106,7 +107,7 @@ public class MessageStoreTest {
         final String id = "1234";
         messageNode.setName(id);
         // timestamp is mandatory...
-        messageNode.setProperty(MessageStore.TIMESTAMP, now);
+        messageNode.setProperty(Message.TIMESTAMP, now);
 
         MessageStore store = new MessageStore();
 

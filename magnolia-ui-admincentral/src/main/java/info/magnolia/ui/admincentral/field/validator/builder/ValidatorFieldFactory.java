@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.field.validator.builder;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.field.validator.FieldValidatorBuilder;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.builder.FactoryBase;
+import info.magnolia.ui.model.builder.MappingFactoryBase;
 import info.magnolia.ui.model.field.validation.definition.FieldValidatorDefinition;
 
 import java.io.Serializable;
@@ -49,7 +49,7 @@ import javax.inject.Inject;
  * @see info.magnolia.ui.model.field.definition.FieldDefinition
  * @see info.magnolia.ui.admincentral.field.FieldBuilder
  */
-public class ValidatorFieldFactory extends FactoryBase<FieldValidatorDefinition, FieldValidatorBuilder> implements Serializable {
+public class ValidatorFieldFactory extends MappingFactoryBase<FieldValidatorDefinition, FieldValidatorBuilder> implements Serializable {
 
     @Inject
     public ValidatorFieldFactory(ComponentProvider componentProvider, ValidatorFieldRegistry validatorFieldRegistery) {

@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.dialog.DialogPresenter;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.builder.FactoryBase;
+import info.magnolia.ui.model.builder.MappingFactoryBase;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -50,7 +50,7 @@ import javax.inject.Singleton;
  * Creates an action based on an {@link info.magnolia.ui.model.action.ActionDefinition}.
  */
 @Singleton
-public class DialogActionFactoryImpl extends FactoryBase<ActionDefinition, Action> implements DialogActionFactory {
+public class DialogActionFactoryImpl extends MappingFactoryBase<ActionDefinition, Action> implements DialogActionFactory {
     private final EventBus eventBus;
 
     @Inject

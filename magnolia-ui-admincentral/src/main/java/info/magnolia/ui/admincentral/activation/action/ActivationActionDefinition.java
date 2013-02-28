@@ -40,7 +40,13 @@ import info.magnolia.ui.model.action.CommandActionDefinition;
  * Activation action definition. By default performs a non-recursive activation.
  */
 public class ActivationActionDefinition extends CommandActionDefinition {
+    
     private boolean recursive = false;
+
+
+    public ActivationActionDefinition() {
+        setImplementationClass(ActivationAction.class);
+    }
 
     public void setRecursive(boolean recursive) {
         this.recursive = recursive;
@@ -49,4 +55,5 @@ public class ActivationActionDefinition extends CommandActionDefinition {
     public boolean isRecursive() {
         return recursive;
     }
+
 }

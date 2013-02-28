@@ -33,11 +33,15 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * EditPageActionDefinition.
  */
-public class EditPageActionDefinition implements ActionDefinition {
+public class EditPageActionDefinition extends ConfiguredActionDefinition {
+
+    public EditPageActionDefinition() {
+        setImplementationClass(EditPageAction.class);
+    }
 
 }

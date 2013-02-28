@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Defines an action for editing an element (page/area/component) of the page editor.
@@ -41,6 +41,6 @@ import info.magnolia.ui.model.action.ActionDefinition;
  * Does not have a concrete action implementation, but is intercepted by the editor subapp to
  * delegate execution to PageEditorPresenter.
  */
-public class EditElementActionDefinition implements ActionDefinition {
+public class EditElementActionDefinition extends ConfiguredActionDefinition {
 
 }

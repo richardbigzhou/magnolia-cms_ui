@@ -33,12 +33,11 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 
 import com.vaadin.data.Item;
 

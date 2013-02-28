@@ -36,13 +36,13 @@ package info.magnolia.ui.admincentral.dialog;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter;
-import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchView.Listener;
 import info.magnolia.ui.framework.app.ItemChosenListener;
 import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.workbench.ContentView.ViewType;
 
 import javax.inject.Inject;
 import javax.inject.Named;

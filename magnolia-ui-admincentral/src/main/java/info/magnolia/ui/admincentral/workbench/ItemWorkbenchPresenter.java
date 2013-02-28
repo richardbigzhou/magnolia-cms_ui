@@ -33,24 +33,25 @@
  */
 package info.magnolia.ui.admincentral.workbench;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.item.ItemPresenter;
 import info.magnolia.ui.admincentral.content.item.ItemView;
-import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
-import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import javax.inject.Inject;
-import javax.inject.Named;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,25 +60,25 @@ import org.slf4j.LoggerFactory;
  * Presenter for the workbench displayed in the {@link info.magnolia.ui.admincentral.app.content.ItemSubApp}.
  * Contains the {@link ActionbarPresenter} for handling action events and the {@link ItemPresenter} for displaying the actual item.
  */
-public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
+public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, ActionbarPresenter.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ItemWorkbenchPresenter.class);
 
+    private final ActionExecutor actionExecutor;
+    private final AppContext appContext;
     private final ItemWorkbenchView view;
-    private final EventBus subAppEventBus;
     private final ItemPresenter itemPresenter;
-    private final WorkbenchActionFactory actionFactory;
     private final ActionbarPresenter actionbarPresenter;
     private final WorkbenchDefinition workbenchDefinition;
     private String nodePath;
 
     @Inject
-    public ItemWorkbenchPresenter(final SubAppContext subAppContext, final ItemWorkbenchView view, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final ItemPresenter itemPresenter, final WorkbenchActionFactory actionFactory, final ActionbarPresenter actionbarPresenter) {
+    public ItemWorkbenchPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final ItemWorkbenchView view,final ItemPresenter itemPresenter, final ActionbarPresenter actionbarPresenter) {
+        this.actionExecutor = actionExecutor;
         this.view = view;
-        this.subAppEventBus = subAppEventBus;
         this.itemPresenter = itemPresenter;
-        this.actionFactory = actionFactory;
         this.actionbarPresenter = actionbarPresenter;
+        this.appContext = subAppContext.getAppContext();
         this.workbenchDefinition = ((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench();
 
     }
@@ -89,24 +90,12 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
         ItemView itemView = itemPresenter.start(workbenchDefinition.getFormDefinition(), item, viewType);
 
         view.setItemView(itemView);
+        actionbarPresenter.setListener(this);
+        ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar());
 
-        ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar(), actionFactory);
         view.setActionbarView(actionbar);
 
-        bindHandlers();
         return view;
-    }
-
-    private void bindHandlers() {
-        subAppEventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarItemClickedEvent.Handler() {
-
-            @Override
-            public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
-                final ActionDefinition actionDefinition = event.getActionDefinition();
-                actionbarPresenter.createAndExecuteAction(actionDefinition, workbenchDefinition.getWorkspace(), nodePath);
-
-            }
-        });
     }
 
     public String getNodePath() {
@@ -120,6 +109,42 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener {
     @Override
     public void onViewTypeChanged(final ItemView.ViewType viewType) {
         // eventBus.fireEvent(new ViewTypeChangedEvent(viewType));
+    }
+
+    @Override
+    public void onExecute(String actionName) {
+        try {
+            Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+            final javax.jcr.Item item = session.getItem(nodePath);
+
+            actionExecutor.execute(actionName, item);
+
+        } catch (RepositoryException e) {
+            throw new RuntimeException("Could not get item: " + nodePath, e);
+        } catch (ActionExecutionException e) {
+            throw new RuntimeException("Could not execute the action: " + actionName, e);
+        }
+    }
+
+    @Override
+    public String getLabel(String actionName) {
+        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
+        return actionDefinition != null ? actionDefinition.getLabel() : null;
+    }
+
+    @Override
+    public String getIcon(String actionName) {
+        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
+        return actionDefinition != null ? actionDefinition.getIcon() : null;
+    }
+
+    @Override
+    public void setFullScreen(boolean fullScreen) {
+        if (fullScreen) {
+            appContext.enterFullScreenMode();
+        } else {
+            appContext.exitFullScreenMode();
+        }
     }
 
 }

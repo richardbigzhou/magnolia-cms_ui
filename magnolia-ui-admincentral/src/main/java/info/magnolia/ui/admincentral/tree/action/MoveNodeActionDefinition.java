@@ -33,11 +33,15 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * The Class MoveNodeActionDefinition.
  */
-public class MoveNodeActionDefinition implements ActionDefinition {
+public class MoveNodeActionDefinition extends ConfiguredActionDefinition {
+
+    public MoveNodeActionDefinition() {
+        setImplementationClass(MoveNodeAction.class);
+    }
 
 }

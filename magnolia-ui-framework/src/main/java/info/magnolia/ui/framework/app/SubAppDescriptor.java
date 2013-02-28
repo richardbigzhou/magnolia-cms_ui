@@ -33,6 +33,10 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.model.action.ActionDefinition;
+
+import java.util.Map;
+
 /**
  * Describes a sub app.
  *
@@ -46,9 +50,9 @@ public interface SubAppDescriptor {
 
     boolean isEnabled();
 
-    boolean isDefault();
-
     String getIcon();
+
+    Map<String, ActionDefinition> getActions();
 
     Class<? extends SubApp> getSubAppClass();
 }

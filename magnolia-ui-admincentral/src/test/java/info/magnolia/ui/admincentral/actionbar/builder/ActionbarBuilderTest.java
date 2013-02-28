@@ -35,18 +35,21 @@ package info.magnolia.ui.admincentral.actionbar.builder;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarItemDefinition;
 import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -64,35 +67,43 @@ public class ActionbarBuilderTest {
     public void testBuildingActionbar() {
 
         // GIVEN
-        ConfiguredActionbarDefinition def = new ConfiguredActionbarDefinition();
+        Map<String, ActionDefinition> actionDefs = new HashMap<String, ActionDefinition>();
+        actionDefs.put("0.0", new TestActionDefinition("0.0"));
+        actionDefs.put("1.0", new TestActionDefinition("1.0"));
+        actionDefs.put("1.1", new TestActionDefinition("1.1"));
+        actionDefs.put("2.0", new TestActionDefinition("2.0"));
+        
+        final ConfiguredActionbarDefinition def = new ConfiguredActionbarDefinition();
 
         // common group
         ActionbarGroupDefinition previewGroup = buildGroup("0",
-                buildItem("0.0"));
+                    "0.0");
 
         // sections
         ActionbarSectionDefinition aSection = buildSection(SECTION_A,
                 previewGroup,
                 buildGroup("1",
-                        buildItem("1.0"),
-                        buildItem("1.1")));
+                            "1.0",
+                            "1.1"));
         ActionbarSectionDefinition bSection = buildSection(SECTION_B,
                 previewGroup,
                 buildGroup("1",
-                        buildItem("1.0"),
-                        buildItem("1.1")),
+                            "1.0",
+                            "1.1"),
                 buildGroup("2",
-                        buildItem("2.0")));
+                            "2.0"));
 
         def.addSection(aSection);
         def.addSection(bSection);
+
+        ActionbarListener listener = new ActionbarListener(actionDefs);
 
         // test variables
         int aActionCount = getActionsCount(aSection);
         int bActionCount = getActionsCount(bSection);
 
         // WHEN
-        ActionbarView actionbar = ActionbarBuilder.build(def);
+        ActionbarView actionbar = ActionbarBuilder.build(def, listener);
 
         // THEN
         Map<String, ActionbarSection> sections = ((Actionbar) actionbar).getSections();
@@ -115,17 +126,22 @@ public class ActionbarBuilderTest {
     @Test
     public void testBuildingActionbarWithEmptyGroup() {
         // GIVEN
+        Map<String, ActionDefinition> actionDefs = new HashMap<String, ActionDefinition>();
+        actionDefs.put("1.0", new TestActionDefinition("1.0"));
+        actionDefs.put("1.1", new TestActionDefinition("1.1"));
         ConfiguredActionbarDefinition def = new ConfiguredActionbarDefinition();
         ActionbarSectionDefinition sectionDef = buildSection(SECTION_A,
                 buildGroup("0"),
                 buildGroup("1",
-                        buildItem("1.0"),
-                        buildItem("1.1")));
+                            "1.0",
+                            "1.1"));
         def.addSection(sectionDef);
         int actionCount = getActionsCount(sectionDef);
 
+        ActionbarListener listener = new ActionbarListener(actionDefs);
+
         // WHEN
-        ActionbarView actionbar = ActionbarBuilder.build(def);
+        ActionbarView actionbar = ActionbarBuilder.build(def, listener);
 
         // THEN
         Map<String, ActionbarItem> actions = ((Actionbar) actionbar).getSections().get(SECTION_A).getActions();
@@ -135,32 +151,54 @@ public class ActionbarBuilderTest {
         }
     }
 
+    private static class TestActionDefinition extends ConfiguredActionDefinition {
+
+        public TestActionDefinition(String id) {
+            setName(id);
+            setIcon("test");
+            setDescription("");
+            setI18nBasename("");
+            setImplementationClass(null);
+            setLabel("label");
+        }
+    }
+    
     @Test
     public void testBuildingActionbarWithDuplicateAction() {
         // GIVEN
+        Map<String, ActionDefinition> actionDefs = new HashMap<String, ActionDefinition>();
+        actionDefs.put("0.0", new TestActionDefinition("0.0"));
+        actionDefs.put("0.1", new TestActionDefinition("0.1"));
+        actionDefs.put("0.2", new TestActionDefinition("0.2"));
+        actionDefs.put("0.3", new TestActionDefinition("0.3"));
+        actionDefs.put("1.0", new TestActionDefinition("1.0"));
+        
         ConfiguredActionbarDefinition def = new ConfiguredActionbarDefinition();
         ActionbarSectionDefinition aSection = buildSection(SECTION_A,
                 buildGroup("0",
-                        buildItem("0.0"),
-                        buildItem("0.1"),
-                        buildItem("0.1"),
-                        buildItem("0.2"),
-                        buildItem("0.3")),
+                            "0.0",
+                            "0.1",
+                            "0.1",
+                            "0.2",
+                            "0.3"),
                 buildGroup("1",
-                        buildItem("1.0"),
-                        buildItem("0.2")));
+                            "1.0",
+                            "0.2"));
         ActionbarSectionDefinition bSection = buildSection(SECTION_B,
                 buildGroup("0",
-                        buildItem("0.3")));
+                            "0.3"));
         def.addSection(aSection);
         def.addSection(bSection);
+
+        ActionbarListener listener = new ActionbarListener(actionDefs);
 
         // test variables
         int aActionCount = getActionsCount(aSection);
         int bActionCount = getActionsCount(bSection);
 
+        
         // WHEN
-        ActionbarView actionbar = ActionbarBuilder.build(def);
+        ActionbarView actionbar = ActionbarBuilder.build(def, listener);
 
         // THEN
         Map<String, ActionbarItem> aActions = ((Actionbar) actionbar).getSections().get(SECTION_A).getActions();
@@ -184,19 +222,14 @@ public class ActionbarBuilderTest {
         return section;
     }
 
-    private ActionbarGroupDefinition buildGroup(String name, ActionbarItemDefinition... items) {
+    private ActionbarGroupDefinition buildGroup(String name, String...actions) {
         ConfiguredActionbarGroupDefinition group = new ConfiguredActionbarGroupDefinition();
         group.setName(name);
-        for (ActionbarItemDefinition item : items) {
-            group.addItem(item);
+        for (String action : actions) {
+            ActionbarItemDefinition def = new ActionbarItemDefinition(action);
+            group.addItem(new ActionbarItemDefinition(action));
         }
         return group;
-    }
-
-    private ActionbarItemDefinition buildItem(String name) {
-        ConfiguredActionbarItemDefinition item = new ConfiguredActionbarItemDefinition();
-        item.setName(name);
-        return item;
     }
 
     private int getActionsCount(ActionbarSectionDefinition section) {
@@ -216,6 +249,35 @@ public class ActionbarBuilderTest {
             }
         }
         return false;
+    }
+
+    private class ActionbarListener implements ActionbarPresenter.Listener {
+
+        private Map<String, ActionDefinition> actionDefinitions;
+
+        private ActionbarListener(Map<String, ActionDefinition> actionDefinitions) {
+            this.actionDefinitions = actionDefinitions;
+        }
+
+        @Override
+        public void onExecute(String actionName) {
+
+        }
+
+        @Override
+        public String getLabel(String actionName) {
+            return actionDefinitions.get(actionName).getLabel();
+        }
+
+        @Override
+        public String getIcon(String actionName) {
+            return actionDefinitions.get(actionName).getLabel();
+        }
+
+        @Override
+        public void setFullScreen(boolean fullscreen) {
+
+        }
     }
 
 }

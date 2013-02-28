@@ -33,18 +33,22 @@
  */
 package info.magnolia.ui.admincentral.form.action;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Action Definition for creating new items.
  * Configuration of all needed parameters to create the correct nodeType and
  * defining the correct app and subApp to handle the action
  */
-public class CreateItemActionDefinition implements ActionDefinition {
+public class CreateItemActionDefinition extends ConfiguredActionDefinition {
 
     private String nodeType;
     private String appId;
     private String subAppId;
+
+    public CreateItemActionDefinition() {
+        setImplementationClass(CreateItemAction.class);
+    }
 
     public String getAppId() {
         return appId;

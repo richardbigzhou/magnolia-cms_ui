@@ -38,7 +38,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.field.FieldBuilder;
 import info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.builder.FactoryBase;
+import info.magnolia.ui.model.builder.MappingFactoryBase;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 import java.io.Serializable;
@@ -53,7 +53,7 @@ import com.vaadin.data.Item;
  * @see FieldDefinition
  * @see FieldBuilder
  */
-public class FieldFactory extends FactoryBase<FieldDefinition, FieldBuilder> implements Serializable {
+public class FieldFactory extends MappingFactoryBase<FieldDefinition, FieldBuilder> implements Serializable {
 
     private ValidatorFieldFactory validatorFieldFactory;
     private I18nContentSupport i18nContentSupport;

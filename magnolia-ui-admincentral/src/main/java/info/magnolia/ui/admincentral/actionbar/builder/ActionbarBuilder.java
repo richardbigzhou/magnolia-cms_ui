@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.actionbar.builder;
 
+import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
@@ -57,7 +58,7 @@ public class ActionbarBuilder {
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarBuilder.class);
 
-    public static ActionbarView build(ActionbarDefinition definition) {
+    public static ActionbarView build(ActionbarDefinition definition, ActionbarPresenter.Listener listener) {
         Actionbar actionbar = new Actionbar();
         if (definition == null) {
             log.warn("No actionbar definition found. This will result in an empty action bar. Is that intended?");
@@ -67,18 +68,18 @@ public class ActionbarBuilder {
             for (ActionbarSectionDefinition section : definition.getSections()) {
                 actionbar.addSection(section.getName(), section.getLabel());
                 List<String> actionNames = new ArrayList<String>();
-
                 for (ActionbarGroupDefinition group : section.getGroups()) {
                     // standalone groups make no sense
+                    log.info("Group actions: " + group.getItems());
+                    for (ActionbarItemDefinition action : group.getItems()) {
 
-                    for (ActionbarItemDefinition item : group.getItems()) {
-                        if (actionNames.contains(item.getName())) {
-                            log.warn("Action was not added: an action with name '" + item.getName() + "' already exists in section '" + section.getName() + "'.");
+                        if (actionNames.contains(action)) {
+                            log.warn("Action was not added: an action with name " + action + "': was already added to the section" + section.getName() + ".");
                             continue;
                         }
-
-                        actionNames.add(item.getName());
-                        addItemFromDefinition(item, actionbar, group.getName(), section.getName());
+                        
+                        actionNames.add(action.getName());
+                        addItemFromDefinition(listener, actionbar, group.getName(), section.getName(), action.getName());
                     }
                 }
             }
@@ -86,22 +87,27 @@ public class ActionbarBuilder {
         return actionbar;
     }
 
-    public static void addItemFromDefinition(ActionbarItemDefinition item, Actionbar actionBar, String groupName, String sectionName) {
-        ActionbarItem entry = null;
-        if (StringUtils.isNotBlank(item.getIcon())) {
-            if (item.getIcon().startsWith("icon-")) {
-                entry = new ActionbarItem(item.getName(), item.getLabel(), item.getIcon(), groupName);
+    public static void addItemFromDefinition(ActionbarPresenter.Listener listener, Actionbar actionBar, String groupName, String sectionName, String actionName) {
+        ActionbarItem entry;
+        String icon = listener.getIcon(actionName);
+        String label = listener.getLabel(actionName);
+        if (StringUtils.isBlank(label)) {
+            return;
+        }
+        if (StringUtils.isNotBlank(icon)) {
+            if (icon.startsWith("icon-")) {
+                entry = new ActionbarItem(actionName, label, icon, groupName);
             } else {
                 try {
-                    actionBar.registerActionIconResource(item.getName(), new ThemeResource(item.getIcon()));
+                    actionBar.registerActionIconResource(actionName, new ThemeResource(icon));
                 } catch (NullPointerException e) {
-                    log.warn("Icon resource not found for Actionbar item '" + item.getName() + "'.");
+                    log.warn("Icon resource not found for Actionbar item " + actionName + "'.");
                 } finally {
-                    entry = new ActionbarItem(item.getName(), item.getLabel(), null, groupName);
+                    entry = new ActionbarItem(actionName, label, null, groupName);
                 }
             }
         } else {
-            entry = new ActionbarItem(item.getName(), item.getLabel(), null, groupName);
+            entry = new ActionbarItem(actionName, label, null, groupName);
         }
         actionBar.addAction(entry, sectionName);
     }

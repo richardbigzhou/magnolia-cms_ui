@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,23 +33,25 @@
  */
 package info.magnolia.ui.model.actionbar.definition;
 
-import info.magnolia.ui.model.action.ActionDefinition;
-
 /**
- * The definition for an action item in the action bar.
+ * A simple item definition used inside {@link ActionbarGroupDefinition}. The name
  */
-public interface ActionbarItemDefinition {
+public class ActionbarItemDefinition {
 
-    String getName();
+    private String name;
 
-    String getLabel();
+    public ActionbarItemDefinition() {
+    }
 
-    String getI18nBasename();
+    public ActionbarItemDefinition(String name) {
+        this.name = name;
+    }
 
-    String getIcon();
+    public String getName() {
+        return name;
+    }
 
-    String getDescription();
-
-    ActionDefinition getActionDefinition();
-
+    public void setName(String name) {
+        this.name = name;
+    }
 }

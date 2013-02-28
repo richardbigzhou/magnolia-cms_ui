@@ -33,25 +33,18 @@
  */
 package info.magnolia.ui.admincentral.actionbar;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
-import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
 
-import javax.inject.Named;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
+import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.vaadin.actionbar.Actionbar;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
+import com.vaadin.server.Resource;
+
 
 /**
  * Default presenter for an action bar.
@@ -60,59 +53,195 @@ public class ActionbarPresenter extends ActionbarPresenterBase {
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarPresenter.class);
 
-    private final AppContext appContext;
+    /*
+     * private final AppContext appContext;
+     * 
+     * @Inject
+     * 
+     * public ActionbarPresenter(@Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, AppContext appContext) {
+     * super(subAppEventBus);
+     * this.appContext = appContext;
+     * }
+     */
 
-    @Inject
 
-    public ActionbarPresenter(@Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, AppContext appContext) {
-        super(subAppEventBus);
-        this.appContext = appContext;
+    private static final String PREVIEW_SECTION_NAME = "preview";
+
+    private ActionbarDefinition definition;
+
+    private ActionbarView actionbar;
+
+    private Listener listener;
+
+    /**
+     * Initializes an actionbar with given definition and returns the view for
+     * parent to add it.
+     */
+    public ActionbarView start(final ActionbarDefinition definition) {
+        this.definition = definition;
+        actionbar = ActionbarBuilder.build(definition, listener);
+        actionbar.setListener(this);
+        return actionbar;
     }
+
+    public void setPreview(final Resource previewResource) {
+        if (previewResource != null) {
+            if (!((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
+                actionbar.addSection(PREVIEW_SECTION_NAME, "Preview");
+            }
+            actionbar.setSectionPreview(previewResource, PREVIEW_SECTION_NAME);
+        } else {
+            if (((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
+                actionbar.removeSection(PREVIEW_SECTION_NAME);
+            }
+        }
+    }
+
+    // JUST DELEGATING CONTEXT SENSITIVITY TO WIDGET
+
+    public void enable(String... actionNames) {
+        if (actionbar != null) {
+            for (String action : actionNames) {
+                actionbar.setActionEnabled(action, true);
+            }
+        }
+    }
+
+    public void disable(String... actionNames) {
+        if (actionbar != null) {
+            for (String action : actionNames) {
+                actionbar.setActionEnabled(action, false);
+            }
+        }
+    }
+
+    public void enableGroup(String groupName) {
+        if (actionbar != null) {
+            actionbar.setGroupEnabled(groupName, true);
+        }
+    }
+
+    public void disableGroup(String groupName) {
+        if (actionbar != null) {
+            actionbar.setGroupEnabled(groupName, false);
+        }
+    }
+
+    public void enableGroup(String groupName, String sectionName) {
+        if (actionbar != null) {
+            actionbar.setGroupEnabled(groupName, sectionName, true);
+        }
+    }
+
+    public void disableGroup(String groupName, String sectionName) {
+        if (actionbar != null) {
+            actionbar.setGroupEnabled(groupName, sectionName, false);
+        }
+    }
+
+    public void showSection(String... sectionNames) {
+        if (actionbar != null) {
+            for (String section : sectionNames) {
+                actionbar.setSectionVisible(section, true);
+            }
+        }
+    }
+
+    public void hideSection(String... sectionNames) {
+        if (actionbar != null) {
+            for (String section : sectionNames) {
+                actionbar.setSectionVisible(section, false);
+            }
+        }
+    }
+
+    // WIDGET LISTENER
+    @Override
+    public void onActionbarItemClicked(String actionToken) {
+        String actionName = getActionName(actionToken);
+        listener.onExecute(actionName);
+    }
+
 
     @Override
     public void onChangeFullScreen(boolean isFullScreen) {
-        if (isFullScreen) {
-            appContext.enterFullScreenMode();
-        } else {
-            appContext.exitFullScreenMode();
+        listener.setFullScreen(isFullScreen);
+    }
+
+    /*
+     * public void createAndExecuteAction(final ActionDefinition actionDefinition, String workspace, String absPath) {
+     * if (actionDefinition == null || StringUtils.isBlank(workspace)) {
+     * Message warn = createMessage(MessageType.WARNING, "Got invalid arguments: action definition is " + actionDefinition + ", workspace is " + workspace, "");
+     * appContext.sendLocalMessage(warn);
+     * }
+     * try {
+     * Session session = MgnlContext.getJCRSession(workspace);
+     * if (absPath == null || !session.itemExists(absPath)) {
+     * log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", absPath);
+     * absPath = "/";
+     * }
+     * final javax.jcr.Item item = session.getItem(absPath);
+     * final Action action = getActionFactory().createAction(actionDefinition, item);
+     * if (action == null) {
+     * Message warn = createMessage(MessageType.WARNING, "Could not create action from actionDefinition. Action is null.", "");
+     * appContext.sendLocalMessage(warn);
+     * } else {
+     * action.execute();
+     * }
+     * appContext.showConfirmationMessage("Action executed successfully.");
+     * } catch (RepositoryException e) {
+     * Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+     * appContext.broadcastMessage(error);
+     * } catch (ActionExecutionException e) {
+     * Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+     * appContext.broadcastMessage(error);
+     * }
+     */
+    private String getActionName(String actionToken) {
+        final String[] chunks = actionToken.split(":");
+        if (chunks.length != 2) {
+            log.warn(
+                    "Invalid actionToken [{}]: it is expected to be in the form sectionName:actionName. ActionDefintion cannot be retrieved. Please check actionbar definition.", actionToken);
+            return null;
+        }
+        final String sectionName = chunks[0];
+        final String actionName = chunks[1];
+
+        return actionName;
+    }
+
+    // DEFAULT ACTION
+
+    /**
+     * Executes the workbench's default action, as configured in the defaultAction property.
+     */
+    public void executeDefaultAction() {
+        String defaultAction = definition.getDefaultAction();
+        if (StringUtils.isNotEmpty(defaultAction)) {
+            listener.onExecute(defaultAction);
+        }
+        else {
+            log.warn("Default action is null. Please check actionbar definition.");
         }
     }
 
-    public void createAndExecuteAction(final ActionDefinition actionDefinition, String workspace, String absPath) {
-        if (actionDefinition == null || StringUtils.isBlank(workspace)) {
-            Message warn = createMessage(MessageType.WARNING, "Got invalid arguments: action definition is " + actionDefinition + ", workspace is " + workspace, "");
-            appContext.sendLocalMessage(warn);
-        }
-        try {
-            Session session = MgnlContext.getJCRSession(workspace);
-            if (absPath == null || !session.itemExists(absPath)) {
-                log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", absPath);
-                absPath = "/";
-            }
-            final javax.jcr.Item item = session.getItem(absPath);
-            final Action action = getActionFactory().createAction(actionDefinition, item);
-            if (action == null) {
-                Message warn = createMessage(MessageType.WARNING, "Could not create action from actionDefinition. Action is null.", "");
-                appContext.sendLocalMessage(warn);
-            } else {
-                action.execute();
-            }
-            appContext.showConfirmationMessage("Action executed successfully.");
-        } catch (RepositoryException e) {
-            Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
-            appContext.broadcastMessage(error);
-        } catch (ActionExecutionException e) {
-            Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
-            appContext.broadcastMessage(error);
-        }
+    public void setListener(Listener listener) {
+        this.listener = listener;
+
     }
 
-    private Message createMessage(MessageType type, String subject, String message) {
-        final Message msg = new Message();
-        msg.setSubject(subject);
-        msg.setMessage(message);
-        msg.setType(type);
-        return msg;
-    }
+    /**
+     *  Listener interface for the Actionbar.
+     */
+    public interface Listener {
 
+        void onExecute(String actionName);
+
+        String getLabel(String actionName);
+
+        String getIcon(String actionName);
+
+        void setFullScreen(boolean fullscreen);
+
+    }
 }
