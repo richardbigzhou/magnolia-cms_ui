@@ -35,8 +35,8 @@ package info.magnolia.ui.admincentral.app.content.location;
 
 import static org.junit.Assert.*;
 
-import info.magnolia.ui.admincentral.content.view.ContentView;
 import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.workbench.ContentView;
 
 import org.junit.Test;
 

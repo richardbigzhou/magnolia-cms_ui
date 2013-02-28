@@ -33,14 +33,18 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Defines a dialog action for opening a dialog for editing a node.
  */
-public class EditDialogActionDefinition implements ActionDefinition {
+public class EditDialogActionDefinition extends ConfiguredActionDefinition {
 
     private String dialogName;
+
+    public EditDialogActionDefinition() {
+        setImplementationClass(EditDialogAction.class);
+    }
 
     public String getDialogName() {
         return dialogName;
@@ -49,4 +53,5 @@ public class EditDialogActionDefinition implements ActionDefinition {
     public void setDialogName(String dialogName) {
         this.dialogName = dialogName;
     }
+
 }

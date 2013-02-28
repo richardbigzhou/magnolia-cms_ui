@@ -47,6 +47,8 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Container.Filterable;
@@ -240,7 +242,7 @@ public class PulseMessagesPresenter implements Serializable {
         if (item != null && message != null) {
             item.getItemProperty("new").setValue(message.isCleared() ? "No" : "Yes");
             item.getItemProperty("type").setValue(message.getType());
-            item.getItemProperty("text").setValue(message.getMessage());
+            item.getItemProperty("text").setValue(StringUtils.abbreviate(message.getMessage(), 40));
             item.getItemProperty("date").setValue(new Date(message.getTimestamp()));
         }
     }
@@ -266,7 +268,7 @@ public class PulseMessagesPresenter implements Serializable {
 
                 switch (category) {
                 case WORK_ITEM:
-                    return type == MessageType.WARNING;
+                    return type == MessageType.WORKITEM;
                 case PROBLEM:
                     return type == MessageType.ERROR;
                 case INFO:

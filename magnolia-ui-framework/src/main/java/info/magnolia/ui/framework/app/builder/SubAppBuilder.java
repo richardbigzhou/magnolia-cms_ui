@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.app.builder;
 
+import info.magnolia.ui.model.action.builder.ActionBuilder;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
@@ -53,8 +54,10 @@ public class SubAppBuilder {
         return this;
     }
 
-    public SubAppBuilder defaultSubApp() {
-        descriptor.setDefault(true);
+    public SubAppBuilder actions(ActionBuilder... builders) {
+        for (ActionBuilder builder : builders) {
+            descriptor.getActions().put(builder.getName(), builder.exec());
+        }
         return this;
     }
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,35 +33,26 @@
  */
 package info.magnolia.ui.model.builder;
 
-import info.magnolia.objectfactory.ComponentProvider;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import info.magnolia.objectfactory.ComponentProvider;
+
 /**
- * A base class for implementing factories which instantiate implementations based on definition objects.
- *
- * @param <D> definition parent type
- * @param <I> implementation parent type
+ * FactoryBase.
+ * @param <D>
+ * @param <I>
  */
 public abstract class FactoryBase<D, I> {
+
     private static final Logger log = LoggerFactory.getLogger(FactoryBase.class);
-
-    private ComponentProvider componentProvider;
-
-    private Map<Class<? extends D>, Class<? extends I>> mapping = new HashMap<Class<? extends D>, Class<? extends I>>();
-
-    protected FactoryBase(ComponentProvider componentProvider) {
+    
+    protected ComponentProvider componentProvider;
+    
+    public FactoryBase(ComponentProvider componentProvider) {
         this.componentProvider = componentProvider;
     }
-
-    protected void addMapping(Class<? extends D> definitionClass, Class<? extends I> implementationClass) {
-        mapping.put(definitionClass, implementationClass);
-    }
-
+    
     /**
      * Creates an instance of the implementation configured for the given definition. The parameters are made
      * available for injection when the instance is created. The definition object given is also available for
@@ -83,18 +74,7 @@ public abstract class FactoryBase<D, I> {
         log.warn("No matching implementation class was found for definition class [{}]. Please check your configuration.", definition.getClass().getName());
         return null;
     }
-
-    private Class<? extends I> resolveImplementationClass(D definition) {
-        final Class<?> definitionClass = definition.getClass();
-        if (mapping.containsKey(definitionClass)) {
-            return mapping.get(definitionClass);
-        }
-        for (Class<? extends D> keyClass : mapping.keySet()) {
-            if (keyClass.isInstance(definition)) {
-                return mapping.get(keyClass);
-            }
-        }
-        return null;
-    }
-
+    
+    protected abstract Class<? extends I> resolveImplementationClass(D definition);
+    
 }

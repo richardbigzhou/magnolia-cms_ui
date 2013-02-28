@@ -33,29 +33,15 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Defines an action for saving a dialog.
  */
-public class SaveDialogActionDefinition implements ActionDefinition {
+public class SaveDialogActionDefinition extends ConfiguredActionDefinition {
 
-    private String label;
-    private String name;
-
-    public String getLabel() {
-        return label;
+    public SaveDialogActionDefinition() {
+        setImplementationClass(SaveDialogAction.class);
     }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

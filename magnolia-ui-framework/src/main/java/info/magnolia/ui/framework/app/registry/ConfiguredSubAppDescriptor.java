@@ -35,6 +35,10 @@ package info.magnolia.ui.framework.app.registry;
 
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.model.action.ActionDefinition;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * ConfiguredSubAppDescriptor.
@@ -52,8 +56,9 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
 
     private String icon;
 
+    private Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
+
     private Class<? extends SubApp> subAppClass;
-    private boolean isDefault;
 
     @Override
     public String getName() {
@@ -71,13 +76,13 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
     }
 
     @Override
-    public boolean isDefault() {
-        return isDefault;
+    public String getIcon() {
+        return icon;
     }
 
     @Override
-    public String getIcon() {
-        return icon;
+    public Map<String, ActionDefinition> getActions() {
+        return actions;
     }
 
     @Override
@@ -97,12 +102,12 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
         this.enabled = enabled;
     }
 
-    public void setDefault(boolean isDefault) {
-        this.isDefault = isDefault;
-    }
-
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public void setActions(Map<String, ActionDefinition> actions) {
+        this.actions = actions;
     }
 
     public void setSubAppClass(Class<? extends SubApp> subAppClass) {

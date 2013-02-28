@@ -34,11 +34,13 @@
 package info.magnolia.ui.framework.message;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.node2bean.Node2BeanException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Singleton;
 import javax.jcr.Node;
@@ -58,12 +60,6 @@ import org.slf4j.LoggerFactory;
 public class MessageStore {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    public static final String TIMESTAMP = "timestamp";
-    public static final String SUBJECT = "subject";
-    public static final String TYPE = "type";
-    public static final String MESSAGE = "message";
-    public static final String CLEARED = "cleared";
 
     static final String MESSAGE_NODE_TYPE = "mgnl:systemMessage";
 
@@ -118,7 +114,7 @@ public class MessageStore {
 
                     int n = 0;
                     for (Node messageNode : NodeUtil.getNodes(getOrCreateUserNode(session, userName), MESSAGE_NODE_TYPE)) {
-                        if (!messageNode.getProperty(CLEARED).getBoolean()) {
+                        if (!messageNode.getProperty(Message.CLEARED).getBoolean()) {
                             n++;
                         }
                     }
@@ -153,6 +149,9 @@ public class MessageStore {
                 } catch (RepositoryException e) {
                     logger.error("Saving message failed for user: " + userName, e);
                     return new ArrayList<Message>();
+                } catch (Node2BeanException e) {
+                    logger.error("Saving message failed for user: " + userName, e);
+                    return new ArrayList<Message>();
                 }
             }
         });
@@ -178,34 +177,26 @@ public class MessageStore {
                 } catch (RepositoryException e) {
                     logger.error("Unable to read message: " + messageId + " for user: " + userName, e);
                     return null;
+                } catch (Node2BeanException e) {
+                    logger.error("Unable to read message: " + messageId + " for user: " + userName, e);
+                    return null;
                 }
             }
         });
     }
 
     void marshallMessage(Message message, Node node) throws RepositoryException {
-        node.setProperty(TIMESTAMP, message.getTimestamp());
-        node.setProperty(TYPE, message.getType().name());
-        node.setProperty(SUBJECT, message.getSubject());
-        node.setProperty(MESSAGE, message.getMessage());
-        node.setProperty(CLEARED, message.isCleared());
+        Node2MapUtil.map2node(node, message);
     }
 
-    Message unmarshallMessage(Node node) throws RepositoryException {
-        final Message message = new Message(node.getProperty(TIMESTAMP).getLong());
+    Message unmarshallMessage(Node node) throws RepositoryException, Node2BeanException {
+        Map<String, Object> map = Node2MapUtil.node2map(node);
+        long timestamp = ((Long) map.get(Message.TIMESTAMP)).longValue();
+
+        final Message message = new Message(timestamp);
+        message.putAll(map);
         message.setId(node.getName());
-        if (node.hasProperty(TYPE)) {
-            message.setType(MessageType.valueOf(node.getProperty(TYPE).getString()));
-        }
-        if (node.hasProperty(SUBJECT)) {
-            message.setSubject(node.getProperty(SUBJECT).getString());
-        }
-        if (node.hasProperty(MESSAGE)) {
-            message.setMessage(node.getProperty(MESSAGE).getString());
-        }
-        if (node.hasProperty(CLEARED)) {
-            message.setCleared(node.getProperty(CLEARED).getBoolean());
-        }
+
         return message;
     }
 

@@ -49,6 +49,7 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.view.View;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -131,16 +132,8 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
     @Override
     public SubAppDescriptor getDefaultSubAppDescriptor() {
-        Map<String, SubAppDescriptor> subAppDescriptors = getAppDescriptor().getSubApps();
-
-        SubAppDescriptor defaultSubAppDescriptor = null;
-        for (SubAppDescriptor subAppDescriptor : subAppDescriptors.values()) {
-            if (subAppDescriptor.isDefault()) {
-                defaultSubAppDescriptor = subAppDescriptor;
-                break;
-            }
-        }
-        return defaultSubAppDescriptor;
+        Collection<SubAppDescriptor> subAppDescriptors = getAppDescriptor().getSubApps().values();
+        return subAppDescriptors.isEmpty() ? null : subAppDescriptors.iterator().next();
     }
 
     private SubAppDescriptor getSubAppDescriptorById(String subAppId) {
@@ -286,12 +279,11 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         }
         SubAppContext subAppContext = new SubAppContextImpl(subAppDescriptor);
 
-        ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppContext.getSubAppId(), subAppContext, componentProvider);
-
-        SubApp subApp = subAppComponentProvider.newInstance(subAppDescriptor.getSubAppClass());
-
         subAppContext.setAppContext(this);
         subAppContext.setLocation(location);
+
+        ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppContext.getSubAppId(), subAppContext, componentProvider);
+        SubApp subApp = subAppComponentProvider.newInstance(subAppDescriptor.getSubAppClass());
         subAppContext.setSubApp(subApp);
 
         String instanceId = app.getView().addSubAppView(subApp.start(location), subApp.getCaption(), !subAppContexts.isEmpty());
@@ -391,5 +383,4 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
         return builder.build();
     }
-
 }

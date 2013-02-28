@@ -33,14 +33,18 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * CreatePageThumbnailActionDefinition.
  */
-public class CreatePageThumbnailActionDefinition implements ActionDefinition {
+public class CreatePageThumbnailActionDefinition extends ConfiguredActionDefinition {
 
     private String exportType;
+
+    public CreatePageThumbnailActionDefinition() {
+        setImplementationClass(CreatePageThumbnailAction.class);
+    }
 
     public String getExportType() {
         return exportType;
@@ -49,4 +53,5 @@ public class CreatePageThumbnailActionDefinition implements ActionDefinition {
     public void setExportType(String exportType) {
         this.exportType = exportType;
     }
+
 }

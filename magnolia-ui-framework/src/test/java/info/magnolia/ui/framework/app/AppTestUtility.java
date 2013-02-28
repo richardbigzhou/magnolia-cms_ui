@@ -79,7 +79,6 @@ public class AppTestUtility {
         descriptor.setIcon(startLibell + "_icon");
         descriptor.setLabel(startLibell + "_label");
         descriptor.setName(startLibell + "_name");
-        descriptor.setDefault(isDefault);
         return descriptor;
     }
 

@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.dialog;
 import info.magnolia.ui.framework.app.ItemChosenListener;
 
 /**
- * Factory interface for creating choose dialog presenters.
+ * Factory interface for creating choose dialogs.
  */
 public interface ChooseDialogPresenterFactory {
 

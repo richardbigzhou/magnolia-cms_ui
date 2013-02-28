@@ -34,39 +34,41 @@
 package info.magnolia.ui.admincentral.workbench;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
-import info.magnolia.ui.admincentral.content.view.ContentView.ViewType;
-import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
-import info.magnolia.ui.framework.event.ContentChangedEvent;
-import info.magnolia.ui.admincentral.event.ItemDoubleClickedEvent;
-import info.magnolia.ui.admincentral.event.ItemEditedEvent;
-import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.event.SearchEvent;
-import info.magnolia.ui.admincentral.event.ViewTypeChangedEvent;
-import info.magnolia.ui.admincentral.search.view.SearchView;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
-import info.magnolia.ui.model.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
+import info.magnolia.ui.workbench.event.ItemEditedEvent;
+import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
+import info.magnolia.ui.workbench.search.SearchView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -86,11 +88,13 @@ import com.vaadin.server.Resource;
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR workspace to connect to, the columns/properties to display, the available actions and so on.
  */
-public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener {
+public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener, ActionbarPresenter.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchPresenter.class);
 
     private final WorkbenchDefinition workbenchDefinition;
+
+    private final ActionExecutor actionExecutor;
 
     private final ContentWorkbenchView view;
 
@@ -98,22 +102,22 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     private final EventBus subAppEventBus;
 
-    private final WorkbenchActionFactory actionFactory;
-
     private final ContentPresenter contentPresenter;
 
     private final ActionbarPresenter actionbarPresenter;
 
     private final ImageProvider imageProvider;
+    private final AppContext appContext;
 
     @Inject
-    public ContentWorkbenchPresenter(final SubAppContext subAppContext, final ContentWorkbenchView view, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus admincentralEventBus,
-            final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final WorkbenchActionFactory actionFactory, final ContentPresenter contentPresenter,
+    public ContentWorkbenchPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentWorkbenchView view, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus admincentralEventBus,
+            final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final ContentPresenter contentPresenter,
             final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
+        this.actionExecutor = actionExecutor;
+        this.appContext = subAppContext.getAppContext();
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
-        this.actionFactory = actionFactory;
         this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.workbenchDefinition = ((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench();
@@ -128,7 +132,9 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
     public ContentWorkbenchView start() {
         view.setListener(this);
         contentPresenter.initContentView(view);
-        ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar(), actionFactory);
+        actionbarPresenter.setListener(this);
+
+        ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar());
         view.setActionbarView(actionbar);
         bindHandlers();
         return view;
@@ -140,16 +146,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
                 refreshActionbarPreviewImage(event.getPath(), event.getWorkspace());
-                view.refresh();
-            }
-        });
-
-        subAppEventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarItemClickedEvent.Handler() {
-
-            @Override
-            public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
-                final ActionDefinition actionDefinition = event.getActionDefinition();
-                actionbarPresenter.createAndExecuteAction(actionDefinition, workbenchDefinition.getWorkspace(), getSelectedItemId());
                 view.refresh();
             }
         });
@@ -166,7 +162,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
             @Override
             public void onItemDoubleClicked(ItemDoubleClickedEvent event) {
-                executeDefaultAction();
+                actionbarPresenter.executeDefaultAction();
             }
         });
 
@@ -204,16 +200,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
 
     public String getWorkspace() {
         return workbenchDefinition.getWorkspace();
-    }
-
-    /**
-     * Executes the workbench's default action, as configured in the defaultAction property.
-     */
-    public void executeDefaultAction() {
-        ActionDefinition defaultActionDef = actionbarPresenter.getDefaultActionDefinition();
-        if (defaultActionDef != null) {
-            actionbarPresenter.createAndExecuteAction(defaultActionDef, workbenchDefinition.getWorkspace(), getSelectedItemId());
-        }
     }
 
     @Override
@@ -319,6 +305,43 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener 
             } catch (RepositoryException e) {
                 log.error("Could not save changes to node.", e);
             }
+        }
+    }
+
+    @Override
+    public void onExecute(String actionName) {
+        try {
+            Session session = MgnlContext.getJCRSession(getWorkspace());
+            final javax.jcr.Item item = session.getItem(getSelectedItemId());
+
+            actionExecutor.execute(actionName, item);
+
+        } catch (RepositoryException e) {
+            throw new RuntimeException("Could not get item: " + getSelectedItemId(), e);
+        } catch (ActionExecutionException e) {
+            throw new RuntimeException("Could not execute the action: " + actionName, e);
+        }
+    }
+
+    @Override
+    public String getLabel(String actionName) {
+        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
+        return actionDefinition != null ? actionDefinition.getLabel() : null;
+    }
+
+    @Override
+    public String getIcon(String actionName) {
+        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
+        return actionDefinition != null ? actionDefinition.getIcon() : null;
+    }
+
+
+    @Override
+    public void setFullScreen(boolean fullScreen) {
+        if (fullScreen) {
+            appContext.enterFullScreenMode();
+        } else {
+            appContext.exitFullScreenMode();
         }
     }
 

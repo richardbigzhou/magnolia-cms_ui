@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.pages.column;
 
-import info.magnolia.ui.model.column.definition.AbstractColumnDefinition;
+import info.magnolia.ui.workbench.column.definition.AbstractColumnDefinition;
 
 /**
  * Definition for a template column.

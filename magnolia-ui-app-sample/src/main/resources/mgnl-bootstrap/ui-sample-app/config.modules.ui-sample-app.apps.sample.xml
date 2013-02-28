@@ -93,9 +93,6 @@
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor</sv:value>
       </sv:property>
-      <sv:property sv:name="default" sv:type="String">
-        <sv:value>true</sv:value>
-      </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
@@ -135,9 +132,6 @@
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor</sv:value>
-      </sv:property>
-      <sv:property sv:name="default" sv:type="String">
-        <sv:value>true</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>

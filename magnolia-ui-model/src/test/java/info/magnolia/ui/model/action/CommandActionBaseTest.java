@@ -37,19 +37,16 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.commands.CommandsManager;
+import info.magnolia.commands.MgnlCommand;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
 import info.magnolia.context.WebContext;
-import info.magnolia.jcr.node2bean.Node2BeanProcessor;
-import info.magnolia.objectfactory.Components;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 
 import java.util.Map;
-
-import javax.jcr.Node;
 
 import org.junit.After;
 import org.junit.Before;
@@ -62,19 +59,10 @@ public class CommandActionBaseTest {
     private String website =
             "/parent.uuid=1\n" +
                     "/parent/sub.uuid=2";
+
     private MockSession session;
 
-    public static class TestAction extends CommandActionBase<CommandActionDefinition> {
-
-
-        public TestAction(CommandActionDefinition definition, Node node, CommandsManager commandsManager) {
-            super(definition, node, commandsManager);
-        }
-
-        @Override
-        public void execute() throws ActionExecutionException {
-        }
-    }
+    private CommandsManager commandsManager;
 
     @Before
     public void setUp() throws Exception {
@@ -89,10 +77,7 @@ public class CommandActionBaseTest {
         when(systemContext.getJCRSession("website")).thenReturn(session);
         ComponentsTestUtil.setInstance(SystemContext.class, systemContext);
 
-        ComponentsTestUtil.setImplementation(CommandsManager.class, CommandsManager.class);
-
-        Node2BeanProcessor node2BeanProcessor = mock(Node2BeanProcessor.class);
-        ComponentsTestUtil.setInstance(Node2BeanProcessor.class, node2BeanProcessor);
+        commandsManager = mock(CommandsManager.class);
     }
 
     @After
@@ -106,7 +91,7 @@ public class CommandActionBaseTest {
     public void testGetParamsReturnsBasicContextParamsFromNode() throws Exception {
 
         // GIVEN
-        TestAction action = new TestAction(new CommandActionDefinition(), session.getNode("/parent/sub"), Components.getComponent(CommandsManager.class));
+        CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(new CommandActionDefinition(), MgnlContext.getJCRSession("website").getNode("/parent/sub"), commandsManager);
 
         // WHEN
         Map<String, Object> params = action.getParams();
@@ -130,7 +115,7 @@ public class CommandActionBaseTest {
         definition.getParams().put("def", "baz");
         definition.getParams().put("ghi", "456");
 
-        TestAction action = new TestAction(definition, session.getNode("/parent/sub"), Components.getComponent(CommandsManager.class));
+        CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(definition, MgnlContext.getJCRSession("website").getNode("/parent/sub"), commandsManager);
 
         // WHEN
         Map<String, Object> params = action.getParams();
@@ -147,15 +132,42 @@ public class CommandActionBaseTest {
     }
 
     @Test
-    public void testGetCommandsManager() throws Exception {
+    public void testExecute() throws Exception {
         // GIVEN
-        TestAction action = new TestAction(new CommandActionDefinition(), session.getNode("/parent/sub"), Components.getComponent(CommandsManager.class));
+        CommandActionDefinition definition = new CommandActionDefinition();
+        definition.setCommand("qux");
+
+        QuxCommand quxCommand = new QuxCommand();
+        when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "qux")).thenReturn(quxCommand);
+        when(commandsManager.getCommand("qux")).thenReturn(quxCommand);
+
+        CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(definition, MgnlContext.getJCRSession("website").getNode("/parent"), commandsManager);
 
         // WHEN
-        CommandsManager manager = action.getCommandsManager();
+        action.execute();
 
         // THEN
-        assertNotNull(manager);
-        assertTrue(manager instanceof CommandsManager);
+        verify(commandsManager, times(1)).executeCommand(quxCommand, action.getParams());
     }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testGetParamsReturnsImmutableMap() throws Exception {
+        // GIVEN
+        CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(new CommandActionDefinition(), MgnlContext.getJCRSession("website").getNode("/parent/sub"), commandsManager);
+        Map<String, Object> params = action.getParams();
+
+        // WHEN
+        params.put("foo", "bar");
+
+        // THEN exception
+    }
+
+    private static final class QuxCommand extends MgnlCommand {
+
+        @Override
+        public boolean execute(Context context) throws Exception {
+            return false;
+        }
+    }
+
 }
