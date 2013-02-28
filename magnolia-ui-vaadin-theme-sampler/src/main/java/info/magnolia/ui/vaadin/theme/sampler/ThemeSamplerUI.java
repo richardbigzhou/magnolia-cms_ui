@@ -45,6 +45,7 @@ import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 
@@ -62,6 +63,7 @@ public class ThemeSamplerUI extends UI {
     private TextField textField = new TextField("TextField", "This is a TextField");
     private TextField wideTextField = new TextField("Wide TextField", "This is a wide TextField");
     private PasswordField passwordField = new PasswordField("PasswordField", "h@¢km3!ƒU©àN");
+    private TextArea textArea = new TextArea("TextArea", "Look at me, I'm a long text!\nI even have line breaks!");
     private ComboBox comboBox = new ComboBox("ComboBox", Arrays.asList("Option A", "Option B"));
     private DateField dateField = new DateField("DateField");
     private Button saveButton = new Button("Save changes");
@@ -85,6 +87,7 @@ public class ThemeSamplerUI extends UI {
         formLayout.addComponent(textField);
         formLayout.addComponent(wideTextField);
         formLayout.addComponent(passwordField);
+        formLayout.addComponent(textArea);
         formLayout.addComponent(comboBox);
         formLayout.addComponent(dateField);
         formLayout.addComponent(cancelButton);
