@@ -99,6 +99,7 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         return user;
     }
 
+    @Override
     @After
     public void tearDown() throws Exception {
         ComponentsTestUtil.clear();
