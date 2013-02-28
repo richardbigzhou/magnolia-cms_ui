@@ -37,7 +37,7 @@ import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -58,7 +58,7 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
 
     private Class<? extends App> appClass;
 
-    private Map<String, SubAppDescriptor> subApps = new HashMap<String, SubAppDescriptor>();
+    private Map<String, SubAppDescriptor> subApps = new LinkedHashMap<String, SubAppDescriptor>();
 
     @Override
     public String getName() {

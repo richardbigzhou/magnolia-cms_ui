@@ -134,7 +134,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      * @param appId of the {@link App} to instantiate.
      */
     private App getAppWithoutStarting(String appId) {
-        AppInstanceController appInstanceController = getAppInstance(appId);
+        AppInstanceController appInstanceController = createNewAppInstance(appId);
         ComponentProvider appComponentProvider = createAppComponentProvider(appInstanceController.getAppDescriptor().getName(), appInstanceController);
         App app = appComponentProvider.newInstance(appInstanceController.getAppDescriptor().getAppClass());
 
@@ -356,16 +356,19 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private AppInstanceController getAppInstance(String appId) {
         if (isAppStarted(appId)) {
             return runningApps.get(appId);
-        } else {
-            AppDescriptor descriptor = getAppDescriptor(appId);
-            if (descriptor == null) {
-                return null;
-            }
-
-            AppInstanceController appInstanceController = componentProvider.newInstance(AppInstanceController.class, descriptor);
-            createAppComponentProvider(descriptor.getName(), appInstanceController);
-            return appInstanceController;
         }
+        return createNewAppInstance(appId);
+    }
+
+    private AppInstanceController createNewAppInstance(String appId) {
+        AppDescriptor descriptor = getAppDescriptor(appId);
+        if (descriptor == null) {
+            return null;
+        }
+
+        AppInstanceController appInstanceController = componentProvider.newInstance(AppInstanceController.class, descriptor);
+        createAppComponentProvider(descriptor.getName(), appInstanceController);
+        return appInstanceController;
     }
 
     @Override
