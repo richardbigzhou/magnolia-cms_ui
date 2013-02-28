@@ -3,6 +3,7 @@
 @import "fonts.scss";
 @import "colors.scss";
 @import "button.scss";
+@import "util/utils.scss";
 
 @mixin magnolia {
   @include base;
@@ -25,7 +26,9 @@
   	color: $c02;
   }
 
-  .v-textfield, .v-filterselect-input {
+  .v-textfield, .v-textarea, .v-filterselect-input {
+    @include box-sizing(content-box);
+    margin: 0;
   	padding: 3px 3px 4px 6px !important;
     border: 1px solid $c02;
     background-color: $c21;
@@ -38,6 +41,17 @@
       border-width: 2px;
       border-color: $c06;
     }
+  }
+
+  .v-app .v-filterselect-input,
+  .v-window .v-filterselect-input,
+  .v-popupview-popup .v-filterselect-input {
+    @include box-sizing(content-box);
+  }
+
+  .v-filterselect-button {
+    position: relative;
+    left: -1.5em;
   }
 
 }

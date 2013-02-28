@@ -64,7 +64,10 @@ public class ThemeSamplerUI extends UI {
     private TextField wideTextField = new TextField("Wide TextField", "This is a wide TextField");
     private PasswordField passwordField = new PasswordField("PasswordField", "h@¢km3!ƒU©àN");
     private TextArea textArea = new TextArea("TextArea", "Look at me, I'm a long text!\nI even have line breaks!");
-    private ComboBox comboBox = new ComboBox("ComboBox", Arrays.asList("Option A", "Option B"));
+    private ComboBox comboBox = new ComboBox("ComboBox", Arrays.asList("Avengers", "Bullit"));
+    private ComboBox paginatedComboBox = new ComboBox("Paginated ComboBox", Arrays.asList("Asteroid", "Basel", "Chainsaw", "Divine", "Easter", "Family", "Georgia",
+            "Hammersmith", "Ipswitch", "Jackrabbit", "Kornhaus", "Liver", "Magnolia", "Noteworthy", "Opium", "Panacotta", "Quadrant", "Responsive Responsive Responsive",
+            "Shark attack", "Trivial", "Unicorn", "Volkswagen", "Warsau", "Xiaoyu", "Yeast", "Zero"));
     private DateField dateField = new DateField("DateField");
     private Button saveButton = new Button("Save changes");
     private Button cancelButton = new Button("Discard");
@@ -76,10 +79,12 @@ public class ThemeSamplerUI extends UI {
 
     private void initLayout() {
 
-        wideTextField.setWidth(300, Unit.PIXELS);
+        wideTextField.setWidth(400, Unit.PIXELS);
 
         comboBox.setInvalidAllowed(false);
         comboBox.setNullSelectionAllowed(false);
+
+        paginatedComboBox.setWidth(400, Unit.PIXELS);
 
         saveButton.addStyleName("commit");
 
@@ -89,6 +94,7 @@ public class ThemeSamplerUI extends UI {
         formLayout.addComponent(passwordField);
         formLayout.addComponent(textArea);
         formLayout.addComponent(comboBox);
+        formLayout.addComponent(paginatedComboBox);
         formLayout.addComponent(dateField);
         formLayout.addComponent(cancelButton);
         formLayout.addComponent(saveButton);
