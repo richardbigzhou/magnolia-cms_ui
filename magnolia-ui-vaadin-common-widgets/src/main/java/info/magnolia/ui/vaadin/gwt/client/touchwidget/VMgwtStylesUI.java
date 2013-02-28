@@ -60,7 +60,6 @@ import com.googlecode.mgwt.ui.client.theme.base.ScrollPanelCss;
 import com.googlecode.mgwt.ui.client.theme.base.SliderCss;
 import com.googlecode.mgwt.ui.client.theme.base.TabBarCss;
 import com.googlecode.mgwt.ui.client.theme.base.UtilCss;
-import com.vaadin.client.ui.VUI;
 
 /**
  * Special {@link VUI} extension to prevent MGWT from injecting its theme styles, which would otherwise potentially
