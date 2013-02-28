@@ -150,18 +150,6 @@ button.btn-form-help {
     width: auto !important;
 }
 
-input[type="text"].v-form-field, .v-form-field.v-customcomponent input[type="text"],
-.v-datefield input[type="text"], textarea.v-form-field {
-    background: #FFF;
-    border-radius: 0px;
-    border: 1px solid #CCC;
-    color: #000;
-    display: inline-block;
-    margin: 0px;
-    padding: 6px 7px 6px 7px;
-    height: 28px !important;
-}
-
 textarea.v-form-field {
     overflow-y: auto;
     height:auto;
@@ -246,13 +234,6 @@ textarea.v-form-field {
     padding: 1px;
     vertical-align: middle;
     width: 20px;
-}
-
-select:focus,input[type="text"]:focus,input[type="password"]:focus,textarea:focus
-{
-    border: 1px solid #4B8E9E;
-    box-shadow: 0px 0px 1px 0px #4B8E9E;
-    color: #777;
 }
 
 .action-jump-to-next-error {
