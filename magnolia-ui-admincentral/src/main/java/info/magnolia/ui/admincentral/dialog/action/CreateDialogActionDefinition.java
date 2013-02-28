@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Defines a dialog action that opens a dialog for adding a new node.
  */
-public class CreateDialogActionDefinition implements ActionDefinition {
+public class CreateDialogActionDefinition extends ConfiguredActionDefinition {
 
     private String dialogName;
 
@@ -48,6 +48,10 @@ public class CreateDialogActionDefinition implements ActionDefinition {
      * @see info.magnolia.jcr.util.NodeTypes
      */
     private String nodeType;
+
+    public CreateDialogActionDefinition() {
+        setImplementationClass(CreateDialogAction.class);
+    }
 
     public String getDialogName() {
         return dialogName;
@@ -64,4 +68,5 @@ public class CreateDialogActionDefinition implements ActionDefinition {
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
     }
+
 }

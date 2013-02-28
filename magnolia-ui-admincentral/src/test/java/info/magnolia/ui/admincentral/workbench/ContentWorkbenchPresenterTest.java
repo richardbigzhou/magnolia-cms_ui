@@ -38,6 +38,8 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -46,14 +48,13 @@ import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
 import info.magnolia.ui.admincentral.app.content.builder.ContentSubAppBuilder;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
-import info.magnolia.ui.admincentral.event.ItemEditedEvent;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.event.EventBus;
-import info.magnolia.event.SimpleEventBus;
-import info.magnolia.ui.model.workbench.builder.WorkbenchBuilder;
+import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+import info.magnolia.ui.workbench.builder.WorkbenchBuilder;
+import info.magnolia.ui.workbench.event.ItemEditedEvent;
 
 import java.util.Calendar;
 
@@ -113,8 +114,10 @@ public class ContentWorkbenchPresenterTest {
         EventBus adminCentralEventBus = mock(EventBus.class);
         ContentPresenter mockContentPresenter = mock(ContentPresenter.class);
         ActionbarPresenter mockActionbarPresenter = mock(ActionbarPresenter.class);
+        ActionExecutor actionExecutor = mock(ActionExecutor.class);
 
-        presenter = new ContentWorkbenchPresenter(subAppContext, mockView, adminCentralEventBus, subAppEventBus, null, mockContentPresenter, mockActionbarPresenter, null);
+        presenter = new ContentWorkbenchPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, 
+                mockContentPresenter, mockActionbarPresenter, null);
 
         // start presenter (binds event handlers)
         presenter.start();

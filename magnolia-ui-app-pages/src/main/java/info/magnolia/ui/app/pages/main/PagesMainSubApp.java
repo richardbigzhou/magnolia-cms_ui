@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.pages.main;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
@@ -42,7 +43,6 @@ import info.magnolia.ui.admincentral.app.content.ContentSubApp;
 import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 
 import javax.inject.Inject;

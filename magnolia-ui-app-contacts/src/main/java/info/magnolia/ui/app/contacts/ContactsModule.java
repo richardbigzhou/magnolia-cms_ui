@@ -40,8 +40,8 @@ import info.magnolia.ui.admincentral.app.CodeConfigurationUtils;
 import info.magnolia.ui.admincentral.app.content.ContentApp;
 import info.magnolia.ui.admincentral.app.content.ItemSubApp;
 import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
-import info.magnolia.ui.admincentral.column.DateColumnFormatter;
-import info.magnolia.ui.admincentral.column.StatusColumnFormatter;
+import info.magnolia.ui.workbench.column.DateColumnFormatter;
+import info.magnolia.ui.workbench.column.StatusColumnFormatter;
 import info.magnolia.ui.admincentral.content.action.EditItemActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
@@ -60,9 +60,9 @@ import info.magnolia.ui.app.contacts.main.ContactsMainSubApp;
 import info.magnolia.ui.framework.app.builder.App;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.model.ModelConstants;
-import info.magnolia.ui.model.builder.UiConfig;
-import info.magnolia.ui.model.column.definition.MetaDataColumnDefinition;
-import info.magnolia.ui.model.column.definition.StatusColumnDefinition;
+import info.magnolia.ui.framework.config.UiConfig;
+import info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition;
+import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
 import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
 import info.magnolia.ui.model.dialog.builder.Dialog;
 import info.magnolia.ui.model.dialog.builder.DialogBuilder;
@@ -99,20 +99,53 @@ public class ContactsModule implements ModuleLifecycle {
         cipd.setOriginalImageNodeName(Contact.IMAGE_NODE_NAME);
         cipd.setImageProviderClass(DefaultImageProvider.class);
 
+
         CreateItemActionDefinition addContactAction = new CreateItemActionDefinition();
+        addContactAction.setName("addContact");
+        addContactAction.setLabel("New contact");
+        addContactAction.setIcon("icon-add-item");
         addContactAction.setNodeType(Contact.NAME);
         addContactAction.setAppId("contacts");
         addContactAction.setSubAppId("item");
 
+/*        items(
+                cfg.actionbars.item("edit").label("Edit contact").icon("icon-edit").action(deleteItemAction)*/
+
         EditItemActionDefinition editContactAction = new EditItemActionDefinition();
+        editContactAction.setName("editContact");
+        editContactAction.setLabel("Edit contact");
+        editContactAction.setIcon("icon-edit");
         editContactAction.setAppId("contacts");
         editContactAction.setSubAppId("item");
 
+        DeleteItemActionDefinition deleteItemAction = new DeleteItemActionDefinition();
+        deleteItemAction.setName("deleteContact");
+        deleteItemAction.setLabel("Delete contact");
+        deleteItemAction.setIcon("icon-delete");
+
         EditDialogActionDefinition editContactActionInDialog = new EditDialogActionDefinition();
+        editContactActionInDialog.setName("editContactInDialog");
+        editContactActionInDialog.setLabel("Edit contact in Dialog");
+        editContactActionInDialog.setIcon("icon-edit");
         editContactActionInDialog.setDialogName("ui-contacts-app:contact");
 
+
+        AddFolderActionDefinition addFolderAction = new AddFolderActionDefinition();
+        addFolderAction.setName("addFolder");
+        addFolderAction.setLabel("New folder");
+        addFolderAction.setIcon("icon-add-item");
+
+
         EditDialogActionDefinition editFolderAction = new EditDialogActionDefinition();
+        editFolderAction.setName("editFolder");
+        editFolderAction.setLabel("Edit folder in Dialog");
+        editFolderAction.setIcon("icon-edit");
         editFolderAction.setDialogName("ui-contacts-app:folder");
+
+        DeleteItemActionDefinition deleteFolderAction = new DeleteItemActionDefinition();
+        deleteFolderAction.setName("deleteFolder");
+        deleteFolderAction.setLabel("Delete folder");
+        deleteFolderAction.setIcon("icon-delete");
 
         app.label("Contacts")
                 .icon("icon-people")
@@ -120,7 +153,7 @@ public class ContactsModule implements ModuleLifecycle {
                 .subApps(
                         app.subApp("main")
                                 .subAppClass(ContactsMainSubApp.class)
-                                .defaultSubApp()
+                                .actions(addContactAction, editContactAction, editContactActionInDialog, deleteItemAction, addFolderAction, editFolderAction, deleteFolderAction)
                                 .workbench(
                                         cfg.workbenches
                                                 .workbench()
@@ -141,32 +174,23 @@ public class ContactsModule implements ModuleLifecycle {
                                                 .actionbar(
                                                         cfg.actionbars
                                                                 .actionbar()
-                                                                .defaultAction("edit")
+                                                                .defaultAction(editContactAction.getName())
                                                                 .sections(
                                                                         cfg.actionbars
                                                                                 .section("contactsActions")
                                                                                 .label("Contact")
-                                                                                .groups(cfg.actionbars.group("addActions").items(
-                                                                                        cfg.actionbars.item("addContact").label("New contact").icon("icon-add-item").action(addContactAction)),
-                                                                                        cfg.actionbars.group("editActions").items(
-                                                                                                cfg.actionbars.item("edit").label("Edit contact").icon("icon-edit").action(editContactAction),
-                                                                                                cfg.actionbars.item("editindialog").label("Edit contact in Dialog").icon("icon-edit")
-                                                                                                        .action(editContactActionInDialog),
-                                                                                                cfg.actionbars.item("delete").label("Delete contact").icon("icon-delete")
-                                                                                                        .action(new DeleteItemActionDefinition()))
-
-                                                                                ),
+                                                                                .groups(cfg.actionbars.group("addActions").actions(addContactAction.getName()),
+                                                                                        cfg.actionbars.group("editActions").actions(editContactAction.getName(), editContactActionInDialog.getName(), deleteItemAction.getName())
+                                                                                )
+                                                                        ,
                                                                         cfg.actionbars
                                                                                 .section("folderActions")
                                                                                 .label("Folder")
-                                                                                .groups(cfg.actionbars.group("addActions").items(
-                                                                                        cfg.actionbars.item("addFolder").label("New folder").icon("icon-add-item")
-                                                                                                .action(new AddFolderActionDefinition())),
-                                                                                        cfg.actionbars.group("editActions").items(
-                                                                                                cfg.actionbars.item("edit").label("Edit folder").icon("icon-edit").action(editFolderAction),
-                                                                                                cfg.actionbars.item("delete").label("Delete folder").icon("icon-delete")
-                                                                                                        .action(new DeleteItemActionDefinition())))))
-
+                                                                                .groups(cfg.actionbars.group("addActions").actions(addFolderAction.getName()),
+                                                                                        cfg.actionbars.group("editActions").actions(editFolderAction.getName(),deleteFolderAction.getName())
+                                                                                )
+                                                                )
+                                                )
                                 ),
 
                         app.subApp("item")

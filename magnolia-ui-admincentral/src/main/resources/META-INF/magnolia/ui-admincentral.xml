@@ -46,12 +46,12 @@
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.workbench.definition.WorkbenchDefinition</type>
-      <implementation>info.magnolia.ui.model.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
+      <type>info.magnolia.ui.workbench.definition.WorkbenchDefinition</type>
+      <implementation>info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.workbench.definition.NodeTypeDefinition</type>
-      <implementation>info.magnolia.ui.model.workbench.definition.ConfiguredNodeTypeDefinition</implementation>
+      <type>info.magnolia.ui.workbench.definition.NodeTypeDefinition</type>
+      <implementation>info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarDefinition</type>
@@ -72,10 +72,6 @@
     <type-mapping>
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition</type>
       <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition</type>
-      <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarItemDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.dialog.definition.DialogDefinition</type>
@@ -117,13 +113,6 @@
     <configurer>
       <class>info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer</class>
     </configurer>
-    <component>
-      <type>info.magnolia.ui.model.workbench.action.WorkbenchActionRegistry</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-admincentral/workbenchActionRegistry</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
     <component>
       <type>info.magnolia.ui.admincentral.dialog.action.DialogActionRegistry</type>
       <workspace>config</workspace>
@@ -224,8 +213,8 @@
       <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenterFactory</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilder</type>
-      <implementation>info.magnolia.ui.admincentral.content.view.builder.ContentViewBuilderImpl</implementation>
+      <type>info.magnolia.ui.workbench.ContentViewBuilder</type>
+      <implementation>info.magnolia.ui.workbench.ContentViewBuilderImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</type>
@@ -262,7 +251,11 @@
       <type>info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView</type>
       <implementation>info.magnolia.ui.admincentral.app.content.WorkbenchSubAppViewImpl</implementation>
     </component>
-      <component>
+    <component>
+      <type>info.magnolia.ui.model.action.ActionExecutor</type>
+      <implementation>info.magnolia.ui.framework.app.action.SubAppActionExecutor</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
       <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
     </component>
@@ -304,10 +297,6 @@
     <component>
       <type>info.magnolia.ui.admincentral.form.action.FormActionFactory</type>
       <implementation>info.magnolia.ui.admincentral.form.action.FormActionFactoryImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.model.workbench.action.WorkbenchActionFactory</type>
-      <implementation>info.magnolia.ui.model.workbench.action.WorkbenchActionFactoryImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition</type>

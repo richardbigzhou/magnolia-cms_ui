@@ -33,32 +33,18 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Defines a dialog action configuration for simple call back actions.
  */
-public class CallbackDialogActionDefinition implements ActionDefinition {
+public class CallbackDialogActionDefinition extends ConfiguredActionDefinition {
 
-    private String name;
-    private String label;
     private boolean callSuccess = true;
     private String successActionName = "success";
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
+    public CallbackDialogActionDefinition() {
+        setImplementationClass(CallbackDialogAction.class);
     }
 
     public boolean isCallSuccess() {
@@ -66,7 +52,9 @@ public class CallbackDialogActionDefinition implements ActionDefinition {
     }
 
     /**
-     * @param callSuccess true (default) call Callback.onSuccess(String action) - false call Callback.onCancel()
+     * @param callSuccess
+     *            true (default) call Callback.onSuccess(String action) - false
+     *            call Callback.onCancel()
      */
     public void setCallSuccess(boolean callSuccess) {
         this.callSuccess = callSuccess;
@@ -77,7 +65,9 @@ public class CallbackDialogActionDefinition implements ActionDefinition {
     }
 
     /**
-     * @param successActionName will be passed as parameter to Callback.onSuccess(String successActionName) - in case of callSuccess = true.
+     * @param successActionName
+     *            will be passed as parameter to Callback.onSuccess(String
+     *            successActionName) - in case of callSuccess = true.
      */
     public void setSuccessActionName(String successActionName) {
         this.successActionName = successActionName;

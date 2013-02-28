@@ -34,6 +34,7 @@
 package info.magnolia.ui.model.action;
 
 import info.magnolia.commands.CommandsManager;
+import info.magnolia.commands.chain.Command;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
@@ -47,12 +48,17 @@ import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Base action supporting execution of commands.
  *
  * @param <D> {@link CommandActionDefinition}.
  */
-public abstract class CommandActionBase<D extends CommandActionDefinition> extends ActionBase<D> {
+public class CommandActionBase<D extends CommandActionDefinition> extends ActionBase<D> {
+
+    private static final Logger log = LoggerFactory.getLogger(CommandActionBase.class);
 
     private CommandsManager commandsManager;
 
@@ -74,6 +80,15 @@ public abstract class CommandActionBase<D extends CommandActionDefinition> exten
      * <li>Context.ATTRIBUTE_UUID = current node's identifier
      * <li>Context.ATTRIBUTE_PATH = current node's path
      * </ul>
+     * Subclasses can override this method to add further parameters to the command execution. E.g.
+     * 
+     * <pre>
+     * protected Map&lt;String, Object&gt; buildParams(final Node node) {
+     *     Map&lt;String, Object&gt; params = super.buildParams(node);
+     *     params.put(Context.ATTRIBUTE_RECURSIVE, getDefinition().isRecursive());
+     *     return params;
+     * }
+     * </pre>
      */
     protected Map<String, Object> buildParams(final Node node) {
         Map<String, Object> params = getDefinition().getParams() == null ? new HashMap<String, Object>() : getDefinition().getParams();
@@ -98,22 +113,42 @@ public abstract class CommandActionBase<D extends CommandActionDefinition> exten
     }
 
     /**
-     * @return the map of parameters to be used for command execution.
+     * @return the <em>immutable</em> map of parameters to be used for command execution.
      * @see CommandActionBase#buildParams(Node).
      */
-    protected final Map<String, Object> getParams() {
+    public final Map<String, Object> getParams() {
         return Collections.unmodifiableMap(params);
     }
 
-    /**
-     * @return an instance of {@link CommandsManager} to be used for action execution. Typically the {@link #execute()} method will do something like
-     * <p>
-     * {@code
-     * getCommandsManager().executeCommand(getDefinition().getCatalog(), getDefinition().getCommand(), getParams());
-     * }
-     */
-    protected final CommandsManager getCommandsManager() {
+    public final CommandsManager getCommandsManager() {
         return commandsManager;
     }
 
+    /**
+     * Handles the retrieval of the {@link Command} instance defined in the {@link CommandActionDefinition} associated with this action and then
+     * performs the actual command execution.
+     *
+     * @throws ActionExecutionException if no command is found or if command execution throws an exception.
+     */
+    @Override
+    public final void execute() throws ActionExecutionException {
+
+        final String commandName = getDefinition().getCommand();
+        final String catalog = getDefinition().getCatalog();
+        final Command command = getCommandsManager().getCommand(catalog, commandName);
+
+        if (command == null) {
+            throw new ActionExecutionException(String.format("Could not find command [%s] in any catalog", commandName));
+        }
+
+        long start = System.currentTimeMillis();
+        try {
+            log.debug("Executing command [{}] from catalog [{}] with the following parameters [{}]...", new Object[] { commandName, catalog, getParams() });
+            commandsManager.executeCommand(command, getParams());
+            log.debug("Command executed successfully in {} ms ", System.currentTimeMillis() - start);
+        } catch (Exception e) {
+            log.debug("Command execution failed after {} ms ", System.currentTimeMillis() - start);
+            throw new ActionExecutionException(e);
+        }
+    }
 }

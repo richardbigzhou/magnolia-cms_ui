@@ -43,7 +43,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * A basic action definition to support command execution via an action.
  */
-public class CommandActionDefinition implements ActionDefinition {
+public class CommandActionDefinition extends ConfiguredActionDefinition {
 
     private String command;
     private String catalog = CommandsManager.DEFAULT_CATALOG;
@@ -81,4 +81,5 @@ public class CommandActionDefinition implements ActionDefinition {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
+
 }

@@ -36,7 +36,9 @@ package info.magnolia.ui.admincentral.app.content.builder;
 import info.magnolia.ui.admincentral.app.content.ConfiguredContentSubAppDescriptor;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
-import info.magnolia.ui.model.workbench.builder.WorkbenchBuilder;
+import info.magnolia.ui.workbench.builder.WorkbenchBuilder;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.builder.ActionBuilder;
 
 /**
  * Builder used to build a sub app descriptor.
@@ -54,22 +56,31 @@ public class ContentSubAppBuilder {
         return this;
     }
 
-    public ContentSubAppBuilder defaultSubApp() {
-        descriptor.setDefault(true);
-        return this;
-    }
-
     public ContentSubAppBuilder workbench(WorkbenchBuilder builder) {
         descriptor.setWorkbench(builder.exec());
         return this;
     }
 
-    public SubAppDescriptor exec() {
-        return descriptor;
-    }
-
     public ContentSubAppBuilder label(String label) {
         descriptor.setLabel(label);
         return this;
+    }
+
+    public ContentSubAppBuilder actions(ActionBuilder... builders) {
+        for (ActionBuilder builder : builders) {
+            descriptor.getActions().put(builder.getName(), builder.exec());
+        }
+        return this;
+    }
+
+    public ContentSubAppBuilder actions(ActionDefinition... definitions) {
+        for (ActionDefinition definition : definitions) {
+            descriptor.getActions().put(definition.getName(), definition);
+        }
+        return this;
+    }
+
+    public SubAppDescriptor exec() {
+        return descriptor;
     }
 }

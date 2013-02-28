@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -41,7 +41,8 @@ public enum MessageType {
     UNKNOWN(""),
     ERROR("Error"),
     WARNING("Warning"),
-    INFO("Info");
+    INFO("Info"), 
+    WORKITEM("WorkItem");
 
     private String caption;
 
@@ -58,6 +59,7 @@ public enum MessageType {
         switch (this) {
         case INFO:
         case UNKNOWN:
+        case WORKITEM:
             return false;
         default:
             return true;

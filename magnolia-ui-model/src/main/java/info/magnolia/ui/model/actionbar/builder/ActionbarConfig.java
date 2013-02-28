@@ -50,7 +50,4 @@ public class ActionbarConfig {
         return new ActionbarGroupBuilder(name);
     }
 
-    public ActionbarItemBuilder item(String name) {
-        return new ActionbarItemBuilder(name);
-    }
 }

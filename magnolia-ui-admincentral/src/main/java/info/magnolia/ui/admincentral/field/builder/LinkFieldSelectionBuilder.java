@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter;
-import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
 import info.magnolia.ui.admincentral.field.TextAndContentViewField;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl;
 import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
-import info.magnolia.event.EventBus;
+import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.LinkFieldSelectionDefinition;
 

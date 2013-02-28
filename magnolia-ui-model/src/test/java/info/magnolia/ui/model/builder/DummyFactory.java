@@ -39,7 +39,7 @@ import info.magnolia.objectfactory.ComponentProvider;
  * Concrete implementation for tests. Uses Number as Definition and TextComponent as implementation class as there's no real
  * world examples in the classpath.
  */
-public class DummyFactory extends FactoryBase<FactoryBaseTest.SuperclassOfDef, FactoryBaseTest.SuperclassOfImpl> {
+public class DummyFactory extends MappingFactoryBase<FactoryBaseTest.SuperclassOfDef, FactoryBaseTest.SuperclassOfImpl> {
 
     public DummyFactory(ComponentProvider componentProvider) {
         super(componentProvider);

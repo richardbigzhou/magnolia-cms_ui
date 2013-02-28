@@ -33,11 +33,15 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Adds a property to a node.
  */
-public class AddPropertyActionDefinition implements ActionDefinition {
+public class AddPropertyActionDefinition extends ConfiguredActionDefinition {
+
+    public AddPropertyActionDefinition() {
+        setImplementationClass(AddPropertyAction.class);
+    }
 
 }
