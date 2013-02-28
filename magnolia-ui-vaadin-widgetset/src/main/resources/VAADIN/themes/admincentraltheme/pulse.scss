@@ -1,3 +1,7 @@
+@charset "UTF-8";
+
+@mixin pulse {
+
 /* PULSE DASHBOARD STYLES */
 
 .pulse-dashboard .v-splitpanel-hsplitter-locked {
@@ -150,4 +154,6 @@
 	color: #666;
 	font-weight: bold;
 	text-align: center;
+}
+
 }

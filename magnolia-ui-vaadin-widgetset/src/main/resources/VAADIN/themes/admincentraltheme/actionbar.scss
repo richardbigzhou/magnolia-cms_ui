@@ -1,3 +1,7 @@
+@charset "UTF-8";
+
+@mixin actionbar {
+
 .v-actionbar {
 	position:relative;
 	background:#666;
@@ -51,7 +55,7 @@
 }
 
 .v-action .v-text {
-	font-family:DINWebPro, Verdana;
+	font-family:DINWebPro-Light, DINWebPro, Verdana;
 }
 .v-actionbar .v-action .v-text {display:none;}
 .v-actionbar-open .v-action .v-text {display:inline;}
@@ -226,3 +230,5 @@ span.icon-publish-incl-sub {margin-left:3px;}
 .tablet .v-actionbar .row-5 {top:400px;}
 .tablet .v-actionbar .row-6 {top:480px;}
 .tablet .v-actionbar .row-7 {top:560px;}
+
+}

@@ -1,3 +1,7 @@
+@charset "UTF-8";
+
+@mixin shellmessage {
+
 .v-shell-notification {
 	width: 100%;
 	position: absolute;
@@ -77,4 +81,6 @@
 	position:absolute;
 	top:29px;
 	left:24px;
+}
+
 }

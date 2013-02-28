@@ -1,3 +1,7 @@
+@charset "UTF-8";
+
+@mixin tabsheet {
+
 /* color definitions */
 .v-shell-tabsheet {background-color:#e6e6e6;position: relative;}
 .v-shell-tabsheet .nav {background-color:#ccc; border-color:#999;}
@@ -144,4 +148,6 @@
     vertical-align: text-bottom;
     z-index: 4001;
     text-align: center;
+}
+
 }

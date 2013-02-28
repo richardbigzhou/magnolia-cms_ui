@@ -1,3 +1,7 @@
+@charset "UTF-8";
+
+@mixin thumbnail-layout {
+
 .thumbnail-layout {
 	position: relative;
 }
@@ -39,4 +43,6 @@
 }
 .thumbnail-info ul > li span.right  {
     float: right;
+}
+
 }

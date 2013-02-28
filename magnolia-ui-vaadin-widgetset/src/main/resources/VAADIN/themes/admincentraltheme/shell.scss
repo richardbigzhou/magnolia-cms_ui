@@ -1,3 +1,7 @@
+@charset "UTF-8";
+
+@mixin shell {
+
 .v-view {
 	overflow: hidden !important;
 }
@@ -250,3 +254,4 @@ button.action-close {
     -webkit-transform: translate3d(0,0,0);
 }
 
+}

@@ -1,3 +1,7 @@
+@charset "UTF-8";
+
+@mixin dialog {
+
 .help-message-inline span, .dialog-description {
   font-family: Verdana, Helvetica, sans-serif !important;
   font-size: 12px !important;
@@ -133,4 +137,6 @@ button.btn-dialog-help {
 .dialog-panel input[type="text"].v-form-field, .dialog-panel .v-form-field.v-customcomponent input[type="text"],
 .dialog-panel .v-datefield input[type="text"], .dialog-panel textarea.v-form-field {
     border: 1px solid #CCC;
+}
+
 }

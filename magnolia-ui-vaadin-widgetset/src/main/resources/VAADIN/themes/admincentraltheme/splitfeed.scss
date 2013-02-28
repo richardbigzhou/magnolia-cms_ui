@@ -1,3 +1,7 @@
+@charset "UTF-8";
+
+@mixin splitfeed {
+
 .v-split-feed {
 	background-color: #FFFFFF;
 	color: #444444;
@@ -37,4 +41,6 @@
 	padding-right: 10px;
 	border-bottom: 1px solid #CCCCCC;
 	font-size: 15px;
+}
+
 }

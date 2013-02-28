@@ -1,3 +1,7 @@
+@charset "UTF-8";
+
+@mixin applauncher {
+
 .app-list {
 	clear: both;
     display: block;
@@ -97,4 +101,6 @@
 	background-image: url("img/applauncher/style-appslauncher-group-triangle-open.png");
     background-position: bottom center;
     background-repeat: no-repeat;
+}
+
 }

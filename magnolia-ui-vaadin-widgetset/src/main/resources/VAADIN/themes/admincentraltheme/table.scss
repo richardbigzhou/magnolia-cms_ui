@@ -1,3 +1,7 @@
+@charset "UTF-8";
+
+@mixin table {
+
 .v-magnolia-table {
 	position:relative;
 	background:none repeat scroll 0 0 #ffffff;
@@ -155,3 +159,4 @@
     vertical-align:middle;
 }
 
+}

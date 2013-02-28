@@ -1,3 +1,7 @@
+@charset "UTF-8";
+
+@mixin lightbox {
+
 .lightbox{
 	position:absolute;
 	top:200px;
@@ -7,6 +11,9 @@
 	height:600px;
 	border:solid 20px blue;
 }
+
 .lightbox {
   content: "LIGHT BOX!!!";
+}
+
 }

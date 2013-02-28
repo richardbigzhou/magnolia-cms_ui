@@ -1,3 +1,7 @@
+@charset "UTF-8";
+
+@mixin uploadfield {
+
 .upload-image-field {
   height: auto !important;
 }
@@ -179,4 +183,6 @@
 
 .uploading-progress-indicator .uploaded-file {
     margin-left:160px
+}
+
 }

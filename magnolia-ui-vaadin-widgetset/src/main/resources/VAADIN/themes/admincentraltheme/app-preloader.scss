@@ -1,3 +1,7 @@
+@charset "UTF-8";
+
+@mixin app-preloader {
+
 .v-viewport.v-app-preloader {
 	top:60px;
 }
@@ -69,4 +73,6 @@
 	1% {color:#fff;}
 	50% {color:#fff;}
 	51% {color:#999;}
+}
+
 }
