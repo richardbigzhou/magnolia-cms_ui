@@ -36,3 +36,5 @@ magnolia-ui-vaadin-widgetset/src/main/resources/VAADIN/gwt-unitCache/
 magnolia-ui-vaadin-widgetset/src/main/resources/VAADIN/widgetsets
 magnolia-ui-webapp/src
 magnolia-ui-vaadin-common-widgets/src/main/java/com/
+
+magnolia-ui-vaadin-theme-sampler/src/main/webapp/VAADIN
