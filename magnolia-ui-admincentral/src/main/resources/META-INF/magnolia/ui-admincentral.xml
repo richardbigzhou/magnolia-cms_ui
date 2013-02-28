@@ -209,8 +209,8 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.ChooseDialogPresenterFactory</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogPresenterFactory</implementation>
+      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenterFactory</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.workbench.ContentViewBuilder</type>
@@ -221,24 +221,24 @@
       <implementation>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.content.view.ChooseDialogContentPresenter</implementation>
+      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogView</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogView</implementation>
+      <type>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</type>
+      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.ChooseDialogView</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.WorkbenchChooseDialogView</implementation>
+      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogView</type>
+      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition</type>
-      <implementation>info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
+      <type>info.magnolia.ui.contentapp.imageprovider.definition.ImageProviderDefinition</type>
+      <implementation>info.magnolia.ui.contentapp.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
+      <type>info.magnolia.ui.contentapp.workbench.ContentWorkbenchView</type>
+      <implementation>info.magnolia.ui.contentapp.workbench.ContentWorkbenchViewImpl</implementation>
     </component>
   </components>
 
@@ -248,36 +248,36 @@
       <class>info.magnolia.ui.framework.app.SubAppEventBusConfigurer</class>
     </configurer>
     <component>
-      <type>info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView</type>
-      <implementation>info.magnolia.ui.admincentral.app.content.WorkbenchSubAppViewImpl</implementation>
+      <type>info.magnolia.ui.contentapp.WorkbenchSubAppView</type>
+      <implementation>info.magnolia.ui.contentapp.WorkbenchSubAppViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.model.action.ActionExecutor</type>
+      <type>info.magnolia.ui.contentapp.action.ActionExecutor</type>
       <implementation>info.magnolia.ui.framework.app.action.SubAppActionExecutor</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
+      <type>info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.content.view.ContentPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.content.view.ContentPresenter</implementation>
+      <type>info.magnolia.ui.contentapp.view.ContentPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.view.ContentPresenter</implementation>
     </component>
       <component>
-      <type>info.magnolia.ui.admincentral.workbench.ItemWorkbenchView</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ItemWorkbenchViewImpl</implementation>
+      <type>info.magnolia.ui.contentapp.workbench.ItemWorkbenchView</type>
+      <implementation>info.magnolia.ui.contentapp.workbench.ItemWorkbenchViewImpl</implementation>
     </component>
       <component>
-      <type>info.magnolia.ui.admincentral.workbench.ItemWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ItemWorkbenchPresenter</implementation>
+      <type>info.magnolia.ui.contentapp.workbench.ItemWorkbenchPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.workbench.ItemWorkbenchPresenter</implementation>
     </component>
       <component>
-      <type>info.magnolia.ui.admincentral.content.item.ItemPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.content.item.ItemPresenter</implementation>
+      <type>info.magnolia.ui.contentapp.item.ItemPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.item.ItemPresenter</implementation>
     </component>
       <component>
-      <type>info.magnolia.ui.admincentral.content.item.ItemView</type>
-      <implementation>info.magnolia.ui.admincentral.content.item.ItemViewImpl</implementation>
+      <type>info.magnolia.ui.contentapp.item.ItemView</type>
+      <implementation>info.magnolia.ui.contentapp.item.ItemViewImpl</implementation>
     </component>
 
 
