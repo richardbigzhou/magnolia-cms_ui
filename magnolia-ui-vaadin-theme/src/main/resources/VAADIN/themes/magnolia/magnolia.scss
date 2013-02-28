@@ -1,13 +1,20 @@
 @charset "UTF-8";
+@import "../base/base.scss";
 @import "fonts.scss";
 @import "colors.scss";
 @import "button.scss";
 
 @mixin magnolia {
+  @include base;
   @include button;
 
   .v-ui {
     font-family: Verdana, sans-serif;
+  }
+
+  .v-widget {
+    font-size: 13px;
+    line-height: 1.4;
   }
 
   .v-caption {
