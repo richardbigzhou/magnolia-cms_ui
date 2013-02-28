@@ -60,6 +60,7 @@ public class ThemeSamplerUI extends UI {
     private FormLayout formLayout = new FormLayout();
     private Label label = new Label("Label");
     private TextField textField = new TextField("TextField", "This is a TextField");
+    private TextField wideTextField = new TextField("Wide TextField", "This is a wide TextField");
     private PasswordField passwordField = new PasswordField("PasswordField", "h@¢km3!ƒU©àN");
     private ComboBox comboBox = new ComboBox("ComboBox", Arrays.asList("Option A", "Option B"));
     private DateField dateField = new DateField("DateField");
@@ -73,6 +74,8 @@ public class ThemeSamplerUI extends UI {
 
     private void initLayout() {
 
+        wideTextField.setWidth(300, Unit.PIXELS);
+
         comboBox.setInvalidAllowed(false);
         comboBox.setNullSelectionAllowed(false);
 
@@ -80,6 +83,7 @@ public class ThemeSamplerUI extends UI {
 
         formLayout.addComponent(label);
         formLayout.addComponent(textField);
+        formLayout.addComponent(wideTextField);
         formLayout.addComponent(passwordField);
         formLayout.addComponent(comboBox);
         formLayout.addComponent(dateField);
