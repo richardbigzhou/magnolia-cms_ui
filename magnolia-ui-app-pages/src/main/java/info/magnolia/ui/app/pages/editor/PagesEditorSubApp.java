@@ -40,10 +40,13 @@ import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
 import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
 import info.magnolia.ui.admincentral.content.item.ItemView;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
@@ -84,6 +87,8 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     private WorkbenchDefinition workbenchDefinition;
 
+    private AppContext appContext;
+
     @Inject
     public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter) {
         super(subAppContext, view);
@@ -94,6 +99,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.workbenchDefinition = ((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench();
+        this.appContext = subAppContext.getAppContext();
 
         bindHandlers();
     }
@@ -274,9 +280,11 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 actionExecutor.execute(actionName, item);
 
             } catch (RepositoryException e) {
-                throw new RuntimeException("Could not get item: " + parameters.getNodePath(), e);
+                Message error = createMessage(MessageType.ERROR, "Could not get item: " + parameters.getNodePath(), e.getMessage());
+                appContext.broadcastMessage(error);
             } catch (ActionExecutionException e) {
-                throw new RuntimeException("Could not execute the action: " + actionName, e);
+                Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+                appContext.broadcastMessage(error);
             }
         }
     }
@@ -300,5 +308,13 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         } else {
             getSubAppContext().getAppContext().exitFullScreenMode();
         }
+    }
+
+    private Message createMessage(MessageType type, String subject, String message) {
+        final Message msg = new Message();
+        msg.setSubject(subject);
+        msg.setMessage(message);
+        msg.setType(type);
+        return msg;
     }
 }

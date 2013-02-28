@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.actionbar;
 
-
 import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
@@ -49,7 +48,7 @@ import com.vaadin.server.Resource;
 /**
  * Default presenter for an action bar.
  */
-public class ActionbarPresenter extends ActionbarPresenterBase {
+public class ActionbarPresenter implements ActionbarView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarPresenter.class);
 
