@@ -48,13 +48,9 @@ import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
 import info.magnolia.ui.admincentral.app.content.builder.ContentSubAppBuilder;
 import info.magnolia.ui.admincentral.content.view.ContentPresenter;
 import info.magnolia.ui.framework.app.SubAppContext;
-<<<<<<< HEAD
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.workbench.builder.WorkbenchBuilder;
-=======
 import info.magnolia.ui.model.action.ActionExecutor;
->>>>>>> master
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -122,7 +118,7 @@ public class ContentWorkbenchPresenterTest {
         ActionbarPresenter mockActionbarPresenter = mock(ActionbarPresenter.class);
         ActionExecutor actionExecutor = mock(ActionExecutor.class);
 
-        presenter = new ContentWorkbenchPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, 
+        presenter = new ContentWorkbenchPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus,
                 mockContentPresenter, mockActionbarPresenter, null);
 
         // start presenter (binds event handlers)
