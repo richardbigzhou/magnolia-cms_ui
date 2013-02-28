@@ -26,7 +26,7 @@
 	padding:4px;
 }
 
-.v-horizontallayout.v-margin-top {padding-top: 20px;}
+.v-horizontallayout.v-margin-top {padding-top:22px;}
 .v-horizontallayout.v-margin-bottom {padding-bottom: 40px;}
 .v-horizontallayout.v-margin-left {padding-left: 40px;}
 .v-horizontallayout.v-margin-right {padding-right: 0;}
@@ -55,29 +55,22 @@
 .searchbox.v-textfield[type="text"] {
     float:right;
     width:246px;
-    height:22px;
+    height:22px !important;
     margin:0;
     padding:0 2px 1px;
-    border-style:solid;
-    border-width:0 0 1px;
-    border-color:#999;
-    border-radius:none;
+    border:none;
+    border-radius:0;
+    -webkit-border-radius:0;
     background:url("img/icon-search.png") no-repeat right center #fff;
     color:#666;
     font-family:Verdana, sans-serif;
     font-size:12px;
 }
-
-.searchbox.v-textfield[type="text"]:focus {
-	border:auto;
-	box-shadow:none;
-}
+.searchbox.v-textfield[type="text"]:focus {box-shadow:none;}
 
 .searchbox.v-textfield-prompt[type="text"] {
-	background-color:transparent;
+	background-color:#f2f2f2;
     color:#999;
-    width:250px;
-    padding:0 0 1px;
 }
 
 .small-app {margin:0 auto;}

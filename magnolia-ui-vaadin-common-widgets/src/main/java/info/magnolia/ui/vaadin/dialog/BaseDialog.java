@@ -39,8 +39,6 @@ import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.gwt.client.dialog.connector.BaseDialogState;
 import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.ActionFiringServerRpc;
 
-import java.util.Iterator;
-
 import com.vaadin.ui.Component;
 
 /**
@@ -56,9 +54,9 @@ public class BaseDialog extends EditorLike implements DialogView {
         registerRpc(new ActionFiringServerRpc() {
             @Override
             public void fireAction(String actionId) {
-                final Iterator<EditorLikeActionListener> it = actionCallbackMap.get(actionId).iterator();
-                while (it.hasNext()) {
-                    it.next().onActionExecuted(actionId);
+                Object[] array = actionCallbackMap.get(actionId).toArray();
+                for (Object l : array) {
+                    ((EditorLikeActionListener)l).onActionExecuted(actionId);
                 }
             }
 

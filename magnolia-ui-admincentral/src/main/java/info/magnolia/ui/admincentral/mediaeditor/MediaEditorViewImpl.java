@@ -33,39 +33,76 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor;
 
-import info.magnolia.ui.vaadin.actionbar.Actionbar;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
 
 /**
- * MediaEditorViewImpl.
+ * Skeleton implementation of the media editor UI. Contains an actionbar and a dialog laid out horizontally.
  */
-public class MediaEditorViewImpl implements MediaEditorView {
+public class MediaEditorViewImpl extends CustomComponent implements MediaEditorView {
+    
+    private BaseDialog dialog;
+    
+    private ActionbarView actionbar;
+    
+    private HorizontalLayout root = new HorizontalLayout();
+    
+    public MediaEditorViewImpl() {
+        addStyleName("v-media-editor");
+        setCompositionRoot(root);
+        setDialog(new BaseDialog());
+        setSizeFull();
+        root.setSizeFull();
+        dialog.setSizeFull();
+        root.setSpacing(true);
+    }
     
     @Override
     public Component asVaadinComponent() {
-        return null;
+        return this;
     }
 
     @Override
     public void setDialog(BaseDialog dialog) {
-        
+        this.dialog = dialog;
+        root.addComponentAsFirst(dialog);
+        root.setExpandRatio(dialog, 1f);
     }
 
     @Override
-    public void setActionBar(Actionbar actionbar) {
-        
+    public void setActionBar(ActionbarView actionbar) {
+        this.actionbar = actionbar;
+        root.addComponent(actionbar.asVaadinComponent());
     }
 
     @Override
     public BaseDialog getDialog() {
-        return null;
+        return dialog;
     }
 
     @Override
-    public Actionbar getActionbar() {
-        return null;
+    public ActionbarView getActionbar() {
+        return actionbar;
+    }
+
+    @Override
+    public void clearActions() {
+        dialog.removeAllActions();
+    }
+
+    @Override
+    public void setMediaContent(MediaField mediaField) {
+        getDialog().setContent(mediaField);
+    }
+
+    @Override
+    public void setToolbar(Component controls) {
+        dialog.setFooterToolbar(controls);
     }
 
 }

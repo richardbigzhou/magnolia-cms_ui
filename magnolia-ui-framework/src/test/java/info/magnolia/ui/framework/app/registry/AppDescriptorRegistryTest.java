@@ -44,8 +44,8 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.SimpleEventBus;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 
 import java.util.ArrayList;
 import java.util.Arrays;

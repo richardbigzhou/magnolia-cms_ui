@@ -36,34 +36,38 @@ package info.magnolia.ui.admincentral.app.simple;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.event.EventBus;
+import info.magnolia.event.InvocationCountingTestEventHandler;
+import info.magnolia.event.SimpleEventBus;
+import info.magnolia.event.SystemEventBus;
+import info.magnolia.event.TestEvent;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ComponentsDefinition;
 import info.magnolia.module.model.ConfigurerDefinition;
 import info.magnolia.module.model.ModuleDefinition;
+import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
+import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.admincentral.app.simple.AppControllerImplTest.AppEventCollector;
+import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.AppInstanceController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventType;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.event.AppEventBusConfigurer;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.InvocationCountingTestEventHandler;
-import info.magnolia.ui.framework.event.SimpleEventBus;
-import info.magnolia.ui.framework.event.TestEvent;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.message.MessagesManagerImpl;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.view.AppView;
+import info.magnolia.ui.framework.view.ViewPort;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,22 +77,27 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
+
 /**
  * Test case for {@link info.magnolia.ui.framework.app.AppController} local
  * App's event.
  */
 public class AppEventTest {
 
-    private AppLauncherLayoutManager appLauncherLayoutManager = null;
     private GuiceComponentProvider componentProvider = null;
     private AppControllerImpl appController = null;
     private AppEventCollector eventCollector = null;
     private String name = "app";
     private String subAppName_1 = "subApp1";
+    private SimpleEventBus eventBus;
+    private ModuleRegistry moduleRegistry;
+    private AppDescriptorRegistry appRegistry;
 
     @Before
     public void setUp() throws Exception {
-        setAppLayoutManager();
+        initAppRegistry();
 
         // Creates a ModuleRegistry with a single module defining a
         // AppEventBusConfigurer for components 'app'
@@ -101,20 +110,18 @@ public class AppEventTest {
         moduleDefinition.addComponents(components);
         ArrayList<ModuleDefinition> moduleDefinitions = new ArrayList<ModuleDefinition>();
         moduleDefinitions.add(moduleDefinition);
-        ModuleRegistry moduleRegistry = mock(ModuleRegistry.class);
+        this.moduleRegistry = mock(ModuleRegistry.class);
         when(moduleRegistry.getModuleDefinitions()).thenReturn(moduleDefinitions);
 
-        componentProvider = AppControllerImplTest.initComponentProvider();
-        Shell shell = mock(MagnoliaShell.class);
-        MessagesManager messagesManager = mock(MessagesManagerImpl.class);
-        LocationController locationController = mock(LocationController.class);
-        SimpleEventBus eventBus = new SimpleEventBus();
+        this.eventBus = new SimpleEventBus();
+        componentProvider = initComponentProvider();
+
         eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-        AppDescriptorRegistry appDescriptorRegistry = mock(AppDescriptorRegistry.class);
 
-        appController = new AppControllerImpl(moduleRegistry, componentProvider, appLauncherLayoutManager, locationController, messagesManager, shell, eventBus);
+        this.appController = (AppControllerImpl) componentProvider.getComponent(AppController.class);
+        appController.setViewPort(mock(ViewPort.class));
     }
 
     @After
@@ -180,24 +187,66 @@ public class AppEventTest {
     /**
      * Init a LayoutManager containing 1 group with one app.
      */
-    private void setAppLayoutManager() {
+    private void initAppRegistry() {
 
-        appLauncherLayoutManager = mock(AppLauncherLayoutManagerImpl.class);
+        this.appRegistry = mock(AppDescriptorRegistry.class);
+
         // create subapps
         Map<String, SubAppDescriptor> subApps = new HashMap<String, SubAppDescriptor>();
         subApps.put(subAppName_1, AppTestUtility.createSubAppDescriptor(
                 subAppName_1, AppTestSubApp.class, true));
 
-        // Set cat1 with App1
+
         AppDescriptor app = AppTestUtility.createAppDescriptorWithSubApps(name,
                 AppEventTestImpl.class, subApps);
-        AppLauncherGroup cat = AppTestUtility.createAppGroup("cat", app);
-        AppLauncherGroupEntry entry = new AppLauncherGroupEntry();
-        entry.setName(name);
-        entry.setAppDescriptor(app);
-        cat.addApp(entry);
-        AppLauncherLayout appLauncherLayout = new AppLauncherLayout();
-        appLauncherLayout.addGroup(cat);
-        when(appLauncherLayoutManager.getLayoutForCurrentUser()).thenReturn(appLauncherLayout);
+        try {
+            when(appRegistry.getAppDescriptor(name + "_name")).thenReturn(app);
+        } catch (RegistrationException e) {
+            // won't happen
+        }
+    }
+
+    public GuiceComponentProvider initComponentProvider() {
+
+        ComponentProviderConfiguration components = new ComponentProviderConfiguration();
+
+        components.addTypeMapping(AppTestImpl.class, AppTestImpl.class);
+        components.addTypeMapping(AppEventTestImpl.class, AppEventTestImpl.class);
+        components.addTypeMapping(AppTestSubApp.class, AppTestSubApp.class);
+        components.addTypeMapping(AppInstanceController.class, AppInstanceControllerImpl.class);
+
+        components.registerImplementation(AppController.class, AppControllerImpl.class);
+        components.registerImplementation(AppTestView.class, AppViewTestImpl.class);
+        components.registerImplementation(AppView.class, AppFrameView.class);
+        components.registerImplementation(LocationController.class);
+
+        components.registerInstance(ModuleRegistry.class, moduleRegistry);
+        components.registerInstance(AppDescriptorRegistry.class, appRegistry);
+        components.registerInstance(Shell.class, mock(MagnoliaShell.class));
+        components.registerInstance(MessagesManager.class, mock(MessagesManagerImpl.class));
+
+
+        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
+        TestEventBusConfigurer eventBusConfigurer = new TestEventBusConfigurer(eventBus);
+
+        builder.withConfiguration(components);
+        builder.exposeGlobally();
+        return builder.build(eventBusConfigurer);
+    }
+
+
+    public class TestEventBusConfigurer extends AdminCentralEventBusConfigurer {
+
+        private final EventBus eventBus;
+
+        private TestEventBusConfigurer(EventBus eventbus) {
+            this.eventBus = eventbus;
+        }
+
+        @Override
+        protected void configure() {
+            bind(EventBus.class).annotatedWith(Names.named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME)).toProvider(Providers.of(eventBus));
+            bind(EventBus.class).annotatedWith(Names.named(SystemEventBus.NAME)).toProvider(Providers.of(new SimpleEventBus()));
+        }
     }
 }

@@ -37,6 +37,8 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.admincentral.app.CodeConfigurationUtils;
+import info.magnolia.ui.admincentral.app.content.ContentApp;
+import info.magnolia.ui.admincentral.app.content.ItemSubApp;
 import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
 import info.magnolia.ui.admincentral.column.DateColumnFormatter;
 import info.magnolia.ui.admincentral.column.StatusColumnFormatter;
@@ -54,7 +56,7 @@ import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
 import info.magnolia.ui.app.contacts.dialog.action.SaveContactDialogActionDefinition;
 import info.magnolia.ui.app.contacts.form.action.SaveContactFormActionDefinition;
-import info.magnolia.ui.app.contacts.item.ContactsItemSubApp;
+import info.magnolia.ui.app.contacts.main.ContactsMainSubApp;
 import info.magnolia.ui.framework.app.builder.App;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.model.ModelConstants;
@@ -114,7 +116,7 @@ public class ContactsModule implements ModuleLifecycle {
 
         app.label("Contacts")
                 .icon("icon-people")
-                .appClass(ContactsApp.class)
+                .appClass(ContentApp.class)
                 .subApps(
                         app.subApp("main")
                                 .subAppClass(ContactsMainSubApp.class)
@@ -125,7 +127,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                 .workspace("contacts")
                                                 .root("/")
                                                 .defaultOrder(ModelConstants.JCR_NAME)
-                                                .groupingItemType(cfg.workbenches.itemType("mgnl:folder").icon("icon-node-folder"))
+                                                .groupingItemType(cfg.workbenches.itemType("mgnl:folder").icon("icon-folder"))
                                                 .mainItemType(cfg.workbenches.itemType(Contact.NAME).icon("icon-node-content"))
                                                 .imageProvider(cipd)
                                                 .columns(
@@ -168,7 +170,7 @@ public class ContactsModule implements ModuleLifecycle {
                                 ),
 
                         app.subApp("item")
-                                .subAppClass(ContactsItemSubApp.class)
+                                .subAppClass(ItemSubApp.class)
                                 .workbench(
                                         cfg.workbenches
                                                 .workbench()
@@ -177,6 +179,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                 .defaultOrder(ModelConstants.JCR_NAME)
                                                 .form(cfg.forms
                                                         .form()
+                                                        .label("Edit contact")
                                                         .description("Define the contact information")
                                                         .tabs(cfg.forms
                                                                 .tab("Personal")
@@ -229,7 +232,7 @@ public class ContactsModule implements ModuleLifecycle {
     public DialogDefinition folderDialog() {
 
         ConfiguredDialogDefinition dialog = new ConfiguredDialogDefinition();
-        dialog.setLabel("Folder");
+        dialog.setLabel("Edit folder");
         dialog.setDescription("Rename folder");
 
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
@@ -264,6 +267,7 @@ public class ContactsModule implements ModuleLifecycle {
     @Dialog("ui-contacts-app:contact")
     public void contactDialog(DialogBuilder dialog, UiConfig cfg) {
 
+        dialog.label("Edit contact");
         dialog.form(
                 cfg.forms
                         .form()

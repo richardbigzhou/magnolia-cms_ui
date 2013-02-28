@@ -33,11 +33,19 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor;
 
-import com.vaadin.ui.Field;
+import info.magnolia.event.HandlerRegistration;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent;
+import info.magnolia.ui.framework.view.View;
+
+import java.io.InputStream;
 
 /**
- * MediaEditor.
+ * Media editor presenter.
  */
-public interface MediaEditorPresenter extends Field<Byte[]> {
+public interface MediaEditorPresenter {
+
+    View start(InputStream stream);
+    
+    HandlerRegistration addCompletionHandler(MediaEditorCompletedEvent.Handler handler);
     
 }

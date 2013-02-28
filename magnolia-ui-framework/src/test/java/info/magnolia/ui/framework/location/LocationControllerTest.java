@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.ui.framework.event.SimpleEventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.Shell;
 

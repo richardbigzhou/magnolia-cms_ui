@@ -38,31 +38,33 @@ import info.magnolia.ui.model.action.AbstractActionFactory;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.workbench.action.WorkbenchActionFactory;
 
 import java.io.Serializable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.jcr.Item;
 
 /**
- * MediaEditorActionFactoryImpl.
+ * Implementation of {@link MediaEditorActionFactory}.
  */
 @Singleton
-public class MediaEditorActionFactoryImpl extends AbstractActionFactory<ActionDefinition, Action> implements WorkbenchActionFactory, Serializable {
+public class MediaEditorActionFactoryImpl extends AbstractActionFactory<ActionDefinition, Action> implements 
+    MediaEditorActionFactory, Serializable {
 
     @Inject
-    public MediaEditorActionFactoryImpl(ComponentProvider componentProvider, MediaEditorActionRegistry mediaEditorActionRegistry) {
+    public MediaEditorActionFactoryImpl(ComponentProvider componentProvider,
+            MediaEditorActionRegistry mediaEditorActionRegistry) {
         super(componentProvider);
-        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : mediaEditorActionRegistry.getDefinitionToImplementationMappings()) {
-            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
+        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : mediaEditorActionRegistry
+                .getDefinitionToImplementationMappings()) {
+            addMapping(definitionToImplementationMapping.getDefinition(),
+                    definitionToImplementationMapping.getImplementation());
         }
     }
 
     @Override
-    public Action createAction(final ActionDefinition actionDefinition, final Item item) {
-        return create(actionDefinition, item);
+    public Action createAction(final ActionDefinition actionDefinition) {
+        return create(actionDefinition);
     }
 
 }

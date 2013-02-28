@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral.actionbar;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
-import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionFactory;
@@ -66,7 +66,7 @@ public abstract class ActionbarPresenterBase implements ActionbarView.Listener {
 
     private ActionbarView actionbar;
 
-    private final EventBus subAppEventBus;
+    private final EventBus eventBus;
 
     private ActionFactory<ActionDefinition, Action> actionFactory;
     
@@ -74,8 +74,8 @@ public abstract class ActionbarPresenterBase implements ActionbarView.Listener {
      * Instantiates a new action bar presenter.
      */
     @Inject
-    public ActionbarPresenterBase(EventBus subAppEventBus) {
-        this.subAppEventBus = subAppEventBus;
+    public ActionbarPresenterBase(EventBus eventBus) {
+        this.eventBus =  eventBus;
     }
 
     /**
@@ -166,7 +166,7 @@ public abstract class ActionbarPresenterBase implements ActionbarView.Listener {
     public void onActionbarItemClicked(String actionToken) {
         ActionDefinition actionDefinition = getActionDefinition(actionToken);
         if (actionDefinition != null) {
-            subAppEventBus.fireEvent(new ActionbarItemClickedEvent(actionDefinition));
+            eventBus.fireEvent(new ActionbarItemClickedEvent(actionDefinition));
         }
     }
 

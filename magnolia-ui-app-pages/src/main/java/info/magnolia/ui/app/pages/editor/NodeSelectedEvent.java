@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.ui.framework.event.Event;
-import info.magnolia.ui.framework.event.EventHandler;
+import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
 
 /**
  * This event is fired when a component is selected in page editor.

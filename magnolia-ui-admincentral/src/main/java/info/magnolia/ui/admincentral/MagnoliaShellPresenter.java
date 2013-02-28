@@ -38,7 +38,8 @@ import info.magnolia.ui.admincentral.app.simple.DefaultLocationHistoryMapper;
 import info.magnolia.ui.admincentral.app.simple.ShellAppController;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
@@ -58,7 +59,7 @@ public class MagnoliaShellPresenter implements MagnoliaShellView.Presenter {
     private final MagnoliaShellView view;
 
     @Inject
-    public MagnoliaShellPresenter(final MagnoliaShellView view, @Named("admincentral") final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
+    public MagnoliaShellPresenter(final MagnoliaShellView view, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
         this.view = view;
         this.view.setPresenter(this);
 

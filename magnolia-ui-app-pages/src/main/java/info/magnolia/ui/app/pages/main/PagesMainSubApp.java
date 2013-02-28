@@ -38,11 +38,12 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.app.content.AbstractContentSubApp;
+import info.magnolia.ui.admincentral.app.content.ContentSubApp;
+import info.magnolia.ui.admincentral.app.content.WorkbenchSubAppView;
 import info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.instantpreview.InstantPreviewDispatcher;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -52,18 +53,11 @@ import javax.jcr.RepositoryException;
 /**
  * PagesMainSubApp.
  */
-public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainView.Listener {
-
-    private final PagesMainView view;
-
-    private final InstantPreviewDispatcher dispatcher;
+public class PagesMainSubApp extends ContentSubApp {
 
     @Inject
-    public PagesMainSubApp(final SubAppContext subappContext, PagesMainView view, ContentWorkbenchPresenter workbench, @Named("subapp") EventBus subAppEventBus, InstantPreviewDispatcher dispatcher) {
+    public PagesMainSubApp(final SubAppContext subappContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
         super(subappContext, view, workbench, subAppEventBus);
-        this.view = view;
-        this.view.setListener(this);
-        this.dispatcher = dispatcher;
     }
 
     @Override
@@ -87,16 +81,6 @@ public class PagesMainSubApp extends AbstractContentSubApp implements PagesMainV
                 actionbar.disable("activateRecursive");
             }
         }
-    }
-
-    @Override
-    public void share() {
-        dispatcher.share();
-    }
-
-    @Override
-    public void subscribe(String hostId) {
-        dispatcher.subscribeTo(hostId);
     }
 
     private boolean isLeaf(final Node node) {

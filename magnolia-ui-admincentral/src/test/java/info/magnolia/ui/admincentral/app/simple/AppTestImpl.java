@@ -33,9 +33,10 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.ui.framework.app.AbstractApp;
+import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.view.AppView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +53,7 @@ import com.google.inject.Inject;
  * it's not possible in the test class to access child GuiceComponentProvider
  * (app specific provider) defining the AppContext.
  */
-public class AppTestImpl extends AbstractApp {
+public class AppTestImpl extends BaseApp {
 
     public List<String> events = new ArrayList<String>();
     public AppContext ctx;
@@ -61,8 +62,8 @@ public class AppTestImpl extends AbstractApp {
     public static int appNumber = 0;
 
     @Inject
-    public AppTestImpl(AppContext ctx) {
-        super(ctx);
+    public AppTestImpl(AppContext ctx, AppView view) {
+        super(ctx, view);
         res.put("TestPageApp" + appNumber, this);
         appNumber += 1;
     }

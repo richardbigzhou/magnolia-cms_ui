@@ -38,7 +38,7 @@ import info.magnolia.ui.vaadin.editor.CroppableImage.SelectionListener;
 import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
 
 /**
- * JCropHandler.
+ * Handler interface for {@link JCrop}-related events.
  */
 public interface JCropHandler {
 

@@ -26,7 +26,7 @@
       <sv:value>610856bb-ce1a-447d-a267-f7b42acbda60</sv:value>
     </sv:property>
     <sv:property sv:name="appClass" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.app.tools.PageApp</sv:value>
+      <sv:value>info.magnolia.ui.framework.app.BaseApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-logging-app</sv:value>
@@ -125,7 +125,7 @@
       <sv:value>2e88d8e4-7119-4fd2-aa29-459c0a3250b3</sv:value>
     </sv:property>
     <sv:property sv:name="appClass" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.app.tools.PageApp</sv:value>
+      <sv:value>info.magnolia.ui.framework.app.BaseApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-news</sv:value>
@@ -224,7 +224,7 @@
       <sv:value>797673e2-96df-4167-acf6-6f40c3743d11</sv:value>
     </sv:property>
     <sv:property sv:name="appClass" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.app.tools.PageApp</sv:value>
+      <sv:value>info.magnolia.ui.framework.app.BaseApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-app</sv:value>
@@ -323,7 +323,7 @@
       <sv:value>85eb0d1d-5de3-400a-abad-2a1d4cc6dde8</sv:value>
     </sv:property>
     <sv:property sv:name="appClass" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.app.tools.PageApp</sv:value>
+      <sv:value>info.magnolia.ui.framework.app.BaseApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-app</sv:value>
@@ -422,7 +422,7 @@
       <sv:value>db5dc418-3108-44c4-95c5-32f0ffdcbeb2</sv:value>
     </sv:property>
     <sv:property sv:name="appClass" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.app.tools.PageApp</sv:value>
+      <sv:value>info.magnolia.ui.framework.app.BaseApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-app</sv:value>
@@ -521,7 +521,7 @@
       <sv:value>18fd2a09-4668-4de3-8cc7-e8d4f8e739da</sv:value>
     </sv:property>
     <sv:property sv:name="appClass" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.app.tools.PageApp</sv:value>
+      <sv:value>info.magnolia.ui.framework.app.BaseApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-app</sv:value>
@@ -620,7 +620,7 @@
       <sv:value>f2ef1979-bd5a-48cb-92f6-c57016fa2bb6</sv:value>
     </sv:property>
     <sv:property sv:name="appClass" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.app.tools.PageApp</sv:value>
+      <sv:value>info.magnolia.ui.framework.app.BaseApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-app</sv:value>
@@ -719,7 +719,7 @@
       <sv:value>4cd99d07-c4b8-42bb-9a21-4b569f6634d6</sv:value>
     </sv:property>
     <sv:property sv:name="appClass" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.app.tools.PageApp</sv:value>
+      <sv:value>info.magnolia.ui.framework.app.BaseApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-app</sv:value>
@@ -818,7 +818,7 @@
       <sv:value>02eddc47-a136-40a9-81c0-a2063bd2c89a</sv:value>
     </sv:property>
     <sv:property sv:name="appClass" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.app.tools.PageApp</sv:value>
+      <sv:value>info.magnolia.ui.framework.app.BaseApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-app</sv:value>
@@ -917,7 +917,7 @@
       <sv:value>b6a631ac-2b18-4594-aad0-143f379bdc49</sv:value>
     </sv:property>
     <sv:property sv:name="appClass" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.app.tools.PageApp</sv:value>
+      <sv:value>info.magnolia.ui.framework.app.BaseApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-app</sv:value>
@@ -1013,7 +1013,7 @@
       <sv:value>31b0451f-3b3b-47c6-9cc7-cf4f79354196</sv:value>
     </sv:property>
     <sv:property sv:name="appClass" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.app.tools.PageApp</sv:value>
+      <sv:value>info.magnolia.ui.framework.app.BaseApp</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-develpment_app</sv:value>

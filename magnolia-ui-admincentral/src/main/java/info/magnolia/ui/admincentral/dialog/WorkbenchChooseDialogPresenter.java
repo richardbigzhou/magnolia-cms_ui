@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.event.ItemSelectedEvent;
-import info.magnolia.ui.framework.event.EventBus;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 
 import com.vaadin.data.Item;

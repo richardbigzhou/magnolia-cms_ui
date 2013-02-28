@@ -50,8 +50,8 @@ import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.event.EventBus;
-import info.magnolia.ui.framework.event.SimpleEventBus;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

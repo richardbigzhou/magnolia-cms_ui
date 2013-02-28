@@ -38,7 +38,7 @@ import info.magnolia.ui.vaadin.gwt.client.form.tab.connector.FormTabState;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 
 /**
- * Dialog tab.
+ * An extension of {@link MagnoliaTab}. Its content is restricted to FormSection.
  */
 public class MagnoliaFormTab extends MagnoliaTab {
 

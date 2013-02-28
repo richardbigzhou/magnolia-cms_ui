@@ -34,6 +34,7 @@
 package info.magnolia.ui.model.mediaeditor.definition;
 
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
 
 
 /**
@@ -43,6 +44,7 @@ public interface MediaEditorDefinition {
     
     String getId();
 
-    ActionbarDefinition getActionBarDefinition();
-    
+    ActionbarDefinition getActionBar();
+
+    EditModeProviderActionDefinition getDefaultEditModeProvider();
 }

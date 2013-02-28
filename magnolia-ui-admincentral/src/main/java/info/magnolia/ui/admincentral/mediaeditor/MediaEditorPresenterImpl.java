@@ -33,26 +33,47 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor;
 
+import info.magnolia.event.EventBus;
+import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
-import info.magnolia.ui.admincentral.mediaeditor.action.EditModeActionDefinition;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeBuilderFactory;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.presenter.EditorPresenter;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent.CompletionType;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent.Handler;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorInternalEvent;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider.ActionContext;
+import info.magnolia.ui.framework.view.View;
+import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.action.ActionFactory;
+import info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition;
+import info.magnolia.ui.model.mediaeditor.features.MediaEditorFeatureDefinition;
+import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
-import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
-import com.vaadin.data.util.converter.Converter.ConversionException;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomField;
+import com.vaadin.data.Property.Transactional;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.TransactionalPropertyWrapper;
 
 /**
- * MediaEditorPresenterImpl.
+ * Implementation of {@link MediaEditorPresenter}.
  */
-public class MediaEditorPresenterImpl extends CustomField<Byte[]> implements MediaEditorPresenter {
+public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEditorInternalEvent.Handler {
 
+    private Logger log = Logger.getLogger(getClass());
+    
     /**
      * ActionbarEventHandler.
      */
@@ -65,39 +86,144 @@ public class MediaEditorPresenterImpl extends CustomField<Byte[]> implements Med
     }
 
     private MediaEditorView view;
-    
-    private EditorPresenter editorPresenter;
-    
-    private EditModeBuilderFactory editModeBuilderFactory;
 
-    public MediaEditorPresenterImpl(EventBus eventBus, MediaEditorView view, EditorPresenter editorPresenter, 
-            EditModeBuilderFactory modeBuilderFactory) {
+    private EditModeProviderFactory editModeBuilderFactory;
+
+    private MediaEditorActionbarPresenter actionbarPresenter;
+
+    private MediaEditorDefinition definition;
+
+    private ActionFactory<ActionDefinition, Action> actionFactory;
+
+    private MediaField currentMediaField;
+   
+    private ObjectProperty<byte[]> dataSource;
+    
+    private Transactional<byte[]> transactionHandler;
+
+    private EventBus eventBus;
+    
+    public MediaEditorPresenterImpl(
+            MediaEditorDefinition definition, 
+            EventBus eventBus, 
+            MediaEditorView view,
+            EditModeProviderFactory modeBuilderFactory,
+            MediaEditorActionbarPresenter actionbarPresenter, 
+            ActionFactory<ActionDefinition, Action> actionFactory) {
         eventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarEventHandler());
+        this.eventBus = eventBus;
         this.view = view;
+        this.actionFactory = actionFactory;
         this.editModeBuilderFactory = modeBuilderFactory;
-        this.editorPresenter = editorPresenter;
+        this.actionbarPresenter = actionbarPresenter;
+        this.definition = definition;
+        eventBus.addHandler(MediaEditorInternalEvent.class, this);
     }
 
+    @Override
+    public View start(final InputStream stream) {
+        try {
+            final ActionbarView actionbar = actionbarPresenter.start(definition.getActionBar(), actionFactory);
+            final byte[] bytes = IOUtils.toByteArray(stream);
+            dataSource = new ObjectProperty<byte[]>(bytes);
+            transactionHandler = new TransactionalPropertyWrapper<byte[]>(dataSource);
+            transactionHandler.startTransaction();
+            view.setActionBar(actionbar);
+            switchToDefaultMode();
+            return view;
+        } catch (IOException e) {
+            log.error("Error occured while editing media: " + e.getMessage(), e);
+        }
+        return null;
+    }
+    
     protected void dispatchActionbarEvent(ActionDefinition actionDefinition) {
-        if (actionDefinition instanceof EditModeActionDefinition) {
-            editModeBuilderFactory.getBuilder((EditModeActionDefinition) actionDefinition);
+        if (actionDefinition instanceof EditModeProviderActionDefinition) {
+            switchEditMode((EditModeProviderActionDefinition)actionDefinition);
+        }
+        if (actionDefinition instanceof MediaEditorFeatureDefinition) {
+            MediaEditorFeatureDefinition def = (MediaEditorFeatureDefinition)actionDefinition;
+            try {
+                final Class<?> clazz = Class.forName(def.getRequiredInterfaceName());
+                if (clazz.isInstance(currentMediaField)) {
+                    actionFactory.createAction(def, currentMediaField).execute();
+                }
+            } catch (ClassNotFoundException e) {
+                log.error("Action required interface does not exist: " + e.getMessage(), e);
+            } catch (ActionExecutionException e) {
+                log.error("Action failed: " + e.getMessage(), e);
+            }
+        }
+    }
+
+    @Override
+    public void onSubmit(MediaEditorInternalEvent event) {
+        transactionHandler.commit();
+        try {
+            OutputStream stream = new ByteArrayOutputStream();
+            stream.write(transactionHandler.getValue());
+            eventBus.fireEvent(new MediaEditorCompletedEvent(CompletionType.SUBMIT, stream));
+        } catch (IOException e) {
+            log.error("Error occured while producing the output stream: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void onCancelAll(MediaEditorInternalEvent event) {
+        transactionHandler.rollback();
+        transactionHandler.startTransaction();
+        try {
+            OutputStream stream = new ByteArrayOutputStream();
+            stream.write(transactionHandler.getValue());
+            eventBus.fireEvent(new MediaEditorCompletedEvent(CompletionType.CANCEL, stream));
+        } catch (IOException e) {
+            log.error("Error occured while producing the output stream: " + e.getMessage(), e);
         }
     }
     
     @Override
-    public Class<? extends Byte[]> getType() {
-        return Byte[].class;
+    public void onCancelLast(MediaEditorInternalEvent e) {
+        switchToDefaultMode();
+    }
+    
+    @Override
+    public void onApply(MediaEditorInternalEvent e) {
+        switchToDefaultMode();
+    }
+    
+    private void switchEditMode(EditModeProviderActionDefinition definition) {
+        EditModeProvider provider = editModeBuilderFactory.getBuilder(definition);
+        if (provider != null) {
+            doSwitchEditMode(provider);
+        } else {        
+            log.warn("No provider was found for definition " + definition.getClass().getName());
+        }
+    }
+
+    private void doSwitchEditMode(EditModeProvider provider) {
+        MediaField newMediaField = provider.getMediaField();
+        if (newMediaField != null) {
+            this.currentMediaField = newMediaField;
+            
+            view.clearActions();
+            view.setMediaContent(currentMediaField);
+            view.setToolbar(provider.getStatusControls());
+            
+            for (ActionContext ctx : provider.getActionContextList()) {
+                view.getDialog().addAction(ctx.getActionId(), ctx.getLabel(), ctx.getListener());
+            }                   
+            currentMediaField.setPropertyDataSource(dataSource);
+        } else {
+            log.warn("Provider did not provide any content UI ");    
+        }
+    }
+
+    private void switchToDefaultMode() {
+        switchEditMode(definition.getDefaultEditModeProvider());
     }
 
     @Override
-    public void setValue(Byte[] value) throws ReadOnlyException, ConversionException {
-        super.setValue(value);
-        editorPresenter.setInputStream(new ByteArrayInputStream(ArrayUtils.toPrimitive(value)));
+    public HandlerRegistration addCompletionHandler(Handler handler) {
+        return eventBus.addHandler(MediaEditorCompletedEvent.class, handler);
     }
-
-    @Override
-    protected Component initContent() {
-        return view.asVaadinComponent();
-    }
-
 }

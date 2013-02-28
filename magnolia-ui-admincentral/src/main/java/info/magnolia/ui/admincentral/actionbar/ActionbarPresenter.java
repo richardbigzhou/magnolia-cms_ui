@@ -35,7 +35,8 @@ package info.magnolia.ui.admincentral.actionbar;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.model.action.Action;
@@ -62,7 +63,7 @@ public class ActionbarPresenter extends ActionbarPresenterBase {
     private final AppContext appContext;
 
     @Inject
-    public ActionbarPresenter(@Named("subapp") EventBus subAppEventBus, AppContext appContext) {
+    public ActionbarPresenter(@Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, AppContext appContext) {
         super(subAppEventBus);
         this.appContext = appContext;
     }
@@ -92,8 +93,9 @@ public class ActionbarPresenter extends ActionbarPresenterBase {
             if (action == null) {
                 Message warn = createMessage(MessageType.WARNING, "Could not create action from actionDefinition. Action is null.", "");
                 appContext.sendLocalMessage(warn);
+            } else {
+                action.execute();
             }
-            action.execute();
             appContext.showConfirmationMessage("Action executed successfully.");
         } catch (RepositoryException e) {
             Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());

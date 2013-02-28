@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.form;
 import info.magnolia.ui.admincentral.field.builder.FieldFactory;
 import info.magnolia.ui.admincentral.form.action.FormActionFactory;
 import info.magnolia.ui.admincentral.form.builder.FormBuilder;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.model.form.action.FormActionDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;

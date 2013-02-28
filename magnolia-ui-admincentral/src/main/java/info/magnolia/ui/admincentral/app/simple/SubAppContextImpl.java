@@ -33,14 +33,11 @@
  */
 package info.magnolia.ui.admincentral.app.simple;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.location.Location;
-
-import com.vaadin.ui.Component;
 
 /**
  * Implementation of {@link SubAppContext}.
@@ -50,18 +47,17 @@ public class SubAppContextImpl implements SubAppContext {
 
     private SubApp subApp;
 
-    private Location location;
+    private String instanceId;
 
-    private ComponentProvider subAppComponentProvider;
+    private Location location;
 
     private SubAppDescriptor subAppDescriptor;
 
     private AppContext appContext;
 
-    private Component tab;
-
     public SubAppContextImpl(SubAppDescriptor subAppDescriptor) {
         this.subAppDescriptor = subAppDescriptor;
+        this.instanceId = subAppDescriptor.getName() + System.currentTimeMillis();
     }
 
     @Override
@@ -105,17 +101,12 @@ public class SubAppContextImpl implements SubAppContext {
     }
 
     @Override
-    public void setSubAppComponentProvider(ComponentProvider subAppComponentProvider) {
-        this.subAppComponentProvider = subAppComponentProvider;
+    public String getInstanceId() {
+        return instanceId;
     }
 
     @Override
-    public Component getTab() {
-        return tab;
-    }
-
-    @Override
-    public void setTab(Component tab) {
-        this.tab = tab;
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
     }
 }

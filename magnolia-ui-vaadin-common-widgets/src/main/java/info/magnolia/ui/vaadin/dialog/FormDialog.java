@@ -44,7 +44,6 @@ public class FormDialog extends BaseDialog implements FormDialogView {
     @Override
     public void setFormView(FormView formView) {
         super.setContent(formView.asVaadinComponent());
-        formView.asVaadinComponent().setHeight("500px");
         formView.suppressOwnActions();
 
     }

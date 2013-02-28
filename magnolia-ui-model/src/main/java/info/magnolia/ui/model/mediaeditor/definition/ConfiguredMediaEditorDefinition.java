@@ -34,13 +34,16 @@
 package info.magnolia.ui.model.mediaeditor.definition;
 
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
 
 /**
  * ConfiguredMediaEditorDefinition.
  */
 public class ConfiguredMediaEditorDefinition implements MediaEditorDefinition {
 
-    private ActionbarDefinition actionbarDefinition;
+    private ActionbarDefinition actionbar;
+    
+    private EditModeProviderActionDefinition defaultProvider;
     
     private String id;
     
@@ -50,17 +53,25 @@ public class ConfiguredMediaEditorDefinition implements MediaEditorDefinition {
     }
 
     @Override
-    public ActionbarDefinition getActionBarDefinition() {
-        return actionbarDefinition;
+    public ActionbarDefinition getActionBar() {
+        return actionbar;
     }
 
+    @Override
+    public EditModeProviderActionDefinition getDefaultEditModeProvider() {
+        return defaultProvider;
+    }
     
     public void setId(String id) {
         this.id = id;
     }
     
-    public void setActionbarDefinition(ActionbarDefinition definition) {
-        this.actionbarDefinition = definition;
+    public void setActionbar(ActionbarDefinition definition) {
+        this.actionbar = definition;
+    }
+    
+    public void setDefaultEditModeProvider(EditModeProviderActionDefinition defaultProvider) {
+        this.defaultProvider = defaultProvider;
     }
 
 }

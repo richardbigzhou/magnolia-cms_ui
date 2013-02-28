@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell;
 
-import info.magnolia.ui.framework.event.EventHandlerCollection;
+import info.magnolia.event.EventHandlerCollection;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;

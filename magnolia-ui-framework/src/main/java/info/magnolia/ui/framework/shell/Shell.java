@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.framework.shell;
 
-import info.magnolia.ui.framework.event.HandlerRegistration;
+import info.magnolia.event.HandlerRegistration;
 
 import java.util.List;
 

@@ -43,7 +43,7 @@ import com.vaadin.ui.Image;
 import com.vaadin.util.ReflectTools;
 
 /**
- * CroppableImage.
+ * Image extended with {@link JCrop}.
  */
 public final class CroppableImage extends Image implements JCropHandler {
     
@@ -81,6 +81,30 @@ public final class CroppableImage extends Image implements JCropHandler {
     @Override
     public void removeReleaseListener(ReleaseListener listener) {
         removeListener(ReleaseListener.EVENT_ID, JCropReleaseEvent.class, listener);
+    }
+    
+    @Override
+    public void setWidth(float width, Unit unit) {
+        super.setWidth(width, unit);
+        jcrop.invalidate();
+    }
+    
+    @Override
+    public void setHeight(float height, Unit unit) {
+        super.setHeight(height, unit);
+        jcrop.invalidate();
+    }
+    
+    @Override
+    public void addStyleName(String style) {
+        super.addStyleName(style);
+        jcrop.invalidate();
+    }
+    
+    @Override
+    public void removeStyleName(String style) {
+        super.removeStyleName(style);
+        jcrop.invalidate();
     }
     
     /**

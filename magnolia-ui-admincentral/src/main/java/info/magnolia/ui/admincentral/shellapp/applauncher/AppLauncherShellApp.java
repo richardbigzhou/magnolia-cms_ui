@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SystemEventBus;
 import info.magnolia.ui.admincentral.MagnoliaShell;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
@@ -45,7 +47,7 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutChangedEvent;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutChangedEventHandler;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.view.View;
@@ -75,7 +77,7 @@ public class AppLauncherShellApp implements ShellApp, AppLauncherView.Presenter 
     private Shell shell;
 
     @Inject
-    public AppLauncherShellApp(Shell shell, AppLauncherView view, AppController appController, AppLauncherLayoutManager appLauncherLayoutManager, @Named("admincentral") EventBus admincentralEventBus, @Named("system") EventBus systemEventBus) {
+    public AppLauncherShellApp(Shell shell, AppLauncherView view, AppController appController, AppLauncherLayoutManager appLauncherLayoutManager, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus admincentralEventBus, @Named(SystemEventBus.NAME) EventBus systemEventBus) {
         this.view = view;
         this.shell = shell;
         this.appController = appController;

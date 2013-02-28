@@ -51,7 +51,7 @@ import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * FormConnector.
+ * Client-side connector, a counter-part for {@link Form}.
  */
 @Connect(Form.class)
 public class FormConnector extends EditorLikeComponentConnector<FormView.Presenter, FormView> {

@@ -45,9 +45,10 @@ import info.magnolia.ui.app.pages.action.AddComponentActionDefinition;
 import info.magnolia.ui.app.pages.action.EditElementActionDefinition;
 import info.magnolia.ui.app.pages.action.EditPageActionDefinition;
 import info.magnolia.ui.app.pages.action.PreviewPageActionDefinition;
-import info.magnolia.ui.framework.app.AbstractSubApp;
+import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.EventBus;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.event.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.view.View;
 import info.magnolia.ui.model.action.ActionDefinition;
@@ -70,7 +71,7 @@ import org.slf4j.LoggerFactory;
 /**
  * PagesEditorSubApp.
  */
-public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubAppView.Listener {
+public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
@@ -90,7 +91,7 @@ public class PagesEditorSubApp extends AbstractSubApp implements PagesEditorSubA
     private WorkbenchDefinition workbenchDefinition;
 
     @Inject
-    public PagesEditorSubApp(final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named("subapp") EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
+    public PagesEditorSubApp(final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final WorkbenchActionFactory actionFactory) {
         super(subAppContext, view);
 
         this.view = view;
