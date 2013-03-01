@@ -49,6 +49,7 @@ public class Message implements Cloneable, Map<String, Object> {
     public static String SUBJECT = "subject";
     public static String MESSAGE = "message";
     public static String CLEARED = "cleared";
+    public static String SENDER = "sender";
 
     private Map<String, Object> data = new HashMap<String, Object>();
 
@@ -59,6 +60,14 @@ public class Message implements Cloneable, Map<String, Object> {
     public Message(long timestampInMillis) {
         setTimestamp(timestampInMillis);
         setCleared(false);
+    }
+
+    public Message(final MessageType type, final String sender, final String subject, final String message) {
+        this();
+        setSender(sender);
+        setSubject(subject);
+        setMessage(message);
+        setType(type);
     }
 
     public long getTimestamp() {
@@ -107,6 +116,14 @@ public class Message implements Cloneable, Map<String, Object> {
 
     public void setCleared(boolean cleared) {
         data.put(CLEARED, cleared);
+    }
+
+    public String getSender() {
+        return data.get(SENDER) != null ? data.get(SENDER).toString() : null;
+    }
+
+    public void setSender(String sender) {
+        data.put(SENDER, sender);
     }
 
     @Override

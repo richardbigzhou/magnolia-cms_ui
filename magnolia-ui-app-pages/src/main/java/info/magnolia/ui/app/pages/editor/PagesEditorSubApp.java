@@ -281,10 +281,10 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 actionExecutor.execute(actionName, item);
 
             } catch (RepositoryException e) {
-                Message error = createMessage(MessageType.ERROR, "Could not get item: " + parameters.getNodePath(), e.getMessage());
+                Message error = new Message(MessageType.ERROR, "system", "Could not get item: " + parameters.getNodePath(), e.getMessage());
                 appContext.broadcastMessage(error);
             } catch (ActionExecutionException e) {
-                Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+                Message error = new Message(MessageType.ERROR, "system", "An error occurred while executing an action.", e.getMessage());
                 appContext.broadcastMessage(error);
             }
         }
@@ -309,13 +309,5 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         } else {
             getSubAppContext().getAppContext().exitFullScreenMode();
         }
-    }
-
-    private Message createMessage(MessageType type, String subject, String message) {
-        final Message msg = new Message();
-        msg.setSubject(subject);
-        msg.setMessage(message);
-        msg.setType(type);
-        return msg;
     }
 }
