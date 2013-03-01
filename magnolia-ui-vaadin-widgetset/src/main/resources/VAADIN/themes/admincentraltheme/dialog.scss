@@ -1,0 +1,164 @@
+@charset "UTF-8";
+
+@mixin dialog {
+
+.help-message-inline span, .dialog-description {
+  font-family: Verdana, Helvetica, sans-serif !important;
+  font-size: 12px !important;
+}
+
+.v-dialog-layout {
+  display: inline-block;
+  width:510px;
+  vertical-align: middle;
+}
+
+.dialog-content {
+	height: 100%;
+	width: 100%;
+}
+
+.dialog-header {
+  background-color: #666;
+  display: block;
+  height: 16px;
+  color: #AABF2F;
+}
+
+.dialog-header span {
+  font-family:DINWebPro;
+  font-size:16px;
+}
+
+.dialog-header-toolbar {
+  float:right;
+  padding-right:12px;
+}
+
+.dialog-description {
+  background: none repeat scroll 0px 0px #C1D8DF;
+}
+
+.dialog-description span {
+  margin-right: 35px;
+}
+
+.dialog-panel {
+  position:absolute;
+  top:2px;
+  bottom:2px;
+  left:50%;
+  width:720px;
+  margin-left:-360px;
+  padding:0;
+}
+
+.modal{
+	position: absolute;
+	display: block;
+	top: 0px;
+	bottom:0px;
+	left: 0px;
+	right: 0px;
+}
+.modal-child{
+    /* nothing now */
+}
+.modal-curtain{
+    position:absolute;
+    top:0px;
+    bottom:0px;
+    left:0px;
+    right:0px;
+
+    background-color:#000;
+    opacity:0.8;
+    filter:alpha(opacity = 80);
+}
+
+/* Set proper stacking for modals */
+.modal.app,
+.modal.sub-app{
+    z-index:50;
+}
+.modal.shell{
+	z-index:500;
+}
+.modal.shell .modal-child{
+    top:60px;
+}
+
+
+.dialog-footer {
+  background: none repeat scroll 0px 0px #CCCCCC;
+  text-align: right;
+}
+
+.dialog-footer-toolbar {
+  float:left;
+}
+
+.dialog-close,.dialog-help {
+  float: right;
+  margin-right: 0px;
+}
+
+button.btn-dialog-close {
+  background: url("img/icon-close-16.png") no-repeat scroll 0px 0px transparent;
+  border: none;
+  display: inline-block;
+  float: right;
+  height: 16px;
+  margin-left: 13px;
+  margin-top: 2px;
+  padding: 0;
+  width: 16px;
+}
+
+button.btn-dialog-close.green {
+  background: url("img/icon-close-green-16.png") no-repeat scroll 0px 0px transparent;
+}
+
+button.btn-dialog-help {
+  background: url("img/icon-help.png") no-repeat scroll 1px 1px transparent;
+  border: none;
+  float: right;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  width: 20px;
+}
+
+.dialog-panel .field-container {
+  color: #999;
+}
+
+
+.action-dialog-help {
+  background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px transparent;
+  border: none;
+  display: inline-block;
+  height: 20px;
+  margin: 0px 1px 0px 2px;
+  padding: 0px;
+  vertical-align: middle;
+  width: 20px;
+}
+
+/*
+* Forms in Dialog.
+*/
+.dialog-panel .form-panel {
+    width: 720px;
+}
+
+.dialog-panel .v-form-layout {
+    background-color: #E6E6E6;
+}
+
+.dialog-panel .form-panel .v-shell-tabsheet,
+.dialog-panel .form-panel .v-shell-tabsheet .nav li.active {
+    background-color: #E6E6E6;
+}
+
+}

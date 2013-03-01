@@ -1,0 +1,46 @@
+@charset "UTF-8";
+
+@mixin splitfeed {
+
+.v-split-feed {
+	background-color: #FFFFFF;
+	color: #444444;
+    font-family: sans-serif;
+    font-size: 13px;
+    text-align: left;
+}
+
+.v-feed-section {
+	position: relative;
+}
+
+.v-feed-section {
+    padding-top: 30px;
+    padding-left: 20px;
+    padding-right: 28px;
+}
+
+.v-split-feed .v-splitpanel-hsplitter, .v-splitpanel-hsplitter-locked {
+    background: #CCCCCC;
+    margin-top: 10px;
+    width: 2px;
+}
+
+.v-split-feed .v-feed-title {
+	color:#679600;
+	font-family:DINWebPro, sans-serif;
+	font-size:16px;
+}
+
+.v-feed-entry {
+	line-height: 21px;
+	height: 21px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 3px;
+	padding-right: 10px;
+	border-bottom: 1px solid #CCCCCC;
+	font-size: 15px;
+}
+
+}

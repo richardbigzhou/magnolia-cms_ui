@@ -1,0 +1,6 @@
+@charset "UTF-8";
+@import "admincentral.scss";
+
+.admincentral {
+  @include admincentral;
+}

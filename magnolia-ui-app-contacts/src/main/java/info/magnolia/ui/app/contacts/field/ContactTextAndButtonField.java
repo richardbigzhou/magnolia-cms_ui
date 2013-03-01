@@ -46,7 +46,7 @@ import com.vaadin.data.util.converter.Converter.ConversionException;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.HorizontalLayout;
 
 /**
  * Specific Contact TextAndButtonField field that add a Thumbnail before the select action and field
@@ -68,7 +68,7 @@ public class ContactTextAndButtonField extends CustomField<String> {
 
     @Override
     protected Component initContent() {
-        VerticalLayout layout = new VerticalLayout();
+        HorizontalLayout layout = new HorizontalLayout();
         // Add Thumbnail Field
         thumbnail.ValueChangeListener(textAndButtonField.getTextField());
         layout.addComponent(thumbnail);
@@ -76,6 +76,7 @@ public class ContactTextAndButtonField extends CustomField<String> {
         layout.addComponent(textAndButtonField);
         layout.setComponentAlignment(textAndButtonField, Alignment.MIDDLE_RIGHT);
         layout.setMargin(true);
+        layout.setSpacing(true);
 
         return layout;
     }

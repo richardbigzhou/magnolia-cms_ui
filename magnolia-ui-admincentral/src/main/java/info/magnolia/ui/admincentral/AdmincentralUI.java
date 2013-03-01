@@ -56,7 +56,7 @@ import com.vaadin.ui.UI;
 /**
  * The Application's "main" class.
  */
-@Theme("admincentraltheme")
+@Theme("admincentral")
 @PreserveOnRefresh
 public class AdmincentralUI extends UI {
 

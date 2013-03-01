@@ -49,14 +49,12 @@ import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
-import com.vaadin.server.ThemeResource;
-import com.vaadin.ui.AbstractEmbedded;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.BaseTheme;
@@ -84,7 +82,7 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
         }
     };
 
-    private final AbstractEmbedded viewTypeArrow;
+    private final Component viewTypeArrow;
 
     private Map<ViewType, ContentView> contentViews = new EnumMap<ViewType, ContentView>(ViewType.class);
 
@@ -161,9 +159,8 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
         return searchbox;
     }
 
-    private AbstractEmbedded buildViewTypeArrow() {
-        ThemeResource img = new ThemeResource("img/arrow-up-white.png");
-        Image arrow = new Image(null, img);
+    private Component buildViewTypeArrow() {
+        Label arrow = new Label();
         arrow.setSizeUndefined();
         arrow.addStyleName("view-type-arrow");
         return arrow;

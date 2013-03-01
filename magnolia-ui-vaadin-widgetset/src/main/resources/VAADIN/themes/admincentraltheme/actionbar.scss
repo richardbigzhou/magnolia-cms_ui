@@ -1,0 +1,234 @@
+@charset "UTF-8";
+
+@mixin actionbar {
+
+.v-actionbar {
+	position:relative;
+	background:#666;
+	color:#fff;
+	font-size:14px;
+}
+.v-actionbar {width:50px; padding-top:24px;}
+.v-actionbar-open {width:270px; padding-top:0;}
+
+.v-actionbar-section {
+	padding:11px 0 10px 10px;
+}
+
+.v-actionbar .v-actionbar-section-title {
+	height:1.2em;
+	margin:0;
+	padding:0 0 6px 4px;
+	color:#aabf2f;
+	font-family:DINWebPro, Verdana;
+	font-size:15px;
+	font-weight:normal;
+}
+.v-actionbar .v-actionbar-section-title {display:none;}
+.v-actionbar-open .v-actionbar-section-title {display:block;}
+
+.v-actionbar-group {
+	margin:0;
+	padding:5px 0 2px;
+	border-bottom:1px solid #888;
+	list-style:outside none;
+}
+
+.v-action {
+	margin-right:10px;
+	line-height:1.6em;
+	text-indent:33px;
+	cursor:pointer;
+}
+.v-actionbar .v-action {text-align:center;}
+.v-actionbar-open .v-action {text-align:left;}
+
+.v-action.v-disabled {opacity:0.4;}
+.v-action.v-disabled:hover {cursor:default;}
+.v-action.v-disabled:hover {color:#fff;}
+
+.v-action .v-icon {
+	display:inline-block;
+	font-size:1.4em;
+	text-indent:-29px;
+	vertical-align:middle;
+}
+
+.v-action .v-text {
+	font-family:DINWebPro-Light, DINWebPro, Verdana;
+}
+.v-actionbar .v-action .v-text {display:none;}
+.v-actionbar-open .v-action .v-text {display:inline;}
+
+.v-action:hover {color:#aabf2f;}
+.v-action.mousedown:hover {color:#fff;}
+
+.v-action .v-flyout-indicator {display:none;}
+
+.v-actionbar-toggle {
+    position:absolute;
+    top:0;
+    right:0;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.v-actionbar-toggle-icon {
+    display:block;
+    width:1em;
+    height:1em;
+    padding:10px;
+	background-image:url("img/actionbar-toggle-open.png");
+	background-position:center center;
+	background-repeat:no-repeat;
+}
+
+.v-actionbar-toggle-icon.open {
+	background-image: url("img/actionbar-toggle-close.png");
+}
+
+.v-actionbar-fullscreen {
+    position:absolute;
+	bottom:0;
+    right:0;
+    padding:10px;
+    font-size:20px;
+    height:1em;
+    line-height:1;
+    cursor:pointer;
+}
+
+.v-actionbar-section.preview {
+    position:absolute;
+    left:0;
+    right:0;
+	bottom:40px;
+    display:block;
+    max-height:184px;
+    overflow:hidden;
+	padding-top:6px;
+	padding-left:14px;
+	padding-right:14px;
+	background-color:#333;
+	text-align:center;
+}
+.v-actionbar .v-actionbar-section.preview {display:none;}
+.v-actionbar-open .v-actionbar-section.preview {display:block;}
+
+.v-actionbar-section.preview .v-actionbar-section-title {
+	text-align:left;
+	padding-left:0;
+}
+
+/** FIXME This is a workaround to align the publish-incl-sub icon. It's an issue with the image itself **/
+span.icon-publish-incl-sub {margin-left:3px;}
+
+/*********************** TABLET STYLES ***/
+
+.tablet .v-actionbar {
+	width:70px;
+	background:none;
+	font-size:12px;
+	margin-top:18px;
+	padding-top:0;
+}
+
+.tablet .v-actionbar-section {padding:0;}
+.tablet .v-actionbar-section-title {display:none;}
+.tablet .v-actionbar-section.preview {display:none;}
+
+.tablet .v-actionbar-group {border:none;}
+
+.tablet .v-action {
+	position:absolute;
+	right:0;
+	width:70px;
+	height:78px;
+	margin-right:0;
+	background:#666;
+	border-width:2px 0 2px 2px;
+	border-style:solid;
+	border-color:#e6e6e6;
+	line-height:inherit;
+	text-align:center;
+	text-indent:0;
+	z-index:10;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+.tablet .v-action.v-disabled {opacity:1;}
+.tablet .v-action.v-disabled > * {opacity:0.4;}
+
+.tablet .v-action.hover {color:#666; background-color:#e6e6e6;}
+
+.tablet .v-action .v-icon {
+	text-indent:0;
+	font-size:32px;
+}
+
+.tablet .v-action img.v-icon {top:7px;}
+
+.tablet .v-action .v-text {
+	position:absolute;
+	left:4px;
+	right:4px;
+	bottom:5px;
+	line-height:1;
+}
+.tablet .v-actionbar .v-action .v-text {display:inline;}
+
+.tablet .v-action .v-flyout-indicator {
+	display: inline;
+	left: 2px;
+	bottom: 0px;
+	position: absolute;
+}
+
+.tablet .v-actionbar-toggle {
+	position:absolute;
+	width:70px;
+	height:40px;
+	margin-top:2px;
+	background-color:#666;
+}
+
+.tablet .v-actionbar-toggle-icon {
+	float:right;
+	width:20px;
+	height:20px;
+}
+
+.tablet .v-actionbar-fullscreen {right:30px; margin-top:2px;}
+
+.tablet .v-action.flyout {
+	background-image: url("img/actionbar-tablet-flyout-toggle-open.png");
+	background-position: 3px 63px;
+	background-repeat: no-repeat;
+}
+
+.tablet .v-actionbar-group.open .v-action.flyout {
+	background-image: url("img/actionbar-tablet-flyout-toggle-close.png");
+}
+
+.tablet .v-actionbar .col-0 {z-index:100;}
+
+.tablet .v-actionbar-group.open .col-1 {right:72px;}
+.tablet .v-actionbar-group.open .col-2 {right:144px;}
+.tablet .v-actionbar-group.open .col-3 {right:216px;}
+.tablet .v-actionbar-group.open .col-4 {right:288px;}
+.tablet .v-actionbar-group.open .col-5 {right:360px;}
+.tablet .v-actionbar-group.open .col-6 {right:432px;}
+.tablet .v-actionbar-group.open .col-7 {right:504px;}
+.tablet .v-actionbar-group.open .col-8 {right:576px;}
+
+.tablet .v-actionbar .row-0 {top:0;}
+.tablet .v-actionbar .row-1 {top:80px;}
+.tablet .v-actionbar .row-2 {top:160px;}
+.tablet .v-actionbar .row-3 {top:240px;}
+.tablet .v-actionbar .row-4 {top:320px;}
+.tablet .v-actionbar .row-5 {top:400px;}
+.tablet .v-actionbar .row-6 {top:480px;}
+.tablet .v-actionbar .row-7 {top:560px;}
+
+}

@@ -16,8 +16,8 @@
     <javaVersion>1.6</javaVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <magnoliaVersion>5.0-alpha3-5</magnoliaVersion>
-    <vaadinVersion>7.0.0</vaadinVersion>
+    <magnoliaVersion>5.0-SNAPSHOT</magnoliaVersion>
+    <vaadinVersion>7.0.1</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
   </properties>
   <scm>
@@ -200,7 +200,7 @@
         <plugin>
           <groupId>com.vaadin</groupId>
           <artifactId>vaadin-maven-plugin</artifactId>
-          <version>7.0.0</version>
+          <version>${vaadinVersion}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -247,6 +247,7 @@
     <module>magnolia-ui-app-messages</module>
     <module>magnolia-ui-app-pages</module>
     <module>magnolia-ui-app-security</module>
+    <module>magnolia-ui-vaadin-theme</module>
   </modules>
   <distributionManagement>
     <site>
