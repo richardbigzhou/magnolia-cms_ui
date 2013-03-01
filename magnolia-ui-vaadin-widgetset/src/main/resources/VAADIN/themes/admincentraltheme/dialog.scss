@@ -2,9 +2,15 @@
 
 @mixin dialog {
 
-.help-message-inline span, .dialog-description {
-  font-family: Verdana, Helvetica, sans-serif !important;
-  font-size: 12px !important;
+.dialog-panel {
+  position:absolute;
+  top:2px;
+  bottom:2px;
+  left:50%;
+  width:720px;
+  margin-left:-360px;
+  padding:0;
+  z-index:201; /* one more than curtain */
 }
 
 .v-dialog-layout {
@@ -18,41 +24,30 @@
 	width: 100%;
 }
 
-.dialog-header {
-  background-color: #666;
-  display: block;
-  height: 16px;
-  color: #AABF2F;
-}
-
-.dialog-header span {
-  font-family:DINWebPro;
-  font-size:16px;
-}
-
 .dialog-description {
-  background: none repeat scroll 0px 0px #C1D8DF;
+  background-color: #c1d8df;
 }
 
 .dialog-description span {
   margin-right: 35px;
 }
 
-.dialog-panel {
-  position:absolute;
-  top:2px;
-  bottom:2px;
-  left:50%;
-  width:720px;
-  margin-left:-360px;
-  padding:0;
-  z-index:201; /* one more than curtain */
-}
-
 .dialog-footer {
-  background: none repeat scroll 0px 0px #CCCCCC;
+  background-color: #ccc;
   text-align: right;
 }
+
+.dialog-description,
+.dialog-error,
+.dialog-footer {padding:10px 16px 10px 20px;}
+.dialog-footer {padding-top:9px; padding-bottom:9px;}
+
+.dialog-description,
+.dialog-error,
+.dialog-content,
+.dialog-footer {margin-top:2px;}
+
+.dialog-footer button.btn-dialog-commit { float: right; margin-left: 10px; }
 
 .dialog-close,.dialog-help {
   float: right;
@@ -85,10 +80,14 @@ button.btn-dialog-help {
   width: 20px;
 }
 
+.help-message-inline span, .dialog-description {
+  font-family: Verdana, Helvetica, sans-serif !important;
+  font-size: 12px !important;
+}
+
 .dialog-panel .field-container {
   color: #999;
 }
-
 
 .action-dialog-help {
   background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px transparent;
