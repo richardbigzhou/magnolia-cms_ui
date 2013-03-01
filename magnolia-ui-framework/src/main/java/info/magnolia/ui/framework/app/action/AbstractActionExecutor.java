@@ -43,8 +43,8 @@ import info.magnolia.ui.model.action.ActionExecutor;
 import javax.inject.Inject;
 
 /**
- * A base implementation of {@link ActionExecutor}. Subclasses need only to implement {@link #getActionDefinition(String)}.
- * Creates the {@link Action} from the implementation class using componentProvider and binds the ActionDefinition to the Action.
+ * A base implementation of {@link ActionExecutor}. Creates the {@link Action} from the implementation class using componentProvider and binds the ActionDefinition to the Action.
+ * Subclasses need only to implement {@link #getActionDefinition(String)}.
  */
 public abstract class AbstractActionExecutor implements ActionExecutor {
 
@@ -69,9 +69,9 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
     /**
      * Creates an action using the implementation configured for the given action definition. The
      * parameters are made available for injection when the instance is created. The definition
-     * object given is also available for injection.
+     * object given is also available for injection. The method has package visibility for the sake of testing.
      */
-    private Action createAction(String actionName, Object... args) throws ConfigurationException {
+    final Action createAction(String actionName, Object... args) throws ConfigurationException {
         final ActionDefinition actionDefinition = getActionDefinition(actionName);
         if (actionDefinition != null) {
             Class<? extends Action> implementationClass = actionDefinition.getImplementationClass();
