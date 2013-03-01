@@ -353,7 +353,7 @@
         <sv:value>info.magnolia.ui.model.field.definition.LinkFieldSelectionDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.builder.LinkFieldSelectionBuilder</sv:value>
+        <sv:value>info.magnolia.ui.contentapp.field.LinkFieldSelectionBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
