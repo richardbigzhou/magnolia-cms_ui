@@ -34,11 +34,11 @@
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategory;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
+import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import java.io.Serializable;
@@ -242,6 +242,7 @@ public class PulseMessagesPresenter implements Serializable {
         if (item != null && message != null) {
             item.getItemProperty("new").setValue(message.isCleared() ? "No" : "Yes");
             item.getItemProperty("type").setValue(message.getType());
+            item.getItemProperty("sender").setValue(message.getSender());
             item.getItemProperty("text").setValue(StringUtils.abbreviate(message.getMessage(), 40));
             item.getItemProperty("date").setValue(new Date(message.getTimestamp()));
         }

@@ -93,4 +93,16 @@ public class MessageTest {
         message.put(Message.TIMESTAMP, 1234565);
     }
 
+    @Test
+    public void testDefaultSender() throws Exception {
+        // GIVEN
+        Message message = new Message();
+
+        // WHEN
+        String sender = message.getSender();
+
+        // THEN
+        assertEquals(Message.DEFAULT_SENDER, sender);
+    }
+
 }

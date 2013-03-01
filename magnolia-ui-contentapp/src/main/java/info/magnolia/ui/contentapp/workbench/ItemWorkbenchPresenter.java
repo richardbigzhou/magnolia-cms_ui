@@ -122,10 +122,10 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
             actionExecutor.execute(actionName, item);
 
         } catch (RepositoryException e) {
-            Message error = new Message(MessageType.ERROR, "system", "Could not get item: " + nodePath, e.getMessage());
+            Message error = new Message(MessageType.ERROR, "Could not get item: " + nodePath, e.getMessage());
             appContext.broadcastMessage(error);
         } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, "system", "An error occurred while executing an action.", e.getMessage());
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
             appContext.broadcastMessage(error);
         }
     }

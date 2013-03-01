@@ -51,10 +51,9 @@ public class MessageStoreTest extends MgnlTestCase {
         final MockNode messageNode = new MockNode();
         final String messageText = "Message in a bottle.";
         final String subject = "Test";
-        final String sender = "someone";
         final MessageType type = MessageType.WARNING;
 
-        final Message message = new Message(type, sender, subject, messageText);
+        final Message message = new Message(type, subject, messageText);
 
         final MessageStore store = new MessageStore();
 
@@ -63,7 +62,7 @@ public class MessageStoreTest extends MgnlTestCase {
 
         // THEN
         assertEquals(subject, messageNode.getProperty(Message.SUBJECT).getString());
-        assertEquals(sender, messageNode.getProperty(Message.SENDER).getString());
+        assertEquals(Message.DEFAULT_SENDER, messageNode.getProperty(Message.SENDER).getString());
         assertEquals(messageText, messageNode.getProperty(Message.MESSAGE).getString());
         assertEquals(type.name(), messageNode.getProperty(Message.MESSAGETYPE).getString());
     }

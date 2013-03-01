@@ -64,25 +64,19 @@ public class MessagesMainSubApp extends BaseSubApp implements MessagesView.Liste
 
     @Override
     public void handleUserMessage(String user, MessageType type, String subject, String message) {
-        getAppContext().sendUserMessage(user, createMessage(type, subject, message));
+        getAppContext().sendUserMessage(user, new Message(type, subject, message));
     }
 
     @Override
     public void handleLocalMessage(MessageType type, String subject, String message) {
-        getAppContext().sendLocalMessage(createMessage(type, subject, message));
+        getAppContext().sendLocalMessage(new Message(type, subject, message));
     }
 
     @Override
     public void handleGlobalMessage(MessageType type, String subject, String message) {
-        getAppContext().broadcastMessage(createMessage(type, subject, message));
+        getAppContext().broadcastMessage(new Message(type, subject, message));
     }
 
-    private Message createMessage(MessageType type, String subject, String message) {
-        final Message msg = new Message();
-        msg.setSubject(subject);
-        msg.setMessage(message);
-        msg.setType(type);
-        return msg;
-    }
+
 
 }
