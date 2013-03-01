@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+@import "../admincentraltheme/admincentraltheme.scss";
+@import "../magnolia/magnolia.scss";
+
+@include magnolia;
+@include admincentraltheme;
+
+@mixin admincentral {
+
+}

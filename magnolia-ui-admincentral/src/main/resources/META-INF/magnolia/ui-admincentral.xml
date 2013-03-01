@@ -367,6 +367,7 @@
       <mappings>
         <mapping>/.magnolia/admincentral</mapping>
         <mapping>/.magnolia/admincentral/*</mapping>
+        <mapping>/VAADIN/*</mapping>
       </mappings>
       <params>
         <param>
@@ -380,10 +381,6 @@
         <param>
           <name>caption</name>
           <value>Magnolia 5.0</value>
-        </param>
-        <param>
-          <name>theme</name>
-          <value>admincentraltheme</value>
         </param>
         <param>
           <name>codeBasePath</name>

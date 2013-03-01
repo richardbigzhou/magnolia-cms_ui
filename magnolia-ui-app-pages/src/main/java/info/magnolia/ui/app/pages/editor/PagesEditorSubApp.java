@@ -36,6 +36,7 @@ package info.magnolia.ui.app.pages.editor;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.ContentSubAppDescriptor;
 import info.magnolia.ui.contentapp.item.ItemView;
@@ -190,7 +191,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         try {
             Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
             Node node = session.getNode(path);
-            caption = node.getProperty("title").getString();
+            caption = PropertyUtil.getString(node, "title", node.getName());
         } catch (RepositoryException e) {
             log.error("Exception caught: {}", e.getMessage(), e);
         }

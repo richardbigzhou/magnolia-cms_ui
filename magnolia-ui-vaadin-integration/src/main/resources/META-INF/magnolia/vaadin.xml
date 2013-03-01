@@ -11,19 +11,4 @@
       <version>5.0/*</version>
     </dependency>
   </dependencies>
-  <servlets>
-    <servlet>
-      <name>VaadinClasspathResourcesSpool</name>
-      <class>info.magnolia.cms.servlets.ClasspathSpool</class>
-      <mappings>
-        <mapping>/VAADIN/*</mapping>
-      </mappings>
-      <params>
-        <param>
-          <name>resourcesRoot</name>
-          <value>/VAADIN</value>
-        </param>
-      </params>
-    </servlet>
-  </servlets>
 </module>
