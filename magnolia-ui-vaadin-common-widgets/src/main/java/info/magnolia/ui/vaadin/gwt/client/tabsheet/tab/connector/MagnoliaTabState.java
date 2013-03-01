@@ -46,6 +46,8 @@ public class MagnoliaTabState extends AbstractComponentState {
 
     public boolean isNotificationHidden = true;
 
+    public boolean isActive = true;
+
     public String notification = null;
 
 }

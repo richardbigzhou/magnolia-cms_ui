@@ -35,14 +35,15 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import static org.junit.Assert.assertEquals;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.form.FormItem;
 import info.magnolia.ui.admincentral.form.FormPresenter;
-import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.shell.ModalLayer;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
 
 import org.junit.Before;
@@ -145,7 +146,7 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public void addAction(String actionName, String actionLabel, FormView.FormActionListener callback) {
+        public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
 
         }
 
@@ -215,7 +216,7 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public FormDialogView start(Item item, Callback callback) {
+        public FormDialogView start(Item item, ModalLayer modalLayer, Callback callback) {
             return null;
         }
 
@@ -228,16 +229,17 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
+        public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
             // TODO Auto-generated method stub
 
         }
 
         @Override
-        public void addActionCallback(String actionName, DialogActionListener callback) {
+        public void addActionCallback(String actionName, EditorLikeActionListener callback) {
             // TODO Auto-generated method stub
 
         }
+
 
     }
 }

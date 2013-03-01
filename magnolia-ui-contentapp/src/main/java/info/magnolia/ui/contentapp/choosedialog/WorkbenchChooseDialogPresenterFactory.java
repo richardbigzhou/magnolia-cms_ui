@@ -40,7 +40,7 @@ import info.magnolia.ui.contentapp.workbench.ContentWorkbenchView.Listener;
 import info.magnolia.ui.framework.app.ItemChosenListener;
 import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.vaadin.dialog.DialogView;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 
 import javax.inject.Inject;
@@ -90,14 +90,14 @@ public class WorkbenchChooseDialogPresenterFactory implements ChooseDialogPresen
             ((ContentWorkbenchView) dialog.getContent()).selectPath(path);
         }
 
-        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.CHOOSE_ACTION_NAME, new DialogView.DialogActionListener() {
+        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.CHOOSE_ACTION_NAME, new EditorLikeActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 listener.onItemChosen(workbenchChooseDialogPresenter.getValue());
             }
         });
 
-        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.CANCEL_ACTION_NAME, new DialogView.DialogActionListener() {
+        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.CANCEL_ACTION_NAME, new EditorLikeActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 listener.onChooseCanceled();

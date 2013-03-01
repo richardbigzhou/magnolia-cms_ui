@@ -47,6 +47,8 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.vaadin.dialog.Modal;
+import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
 
 import java.util.Collection;
@@ -147,8 +149,9 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     }
 
     @Override
-    public Shell.ShellDialog openDialog(View view) {
-        return shell.openDialog(view);
+    public ModalCloser openModal(View view) {
+        View modalityParent = getView();
+        return shell.openModalOnView(view, modalityParent, Modal.ModalityLevel.APP);
     }
 
     /**
@@ -277,7 +280,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         if (subAppDescriptor == null) {
             subAppDescriptor = getDefaultSubAppDescriptor();
         }
-        SubAppContext subAppContext = new SubAppContextImpl(subAppDescriptor);
+        SubAppContext subAppContext = new SubAppContextImpl(subAppDescriptor, shell);
 
         subAppContext.setAppContext(this);
         subAppContext.setLocation(location);
@@ -332,7 +335,8 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         app.getView().setFullscreen(false);
     }
 
-    private SubAppContext getActiveSubAppContext() {
+    @Override
+    public SubAppContext getActiveSubAppContext() {
         return currentSubAppContext;
     }
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
-import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.gwt.client.dialog.connector.ModalConnector;
+
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that
- * adapts to the content ({@link FormView}) and delegates the view logic to it.
+ * MagnoliaTabWidget.
  */
-public class FormDialog extends BaseDialog implements FormDialogView {
+public class ModalWidget extends SimplePanel {
 
-    @Override
-    public void setFormView(FormView formView) {
-        super.setContent(formView.asVaadinComponent());
-        formView.suppressOwnActions();
+    private final Element modalityCurtain = DOM.createDiv();
 
+    public ModalWidget(ModalConnector connector) {
+        super();
+
+        setStyleName("modal");
+
+        modalityCurtain.setClassName("modal-curtain");
+        this.getElement().appendChild(modalityCurtain);
     }
 
 }

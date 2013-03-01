@@ -33,87 +33,40 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeHeaderWidget;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 
 /**
  * VFormHeader.
  */
-public class FormHeaderWidget extends FlowPanel {
+public class FormHeaderWidget extends EditorLikeHeaderWidget {
 
     private static final String ClASSNAME_ERROR = "form-error";
-    private static final String CLASSNAME_HEADER = "form-header";
-    private static final String ClASSNAME_DESCRIPTION = "form-description";
-    private static final String CLASSNAME_HELPBUTTON = "btn-form-help";
 
-    protected final FormHeaderCallback callback;
+    private FlowPanel errorPanel;
 
-    private FlowPanel errorPanel = new FlowPanel();
-
-    private FlowPanel descriptionPanel = new FlowPanel();
-
-    protected Element captionContainer = DOM.createDiv();
-
-    private Element caption = DOM.createSpan();
-
-    private boolean isDescriptionVisible = false;
-
-    private boolean hasDescription = false;
-
-    private final Button helpButton = new Button("", new ClickHandler() {
-        @Override
-        public void onClick(ClickEvent event) {
-            isDescriptionVisible = !isDescriptionVisible;
-            if (hasDescription) {
-                descriptionPanel.setVisible(isDescriptionVisible);
-            }
-            callback.onDescriptionVisibilityChanged(isDescriptionVisible);
-        }
-    });
-
-    public FormHeaderWidget(final FormHeaderCallback callback) {
-        this.callback = callback;
-        callback.onDescriptionVisibilityChanged(false);
-        construct();
+    public FormHeaderWidget(FormHeaderCallback callback) {
+        super(callback);
     }
 
     public void construct() {
-        captionContainer.addClassName(CLASSNAME_HEADER);
+        super.construct();
+        errorPanel = new FlowPanel();
         errorPanel.addStyleName(ClASSNAME_ERROR);
-        descriptionPanel.addStyleName(ClASSNAME_DESCRIPTION);
-        helpButton.setStyleName(CLASSNAME_HELPBUTTON);
-
-        getElement().appendChild(captionContainer);
-        captionContainer.appendChild(caption);
-
-        descriptionPanel.setVisible(false);
-        add(helpButton, captionContainer);
-        add(descriptionPanel);
         add(errorPanel);
-    }
-
-    public void setFormCaption(final String caption) {
-        this.caption.setInnerText(caption);
-    }
-
-    public void setDescription(final String dialogDescription) {
-        final Label content = new Label();
-        content.setText(dialogDescription);
-        descriptionPanel.insert(content, 0);
-        hasDescription = !dialogDescription.isEmpty();
+        errorPanel.setVisible(false);
     }
 
     /**
      * Callback interface for the Form header.
      */
-    public interface FormHeaderCallback {
+    public interface FormHeaderCallback extends EditorLikeHeaderWidget.VEditorLikeHeaderCallback {
 
         void onDescriptionVisibilityChanged(boolean isVisible);
 
@@ -131,7 +84,7 @@ public class FormHeaderWidget extends FlowPanel {
             errorButton.addDomHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    callback.jumpToNextError();
+                    ((FormHeaderCallback) callback).jumpToNextError();
                 }
             }, ClickEvent.getType());
             errorPanel.add(errorButton);

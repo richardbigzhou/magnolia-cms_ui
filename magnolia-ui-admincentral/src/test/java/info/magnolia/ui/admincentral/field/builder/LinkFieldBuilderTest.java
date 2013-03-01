@@ -53,7 +53,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
     @Test
     public void simpleLinkFieldTest() throws Exception {
         // GIVEN
-        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
+        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null, null);
         linkFieldBuilder.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field field = linkFieldBuilder.getField();
@@ -70,7 +70,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
         definition.setWorkspace(workspaceName);
         baseNode.setProperty(propertyName, baseNode.getIdentifier());
         baseItem = new JcrNodeAdapter(baseNode);
-        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
+        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null, null);
         linkFieldBuilder.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field field = linkFieldBuilder.getField();
@@ -84,7 +84,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
     @Test
     public void linkField_SetButtonCaptionNewTest() throws Exception {
         // GIVEN
-        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
+        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null, null);
         linkFieldBuilder.setI18nContentSupport(i18nContentSupport);
         definition.setButtonSelectNewLabel("New");
         definition.setButtonSelectOtherLabel("Other");
@@ -102,7 +102,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
         definition.setName(propertyName);
         baseNode.setProperty(propertyName, "notChanged");
         baseItem = new JcrNodeAdapter(baseNode);
-        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
+        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null, null);
         linkFieldBuilder.setI18nContentSupport(i18nContentSupport);
         definition.setButtonSelectNewLabel("New");
         definition.setButtonSelectOtherLabel("Other");
@@ -120,7 +120,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
         definition.setName(propertyName);
         baseNode.setProperty(propertyName, "notChanged");
         baseItem = new JcrNodeAdapter(baseNode);
-        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null);
+        linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null, null);
         linkFieldBuilder.setI18nContentSupport(i18nContentSupport);
         Field field = linkFieldBuilder.getField();
         assertEquals("notChanged", ((TextAndButtonField) field).getTextField().getValue());

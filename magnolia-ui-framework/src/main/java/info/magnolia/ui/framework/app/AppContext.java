@@ -35,13 +35,12 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.framework.shell.ModalLayer;
 
 /**
  * Provides functionality used by an app to interact with the Magnolia shell.
  */
-public interface AppContext extends AppView.Listener {
+public interface AppContext extends AppView.Listener, ModalLayer {
 
     void enterFullScreenMode();
 
@@ -67,5 +66,6 @@ public interface AppContext extends AppView.Listener {
 
     SubAppDescriptor getDefaultSubAppDescriptor();
 
-    Shell.ShellDialog openDialog(View view);
+    SubAppContext getActiveSubAppContext();
+
 }

@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.ItemChosenListener;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -87,10 +88,13 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
     private MagnoliaRichTextField richTextEditor;
     private static final Logger log = LoggerFactory.getLogger(LinkFieldBuilder.class);
 
+    private final SubAppContext subAppContext;
+
     @Inject
-    public RichTextFieldBuilder(RichTextFieldDefinition definition, Item relatedFieldItem, AppController appController) {
+    public RichTextFieldBuilder(RichTextFieldDefinition definition, Item relatedFieldItem, AppController appController, SubAppContext subAppContext) {
         super(definition, relatedFieldItem);
         this.appController = appController;
+        this.subAppContext = subAppContext;
     }
 
     @Override
@@ -138,7 +142,7 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
 
     private void openLinkDialog(String path) {
 
-        appController.openChooseDialog("pages", path, new ItemChosenListener() {
+        appController.openChooseDialog("pages", path, subAppContext, new ItemChosenListener() {
 
                 @Override
                 public void onItemChosen(Item chosenValue) {

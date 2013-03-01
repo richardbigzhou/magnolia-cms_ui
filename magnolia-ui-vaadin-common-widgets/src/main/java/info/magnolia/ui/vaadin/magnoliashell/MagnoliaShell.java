@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell;
 
-import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.common.ComponentIterator;
+import info.magnolia.ui.vaadin.dialog.Modal;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellState;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget.MessageType;
@@ -46,7 +46,10 @@ import info.magnolia.ui.vaadin.magnoliashell.viewport.AppsViewport;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.DialogViewport;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellAppsViewport;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
+import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.view.View;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -196,6 +199,34 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         ((ShellViewport) getState().viewports.get(ViewportType.DIALOG)).addComponent(dialog);
     }
 
+    /**
+     * Open a Modal on top of a specific View.
+     * 
+     * @param view
+     *            View to be displayed modally.
+     * @param parent
+     *            The View to open the Modal on top of.
+     */
+    public ModalCloser openModal(final View child, View parent, Modal.ModalityLevel modalityLevel) {
+        Modal modal = new Modal(child.asVaadinComponent(), parent.asVaadinComponent(), modalityLevel);
+        getState().modals.add(modal);
+
+        // modal has Vaadin parent of MagnoliaShell
+        modal.setParent(this);
+
+        return new ModalCloser() {
+            @Override
+            public void close() {
+                MagnoliaShell.this.closeModal(child.asVaadinComponent());
+            }
+        };
+    }
+
+    public void closeModal(Component modalComponent) {
+        Modal modal = (Modal) modalComponent.getParent();
+        getState().modals.remove(modal);
+    }
+
     public void setActiveViewport(ShellViewport viewport) {
         final Connector currentActive = getState().activeViewport;
         if (currentActive != viewport) {
@@ -205,6 +236,11 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
 
     public ShellViewport getActiveViewport() {
         return (ShellViewport) getState(false).activeViewport;
+    }
+
+    @Override
+    protected MagnoliaShellState createState() {
+        return new MagnoliaShellState();
     }
 
     @Override
@@ -249,9 +285,28 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         getState().shellApps.put(type, component);
     }
 
+    /**
+     * Must also include any modals that have been attached to the shell.
+     */
     @Override
     public Iterator<Component> iterator() {
-        return new ComponentIterator<Connector>(getState(false).viewports.values().iterator());
+
+        Iterator<Connector> viewportIterator = getState(false).viewports.values().iterator();
+        Iterator<Connector> modalIterator = getState(false).modals.iterator();
+
+        ArrayList<Connector> connectors = new ArrayList<Connector>();
+
+        // Add viewports
+        while (viewportIterator.hasNext()) {
+            connectors.add(viewportIterator.next());
+        }
+
+        // Add modals
+        while (modalIterator.hasNext()) {
+            connectors.add(modalIterator.next());
+        }
+
+        return new ComponentIterator<Connector>(connectors.iterator());
     }
 
     public ShellViewport getAppViewport() {

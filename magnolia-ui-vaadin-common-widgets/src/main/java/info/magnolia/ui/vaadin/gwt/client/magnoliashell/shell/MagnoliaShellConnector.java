@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
+import info.magnolia.ui.vaadin.gwt.client.dialog.connector.ModalConnector;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppActivatedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellServerRpc;
@@ -88,7 +89,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             @Override
             public void onStateChanged(StateChangeEvent event) {
                 MagnoliaShellState state = getState();
-                Iterator<Entry<ShellAppType, Integer>> it = getState().indications.entrySet().iterator();
+                Iterator<Entry<ShellAppType, Integer>> it = state.indications.entrySet().iterator();
                 while (it.hasNext()) {
                     final Entry<ShellAppType, Integer> entry = it.next();
                     view.setShellAppIndication(entry.getKey(), entry.getValue());
@@ -96,6 +97,31 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 final Connector active = state.activeViewport;
                 if (active != null) {
                     view.setActiveViewport(((ViewportConnector) active).getWidget());
+                }
+
+            }
+        });
+
+        addStateChangeHandler("modals", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+
+                MagnoliaShellState state = getState();
+                Iterator<Connector> it = state.modals.iterator();
+
+                // Check for modals that have not yet been added.
+                while (it.hasNext()) {
+                    final Connector modal = it.next();
+                    // Test if modal is attached.
+                    Widget modalWidget = ((ComponentConnector) modal).getWidget();
+
+                    if (modalWidget.getParent() == null) {
+                        // Add the widget
+                        ComponentConnector modalityParent = (ComponentConnector) (((ModalConnector) modal).getState().modalityParent);
+
+                        Widget parentWidget = modalityParent.getWidget();
+                        view.openModalOnWidget(modalWidget, parentWidget);
+                    }
                 }
 
             }

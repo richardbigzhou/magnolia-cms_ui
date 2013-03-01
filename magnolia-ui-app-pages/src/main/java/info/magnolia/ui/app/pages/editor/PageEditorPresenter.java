@@ -46,6 +46,7 @@ import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.app.pages.field.TemplateSelectorField;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.ModelConstants;
@@ -93,12 +94,16 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private AbstractElement selectedElement;
 
+    private SubAppContext subAppContext;
+
     @Inject
-    public PageEditorPresenter(PageEditorView view, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, FormDialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry) {
+    public PageEditorPresenter(PageEditorView view, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, FormDialogPresenterFactory dialogPresenterFactory, TemplateDefinitionRegistry templateDefinitionRegistry,
+            SubAppContext subAppContext) {
         this.view = view;
         this.eventBus = eventBus;
         this.dialogPresenterFactory = dialogPresenterFactory;
         this.templateDefinitionRegistry = templateDefinitionRegistry;
+        this.subAppContext = subAppContext;
 
         registerHandlers();
     }
@@ -160,7 +165,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             item.addItemProperty(ModelConstants.JCR_NAME, property);
 
             // perform custom chaining of dialogs
-            dialogPresenter.start(item, new FormDialogPresenter.Callback() {
+            dialogPresenter.start(item, subAppContext, new FormDialogPresenter.Callback() {
 
                 @Override
                 public void onSuccess(String actionName) {
@@ -193,7 +198,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
      * Create a Dialog and define the call back actions.
      */
     private void createDialogAction(final JcrNodeAdapter item, final FormDialogPresenter dialogPresenter) {
-        dialogPresenter.start(item, new FormDialogPresenter.Callback() {
+        dialogPresenter.start(item, subAppContext, new FormDialogPresenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {

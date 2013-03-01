@@ -33,16 +33,23 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.vaadin.view.View;
+
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
+import info.magnolia.ui.vaadin.view.View;
+
+import javax.inject.Inject;
 
 import com.vaadin.server.KeyMapper;
+import com.vaadin.ui.Component;
 
 /**
  * View used to give all apps a uniform look-and-feel.
  */
 public class AppFrameView implements AppView {
+
+    private final Shell shell;
 
     private Listener listener;
 
@@ -66,8 +73,10 @@ public class AppFrameView implements AppView {
         }
     };
 
-    public AppFrameView() {
+    @Inject
+    public AppFrameView(final Shell shell) {
         super();
+        this.shell = shell;
         tabsheet.setSizeFull();
         tabsheet.addStyleName("app");
     }
@@ -107,4 +116,18 @@ public class AppFrameView implements AppView {
     public MagnoliaTabSheet asVaadinComponent() {
         return tabsheet;
     }
+
+    @Override
+    public View getSubAppViewContainer(final String instanceId) {
+
+        return new View(){
+
+            @Override
+            public Component asVaadinComponent() {
+                return mapper.get(instanceId);
+            }
+
+        };
+    }
+
 }
