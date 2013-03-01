@@ -38,8 +38,8 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.ContentPresenter;
 import info.magnolia.ui.admincentral.event.SearchEvent;
+import info.magnolia.ui.contentapp.ContentPresenter;
 import info.magnolia.ui.contentapp.ContentSubAppDescriptor;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -98,6 +98,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
 
     private final ActionExecutor actionExecutor;
 
+    private ContentSubAppDescriptor subAppDescriptor;
+
     private final ContentWorkbenchView view;
 
     private final EventBus admincentralEventBus;
@@ -116,14 +118,24 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
             final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final ContentPresenter contentPresenter,
             final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
         this.actionExecutor = actionExecutor;
-        this.appContext = subAppContext.getAppContext();
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
         this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
-        this.workbenchDefinition = ((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench();
-        ImageProviderDefinition imageProviderDefinition = workbenchDefinition.getImageProvider();
+
+        this.appContext = subAppContext.getAppContext();
+
+        if (subAppContext.getSubAppDescriptor() instanceof ContentSubAppDescriptor) {
+            this.subAppDescriptor = (ContentSubAppDescriptor) subAppContext.getSubAppDescriptor();
+        }
+        else {
+            log.error("{} {} subApp must contain a subAppDescriptor of type {}", new String[] {appContext.getName(), subAppContext.getSubAppId(), ContentSubAppDescriptor.class.getName()});
+        }
+
+        this.workbenchDefinition = subAppDescriptor.getWorkbench();
+
+        ImageProviderDefinition imageProviderDefinition = subAppDescriptor.getImageProvider();
         if (imageProviderDefinition == null) {
             this.imageProvider = null;
         } else {
@@ -136,7 +148,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
         contentPresenter.initContentView(view);
         actionbarPresenter.setListener(this);
 
-        ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar());
+        ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar());
         view.setActionbarView(actionbar);
         bindHandlers();
         return view;

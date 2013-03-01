@@ -42,8 +42,8 @@ import info.magnolia.ui.workbench.list.FlatJcrContainer;
 import info.magnolia.ui.workbench.list.ListViewImpl;
 import info.magnolia.ui.workbench.search.SearchJcrContainer;
 import info.magnolia.ui.workbench.search.SearchViewImpl;
-import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer;
 import info.magnolia.ui.workbench.thumbnail.LazyThumbnailViewImpl;
+import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer;
 import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
 import info.magnolia.ui.workbench.tree.TreeViewImpl;
 
@@ -64,7 +64,7 @@ public class ContentViewBuilderImpl implements ContentViewBuilder, Serializable 
     }
 
     @Override
-    public ContentView build(final WorkbenchDefinition workbenchDefinition, final ViewType type) {
+    public ContentView build(final WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, final ViewType type) {
         switch (type) {
 
         case TREE:
@@ -77,10 +77,9 @@ public class ContentViewBuilderImpl implements ContentViewBuilder, Serializable 
             final SearchJcrContainer searchContainer = new SearchJcrContainer(workbenchDefinition);
             return componentProvider.newInstance(SearchViewImpl.class, workbenchDefinition, searchContainer);
         case THUMBNAIL:
-            ImageProviderDefinition imageProviderDef = workbenchDefinition.getImageProvider();
             ImageProvider imageProvider = null;
-            if (imageProviderDef != null) {
-                imageProvider = componentProvider.newInstance(imageProviderDef.getImageProviderClass(), imageProviderDef);
+            if (imageProviderDefinition != null) {
+                imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
             }
             final ThumbnailContainer thumbnailContainer = new ThumbnailContainer(workbenchDefinition, imageProvider);
             return componentProvider.newInstance(LazyThumbnailViewImpl.class, workbenchDefinition, thumbnailContainer);
