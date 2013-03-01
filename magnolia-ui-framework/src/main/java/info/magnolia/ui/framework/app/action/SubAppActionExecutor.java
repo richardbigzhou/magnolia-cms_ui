@@ -33,63 +33,24 @@
  */
 package info.magnolia.ui.framework.app.action;
 
-import info.magnolia.cms.beans.config.ConfigurationException;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
-import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.action.ActionExecutor;
 
 import javax.inject.Inject;
 
 /**
- * {@link ActionExecutor} used in the scope of sub apps. Reads the {@link ActionDefinition} from the {@link SubAppDescriptor} bound to the current {@link SubAppContext}.
- * Creates the {@link Action} from the implementation class using componentProvider and binds the ActionDefinition to the Action.
+ * {@link info.magnolia.ui.model.action.ActionExecutor} used in the scope of sub apps. Reads the {@link ActionDefinition} from the {@link SubAppDescriptor} bound to the current {@link SubAppContext}.
  */
-public class SubAppActionExecutor implements ActionExecutor {
+public class SubAppActionExecutor extends AbstractActionExecutor {
 
     private SubAppDescriptor subAppDescriptor;
-    
-    private ComponentProvider componentProvider;
-    
+
     @Inject
     public SubAppActionExecutor(final ComponentProvider componentProvider, final SubAppContext subAppContext) {
+        super(componentProvider);
         this.subAppDescriptor = subAppContext.getSubAppDescriptor();
-        this.componentProvider = componentProvider;
-    }
-
-    @Override
-    public void execute(String actionName, Object... args) throws ActionExecutionException {
-        try {
-            Action action = createAction(actionName, args);
-            action.execute();
-        }
-        catch (ConfigurationException e) {
-            throw new ActionExecutionException(e);
-        }
-    }
-
-    /**
-     * Creates an action using the implementation configured for the given action definition. The
-     * parameters are made available for injection when the instance is created. The definition
-     * object given is also available for injection.
-     */
-    private Action createAction(String actionName, Object... args) throws ConfigurationException {
-        final ActionDefinition actionDefinition = getActionDefinition(actionName);
-        if (actionDefinition != null) {
-            Class<? extends Action> implementationClass = actionDefinition.getImplementationClass();
-            if (implementationClass != null) {
-                Object[] combinedParameters = new Object[args.length + 1];
-                combinedParameters[0] = actionDefinition;
-                System.arraycopy(args, 0, combinedParameters, 1, args.length);
-
-                return componentProvider.newInstance(implementationClass, combinedParameters);
-            }
-        }
-
-        throw new ConfigurationException("Could not create action: " + actionName);
     }
 
     @Override

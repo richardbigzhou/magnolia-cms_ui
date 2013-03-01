@@ -14,7 +14,17 @@
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-model</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-admincentral</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-contentapp</artifactId>
       <version>${project.version}</version>
     </dependency>
 
