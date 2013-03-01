@@ -35,8 +35,8 @@ package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
-import info.magnolia.ui.admincentral.content.item.ItemView;
+import info.magnolia.ui.contentapp.location.ItemLocation;
+import info.magnolia.ui.contentapp.item.ItemView;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;

@@ -79,14 +79,12 @@ public class PulseViewImpl implements PulseView {
 
         this.messagesView = messagesView;
         tabsheet.addStyleName("v-shell-tabsheet-light");
-        final MagnoliaTab dashboard = tabsheet.addTab("Dashboard", dashboardView.asVaadinComponent());
         final MagnoliaTab messages = tabsheet.addTab("Messages", messagesView.asVaadinComponent());
 
         tabsheet.addStyleName("v-pulse");
         tabsheet.setSizeFull();
         tabsheet.setWidth("900px");
 
-        m.put(PulseTabType.DASHBOARD, dashboard);
         m.put(PulseTabType.MESSAGES, messages);
     }
 

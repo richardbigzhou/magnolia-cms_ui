@@ -110,15 +110,25 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
         registerRpc(new FormServerRpc() {
             @Override
             public void focusNextProblematicField(Connector currentFocused) {
-                MagnoliaFormTab activeTab = (MagnoliaFormTab) tabSheet.getActiveTab();
-                FormSection formSection = activeTab.getContent();
-                Component nextProblematic = formSection.getNextProblematicField(currentFocused);
-                if (nextProblematic == null) {
-                    MagnoliaTab nextTab = tabSheet.getNextTab(activeTab);
-                    tabSheet.setActiveTab(nextTab);
-                    focusNextProblematicField(null);
-                } else {
-                    formSection.focusField(nextProblematic);
+
+                int tabCount = tabSheet.getComponentCount();
+                MagnoliaTab tab = tabSheet.getActiveTab();
+                FormSection section = null;
+                Component nextProblematic = null;
+
+                do {
+                    section = (FormSection) tab.getContent();
+                    nextProblematic = section.getNextProblematicField(currentFocused);
+                    if (nextProblematic == null) {
+                        tab = tabSheet.getNextTab(tab);
+                        tabCount--;
+                    }
+                } while (nextProblematic == null && tabCount > 0);
+
+                // focus next tab and field
+                if (nextProblematic != null) {
+                    tabSheet.setActiveTab(tab);
+                    section.focusField(nextProblematic);
                 }
             }
         });
