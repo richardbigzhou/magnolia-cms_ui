@@ -200,7 +200,7 @@
         <plugin>
           <groupId>com.vaadin</groupId>
           <artifactId>vaadin-maven-plugin</artifactId>
-          <version>7.0.0</version>
+          <version>${vaadinVersion}</version>
         </plugin>
       </plugins>
     </pluginManagement>
