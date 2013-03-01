@@ -34,9 +34,7 @@
 package info.magnolia.ui.framework.app.action;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
+import static org.mockito.Mockito.*;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
@@ -45,8 +43,6 @@ import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
@@ -54,22 +50,17 @@ import info.magnolia.ui.model.action.ActionExecutor;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * SubAppActionExecutorTest.
  */
-public class SubAppActionExecutorTest {
-
-    private final static String ACTION_NAME = "testActionName";
+public class SubAppActionExecutorTest extends AbstractActionExecutorTest {
 
     private SubAppContext subAppContext;
-    private ActionExecutor actionExecutor;
-    private TestActionParameters params;
 
+    @Override
     @Before
     public void setUp() throws Exception {
 
@@ -115,6 +106,7 @@ public class SubAppActionExecutorTest {
         return descriptor;
     }
 
+    @Override
     public GuiceComponentProvider initComponentProvider() {
 
         ComponentProviderConfiguration components = new ComponentProviderConfiguration();
@@ -131,65 +123,4 @@ public class SubAppActionExecutorTest {
         return builder.build();
     }
 
-    private class TestActionDefinition implements ActionDefinition {
-
-        @Override
-        public Class<? extends Action> getImplementationClass() {
-            return TestAction.class;
-        }
-
-        @Override
-        public String getName() {
-            return ACTION_NAME;
-        }
-
-        @Override
-        public String getLabel() {
-            return "test Action Label";
-        }
-
-        @Override
-        public String getI18nBasename() {
-            return "";
-        }
-
-        @Override
-        public String getIcon() {
-            return "test-icon";
-        }
-
-        @Override
-        public String getDescription() {
-            return "test description";
-        }
-
-        public class TestAction extends ActionBase {
-
-            private final TestActionParameters params;
-
-            @Inject
-            public TestAction(TestActionDefinition definition, TestActionParameters params) {
-                super(definition);
-                this.params = params;
-            }
-
-            @Override
-            public void execute() throws ActionExecutionException {
-                params.setActionname(getDefinition().getName());
-            }
-        }
-    }
-
-    public class TestActionParameters {
-
-        private String actionname = "";
-
-        public String getActionname() {
-            return actionname;
-        }
-
-        public void setActionname(String actionname) {
-            this.actionname = actionname;
-        }
-    }
 }
