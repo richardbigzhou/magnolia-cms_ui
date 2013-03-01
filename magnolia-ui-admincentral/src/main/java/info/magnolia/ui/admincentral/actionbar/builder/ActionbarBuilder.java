@@ -70,14 +70,14 @@ public class ActionbarBuilder {
                 List<String> actionNames = new ArrayList<String>();
                 for (ActionbarGroupDefinition group : section.getGroups()) {
                     // standalone groups make no sense
-                    log.info("Group actions: " + group.getItems());
+                    log.debug("Group actions: " + group.getItems());
                     for (ActionbarItemDefinition action : group.getItems()) {
 
                         if (actionNames.contains(action)) {
                             log.warn("Action was not added: an action with name " + action + "': was already added to the section" + section.getName() + ".");
                             continue;
                         }
-                        
+
                         actionNames.add(action.getName());
                         addItemFromDefinition(listener, actionbar, group.getName(), section.getName(), action.getName());
                     }
