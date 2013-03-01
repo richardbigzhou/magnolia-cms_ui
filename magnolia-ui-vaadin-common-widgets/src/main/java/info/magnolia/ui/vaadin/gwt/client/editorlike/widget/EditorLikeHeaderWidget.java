@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * EditorLikeHeaderWidget.
+ * A header for ui elements like dialogs and forms which supports a description and a toolbar.
  */
 public abstract class EditorLikeHeaderWidget extends FlowPanel {
 
