@@ -60,6 +60,7 @@ public class FormHeaderWidget extends EditorLikeHeaderWidget {
         errorPanel = new FlowPanel();
         errorPanel.addStyleName(ClASSNAME_ERROR);
         add(errorPanel);
+        errorPanel.setVisible(false);
     }
 
     /**

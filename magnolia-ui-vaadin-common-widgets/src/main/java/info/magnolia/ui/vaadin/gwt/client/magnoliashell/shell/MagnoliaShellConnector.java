@@ -124,19 +124,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                     }
                 }
 
-                // Check for modals that have not yet been removed.
-
-                /*
-                 * if (getState().modalityChild == null) {
-                 * // Remove the widget
-                 * view.closeModalOnComponent();// childWidget, parentWidget);
-                 * } else {
-                 * // Add the widget
-                 * Widget childWidget = ((ComponentConnector) getState().modalityChild).getWidget();
-                 * Widget parentWidget = ((ComponentConnector) getState().modalityParent).getWidget();
-                 * view.openModalOnComponent(childWidget, parentWidget);
-                 * }
-                 */
             }
         });
 
