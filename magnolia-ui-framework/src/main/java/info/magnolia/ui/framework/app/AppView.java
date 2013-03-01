@@ -43,6 +43,8 @@ public interface AppView extends View {
 
     void setFullscreen(boolean fullscreen);
 
+    void setTheme(String value);
+
     /**
      * Listens to events coming from the TabSheet.
      */

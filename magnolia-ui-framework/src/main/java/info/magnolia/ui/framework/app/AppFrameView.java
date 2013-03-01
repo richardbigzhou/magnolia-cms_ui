@@ -37,7 +37,11 @@ import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
+import org.vaadin.cssinject.CSSInject;
+
 import com.vaadin.server.KeyMapper;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.Component;
 
 /**
  * View used to give all apps a uniform look-and-feel.
@@ -96,6 +100,20 @@ public class AppFrameView implements AppView {
     @Override
     public void setFullscreen(boolean fullscreen) {
         tabsheet.setFullscreen(fullscreen);
+    }
+
+    @Override
+    public void setTheme(String themeName) {
+        String stylename = String.format("app-%s", themeName);
+        Component vaadinComponent = asVaadinComponent();
+        vaadinComponent.addStyleName(stylename);
+
+        if (vaadinComponent.getUI() != null) {
+            String themeUrl = String.format("../%s/styles.css", themeName);
+            ThemeResource res = new ThemeResource(themeUrl);
+            CSSInject cssInject = new CSSInject(vaadinComponent.getUI());
+            cssInject.addStyleSheet(res);
+        }
     }
 
     @Override
