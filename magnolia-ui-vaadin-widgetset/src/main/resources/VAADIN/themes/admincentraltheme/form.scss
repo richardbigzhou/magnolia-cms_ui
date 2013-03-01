@@ -97,36 +97,11 @@
     margin-right: 0px;
 }
 
-button.btn-form {
-    border:none;
-    padding:6px 10px 3px;
-    color:#fff;
-    font-family:DINWebPro;
-    font-size:12px;
-    line-height:1;
-    text-transform:uppercase;
-    background:none repeat scroll 0px 0px #666666;
-    cursor:pointer;
-}
-
 button.btn-form-select {
     margin-left: 2px;
 }
 
-.btn-form-select span {
-    font-family: DINWebPro !important;
-    font-size: 12px !important;
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 55px !important;
-}
-
-button.btn-form-commit {
-    background: none repeat scroll 0px 0px #689600;
-    margin-left:10px;
-    float: right;
-}
+.form-footer button.btn-form-commit { float: right; margin-left: 10px; }
 
 button.btn-form-help {
     background: url("img/icon-help.png") no-repeat scroll center center transparent;
@@ -150,10 +125,6 @@ button.btn-form-help {
     width: auto !important;
 }
 
-textarea.v-form-field {
-    overflow-y: auto;
-    height:auto;
-}
 .v-form-field-label {
     display: inline-block;
     text-align: right;
@@ -179,10 +150,6 @@ textarea.v-form-field {
 .v-form-field-section {
     color: #000;
     margin-bottom: 11px;
-}
-
-.triangle {
-
 }
 
 .validation-message-inline,.help-message-inline {

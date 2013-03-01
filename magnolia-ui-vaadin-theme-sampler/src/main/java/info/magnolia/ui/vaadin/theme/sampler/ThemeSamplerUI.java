@@ -44,10 +44,12 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * The Application UI for developing the theme for Magnolia 5.
@@ -69,8 +71,15 @@ public class ThemeSamplerUI extends UI {
             "Hammersmith", "Ipswitch", "Jackrabbit", "Kornhaus", "Liver", "Magnolia", "Noteworthy", "Opium", "Panacotta", "Quadrant", "Responsive Responsive Responsive",
             "Shark attack", "Trivial", "Unicorn", "Volkswagen", "Warsau", "Xiaoyu", "Yeast", "Zero"));
     private DateField dateField = new DateField("DateField");
-    private Button saveButton = new Button("Save changes");
-    private Button cancelButton = new Button("Discard");
+
+    private CssLayout buttonLayout = new CssLayout();
+    private Button button = new Button("Button");
+    private Button commitButton = new Button("Commit Button");
+    private NativeButton nativeButton = new NativeButton("Native Button");
+    private NativeButton styledNativeButton = new NativeButton("Styled Native");
+    private NativeButton styledNativeCommitButton = new NativeButton("Native Commit");
+    private Button linkButton = new Button("Link Button");
+
 
     @Override
     protected void init(VaadinRequest request) {
@@ -83,10 +92,20 @@ public class ThemeSamplerUI extends UI {
 
         comboBox.setInvalidAllowed(false);
         comboBox.setNullSelectionAllowed(false);
-
         paginatedComboBox.setWidth(400, Unit.PIXELS);
 
-        saveButton.addStyleName("commit");
+        buttonLayout.addStyleName("buttons");
+        commitButton.addStyleName("commit");
+        styledNativeButton.addStyleName("btn-dialog");
+        styledNativeCommitButton.addStyleName("btn-form commit");
+        linkButton.setStyleName(BaseTheme.BUTTON_LINK);
+
+        buttonLayout.addComponent(button);
+        buttonLayout.addComponent(commitButton);
+        buttonLayout.addComponent(styledNativeButton);
+        buttonLayout.addComponent(styledNativeCommitButton);
+        buttonLayout.addComponent(nativeButton);
+        buttonLayout.addComponent(linkButton);
 
         formLayout.addComponent(label);
         formLayout.addComponent(textField);
@@ -96,8 +115,7 @@ public class ThemeSamplerUI extends UI {
         formLayout.addComponent(comboBox);
         formLayout.addComponent(paginatedComboBox);
         formLayout.addComponent(dateField);
-        formLayout.addComponent(cancelButton);
-        formLayout.addComponent(saveButton);
+        formLayout.addComponent(buttonLayout);
 
         titleLabel.addStyleName("title");
 
