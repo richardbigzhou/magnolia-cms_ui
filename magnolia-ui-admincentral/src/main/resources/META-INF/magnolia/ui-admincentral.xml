@@ -233,8 +233,8 @@
       <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.contentapp.imageprovider.definition.ImageProviderDefinition</type>
-      <implementation>info.magnolia.ui.contentapp.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
+      <type>info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition</type>
+      <implementation>info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.contentapp.workbench.ContentWorkbenchView</type>
@@ -252,7 +252,7 @@
       <implementation>info.magnolia.ui.contentapp.WorkbenchSubAppViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.contentapp.action.ActionExecutor</type>
+      <type>info.magnolia.ui.model.action.ActionExecutor</type>
       <implementation>info.magnolia.ui.framework.app.action.SubAppActionExecutor</implementation>
     </component>
     <component>
@@ -260,8 +260,8 @@
       <implementation>info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.contentapp.view.ContentPresenter</type>
-      <implementation>info.magnolia.ui.contentapp.view.ContentPresenter</implementation>
+      <type>info.magnolia.ui.contentapp.ContentPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.ContentPresenter</implementation>
     </component>
       <component>
       <type>info.magnolia.ui.contentapp.workbench.ItemWorkbenchView</type>
