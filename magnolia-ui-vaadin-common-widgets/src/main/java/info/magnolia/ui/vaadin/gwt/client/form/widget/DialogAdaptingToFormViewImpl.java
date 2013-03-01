@@ -119,7 +119,6 @@ public class DialogAdaptingToFormViewImpl extends SimplePanel implements BaseDia
 
     @Override
     public void removeFromParent() {
-        // TODO Auto-generated method stub
         super.removeFromParent();
     }
 

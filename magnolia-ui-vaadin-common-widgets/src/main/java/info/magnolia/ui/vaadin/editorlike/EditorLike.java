@@ -162,13 +162,6 @@ public abstract class EditorLike extends AbstractComponent implements HasCompone
         return new HorizontalLayout();
     }
 
-    /*
-     * @Override
-     * public BaseDialog asVaadinComponent() {
-     * return this;
-     * }
-     */
-
     public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
         addAction(actionName, actionLabel);
         addActionCallback(actionName, callback);

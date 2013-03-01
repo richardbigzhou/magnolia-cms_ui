@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -43,9 +43,12 @@ import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractComponentContainerConnector;
 
 /**
- * A common base for the editing components like forms and dialogs. 
- * @param <T> the view
- * @param <U> the presenter
+ * A common base for the editing components like forms and dialogs.
+ * 
+ * @param <T>
+ *            the view
+ * @param <U>
+ *            the presenter
  */
 public abstract class EditorLikeComponentConnector<U extends EditorLikeView.Presenter, T extends EditorLikeView<U>> extends AbstractComponentContainerConnector {
 
@@ -109,8 +112,6 @@ public abstract class EditorLikeComponentConnector<U extends EditorLikeView.Pres
         view.setActions(getState().actions);
     }
 
-    // TODO: Perhaps these six methods can be refactored down to fewer more generic methods.
-    // Do we need get*() methods?
     protected ComponentConnector getContent() {
         return (ComponentConnector) getState().content;
     }

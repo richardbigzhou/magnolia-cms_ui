@@ -50,11 +50,6 @@ import javax.inject.Inject;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 
-/*
- * import info.magnolia.ui.app.contacts.field.ContactTextAndButtonField;
- import info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition;
- */
-
 /**
  * Creates and initializes a ContactLinkField field based on a field definition.
  */

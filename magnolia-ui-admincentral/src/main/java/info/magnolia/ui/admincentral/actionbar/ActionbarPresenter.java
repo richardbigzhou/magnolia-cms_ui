@@ -52,18 +52,6 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarPresenter.class);
 
-    /*
-     * private final AppContext appContext;
-     * 
-     * @Inject
-     * 
-     * public ActionbarPresenter(@Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, AppContext appContext) {
-     * super(subAppEventBus);
-     * this.appContext = appContext;
-     * }
-     */
-
-
     private static final String PREVIEW_SECTION_NAME = "preview";
 
     private ActionbarDefinition definition;
@@ -167,35 +155,6 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         listener.setFullScreen(isFullScreen);
     }
 
-    /*
-     * public void createAndExecuteAction(final ActionDefinition actionDefinition, String workspace, String absPath) {
-     * if (actionDefinition == null || StringUtils.isBlank(workspace)) {
-     * Message warn = createMessage(MessageType.WARNING, "Got invalid arguments: action definition is " + actionDefinition + ", workspace is " + workspace, "");
-     * appContext.sendLocalMessage(warn);
-     * }
-     * try {
-     * Session session = MgnlContext.getJCRSession(workspace);
-     * if (absPath == null || !session.itemExists(absPath)) {
-     * log.debug("{} does not exist anymore. Was it just deleted? Resetting path to root...", absPath);
-     * absPath = "/";
-     * }
-     * final javax.jcr.Item item = session.getItem(absPath);
-     * final Action action = getActionFactory().createAction(actionDefinition, item);
-     * if (action == null) {
-     * Message warn = createMessage(MessageType.WARNING, "Could not create action from actionDefinition. Action is null.", "");
-     * appContext.sendLocalMessage(warn);
-     * } else {
-     * action.execute();
-     * }
-     * appContext.showConfirmationMessage("Action executed successfully.");
-     * } catch (RepositoryException e) {
-     * Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
-     * appContext.broadcastMessage(error);
-     * } catch (ActionExecutionException e) {
-     * Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
-     * appContext.broadcastMessage(error);
-     * }
-     */
     private String getActionName(String actionToken) {
         final String[] chunks = actionToken.split(":");
         if (chunks.length != 2) {

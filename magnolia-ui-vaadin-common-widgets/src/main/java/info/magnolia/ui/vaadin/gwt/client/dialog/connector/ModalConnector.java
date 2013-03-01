@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -43,7 +43,7 @@ import com.vaadin.client.ui.AbstractSingleComponentContainerConnector;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * MagnoliaTabConnector.
+ * Connector for Modal - Takes care of unregistering the widget at the proper time - so the modal dissapears when it is ready.
  */
 @Connect(Modal.class)
 public class ModalConnector extends AbstractSingleComponentContainerConnector {
@@ -67,15 +67,10 @@ public class ModalConnector extends AbstractSingleComponentContainerConnector {
         return new ModalWidget(this);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.vaadin.client.ui.AbstractComponentConnector#onUnregister()
-     */
+
     @Override
     public void onUnregister() {
-        // Delays the destruction of the connector.
-
+        // Delay the destruction of the connector till the widget is ready.
         new Timer() {
 
             @Override
@@ -83,24 +78,6 @@ public class ModalConnector extends AbstractSingleComponentContainerConnector {
                 ModalConnector.super.onUnregister();
             }
         }.schedule(300);
-
-        /*
-         * See ActionbarConnector().
-         * Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-         * 
-         * @Override
-         * public void execute() {
-         * for (String sectionName : getState().sections.keySet()) {
-         * String previewUrl = getResourceUrl(sectionName);
-         * if (previewUrl != null) {
-         * view.setSectionPreview(sectionName, previewUrl);
-         * }
-         * }
-         * }
-         * });
-         */
-
-        // super.onUnregister();
     }
 
     @Override

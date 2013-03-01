@@ -115,8 +115,7 @@ public class SubAppContextImpl implements SubAppContext {
 
     @Override
     public ModalCloser openModal(View view) {
-        // View modalityParent = subApp.getView();
-        //Get the tab for the view
+        // Get the MagnoliaTab for the view
         View modalityParent = getAppContext().getView().getSubAppViewContainer(instanceId);
         return shell.openModalOnView(view, modalityParent, Modal.ModalityLevel.SUB_APP);
     }

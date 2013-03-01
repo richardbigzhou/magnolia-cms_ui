@@ -77,19 +77,6 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
             }
         });
 
-        /*
-         * <<<<<<< HEAD
-         * }
-         * 
-         * @Override
-         * public ChooseDialogView getView() {
-         * return chooseDialogView;
-         * }
-         * 
-         * @Override
-         * public void addValueChosenListener(final ValueChosenListener<Item> listener) {
-         * addActionCallback(WorkbenchValueChooseDialog.CHOOSE_ACTION_NAME, new EditorLikeActionListener() {
-         */
         addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
 
             @Override
@@ -100,17 +87,6 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
         });
     }
 
-    /*
-     * <<<<<<< HEAD
-     * addActionCallback(WorkbenchValueChooseDialog.CANCEL_ACTION_NAME, new EditorLikeActionListener() {
-     * 
-     * @Override
-     * public void onActionExecuted(final String actionName) {
-     * listener.selectionCanceled();
-     * }
-     * });
-     * =======
-     */
     @Override
     public void setListener(Listener listener) {
         this.listener = listener;

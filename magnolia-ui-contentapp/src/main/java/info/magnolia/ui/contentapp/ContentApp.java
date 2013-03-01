@@ -58,37 +58,6 @@ public class ContentApp extends BaseApp {
         this.chooseDialogPresenterFactory = chooseDialogPresenterFactory;
     }
 
-    /*
-     * <<<<<<< HEAD
-     * public ChooseDialogPresenter<Item> openChooseDialog() {
-     * 
-     * return openChooseDialog(null);
-     * }
-     * 
-     * public ChooseDialogPresenter<Item> openChooseDialog(String defaultPath) {
-     * final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = chooseDialogFactory.createWorkbenchChooseDialog(defaultPath);
-     * 
-     * final ModalityLevel modalityLevel = Modal.ModalityLevel.SUB_APP;
-     * 
-     * // ((ShellImpl) shell).openDialog(workbenchChooseDialogPresenter);
-     * 
-     * workbenchChooseDialogPresenter.addDialogCloseHandler(new DialogCloseEvent.Handler() {
-     * 
-     * @Override
-     * public void onClose(DialogCloseEvent event) {
-     * // appContext.getView().clearModal(FormDialogPresenterImpl.this.getView());
-     * shell.closeModal(workbenchChooseDialogPresenter.getView());
-     * event.getView().asVaadinComponent().removeDialogCloseHandler(this);
-     * }
-     * });
-     * 
-     * View modalView = workbenchChooseDialogPresenter.getView();
-     * shell.openModal(modalView, modalityLevel);
-     * 
-     * return workbenchChooseDialogPresenter;
-     * }
-     * =======
-     */
     @Override
     public void openChooseDialog(String path, ModalLayer modalLayer, final ItemChosenListener listener) {
 
