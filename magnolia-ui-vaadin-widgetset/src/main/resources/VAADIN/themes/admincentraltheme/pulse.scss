@@ -21,8 +21,6 @@
 /* Clearfix */
 .v-dashboard-entry:before, .v-dashboard-entry:after { content: ""; display: table; }
 .v-dashboard-entry:after { clear: both; }
-.v-dashboard-entry { *zoom: 1; }
-
 
 .v-dashboard-entry {padding-top:10px; padding-bottom:5px;}
 
