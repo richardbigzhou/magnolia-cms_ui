@@ -83,6 +83,7 @@ public class PasswordFields extends CustomField<String> {
             verificationField = new PasswordField();
             verificationField.setNullRepresentation("");
         }
+        initContent();
     }
 
     @Override
