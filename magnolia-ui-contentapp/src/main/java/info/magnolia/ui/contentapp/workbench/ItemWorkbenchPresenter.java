@@ -47,13 +47,16 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +89,20 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
     public View start(String nodePath, ItemView.ViewType viewType) {
         view.setListener(this);
         this.nodePath = nodePath;
-        final JcrNodeAdapter item = new JcrNodeAdapter(SessionUtil.getNode(subAppDescriptor.getWorkspace(), nodePath));
+        JcrNodeAdapter item;
+        try {
+            Session session = MgnlContext.getJCRSession(subAppDescriptor.getWorkspace());
+            Node parent = session.getNode(StringUtils.substringBeforeLast(nodePath, "/"));
+            if (session.nodeExists(nodePath)) {
+                item = new JcrNodeAdapter(SessionUtil.getNode(subAppDescriptor.getWorkspace(), nodePath));
+            } else {
+                item = new JcrNewNodeAdapter(parent, subAppDescriptor.getNodeType().getName());
+            }
+        } catch (RepositoryException e) {
+            log.warn("Not able to create an Item based on the following path {} ", nodePath, e);
+            throw new RuntimeException(e);
+        }
+
         ItemView itemView = itemPresenter.start(subAppDescriptor.getFormDefinition(), item, viewType);
 
         view.setItemView(itemView);

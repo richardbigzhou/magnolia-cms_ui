@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.contentapp.item.action;
 
-import info.magnolia.ui.contentapp.location.ItemLocation;
 import info.magnolia.ui.contentapp.item.ItemView;
+import info.magnolia.ui.contentapp.location.ItemLocation;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -68,12 +68,9 @@ public class CreateItemAction extends ActionBase<CreateItemActionDefinition> {
     public void execute() throws ActionExecutionException {
 
         try {
-            Node newNode = parent.addNode(NEW_NODE_NAME, getDefinition().getNodeType());
-
-            newNode.getSession().save();
-            ItemLocation location = new ItemLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), ItemView.ViewType.EDIT, newNode.getPath());
+            String path = parent.getPath() + "/" + NEW_NODE_NAME;
+            ItemLocation location = new ItemLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), ItemView.ViewType.EDIT, path);
             locationController.goTo(location);
-
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }
