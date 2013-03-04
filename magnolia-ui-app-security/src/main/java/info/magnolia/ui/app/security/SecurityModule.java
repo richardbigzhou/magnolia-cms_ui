@@ -151,7 +151,7 @@ public class SecurityModule implements ModuleLifecycle {
                                                 cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
                                         )
                                 )
-                                .actionbar(cfg.actionbars.actionbar().defaultAction("edit")
+                                .actionbar(cfg.actionbars.actionbar().defaultAction(editGroupAction.getName())
                                         .sections(
                                                 cfg.actionbars.section("groupActions").label("Groups")
                                                         .groups(
@@ -174,7 +174,7 @@ public class SecurityModule implements ModuleLifecycle {
                                         )
 
                                 )
-                                .actionbar(cfg.actionbars.actionbar().defaultAction("edit")
+                                .actionbar(cfg.actionbars.actionbar().defaultAction(editRoleAction.getName())
                                         .sections(
                                                 cfg.actionbars.section("roleActions").label("Roles")
                                                         .groups(
@@ -226,7 +226,7 @@ public class SecurityModule implements ModuleLifecycle {
                                 cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
                         )
                 )
-                .actionbar(cfg.actionbars.actionbar().defaultAction("edit")
+                .actionbar(cfg.actionbars.actionbar().defaultAction(editUserAction.getName())
                         .sections(
                                 cfg.actionbars.section("usersActions").label("Users")
                                         .groups(
