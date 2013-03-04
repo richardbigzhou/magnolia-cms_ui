@@ -40,7 +40,6 @@ import info.magnolia.ui.vaadin.editor.CroppableImage.ReleaseListener;
 import info.magnolia.ui.vaadin.editor.CroppableImage.SelectionListener;
 import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
 
-import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter.ConversionException;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
@@ -83,7 +82,7 @@ public class JCropField extends CustomField<SelectionArea> {
     public void setStatusComponent(Component c) {
         jcrop.setSelectionStatusComponent(c);
     }
-    
+
     public Resource getImageSource() {
         return image.getSource();
     }
@@ -142,21 +141,21 @@ public class JCropField extends CustomField<SelectionArea> {
         super.setWidth(width, unit);
         getContent().setWidth(width, unit);
     }
-    
+
     @Override
     public void setHeight(float height, Unit unit) {
         super.setHeight(height, unit);
         getContent().setHeight(height, unit);
     }
-    
+
     @Override
-    public void setValue(SelectionArea newFieldValue) throws Property.ReadOnlyException,
+    public void setValue(SelectionArea newFieldValue) throws ReadOnlyException,
             ConversionException {
         if ((newFieldValue == null && getValue() != null) || (newFieldValue != null && !newFieldValue.equals(getValue()))) {
-            super.setValue(newFieldValue);   
+            super.setValue(newFieldValue);
         }
     }
-    
+
     @Override
     protected Component initContent() {
         if (image == null) {
@@ -169,7 +168,7 @@ public class JCropField extends CustomField<SelectionArea> {
     public Class<? extends SelectionArea> getType() {
         return SelectionArea.class;
     }
-    
+
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);

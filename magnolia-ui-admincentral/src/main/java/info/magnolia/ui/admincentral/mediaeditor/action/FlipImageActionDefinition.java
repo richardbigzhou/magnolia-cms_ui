@@ -38,14 +38,14 @@ import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinit
 /**
  * Definition paired with {@link info.magnolia.ui.admincentral.mediaeditor.editmode.provider.FlipImageProvider}.
  */
-public class FlipImageActionDefinition implements EditModeProviderActionDefinition {
+public class FlipImageActionDefinition extends EditModeProviderActionDefinition {
 
     private boolean flipHorizontal = true;
-            
+
     public void setFlipHorizontal(boolean isFlipHorizontal) {
         this.flipHorizontal = isFlipHorizontal;
     }
-    
+
     public boolean getFlipHorizontal() {
         return flipHorizontal;
     }

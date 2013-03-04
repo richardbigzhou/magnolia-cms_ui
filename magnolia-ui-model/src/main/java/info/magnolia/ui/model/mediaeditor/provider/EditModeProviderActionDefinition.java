@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.model.mediaeditor.provider;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * EditModeAction.
  */
-public interface EditModeProviderActionDefinition extends ActionDefinition {
+public class EditModeProviderActionDefinition extends ConfiguredActionDefinition {
 
 }

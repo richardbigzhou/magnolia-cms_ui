@@ -38,6 +38,6 @@ import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinit
 /**
  * Definition paired with {@link info.magnolia.ui.admincentral.mediaeditor.editmode.provider.GrayScaleProvider}.
  */
-public class GrayScaleActionDefinition implements EditModeProviderActionDefinition {
+public class GrayScaleActionDefinition extends EditModeProviderActionDefinition {
 
 }

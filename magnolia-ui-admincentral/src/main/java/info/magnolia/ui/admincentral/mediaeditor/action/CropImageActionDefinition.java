@@ -38,6 +38,6 @@ import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinit
 /**
  * Definition paired with {@link info.magnolia.ui.admincentral.mediaeditor.editmode.provider.CropImageProvider}.
  */
-public class CropImageActionDefinition implements EditModeProviderActionDefinition {
+public class CropImageActionDefinition extends EditModeProviderActionDefinition {
 
 }
