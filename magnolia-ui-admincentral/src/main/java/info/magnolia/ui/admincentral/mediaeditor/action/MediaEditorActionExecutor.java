@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,19 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.actionfactory;
+package info.magnolia.ui.admincentral.mediaeditor.action;
 
-import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.mediaeditor.features.MediaEditorFeatureDefinition;
-
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory;
+import info.magnolia.ui.framework.app.action.AbstractActionExecutor;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * Used by {@link info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter} in order to either
- * switch an edit mode (in case of {@link info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition})
- * or to perform an action on the UI (in case of {@link info.magnolia.ui.model.mediaeditor.features.MediaEditorFeatureDefinition}).
+ * MediaEditorActionExecutor.
  */
-public interface MediaEditorActionFactory {
+public class MediaEditorActionExecutor extends AbstractActionExecutor {
 
-    Action createAction(MediaEditorFeatureDefinition definition, MediaField currentMediaField);
+    private MediaEditorActionFactory mediaEditorActionFactory;
+
+    public MediaEditorActionExecutor(ComponentProvider componentProvider, MediaEditorActionFactory mediaEditorActionFactory) {
+        super(componentProvider);
+        this.mediaEditorActionFactory = mediaEditorActionFactory;
+    }
+
+    @Override
+    public ActionDefinition getActionDefinition(String actionName) {
+        // mediaEditorActionFactory.createAction(definition, currentMediaField)
+        return null;
+    }
+
 }

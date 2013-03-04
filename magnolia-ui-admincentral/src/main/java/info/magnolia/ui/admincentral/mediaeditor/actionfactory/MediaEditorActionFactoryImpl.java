@@ -34,12 +34,12 @@
 package info.magnolia.ui.admincentral.mediaeditor.actionfactory;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.model.action.AbstractActionFactory;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-
-import java.io.Serializable;
+import info.magnolia.ui.model.builder.MappingFactoryBase;
+import info.magnolia.ui.model.mediaeditor.features.MediaEditorFeatureDefinition;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -48,23 +48,19 @@ import javax.inject.Singleton;
  * Implementation of {@link MediaEditorActionFactory}.
  */
 @Singleton
-public class MediaEditorActionFactoryImpl extends AbstractActionFactory<ActionDefinition, Action> implements 
-    MediaEditorActionFactory, Serializable {
+public class MediaEditorActionFactoryImpl extends MappingFactoryBase<ActionDefinition, Action> implements MediaEditorActionFactory {
 
     @Inject
-    public MediaEditorActionFactoryImpl(ComponentProvider componentProvider,
-            MediaEditorActionRegistry mediaEditorActionRegistry) {
+    public MediaEditorActionFactoryImpl(ComponentProvider componentProvider, MediaEditorActionRegistry mediaEditorActionRegistry) {
         super(componentProvider);
-        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : mediaEditorActionRegistry
-                .getDefinitionToImplementationMappings()) {
-            addMapping(definitionToImplementationMapping.getDefinition(),
-                    definitionToImplementationMapping.getImplementation());
+        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : mediaEditorActionRegistry.getDefinitionToImplementationMappings()) {
+            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
         }
     }
 
     @Override
-    public Action createAction(final ActionDefinition actionDefinition) {
-        return create(actionDefinition);
+    public Action createAction(MediaEditorFeatureDefinition definition, MediaField currentMediaField) {
+        definition.getRequiredInterfaceName();
+        return create(definition, currentMediaField);
     }
-
 }

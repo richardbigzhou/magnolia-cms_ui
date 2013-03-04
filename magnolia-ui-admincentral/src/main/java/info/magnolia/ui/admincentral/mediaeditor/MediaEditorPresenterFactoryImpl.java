@@ -45,12 +45,12 @@ import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter;
+import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.mediaeditor.action.MediaEditorActionExecutor;
 import info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition;
-import info.magnolia.ui.model.mediaeditor.registry.MediaEditorRegistry;
 
 import java.util.List;
 
@@ -67,30 +67,30 @@ import com.google.inject.util.Providers;
  */
 @Singleton
 public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFactory {
-    
+
     private static final String MEDIA_EDITOR_COMPONENT_ID = "mediaeditor";
-    
+
     private Logger log = Logger.getLogger(getClass());
-    
+
     private ComponentProvider subAppComponentProvider;
-    
+
     private MediaEditorRegistry registry;
-    
+
     private ModuleRegistry moduleRegistry;
-    
+
     private EventBus eventBus = new SimpleEventBus();
-    
+
     @Inject
     public MediaEditorPresenterFactoryImpl(
             ComponentProvider subAppComponentProvider,
             ModuleRegistry moduleRegistry,
-            MediaEditorRegistry registry, 
+            MediaEditorRegistry registry,
             Shell shell) {
         this.subAppComponentProvider = subAppComponentProvider;
         this.moduleRegistry = moduleRegistry;
         this.registry = registry;
     }
-    
+
     @Override
     public MediaEditorPresenter getPresenterById(String id) {
         return getPresenterByDefinition(createDefinition(id));
@@ -114,7 +114,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
         // Get components common to all sub apps
-        ComponentProviderConfiguration configuration = 
+        ComponentProviderConfiguration configuration =
                 configurationBuilder.getComponentsFromModules(MEDIA_EDITOR_COMPONENT_ID, moduleDefinitions);
         log.debug("Creating component provider for media editor");
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
@@ -124,19 +124,20 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
             @Override
             protected void configure() {
                 bind(EventBus.class).annotatedWith(Names.named("mediaeditor")).toProvider(Providers.of(eventBus));
-            }            
+            }
         };
         return builder.build(c);
     }
-    
+
     @Override
     public MediaEditorPresenter getPresenterByDefinition(MediaEditorDefinition definition) {
         ComponentProvider mediaEditorComponentProvider = createMediaEditorComponentProvider();
         MediaEditorView view = mediaEditorComponentProvider.getComponent(MediaEditorView.class);
-        MediaEditorActionbarPresenter actionbarPresenter = mediaEditorComponentProvider.getComponent(MediaEditorActionbarPresenter.class);
+        ActionbarPresenter actionbarPresenter = mediaEditorComponentProvider.getComponent(ActionbarPresenter.class);
         MediaEditorActionFactory actionFactory = mediaEditorComponentProvider.getComponent(MediaEditorActionFactory.class);
         EditModeProviderFactory modeBuilderFactory = mediaEditorComponentProvider.getComponent(EditModeProviderFactory.class);
-        return new MediaEditorPresenterImpl(definition, eventBus, view, modeBuilderFactory, actionbarPresenter, actionFactory);
+        MediaEditorActionExecutor mediaActionExecutor = mediaEditorComponentProvider.getComponent(MediaEditorActionExecutor.class);
+        return new MediaEditorPresenterImpl(definition, eventBus, view, modeBuilderFactory, actionbarPresenter, actionFactory, mediaActionExecutor);
     }
 
 }

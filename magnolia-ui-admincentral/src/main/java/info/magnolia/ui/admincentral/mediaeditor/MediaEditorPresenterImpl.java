@@ -35,8 +35,9 @@ package info.magnolia.ui.admincentral.mediaeditor;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.event.HandlerRegistration;
-import info.magnolia.ui.admincentral.event.ActionbarItemClickedEvent;
-import info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter;
+import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.mediaeditor.action.MediaEditorActionExecutor;
+import info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent.CompletionType;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent.Handler;
@@ -45,13 +46,13 @@ import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProvid
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider.ActionContext;
-import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition;
 import info.magnolia.ui.model.mediaeditor.features.MediaEditorFeatureDefinition;
 import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.view.View;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -61,35 +62,38 @@ import java.io.OutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
+import com.vaadin.data.Property.Transactional;
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.TransactionalPropertyWrapper;
 
 /**
  * Implementation of {@link MediaEditorPresenter}.
  */
-public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEditorInternalEvent.Handler {
+public class MediaEditorPresenterImpl implements MediaEditorPresenter, ActionbarPresenter.Listener, MediaEditorInternalEvent.Handler {
 
     private Logger log = Logger.getLogger(getClass());
 
     /**
      * ActionbarEventHandler.
+     * private final class ActionbarEventHandler implements ActionbarItemClickedEvent.Handler {
+     * 
+     * @Override
+     * public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
+     * final ActionDefinition actionDefinition = event.getActionDefinition();
+     * dispatchActionbarEvent(actionDefinition);
+     * }
+     * }
      */
-    private final class ActionbarEventHandler implements ActionbarItemClickedEvent.Handler {
-        @Override
-        public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
-            final ActionDefinition actionDefinition = event.getActionDefinition();
-            dispatchActionbarEvent(actionDefinition);
-        }
-    }
 
     private MediaEditorView view;
 
     private EditModeProviderFactory editModeBuilderFactory;
 
-    private MediaEditorActionbarPresenter actionbarPresenter;
+    private ActionbarPresenter actionbarPresenter;
 
     private MediaEditorDefinition definition;
 
-    private ActionFactory<ActionDefinition, Action> actionFactory;
+    private MediaEditorActionFactory actionFactory;
 
     private MediaField currentMediaField;
 
@@ -99,27 +103,32 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEdit
 
     private EventBus eventBus;
 
+    private MediaEditorActionExecutor actionExecutor;
+
     public MediaEditorPresenterImpl(
             MediaEditorDefinition definition,
             EventBus eventBus,
             MediaEditorView view,
             EditModeProviderFactory modeBuilderFactory,
-            MediaEditorActionbarPresenter actionbarPresenter,
-            ActionFactory<ActionDefinition, Action> actionFactory) {
-        eventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarEventHandler());
+            ActionbarPresenter actionbarPresenter,
+            MediaEditorActionFactory actionFactory,
+            MediaEditorActionExecutor actionExecutor) {
+        // eventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarEventHandler());
         this.eventBus = eventBus;
         this.view = view;
         this.actionFactory = actionFactory;
         this.editModeBuilderFactory = modeBuilderFactory;
         this.actionbarPresenter = actionbarPresenter;
         this.definition = definition;
+        this.actionExecutor = actionExecutor;
+        this.actionbarPresenter.setListener(this);
         eventBus.addHandler(MediaEditorInternalEvent.class, this);
     }
 
     @Override
     public View start(final InputStream stream) {
         try {
-            final ActionbarView actionbar = actionbarPresenter.start(definition.getActionBar(), actionFactory);
+            final ActionbarView actionbar = actionbarPresenter.start(definition.getActionBar());
             final byte[] bytes = IOUtils.toByteArray(stream);
             dataSource = new ObjectProperty<byte[]>(bytes);
             transactionHandler = new TransactionalPropertyWrapper<byte[]>(dataSource);
@@ -221,5 +230,33 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEdit
     @Override
     public HandlerRegistration addCompletionHandler(Handler handler) {
         return eventBus.addHandler(MediaEditorCompletedEvent.class, handler);
+    }
+
+    @Override
+    public void onExecute(String actionName) {
+        try {
+            actionExecutor.execute(actionName);
+        } catch (ActionExecutionException e) {
+            new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public String getLabel(String actionName) {
+        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
+        return actionDefinition != null ? actionDefinition.getLabel() : null;
+    }
+
+    @Override
+    public String getIcon(String actionName) {
+        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
+        return actionDefinition != null ? actionDefinition.getIcon() : null;
+    }
+
+    @Override
+    public void setFullScreen(boolean fullscreen) {
+        // TODO Auto-generated method stub
+
     }
 }

@@ -52,7 +52,6 @@ public class MediaEditorActionRegistry implements Serializable {
     private List<DefinitionToImplementationMapping<ActionDefinition, Action>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<ActionDefinition, Action>>();
 
     public MediaEditorActionRegistry() {
-        super();
     }
 
     public List<DefinitionToImplementationMapping<ActionDefinition, Action>> getDefinitionToImplementationMappings() {

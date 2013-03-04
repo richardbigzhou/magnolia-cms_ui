@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.mediaeditor.editmode.factory;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.builder.FactoryBase;
+import info.magnolia.ui.model.builder.MappingFactoryBase;
 import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
 
 import javax.inject.Inject;
@@ -44,11 +44,12 @@ import javax.inject.Singleton;
 
 /**
  * Creates an {@link EditModeProvider} corresponding to the {@link EditModeProviderActionDefinition}.
- * Used in media editor to dynamically switch between editing modes. 
+ * Used in media editor to dynamically switch between editing modes.
+ * 
  * @see MediaEditorPresenter.
  */
 @Singleton
-public class EditModeProviderFactory extends FactoryBase<EditModeProviderActionDefinition, EditModeProvider> {
+public class EditModeProviderFactory extends MappingFactoryBase<EditModeProviderActionDefinition, EditModeProvider> {
 
     @Inject
     public EditModeProviderFactory(EditModeRegistry registry, ComponentProvider provider) {
