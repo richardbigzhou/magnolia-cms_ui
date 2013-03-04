@@ -92,10 +92,10 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
         JcrNodeAdapter item;
         try {
             Session session = MgnlContext.getJCRSession(subAppDescriptor.getWorkspace());
-            Node parent = session.getNode(StringUtils.substringBeforeLast(nodePath, "/"));
             if (session.nodeExists(nodePath)) {
                 item = new JcrNodeAdapter(SessionUtil.getNode(subAppDescriptor.getWorkspace(), nodePath));
             } else {
+                Node parent = session.getNode(StringUtils.substringBeforeLast(nodePath, "/"));
                 item = new JcrNewNodeAdapter(parent, subAppDescriptor.getNodeType().getName());
             }
         } catch (RepositoryException e) {
