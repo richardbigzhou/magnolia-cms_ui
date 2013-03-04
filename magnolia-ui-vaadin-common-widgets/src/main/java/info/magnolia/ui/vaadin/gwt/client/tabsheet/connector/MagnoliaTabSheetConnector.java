@@ -94,8 +94,16 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
             public void onStateChanged(StateChangeEvent event) {
                 final MagnoliaTabConnector tabConnector = (MagnoliaTabConnector) getState().activeTab;
                 if (tabConnector != null) {
+
                     view.setActiveTab(tabConnector.getWidget());
-                    eventBus.fireEvent(new ActiveTabChangedEvent(tabConnector.getWidget(), false));
+
+                    // TODO: Implement the activation of the tab label in a more robust way that is not subject to timing issues. (see MGNLUI-771)
+                    new Timer() {
+                        @Override
+                        public void run() {
+                            eventBus.fireEvent(new ActiveTabChangedEvent(tabConnector.getWidget(), false));
+                        }
+                    }.schedule(10);
                 }
             }
         });
