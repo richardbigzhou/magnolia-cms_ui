@@ -39,6 +39,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.ContentSubAppDescriptor;
+import info.magnolia.ui.contentapp.ItemSubAppDescriptor;
 import info.magnolia.ui.contentapp.item.ItemView;
 import info.magnolia.ui.contentapp.location.ItemLocation;
 import info.magnolia.ui.framework.app.AppContext;
@@ -55,7 +56,6 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.view.View;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -84,9 +84,8 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     private final ActionbarPresenter actionbarPresenter;
 
+    private final String workspace;
     private String caption;
-
-    private WorkbenchDefinition workbenchDefinition;
 
     private AppContext appContext;
 
@@ -99,7 +98,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.eventBus = eventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
-        this.workbenchDefinition = ((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench();
+        this.workspace = ((ItemSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkspace();
         this.appContext = subAppContext.getAppContext();
 
         bindHandlers();
@@ -189,7 +188,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private String getPageTitle(String path) {
         String caption = null;
         try {
-            Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+            Session session = MgnlContext.getJCRSession(workspace);
             Node node = session.getNode(path);
             caption = PropertyUtil.getString(node, "title", node.getName());
         } catch (RepositoryException e) {
