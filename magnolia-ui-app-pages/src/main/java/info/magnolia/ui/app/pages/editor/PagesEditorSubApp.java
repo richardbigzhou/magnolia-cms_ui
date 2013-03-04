@@ -38,7 +38,6 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.ContentSubAppDescriptor;
 import info.magnolia.ui.contentapp.ItemSubAppDescriptor;
 import info.magnolia.ui.contentapp.item.ItemView;
 import info.magnolia.ui.contentapp.location.ItemLocation;
@@ -254,7 +253,6 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     @Override
     public void onExecute(String actionName) {
-        String workspace = ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace();
 
         if (actionName.equals("editProperties") || actionName.equals("editComponent") || actionName.equals("editArea")) {
             pageEditorPresenter.editComponent(
@@ -264,7 +262,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         }
         else if (actionName.equals("addComponent")) {
             pageEditorPresenter.editComponent(
-                    ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
+                    workspace,
                     pageEditorPresenter.getSelectedElement().getPath(),
                     pageEditorPresenter.getSelectedElement().getDialog());
         }
