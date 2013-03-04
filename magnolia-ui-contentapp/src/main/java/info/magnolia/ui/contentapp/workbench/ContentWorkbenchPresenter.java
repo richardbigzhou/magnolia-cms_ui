@@ -38,8 +38,8 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.ContentPresenter;
 import info.magnolia.ui.admincentral.event.SearchEvent;
+import info.magnolia.ui.contentapp.ContentPresenter;
 import info.magnolia.ui.contentapp.ContentSubAppDescriptor;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -319,10 +319,10 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
             actionExecutor.execute(actionName, item);
 
         } catch (RepositoryException e) {
-            Message error = createMessage(MessageType.ERROR, "Could not get item: " + getSelectedItemId(), e.getMessage());
+            Message error = new Message(MessageType.ERROR, "Could not get item: " + getSelectedItemId(), e.getMessage());
             appContext.broadcastMessage(error);
         } catch (ActionExecutionException e) {
-            Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
             appContext.broadcastMessage(error);
         }
     }
@@ -347,14 +347,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
         } else {
             appContext.exitFullScreenMode();
         }
-    }
-
-    private Message createMessage(MessageType type, String subject, String message) {
-        final Message msg = new Message();
-        msg.setSubject(subject);
-        msg.setMessage(message);
-        msg.setType(type);
-        return msg;
     }
 
 }

@@ -54,4 +54,7 @@ public interface SubApp {
     String getSubAppId();
 
     boolean supportsLocation(Location location);
+
+    View getView();
+
 }

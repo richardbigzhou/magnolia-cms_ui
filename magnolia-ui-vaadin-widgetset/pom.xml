@@ -122,7 +122,7 @@
                           if(it.path =~ /\/target\/.*\/VAADIN\/.*\.scss$/) {                                            
                               def sassFile = it.path
                               def cssFile = it.path.replaceAll(".scss", ".css")
-                              println "Compiling Sass file " + sassFile + " -> " + cssFile
+                              println "Compiling Sass file " + sassFile + " -&gt; " + cssFile
                               SassCompiler.main([sassFile, cssFile] as String[])
                           }                
                         }

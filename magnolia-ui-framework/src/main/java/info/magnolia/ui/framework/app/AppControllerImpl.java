@@ -53,6 +53,7 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
+import info.magnolia.ui.framework.shell.ModalLayer;
 import info.magnolia.ui.vaadin.view.Viewport;
 
 import java.util.HashMap;
@@ -382,10 +383,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     @Override
-    public void openChooseDialog(String appName, String path, ItemChosenListener listener) {
+    public void openChooseDialog(String appName, String path, ModalLayer modalLayer, ItemChosenListener listener) {
         App targetApp = getAppWithoutStarting(appName);
         if (targetApp != null) {
-            targetApp.openChooseDialog(path, listener);
+            targetApp.openChooseDialog(path, modalLayer, listener);
         }
     }
 

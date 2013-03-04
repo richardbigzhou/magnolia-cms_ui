@@ -33,15 +33,15 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 
 /**
  * {@link DialogPresenter} takes care of {@link DialogView} presentation, the main responsibility
@@ -59,9 +59,9 @@ public interface DialogPresenter {
 
     void addDialogCloseHandler(final DialogCloseEvent.Handler listener);
 
-    void addAction(String actionName, String actionLabel, DialogActionListener callback);
+    void addAction(String actionName, String actionLabel, EditorLikeActionListener callback);
 
-    void addActionCallback(String actionName, DialogActionListener callback);
+    void addActionCallback(String actionName, EditorLikeActionListener callback);
 
     /**
      * Callback interface for DialogView.Presenter.
@@ -96,7 +96,7 @@ public interface DialogPresenter {
     public class DialogPresenterUtil {
 
         public static void addActionFromDefinition(final DialogPresenter presenter, final DialogActionDefinition definition, final DialogActionFactory factory) {
-            presenter.addAction(definition.getName(), definition.getLabel(), new DialogActionListener() {
+            presenter.addAction(definition.getName(), definition.getLabel(), new EditorLikeActionListener() {
                 @Override
                 public void onActionExecuted(final String actionName) {
                     final ActionDefinition actionDefinition = definition.getActionDefinition();

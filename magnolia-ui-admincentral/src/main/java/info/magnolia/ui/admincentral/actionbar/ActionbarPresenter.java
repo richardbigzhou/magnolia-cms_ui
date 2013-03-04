@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.server.Resource;
 
+
 /**
  * Default presenter for an action bar.
  */
@@ -148,6 +149,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         listener.onExecute(actionName);
     }
 
+
     @Override
     public void onChangeFullScreen(boolean isFullScreen) {
         listener.setFullScreen(isFullScreen);
@@ -183,6 +185,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     public void setListener(Listener listener) {
         this.listener = listener;
+
     }
 
     /**

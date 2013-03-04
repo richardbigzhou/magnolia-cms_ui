@@ -49,6 +49,7 @@ import info.magnolia.ui.contentapp.config.ContentAppBuilder;
 import info.magnolia.ui.contentapp.config.ContentSubAppBuilder;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -106,7 +107,8 @@ public class ContentWorkbenchPresenterTest {
         // initialize test instance
         ContentSubAppBuilder subAppBuilder = new ContentAppBuilder(APP_NAME).subApp(SUB_APP_NAME);
         subAppBuilder.workbench(new WorkbenchBuilder().workspace(WORKSPACE).root(ROOT_PATH));
-        SubAppContext subAppContext = new SubAppContextImpl(subAppBuilder.exec());
+        Shell mockShell = mock(Shell.class);
+        SubAppContext subAppContext = new SubAppContextImpl(subAppBuilder.exec(), mockShell);
 
         ContentWorkbenchView mockView = mock(ContentWorkbenchView.class);
         subAppEventBus = new SimpleEventBus();

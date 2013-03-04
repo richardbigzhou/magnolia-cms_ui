@@ -79,6 +79,19 @@ public class MagnoliaTabConnector extends AbstractSingleComponentContainerConnec
                 getWidget().getLabel().updateNotification(getState().notification);
             }
         });
+
+        addStateChangeHandler("isActive", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                getWidget().getLabel().updateNotification(getState().notification);
+                if (getState().isActive) {
+                    getWidget().removeStyleName("inactive");
+                } else {
+                    getWidget().addStyleName("inactive");
+                }
+
+            }
+        });
     }
 
     @Override

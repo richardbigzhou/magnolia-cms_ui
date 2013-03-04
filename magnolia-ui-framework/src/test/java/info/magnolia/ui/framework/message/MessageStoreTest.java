@@ -49,15 +49,11 @@ public class MessageStoreTest extends MgnlTestCase {
     public void testMarshall() throws Exception {
         // GIVEN
         final MockNode messageNode = new MockNode();
-        final long now = System.currentTimeMillis();
         final String messageText = "Message in a bottle.";
         final String subject = "Test";
         final MessageType type = MessageType.WARNING;
 
-        final Message message = new Message(now);
-        message.setSubject(subject);
-        message.setMessage(messageText);
-        message.setType(type);
+        final Message message = new Message(type, subject, messageText);
 
         final MessageStore store = new MessageStore();
 
@@ -66,6 +62,7 @@ public class MessageStoreTest extends MgnlTestCase {
 
         // THEN
         assertEquals(subject, messageNode.getProperty(Message.SUBJECT).getString());
+        assertEquals(Message.DEFAULT_SENDER, messageNode.getProperty(Message.SENDER).getString());
         assertEquals(messageText, messageNode.getProperty(Message.MESSAGE).getString());
         assertEquals(type.name(), messageNode.getProperty(Message.MESSAGETYPE).getString());
     }
@@ -76,12 +73,14 @@ public class MessageStoreTest extends MgnlTestCase {
         final MockNode messageNode = new MockNode();
         final String id = "1234";
         final long now = System.currentTimeMillis();
+        final String sender = "someone";
         final String messageText = "Message in a bottle.";
         final String subject = "Test";
         final MessageType type = MessageType.WARNING;
 
         messageNode.setName(id);
         messageNode.setProperty(Message.TIMESTAMP, now);
+        messageNode.setProperty(Message.SENDER, sender);
         messageNode.setProperty(Message.SUBJECT, subject);
         messageNode.setProperty(Message.MESSAGE, messageText);
         messageNode.setProperty(Message.MESSAGETYPE, type.name());
@@ -94,6 +93,7 @@ public class MessageStoreTest extends MgnlTestCase {
         // THEN
         assertEquals(id, result.getId());
         assertEquals(now, result.getTimestamp());
+        assertEquals(sender, result.getSender());
         assertEquals(subject, result.getSubject());
         assertEquals(messageText, result.getMessage());
         assertEquals(type, result.getType());

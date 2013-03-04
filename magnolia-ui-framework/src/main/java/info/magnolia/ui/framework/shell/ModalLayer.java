@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.framework.shell;
 
-import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.view.View;
 
 /**
- * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that
- * adapts to the content ({@link FormView}) and delegates the view logic to it.
+ * Implementers can open modal views over their display area.
  */
-public class FormDialog extends BaseDialog implements FormDialogView {
+public interface ModalLayer {
 
-    @Override
-    public void setFormView(FormView formView) {
-        super.setContent(formView.asVaadinComponent());
-        formView.suppressOwnActions();
-
-    }
+    /**
+     * Open a Modal on top of the ModalLayer implementer.
+     * 
+     * @param view
+     *            View to be displayed modally.
+     */
+    ModalCloser openModal(View view);
 
 }

@@ -61,4 +61,10 @@ public interface AppView extends View {
     void setActiveSubAppView(String instanceId);
 
     String getActiveSubAppView();
+
+    /**
+     * Get the view of the container of a SubApp.
+     * Enables working with the Tab component for example, which is necessary for attaching dialogs.
+     */
+    View getSubAppViewContainer(String instanceId);
 }

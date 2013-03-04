@@ -36,7 +36,7 @@ package info.magnolia.ui.contentapp.choosedialog;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.dialog.BaseDialogPresenter;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.vaadin.dialog.DialogView.DialogActionListener;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 
@@ -63,14 +63,14 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
             }
         });
 
-        addActionCallback(WorkbenchChooseDialogView.CANCEL_ACTION_NAME, new DialogActionListener() {
+        addActionCallback(WorkbenchChooseDialogView.CANCEL_ACTION_NAME, new EditorLikeActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 closeDialog();
             }
         });
 
-        addActionCallback(WorkbenchChooseDialogView.CHOOSE_ACTION_NAME, new DialogActionListener() {
+        addActionCallback(WorkbenchChooseDialogView.CHOOSE_ACTION_NAME, new EditorLikeActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 closeDialog();
@@ -78,6 +78,7 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
         });
 
         addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
+
             @Override
             public void onClose(BaseDialog.DialogCloseEvent event) {
                 event.getView().asVaadinComponent().removeDialogCloseHandler(this);
@@ -89,6 +90,7 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
     @Override
     public void setListener(Listener listener) {
         this.listener = listener;
+
     }
 
     @Override

@@ -109,6 +109,7 @@ public class BaseSubApp implements SubApp {
         return subAppContext.getSubAppId();
     }
 
+    @Override
     public View getView() {
         return view;
     }
@@ -140,5 +141,6 @@ public class BaseSubApp implements SubApp {
     protected Location getCurrentLocation() {
         return getSubAppContext().getLocation();
     }
+
 
 }

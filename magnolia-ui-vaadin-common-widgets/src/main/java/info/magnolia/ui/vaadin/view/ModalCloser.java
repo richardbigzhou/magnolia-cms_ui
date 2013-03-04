@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
-
-import info.magnolia.ui.vaadin.form.FormView;
+package info.magnolia.ui.vaadin.view;
 
 /**
- * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that
- * adapts to the content ({@link FormView}) and delegates the view logic to it.
+ * Callback for closing a dialog.
  */
-public class FormDialog extends BaseDialog implements FormDialogView {
+public interface ModalCloser {
 
-    @Override
-    public void setFormView(FormView formView) {
-        super.setContent(formView.asVaadinComponent());
-        formView.suppressOwnActions();
-
-    }
+    void close();
 
 }

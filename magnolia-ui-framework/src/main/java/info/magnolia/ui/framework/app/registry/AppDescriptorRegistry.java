@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
+
+import info.magnolia.event.EventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.event.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collection;

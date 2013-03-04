@@ -34,33 +34,29 @@
 package info.magnolia.ui.vaadin.dialog;
 
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
+import info.magnolia.ui.vaadin.editorlike.EditorLike;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.gwt.client.dialog.connector.BaseDialogState;
 import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.ActionFiringServerRpc;
 
 import java.util.Iterator;
 
-import com.google.gwt.thirdparty.guava.common.collect.ArrayListMultimap;
-import com.google.gwt.thirdparty.guava.common.collect.ListMultimap;
-import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * Basic implementation of dialogs.
- * Is capable of displaying any content inside it's content component.
  * Provides Action registration and callbacks to the view.
+ * Can be closed.
  */
-public class BaseDialog extends AbstractSingleComponentContainer implements DialogView {
-
-    private final ListMultimap<String, DialogActionListener> actionCallbackMap = ArrayListMultimap.<String, DialogActionListener>create();
+public class BaseDialog extends EditorLike implements DialogView {
 
     public BaseDialog() {
-        setImmediate(true);
-        setContent(createDefaultContent());
+        super();
+
         registerRpc(new ActionFiringServerRpc() {
             @Override
             public void fireAction(String actionId) {
-                final Iterator<DialogActionListener> it = actionCallbackMap.get(actionId).iterator();
+                final Iterator<EditorLikeActionListener> it = actionCallbackMap.get(actionId).iterator();
                 while (it.hasNext()) {
                     it.next().onActionExecuted(actionId);
                 }
@@ -74,42 +70,8 @@ public class BaseDialog extends AbstractSingleComponentContainer implements Dial
     }
 
     @Override
-    public void setContent(Component content) {
-        final Component actualContent = content == null ? createDefaultContent() : content;
-        super.setContent(actualContent);
-    }
-
-    public void closeSelf() {
-        fireEvent(new DialogCloseEvent(this, this));
-    }
-
-    public void addAction(String actionName, String actionLabel) {
-        getState().actions.put(actionName, actionLabel);
-    }
-
-    @Deprecated
-    public void setActionLabel(String actionName, String actionLabel) {
-        addAction(actionName, actionLabel);
-    }
-
-    @Override
-    public void setDialogDescription(String description) {
-        getState().componentDescription = description;
-    }
-
-    @Override
     protected BaseDialogState getState() {
         return (BaseDialogState) super.getState();
-    }
-
-    @Override
-    public void setCaption(String caption) {
-        super.setCaption(caption);
-        getContent().setCaption(caption);
-    }
-
-    protected Component createDefaultContent() {
-        return new VerticalLayout();
     }
 
     @Override
@@ -117,14 +79,15 @@ public class BaseDialog extends AbstractSingleComponentContainer implements Dial
         return this;
     }
 
-    public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
-        addAction(actionName, actionLabel);
-        addActionCallback(actionName, callback);
+    public void closeSelf() {
+        fireEvent(new DialogCloseEvent(this, this));
     }
 
-    public void addActionCallback(String actionName, DialogActionListener callback) {
-        actionCallbackMap.put(actionName, callback);
+    @Override
+    public void setDialogDescription(String description) {
+        getState().componentDescription = description;
     }
+
 
     public void addDialogCloseHandler(Handler handler) {
         addListener("dialogCloseEvent", DialogCloseEvent.class, handler, DialogCloseEvent.ON_DIALOG_CLOSE);
@@ -168,8 +131,6 @@ public class BaseDialog extends AbstractSingleComponentContainer implements Dial
         }
     }
 
-    public void clearCallbacks() {
-        actionCallbackMap.clear();
-    }
+
 
 }
