@@ -123,12 +123,6 @@ public class ContactsModule implements ModuleLifecycle {
         deleteItemAction.setLabel("Delete contact");
         deleteItemAction.setIcon("icon-delete");
 
-        EditDialogActionDefinition editContactActionInDialog = new EditDialogActionDefinition();
-        editContactActionInDialog.setName("editContactInDialog");
-        editContactActionInDialog.setLabel("Edit contact in Dialog");
-        editContactActionInDialog.setIcon("icon-edit");
-        editContactActionInDialog.setDialogName("ui-contacts-app:contact");
-
 
         AddFolderActionDefinition addFolderAction = new AddFolderActionDefinition();
         addFolderAction.setName("addFolder");
@@ -153,7 +147,7 @@ public class ContactsModule implements ModuleLifecycle {
                 .subApps(
                         app.workbenchSubApp("main")
                                 .subAppClass(ContactsMainSubApp.class)
-                                .actions(addContactAction, editContactAction, editContactActionInDialog, deleteItemAction, addFolderAction, editFolderAction, deleteFolderAction)
+                                .actions(addContactAction, editContactAction, deleteItemAction, addFolderAction, editFolderAction, deleteFolderAction)
                                 .imageProvider(cipd)
                                 .workbench(
                                         cfg.workbenches
@@ -183,7 +177,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                                 .section("contactsActions")
                                                                 .label("Contact")
                                                                 .groups(cfg.actionbars.group("addActions").actions(addContactAction.getName()),
-                                                                        cfg.actionbars.group("editActions").actions(editContactAction.getName(), editContactActionInDialog.getName(), deleteItemAction.getName())
+                                                                        cfg.actionbars.group("editActions").actions(editContactAction.getName(), deleteItemAction.getName())
                                                                 )
                                                         ,
                                                         cfg.actionbars
