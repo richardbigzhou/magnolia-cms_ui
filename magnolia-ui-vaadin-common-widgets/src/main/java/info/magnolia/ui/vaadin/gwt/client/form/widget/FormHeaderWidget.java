@@ -55,6 +55,7 @@ public class FormHeaderWidget extends EditorLikeHeaderWidget {
         super(callback);
     }
 
+    @Override
     public void construct() {
         super.construct();
         errorPanel = new FlowPanel();
@@ -67,8 +68,6 @@ public class FormHeaderWidget extends EditorLikeHeaderWidget {
      * Callback interface for the Form header.
      */
     public interface FormHeaderCallback extends EditorLikeHeaderWidget.VEditorLikeHeaderCallback {
-
-        void onDescriptionVisibilityChanged(boolean isVisible);
 
         void jumpToNextError();
     }

@@ -45,8 +45,6 @@ import com.google.gwt.user.client.ui.Button;
 public class DialogHeaderWidget extends EditorLikeHeaderWidget {
 
     private static final String CLASSNAME_CLOSEBUTTON = "btn-dialog-close";
-    private static final String CLASSNAME_HEADER_TOOLBAR = "dialog-header-toolbar";
-
 
     /**
      * Callback interface for the EditorLike header.
@@ -54,19 +52,15 @@ public class DialogHeaderWidget extends EditorLikeHeaderWidget {
     public interface VDialogHeaderCallback extends EditorLikeHeaderWidget.VEditorLikeHeaderCallback {
 
         void onCloseFired();
-
-        void onDescriptionVisibilityChanged(boolean isVisible);
     }
 
     protected Button closeButton;
 
-    /**
-     * @param callback
-     */
     public DialogHeaderWidget(VDialogHeaderCallback callback) {
-        super((VEditorLikeHeaderCallback) callback);
+        super(callback);
     }
 
+    @Override
     public void construct() {
 
         closeButton = new Button("", new ClickHandler() {

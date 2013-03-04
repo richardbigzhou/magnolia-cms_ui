@@ -26,7 +26,7 @@
 }
 
 .form-content {
-    overflow:hidden;
+  overflow:hidden;
 	transition-property:height;
 	transition-duration:1s;
 }
@@ -38,8 +38,8 @@
 .tablet .form-content .v-shell-tabsheet-scroller {max-height:385px;} /* Ensure form footer is visible on the iPad */
 
 .form-footer {
+  background-color:#ccc;
 	text-align:right;
-    background-color:#ccc;
 }
 
 .form-header,
