@@ -36,6 +36,8 @@ package info.magnolia.ui.framework.app.registry;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,6 +59,10 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
     private String icon;
 
     private Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
+
+    private ActionbarDefinition actionbar;
+
+    private ImageProviderDefinition imageProvider;
 
     private Class<? extends SubApp> subAppClass;
 
@@ -86,6 +92,16 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
     }
 
     @Override
+    public ActionbarDefinition getActionbar() {
+        return actionbar;
+    }
+
+    @Override
+    public ImageProviderDefinition getImageProvider() {
+        return imageProvider;
+    }
+
+    @Override
     public Class<? extends SubApp> getSubAppClass() {
         return subAppClass;
     }
@@ -108,6 +124,14 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
 
     public void setActions(Map<String, ActionDefinition> actions) {
         this.actions = actions;
+    }
+
+    public void setActionbar(ActionbarDefinition actionbar) {
+        this.actionbar = actionbar;
+    }
+
+    public void setImageProvider(ImageProviderDefinition imageProvider) {
+        this.imageProvider = imageProvider;
     }
 
     public void setSubAppClass(Class<? extends SubApp> subAppClass) {

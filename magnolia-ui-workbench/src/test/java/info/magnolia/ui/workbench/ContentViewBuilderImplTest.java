@@ -62,6 +62,7 @@ public class ContentViewBuilderImplTest {
 
     protected final MockComponentProvider componentProvider = new MockComponentProvider();
     protected final ConfiguredWorkbenchDefinition workbenchDef = new ConfiguredWorkbenchDefinition();
+    private ImageProviderDefinition imageProvider;
 
     @Before
     public void setUp() throws Exception {
@@ -71,12 +72,11 @@ public class ContentViewBuilderImplTest {
         final MockSession session = new MockSession(workspace);
         MockUtil.setSessionAndHierarchyManager(session);
 
-        final ImageProviderDefinition imageProvider = mock(ImageProviderDefinition.class);
+        this.imageProvider = mock(ImageProviderDefinition.class);
         componentProvider.setInstance(ImageProviderDefinition.class, imageProvider);
 
         workbenchDef.setWorkspace(workspace);
         workbenchDef.setPath("/");
-        workbenchDef.setImageProvider(imageProvider);
 
         final ConfiguredNodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
         nodeTypeDefinition.setName("qux");
@@ -93,7 +93,7 @@ public class ContentViewBuilderImplTest {
 
         // WHEN
         final ContentViewBuilderImpl builder = new ContentViewBuilderImpl(componentProvider);
-        final ContentView result = builder.build(workbenchDef, ViewType.LIST);
+        final ContentView result = builder.build(workbenchDef, imageProvider, ViewType.LIST);
 
         // THEN
         assertTrue(result instanceof ListView);
@@ -106,7 +106,7 @@ public class ContentViewBuilderImplTest {
 
         // WHEN
         final ContentViewBuilderImpl builder = new ContentViewBuilderImpl(componentProvider);
-        final ContentView result = builder.build(workbenchDef, ViewType.TREE);
+        final ContentView result = builder.build(workbenchDef, imageProvider, ViewType.TREE);
 
         // THEN
         assertTrue(result instanceof TreeView);
@@ -119,7 +119,7 @@ public class ContentViewBuilderImplTest {
 
         // WHEN
         final ContentViewBuilderImpl builder = new ContentViewBuilderImpl(componentProvider);
-        final ContentView result = builder.build(workbenchDef, ViewType.THUMBNAIL);
+        final ContentView result = builder.build(workbenchDef, imageProvider, ViewType.THUMBNAIL);
 
         // THEN
         assertTrue(result instanceof ThumbnailView);
@@ -132,7 +132,7 @@ public class ContentViewBuilderImplTest {
 
         // WHEN
         final ContentViewBuilderImpl builder = new ContentViewBuilderImpl(componentProvider);
-        final ContentView result = builder.build(workbenchDef, ViewType.SEARCH);
+        final ContentView result = builder.build(workbenchDef, imageProvider, ViewType.SEARCH);
 
         // THEN
         assertTrue(result instanceof SearchView);

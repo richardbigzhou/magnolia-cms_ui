@@ -34,6 +34,7 @@
 package info.magnolia.ui.contentapp;
 
 import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 /**
@@ -43,4 +44,5 @@ public interface ContentSubAppDescriptor extends SubAppDescriptor {
 
     WorkbenchDefinition getWorkbench();
 
+    FormDefinition getFormDefinition();
 }

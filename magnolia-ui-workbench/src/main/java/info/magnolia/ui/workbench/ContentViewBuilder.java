@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.workbench;
 
+import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
@@ -41,5 +42,5 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
  */
 public interface ContentViewBuilder {
 
-    ContentView build(WorkbenchDefinition workbenchDefinition, ViewType type);
+    ContentView build(WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, ViewType type);
 }
