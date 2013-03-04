@@ -33,17 +33,19 @@
  */
 package info.magnolia.ui.model.mediaeditor.features;
 
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
+
 /**
  * ConfiguredMediaEditorFeatureDefinition.
  */
-public class ConfiguredMediaEditorFeatureDefinition implements MediaEditorFeatureDefinition {
+public class ConfiguredMediaEditorFeatureDefinition extends ConfiguredActionDefinition implements MediaEditorFeatureDefinition {
 
     private String requiredInterfaceName;
-    
+
     public void setRequiredInterfaceName(String requiredInterfaceName) {
         this.requiredInterfaceName = requiredInterfaceName;
     }
-    
+
     @Override
     public String getRequiredInterfaceName() {
         return requiredInterfaceName;
