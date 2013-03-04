@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.contentapp.item.action;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.ui.contentapp.item.ItemView;
 import info.magnolia.ui.contentapp.location.ItemLocation;
 import info.magnolia.ui.framework.location.LocationController;
@@ -68,7 +69,7 @@ public class CreateItemAction extends ActionBase<CreateItemActionDefinition> {
     public void execute() throws ActionExecutionException {
 
         try {
-            String path = parent.getPath() + "/" + NEW_NODE_NAME;
+            String path = Path.getAbsolutePath(parent.getPath(), NEW_NODE_NAME);
             ItemLocation location = new ItemLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), ItemView.ViewType.EDIT, path);
             locationController.goTo(location);
         } catch (RepositoryException e) {
