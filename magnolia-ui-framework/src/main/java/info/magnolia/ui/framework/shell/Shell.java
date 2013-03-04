@@ -35,6 +35,8 @@ package info.magnolia.ui.framework.shell;
 
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.vaadin.dialog.Modal;
+import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
 
 import java.util.List;
@@ -42,7 +44,7 @@ import java.util.List;
 /**
  * Decouples the presenters and the Vaadin application. Provides methods to show messages and configuration dialogs.
  */
-public interface Shell {
+public interface Shell extends ModalLayer {
 
     void askForConfirmation(String message, ConfirmationHandler listener);
 
@@ -67,12 +69,13 @@ public interface Shell {
     void showWarning(Message message);
 
     /**
-     * Callback for closing a dialog.
+     * Open a Modal on top of a specific View.
+     * 
+     * @param view
+     *            View to be displayed modally.
+     * @param parent
+     *            The View to open the Modal on top of.
      */
-    public interface ShellDialog {
+    ModalCloser openModalOnView(View view, View parent, Modal.ModalityLevel modalityLevel);
 
-        void close();
-    }
-
-    ShellDialog openDialog(View view);
 }

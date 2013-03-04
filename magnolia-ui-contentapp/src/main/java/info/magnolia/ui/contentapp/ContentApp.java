@@ -33,13 +33,15 @@
  */
 package info.magnolia.ui.contentapp;
 
+
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.ItemChosenListener;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.shell.ModalLayer;
+import info.magnolia.ui.vaadin.view.ModalCloser;
 
 import javax.inject.Inject;
 
@@ -57,17 +59,17 @@ public class ContentApp extends BaseApp {
     }
 
     @Override
-    public void openChooseDialog(String path, final ItemChosenListener listener) {
+    public void openChooseDialog(String path, ModalLayer modalLayer, final ItemChosenListener listener) {
 
         final ChooseDialogPresenter chooseDialogPresenter = chooseDialogPresenterFactory.createChooseDialogPresenter(path, listener);
 
-        final Shell.ShellDialog shellDialog = appContext.openDialog(chooseDialogPresenter.start());
+        final ModalCloser modalCloser = modalLayer.openModal(chooseDialogPresenter.start());
 
         chooseDialogPresenter.setListener(new ChooseDialogPresenter.Listener() {
 
             @Override
             public void onClose() {
-                shellDialog.close();
+                modalCloser.close();
             }
         });
     }

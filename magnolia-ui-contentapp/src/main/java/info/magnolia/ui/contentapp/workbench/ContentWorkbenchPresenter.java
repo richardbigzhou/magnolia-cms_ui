@@ -331,10 +331,10 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
             actionExecutor.execute(actionName, item);
 
         } catch (RepositoryException e) {
-            Message error = createMessage(MessageType.ERROR, "Could not get item: " + getSelectedItemId(), e.getMessage());
+            Message error = new Message(MessageType.ERROR, "Could not get item: " + getSelectedItemId(), e.getMessage());
             appContext.broadcastMessage(error);
         } catch (ActionExecutionException e) {
-            Message error = createMessage(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
             appContext.broadcastMessage(error);
         }
     }
@@ -359,14 +359,6 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
         } else {
             appContext.exitFullScreenMode();
         }
-    }
-
-    private Message createMessage(MessageType type, String subject, String message) {
-        final Message msg = new Message();
-        msg.setSubject(subject);
-        msg.setMessage(message);
-        msg.setType(type);
-        return msg;
     }
 
 }

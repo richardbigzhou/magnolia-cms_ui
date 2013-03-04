@@ -119,6 +119,9 @@
 .v-shell-tab {
 	visibility:inherit !important; /* do not show tab content if parent is set to hidden */
 }
+.v-shell-tab.inactive{
+	visibility:hidden;
+}
 
 .v-shell-tab-notification {
     background: url("img/message-circle-pulse-tab.png") no-repeat scroll 0 0 transparent;

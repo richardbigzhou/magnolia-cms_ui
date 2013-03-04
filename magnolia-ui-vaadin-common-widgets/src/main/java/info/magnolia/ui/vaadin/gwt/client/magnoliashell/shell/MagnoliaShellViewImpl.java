@@ -272,6 +272,12 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         mainAppLauncher.updateDivet();
     }
 
+    @Override
+    public void openModalOnWidget(Widget modalWidget, Widget modalityParent) {
+        // Insert a child widget into a parent element.
+        add(modalWidget, modalityParent.getElement());
+    }
+
     private final ShellAppActivatedEvent.Handler navigationHandler = new ShellAppActivatedEvent.Handler() {
         @Override
         public void onShellAppActivated(final ShellAppActivatedEvent event) {
@@ -317,4 +323,5 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
             }
         }
     };
+
 }

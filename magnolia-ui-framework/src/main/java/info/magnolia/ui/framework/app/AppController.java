@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.shell.ModalLayer;
 import info.magnolia.ui.vaadin.view.Viewport;
 
 /**
@@ -71,5 +72,5 @@ public interface AppController {
 
     void setViewport(Viewport viewport);
 
-    void openChooseDialog(String appName, String path, ItemChosenListener listener);
+    void openChooseDialog(String appName, String path, ModalLayer modalLayer, ItemChosenListener listener);
 }

@@ -62,4 +62,6 @@ public class MagnoliaShellState extends AbstractLayoutState {
 
     public Connector activeViewport = null;
 
+    public List<Connector> modals = new ArrayList<Connector>();
+
 }

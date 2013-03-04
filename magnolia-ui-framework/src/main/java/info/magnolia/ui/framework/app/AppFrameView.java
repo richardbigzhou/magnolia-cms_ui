@@ -125,4 +125,18 @@ public class AppFrameView implements AppView {
     public MagnoliaTabSheet asVaadinComponent() {
         return tabsheet;
     }
+
+    @Override
+    public View getSubAppViewContainer(final String instanceId) {
+
+        return new View(){
+
+            @Override
+            public Component asVaadinComponent() {
+                return mapper.get(instanceId);
+            }
+
+        };
+    }
+
 }
