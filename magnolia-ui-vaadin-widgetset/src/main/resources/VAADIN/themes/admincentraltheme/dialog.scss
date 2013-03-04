@@ -2,9 +2,14 @@
 
 @mixin dialog {
 
-.help-message-inline span, .dialog-description {
-  font-family: Verdana, Helvetica, sans-serif !important;
-  font-size: 12px !important;
+.dialog-panel {
+  position:absolute;
+  top:2px;
+  bottom:2px;
+  left:50%;
+  width:720px;
+  margin-left:-360px;
+  padding:0;
 }
 
 .v-dialog-layout {
@@ -43,7 +48,7 @@
 }
 
 .dialog-description {
-  background: none repeat scroll 0px 0px #C1D8DF;
+  background-color: #c1d8df;
 }
 
 .dialog-description span {
@@ -100,7 +105,7 @@
 
 
 .dialog-footer {
-  background: none repeat scroll 0px 0px #CCCCCC;
+  background-color: #ccc;
   text-align: right;
   position: absolute;
   left: 0;
@@ -108,6 +113,17 @@
   bottom: 0;
 }
 
+.dialog-description,
+.dialog-error,
+.dialog-footer {padding:10px 16px 10px 20px;}
+.dialog-footer {padding-top:9px; padding-bottom:9px;}
+
+.dialog-description,
+.dialog-error,
+.dialog-content,
+.dialog-footer {margin-top:2px;}
+
+.dialog-footer button.btn-dialog-commit { float: right; margin-left: 10px; }
 .dialog-footer-toolbar {
   float:left;
 }
@@ -141,6 +157,11 @@ button.btn-dialog-help {
   margin: 0;
   padding: 0;
   width: 20px;
+}
+
+.help-message-inline span, .dialog-description {
+  font-family: Verdana, Helvetica, sans-serif !important;
+  font-size: 12px !important;
 }
 
 .dialog-panel .field-container {

@@ -77,7 +77,7 @@ public class ModalConnector extends AbstractSingleComponentContainerConnector {
             public void run() {
                 ModalConnector.super.onUnregister();
             }
-        }.schedule(300);
+        }.schedule(10);
     }
 
     @Override
