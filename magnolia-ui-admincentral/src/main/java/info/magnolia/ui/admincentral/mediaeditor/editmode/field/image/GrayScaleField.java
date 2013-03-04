@@ -31,26 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.admincentral.mediaeditor.editmode.field.image;
 
-import info.magnolia.ui.vaadin.editor.CroppableImage.ReleaseListener;
-import info.magnolia.ui.vaadin.editor.CroppableImage.SelectionListener;
-import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import com.jhlabs.image.GrayscaleFilter;
+import com.vaadin.data.Property;
 
 /**
- * Handler interface for {@link JCrop}-related events.
+ * Provides the functionality for image gray-scaling.
  */
-public interface JCropHandler {
+public class GrayScaleField extends ViewImageField {
 
-    void handleSelection(SelectionArea area);
+    @Override
+    @SuppressWarnings("rawtypes")
+    public void setPropertyDataSource(Property newDataSource) {
+        super.setPropertyDataSource(newDataSource);
+        execute();
+    }
     
-    void handleRelease();
     
-    void addReleaseListener(ReleaseListener listener);
-    
-    void addSelectionListener(SelectionListener listener);
-    
-    void removeSelectionListener(SelectionListener listener);
-    
-    void removeReleaseListener(ReleaseListener listener);
+    @Override
+    protected BufferedImage executeImageModification() throws IOException {
+        final BufferedImage img = ImageIO.read(new ByteArrayInputStream(getValue()));
+        return new GrayscaleFilter().filter(img, null);
+    }
 }

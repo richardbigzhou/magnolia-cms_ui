@@ -111,13 +111,16 @@ public abstract class EditorLike extends AbstractComponent implements HasCompone
      *            the root of the composition component tree.
      */
     protected void replaceComponent(Component newContent) {
-
         if (newContent != null) {
             // set new component
             if (newContent.getParent() != null) {
-                // If the component already has a parent, try to remove it
-                AbstractSingleComponentContainer
-                        .removeFromParent(newContent);
+                if (newContent.getParent() == this) {
+                    newContent.setParent(null);
+                } else {
+                    // If the component already has a parent, try to remove it
+                    AbstractSingleComponentContainer
+                            .removeFromParent(newContent);   
+                }
             }
             newContent.setParent(this);
         }
@@ -130,6 +133,16 @@ public abstract class EditorLike extends AbstractComponent implements HasCompone
         return (Component) getState().content;
     }
 
+    public void removeAllActions() {
+        getState().actions.clear();
+        actionCallbackMap.clear();
+    }
+    
+    public void removeAction(String actionName) {
+        getState().actions.remove(actionName);
+        actionCallbackMap.removeAll(actionName);
+    }
+    
     public void addAction(String actionName, String actionLabel) {
         getState().actions.put(actionName, actionLabel);
     }

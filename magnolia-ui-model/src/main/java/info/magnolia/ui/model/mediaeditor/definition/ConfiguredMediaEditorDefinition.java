@@ -31,26 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.model.mediaeditor.definition;
 
-import info.magnolia.ui.vaadin.editor.CroppableImage.ReleaseListener;
-import info.magnolia.ui.vaadin.editor.CroppableImage.SelectionListener;
-import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
 
 /**
- * Handler interface for {@link JCrop}-related events.
+ * ConfiguredMediaEditorDefinition.
  */
-public interface JCropHandler {
+public class ConfiguredMediaEditorDefinition implements MediaEditorDefinition {
 
-    void handleSelection(SelectionArea area);
+    private ActionbarDefinition actionbar;
     
-    void handleRelease();
+    private EditModeProviderActionDefinition defaultProvider;
     
-    void addReleaseListener(ReleaseListener listener);
+    private String id;
     
-    void addSelectionListener(SelectionListener listener);
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public ActionbarDefinition getActionBar() {
+        return actionbar;
+    }
+
+    @Override
+    public EditModeProviderActionDefinition getDefaultEditModeProvider() {
+        return defaultProvider;
+    }
     
-    void removeSelectionListener(SelectionListener listener);
+    public void setId(String id) {
+        this.id = id;
+    }
     
-    void removeReleaseListener(ReleaseListener listener);
+    public void setActionbar(ActionbarDefinition definition) {
+        this.actionbar = definition;
+    }
+    
+    public void setDefaultEditModeProvider(EditModeProviderActionDefinition defaultProvider) {
+        this.defaultProvider = defaultProvider;
+    }
+
 }

@@ -31,26 +31,62 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.admincentral.mediaeditor.editmode.provider;
 
-import info.magnolia.ui.vaadin.editor.CroppableImage.ReleaseListener;
-import info.magnolia.ui.vaadin.editor.CroppableImage.SelectionListener;
-import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+
+import java.util.List;
+
+import com.vaadin.ui.Component;
 
 /**
- * Handler interface for {@link JCrop}-related events.
+ * Provides UI and logic for some kind of image editing.
  */
-public interface JCropHandler {
+public interface EditModeProvider {
+   
+    MediaField getMediaField();
+    
+    Component getStatusControls();
+    
+    List<ActionContext> getActionContextList();
 
-    void handleSelection(SelectionArea area);
-    
-    void handleRelease();
-    
-    void addReleaseListener(ReleaseListener listener);
-    
-    void addSelectionListener(SelectionListener listener);
-    
-    void removeSelectionListener(SelectionListener listener);
-    
-    void removeReleaseListener(ReleaseListener listener);
+    /**
+     * ActionContext.
+     */
+    public static class ActionContext {
+
+        private String actionId;
+
+        private String label;
+        
+        private EditorLikeActionListener listener;
+
+        public ActionContext(String id, String label, EditorLikeActionListener listener) {
+            this.actionId = id;
+            this.label = label;
+            this.listener = listener;
+        }
+
+        /**
+         * @return the actionId
+         */
+        public String getActionId() {
+            return actionId;
+        }
+
+        /**
+         * @return the label
+         */
+        public String getLabel() {
+            return label;
+        }
+
+        /**
+         * @return the listener
+         */
+        public EditorLikeActionListener getListener() {
+            return listener;
+        }
+    }
 }

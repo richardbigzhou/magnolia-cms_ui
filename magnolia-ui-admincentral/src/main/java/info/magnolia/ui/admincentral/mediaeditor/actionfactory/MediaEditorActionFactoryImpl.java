@@ -31,26 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.admincentral.mediaeditor.actionfactory;
 
-import info.magnolia.ui.vaadin.editor.CroppableImage.ReleaseListener;
-import info.magnolia.ui.vaadin.editor.CroppableImage.SelectionListener;
-import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.model.action.AbstractActionFactory;
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
+
+import java.io.Serializable;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
- * Handler interface for {@link JCrop}-related events.
+ * Implementation of {@link MediaEditorActionFactory}.
  */
-public interface JCropHandler {
+@Singleton
+public class MediaEditorActionFactoryImpl extends AbstractActionFactory<ActionDefinition, Action> implements 
+    MediaEditorActionFactory, Serializable {
 
-    void handleSelection(SelectionArea area);
-    
-    void handleRelease();
-    
-    void addReleaseListener(ReleaseListener listener);
-    
-    void addSelectionListener(SelectionListener listener);
-    
-    void removeSelectionListener(SelectionListener listener);
-    
-    void removeReleaseListener(ReleaseListener listener);
+    @Inject
+    public MediaEditorActionFactoryImpl(ComponentProvider componentProvider,
+            MediaEditorActionRegistry mediaEditorActionRegistry) {
+        super(componentProvider);
+        for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : mediaEditorActionRegistry
+                .getDefinitionToImplementationMappings()) {
+            addMapping(definitionToImplementationMapping.getDefinition(),
+                    definitionToImplementationMapping.getImplementation());
+        }
+    }
+
+    @Override
+    public Action createAction(final ActionDefinition actionDefinition) {
+        return create(actionDefinition);
+    }
+
 }

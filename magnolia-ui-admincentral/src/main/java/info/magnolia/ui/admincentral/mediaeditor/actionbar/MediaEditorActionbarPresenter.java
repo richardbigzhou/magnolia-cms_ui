@@ -31,26 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.admincentral.mediaeditor.actionbar;
 
-import info.magnolia.ui.vaadin.editor.CroppableImage.ReleaseListener;
-import info.magnolia.ui.vaadin.editor.CroppableImage.SelectionListener;
-import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
- * Handler interface for {@link JCrop}-related events.
+ * Actionbar presenter bound to the scope of media editor.
  */
-public interface JCropHandler {
+public class MediaEditorActionbarPresenter extends ActionbarPresenterBase {
 
-    void handleSelection(SelectionArea area);
-    
-    void handleRelease();
-    
-    void addReleaseListener(ReleaseListener listener);
-    
-    void addSelectionListener(SelectionListener listener);
-    
-    void removeSelectionListener(SelectionListener listener);
-    
-    void removeReleaseListener(ReleaseListener listener);
+    @Inject
+    public MediaEditorActionbarPresenter(@Named("mediaeditor") EventBus subAppEventBus) {
+        super(subAppEventBus);
+    }
+
+    @Override
+    public void onChangeFullScreen(boolean isFullScreen) {
+
+    }
+
+    @Override
+    public void onActionbarItemClicked(String actionToken) {
+        super.onActionbarItemClicked(actionToken);
+    }
+
+    public void fireAction(ActionDefinition actionDef) throws ActionExecutionException {
+        final Action action = getActionFactory().createAction(actionDef);
+        if (action == null) {
+            throw new ActionExecutionException("Could not create action from actionDefinition. Action is null.");
+        }
+        action.execute();
+    }
+
 }

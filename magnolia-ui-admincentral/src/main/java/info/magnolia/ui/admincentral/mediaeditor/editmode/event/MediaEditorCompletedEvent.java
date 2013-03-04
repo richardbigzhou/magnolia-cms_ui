@@ -31,26 +31,63 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.admincentral.mediaeditor.editmode.event;
 
-import info.magnolia.ui.vaadin.editor.CroppableImage.ReleaseListener;
-import info.magnolia.ui.vaadin.editor.CroppableImage.SelectionListener;
-import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
+import java.io.OutputStream;
+
+import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
 
 /**
- * Handler interface for {@link JCrop}-related events.
+ * MediaEditorCompletedEvent.
  */
-public interface JCropHandler {
+public class MediaEditorCompletedEvent implements Event<MediaEditorCompletedEvent.Handler>{
 
-    void handleSelection(SelectionArea area);
+    /**
+     * CompletionType.
+     */
+    public enum CompletionType {  
+        SUBMIT,
+        CANCEL;
+    };
     
-    void handleRelease();
+    private CompletionType type;
     
-    void addReleaseListener(ReleaseListener listener);
+    private OutputStream stream;
     
-    void addSelectionListener(SelectionListener listener);
+    public MediaEditorCompletedEvent(CompletionType type, OutputStream stream) {
+        this.stream = stream;
+        this.type = type;
+    }
     
-    void removeSelectionListener(SelectionListener listener);
+    public OutputStream getStream() {
+        return stream;
+    }
     
-    void removeReleaseListener(ReleaseListener listener);
+    public CompletionType getType() {
+        return type;
+    }
+    
+    /** 
+     * Handler.
+     */
+    public interface Handler extends EventHandler {
+        
+        void onSubmit(MediaEditorCompletedEvent event);
+        
+        void onCancel(MediaEditorCompletedEvent event);
+        
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        switch (type) {
+        case SUBMIT:
+            handler.onSubmit(this);
+            break;
+        case CANCEL:
+            handler.onCancel(this);
+            break;
+        }
+    }
 }

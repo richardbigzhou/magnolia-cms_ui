@@ -31,26 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.admincentral.mediaeditor.action.feature;
 
-import info.magnolia.ui.vaadin.editor.CroppableImage.ReleaseListener;
-import info.magnolia.ui.vaadin.editor.CroppableImage.SelectionListener;
-import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
+import info.magnolia.ui.admincentral.mediaeditor.action.feature.definition.ScaleToFitActionDefinition;
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
 
 /**
- * Handler interface for {@link JCrop}-related events.
+ * Forces an instance of {@link Scalable} to scale to fit the available space.
  */
-public interface JCropHandler {
+public class ScaleToFitAction extends ActionBase<ScaleToFitActionDefinition> {
 
-    void handleSelection(SelectionArea area);
+    private Scalable scalable;
     
-    void handleRelease();
+    public ScaleToFitAction(ScaleToFitActionDefinition def, Scalable scalable) {
+        super(def);
+        this.scalable = scalable;
+    }
     
-    void addReleaseListener(ReleaseListener listener);
-    
-    void addSelectionListener(SelectionListener listener);
-    
-    void removeSelectionListener(SelectionListener listener);
-    
-    void removeReleaseListener(ReleaseListener listener);
+    @Override
+    public void execute() throws ActionExecutionException {
+        scalable.scaleToFit();
+    }
 }

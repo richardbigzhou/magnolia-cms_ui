@@ -31,26 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
-
-import info.magnolia.ui.vaadin.editor.CroppableImage.ReleaseListener;
-import info.magnolia.ui.vaadin.editor.CroppableImage.SelectionListener;
-import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
+package info.magnolia.ui.admincentral.mediaeditor.action.feature;
 
 /**
- * Handler interface for {@link JCrop}-related events.
+ * Implemented by all the UI-fields that want to provide support for scaling the content.
  */
-public interface JCropHandler {
+public interface Scalable {
 
-    void handleSelection(SelectionArea area);
-    
-    void handleRelease();
-    
-    void addReleaseListener(ReleaseListener listener);
-    
-    void addSelectionListener(SelectionListener listener);
-    
-    void removeSelectionListener(SelectionListener listener);
-    
-    void removeReleaseListener(ReleaseListener listener);
+    void scaleToActualSize();
+
+    void scaleToFit();
+
 }

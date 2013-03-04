@@ -31,26 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.model.mediaeditor.definition;
 
-import info.magnolia.ui.vaadin.editor.CroppableImage.ReleaseListener;
-import info.magnolia.ui.vaadin.editor.CroppableImage.SelectionListener;
-import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
+
 
 /**
- * Handler interface for {@link JCrop}-related events.
+ * MediaEditorDefinition.
  */
-public interface JCropHandler {
+public interface MediaEditorDefinition {
+    
+    String getId();
 
-    void handleSelection(SelectionArea area);
-    
-    void handleRelease();
-    
-    void addReleaseListener(ReleaseListener listener);
-    
-    void addSelectionListener(SelectionListener listener);
-    
-    void removeSelectionListener(SelectionListener listener);
-    
-    void removeReleaseListener(ReleaseListener listener);
+    ActionbarDefinition getActionBar();
+
+    EditModeProviderActionDefinition getDefaultEditModeProvider();
 }

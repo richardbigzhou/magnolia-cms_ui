@@ -31,26 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.admincentral.mediaeditor.actionfactory;
 
-import info.magnolia.ui.vaadin.editor.CroppableImage.ReleaseListener;
-import info.magnolia.ui.vaadin.editor.CroppableImage.SelectionListener;
-import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionFactory;
 
 /**
- * Handler interface for {@link JCrop}-related events.
+ * Used by {@link info.magnolia.ui.admincentral.mediaeditor.actionbar.MediaEditorActionbarPresenter} in order to either 
+ * switch an edit mode (in case of {@link info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition}) 
+ * or to perform an action on the UI (in case of {@link info.magnolia.ui.model.mediaeditor.features.MediaEditorFeatureDefinition}).
  */
-public interface JCropHandler {
-
-    void handleSelection(SelectionArea area);
-    
-    void handleRelease();
-    
-    void addReleaseListener(ReleaseListener listener);
-    
-    void addSelectionListener(SelectionListener listener);
-    
-    void removeSelectionListener(SelectionListener listener);
-    
-    void removeReleaseListener(ReleaseListener listener);
+public interface MediaEditorActionFactory extends ActionFactory<ActionDefinition, Action> {
+    Action createAction(final ActionDefinition actionDefinition);
 }

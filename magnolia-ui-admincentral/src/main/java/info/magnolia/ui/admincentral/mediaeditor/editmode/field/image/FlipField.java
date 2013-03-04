@@ -31,26 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.admincentral.mediaeditor.editmode.field.image;
 
-import info.magnolia.ui.vaadin.editor.CroppableImage.ReleaseListener;
-import info.magnolia.ui.vaadin.editor.CroppableImage.SelectionListener;
-import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import com.jhlabs.image.FlipFilter;
+import com.vaadin.data.Property;
 
 /**
- * Handler interface for {@link JCrop}-related events.
+ * Provides the functionality for image flip.
  */
-public interface JCropHandler {
+public class FlipField extends ViewImageField {
 
-    void handleSelection(SelectionArea area);
+    private boolean isFlipHorizontal;
+
+    public FlipField(boolean isFlipHorizontal) {
+        this.isFlipHorizontal = isFlipHorizontal;
+        setBuffered(true);
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public void setPropertyDataSource(Property newDataSource) {
+        super.setPropertyDataSource(newDataSource);
+        execute();
+    }
+
+    @Override
+    protected BufferedImage executeImageModification() throws IOException {
+        final BufferedImage img = ImageIO.read(new ByteArrayInputStream(getValue()));
+        final FlipFilter flipFilter = new FlipFilter(isFlipHorizontal ? FlipFilter.FLIP_H : FlipFilter.FLIP_V);
+        return flipFilter.filter(img, null);
+    }
     
-    void handleRelease();
-    
-    void addReleaseListener(ReleaseListener listener);
-    
-    void addSelectionListener(SelectionListener listener);
-    
-    void removeSelectionListener(SelectionListener listener);
-    
-    void removeReleaseListener(ReleaseListener listener);
+    @Override
+    public void execute() {
+        super.execute();
+        commit();
+    }
 }
