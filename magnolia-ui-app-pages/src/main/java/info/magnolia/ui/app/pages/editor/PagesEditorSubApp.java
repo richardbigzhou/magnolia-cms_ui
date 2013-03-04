@@ -116,7 +116,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         super.start(itemLocation);
 
         actionbarPresenter.setListener(this);
-        ActionbarDefinition actionbarDefinition = workbenchDefinition.getActionbar();
+        ActionbarDefinition actionbarDefinition = getSubAppContext().getSubAppDescriptor().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition);
         view.setActionbarView(actionbar);
         view.setPageEditorView(pageEditorPresenter.start());

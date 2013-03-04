@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.workbench.definition;
 
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.form.definition.FormDefinition;
-import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 
 import java.io.Serializable;
@@ -65,13 +62,6 @@ public interface WorkbenchDefinition extends Serializable {
     List<ColumnDefinition> getColumns();
 
     /**
-     * Gets the definition for the action bar related to this workbench.
-     */
-    ActionbarDefinition getActionbar();
-
-    ImageProviderDefinition getImageProvider();
-
-    /**
      * Define if this workbench is used for Dialog. This is set during the cloning of the workbench in
      * ChooseDialogContentPresenter.
      */
@@ -89,5 +79,4 @@ public interface WorkbenchDefinition extends Serializable {
      */
     boolean isEditable();
 
-    FormDefinition getFormDefinition();
 }

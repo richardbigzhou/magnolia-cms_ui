@@ -72,6 +72,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
     private final ItemPresenter itemPresenter;
     private final ActionbarPresenter actionbarPresenter;
     private final WorkbenchDefinition workbenchDefinition;
+    private final ContentSubAppDescriptor subAppDescriptor;
     private String nodePath;
 
     @Inject
@@ -81,19 +82,19 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
         this.itemPresenter = itemPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
-        this.workbenchDefinition = ((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench();
-
+        this.subAppDescriptor = (ContentSubAppDescriptor) subAppContext.getSubAppDescriptor();
+        this.workbenchDefinition = subAppDescriptor.getWorkbench();
     }
 
     public View start(String nodePath, ItemView.ViewType viewType) {
         view.setListener(this);
         this.nodePath = nodePath;
         final JcrNodeAdapter item = new JcrNodeAdapter(SessionUtil.getNode(workbenchDefinition.getWorkspace(), nodePath));
-        ItemView itemView = itemPresenter.start(workbenchDefinition.getFormDefinition(), item, viewType);
+        ItemView itemView = itemPresenter.start(subAppDescriptor.getFormDefinition(), item, viewType);
 
         view.setItemView(itemView);
         actionbarPresenter.setListener(this);
-        ActionbarView actionbar = actionbarPresenter.start(workbenchDefinition.getActionbar());
+        ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar());
 
         view.setActionbarView(actionbar);
 
