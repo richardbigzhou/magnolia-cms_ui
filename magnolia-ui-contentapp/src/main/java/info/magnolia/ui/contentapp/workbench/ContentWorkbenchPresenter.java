@@ -123,16 +123,8 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
         this.subAppEventBus = subAppEventBus;
         this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
-
         this.appContext = subAppContext.getAppContext();
-
-        if (subAppContext.getSubAppDescriptor() instanceof ContentSubAppDescriptor) {
-            this.subAppDescriptor = (ContentSubAppDescriptor) subAppContext.getSubAppDescriptor();
-        }
-        else {
-            log.error("{} {} subApp must contain a subAppDescriptor of type {}", new String[] {appContext.getName(), subAppContext.getSubAppId(), ContentSubAppDescriptor.class.getName()});
-        }
-
+        this.subAppDescriptor = (ContentSubAppDescriptor) subAppContext.getSubAppDescriptor();
         this.workbenchDefinition = subAppDescriptor.getWorkbench();
 
         ImageProviderDefinition imageProviderDefinition = subAppDescriptor.getImageProvider();

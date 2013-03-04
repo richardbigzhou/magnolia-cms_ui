@@ -82,10 +82,8 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
         this.itemPresenter = itemPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
-
         this.subAppDescriptor = (ContentSubAppDescriptor) subAppContext.getSubAppDescriptor();
         this.workbenchDefinition = subAppDescriptor.getWorkbench();
-
     }
 
     public View start(String nodePath, ItemView.ViewType viewType) {
