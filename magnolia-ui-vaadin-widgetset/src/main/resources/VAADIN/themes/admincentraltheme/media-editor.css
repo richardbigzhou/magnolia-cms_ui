@@ -1,3 +1,6 @@
+@charset "UTF-8";
+
+@mixin media-editor {
 .v-media-editor {
 	z-index: 201;
 }
@@ -45,4 +48,5 @@
 .v-media-editor .scale-to-fit, .scale-to-fit img{
 	max-width: 100%;
 	max-height: 100%;
+}
 }

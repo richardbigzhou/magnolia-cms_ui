@@ -6,6 +6,7 @@
 @import "form.scss";
 @import "fonts.scss";
 @import "lightbox.scss";
+@import "media-editor.scss";
 @import "pulse.scss";
 @import "shell.scss";
 @import "shellmessage.scss";
@@ -16,6 +17,7 @@
 @import "workbench.scss";
 @import "uploadfield.scss";
 
+
 @mixin admincentraltheme {
   @include actionbar;
   @include app-preloader;
@@ -24,6 +26,7 @@
   @include favorites;
   @include form;
   @include lightbox;
+  @include media-editor;
   @include pulse;
   @include tabsheet;
   @include shell;
