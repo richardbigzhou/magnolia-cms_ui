@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
-
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.registry.RegistrationException;

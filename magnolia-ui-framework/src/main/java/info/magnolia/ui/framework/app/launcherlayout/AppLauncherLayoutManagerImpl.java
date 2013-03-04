@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.app.launcherlayout;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.framework.app.AppDescriptor;
@@ -42,7 +43,6 @@ import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayou
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.app.registry.AppRegistryEvent;
 import info.magnolia.ui.framework.app.registry.AppRegistryEventHandler;
-import info.magnolia.event.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
