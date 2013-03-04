@@ -113,6 +113,11 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
                 view.setShowActiveTabFullscreen(isFullScreen);
                 getLayoutManager().setNeedsMeasure(MagnoliaTabSheetConnector.this);
             }
+
+            @Override
+            public void closeTab(Connector tabConnector) {
+                eventBus.fireEvent(new TabCloseEvent(((MagnoliaTabConnector)tabConnector).getWidget()));
+            }
         });
 
         eventBus.addHandler(TabCloseEvent.TYPE, new TabCloseEventHandler() {
