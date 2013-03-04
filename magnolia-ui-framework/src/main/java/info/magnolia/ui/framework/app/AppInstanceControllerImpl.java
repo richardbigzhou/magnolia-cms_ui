@@ -257,6 +257,16 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
     }
 
+    /**
+     * Used to close a running subApp from server side. Delegates to {@link AppView#closeSubAppView(String)}.
+     * The actual closing and cleaning up, will be handled by the callback {@link AppView.Listener#onClose(String)}
+     * implemented in {@link #onClose(String)}.
+     */
+    @Override
+    public void closeSubApp(String instanceId) {
+       getView().closeSubAppView(instanceId);
+    }
+
     private SubAppContext startSubApp(Location location) {
 
         SubAppDescriptor subAppDescriptor = getSubAppDescriptorById(location.getSubAppId());
