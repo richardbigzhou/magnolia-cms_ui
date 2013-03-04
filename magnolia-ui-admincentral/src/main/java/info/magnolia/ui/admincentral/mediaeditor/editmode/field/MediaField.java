@@ -38,7 +38,7 @@ import com.vaadin.ui.Field;
 /**
  * Base interface for media editor fields.
  */
-public interface MediaField extends Field {
+public interface MediaField extends Field<byte[]> {
 
     void applyChanges();
 

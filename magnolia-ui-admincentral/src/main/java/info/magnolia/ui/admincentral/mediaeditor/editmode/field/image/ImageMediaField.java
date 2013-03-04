@@ -71,7 +71,7 @@ public abstract class ImageMediaField extends CustomField<byte[]> implements Med
     protected Logger log = Logger.getLogger(getClass());
 
     private Transactional<Byte[]> transactionHandler;
-    
+
     private Component fieldComponent;
 
     @Override
@@ -86,7 +86,7 @@ public abstract class ImageMediaField extends CustomField<byte[]> implements Med
         mediaContentWrapper.setComponentAlignment(fieldComponent, Alignment.MIDDLE_CENTER);
         return mediaContentWrapper;
     }
-    
+
     protected abstract Component createField();
 
     @Override
@@ -138,7 +138,7 @@ public abstract class ImageMediaField extends CustomField<byte[]> implements Med
             }
         }
     }
-    
+
     @Override
     public Class<byte[]> getType() {
         return byte[].class;
@@ -188,7 +188,7 @@ public abstract class ImageMediaField extends CustomField<byte[]> implements Med
                 return new ByteArrayInputStream(getValue());
             }
         }, generateTempFileName()) {{
-          setMIMEType("image/" + DEFAULT_FORMAT);  
+                setMIMEType("image/" + DEFAULT_FORMAT);
         }};
     }
 
