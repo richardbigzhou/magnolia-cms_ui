@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,21 +34,42 @@
 package info.magnolia.ui.contentapp;
 
 import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.model.form.definition.FormDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 /**
- * ConfiguredContentSubAppDescriptor.
+ * ConfiguredItemSubAppDescriptor.
  */
-public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescriptor implements ContentSubAppDescriptor {
+public class ConfiguredItemSubAppDescriptor extends ConfiguredSubAppDescriptor implements ItemSubAppDescriptor {
 
-    private WorkbenchDefinition workbench;
+    private FormDefinition form;
+    private String workspace;
+    private NodeTypeDefinition nodeType;
 
     @Override
-    public WorkbenchDefinition getWorkbench() {
-        return workbench;
+    public String getWorkspace() {
+        return workspace;
     }
 
-    public void setWorkbench(WorkbenchDefinition workBench) {
-        this.workbench = workBench;
+    @Override
+    public NodeTypeDefinition getNodeType() {
+        return nodeType;
+    }
+
+    @Override
+    public FormDefinition getFormDefinition() {
+        return form;
+    }
+
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
+    }
+
+    public void setNodeType(NodeTypeDefinition nodeType) {
+        this.nodeType = nodeType;
+    }
+
+    public void setFormDefinition(FormDefinition formDefinition) {
+        this.form = formDefinition;
     }
 }

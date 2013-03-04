@@ -136,9 +136,9 @@ public class SecurityModule implements ModuleLifecycle {
 
         app.label("Security").icon("icon-security-app").appClass(SecurityApp.class) // .categoryName("MANAGE")
                 .subApps(
-                        userSubApp(app, cfg, "users", "/admin").label("Users"),
-                        userSubApp(app, cfg, "systemUsers", "/system").label("System users"),
-                        app.subApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
+                        userSubApp(app, cfg, "users", "/admin").label("Users").exec(),
+                        userSubApp(app, cfg, "systemUsers", "/system").label("System users").exec(),
+                        app.workbenchSubApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
                                 .actions(addGroupAction, editGroupAction, deleteGroupActionDefinition)
                                 .imageProvider(cipd)
                                 .workbench(cfg.workbenches.workbench().workspace("usergroups").root("/").defaultOrder(ModelConstants.JCR_NAME)
@@ -159,8 +159,8 @@ public class SecurityModule implements ModuleLifecycle {
                                                                 cfg.actionbars.group("editActions").actions(editGroupAction.getName(), deleteGroupActionDefinition.getName())
                                                         )
                                         )
-                                ),
-        app.subApp("roles").subAppClass(SecurityRolesSubApp.class).label("Roles")
+                                ).exec(),
+                        app.workbenchSubApp("roles").subAppClass(SecurityRolesSubApp.class).label("Roles")
                                 .actions(addRoleAction, editRoleAction, deleteRoleActionDefinition)
                                 .imageProvider(cipd)
                                 .workbench(cfg.workbenches.workbench().workspace("userroles").root("/").defaultOrder(ModelConstants.JCR_NAME)
@@ -179,10 +179,10 @@ public class SecurityModule implements ModuleLifecycle {
                                                 cfg.actionbars.section("roleActions").label("Roles")
                                                         .groups(
                                                                 cfg.actionbars.group("addActions").actions(addRoleAction.getName()),
-                                                                cfg.actionbars.group("editActions").actions(editRoleAction.getName(),deleteRoleActionDefinition.getName())
+                                                                cfg.actionbars.group("editActions").actions(editRoleAction.getName(), deleteRoleActionDefinition.getName())
                                                         )
                                         )
-                                )
+                                ).exec()
 
                 );
     }
@@ -212,7 +212,7 @@ public class SecurityModule implements ModuleLifecycle {
         cipd.setOriginalImageNodeName("photo");
         cipd.setImageProviderClass(DefaultImageProvider.class);
 
-        return app.subApp(name).subAppClass(SecurityUsersSubApp.class)
+        return app.workbenchSubApp(name).subAppClass(SecurityUsersSubApp.class)
                 .actions(addUserAction, editUserAction, deleteUserActionDefinition)
                 .imageProvider(cipd)
                 .workbench(cfg.workbenches.workbench().workspace("users").root(root).defaultOrder(ModelConstants.JCR_NAME)

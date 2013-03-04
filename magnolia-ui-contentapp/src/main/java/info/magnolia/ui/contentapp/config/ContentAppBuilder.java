@@ -34,6 +34,7 @@
 package info.magnolia.ui.contentapp.config;
 
 import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 
 /**
@@ -67,13 +68,17 @@ public class ContentAppBuilder {
         return this;
     }
 
-    public ContentSubAppBuilder subApp(String name) {
+    public ContentSubAppBuilder workbenchSubApp(String name) {
         return new ContentSubAppBuilder(name);
     }
 
-    public ContentAppBuilder subApps(ContentSubAppBuilder... builders) {
-        for (ContentSubAppBuilder builder : builders) {
-            descriptor.addSubApp(builder.exec());
+    public ItemSubAppBuilder itemSubApp(String name) {
+        return new ItemSubAppBuilder(name);
+    }
+
+    public ContentAppBuilder subApps(SubAppDescriptor... descriptors) {
+        for (SubAppDescriptor subAppDescriptor : descriptors) {
+            descriptor.addSubApp(subAppDescriptor);
         }
         return this;
     }

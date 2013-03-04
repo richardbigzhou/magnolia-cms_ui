@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,22 +33,19 @@
  */
 package info.magnolia.ui.contentapp;
 
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.model.form.definition.FormDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 /**
- * ConfiguredContentSubAppDescriptor.
+ * Descriptor for Item subApps.
+ * Holds the form definition to build a form and needed fields to create a new node.
  */
-public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescriptor implements ContentSubAppDescriptor {
+public interface ItemSubAppDescriptor extends SubAppDescriptor {
 
-    private WorkbenchDefinition workbench;
+    FormDefinition getFormDefinition();
 
-    @Override
-    public WorkbenchDefinition getWorkbench() {
-        return workbench;
-    }
+    String getWorkspace();
 
-    public void setWorkbench(WorkbenchDefinition workBench) {
-        this.workbench = workBench;
-    }
+    NodeTypeDefinition getNodeType();
 }

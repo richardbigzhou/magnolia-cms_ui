@@ -151,7 +151,7 @@ public class ContactsModule implements ModuleLifecycle {
                 .icon("icon-people")
                 .appClass(ContentApp.class)
                 .subApps(
-                        app.subApp("main")
+                        app.workbenchSubApp("main")
                                 .subAppClass(ContactsMainSubApp.class)
                                 .actions(addContactAction, editContactAction, editContactActionInDialog, deleteItemAction, addFolderAction, editFolderAction, deleteFolderAction)
                                 .imageProvider(cipd)
@@ -193,17 +193,12 @@ public class ContactsModule implements ModuleLifecycle {
                                                                         cfg.actionbars.group("editActions").actions(editFolderAction.getName(),deleteFolderAction.getName())
                                                                 )
                                                 )
-                                ),
+                                ).exec(),
 
-                        app.subApp("item")
+                        app.itemSubApp("item")
                                 .subAppClass(ItemSubApp.class)
-                                .workbench(
-                                        cfg.workbenches
-                                        .workbench()
-                                        .workspace("contacts")
-                                        .root("/")
-                                        .defaultOrder(ModelConstants.JCR_NAME)
-                                )
+                                .workspace("contacts")
+                                .nodeType(cfg.workbenches.nodeType(Contact.NAME).icon("icon-node-content"))
                                 .form(cfg.forms
                                         .form()
                                         .label("Edit contact")
@@ -254,7 +249,7 @@ public class ContactsModule implements ModuleLifecycle {
                                         .actions(cfg.forms.action("commit").label("save changes").action(new SaveContactFormActionDefinition()),
                                                 cfg.forms.action("cancel").label("cancel").action(new CancelFormActionDefinition())
                                         )
-                                )
+                                ).exec()
                         );
     }
 
