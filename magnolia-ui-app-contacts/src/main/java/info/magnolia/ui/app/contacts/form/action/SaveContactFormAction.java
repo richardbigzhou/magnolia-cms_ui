@@ -39,6 +39,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.action.SaveFormAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
@@ -68,8 +69,9 @@ public class SaveContactFormAction extends SaveFormAction {
             try {
                 final Node node = itemChanged.getNode();
                 // Set the Node Composite Name
-                generateUniqueNodeNameForContact(node);
-                itemChanged.setPath(node.getPath());
+                if (itemChanged instanceof JcrNewNodeAdapter || !node.getName().equals(defineNodeName(node))) {
+                    itemChanged.setPath(generateUniqueNodeNameForContact(node));
+                }
 
                 NodeTypes.LastModified.update(node);
                 node.getSession().save();
@@ -81,14 +83,24 @@ public class SaveContactFormAction extends SaveFormAction {
 
     }
 
-    // we have already utilities in core to generate unique names. Why not reuse them rather then inventing your own code?
-    private void generateUniqueNodeNameForContact(final Node node) throws RepositoryException {
-        String firstName = node.getProperty("firstName").getString();
-        String lastName = node.getProperty("lastName").getString();
-        String newNodeName = (firstName.charAt(0) + lastName.replaceAll("\\s+", "")).toLowerCase();
+    /**
+     * Create a new Node Unique NodeName.
+     */
+    private String generateUniqueNodeNameForContact(final Node node) throws RepositoryException {
+        String newNodeName = defineNodeName(node);
         newNodeName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), newNodeName);
-
         String newPath = NodeUtil.combinePathAndName(node.getParent().getPath(), newNodeName);
         node.getSession().move(node.getPath(), newPath);
+        return newPath;
+    }
+
+    /**
+     * Define the Node Name. Node Name = First Char of the lastName + the full
+     * firstName. lastName = eric firstName = tabli The node name is etabli
+     */
+    private String defineNodeName(final Node node) throws RepositoryException {
+        String firstName = node.getProperty("firstName").getString();
+        String lastName = node.getProperty("lastName").getString();
+        return (firstName.charAt(0) + lastName.replaceAll("\\s+", "")).toLowerCase();
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,15 +33,61 @@
  */
 package info.magnolia.ui.contentapp.item.action;
 
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
- * ActionDefinition used for editing Items.
- * Provides appId and subAppId to determine the correct app and subApp to edit item.
- * see MGNLUI-229.
+ * Base ContentApp ItemActionDefinition.
  */
-public class EditItemActionDefinition extends AbstractItemActionDefinition {
+public abstract class AbstractItemActionDefinition extends ConfiguredActionDefinition {
+    private String nodeType = StringUtils.EMPTY;
+    private String appId;
+    private String subAppId;
 
-    public EditItemActionDefinition() {
-        setImplementationClass(EditItemAction.class);
+
+    /**
+     * @return the nodeType.
+     */
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    /**
+     * @param nodeType
+     *            the nodeType to set.
+     */
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
+    /**
+     * @return the appId.
+     */
+    public String getAppId() {
+        return appId;
+    }
+
+    /**
+     * @param appId
+     *            the appId to set.
+     */
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    /**
+     * @return the subAppId.
+     */
+    public String getSubAppId() {
+        return subAppId;
+    }
+
+    /**
+     * @param subAppId
+     *            the subAppId to set.
+     */
+    public void setSubAppId(String subAppId) {
+        this.subAppId = subAppId;
     }
 }
