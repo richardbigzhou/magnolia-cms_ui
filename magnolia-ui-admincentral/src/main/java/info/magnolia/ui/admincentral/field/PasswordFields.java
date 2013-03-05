@@ -70,6 +70,7 @@ public class PasswordFields extends CustomField<String> {
     public PasswordFields(boolean verification, String verificationMessage, String verificationErrorMessage, boolean encode) {
         layout = new VerticalLayout();
         passwordField = new PasswordField();
+        passwordField.setNullRepresentation("");
         this.verification = verification;
         this.verificationErrorMessage = verificationErrorMessage;
         this.verificationMessage = verificationMessage;
@@ -77,6 +78,10 @@ public class PasswordFields extends CustomField<String> {
         if (encode) {
             this.translator = new Base64Translator();
             passwordField.setConverter(translator);
+        }
+        if (this.verification) {
+            verificationField = new PasswordField();
+            verificationField.setNullRepresentation("");
         }
         initContent();
     }
@@ -88,7 +93,6 @@ public class PasswordFields extends CustomField<String> {
         if (this.verification) {
             Label msg = new Label(verificationMessage);
             layout.addComponent(msg);
-            verificationField = new PasswordField();
             layout.addComponent(verificationField);
         }
         return layout;
@@ -105,7 +109,8 @@ public class PasswordFields extends CustomField<String> {
     public void validate() throws InvalidValueException {
         super.validate();
         if (this.verification) {
-            if (StringUtils.isBlank(passwordField.getValue().toString()) || StringUtils.isBlank(verificationField.getValue().toString())) {
+            if (passwordField.getValue() == null || StringUtils.isBlank(passwordField.getValue().toString()) || verificationField.getValue() == null
+                    || StringUtils.isBlank(verificationField.getValue().toString())) {
                 throw new InvalidValueException(verificationErrorMessage);
             }
             if (!passwordField.getValue().toString().equals(verificationField.getValue().toString())) {
@@ -113,6 +118,7 @@ public class PasswordFields extends CustomField<String> {
             }
         }
     }
+
 
     @Override
     public boolean isValid() {
@@ -147,9 +153,10 @@ public class PasswordFields extends CustomField<String> {
     @SuppressWarnings("rawtypes")
     public void setPropertyDataSource(Property newDataSource) {
         passwordField.setPropertyDataSource(newDataSource);
-        if (this.verification) {
+        if (this.verification && newDataSource.getValue() != null) {
             verificationField.setValue(String.valueOf(newDataSource.getValue()));
         }
+        super.setPropertyDataSource(newDataSource);
     }
 
     @Override

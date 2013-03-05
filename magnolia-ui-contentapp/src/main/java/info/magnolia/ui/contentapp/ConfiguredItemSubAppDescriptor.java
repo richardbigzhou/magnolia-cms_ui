@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.contentapp;
 
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.shell.ModalLayer;
+import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+import info.magnolia.ui.model.form.definition.FormDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 /**
- * Provides functionality used by a sub app to interact with the Magnolia shell.
+ * ConfiguredItemSubAppDescriptor.
  */
-public interface SubAppContext extends ModalLayer {
+public class ConfiguredItemSubAppDescriptor extends ConfiguredSubAppDescriptor implements ItemSubAppDescriptor {
 
-    String getSubAppId();
+    private FormDefinition form;
+    private String workspace;
+    private NodeTypeDefinition nodeType;
 
-    SubApp getSubApp();
+    @Override
+    public String getWorkspace() {
+        return workspace;
+    }
 
-    Location getLocation();
+    @Override
+    public NodeTypeDefinition getNodeType() {
+        return nodeType;
+    }
 
-    AppContext getAppContext();
+    @Override
+    public FormDefinition getFormDefinition() {
+        return form;
+    }
 
-    SubAppDescriptor getSubAppDescriptor();
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
+    }
 
-    void setAppContext(AppContext appContext);
+    public void setNodeType(NodeTypeDefinition nodeType) {
+        this.nodeType = nodeType;
+    }
 
-    void setLocation(Location location);
-
-    void setSubApp(SubApp subApp);
-
-    void setInstanceId(String instanceId);
-
-    String getInstanceId();
-
-    void close();
+    public void setFormDefinition(FormDefinition formDefinition) {
+        this.form = formDefinition;
+    }
 }

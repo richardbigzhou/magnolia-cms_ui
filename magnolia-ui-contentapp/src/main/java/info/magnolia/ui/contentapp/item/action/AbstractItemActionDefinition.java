@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,63 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.contentapp.item.action;
 
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.shell.ModalLayer;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
- * Provides functionality used by a sub app to interact with the Magnolia shell.
+ * Base ContentApp ItemActionDefinition.
  */
-public interface SubAppContext extends ModalLayer {
+public abstract class AbstractItemActionDefinition extends ConfiguredActionDefinition {
+    private String nodeType = StringUtils.EMPTY;
+    private String appId;
+    private String subAppId;
 
-    String getSubAppId();
 
-    SubApp getSubApp();
+    /**
+     * @return the nodeType.
+     */
+    public String getNodeType() {
+        return nodeType;
+    }
 
-    Location getLocation();
+    /**
+     * @param nodeType
+     *            the nodeType to set.
+     */
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
 
-    AppContext getAppContext();
+    /**
+     * @return the appId.
+     */
+    public String getAppId() {
+        return appId;
+    }
 
-    SubAppDescriptor getSubAppDescriptor();
+    /**
+     * @param appId
+     *            the appId to set.
+     */
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
 
-    void setAppContext(AppContext appContext);
+    /**
+     * @return the subAppId.
+     */
+    public String getSubAppId() {
+        return subAppId;
+    }
 
-    void setLocation(Location location);
-
-    void setSubApp(SubApp subApp);
-
-    void setInstanceId(String instanceId);
-
-    String getInstanceId();
-
-    void close();
+    /**
+     * @param subAppId
+     *            the subAppId to set.
+     */
+    public void setSubAppId(String subAppId) {
+        this.subAppId = subAppId;
+    }
 }
