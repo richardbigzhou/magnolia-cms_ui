@@ -77,7 +77,7 @@ public class Form extends EditorLike implements FormView {
                 doAddTab(tab);
                 return tab;
             }
-            return null;
+            throw new IllegalArgumentException("TabSheet inside a Form should only receive the FormSection objects as tab content.");
         }
     };
 
@@ -88,7 +88,7 @@ public class Form extends EditorLike implements FormView {
         // setImmediate(true);
         tabSheet.setSizeFull();
         tabSheet.showAllTab(true, SHOW_ALL);
-        setContent((Component) tabSheet);
+        setContent(tabSheet);
 
         registerRpc(new ActionFiringServerRpc() {
 
