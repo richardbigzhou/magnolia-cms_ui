@@ -243,12 +243,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         boolean isDefaultSubApp = defaultLocation.getSubAppId().equals(location.getSubAppId());
         if (!isDefaultSubApp) {
             SubAppContext subAppContext = getSupportingSubAppContext(defaultLocation);
-            if (subAppContext != null) {
-                if (!location.equals(subAppContext.getLocation())) {
-                    subAppContext.setLocation(defaultLocation);
-                    subAppContext.getSubApp().locationChanged(defaultLocation);
-                }
-            } else {
+            if (subAppContext == null) {
                 startSubApp(defaultLocation, false);
             }
         }
