@@ -152,6 +152,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
             @Override
             public void onContentChanged(ContentChangedEvent event) {
                 refreshActionbarPreviewImage(event.getPath(), event.getWorkspace());
+                view.selectPath(event.getPath());
                 view.refresh();
             }
         });
