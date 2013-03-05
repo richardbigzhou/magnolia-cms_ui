@@ -45,6 +45,7 @@ import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -70,6 +71,7 @@ public class ThemeSamplerUI extends UI {
     private ComboBox paginatedComboBox = new ComboBox("Paginated ComboBox", Arrays.asList("Asteroid", "Basel", "Chainsaw", "Divine", "Easter", "Family", "Georgia",
             "Hammersmith", "Ipswitch", "Jackrabbit", "Kornhaus", "Liver", "Magnolia", "Noteworthy", "Opium", "Panacotta", "Quadrant", "Responsive Responsive Responsive",
             "Shark attack", "Trivial", "Unicorn", "Volkswagen", "Warsau", "Xiaoyu", "Yeast", "Zero"));
+    private NativeSelect nativeSelect = new NativeSelect("NativeSelect", paginatedComboBox.getContainerDataSource());
     private DateField dateField = new DateField("DateField");
 
     private CssLayout buttonLayout = new CssLayout();
@@ -90,14 +92,18 @@ public class ThemeSamplerUI extends UI {
 
         wideTextField.setWidth(400, Unit.PIXELS);
 
+        nativeSelect.setWidth(200, Unit.PIXELS);
         comboBox.setInvalidAllowed(false);
         comboBox.setNullSelectionAllowed(false);
+        comboBox.setTextInputAllowed(false);
         paginatedComboBox.setWidth(400, Unit.PIXELS);
+        // paginatedComboBox.setPageLength(0);
 
         buttonLayout.addStyleName("buttons");
         commitButton.addStyleName("commit");
         styledNativeButton.addStyleName("btn-dialog");
         styledNativeCommitButton.addStyleName("btn-form commit");
+        nativeButton.setDescription("This button is a NativeButton which has not received any additional style, so it still looks... well, native!");
         linkButton.setStyleName(BaseTheme.BUTTON_LINK);
 
         buttonLayout.addComponent(button);
@@ -114,6 +120,7 @@ public class ThemeSamplerUI extends UI {
         formLayout.addComponent(textArea);
         formLayout.addComponent(comboBox);
         formLayout.addComponent(paginatedComboBox);
+        formLayout.addComponent(nativeSelect);
         formLayout.addComponent(dateField);
         formLayout.addComponent(buttonLayout);
 
@@ -125,4 +132,5 @@ public class ThemeSamplerUI extends UI {
 
         setContent(layout);
     }
+
 }
