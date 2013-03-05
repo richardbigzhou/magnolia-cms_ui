@@ -34,11 +34,11 @@
 package info.magnolia.ui.app.contacts.action;
 
 import info.magnolia.cms.core.Path;
+import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.tree.action.RepositoryOperationAction;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
-import info.magnolia.event.EventBus;
 
 import javax.inject.Named;
 import javax.jcr.Item;
@@ -50,6 +50,8 @@ import javax.jcr.RepositoryException;
  * is a folder.
  */
 public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDefinition> {
+
+    private String path;
 
     public AddFolderAction(AddFolderActionDefinition definition, Item item, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus) {
         super(definition, item, eventBus);
@@ -68,6 +70,7 @@ public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDe
         String name = Path.getUniqueLabel(node.getSession(), node.getPath(), "untitled");
         Node newNode = node.addNode(name, "mgnl:folder");
         NodeTypes.Created.set(newNode);
+        path = newNode.getPath();
     }
 
     private Node findAncestorOfType(Node node, String nodeType) throws RepositoryException {
@@ -78,5 +81,10 @@ public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDe
             node = node.getParent();
         }
         return null;
+    }
+    
+    @Override
+    protected String getItemPath() throws RepositoryException {
+        return path;
     }
 }
