@@ -41,6 +41,7 @@ import info.magnolia.ui.app.contacts.ContactNodeType.Contact;
 import info.magnolia.ui.app.contacts.field.ContactTextAndButtonField;
 import info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition;
 import info.magnolia.ui.framework.app.AppController;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 
@@ -57,8 +58,8 @@ public class ContactLinkFieldBuilder extends LinkFieldBuilder<ContactLinkFieldDe
     private ImageProvider imageThumbnailProvider;
 
     @Inject
-    public ContactLinkFieldBuilder(ContactLinkFieldDefinition definition, Item relatedFieldItem, AppController appController, ComponentProvider componentProvider) {
-        super(definition, relatedFieldItem, appController);
+    public ContactLinkFieldBuilder(ContactLinkFieldDefinition definition, Item relatedFieldItem, AppController appController, SubAppContext subAppContext, ComponentProvider componentProvider) {
+        super(definition, relatedFieldItem, appController, subAppContext);
 
         // Create an imageProviderDefinition
         // TODO: Retrieve imageProviderDefinition from Contact App

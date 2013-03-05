@@ -20,12 +20,12 @@
       <implementation>info.magnolia.ui.app.pages.main.PagesMainSubApp</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchView</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchViewImpl</implementation>
+      <type>info.magnolia.ui.contentapp.workbench.ContentWorkbenchView</type>
+      <implementation>info.magnolia.ui.contentapp.workbench.ContentWorkbenchViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.workbench.ContentWorkbenchPresenter</implementation>
+      <type>info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter</implementation>
     </component>
   </components>
 

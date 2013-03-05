@@ -33,96 +33,48 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeHeaderWidget;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 
 /**
  * DialogHeaderWidget.
  */
-public class DialogHeaderWidget extends FlowPanel {
+public class DialogHeaderWidget extends EditorLikeHeaderWidget {
 
-    private static final String CLASSNAME_HEADER = "form-header";
-    private static final String ClASSNAME_DESCRIPTION = "form-description";
-    private static final String CLASSNAME_HELPBUTTON = "btn-form-help";
     private static final String CLASSNAME_CLOSEBUTTON = "btn-dialog-close";
 
-    protected final VDialogHeaderCallback callback;
+    /**
+     * Callback interface for the EditorLike header.
+     */
+    public interface VDialogHeaderCallback extends EditorLikeHeaderWidget.VEditorLikeHeaderCallback {
 
-    private final FlowPanel descriptionPanel = new FlowPanel();
+        void onCloseFired();
+    }
 
-    protected Element captionContainer = DOM.createDiv();
+    protected Button closeButton;
 
-    private final Element caption = DOM.createSpan();
+    public DialogHeaderWidget(VDialogHeaderCallback callback) {
+        super(callback);
+    }
 
-    private boolean isDescriptionVisible = false;
-
-    private boolean hasDescription = false;
-
-    private final Button closeButton = new Button("", new ClickHandler() {
-        @Override
-        public void onClick(ClickEvent event) {
-            callback.onCloseFired();
-        }
-    });
-
-    private final Button helpButton = new Button("", new ClickHandler() {
-        @Override
-        public void onClick(ClickEvent event) {
-            isDescriptionVisible = !isDescriptionVisible;
-            if (hasDescription) {
-                descriptionPanel.setVisible(isDescriptionVisible);
-            }
-            callback.onDescriptionVisibilityChanged(isDescriptionVisible);
-        }
-    });
-
+    @Override
     public void construct() {
-        captionContainer.addClassName(CLASSNAME_HEADER);
+
+        closeButton = new Button("", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                ((VDialogHeaderCallback) callback).onCloseFired();
+            }
+        });
 
         closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
         closeButton.addStyleName("green");
-        add(closeButton, captionContainer);
+        add(closeButton, headerPanel);
 
-        descriptionPanel.addStyleName(ClASSNAME_DESCRIPTION);
-        helpButton.setStyleName(CLASSNAME_HELPBUTTON);
+        super.construct();
 
-        getElement().appendChild(captionContainer);
-        captionContainer.appendChild(caption);
-
-        descriptionPanel.setVisible(false);
-        add(helpButton, captionContainer);
-        add(descriptionPanel);
-    }
-
-    public DialogHeaderWidget(final VDialogHeaderCallback callback) {
-        this.callback = callback;
-        callback.onDescriptionVisibilityChanged(false);
-        construct();
-    }
-
-    public void setDescription(String description) {
-        final Label content = new Label();
-        content.setText(description);
-        descriptionPanel.insert(content, 0);
-        hasDescription = !description.isEmpty();
-    }
-
-    public void setDialogCaption(String caption) {
-        this.caption.setInnerText(caption);
-    }
-
-    /**
-     * Callback interface for the Dialog header.
-     */
-    public interface VDialogHeaderCallback {
-
-        void onCloseFired();
-
-        void onDescriptionVisibilityChanged(boolean isVisible);
     }
 }

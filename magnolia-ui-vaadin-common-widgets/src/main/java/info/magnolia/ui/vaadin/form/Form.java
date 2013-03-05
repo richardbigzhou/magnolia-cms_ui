@@ -34,6 +34,8 @@
 package info.magnolia.ui.vaadin.form;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.vaadin.editorlike.EditorLike;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.form.tab.MagnoliaFormTab;
 import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.ActionFiringServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.form.connector.FormState;
@@ -46,11 +48,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.gwt.thirdparty.guava.common.collect.ArrayListMultimap;
-import com.google.gwt.thirdparty.guava.common.collect.ListMultimap;
 import com.vaadin.data.Item;
 import com.vaadin.shared.Connector;
-import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 
@@ -60,7 +59,7 @@ import com.vaadin.ui.Field;
  *
  * TODO: TAKE CARE OF FIELDGROUP IN THE FORM BUILDER LATER ON!
  */
-public class Form extends AbstractSingleComponentContainer implements FormView {
+public class Form extends EditorLike implements FormView {
 
     private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");
 
@@ -82,19 +81,20 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
         }
     };
 
-    private final ListMultimap<String, FormView.FormActionListener> actionCallbackMap = ArrayListMultimap.<String, FormView.FormActionListener>create();
 
     public Form() {
+        super();
         setStyleName("v-magnolia-form");
-        setImmediate(true);
+        // setImmediate(true);
         tabSheet.setSizeFull();
         tabSheet.showAllTab(true, SHOW_ALL);
-        setContent(tabSheet);
+        setContent((Component) tabSheet);
 
         registerRpc(new ActionFiringServerRpc() {
+
             @Override
             public void fireAction(String actionId) {
-                final Iterator<FormActionListener> it = actionCallbackMap.get(actionId).iterator();
+                final Iterator<EditorLikeActionListener> it = actionCallbackMap.get(actionId).iterator();
                 while (it.hasNext()) {
                     it.next().onActionExecuted(actionId);
                 }
@@ -110,20 +110,30 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
         registerRpc(new FormServerRpc() {
             @Override
             public void focusNextProblematicField(Connector currentFocused) {
-                MagnoliaFormTab activeTab = (MagnoliaFormTab) tabSheet.getActiveTab();
-                FormSection formSection = activeTab.getContent();
-                Component nextProblematic = formSection.getNextProblematicField(currentFocused);
-                if (nextProblematic == null) {
-                    MagnoliaTab nextTab = tabSheet.getNextTab(activeTab);
-                    tabSheet.setActiveTab(nextTab);
-                    focusNextProblematicField(null);
-                } else {
-                    formSection.focusField(nextProblematic);
+
+                int tabCount = tabSheet.getComponentCount();
+                MagnoliaTab tab = tabSheet.getActiveTab();
+                FormSection section = null;
+                Component nextProblematic = null;
+
+                do {
+                    section = (FormSection) tab.getContent();
+                    nextProblematic = section.getNextProblematicField(currentFocused);
+                    if (nextProblematic == null) {
+                        tab = tabSheet.getNextTab(tab);
+                        tabCount--;
+                    }
+                } while (nextProblematic == null && tabCount > 0);
+
+                // focus next tab and field
+                if (nextProblematic != null) {
+                    tabSheet.setActiveTab(tab);
+                    section.focusField(nextProblematic);
                 }
             }
         });
-
     }
+
 
     @Override
     public void setItemDataSource(Item newDataSource) {
@@ -178,20 +188,6 @@ public class Form extends AbstractSingleComponentContainer implements FormView {
     @Override
     public void setFormDescription(String description) {
         getState().componentDescription = description;
-    }
-
-    @Override
-    public void addAction(String actionName, String actionLabel, FormView.FormActionListener callback) {
-        addAction(actionName, actionLabel);
-        addActionCallback(actionName, callback);
-    }
-
-    public void addAction(String actionName, String actionLabel) {
-        getState().actions.put(actionName, actionLabel);
-    }
-
-    public void addActionCallback(String actionName, FormView.FormActionListener callback) {
-        actionCallbackMap.put(actionName, callback);
     }
 
     @Override

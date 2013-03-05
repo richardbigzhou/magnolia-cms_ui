@@ -34,6 +34,10 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.vaadin.dialog.Modal;
+import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.view.View;
 
 /**
  * Implementation of {@link SubAppContext}.
@@ -51,9 +55,12 @@ public class SubAppContextImpl implements SubAppContext {
 
     private AppContext appContext;
 
-    public SubAppContextImpl(SubAppDescriptor subAppDescriptor) {
+    private Shell shell;
+
+
+    public SubAppContextImpl(SubAppDescriptor subAppDescriptor, Shell shell) {
         this.subAppDescriptor = subAppDescriptor;
-        this.instanceId = subAppDescriptor.getName() + System.currentTimeMillis();
+        this.shell = shell;
     }
 
     @Override
@@ -104,5 +111,17 @@ public class SubAppContextImpl implements SubAppContext {
     @Override
     public void setInstanceId(String instanceId) {
         this.instanceId = instanceId;
+    }
+
+    @Override
+    public ModalCloser openModal(View view) {
+        // Get the MagnoliaTab for the view
+        View modalityParent = getAppContext().getView().getSubAppViewContainer(instanceId);
+        return shell.openModalOnView(view, modalityParent, Modal.ModalityLevel.SUB_APP);
+    }
+
+    @Override
+    public void close() {
+        appContext.closeSubApp(instanceId);
     }
 }

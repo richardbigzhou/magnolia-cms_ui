@@ -36,6 +36,8 @@ package info.magnolia.ui.framework.app.registry;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,9 +60,11 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
 
     private Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
 
-    private Class<? extends SubApp> subAppClass;
+    private ActionbarDefinition actionbar;
 
-    private boolean isDefault;
+    private ImageProviderDefinition imageProvider;
+
+    private Class<? extends SubApp> subAppClass;
 
     @Override
     public String getName() {
@@ -78,11 +82,6 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
     }
 
     @Override
-    public boolean isDefault() {
-        return isDefault;
-    }
-
-    @Override
     public String getIcon() {
         return icon;
     }
@@ -90,6 +89,16 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
     @Override
     public Map<String, ActionDefinition> getActions() {
         return actions;
+    }
+
+    @Override
+    public ActionbarDefinition getActionbar() {
+        return actionbar;
+    }
+
+    @Override
+    public ImageProviderDefinition getImageProvider() {
+        return imageProvider;
     }
 
     @Override
@@ -109,16 +118,20 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
         this.enabled = enabled;
     }
 
-    public void setDefault(boolean isDefault) {
-        this.isDefault = isDefault;
-    }
-
     public void setIcon(String icon) {
         this.icon = icon;
     }
 
     public void setActions(Map<String, ActionDefinition> actions) {
         this.actions = actions;
+    }
+
+    public void setActionbar(ActionbarDefinition actionbar) {
+        this.actionbar = actionbar;
+    }
+
+    public void setImageProvider(ImageProviderDefinition imageProvider) {
+        this.imageProvider = imageProvider;
     }
 
     public void setSubAppClass(Class<? extends SubApp> subAppClass) {

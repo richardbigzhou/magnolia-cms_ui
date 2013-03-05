@@ -48,10 +48,13 @@ import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
+import info.magnolia.ui.vaadin.dialog.Modal;
+import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
+import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.view.Viewport;
 
@@ -64,6 +67,7 @@ import javax.inject.Singleton;
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.ui.Component;
+
 
 /**
  * Admin shell.
@@ -211,15 +215,13 @@ public class ShellImpl implements Shell, MessageEventHandler {
     }
 
     @Override
-    public ShellDialog openDialog(final View view) {
-        final Component component = view.asVaadinComponent();
-        magnoliaShell.addDialog(component);
-        return new ShellDialog() {
-            @Override
-            public void close() {
-                magnoliaShell.removeDialog(component);
-            }
-        };
+    public ModalCloser openModal(final View view) {
+        return magnoliaShell.openModal(view, magnoliaShell, Modal.ModalityLevel.SHELL);
+    }
+
+    @Override
+    public ModalCloser openModalOnView(View view, View parent, ModalityLevel modalityLevel) {
+        return magnoliaShell.openModal(view, parent, modalityLevel);
     }
 
     @Override
@@ -350,4 +352,5 @@ public class ShellImpl implements Shell, MessageEventHandler {
     public MagnoliaShell getMagnoliaShell() {
         return magnoliaShell;
     }
+
 }

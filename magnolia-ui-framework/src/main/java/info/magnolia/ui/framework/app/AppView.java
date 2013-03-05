@@ -41,8 +41,6 @@ import info.magnolia.ui.vaadin.view.View;
  */
 public interface AppView extends View {
 
-    void setFullscreen(boolean fullscreen);
-
     /**
      * Listens to events coming from the TabSheet.
      */
@@ -54,11 +52,23 @@ public interface AppView extends View {
 
     }
 
+    void setFullscreen(boolean fullscreen);
+
+    void setTheme(String value);
+
     void setListener(Listener listener);
 
     String addSubAppView(View view, String caption, boolean closable);
 
+    void closeSubAppView(String instanceId);
+
     void setActiveSubAppView(String instanceId);
 
     String getActiveSubAppView();
+
+    /**
+     * Get the view of the container of a SubApp.
+     * Enables working with the Tab component for example, which is necessary for attaching dialogs.
+     */
+    View getSubAppViewContainer(String instanceId);
 }

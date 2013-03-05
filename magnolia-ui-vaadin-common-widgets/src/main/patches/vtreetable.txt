@@ -1,9 +1,9 @@
---- k1/src/main/java/com/vaadin/client/ui/VTreeTable.java	2013-01-08 10:34:48.000000000 +0200
-+++ k2/src/main/java/com/vaadin/client/ui/VTreeTable.java	2013-01-08 12:26:00.000000000 +0200
+--- k1/src/main/java/com/vaadin/client/ui/VTreeTable.java	2013-02-22 10:34:48.000000000 +0200
++++ k2/src/main/java/com/vaadin/client/ui/VTreeTable.java	2013-02-22 12:26:00.000000000 +0200
 @@ -16,6 +16,8 @@
- 
+
  package com.vaadin.client.ui;
- 
+
 +import info.magnolia.ui.vaadin.gwt.client.grid.VMagnoliaTable;
 +
  import java.util.ArrayList;
@@ -15,41 +15,41 @@
  import com.vaadin.client.Util;
 -import com.vaadin.client.ui.VTreeTable.VTreeTableScrollBody.VTreeTableRow;
 +import com.vaadin.client.ui.VTreeTablePatched.VTreeTableScrollBody.VTreeTableRow;
- 
+
 -public class VTreeTable extends VScrollTable {
 +public class VTreeTablePatched extends VMagnoliaTable {
- 
+
      /** For internal use only. May be removed or replaced in the future. */
      public static class PendingNavigationEvent {
 @@ -86,7 +88,7 @@
      public boolean animationsEnabled;
- 
+
      /** For internal use only. May be removed or replaced in the future. */
 -    public LinkedList<PendingNavigationEvent> pendingNavigationEvents = new LinkedList<VTreeTable.PendingNavigationEvent>();
 +    public LinkedList<PendingNavigationEvent> pendingNavigationEvents = new LinkedList<VTreeTablePatched.PendingNavigationEvent>();
- 
+
      /** For internal use only. May be removed or replaced in the future. */
      public boolean focusParentResponsePending;
-@@ -122,10 +124,10 @@
-         }
+@@ -128,10 +130,10 @@
      }
- 
+
 -    public class VTreeTableScrollBody extends VScrollTable.VScrollTableBody {
 +    public class VTreeTableScrollBody extends VMagnoliaTable.MagnoliaTableBody {
          private int indentWidth = -1;
- 
+         private int maxIndent = 0;
+
 -        VTreeTableScrollBody() {
 +        protected VTreeTableScrollBody() {
              super();
          }
- 
-@@ -139,13 +141,13 @@
+
+@@ -145,13 +147,13 @@
          }
- 
+
          public class VTreeTableRow extends
 -                VScrollTable.VScrollTableBody.VScrollTableRow {
 +                VMagnoliaTable.MagnoliaTableBody.MagnoliaTableRow {
- 
+
 -            private boolean isTreeCellAdded = false;
 -            private SpanElement treeSpacer;
 -            private boolean open;
@@ -61,48 +61,57 @@
 +            protected int depth;
 +            protected boolean canHaveChildren;
              protected Widget widgetInHierarchyColumn;
- 
+
              public VTreeTableRow(UIDL uidl, char[] aligns2) {
-@@ -198,7 +200,7 @@
+@@ -204,7 +206,7 @@
                  return false;
              }
- 
+
 -            private boolean cellShowsTreeHierarchy(int curColIndex) {
 +            protected boolean cellShowsTreeHierarchy(int curColIndex) {
                  if (isTreeCellAdded) {
                      return false;
                  }
-@@ -227,7 +229,7 @@
- 
+@@ -233,7 +235,7 @@
+
              }
- 
+
 -            private void setIndent() {
 +            protected void setIndent() {
                  if (getIndentWidth() > 0) {
                      treeSpacer.getParentElement().getStyle()
                              .setPaddingLeft(getIndent(), Unit.PX);
-@@ -287,7 +289,7 @@
-                 return colIndexOfHierarchy + (showRowHeaders ? 1 : 0);
+@@ -240,7 +242,7 @@
+                     treeSpacer.getStyle().setWidth(getIndent(), Unit.PX);
+                     int colWidth = getColWidth(getHierarchyColumnIndex());
+                     if (colWidth > 0 && getIndent() > colWidth) {
+-                        VTreeTable.this.setColWidth(getHierarchyColumnIndex(),
++                        VTreeTablePatched.this.setColWidth(getHierarchyColumnIndex(),
+                                 getIndent(), false);
+                     }
+                 }
+@@ -294,7 +296,7 @@
+                 super.setCellWidth(cellIx, width);
              }
- 
+
 -            private int getIndent() {
 +            protected int getIndent() {
                  return (depth + 1) * getIndentWidth();
              }
          }
-@@ -417,7 +419,7 @@
+@@ -425,7 +427,7 @@
              }
          }
- 
+
 -        private int getIndentWidth() {
 +        public int getIndentWidth() {
              return indentWidth;
          }
- 
-@@ -836,7 +838,7 @@
+
+@@ -862,7 +864,7 @@
          return super.handleNavigation(keycode, ctrl, shift);
      }
- 
+
 -    private void sendToggleCollapsedUpdate(String rowKey) {
 +    public void sendToggleCollapsedUpdate(String rowKey) {
          collapsedRowKey = rowKey;

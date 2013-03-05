@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.contacts.form.action;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.form.FormPresenter;
@@ -66,9 +67,10 @@ public class SaveContactFormAction extends SaveFormAction {
 
             try {
                 final Node node = itemChanged.getNode();
+                // Set the Node Composite Name
+                generateUniqueNodeNameForContact(node);
+                itemChanged.setPath(node.getPath());
 
-                // Can't use this anymore, breaks when renaming node, ContentChangedEvent is still using the old path
-                // generateUniqueNodeNameForContact(node);
                 NodeTypes.LastModified.update(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
@@ -84,14 +86,9 @@ public class SaveContactFormAction extends SaveFormAction {
         String firstName = node.getProperty("firstName").getString();
         String lastName = node.getProperty("lastName").getString();
         String newNodeName = (firstName.charAt(0) + lastName.replaceAll("\\s+", "")).toLowerCase();
-        String parentPath = node.getParent().getPath();
-        String newNodeAbsPath = NodeUtil.combinePathAndName(parentPath, newNodeName);
-        int i = 1;
+        newNodeName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), newNodeName);
 
-        while (node.getSession().itemExists(newNodeAbsPath)) {
-            newNodeAbsPath = NodeUtil.combinePathAndName(parentPath, newNodeName + i);
-            i++;
-        }
-        node.getSession().move(node.getPath(), newNodeAbsPath);
+        String newPath = NodeUtil.combinePathAndName(node.getParent().getPath(), newNodeName);
+        node.getSession().move(node.getPath(), newPath);
     }
 }

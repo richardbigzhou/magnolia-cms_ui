@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+@import "box-sizing.scss";
+
+@mixin prefix ($property, $value) {
+  -webkit-#{$property}: $value;
+  -moz-#{$property}: $value;
+  #{$property}: $value;
+}

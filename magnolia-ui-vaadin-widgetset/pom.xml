@@ -27,11 +27,6 @@
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-themes</artifactId>
     </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
     <!-- this replaces gwt-dev.jar -->
     <dependency>
@@ -40,12 +35,17 @@
       <scope>provided</scope>
     </dependency>
 
-
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-vaadin-theme</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-widget-editor</artifactId>
@@ -91,10 +91,49 @@
         <configuration>
           <skip>true</skip>
         </configuration>
-      </plugin>
+      </plugin>     
     </plugins>
   </build>
   <profiles>
+    <profile>
+        <id>sass-compile-production</id>
+        <build>
+            <plugins>
+              <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>groovy-maven-plugin</artifactId>
+                <executions>
+                  <execution>
+                    <phase>prepare-package</phase>            
+                    <goals>
+                      <goal>execute</goal>
+                    </goals>
+                    <configuration>
+                      <classpath>
+                        <element>
+                          <groupId>info.magnolia.ui</groupId>
+                          <artifactId>magnolia-ui-vaadin-theme</artifactId>
+                        </element>
+                      </classpath>
+                      <source>
+                        import com.vaadin.sass.SassCompiler
+        
+                        new File("./").eachFileRecurse{
+                          if(it.path =~ /\/target\/.*\/VAADIN\/.*\.scss$/) {                                            
+                              def sassFile = it.path
+                              def cssFile = it.path.replaceAll(".scss", ".css")
+                              println "Compiling Sass file " + sassFile + " -&gt; " + cssFile
+                              SassCompiler.main([sassFile, cssFile] as String[])
+                          }                
+                        }
+                      </source>
+                    </configuration>
+                  </execution>
+                </executions>
+              </plugin>
+            </plugins>
+        </build>
+    </profile>
     <profile>
       <id>gwt-compile-production</id>
       <activation>

@@ -37,6 +37,7 @@ import info.magnolia.ui.admincentral.field.TextAndButtonField;
 import info.magnolia.ui.admincentral.field.translator.IdentifierToPathTranslator;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.ItemChosenListener;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -69,10 +70,13 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
 
     private final AppController appController;
 
+    private final SubAppContext subAppContext;
+
     @Inject
-    public LinkFieldBuilder(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController) {
+    public LinkFieldBuilder(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController, SubAppContext subAppContext) {
         super(definition, relatedFieldItem);
         this.appController = appController;
+        this.subAppContext = subAppContext;
     }
 
     @Override
@@ -107,7 +111,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
             @Override
             public void buttonClick(ClickEvent event) {
 
-                appController.openChooseDialog(appName, "/", new ItemChosenListener() {
+                appController.openChooseDialog(appName, "/", subAppContext, new ItemChosenListener() {
                     @Override
                     public void onItemChosen(final Item chosenValue) {
                         String propertyName = getPropertyName();

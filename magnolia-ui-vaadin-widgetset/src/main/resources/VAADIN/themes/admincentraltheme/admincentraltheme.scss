@@ -1,0 +1,164 @@
+@import "actionbar.scss";
+@import "app-preloader.scss";
+@import "applauncher.scss";
+@import "dialog.scss";
+@import "favorites.scss";
+@import "form.scss";
+@import "fonts.scss";
+@import "lightbox.scss";
+@import "pulse.scss";
+@import "shell.scss";
+@import "shellmessage.scss";
+@import "splitfeed.scss";
+@import "table.scss";
+@import "tabsheet.scss";
+@import "thumbnail-layout.scss";
+@import "workbench.scss";
+@import "uploadfield.scss";
+
+@mixin admincentraltheme {
+  @include actionbar;
+  @include app-preloader;
+  @include applauncher;
+  @include dialog;
+  @include favorites;
+  @include form;
+  @include lightbox;
+  @include pulse;
+  @include tabsheet;
+  @include shell;
+  @include shellmessage;
+  @include splitfeed;
+  @include table;
+  @include thumbnail-layout;
+  @include workbench;
+  @include uploadfield;
+
+  body{
+      -webkit-user-select: none; /* Disable content selection on mobile safari */
+      -webkit-tap-highlight-color: rgba(0,0,0,0); /* Disable grey box when you click on something */
+      -webkit-touch-callout: none;/* Remove Callout Context menu when tapping on something */
+  }
+
+  .v-csslayout-container {
+  	overflow: hidden;
+  }
+
+  .clearfix:after { content: ""; display: table; clear: both; }
+
+
+  /*END OF APP LAUNCHER RELATED STYLES*/
+
+
+  /*AdminCentral module styles */
+  button.btn-dialog-selectCallBack {
+  	background: none repeat scroll 0px 0px #689600;
+  	margin-left:10px;
+  	float: right;
+  }
+
+  /* Checkbox styles */
+
+  .v-checkbox > input[type="checkbox"],
+  .gwt-CheckBox > input[type="checkbox"] {
+  	margin:0;
+      opacity:0;
+  }
+
+  .v-checkbox > label,
+  .gwt-CheckBox > label {
+      display:inline-block;
+      margin-left:-13px;
+      min-width:15px;
+      min-height:15px;
+      text-indent:20px;
+      vertical-align:middle;
+  }
+
+  .v-checkbox > input[type="checkbox"] + label,
+  .gwt-CheckBox > input[type="checkbox"] + label {
+      background-image:url('img/icon-checkbox_off.png'); /* SVG with PNG fallback technique */
+      background-image:none, url('img/icon-checkbox_off.svg');
+  	background-position:0 center;
+  	background-repeat:no-repeat;
+      background-size:15px 15px;
+      -o-background-size:15px 15px;
+      -webkit-background-size:15px 15px;
+  }
+
+  .v-checkbox > input[type="checkbox"]:checked + label,
+  .gwt-CheckBox > input[type="checkbox"]:checked + label {
+  	background-image:url('img/icon-checkbox_on.png');
+  	background-image:none, url('img/icon-checkbox_on.svg');
+  }
+
+  /*TwinCol styles*/
+
+  .v-select-twincol {
+       width: 510px ! important;
+  }
+
+  .v-select-twincol-buttons {
+       margin-left:3px;
+       margin-right:3px;
+       width: 60px !important;
+  }
+
+  .v-select-twincol-options {
+       width: 230px ! important;
+  }
+
+  .v-select-twincol-selections {
+       width: 230px ! important;
+  }
+
+  .v-select-twincol-buttons .v-button {
+       background: none repeat scroll 0px 0px #666666 ! important;
+       border-radius: 0px 0px 0px 0px ! important;
+       border: medium none;
+       color: #FFFFFF;
+       cursor: pointer;
+       font-family: DINWebPro;
+       font-size: 12px;
+       height: 25px;
+       width: 55px;
+       margin-bottom: 3px;
+       text-shadow: none;
+  }
+
+  .v-select-twincol-buttons .v-button-wrap {
+    background: none !important;
+  }
+  /*a bit hackish -  right caption is positioned absolutely whereas left caption is floating left */
+  .v-select-twincol-caption-right {
+      color: #666;
+      left: 450px;
+      position: absolute;
+      width: 200px !important;
+  }
+
+  .v-select-twincol-caption-left {
+      color: #666;
+      width: 200px !important;
+  }
+
+  input.v-textfield-readonly, textarea.v-textarea-readonly {
+      background-color: #e6e6e6 !important;
+  }
+
+  .cke_contents {
+  	height: 120px !important;
+  }
+
+
+  /*Due to implementation reasons this has to be here. For all other styles of thumbnail layout - see thumbnail.css file.*/
+  .thumbnail {
+  	border: 1px solid #F0F0F0;
+  	margin: 3px;
+  	padding: 5px;
+  	cursor:pointer;
+  	overflow:hidden;
+  	float:left;
+  }
+
+}

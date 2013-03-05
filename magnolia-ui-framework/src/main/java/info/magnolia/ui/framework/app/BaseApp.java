@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.shell.ModalLayer;
 
 import javax.inject.Inject;
 
@@ -64,6 +65,7 @@ public class BaseApp implements App {
         appContext.openSubApp(location);
     }
 
+    @Override
     public AppContext getAppContext() {
         return appContext;
     }
@@ -78,6 +80,6 @@ public class BaseApp implements App {
     }
 
     @Override
-    public void openChooseDialog(String path, ItemChosenListener listener) {
+    public void openChooseDialog(String path, ModalLayer modalLayer, ItemChosenListener listener) {
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,14 +36,18 @@ package info.magnolia.ui.app.pages.editor;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.app.content.ContentSubAppDescriptor;
-import info.magnolia.ui.admincentral.app.content.location.ItemLocation;
-import info.magnolia.ui.admincentral.content.item.ItemView;
+import info.magnolia.ui.contentapp.ItemSubAppDescriptor;
+import info.magnolia.ui.contentapp.item.ItemView;
+import info.magnolia.ui.contentapp.location.ItemLocation;
+import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
@@ -51,7 +55,6 @@ import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.view.View;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -80,9 +83,10 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     private final ActionbarPresenter actionbarPresenter;
 
+    private final String workspace;
     private String caption;
 
-    private WorkbenchDefinition workbenchDefinition;
+    private AppContext appContext;
 
     @Inject
     public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter) {
@@ -93,7 +97,8 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.eventBus = eventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
-        this.workbenchDefinition = ((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench();
+        this.workspace = ((ItemSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkspace();
+        this.appContext = subAppContext.getAppContext();
 
         bindHandlers();
     }
@@ -109,7 +114,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         super.start(itemLocation);
 
         actionbarPresenter.setListener(this);
-        ActionbarDefinition actionbarDefinition = workbenchDefinition.getActionbar();
+        ActionbarDefinition actionbarDefinition = getSubAppContext().getSubAppDescriptor().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition);
         view.setActionbarView(actionbar);
         view.setPageEditorView(pageEditorPresenter.start());
@@ -182,9 +187,9 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private String getPageTitle(String path) {
         String caption = null;
         try {
-            Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+            Session session = MgnlContext.getJCRSession(workspace);
             Node node = session.getNode(path);
-            caption = node.getProperty("title").getString();
+            caption = PropertyUtil.getString(node, "title", node.getName());
         } catch (RepositoryException e) {
             log.error("Exception caught: {}", e.getMessage(), e);
         }
@@ -248,7 +253,6 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     @Override
     public void onExecute(String actionName) {
-        String workspace = ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace();
 
         if (actionName.equals("editProperties") || actionName.equals("editComponent") || actionName.equals("editArea")) {
             pageEditorPresenter.editComponent(
@@ -258,7 +262,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         }
         else if (actionName.equals("addComponent")) {
             pageEditorPresenter.editComponent(
-                    ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getWorkspace(),
+                    workspace,
                     pageEditorPresenter.getSelectedElement().getPath(),
                     pageEditorPresenter.getSelectedElement().getDialog());
         }
@@ -274,9 +278,11 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 actionExecutor.execute(actionName, item);
 
             } catch (RepositoryException e) {
-                throw new RuntimeException("Could not get item: " + parameters.getNodePath(), e);
+                Message error = new Message(MessageType.ERROR, "Could not get item: " + parameters.getNodePath(), e.getMessage());
+                appContext.broadcastMessage(error);
             } catch (ActionExecutionException e) {
-                throw new RuntimeException("Could not execute the action: " + actionName, e);
+                Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+                appContext.broadcastMessage(error);
             }
         }
     }

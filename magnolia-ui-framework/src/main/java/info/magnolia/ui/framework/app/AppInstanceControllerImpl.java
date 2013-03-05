@@ -47,8 +47,11 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.vaadin.dialog.Modal;
+import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -127,16 +130,8 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
     @Override
     public SubAppDescriptor getDefaultSubAppDescriptor() {
-        Map<String, SubAppDescriptor> subAppDescriptors = getAppDescriptor().getSubApps();
-
-        SubAppDescriptor defaultSubAppDescriptor = null;
-        for (SubAppDescriptor subAppDescriptor : subAppDescriptors.values()) {
-            if (subAppDescriptor.isDefault()) {
-                defaultSubAppDescriptor = subAppDescriptor;
-                break;
-            }
-        }
-        return defaultSubAppDescriptor;
+        Collection<SubAppDescriptor> subAppDescriptors = getAppDescriptor().getSubApps().values();
+        return subAppDescriptors.isEmpty() ? null : subAppDescriptors.iterator().next();
     }
 
     private SubAppDescriptor getSubAppDescriptorById(String subAppId) {
@@ -150,8 +145,9 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     }
 
     @Override
-    public Shell.ShellDialog openDialog(View view) {
-        return shell.openDialog(view);
+    public ModalCloser openModal(View view) {
+        View modalityParent = getView();
+        return shell.openModalOnView(view, modalityParent, Modal.ModalityLevel.APP);
     }
 
     /**
@@ -162,9 +158,22 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     public void start(Location location) {
 
         app = componentProvider.newInstance(appDescriptor.getAppClass());
-
         app.start(location);
+
+        if (isThemedApp(app)) {
+            AppTheme themeAnnotation = app.getClass().getAnnotation(AppTheme.class);
+            app.getView().setTheme(themeAnnotation.value());
+        }
     }
+
+    private boolean isThemedApp(App app) {
+        if (app.getClass().isAnnotationPresent(AppTheme.class)) {
+            return true;
+        }
+
+        return false;
+    }
+
 
     /**
      * Called when a location change occurs and the app is already running.
@@ -248,6 +257,16 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
     }
 
+    /**
+     * Used to close a running subApp from server side. Delegates to {@link AppView#closeSubAppView(String)}.
+     * The actual closing and cleaning up, will be handled by the callback {@link AppView.Listener#onClose(String)}
+     * implemented in {@link #onClose(String)}.
+     */
+    @Override
+    public void closeSubApp(String instanceId) {
+       getView().closeSubAppView(instanceId);
+    }
+
     private SubAppContext startSubApp(Location location) {
 
         SubAppDescriptor subAppDescriptor = getSubAppDescriptorById(location.getSubAppId());
@@ -255,7 +274,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         if (subAppDescriptor == null) {
             subAppDescriptor = getDefaultSubAppDescriptor();
         }
-        SubAppContext subAppContext = new SubAppContextImpl(subAppDescriptor);
+        SubAppContext subAppContext = new SubAppContextImpl(subAppDescriptor, shell);
 
         subAppContext.setAppContext(this);
         subAppContext.setLocation(location);
@@ -310,7 +329,8 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         app.getView().setFullscreen(false);
     }
 
-    private SubAppContext getActiveSubAppContext() {
+    @Override
+    public SubAppContext getActiveSubAppContext() {
         return currentSubAppContext;
     }
 
@@ -361,5 +381,4 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
         return builder.build();
     }
-
 }

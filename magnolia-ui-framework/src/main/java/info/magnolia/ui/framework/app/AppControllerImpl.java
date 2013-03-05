@@ -53,6 +53,7 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
+import info.magnolia.ui.framework.shell.ModalLayer;
 import info.magnolia.ui.vaadin.view.Viewport;
 
 import java.util.HashMap;
@@ -134,7 +135,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      * @param appId of the {@link App} to instantiate.
      */
     private App getAppWithoutStarting(String appId) {
-        AppInstanceController appInstanceController = getAppInstance(appId);
+        AppInstanceController appInstanceController = createNewAppInstance(appId);
         ComponentProvider appComponentProvider = createAppComponentProvider(appInstanceController.getAppDescriptor().getName(), appInstanceController);
         App app = appComponentProvider.newInstance(appInstanceController.getAppDescriptor().getAppClass());
 
@@ -356,16 +357,19 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private AppInstanceController getAppInstance(String appId) {
         if (isAppStarted(appId)) {
             return runningApps.get(appId);
-        } else {
-            AppDescriptor descriptor = getAppDescriptor(appId);
-            if (descriptor == null) {
-                return null;
-            }
-
-            AppInstanceController appInstanceController = componentProvider.newInstance(AppInstanceController.class, descriptor);
-            createAppComponentProvider(descriptor.getName(), appInstanceController);
-            return appInstanceController;
         }
+        return createNewAppInstance(appId);
+    }
+
+    private AppInstanceController createNewAppInstance(String appId) {
+        AppDescriptor descriptor = getAppDescriptor(appId);
+        if (descriptor == null) {
+            return null;
+        }
+
+        AppInstanceController appInstanceController = componentProvider.newInstance(AppInstanceController.class, descriptor);
+        createAppComponentProvider(descriptor.getName(), appInstanceController);
+        return appInstanceController;
     }
 
     @Override
@@ -379,10 +383,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     @Override
-    public void openChooseDialog(String appName, String path, ItemChosenListener listener) {
+    public void openChooseDialog(String appName, String path, ModalLayer modalLayer, ItemChosenListener listener) {
         App targetApp = getAppWithoutStarting(appName);
         if (targetApp != null) {
-            targetApp.openChooseDialog(path, listener);
+            targetApp.openChooseDialog(path, modalLayer, listener);
         }
     }
 

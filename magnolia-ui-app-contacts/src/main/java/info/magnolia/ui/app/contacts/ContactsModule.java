@@ -36,18 +36,10 @@ package info.magnolia.ui.app.contacts;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
-import info.magnolia.ui.admincentral.app.CodeConfigurationUtils;
-import info.magnolia.ui.admincentral.app.content.ContentApp;
-import info.magnolia.ui.admincentral.app.content.ItemSubApp;
-import info.magnolia.ui.admincentral.app.content.builder.ContentAppBuilder;
-import info.magnolia.ui.workbench.column.DateColumnFormatter;
-import info.magnolia.ui.workbench.column.StatusColumnFormatter;
-import info.magnolia.ui.admincentral.content.action.EditItemActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.admincentral.form.action.CancelFormActionDefinition;
-import info.magnolia.ui.admincentral.form.action.CreateItemActionDefinition;
 import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.contacts.ContactNodeType.Contact;
@@ -57,12 +49,16 @@ import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
 import info.magnolia.ui.app.contacts.dialog.action.SaveContactDialogActionDefinition;
 import info.magnolia.ui.app.contacts.form.action.SaveContactFormActionDefinition;
 import info.magnolia.ui.app.contacts.main.ContactsMainSubApp;
+import info.magnolia.ui.contentapp.ContentApp;
+import info.magnolia.ui.contentapp.ItemSubApp;
+import info.magnolia.ui.contentapp.config.CodeConfigurationUtils;
+import info.magnolia.ui.contentapp.config.ContentAppBuilder;
+import info.magnolia.ui.contentapp.item.action.CreateItemActionDefinition;
+import info.magnolia.ui.contentapp.item.action.EditItemActionDefinition;
 import info.magnolia.ui.framework.app.builder.App;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
-import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.framework.config.UiConfig;
-import info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition;
-import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
+import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
 import info.magnolia.ui.model.dialog.builder.Dialog;
 import info.magnolia.ui.model.dialog.builder.DialogBuilder;
@@ -73,6 +69,10 @@ import info.magnolia.ui.model.field.definition.TextFieldDefinition;
 import info.magnolia.ui.model.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.model.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
+import info.magnolia.ui.workbench.column.DateColumnFormatter;
+import info.magnolia.ui.workbench.column.StatusColumnFormatter;
+import info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition;
+import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
 
 import javax.inject.Inject;
 import javax.jcr.PropertyType;
@@ -123,12 +123,6 @@ public class ContactsModule implements ModuleLifecycle {
         deleteItemAction.setLabel("Delete contact");
         deleteItemAction.setIcon("icon-delete");
 
-        EditDialogActionDefinition editContactActionInDialog = new EditDialogActionDefinition();
-        editContactActionInDialog.setName("editContactInDialog");
-        editContactActionInDialog.setLabel("Edit contact in Dialog");
-        editContactActionInDialog.setIcon("icon-edit");
-        editContactActionInDialog.setDialogName("ui-contacts-app:contact");
-
 
         AddFolderActionDefinition addFolderAction = new AddFolderActionDefinition();
         addFolderAction.setName("addFolder");
@@ -151,106 +145,106 @@ public class ContactsModule implements ModuleLifecycle {
                 .icon("icon-people")
                 .appClass(ContentApp.class)
                 .subApps(
-                        app.subApp("main")
+                        app.workbenchSubApp("main")
                                 .subAppClass(ContactsMainSubApp.class)
-                                .defaultSubApp()
-                                .actions(addContactAction, editContactAction, editContactActionInDialog, deleteItemAction, addFolderAction, editFolderAction, deleteFolderAction)
+                                .actions(addContactAction, editContactAction, deleteItemAction, addFolderAction, editFolderAction, deleteFolderAction)
+                                .imageProvider(cipd)
                                 .workbench(
                                         cfg.workbenches
-                                                .workbench()
-                                                .workspace("contacts")
-                                                .root("/")
-                                                .defaultOrder(ModelConstants.JCR_NAME)
-                                                .nodeType(cfg.workbenches.nodeType(Contact.NAME).icon("icon-node-content"))
-                                                .nodeType(cfg.workbenches.nodeType("mgnl:folder").icon("icon-folder"))
-                                                .imageProvider(cipd)
-                                                .columns(
-                                                        cfg.columns.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME)
-                                                                .formatterClass(ContactNameColumnFormatter.class).expandRatio(2),
-                                                        cfg.columns.property("email", "Email").sortable(true).displayInDialog(false).expandRatio(1),
-                                                        cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false)
-                                                                .formatterClass(StatusColumnFormatter.class).width(46),
-                                                        cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification Date").sortable(true)
-                                                                .propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160))
-                                                .actionbar(
+                                        .workbench()
+                                        .workspace("contacts")
+                                        .root("/")
+                                        .defaultOrder(ModelConstants.JCR_NAME)
+                                        .nodeType(cfg.workbenches.nodeType(Contact.NAME).icon("icon-node-content"))
+                                        .nodeType(cfg.workbenches.nodeType("mgnl:folder").icon("icon-folder"))
+                                        .columns(
+                                                cfg.columns.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME)
+                                                        .formatterClass(ContactNameColumnFormatter.class).expandRatio(2),
+                                                cfg.columns.property("email", "Email").sortable(true).displayInDialog(false).expandRatio(1),
+                                                cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false)
+                                                        .formatterClass(StatusColumnFormatter.class).width(46),
+                                                cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification Date").sortable(true)
+                                                        .propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
+                                        )
+
+                                )
+                                .actionbar(
+                                        cfg.actionbars
+                                                .actionbar()
+                                                .defaultAction(editContactAction.getName())
+                                                .sections(
                                                         cfg.actionbars
-                                                                .actionbar()
-                                                                .defaultAction(editContactAction.getName())
-                                                                .sections(
-                                                                        cfg.actionbars
-                                                                                .section("contactsActions")
-                                                                                .label("Contact")
-                                                                                .groups(cfg.actionbars.group("addActions").actions(addContactAction.getName()),
-                                                                                        cfg.actionbars.group("editActions").actions(editContactAction.getName(), editContactActionInDialog.getName(), deleteItemAction.getName())
-                                                                                )
-                                                                        ,
-                                                                        cfg.actionbars
-                                                                                .section("folderActions")
-                                                                                .label("Folder")
-                                                                                .groups(cfg.actionbars.group("addActions").actions(addFolderAction.getName()),
-                                                                                        cfg.actionbars.group("editActions").actions(editFolderAction.getName(),deleteFolderAction.getName())
-                                                                                )
+                                                                .section("contactsActions")
+                                                                .label("Contact")
+                                                                .groups(cfg.actionbars.group("addActions").actions(addContactAction.getName()),
+                                                                        cfg.actionbars.group("editActions").actions(editContactAction.getName(), deleteItemAction.getName())
+                                                                )
+                                                        ,
+                                                        cfg.actionbars
+                                                                .section("folderActions")
+                                                                .label("Folder")
+                                                                .groups(cfg.actionbars.group("addActions").actions(addFolderAction.getName()),
+                                                                        cfg.actionbars.group("editActions").actions(editFolderAction.getName(),deleteFolderAction.getName())
                                                                 )
                                                 )
-                                ),
+                                ).exec(),
 
-                        app.subApp("item")
+                        app.itemSubApp("item")
                                 .subAppClass(ItemSubApp.class)
-                                .workbench(
-                                        cfg.workbenches
-                                                .workbench()
-                                                .workspace("contacts")
-                                                .root("/")
-                                                .defaultOrder(ModelConstants.JCR_NAME)
-                                                .form(cfg.forms
-                                                        .form()
-                                                        .label("Edit contact")
-                                                        .description("Define the contact information")
-                                                        .tabs(cfg.forms
-                                                                .tab("Personal")
-                                                                .label("Personal")
-                                                                .fields(cfg.fields.text(Contact.PROPERTY_SALUTATION).label("Salutation").description("Define salutation"),
-                                                                        cfg.fields.text(Contact.PROPERTY_FIRST_NAME).label("First name")
-                                                                                .description("Please enter the contact first name. Field is mandatory")
-                                                                                .required(),
-                                                                        cfg.fields.text(Contact.PROPERTY_LAST_NAME).label("Last name")
-                                                                                .description("Please enter the contact last name. Field is mandatory").required(),
-                                                                        cfg.fields.fileUpload("fileUpload").label("Image").preview().imageNodeName(Contact.IMAGE_NODE_NAME),
-                                                                        cfg.fields.text(Contact.PROPERTY_PHOTO_CAPTION).label("Image caption")
-                                                                                .description("Please define an image caption"),
-                                                                        cfg.fields.text(Contact.PROPERTY_PHOTO_ALT_TEXT).label("Image alt text")
-                                                                                .description("Please define an image alt text")),
-                                                                cfg.forms
-                                                                        .tab("Address")
-                                                                        .label("Address")
-                                                                        .fields(cfg.fields.text(Contact.PROPERTY_ORGANIZATION_NAME).label("Organization name")
-                                                                                .description("Enter the organization name").required(),
-                                                                                cfg.fields.text(Contact.PROPERTY_ORGANIZATION_UNIT_NAME).label("Organization unit name")
-                                                                                        .description("Enter the organization unit name"),
-                                                                                cfg.fields.text(Contact.PROPERTY_STREET_ADDRESS).label("Street address")
-                                                                                        .description("Please enter the company street address").rows(2),
-                                                                                cfg.fields.text(Contact.PROPERTY_ZIP_CODE).type(PropertyType.TYPENAME_LONG).label("ZIP code")
-                                                                                        .description("Please enter the zip code (only digits)"),
-                                                                                cfg.fields.text(Contact.PROPERTY_CITY).label("City")
-                                                                                        .description("Please enter the company city  "),
-                                                                                cfg.fields.text(Contact.PROPERTY_COUNTRY).label("Country")
-                                                                                        .description("Please enter the company country")),
-                                                                cfg.forms
-                                                                        .tab("Contact details")
-                                                                        .label("Contact details")
-                                                                        .fields(cfg.fields.text(Contact.PROPERTY_OFFICE_PHONE_NR).label("Office phone")
-                                                                                .description("Please enter the office phone number"),
-                                                                                cfg.fields.text(Contact.PROPERTY_OFFICE_FAX_NR).label("Office fax nr.")
-                                                                                        .description("Please enter the office fax number"),
-                                                                                cfg.fields.text(Contact.PROPERTY_MOBILE_PHONE_NR).label("Mobile phone")
-                                                                                        .description("Please enter the mobile phone number"),
-                                                                                cfg.fields.text(Contact.PROPERTY_EMAIL).label("E-Mail address")
-                                                                                        .description("Please enter the email address").required()
-                                                                                        .validator(cfg.validators.email().errorMessage("validation.message.non.valid.email")),
-                                                                                cfg.fields.text(Contact.PROPERTY_WEBSITE).label("Website")
-                                                                                        .description("Please enter the Website")))
-                                                        .actions(cfg.forms.action("commit").label("save changes").action(new SaveContactFormActionDefinition()),
-                                                                cfg.forms.action("cancel").label("cancel").action(new CancelFormActionDefinition())))));
+                                .workspace("contacts")
+                                .nodeType(cfg.workbenches.nodeType(Contact.NAME).icon("icon-node-content"))
+                                .form(cfg.forms
+                                        .form()
+                                        .label("Edit contact")
+                                        .description("Define the contact information")
+                                        .tabs(cfg.forms
+                                                .tab("Personal")
+                                                .label("Personal")
+                                                .fields(cfg.fields.text(Contact.PROPERTY_SALUTATION).label("Salutation").description("Define salutation"),
+                                                        cfg.fields.text(Contact.PROPERTY_FIRST_NAME).label("First name")
+                                                                .description("Please enter the contact first name. Field is mandatory")
+                                                                .required(),
+                                                        cfg.fields.text(Contact.PROPERTY_LAST_NAME).label("Last name")
+                                                                .description("Please enter the contact last name. Field is mandatory").required(),
+                                                        cfg.fields.fileUpload("fileUpload").label("Image").preview().imageNodeName(Contact.IMAGE_NODE_NAME),
+                                                        cfg.fields.text(Contact.PROPERTY_PHOTO_CAPTION).label("Image caption")
+                                                                .description("Please define an image caption"),
+                                                        cfg.fields.text(Contact.PROPERTY_PHOTO_ALT_TEXT).label("Image alt text")
+                                                                .description("Please define an image alt text")),
+                                                cfg.forms
+                                                        .tab("Address")
+                                                        .label("Address")
+                                                        .fields(cfg.fields.text(Contact.PROPERTY_ORGANIZATION_NAME).label("Organization name")
+                                                                .description("Enter the organization name").required(),
+                                                                cfg.fields.text(Contact.PROPERTY_ORGANIZATION_UNIT_NAME).label("Organization unit name")
+                                                                        .description("Enter the organization unit name"),
+                                                                cfg.fields.text(Contact.PROPERTY_STREET_ADDRESS).label("Street address")
+                                                                        .description("Please enter the company street address").rows(2),
+                                                                cfg.fields.text(Contact.PROPERTY_ZIP_CODE).type(PropertyType.TYPENAME_LONG).label("ZIP code")
+                                                                        .description("Please enter the zip code (only digits)"),
+                                                                cfg.fields.text(Contact.PROPERTY_CITY).label("City")
+                                                                        .description("Please enter the company city  "),
+                                                                cfg.fields.text(Contact.PROPERTY_COUNTRY).label("Country")
+                                                                        .description("Please enter the company country")),
+                                                cfg.forms
+                                                        .tab("Contact details")
+                                                        .label("Contact details")
+                                                        .fields(cfg.fields.text(Contact.PROPERTY_OFFICE_PHONE_NR).label("Office phone")
+                                                                .description("Please enter the office phone number"),
+                                                                cfg.fields.text(Contact.PROPERTY_OFFICE_FAX_NR).label("Office fax nr.")
+                                                                        .description("Please enter the office fax number"),
+                                                                cfg.fields.text(Contact.PROPERTY_MOBILE_PHONE_NR).label("Mobile phone")
+                                                                        .description("Please enter the mobile phone number"),
+                                                                cfg.fields.text(Contact.PROPERTY_EMAIL).label("E-Mail address")
+                                                                        .description("Please enter the email address").required()
+                                                                        .validator(cfg.validators.email().errorMessage("validation.message.non.valid.email")),
+                                                                cfg.fields.text(Contact.PROPERTY_WEBSITE).label("Website")
+                                                                        .description("Please enter the Website")))
+                                        .actions(cfg.forms.action("commit").label("save changes").action(new SaveContactFormActionDefinition()),
+                                                cfg.forms.action("cancel").label("cancel").action(new CancelFormActionDefinition())
+                                        )
+                                ).exec()
+                        );
     }
 
     @Dialog("ui-contacts-app:folder")

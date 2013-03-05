@@ -37,7 +37,11 @@ import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
+import org.vaadin.cssinject.CSSInject;
+
 import com.vaadin.server.KeyMapper;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.Component;
 
 /**
  * View used to give all apps a uniform look-and-feel.
@@ -58,7 +62,7 @@ public class AppFrameView implements AppView {
         }
 
         @Override
-        protected void closeTab(MagnoliaTab tab) {
+        public void closeTab(MagnoliaTab tab) {
             super.closeTab(tab);
             String key = mapper.key(tab);
             listener.onClose(key);
@@ -99,6 +103,20 @@ public class AppFrameView implements AppView {
     }
 
     @Override
+    public void setTheme(String themeName) {
+        String stylename = String.format("app-%s", themeName);
+        Component vaadinComponent = asVaadinComponent();
+        vaadinComponent.addStyleName(stylename);
+
+        if (vaadinComponent.getUI() != null) {
+            String themeUrl = String.format("../%s/styles.css", themeName);
+            ThemeResource res = new ThemeResource(themeUrl);
+            CSSInject cssInject = new CSSInject(vaadinComponent.getUI());
+            cssInject.addStyleSheet(res);
+        }
+    }
+
+    @Override
     public void setListener(Listener listener) {
         this.listener = listener;
     }
@@ -107,4 +125,23 @@ public class AppFrameView implements AppView {
     public MagnoliaTabSheet asVaadinComponent() {
         return tabsheet;
     }
+
+    @Override
+    public View getSubAppViewContainer(final String instanceId) {
+
+        return new View(){
+
+            @Override
+            public Component asVaadinComponent() {
+                return mapper.get(instanceId);
+            }
+
+        };
+    }
+
+    @Override
+    public void closeSubAppView(String instanceId) {
+        tabsheet.closeTabFromServer(mapper.get(instanceId));
+    }
+
 }
