@@ -173,35 +173,49 @@ public class DefaultImageProvider implements ImageProvider {
      * Simple MimeType to Icon Class Mapping.
      */
     private String resolveIconClassName(String mimeType) {
-        if (mimeType.contains("application/pdf")) {
-            return "file-pdf";
-        }
-        if (mimeType.matches("application.*(msword)")) {
-            return "file-word";
-        }
-        if (mimeType.matches("application.*(excel|xls)")) {
-            return "file-excel";
-        }
-        if (mimeType.matches("application.*(powerpoint)")) {
-            return "file-powerpoint";
-        }
-        if (mimeType.contains("text/")) {
-            return "file-text";
-        }
-        if (mimeType.contains("image/")) {
-            return "file-image";
-        }
-        if (mimeType.contains("video/")) {
-            return "file-video";
-        }
-        if (mimeType.contains("audio/")) {
-            return "file-audio";
-        }
-        if (mimeType.matches(".*(zip|compress)")) {
-            return "file";
+
+        String fileType = resolveFileTypeFromMimeType(mimeType);
+
+        if (!"".equals(fileType)) {
+            return "file-" + fileType;
         }
 
         return ICON_CLASS_DEFAULT;
+    }
+
+    /**
+     * Simple MimeType to FileType Mapping.
+     */
+    private String resolveFileTypeFromMimeType(String mimeType) {
+        if (mimeType.contains("application/pdf")) {
+            return "pdf";
+        }
+        if (mimeType.matches("application.*(msword)")) {
+            return "word";
+        }
+        if (mimeType.matches("application.*(excel|xls)")) {
+            return "excel";
+        }
+        if (mimeType.matches("application.*(powerpoint)")) {
+            return "powerpoint";
+        }
+        if (mimeType.contains("text/")) {
+            return "text";
+        }
+        if (mimeType.contains("image/")) {
+            return "image";
+        }
+        if (mimeType.contains("video/")) {
+            return "video";
+        }
+        if (mimeType.contains("audio/")) {
+            return "audio";
+        }
+        if (mimeType.matches(".*(zip|compress)")) {
+            return "";
+        }
+
+        return "";
     }
 
     private boolean isImage(String mimeType) {

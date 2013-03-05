@@ -41,7 +41,9 @@ import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -369,6 +371,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
         return this.editButton;
     }
 
+
     /**
      * Open a mediaEditor populated with the media of this file.
      */
@@ -376,6 +379,8 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
 
         final NativeButton mediaEditorPlaceholder = new NativeButton("Media Editor Placeholder (Close Dialog)");
         mediaEditorPlaceholder.addStyleName("btn-form btn-form-commit");
+
+        ByteArrayInputStream inputStream = this.fileItem.getStream();
 
         View placeholderView = new View() {
             @Override
@@ -393,6 +398,27 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
             }
         });
     }
+
+    /**
+     * Handle the {@link MediaEditorCompletedEvent}.
+     */
+    protected void handleMediaEditorCompletedEvent(Event event) {
+
+        // Create test stream.
+        InputStream inputStream = new ByteArrayInputStream(null);
+        updateFileMedia(inputStream);
+
+        // Update the display to show changes to media.
+        updateDisplay();
+    }
+
+    protected void updateFileMedia(InputStream inputStream) {
+        this.fileItem.updateMediaWithStream(inputStream);
+        // buildUploadDoneLayout();
+        // fireValueChange(true);
+        this.fileItem.populateJcrItemProperty();
+    }
+
 
     /**
      * Create Delete button.
@@ -521,6 +547,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
             return;
         }
         this.fileItem.updateProperties(FileBufferPropertiesAdapter.adapt(receiver));
+
         buildUploadDoneLayout();
         fireValueChange(true);
         this.fileItem.populateJcrItemProperty();
