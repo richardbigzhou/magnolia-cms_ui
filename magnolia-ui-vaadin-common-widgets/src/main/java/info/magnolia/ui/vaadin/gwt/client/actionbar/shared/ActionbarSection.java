@@ -34,7 +34,9 @@
 package info.magnolia.ui.vaadin.gwt.client.actionbar.shared;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +44,8 @@ import java.util.Map;
  */
 public class ActionbarSection implements Serializable {
 
+    private List<String> actionOrder = new ArrayList<String>();
+    
     private Map<String, ActionbarItem> actions = new LinkedHashMap<String, ActionbarItem>();
 
     private String name;
@@ -81,9 +85,18 @@ public class ActionbarSection implements Serializable {
     }
 
     public void addAction(ActionbarItem action) {
+        actionOrder.add(action.getName());
         actions.put(action.getName(), action);
     }
 
+    public List<String> getActionOrder() {
+        return actionOrder;
+    }
+    
+    public void setActionOrder(List<String> actionOrder) {
+        this.actionOrder = actionOrder;
+    }
+    
     @Override
     public int hashCode() {
         final int prime = 31;
