@@ -35,6 +35,9 @@ package info.magnolia.ui.admincentral.mediaeditor;
 
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider;
+import info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition;
 import info.magnolia.ui.vaadin.view.View;
 
 import java.io.InputStream;
@@ -47,5 +50,11 @@ public interface MediaEditorPresenter {
     View start(InputStream stream);
 
     HandlerRegistration addCompletionHandler(MediaEditorCompletedEvent.Handler handler);
+
+    MediaEditorDefinition getDefinition();
+
+    void switchEditMode(EditModeProvider provider);
+
+    MediaField getCurrentMediaField();
 
 }

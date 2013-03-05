@@ -33,8 +33,11 @@
  */
 package info.magnolia.ui.model.mediaeditor.definition;
 
+import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
+
+import java.util.Map;
 
 
 /**
@@ -47,4 +50,6 @@ public interface MediaEditorDefinition {
     ActionbarDefinition getActionBar();
 
     EditModeProviderActionDefinition getDefaultEditModeProvider();
+
+    Map<String, ActionDefinition> getActions(); 
 }

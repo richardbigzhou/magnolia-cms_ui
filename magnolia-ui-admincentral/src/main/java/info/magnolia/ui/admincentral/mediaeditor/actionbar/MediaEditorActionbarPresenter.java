@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor.actionbar;
 
-import info.magnolia.event.EventBus;
+/**import info.magnolia.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -43,7 +43,7 @@ import javax.inject.Named;
 
 /**
  * Actionbar presenter bound to the scope of media editor.
- */
+ *//*
 public class MediaEditorActionbarPresenter extends ActionbarPresenterBase {
 
     @Inject
@@ -69,4 +69,4 @@ public class MediaEditorActionbarPresenter extends ActionbarPresenterBase {
         action.execute();
     }
 
-}
+}*/

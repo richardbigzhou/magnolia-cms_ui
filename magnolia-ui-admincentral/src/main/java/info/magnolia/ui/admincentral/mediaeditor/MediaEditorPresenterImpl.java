@@ -42,7 +42,6 @@ import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompl
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent.CompletionType;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent.Handler;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorInternalEvent;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider.ActionContext;
@@ -50,7 +49,6 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition;
 import info.magnolia.ui.model.mediaeditor.features.MediaEditorFeatureDefinition;
-import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.view.View;
 
@@ -58,6 +56,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import javax.inject.Singleton;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -69,25 +69,12 @@ import com.vaadin.data.util.TransactionalPropertyWrapper;
 /**
  * Implementation of {@link MediaEditorPresenter}.
  */
+@Singleton
 public class MediaEditorPresenterImpl implements MediaEditorPresenter, ActionbarPresenter.Listener, MediaEditorInternalEvent.Handler {
 
     private Logger log = Logger.getLogger(getClass());
 
-    /**
-     * ActionbarEventHandler.
-     * private final class ActionbarEventHandler implements ActionbarItemClickedEvent.Handler {
-     * 
-     * @Override
-     * public void onActionbarItemClicked(ActionbarItemClickedEvent event) {
-     * final ActionDefinition actionDefinition = event.getActionDefinition();
-     * dispatchActionbarEvent(actionDefinition);
-     * }
-     * }
-     */
-
     private MediaEditorView view;
-
-    private EditModeProviderFactory editModeBuilderFactory;
 
     private ActionbarPresenter actionbarPresenter;
 
@@ -109,15 +96,12 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             MediaEditorDefinition definition,
             EventBus eventBus,
             MediaEditorView view,
-            EditModeProviderFactory modeBuilderFactory,
             ActionbarPresenter actionbarPresenter,
             MediaEditorActionFactory actionFactory,
             MediaEditorActionExecutor actionExecutor) {
-        // eventBus.addHandler(ActionbarItemClickedEvent.class, new ActionbarEventHandler());
         this.eventBus = eventBus;
         this.view = view;
         this.actionFactory = actionFactory;
-        this.editModeBuilderFactory = modeBuilderFactory;
         this.actionbarPresenter = actionbarPresenter;
         this.definition = definition;
         this.actionExecutor = actionExecutor;
@@ -143,9 +127,6 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     }
 
     protected void dispatchActionbarEvent(ActionDefinition actionDefinition) {
-        if (actionDefinition instanceof EditModeProviderActionDefinition) {
-            switchEditMode((EditModeProviderActionDefinition)actionDefinition);
-        }
         if (actionDefinition instanceof MediaEditorFeatureDefinition) {
             MediaEditorFeatureDefinition def = (MediaEditorFeatureDefinition)actionDefinition;
             try {
@@ -196,16 +177,8 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
         switchToDefaultMode();
     }
 
-    private void switchEditMode(EditModeProviderActionDefinition definition) {
-        EditModeProvider provider = editModeBuilderFactory.getBuilder(definition);
-        if (provider != null) {
-            doSwitchEditMode(provider);
-        } else {
-            log.warn("No provider was found for definition " + definition.getClass().getName());
-        }
-    }
-
-    private void doSwitchEditMode(EditModeProvider provider) {
+    @Override
+    public void switchEditMode(EditModeProvider provider) {
         MediaField newMediaField = provider.getMediaField();
         if (newMediaField != null) {
             this.currentMediaField = newMediaField;
@@ -224,7 +197,8 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     }
 
     private void switchToDefaultMode() {
-        switchEditMode(definition.getDefaultEditModeProvider());
+        
+        //switchEditMode(definition.getDefaultEditModeProvider());
     }
 
     @Override
@@ -235,11 +209,11 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     @Override
     public void onExecute(String actionName) {
         try {
-            actionExecutor.execute(actionName);
+            actionExecutor.execute(actionName, currentMediaField);
         } catch (ActionExecutionException e) {
-            new RuntimeException(e);
+            e.printStackTrace();
         }
-
+        //dispatchActionbarEvent(actionDefinition);
     }
 
     @Override
@@ -258,5 +232,15 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     public void setFullScreen(boolean fullscreen) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public MediaEditorDefinition getDefinition() {
+        return definition;
+    }
+
+    @Override
+    public MediaField getCurrentMediaField() {
+        return currentMediaField;
     }
 }

@@ -31,14 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.action;
+package info.magnolia.ui.model.mediaeditor.registry;
 
-import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.registry.RegistryMap;
+import info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
+
+import javax.inject.Singleton;
 
 /**
- * Definition paired with {@link info.magnolia.ui.admincentral.mediaeditor.editmode.provider.GrayScaleProvider}.
+ * MediaEditorRegistry.
  */
-public class GrayScaleActionDefinition extends EditModeProviderActionDefinition {
+@Singleton
+public class MediaEditorRegistry implements Serializable {
 
+    private final RegistryMap<String, MediaEditorDefinition> registry = new RegistryMap<String, MediaEditorDefinition>() {
+
+        @Override
+        protected String keyFromValue(MediaEditorDefinition value) {
+            return value.getId();
+        }
+    };
+
+    public MediaEditorDefinition get(String id) throws RegistrationException {
+        MediaEditorDefinition def;
+        try {
+            def = registry.getRequired(id);
+        } catch (RegistrationException e) {
+            throw new RegistrationException("No media editor definition registered for id: " + id, e);
+        }
+        return def;
+    }
+    
+    public Set<String> unregisterAndRegister(Set<String> registeredIds, List<MediaEditorDefinition> definitions) {
+        return registry.removeAndPutAll(registeredIds, definitions);
+    }
+    
 }

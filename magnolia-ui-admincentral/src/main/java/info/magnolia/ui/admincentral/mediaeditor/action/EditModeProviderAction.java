@@ -31,35 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.mediaeditor.editmode.factory;
+package info.magnolia.ui.admincentral.mediaeditor.action;
 
-import info.magnolia.objectfactory.ComponentProvider;
+import org.apache.log4j.Logger;
+
+import info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenter;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.builder.MappingFactoryBase;
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 /**
- * Creates an {@link EditModeProvider} corresponding to the {@link EditModeProviderActionDefinition}.
- * Used in media editor to dynamically switch between editing modes.
- * 
- * @see MediaEditorPresenter.
+ * EditModeProviderAction.
  */
-@Singleton
-public class EditModeProviderFactory extends MappingFactoryBase<EditModeProviderActionDefinition, EditModeProvider> {
+public class EditModeProviderAction extends ActionBase<EditModeProviderActionDefinition> {
 
-    @Inject
-    public EditModeProviderFactory(EditModeRegistry registry, ComponentProvider provider) {
-        super(provider);
-        for (DefinitionToImplementationMapping<EditModeProviderActionDefinition, EditModeProvider> definitionToImplementationMapping : registry.getDefinitionToImplementationMappings()) {
-            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
+    private Logger log = Logger.getLogger(getClass());
+    
+    private EditModeProviderFactory factory;
+    
+    private EditModeProviderActionDefinition editModeDefinition;
+    
+    private MediaEditorPresenter mediaEditor;
+    
+    public EditModeProviderAction(
+            EditModeProviderActionDefinition definition, 
+            EditModeProviderFactory factory,
+            MediaEditorPresenter mediaEditor) {
+        super(definition);
+        this.factory = factory;
+        this.editModeDefinition = definition;
+        this.mediaEditor = mediaEditor;
+    }
+
+    @Override
+    public void execute() throws ActionExecutionException {
+        EditModeProvider provider = factory.getEditModeProvider(editModeDefinition);
+        if (provider != null) {
+            mediaEditor.switchEditMode(provider);   
+        } else {
+            log.warn("No provider was found for definition " + editModeDefinition.getClass().getName());
         }
     }
 
-    public EditModeProvider getEditModeProvider(EditModeProviderActionDefinition definition, Object...parameters ) {
-        return create(definition, parameters);
-    }
 }

@@ -33,14 +33,20 @@
  */
 package info.magnolia.ui.model.mediaeditor.definition;
 
+import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * ConfiguredMediaEditorDefinition.
  */
 public class ConfiguredMediaEditorDefinition implements MediaEditorDefinition {
 
+    private Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
+    
     private ActionbarDefinition actionbar;
     
     private EditModeProviderActionDefinition defaultProvider;
@@ -74,4 +80,12 @@ public class ConfiguredMediaEditorDefinition implements MediaEditorDefinition {
         this.defaultProvider = defaultProvider;
     }
 
+    @Override
+    public Map<String, ActionDefinition> getActions() {
+        return actions;
+    }
+    
+    public void setActions(Map<String, ActionDefinition> actions) {
+        this.actions = actions;
+    }
 }
