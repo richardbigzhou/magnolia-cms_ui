@@ -35,7 +35,7 @@ package info.magnolia.ui.vaadin.gwt.client.actionbar.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +46,7 @@ public class ActionbarSection implements Serializable {
 
     private List<String> actionOrder = new ArrayList<String>();
     
-    private Map<String, ActionbarItem> actions = new LinkedHashMap<String, ActionbarItem>();
+    private Map<String, ActionbarItem> actions = new HashMap<String, ActionbarItem>();
 
     private String name;
 
