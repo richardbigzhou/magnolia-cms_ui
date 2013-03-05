@@ -223,14 +223,14 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         if (subAppContext != null) {
             return subAppContext.getLocation();
         }
-        return new DefaultLocation(Location.LOCATION_TYPE_APP, appDescriptor.getName(), "", "");
+        return new DefaultLocation(Location.LOCATION_TYPE_APP, appDescriptor.getName());
     }
 
     @Override
     public Location getDefaultLocation() {
         SubAppDescriptor subAppDescriptor = getDefaultSubAppDescriptor();
         if (subAppDescriptor != null) {
-            return new DefaultLocation(Location.LOCATION_TYPE_APP, appDescriptor.getName(), subAppDescriptor.getName(), "");
+            return new DefaultLocation(Location.LOCATION_TYPE_APP, appDescriptor.getName(), subAppDescriptor.getName());
         } else {
             return null;
         }
@@ -238,6 +238,20 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
     @Override
     public void openSubApp(Location location) {
+        // main sub app has always to be there - open it if not yet running
+        final Location defaultLocation = getDefaultLocation();
+        boolean isDefaultSubApp = defaultLocation.getSubAppId().equals(location.getSubAppId());
+        if (!isDefaultSubApp) {
+            SubAppContext subAppContext = getSupportingSubAppContext(defaultLocation);
+            if (subAppContext != null) {
+                if (!location.equals(subAppContext.getLocation())) {
+                    subAppContext.setLocation(defaultLocation);
+                    subAppContext.getSubApp().locationChanged(defaultLocation);
+                }
+            } else {
+                startSubApp(defaultLocation, false);
+            }
+        }
         // If the location targets an existing sub app then activate it and update its location
         // launch running subapp
         SubAppContext subAppContext = getSupportingSubAppContext(location);
@@ -251,7 +265,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
                 app.getView().setActiveSubAppView(subAppContext.getInstanceId());
             }
         } else {
-            subAppContext = startSubApp(location);
+            subAppContext = startSubApp(location, !isDefaultSubApp);
         }
         currentSubAppContext = subAppContext;
 
@@ -267,7 +281,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
        getView().closeSubAppView(instanceId);
     }
 
-    private SubAppContext startSubApp(Location location) {
+    private SubAppContext startSubApp(Location location, boolean isClosable) {
 
         SubAppDescriptor subAppDescriptor = getSubAppDescriptorById(location.getSubAppId());
 
@@ -283,7 +297,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         SubApp subApp = subAppComponentProvider.newInstance(subAppDescriptor.getSubAppClass());
         subAppContext.setSubApp(subApp);
 
-        String instanceId = app.getView().addSubAppView(subApp.start(location), subApp.getCaption(), !subAppContexts.isEmpty());
+        String instanceId = app.getView().addSubAppView(subApp.start(location), subApp.getCaption(), isClosable);
 
         subAppContext.setInstanceId(instanceId);
 
