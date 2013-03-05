@@ -36,7 +36,10 @@ package info.magnolia.ui.admincentral.field.upload;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.file.FileBufferPropertiesAdapter;
 import info.magnolia.ui.admincentral.file.FileItemWrapper;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.view.View;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -117,6 +120,8 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
 
     private final String deleteFileCaption;
 
+    private final String editFileCaption;
+
     // Define global variable used by this implementation
     protected D fileItem;
 
@@ -135,6 +140,8 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
 
     private Component previewComponent;
 
+    private Button editButton;
+
     private Button deleteButton;
 
     private Button cancelButton;
@@ -146,16 +153,21 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     // Used to force the refresh of the Uploading view in case of Drag and Drop.
     private final Shell shell;
 
+    // For opening mediaEditor on a modal on the subApp.
+    private final SubAppContext subAppContext;
+
     /**
      * Basic constructor.
      *
      * @param fileItem used to store the File properties like binary data, file name,
      * etc.
      */
-    public AbstractUploadFileField(D fileItem, Shell shell) {
+    public AbstractUploadFileField(D fileItem, Shell shell, SubAppContext subAppContext) {
         this.fileItem = fileItem;
         this.shell = shell;
+        this.subAppContext = subAppContext;
         deleteFileCaption = MessagesUtil.get("field.upload.remove.file");
+        editFileCaption = MessagesUtil.get("field.upload.edit.file");
         setStorageMode();
         createUpload();
     }
@@ -337,10 +349,65 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     }
 
     /**
+     * Create Edit button.
+     */
+    protected Button createEditButton() {
+        this.editButton = new Button(editFileCaption);
+        this.editButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                // Launch MediaEditor for this item.
+                openMediaEditor();
+
+                // fileItem.unLinkItemFromParent();
+                // fileItem.clearProperties();
+                updateDisplay();
+            }
+        });
+        this.editButton.addStyleName("edit");
+        defaultComponent.put(DefaultComponent.EDIT_BUTTON, this.editButton);
+        return this.editButton;
+    }
+
+    /**
+     * Open a mediaEditor populated with the media of this file.
+     */
+    protected void openMediaEditor() {
+
+        final NativeButton mediaEditorPlaceholder = new NativeButton("Media Editor Placeholder (Close Dialog)");
+        mediaEditorPlaceholder.addStyleName("btn-form btn-form-commit");
+
+        View placeholderView = new View() {
+            @Override
+            public Component asVaadinComponent() {
+                return mediaEditorPlaceholder;
+            }
+        };
+
+        final ModalCloser modalCloser = subAppContext.openModal(placeholderView);
+
+        mediaEditorPlaceholder.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                modalCloser.close();
+            }
+        });
+    }
+
+    /**
      * Create Delete button.
      */
     protected Button createDeleteButton() {
-        this.deleteButton = new Button(deleteFileCaption);
+        // this.deleteButton = new Button(deleteFileCaption);
+        // this.deleteButton.addStyleName("delete");
+
+        this.deleteButton = new Button();
+        // this.deleteButton.setStyleName(BaseTheme.BUTTON_LINK);
+
+        // this.deleteButton.setHtmlContentAllowed(true);
+        // this.deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
+        this.deleteButton.setCaption("R"); // TEST.
+
         this.deleteButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
@@ -351,7 +418,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
                 updateDisplay();
             }
         });
-        this.deleteButton.addStyleName("delete");
+
         defaultComponent.put(DefaultComponent.DELETE_BUTTON, this.deleteButton);
         return this.deleteButton;
     }
@@ -403,7 +470,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
      * Default component key definition.
      */
     public enum DefaultComponent {
-        UPLOAD, PROGRESS_BAR, FILE_DETAIL, PREVIEW, DELETE_BUTTON, CANCEL_BUTTON, DROP_ZONE
+        UPLOAD, PROGRESS_BAR, FILE_DETAIL, PREVIEW, DELETE_BUTTON, EDIT_BUTTON, CANCEL_BUTTON, DROP_ZONE
     }
 
     /**

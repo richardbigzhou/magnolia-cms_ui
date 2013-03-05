@@ -36,13 +36,19 @@ package info.magnolia.ui.admincentral.field.upload;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.file.FileItemWrapper;
 import info.magnolia.ui.admincentral.image.ImageSize;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.vaadin.lightbox.Lightbox;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -76,8 +82,8 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
     /**
      * Initialize basic components.
      */
-    public UploadFileFieldImpl(FileItemWrapper fileItem, Shell shell) {
-        super(fileItem, shell);
+    public UploadFileFieldImpl(FileItemWrapper fileItem, Shell shell, SubAppContext subAppContext) {
+        super(fileItem, shell, subAppContext);
 
         initMessages();
 
@@ -92,6 +98,7 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         createProgressIndicator();
         createCancelButton();
         createDeleteButton();
+        createEditButton();
         createFileDetail();
     }
 
@@ -160,24 +167,80 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         actionLayout.setSizeUndefined();
         actionLayout.addStyleName("buttons");
 
+        // if an Image was already uploaded, give the ability to edit it.
+        if (fileItem.getJcrItem().getParent() != null && fileDeletion) {
+            actionLayout.addComponent(getDefaultComponent(DefaultComponent.EDIT_BUTTON));
+        }
+
         // Change the Label of the Upload Button
         setUploadButtonCaption(chooseNewCaption);
         actionLayout.addComponent(getDefaultComponent(DefaultComponent.UPLOAD));
+
         // if an Image was already uploaded, give the ability to remove it.
         if (fileItem.getJcrItem().getParent() != null && fileDeletion) {
             actionLayout.addComponent(getDefaultComponent(DefaultComponent.DELETE_BUTTON));
+            // Icon deleteIcon = new Icon ("icon-delete");
+
         }
         layout.addComponent(actionLayout);
 
         // Create preview Image
         if (preview && !fileItem.isEmpty()) {
             Component preview = fileItem.createPreview();
-            layout.addComponent(preview);
+            Resource previewResource = fileItem.getResource();
+            // layout.addComponent(preview);
+
+            Component previewComponent = buildPreviewComponent(preview, previewResource);
+            layout.addComponent(previewComponent);
+
         }
         getRootLayout().addStyleName("upload");
         getRootLayout().removeStyleName("in-progress");
         getRootLayout().removeStyleName("initial");
         getRootLayout().addStyleName("done");
+    }
+
+    public Component buildPreviewComponent(Component preview, final Resource previewResource) {
+
+        AbsoluteLayout previewLayout = new AbsoluteLayout();
+        previewLayout.setWidth("150px");
+        previewLayout.setHeight("150px");
+
+        previewLayout.addComponent(preview, "top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 0;");
+
+        // Add buttons to the preview image
+        Button lightboxButton = new Button();
+        lightboxButton.setHtmlContentAllowed(true);
+        lightboxButton.setCaption("<span class=\"" + "icon-search" + "\"></span>");
+        previewLayout.addComponent(lightboxButton, "left: 0px; bottom: 0px; z-index: 1;");
+
+        Button editButton = new Button();
+        editButton.setHtmlContentAllowed(true);
+        editButton.setCaption("<span class=\"" + "icon-edit" + "\"></span>");
+        previewLayout.addComponent(editButton, "right: 0px; bottom: 0px; z-index: 1;");
+
+        editButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                // Launch MediaEditor for this item.
+                openMediaEditor();
+                updateDisplay();
+            }
+        });
+
+        lightboxButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                // Launch Lightbox component
+                Lightbox lightbox = new Lightbox();
+                lightbox.setSource(previewResource);
+                lightbox.attach();
+
+            }
+        });
+
+        return previewLayout;
+
     }
 
     @Override
@@ -206,6 +269,11 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
     @Override
     protected String getDisplayDetails() {
         StringBuilder sb = new StringBuilder();
+
+        sb.append("<span class=\"value\">");
+        sb.append("Image details"); // TODO CLZ Should be dynamic based on type - should come from string resource. - should have own css class.
+        sb.append("</span>");
+        sb.append("<br/><br/>");
 
         sb.append("<span class=\"key\">");
         sb.append(fileNameCaption);
