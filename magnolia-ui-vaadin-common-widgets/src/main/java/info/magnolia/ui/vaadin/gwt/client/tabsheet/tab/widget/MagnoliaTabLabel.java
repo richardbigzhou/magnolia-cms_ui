@@ -90,6 +90,7 @@ public class MagnoliaTabLabel extends SimplePanel {
         DOM.sinkEvents(getElement(), Event.MOUSEEVENTS | Event.TOUCHEVENTS);
         hideNotification();
         setHasError(false);
+        setWidth("10px");
     }
 
     @Override
@@ -123,6 +124,7 @@ public class MagnoliaTabLabel extends SimplePanel {
 
     public void updateCaption(final String caption) {
         textWrapper.setInnerText(caption);
+        setWidth("");
     }
 
     public void setClosable(boolean isClosable) {
