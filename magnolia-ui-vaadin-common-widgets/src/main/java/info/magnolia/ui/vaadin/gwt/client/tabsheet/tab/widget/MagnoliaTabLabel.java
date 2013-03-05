@@ -90,7 +90,8 @@ public class MagnoliaTabLabel extends SimplePanel {
         DOM.sinkEvents(getElement(), Event.MOUSEEVENTS | Event.TOUCHEVENTS);
         hideNotification();
         setHasError(false);
-        setWidth("10px");
+        // MGNLUI-786: Fixes tab label sizing issue in Chrome.
+        setWidth("100px");
     }
 
     @Override
