@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.field.builder;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.model.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,14 +117,15 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
         IndexedContainer optionContainer = new IndexedContainer();
         List<SelectFieldOptionDefinition> options = getSelectFieldOptionDefinition();
         if (!options.isEmpty()) {
-            optionContainer.addContainerProperty(optionValueName, String.class, null);
+            optionContainer.addContainerProperty(optionValueName, getFieldType(definition), null);
             optionContainer.addContainerProperty(optionLabelName, String.class, null);
             if (hasOptionIcon) {
                 optionContainer.addContainerProperty(optionIconName, Resource.class, null);
             }
             for (SelectFieldOptionDefinition option : options) {
-                Item item = optionContainer.addItem(option.getValue());
-                item.getItemProperty(optionValueName).setValue(option.getValue());
+                Object value = DefaultPropertyUtil.createTypedValue(getFieldType(definition).getSimpleName(), option.getValue());
+                Item item = optionContainer.addItem(value);
+                item.getItemProperty(optionValueName).setValue(value);
                 item.getItemProperty(optionLabelName).setValue(option.getLabel());
                 if (StringUtils.isNotBlank(option.getIconSrc())) {
                     item.getItemProperty(optionIconName).setValue(getIconResource(option));
@@ -213,9 +215,9 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
      * Else, set the first element of the list.
      */
     private void setDefaultSelectedItem(Property<?> dataSource) {
-        String selectedValue = null;
+        Object selectedValue = null;
         if (StringUtils.isNotEmpty(dataSource.toString())) {
-            selectedValue = dataSource.toString();
+            selectedValue = dataSource.getValue();
         } else if (initialSelecteKey != null) {
             selectedValue = initialSelecteKey;
         } else if (definition.getOptions() != null && !definition.getOptions().isEmpty()) {
