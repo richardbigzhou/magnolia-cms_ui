@@ -179,6 +179,44 @@ public class FileItemWrapperImpl implements FileItemWrapper {
     }
 
     /**
+     * Get a reference to the file as a Resource.
+     */
+    @Override
+    public Resource getResource() {
+        return isImage() ? getImageResource() : getFileResource();
+    }
+
+    /**
+     * Create an Resource from the contents.
+     */
+    private Resource getImageResource() {
+        ImageSize scaledImageSize = imageSize.scaleToFitIfLarger(1000, 1000);
+
+        final StreamSource source = new StreamResource.StreamSource() {
+            @Override
+            public InputStream getStream() {
+                return new ByteArrayInputStream(getBinaryData());
+            }
+        };
+
+        final Resource imageResource = new StreamResource(source, "") {
+            @Override
+            public String getMIMEType() {
+                return getMimeType();
+            }
+        };
+
+        return imageResource;
+    }
+
+    /**
+     * Create a resource for the contents when its a file.
+     */
+    private Resource getFileResource() {
+        return null;
+    }
+
+    /**
      * Create a preview Component object.
      */
     @Override
@@ -209,10 +247,11 @@ public class FileItemWrapperImpl implements FileItemWrapper {
         final Image embedded = new Image(null, imageResource);
         embedded.setWidth(scaledImageSize.getWidth(), Unit.PIXELS);
         embedded.setHeight(scaledImageSize.getHeight(), Unit.PIXELS);
-        embedded.addStyleName("image");
+        // TODO: CLZ: embedded.addStyleName("image");
 
         return embedded;
     }
+
 
     /**
      * Create a Icon Component.

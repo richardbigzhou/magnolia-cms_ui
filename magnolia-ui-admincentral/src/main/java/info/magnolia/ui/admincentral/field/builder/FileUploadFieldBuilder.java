@@ -37,6 +37,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.admincentral.field.upload.UploadFileFieldImpl;
 import info.magnolia.ui.admincentral.file.FileItemWrapper;
 import info.magnolia.ui.admincentral.file.FileItemWrapperImpl;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
@@ -67,10 +68,13 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
 
     private final Shell shell;
 
+    private final SubAppContext subAppContext;
+
     @Inject
-    public FileUploadFieldBuilder(FileUploadFieldDefinition definition, Item relatedFieldItem, Shell shell) {
+    public FileUploadFieldBuilder(FileUploadFieldDefinition definition, Item relatedFieldItem, Shell shell, SubAppContext subAppContext) {
         super(definition, relatedFieldItem);
         this.shell = shell;
+        this.subAppContext = subAppContext;
     }
 
     @Override
@@ -89,7 +93,7 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
         // Create the File Wrapper.
         FileItemWrapper fileItem = new FileItemWrapperImpl(binaryDataSubNodeItem);
         // Create Upload Filed.
-        UploadFileFieldImpl uploadField = new UploadFileFieldImpl(fileItem, shell);
+        UploadFileFieldImpl uploadField = new UploadFileFieldImpl(fileItem, shell, subAppContext);
         uploadField.setInfo(true);
         uploadField.setProgressInfo(true);
         uploadField.setFileDeletion(true);
