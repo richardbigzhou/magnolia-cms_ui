@@ -36,7 +36,7 @@ package info.magnolia.ui.contentapp.workbench;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.ContentSubAppDescriptor;
+import info.magnolia.ui.contentapp.ItemSubAppDescriptor;
 import info.magnolia.ui.contentapp.item.ItemPresenter;
 import info.magnolia.ui.contentapp.item.ItemView;
 import info.magnolia.ui.framework.app.AppContext;
@@ -47,14 +47,16 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.view.View;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import javax.inject.Inject;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,8 +73,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
     private final ItemWorkbenchView view;
     private final ItemPresenter itemPresenter;
     private final ActionbarPresenter actionbarPresenter;
-    private final WorkbenchDefinition workbenchDefinition;
-    private final ContentSubAppDescriptor subAppDescriptor;
+    private final ItemSubAppDescriptor subAppDescriptor;
     private String nodePath;
 
     @Inject
@@ -82,14 +83,28 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
         this.itemPresenter = itemPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
-        this.subAppDescriptor = (ContentSubAppDescriptor) subAppContext.getSubAppDescriptor();
-        this.workbenchDefinition = subAppDescriptor.getWorkbench();
+        this.subAppDescriptor = (ItemSubAppDescriptor) subAppContext.getSubAppDescriptor();
     }
 
     public View start(String nodePath, ItemView.ViewType viewType) {
         view.setListener(this);
         this.nodePath = nodePath;
-        final JcrNodeAdapter item = new JcrNodeAdapter(SessionUtil.getNode(workbenchDefinition.getWorkspace(), nodePath));
+        JcrNodeAdapter item;
+        try {
+            Session session = MgnlContext.getJCRSession(subAppDescriptor.getWorkspace());
+            if (session.nodeExists(nodePath) && session.getNode(nodePath).getPrimaryNodeType().getName().equals(subAppDescriptor.getNodeType().getName())) {
+                item = new JcrNodeAdapter(SessionUtil.getNode(subAppDescriptor.getWorkspace(), nodePath));
+            } else {
+                String parentPath = StringUtils.substringBeforeLast(nodePath, "/");
+                parentPath = parentPath.isEmpty() ? "/" : parentPath;
+                Node parent = session.getNode(parentPath);
+                item = new JcrNewNodeAdapter(parent, subAppDescriptor.getNodeType().getName());
+            }
+        } catch (RepositoryException e) {
+            log.warn("Not able to create an Item based on the following path {} ", nodePath, e);
+            throw new RuntimeException(e);
+        }
+
         ItemView itemView = itemPresenter.start(subAppDescriptor.getFormDefinition(), item, viewType);
 
         view.setItemView(itemView);
@@ -117,7 +132,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
     @Override
     public void onExecute(String actionName) {
         try {
-            Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+            Session session = MgnlContext.getJCRSession(subAppDescriptor.getWorkspace());
             final javax.jcr.Item item = session.getItem(nodePath);
 
             actionExecutor.execute(actionName, item);

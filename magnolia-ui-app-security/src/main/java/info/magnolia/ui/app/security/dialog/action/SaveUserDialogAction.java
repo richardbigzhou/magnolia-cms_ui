@@ -112,15 +112,15 @@ public class SaveUserDialogAction extends SaveDialogAction {
                 }
             }
 
-            final String enabled = userItem.getItemProperty(PROPERTY_ENABLED).getValue().toString();
+            final String enabled = userItem.getItemProperty(PROPERTY_ENABLED).toString();
             log.debug("Is user enabled? {}", enabled);
             PropertyUtil.setProperty(userNode, PROPERTY_ENABLED, Boolean.parseBoolean(enabled));
 
-            final String email = userItem.getItemProperty(PROPERTY_EMAIL).getValue().toString();
+            final String email = userItem.getItemProperty(PROPERTY_EMAIL).toString();
             log.debug("Setting user email as [{}]", email);
             PropertyUtil.setProperty(userNode, PROPERTY_EMAIL, email);
 
-            final String fullName = userItem.getItemProperty(PROPERTY_TITLE).getValue().toString();
+            final String fullName = userItem.getItemProperty(PROPERTY_TITLE).toString();
             log.debug("Setting user title as [{}]", fullName);
             PropertyUtil.setProperty(userNode, PROPERTY_TITLE, fullName);
 

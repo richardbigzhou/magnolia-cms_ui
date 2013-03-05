@@ -119,4 +119,9 @@ public class SubAppContextImpl implements SubAppContext {
         View modalityParent = getAppContext().getView().getSubAppViewContainer(instanceId);
         return shell.openModalOnView(view, modalityParent, Modal.ModalityLevel.SUB_APP);
     }
+
+    @Override
+    public void close() {
+        appContext.closeSubApp(instanceId);
+    }
 }

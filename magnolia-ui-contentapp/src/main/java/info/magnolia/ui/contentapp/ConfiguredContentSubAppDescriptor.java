@@ -34,7 +34,6 @@
 package info.magnolia.ui.contentapp;
 
 import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
-import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 /**
@@ -43,24 +42,13 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescriptor implements ContentSubAppDescriptor {
 
     private WorkbenchDefinition workbench;
-    private FormDefinition formDefinition;
 
     @Override
     public WorkbenchDefinition getWorkbench() {
         return workbench;
     }
 
-    @Override
-    public FormDefinition getFormDefinition() {
-        return formDefinition;
-    }
-
     public void setWorkbench(WorkbenchDefinition workBench) {
         this.workbench = workBench;
     }
-
-    public void setFormDefinition(FormDefinition formDefinition) {
-        this.formDefinition = formDefinition;
-    }
-
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.contentapp;
 
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.shell.ModalLayer;
+import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.model.form.definition.FormDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 /**
- * Provides functionality used by a sub app to interact with the Magnolia shell.
+ * Descriptor for Item subApps.
+ * Holds the form definition to build a form and needed fields to create a new node.
  */
-public interface SubAppContext extends ModalLayer {
+public interface ItemSubAppDescriptor extends SubAppDescriptor {
 
-    String getSubAppId();
+    FormDefinition getFormDefinition();
 
-    SubApp getSubApp();
+    String getWorkspace();
 
-    Location getLocation();
-
-    AppContext getAppContext();
-
-    SubAppDescriptor getSubAppDescriptor();
-
-    void setAppContext(AppContext appContext);
-
-    void setLocation(Location location);
-
-    void setSubApp(SubApp subApp);
-
-    void setInstanceId(String instanceId);
-
-    String getInstanceId();
-
-    void close();
+    NodeTypeDefinition getNodeType();
 }

@@ -189,4 +189,12 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
     public Iterator<Component> iterator() {
         return new ComponentIterator<MagnoliaTab>(tabs.iterator());
     }
+
+    /**
+     * Send a rpc call to the client, which will remove the tab related views and call back to the server.
+     * @see #closeTab(MagnoliaTab)
+     */
+    public void closeTabFromServer(MagnoliaTab tab) {
+        getRpcProxy(MagnoliaTabSheetClientRpc.class).closeTab(tab);
+    }
 }

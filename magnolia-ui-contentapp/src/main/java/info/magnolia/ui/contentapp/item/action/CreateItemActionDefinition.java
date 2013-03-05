@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,54 +34,15 @@
 package info.magnolia.ui.contentapp.item.action;
 
 
-import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * Action Definition for creating new items.
  * Configuration of all needed parameters to create the correct nodeType and
  * defining the correct app and subApp to handle the action
  */
-public class CreateItemActionDefinition extends ConfiguredActionDefinition {
-
-    private String nodeType;
-    private String appId;
-    private String subAppId;
+public class CreateItemActionDefinition extends AbstractItemActionDefinition {
 
     public CreateItemActionDefinition() {
         setImplementationClass(CreateItemAction.class);
     }
-
-    public String getAppId() {
-        return appId;
-    }
-
-    /**
-     * @param appId associated with the action.
-     */
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
-    public String getSubAppId() {
-        return subAppId;
-    }
-
-    /**
-     * @param subAppId associated with the action.
-     */
-    public void setSubAppId(String subAppId) {
-        this.subAppId = subAppId;
-    }
-
-    public String getNodeType() {
-        return nodeType;
-    }
-
-    /**
-     * @param nodeType specifies the new node nodeType.
-     */
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
-    }
-
 }
