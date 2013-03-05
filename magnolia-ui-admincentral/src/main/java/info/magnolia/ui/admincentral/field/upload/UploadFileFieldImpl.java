@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -166,6 +167,7 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         HorizontalLayout actionLayout = new HorizontalLayout();
         actionLayout.setSizeUndefined();
         actionLayout.addStyleName("buttons");
+        actionLayout.setSpacing(true);
 
         // if an Image was already uploaded, give the ability to edit it.
         if (fileItem.getJcrItem().getParent() != null && fileDeletion) {
@@ -179,6 +181,7 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         // if an Image was already uploaded, give the ability to remove it.
         if (fileItem.getJcrItem().getParent() != null && fileDeletion) {
             actionLayout.addComponent(getDefaultComponent(DefaultComponent.DELETE_BUTTON));
+            actionLayout.setComponentAlignment(getDefaultComponent(DefaultComponent.DELETE_BUTTON), Alignment.MIDDLE_LEFT);
             // Icon deleteIcon = new Icon ("icon-delete");
 
         }
@@ -203,6 +206,11 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
     public Component buildPreviewComponent(Component preview, final Resource previewResource) {
 
         AbsoluteLayout previewLayout = new AbsoluteLayout();
+
+        previewLayout.addStyleName("file-preview-area");
+
+        // previewLayout.setWidth(preview.getWidth() + "px");
+        // previewLayout.setHeight(preview.getHeight() + "px");
         previewLayout.setWidth("150px");
         previewLayout.setHeight("150px");
 
@@ -212,11 +220,13 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         Button lightboxButton = new Button();
         lightboxButton.setHtmlContentAllowed(true);
         lightboxButton.setCaption("<span class=\"" + "icon-search" + "\"></span>");
+        lightboxButton.setDescription("View in Lightbox");
         previewLayout.addComponent(lightboxButton, "left: 0px; bottom: 0px; z-index: 1;");
 
         Button editButton = new Button();
         editButton.setHtmlContentAllowed(true);
         editButton.setCaption("<span class=\"" + "icon-edit" + "\"></span>");
+        editButton.setDescription("Edit media");
         previewLayout.addComponent(editButton, "right: 0px; bottom: 0px; z-index: 1;");
 
         editButton.addClickListener(new Button.ClickListener() {

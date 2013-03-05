@@ -398,15 +398,12 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
      * Create Delete button.
      */
     protected Button createDeleteButton() {
-        // this.deleteButton = new Button(deleteFileCaption);
-        // this.deleteButton.addStyleName("delete");
 
         this.deleteButton = new Button();
-        // this.deleteButton.setStyleName(BaseTheme.BUTTON_LINK);
 
-        // this.deleteButton.setHtmlContentAllowed(true);
-        // this.deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
-        this.deleteButton.setCaption("R"); // TEST.
+        this.deleteButton.setHtmlContentAllowed(true);
+        this.deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
+        this.deleteButton.setDescription(deleteFileCaption);
 
         this.deleteButton.addClickListener(new Button.ClickListener() {
             @Override

@@ -32,12 +32,16 @@
   -moz-border-radius: 0px;
 }
 
+.v-upload-immediate input{
+    display:none;
+}
+
 .in-progress {
   height: 118px !important;
 }
 
 .done {
-  height: 188px !important;
+  height: 192px !important;
 }
 
 .initial {
@@ -46,7 +50,7 @@
 
 .file-details {
   top: 20px;
-  left: 185px;
+  left: 190px;
   position: absolute;
 }
 
@@ -73,12 +77,24 @@
   font-size: 100px;
 }
 
+.file-preview-area {
+  position: absolute;
+  left: 20px;
+  top:20px;
+    background-color: #dddddd;
+}
+
 
 .upload-image-field .buttons {
   bottom:20px;
-  left: 200px;
+  left: 190px;
+  width: 315px;
   padding: 0;
   position: absolute;
+}
+
+.v-horizontallayout-buttons .v-spacing {
+    width: 10px;
 }
 
 .upload-image-field .v-button {
@@ -115,7 +131,7 @@
 .initial .v-button {
   margin-top:30px;
   margin-left:20px;
-  width: 120px;
+  width: 180px;
 }
 
 .upload-image-field  .v-button .v-button-caption {
@@ -126,7 +142,7 @@
   width: auto !important;
   position: absolute;
   top: 46px;
-  left: 160px;
+  left: 210px;
   color: #999
 }
 

@@ -247,7 +247,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
         final Image embedded = new Image(null, imageResource);
         embedded.setWidth(scaledImageSize.getWidth(), Unit.PIXELS);
         embedded.setHeight(scaledImageSize.getHeight(), Unit.PIXELS);
-        embedded.addStyleName("image");
+        // TODO: CLZ: embedded.addStyleName("image");
 
         return embedded;
     }
