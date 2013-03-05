@@ -98,12 +98,7 @@ public class FormSectionWidget extends FlowPanel {
         } else {
             fieldSection = (FormFieldWrapper) w;
         }
-
-        super.insert(fieldSection, beforeIndex);
-
-        if (beforeIndex == 0) {
-            getElement().insertFirst(fieldSet);
-        }
+        super.insert(fieldSection, fieldSet, beforeIndex, true);
     }
 
     @Override

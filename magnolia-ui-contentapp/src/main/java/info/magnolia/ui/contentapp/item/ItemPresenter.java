@@ -36,6 +36,7 @@ package info.magnolia.ui.contentapp.item;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.form.FormPresenter;
 import info.magnolia.ui.admincentral.form.FormPresenterFactory;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.form.definition.FormDefinition;
@@ -51,6 +52,7 @@ import javax.inject.Named;
  */
 public class ItemPresenter {
 
+    private SubAppContext subAppContext;
     private final EventBus eventBus;
 
     private final ItemView view;
@@ -62,7 +64,8 @@ public class ItemPresenter {
     private JcrNodeAdapter item;
 
     @Inject
-    public ItemPresenter(final @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, ItemView view, FormPresenterFactory formPresenterFactory) {
+    public ItemPresenter(SubAppContext subAppContext, final @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, ItemView view, FormPresenterFactory formPresenterFactory) {
+        this.subAppContext = subAppContext;
         this.eventBus = eventBus;
         this.view = view;
         this.formPresenterFactory = formPresenterFactory;
@@ -87,13 +90,15 @@ public class ItemPresenter {
 
                 @Override
                 public void onCancel() {
-                    setItemView(ItemView.ViewType.VIEW);
+                    //setItemView(ItemView.ViewType.VIEW);
+                    subAppContext.close();
                 }
 
                 @Override
                 public void onSuccess(String actionName) {
                     eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
-                    setItemView(ItemView.ViewType.VIEW);
+                    //setItemView(ItemView.ViewType.VIEW);
+                    subAppContext.close();
                 }
             });
             view.setItemView(formView.asVaadinComponent(), viewType);

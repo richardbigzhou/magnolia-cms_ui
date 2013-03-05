@@ -62,7 +62,7 @@ public class AppFrameView implements AppView {
         }
 
         @Override
-        protected void closeTab(MagnoliaTab tab) {
+        public void closeTab(MagnoliaTab tab) {
             super.closeTab(tab);
             String key = mapper.key(tab);
             listener.onClose(key);
@@ -137,6 +137,11 @@ public class AppFrameView implements AppView {
             }
 
         };
+    }
+
+    @Override
+    public void closeSubAppView(String instanceId) {
+        tabsheet.closeTabFromServer(mapper.get(instanceId));
     }
 
 }

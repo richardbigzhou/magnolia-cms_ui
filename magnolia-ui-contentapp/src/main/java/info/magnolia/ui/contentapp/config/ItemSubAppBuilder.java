@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,61 +33,71 @@
  */
 package info.magnolia.ui.contentapp.config;
 
-import info.magnolia.ui.contentapp.ConfiguredContentSubAppDescriptor;
+import info.magnolia.ui.contentapp.ConfiguredItemSubAppDescriptor;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.builder.ActionBuilder;
 import info.magnolia.ui.model.actionbar.builder.ActionbarBuilder;
+import info.magnolia.ui.model.form.builder.FormBuilder;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.workbench.builder.WorkbenchBuilder;
+import info.magnolia.ui.workbench.builder.NodeTypeBuilder;
 
 /**
- * Builder used to build a sub app descriptor.
+ * ItemSubAppBuilder.
  */
-public class ContentSubAppBuilder {
+public class ItemSubAppBuilder {
+    private ConfiguredItemSubAppDescriptor descriptor = new ConfiguredItemSubAppDescriptor();
 
-    private ConfiguredContentSubAppDescriptor descriptor = new ConfiguredContentSubAppDescriptor();
-
-    public ContentSubAppBuilder(String name) {
+    public ItemSubAppBuilder(String name) {
         this.descriptor.setName(name);
     }
 
-    public ContentSubAppBuilder subAppClass(Class<? extends SubApp> subAppClass) {
+    public ItemSubAppBuilder subAppClass(Class<? extends SubApp> subAppClass) {
         descriptor.setSubAppClass(subAppClass);
         return this;
     }
 
-    public ContentSubAppBuilder workbench(WorkbenchBuilder builder) {
-        descriptor.setWorkbench(builder.exec());
-        return this;
-    }
-
-    public ContentSubAppBuilder label(String label) {
+    public ItemSubAppBuilder label(String label) {
         descriptor.setLabel(label);
         return this;
     }
 
-    public ContentSubAppBuilder actions(ActionBuilder... builders) {
+    public ItemSubAppBuilder nodeType(NodeTypeBuilder nodeTypeBuilder) {
+        descriptor.setNodeType(nodeTypeBuilder.exec());
+        return this;
+    }
+
+    public ItemSubAppBuilder workspace(String workspace) {
+        descriptor.setWorkspace(workspace);
+        return this;
+    }
+
+    public ItemSubAppBuilder form(FormBuilder builder) {
+        descriptor.setFormDefinition(builder.exec());
+        return this;
+    }
+
+    public ItemSubAppBuilder actions(ActionBuilder... builders) {
         for (ActionBuilder builder : builders) {
             descriptor.getActions().put(builder.getName(), builder.exec());
         }
         return this;
     }
 
-    public ContentSubAppBuilder actions(ActionDefinition... definitions) {
+    public ItemSubAppBuilder actions(ActionDefinition... definitions) {
         for (ActionDefinition definition : definitions) {
             descriptor.getActions().put(definition.getName(), definition);
         }
         return this;
     }
 
-    public ContentSubAppBuilder actionbar(ActionbarBuilder builder) {
+    public ItemSubAppBuilder actionbar(ActionbarBuilder builder) {
         descriptor.setActionbar(builder.exec());
         return this;
     }
 
-    public ContentSubAppBuilder imageProvider(ImageProviderDefinition imageProvider) {
+    public ItemSubAppBuilder imageProvider(ImageProviderDefinition imageProvider) {
         descriptor.setImageProvider(imageProvider);
         return this;
     }

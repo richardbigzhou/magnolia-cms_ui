@@ -33,37 +33,15 @@
  */
 package info.magnolia.ui.contentapp.item.action;
 
-import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
  * ActionDefinition used for editing Items.
  * Provides appId and subAppId to determine the correct app and subApp to edit item.
  * see MGNLUI-229.
  */
-public class EditItemActionDefinition extends ConfiguredActionDefinition {
-
-    private String appId;
-
-    private String subAppId;
+public class EditItemActionDefinition extends AbstractItemActionDefinition {
 
     public EditItemActionDefinition() {
         setImplementationClass(EditItemAction.class);
     }
-
-    public String getAppId() {
-        return appId;
-    }
-
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
-    public String getSubAppId() {
-        return subAppId;
-    }
-
-    public void setSubAppId(String subAppId) {
-        this.subAppId = subAppId;
-    }
-
 }

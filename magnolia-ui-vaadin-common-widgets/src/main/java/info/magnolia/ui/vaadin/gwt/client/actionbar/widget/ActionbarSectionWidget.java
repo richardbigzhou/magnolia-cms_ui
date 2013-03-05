@@ -78,6 +78,7 @@ public class ActionbarSectionWidget extends FlowPanel {
     }
 
     public Map<String, VActionbarGroup> getGroups() {
+        //Collections.sor
         return groups;
     }
 

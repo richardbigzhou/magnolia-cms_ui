@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.contentapp.item.action;
 
-import info.magnolia.ui.contentapp.location.ItemLocation;
 import info.magnolia.ui.contentapp.item.ItemView;
+import info.magnolia.ui.contentapp.location.ItemLocation;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -42,13 +42,17 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Action for editing items in {@link info.magnolia.ui.contentapp.ItemSubApp}.
  *
  * @see EditItemActionDefinition
  */
 public class EditItemAction extends ActionBase<EditItemActionDefinition> {
-
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final Node nodeToEdit;
     private final LocationController locationController;
 
@@ -61,7 +65,11 @@ public class EditItemAction extends ActionBase<EditItemActionDefinition> {
     @Override
     public void execute() throws ActionExecutionException {
         try {
-
+            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeToEdit.getPrimaryNodeType().getName())) {
+                log.warn("EditItemAction requested for a node type definition {}. Current node type is {}. No action will be performed.", getDefinition().getNodeType(), nodeToEdit
+                        .getPrimaryNodeType().getName());
+                return;
+            }
             final String path = nodeToEdit.getPath();
             ItemLocation location = new ItemLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), ItemView.ViewType.EDIT, path);
             locationController.goTo(location);

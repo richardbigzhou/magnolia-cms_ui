@@ -105,7 +105,7 @@ public class ContentWorkbenchPresenterTest {
 
     private void initContentWorkbenchPresenter() {
         // initialize test instance
-        ContentSubAppBuilder subAppBuilder = new ContentAppBuilder(APP_NAME).subApp(SUB_APP_NAME);
+        ContentSubAppBuilder subAppBuilder = new ContentAppBuilder(APP_NAME).workbenchSubApp(SUB_APP_NAME);
         subAppBuilder.workbench(new WorkbenchBuilder().workspace(WORKSPACE).root(ROOT_PATH));
         Shell mockShell = mock(Shell.class);
         SubAppContext subAppContext = new SubAppContextImpl(subAppBuilder.exec(), mockShell);
