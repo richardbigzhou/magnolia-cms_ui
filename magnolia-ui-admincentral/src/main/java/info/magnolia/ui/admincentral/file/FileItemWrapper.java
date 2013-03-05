@@ -36,6 +36,9 @@ package info.magnolia.ui.admincentral.file;
 import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 
@@ -55,6 +58,11 @@ public interface FileItemWrapper {
     public void updateProperties(FilePropertiesAdapter receiver);
 
     /**
+     * Update media with a stream.
+     */
+    public void updateMediaWithStream(InputStream inputStream);
+
+    /**
      * Clear all properties.
      */
     public void clearProperties();
@@ -68,6 +76,11 @@ public interface FileItemWrapper {
      * Get a reference to the file as a Resource.
      */
     public Resource getResource();
+
+    /**
+     * Get a reference to the file as a Stream.
+     */
+    public ByteArrayInputStream getStream();
 
     /**
      * Return the related JcrItem.
@@ -97,6 +110,10 @@ public interface FileItemWrapper {
     public ImageSize getImageSize();
 
     public String getFileName();
+
+    public String getFormat();
+
+    public String getMediaTypeName();
 
     public long getFileSize();
 }

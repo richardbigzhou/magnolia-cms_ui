@@ -280,18 +280,22 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
     protected String getDisplayDetails() {
         StringBuilder sb = new StringBuilder();
 
+        // Title
         sb.append("<span class=\"value\">");
         sb.append("Image details"); // TODO CLZ Should be dynamic based on type - should come from string resource. - should have own css class.
         sb.append("</span>");
         sb.append("<br/><br/>");
 
+        // Name
         sb.append("<span class=\"key\">");
         sb.append(fileNameCaption);
         sb.append("</span>");
         sb.append("<span class=\"value\">");
         sb.append(this.fileItem.getFileName());
         sb.append("</span>");
-        sb.append("</br>");
+        sb.append("<br/>");
+
+        // Size
         sb.append("<span class=\"key\">");
         sb.append(fileSizeCaption);
         sb.append("</span>");
@@ -302,6 +306,16 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         }
         sb.append(FileUtils.byteCountToDisplaySize(this.fileItem.getFileSize()));
         sb.append("</span>");
+        sb.append("<br/>");
+
+        // Format
+        sb.append("<span class=\"key\">");
+        sb.append("Format"); // TODO CLZ use a variable.
+        sb.append("</span>");
+        sb.append("<span class=\"value\">");
+        sb.append(this.fileItem.getFormat());
+        sb.append("</span>");
+        sb.append("<br/>");
 
         return sb.toString();
     }

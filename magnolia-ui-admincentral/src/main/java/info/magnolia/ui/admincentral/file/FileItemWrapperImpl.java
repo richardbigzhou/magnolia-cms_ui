@@ -41,11 +41,13 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
@@ -71,6 +73,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
     private byte[] binaryData;
     private long fileSize;
     private String mimeType;
+    private String extension;
     private String fileName;
     private ImageSize imageSize;
     private long width;
@@ -93,6 +96,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
                 binaryData = (byte[]) data.getValue();
                 fileSize = Long.parseLong(jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).getValue().toString());
                 mimeType = (String) jcrItem.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue();
+                extension = (String) jcrItem.getItemProperty(FileProperties.PROPERTY_EXTENSION).getValue();
                 if (isImage()) {
                     imageSize = new ImageSize(Long.parseLong(jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue().toString()), Long.parseLong(jcrItem.getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue().toString()));
                     width = imageSize.getWidth();
@@ -162,6 +166,22 @@ public class FileItemWrapperImpl implements FileItemWrapper {
         }
     }
 
+    @Override
+    public void updateMediaWithStream(InputStream inputStream) {
+        try {
+            binaryData = IOUtils.toByteArray(inputStream);
+        } catch (IOException e) {
+            log.error("Could not update media with stream. ", e);
+            return;
+        }
+
+        // if (isImage()) {
+            imageSize = ImageSize.valueOf(new ByteArrayInputStream(getBinaryData()));
+            width = imageSize.getWidth();
+            height = imageSize.getHeight();
+        // }
+    }
+
     /**
      * Clear all properties.
      */
@@ -184,6 +204,11 @@ public class FileItemWrapperImpl implements FileItemWrapper {
     @Override
     public Resource getResource() {
         return isImage() ? getImageResource() : getFileResource();
+    }
+
+    @Override
+    public ByteArrayInputStream getStream() {
+        return new ByteArrayInputStream(getBinaryData());
     }
 
     /**
@@ -268,26 +293,83 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      * Simple MimeType to Icon Mapping.
      */
     private String resolveIconClassName() {
-        String iconeClassName = "icon-file";
+        String fileType = resolveFileTypeFromMimeType(mimeType);
+
+        if (!"".equals(fileType)) {
+            return "icon-file-" + fileType;
+        }
+
+        return "icon-file";
+    }
+
+    /**
+     * Simple MimeType to FileType Mapping.
+     */
+    private String resolveFileTypeFromMimeType(String mimeType) {
         if (mimeType.contains("application/pdf")) {
-            return iconeClassName + "-pdf";
+            return "pdf";
         }
         if (mimeType.matches("application.*(msword)")) {
-            return iconeClassName + "-word";
+            return "word";
         }
         if (mimeType.matches("application.*(excel|xls)")) {
-            return iconeClassName + "-excel";
+            return "excel";
         }
         if (mimeType.matches("application.*(powerpoint)")) {
-            return iconeClassName + "-powerpoint";
+            return "powerpoint";
         }
         if (mimeType.contains("text/")) {
-            return iconeClassName + "-text";
+            return "text";
         }
         if (mimeType.contains("image/")) {
-            return iconeClassName + "-image";
+            return "image";
         }
-        return iconeClassName;
+        if (mimeType.contains("video/")) {
+            return "video";
+        }
+        if (mimeType.contains("audio/")) {
+            return "audio";
+        }
+        if (mimeType.matches(".*(zip|compress)")) {
+            return "";
+        }
+
+        return "";
+    }
+
+    /**
+     * Simple MimeType to MediaType Mapping.
+     */
+    private String resolveMediaTypeFromMimeType(String mimeType) {
+        if (mimeType.contains("application/pdf")) {
+            return "document";
+        }
+        if (mimeType.matches("application.*(msword)")) {
+            return "document";
+        }
+        if (mimeType.matches("application.*(excel|xls)")) {
+            return "document";
+        }
+        if (mimeType.matches("application.*(powerpoint)")) {
+            return "document";
+        }
+        if (mimeType.contains("text/")) {
+            return "text";
+        }
+        if (mimeType.contains("image/")) {
+            return "image";
+        }
+        if (mimeType.contains("video/")) {
+            return "video";
+        }
+        if (mimeType.contains("audio/")) {
+            return "audio";
+        }
+        if (mimeType.matches(".*(zip|compress)")) {
+            return "";
+        }
+
+        return "";
     }
 
     @Override
@@ -323,6 +405,16 @@ public class FileItemWrapperImpl implements FileItemWrapper {
     @Override
     public long getFileSize() {
         return fileSize;
+    }
+
+    @Override
+    public String getFormat() {
+        return this.extension;
+    }
+
+    @Override
+    public String getMediaTypeName() {
+        return resolveMediaTypeFromMimeType(mimeType);
     }
 
     protected String getMimeType() {
