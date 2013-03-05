@@ -53,6 +53,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.view.View;
 
@@ -261,10 +262,11 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                     pageEditorPresenter.getSelectedElement().getDialog());
         }
         else if (actionName.equals("addComponent")) {
-            pageEditorPresenter.editComponent(
+            AreaElement areaElement = (AreaElement) pageEditorPresenter.getSelectedElement();
+            pageEditorPresenter.newComponent(
                     workspace,
-                    pageEditorPresenter.getSelectedElement().getPath(),
-                    pageEditorPresenter.getSelectedElement().getDialog());
+                    areaElement.getPath(),
+                    areaElement.getAvailableComponents());
         }
         else if (actionName.equals("deleteItem")) {
             pageEditorPresenter.deleteComponent(workspace, pageEditorPresenter.getSelectedElement().getPath());
