@@ -3,6 +3,7 @@
 @mixin button {
 
   .v-button,
+  .v-nativebutton-magnoliabutton,
   button.btn-dialog,
   button.btn-form {
     padding: 3px 10px 0;
@@ -13,6 +14,7 @@
     font-size: 12px;
     text-transform: uppercase;
     cursor: pointer;
+    outline: none !important;
 
     &:active:not(.v-button-link) .v-button-wrap {
       position: relative;
@@ -30,6 +32,7 @@
     }
   }
 
+  .v-nativebutton-magnoliabutton,
   button.btn-dialog,
   button.btn-form {
     line-height: 1;
@@ -46,6 +49,8 @@
     color: inherit;
     padding-left: 0;
     padding-right: 0;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 
     &:hover,
     &:focus {

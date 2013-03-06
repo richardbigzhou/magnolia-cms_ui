@@ -53,9 +53,9 @@ import com.vaadin.ui.TextField;
  */
 public class TextAndButtonField extends CustomField<String> {
 
-    private final Button selectButton;
+    private final TextField textField = new TextField();;
 
-    private final TextField textField;
+    private final Button selectButton = new NativeButton();
 
     private final Converter<String, ?> converter;
 
@@ -67,24 +67,27 @@ public class TextAndButtonField extends CustomField<String> {
         this.converter = converter;
         this.buttonCaptionNew = buttonCaptionNew;
         this.buttonCaptionOther = buttonCaptionOther;
-
-        textField = new TextField();
-        textField.setSizeUndefined();
-        textField.addStyleName("small-textfield");
-        textField.setImmediate(true);
-
-        selectButton = new NativeButton();
-        selectButton.addStyleName("btn-form btn-form-select");
     }
 
     @Override
     protected Component initContent() {
-        HorizontalLayout layout = new HorizontalLayout();
-        layout.setWidth("100%");
-        layout.addComponent(textField);
-        layout.addComponent(selectButton);
-        layout.setComponentAlignment(selectButton, Alignment.MIDDLE_CENTER);
-        return layout;
+        addStyleName("linkfield");
+
+        HorizontalLayout root = new HorizontalLayout();
+        root.setSizeFull();
+        root.setSpacing(true);
+        
+        textField.setImmediate(true);
+        textField.setWidth(100, Unit.PERCENTAGE);
+        selectButton.addStyleName("magnoliabutton");
+        
+        root.addComponent(textField);
+        root.addComponent(selectButton);
+        root.setExpandRatio(textField, 1);
+        root.setExpandRatio(selectButton, 0);
+        root.setComponentAlignment(textField, Alignment.MIDDLE_LEFT);
+        root.setComponentAlignment(selectButton, Alignment.MIDDLE_RIGHT);
+        return root;
     }
 
     public TextField getTextField() {

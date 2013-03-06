@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+@mixin linkfield {
+
+  .v-customcomponent-linkfield {
+    overflow: visible;
+
+    .v-spacing {
+      width: 17px;
+    }
+  }
+}
