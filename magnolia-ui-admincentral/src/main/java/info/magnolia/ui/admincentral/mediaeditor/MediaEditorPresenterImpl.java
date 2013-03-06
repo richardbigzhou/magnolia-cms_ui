@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.mediaeditor;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent.CompletionType;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent.Handler;
@@ -49,7 +48,6 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition;
-import info.magnolia.ui.model.mediaeditor.features.MediaEditorFeatureDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.view.View;
 
@@ -77,8 +75,6 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
 
     private MediaEditorDefinition definition;
 
-    private MediaEditorActionFactory actionFactory;
-
     private MediaField currentMediaField;
 
     private ObjectProperty<byte[]> dataSource;
@@ -96,11 +92,9 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             EventBus eventBus,
             MediaEditorView view,
             ActionbarPresenter actionbarPresenter,
-            MediaEditorActionFactory actionFactory, 
             EditModeProviderFactory providerFactory) {
         this.eventBus = eventBus;
         this.view = view;
-        this.actionFactory = actionFactory;
         this.actionbarPresenter = actionbarPresenter;
         this.definition = definition;
         this.actionbarPresenter.setListener(this);
@@ -128,22 +122,6 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             log.error("Error occured while editing media: " + e.getMessage(), e);
         }
         return null;
-    }
-
-    protected void dispatchActionbarEvent(ActionDefinition actionDefinition) {
-        if (actionDefinition instanceof MediaEditorFeatureDefinition) {
-            MediaEditorFeatureDefinition def = (MediaEditorFeatureDefinition)actionDefinition;
-            try {
-                final Class<?> clazz = Class.forName(def.getRequiredInterfaceName());
-                if (clazz.isInstance(currentMediaField)) {
-                    actionFactory.createAction(def, currentMediaField).execute();
-                }
-            } catch (ClassNotFoundException e) {
-                log.error("Action required interface does not exist: " + e.getMessage(), e);
-            } catch (ActionExecutionException e) {
-                log.error("Action failed: " + e.getMessage(), e);
-            }
-        }
     }
 
     @Override
@@ -191,8 +169,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     }
 
     private void switchToDefaultMode() {
-
-        //switchEditMode(definition.getDefaultEditModeProvider());
+        doExecuteMediaEditorAction(definition.getDefaultEditModeProvider());
     }
 
     @Override
@@ -202,8 +179,17 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
 
     @Override
     public void onExecute(String actionName) {
+        doExecuteMediaEditorAction(actionName);
+    }
+
+    private void doExecuteMediaEditorAction(String actionName) {
         try {
-            actionExecutor.execute(actionName, this, providerFactory);
+            if (currentMediaField != null) {
+                actionExecutor.execute(actionName, this, providerFactory, currentMediaField);
+            } else {
+                actionExecutor.execute(actionName, this, providerFactory);
+            }
+            
         } catch (ActionExecutionException e) {
             e.printStackTrace();
         }

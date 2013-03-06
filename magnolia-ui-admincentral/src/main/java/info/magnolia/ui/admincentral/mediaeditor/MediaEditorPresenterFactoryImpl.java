@@ -47,7 +47,6 @@ import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.mediaeditor.action.MediaEditorActionExecutor;
-import info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.ActionExecutor;
@@ -137,14 +136,13 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         MediaEditorView view = mediaEditorComponentProvider.getComponent(MediaEditorView.class);
         ActionbarPresenter actionbarPresenter = new ActionbarPresenter();
         EditModeProviderFactory providerFactory = mediaEditorComponentProvider.getComponent(EditModeProviderFactory.class);
-        MediaEditorActionFactory actionFactory = mediaEditorComponentProvider.getComponent(MediaEditorActionFactory.class);
         MediaEditorPresenter mediaEditorPresenter = 
                 new MediaEditorPresenterImpl(
                         definition, 
                         eventBus, 
                         view, 
                         actionbarPresenter, 
-                        actionFactory, providerFactory);
+                        providerFactory);
         ActionExecutor mediaActionExecutor = mediaEditorComponentProvider.getComponent(ActionExecutor.class);
         ((MediaEditorActionExecutor)mediaActionExecutor).setDef(definition);
         mediaEditorPresenter.setActionExecutor(mediaActionExecutor);

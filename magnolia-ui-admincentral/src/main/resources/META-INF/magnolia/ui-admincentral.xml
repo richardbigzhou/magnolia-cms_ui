@@ -341,7 +341,7 @@
       <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
 
-    <!-- Declaring page view for all apps embedding old adminCentral views
+    <!-- Declaring page view for all apps embedding old adminCentral views 
       in iFrame -->
     <component>
       <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
@@ -355,16 +355,11 @@
       <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactory</type>
       <implementation>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactoryImpl</implementation>
     </component>
-   
+
   </components>
 
   <components>
     <id>mediaeditor</id>
-     
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactoryImpl</implementation>
-    </component>
 
     <component>
       <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorView</type>
@@ -375,17 +370,17 @@
       <type>info.magnolia.ui.model.action.ActionExecutor</type>
       <implementation>info.magnolia.ui.admincentral.mediaeditor.action.MediaEditorActionExecutor</implementation>
     </component>
-    
+
     <component>
       <type>info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition</type>
       <implementation>info.magnolia.ui.model.mediaeditor.definition.ConfiguredMediaEditorDefinition</implementation>
     </component>
-    
+
     <component>
       <type>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory</type>
       <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory</implementation>
     </component>
-    
+
   </components>
   <!-- End of Media Editor Configuration -->
 

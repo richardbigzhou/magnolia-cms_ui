@@ -39,5 +39,4 @@ import info.magnolia.ui.model.action.ConfiguredActionDefinition;
  * EditModeAction.
  */
 public class EditModeProviderActionDefinition extends ConfiguredActionDefinition {
-
 }

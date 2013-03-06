@@ -41,4 +41,7 @@ import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinit
  */
 public class GrayScaleActionDefinition extends EditModeProviderActionDefinition {
 
+    public GrayScaleActionDefinition() {
+        setImplementationClass(EditModeProviderAction.class);
+    }
 }
