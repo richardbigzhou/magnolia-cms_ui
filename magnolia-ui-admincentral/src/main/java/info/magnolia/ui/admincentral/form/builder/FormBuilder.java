@@ -39,6 +39,7 @@ import info.magnolia.ui.admincentral.field.builder.FieldFactory;
 import info.magnolia.ui.admincentral.form.Form;
 import info.magnolia.ui.admincentral.form.FormItem;
 import info.magnolia.ui.admincentral.form.FormTab;
+import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
 import info.magnolia.ui.model.form.definition.TabDefinition;
@@ -81,6 +82,11 @@ public class FormBuilder {
             FormTab tab = new FormTab(tabDefinition);
             tab.setParent(form);
             for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
+                // FIXME MGNLUI-829 should introduce a better handling for this
+                // case.
+                if (fieldDefinition.getClass().equals(ConfiguredFieldDefinition.class)) {
+                    continue;
+                }
                 final FieldBuilder formField = fieldFactory.create(fieldDefinition, item);
                 formField.setParent(tab);
                 final Field<?> field = formField.getField();
