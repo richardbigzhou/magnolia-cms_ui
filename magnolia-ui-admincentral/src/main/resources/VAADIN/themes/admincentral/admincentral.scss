@@ -3,9 +3,11 @@
 @import "../admincentraltheme/admincentraltheme.scss";
 @import "../magnolia/magnolia.scss";
 
+@import "field/linkfield.scss";
+
 @include magnolia;
 @include admincentraltheme;
 
 @mixin admincentral {
-
+  @include linkfield;
 }

@@ -3,6 +3,7 @@
 @mixin button {
 
   .v-button,
+  .v-nativebutton-magnoliabutton,
   button.btn-dialog,
   button.btn-form {
     padding: 3px 10px 0;
@@ -30,6 +31,7 @@
     }
   }
 
+  .v-nativebutton-magnoliabutton,
   button.btn-dialog,
   button.btn-form {
     line-height: 1;
