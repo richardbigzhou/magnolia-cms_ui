@@ -33,8 +33,8 @@
 .v-horizontallayout.v-margin-top {padding-top:22px;}
 .v-horizontallayout.v-margin-bottom {padding-bottom: 40px;}
 .v-horizontallayout.v-margin-left {padding-left: 40px;}
-.v-horizontallayout.v-margin-right {padding-right: 40px;}
-
+.v-horizontallayout.v-margin-right {padding-right: 0;}
+.dialog-panel .v-horizontallayout.v-margin-right {padding-right: 40px;}
 
 .activation-status {font-size:18px; text-align: center}
 .color-green {color:#689600;}
