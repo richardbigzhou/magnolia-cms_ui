@@ -86,6 +86,7 @@
 .modal.app,
 .modal.sub-app {
     z-index:50;
+    overflow: hidden;
 }
 
 .modal.shell{
