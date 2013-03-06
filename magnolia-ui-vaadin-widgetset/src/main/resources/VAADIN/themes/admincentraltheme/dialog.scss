@@ -85,7 +85,7 @@
 /* Set proper stacking for modals */
 .modal.app,
 .modal.sub-app {
-    z-index:50;
+    z-index: 110;
     overflow: hidden;
 }
 
