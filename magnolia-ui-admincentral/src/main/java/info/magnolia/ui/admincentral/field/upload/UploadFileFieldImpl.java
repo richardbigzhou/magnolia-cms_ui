@@ -38,7 +38,6 @@ import info.magnolia.ui.admincentral.file.FileItemWrapper;
 import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.lightbox.Lightbox;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -184,8 +183,6 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         if (fileItem.getJcrItem().getParent() != null && fileDeletion) {
             actionLayout.addComponent(getDefaultComponent(DefaultComponent.DELETE_BUTTON));
             actionLayout.setComponentAlignment(getDefaultComponent(DefaultComponent.DELETE_BUTTON), Alignment.MIDDLE_LEFT);
-            // Icon deleteIcon = new Icon ("icon-delete");
-
         }
         layout.addComponent(actionLayout);
 
@@ -245,9 +242,9 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
             @Override
             public void buttonClick(ClickEvent event) {
                 // Launch Lightbox component
-                Lightbox lightbox = new Lightbox();
-                lightbox.setSource(previewResource);
-                lightbox.attach();
+                // Lightbox lightbox = new Lightbox();
+                // lightbox.setSource(previewResource);
+                // lightbox.attach();
             }
         });
 
@@ -311,7 +308,7 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
 
         // Format
         sb.append("<span class=\"key\">");
-        sb.append("Format");
+        sb.append(fileFormatCaption);
         sb.append("</span>");
         sb.append("<span class=\"value\">");
         sb.append(this.fileItem.getFormat());
