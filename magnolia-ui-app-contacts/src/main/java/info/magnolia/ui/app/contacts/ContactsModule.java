@@ -128,7 +128,7 @@ public class ContactsModule implements ModuleLifecycle {
 
         EditDialogActionDefinition editFolderAction = new EditDialogActionDefinition();
         editFolderAction.setName("editFolder");
-        editFolderAction.setLabel("Edit folder in Dialog");
+        editFolderAction.setLabel("Rename folder");
         editFolderAction.setIcon("icon-edit");
         editFolderAction.setDialogName("ui-contacts-app:folder");
 
