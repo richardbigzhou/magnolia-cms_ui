@@ -45,6 +45,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
@@ -56,7 +57,6 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.Upload.StartedEvent;
 
 /**
@@ -258,24 +258,23 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
      */
     protected void openLightbox(final Resource imageResource) {
 
-        final NativeButton mediaEditorPlaceholder = new NativeButton("Media Editor Placeholder (Close Dialog)");
-        mediaEditorPlaceholder.addStyleName("btn-form btn-form-commit");
-
+        final Embedded imageComponent = new Embedded("", imageResource);
+        imageComponent.addStyleName("lightbox-image");
         View lightboxView = new View() {
             @Override
             public Component asVaadinComponent() {
-                return new Embedded("", imageResource);
+                return imageComponent;
             }
         };
 
-        final ModalCloser modalCloser = subAppContext.openModal(lightboxView);
+        final ModalCloser lightbox = subAppContext.openModal(lightboxView);
+        imageComponent.addClickListener(new ClickListener() {
 
-        // mediaEditorPlaceholder.addClickListener(new Button.ClickListener() {
-        // @Override
-        // public void buttonClick(ClickEvent event) {
-        // modalCloser.close();
-        // }
-        // });
+            @Override
+            public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
+                lightbox.close();
+            }
+        });
     }
 
     @Override
