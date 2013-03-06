@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,50 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
+package info.magnolia.ui.contentapp;
 
-import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeHeaderWidget;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
+import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.model.form.definition.FormDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 /**
- * DialogHeaderWidget.
+ * Descriptor for Item subApps.
+ * Holds the form definition to build a form and needed fields to create a new node.
  */
-public class DialogHeaderWidget extends EditorLikeHeaderWidget {
+public interface ItemSubAppDescriptor extends SubAppDescriptor {
 
-    private static final String CLASSNAME_CLOSEBUTTON = "btn-dialog-close";
+    FormDefinition getFormDefinition();
 
-    /**
-     * Callback interface for the EditorLike header.
-     */
-    public interface VDialogHeaderCallback extends EditorLikeHeaderWidget.VEditorLikeHeaderCallback {
+    String getWorkspace();
 
-        void onCloseFired();
-    }
-
-    protected Button closeButton;
-
-    public DialogHeaderWidget(VDialogHeaderCallback callback) {
-        super(callback);
-    }
-
-    @Override
-    public void construct() {
-
-        closeButton = new Button("", new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                ((VDialogHeaderCallback) callback).onCloseFired();
-            }
-        });
-
-        closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
-        closeButton.addStyleName("green");
-        add(closeButton, headerPanel);
-
-        super.construct();
-
-    }
+    NodeTypeDefinition getNodeType();
 }

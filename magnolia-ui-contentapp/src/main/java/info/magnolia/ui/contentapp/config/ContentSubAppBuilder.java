@@ -38,6 +38,8 @@ import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.builder.ActionBuilder;
+import info.magnolia.ui.model.actionbar.builder.ActionbarBuilder;
+import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.workbench.builder.WorkbenchBuilder;
 
 /**
@@ -77,6 +79,16 @@ public class ContentSubAppBuilder {
         for (ActionDefinition definition : definitions) {
             descriptor.getActions().put(definition.getName(), definition);
         }
+        return this;
+    }
+
+    public ContentSubAppBuilder actionbar(ActionbarBuilder builder) {
+        descriptor.setActionbar(builder.exec());
+        return this;
+    }
+
+    public ContentSubAppBuilder imageProvider(ImageProviderDefinition imageProvider) {
+        descriptor.setImageProvider(imageProvider);
         return this;
     }
 

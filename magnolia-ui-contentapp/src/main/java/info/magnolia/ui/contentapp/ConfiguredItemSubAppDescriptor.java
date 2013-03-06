@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,50 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
+package info.magnolia.ui.contentapp;
 
-import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeHeaderWidget;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
+import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+import info.magnolia.ui.model.form.definition.FormDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 /**
- * DialogHeaderWidget.
+ * ConfiguredItemSubAppDescriptor.
  */
-public class DialogHeaderWidget extends EditorLikeHeaderWidget {
+public class ConfiguredItemSubAppDescriptor extends ConfiguredSubAppDescriptor implements ItemSubAppDescriptor {
 
-    private static final String CLASSNAME_CLOSEBUTTON = "btn-dialog-close";
+    private FormDefinition form;
+    private String workspace;
+    private NodeTypeDefinition nodeType;
 
-    /**
-     * Callback interface for the EditorLike header.
-     */
-    public interface VDialogHeaderCallback extends EditorLikeHeaderWidget.VEditorLikeHeaderCallback {
-
-        void onCloseFired();
-    }
-
-    protected Button closeButton;
-
-    public DialogHeaderWidget(VDialogHeaderCallback callback) {
-        super(callback);
+    @Override
+    public String getWorkspace() {
+        return workspace;
     }
 
     @Override
-    public void construct() {
+    public NodeTypeDefinition getNodeType() {
+        return nodeType;
+    }
 
-        closeButton = new Button("", new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                ((VDialogHeaderCallback) callback).onCloseFired();
-            }
-        });
+    @Override
+    public FormDefinition getFormDefinition() {
+        return form;
+    }
 
-        closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
-        closeButton.addStyleName("green");
-        add(closeButton, headerPanel);
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
+    }
 
-        super.construct();
+    public void setNodeType(NodeTypeDefinition nodeType) {
+        this.nodeType = nodeType;
+    }
 
+    public void setFormDefinition(FormDefinition formDefinition) {
+        this.form = formDefinition;
     }
 }

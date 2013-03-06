@@ -41,8 +41,6 @@ import info.magnolia.ui.vaadin.view.View;
  */
 public interface AppView extends View {
 
-    void setFullscreen(boolean fullscreen);
-
     /**
      * Listens to events coming from the TabSheet.
      */
@@ -54,9 +52,15 @@ public interface AppView extends View {
 
     }
 
+    void setFullscreen(boolean fullscreen);
+
+    void setTheme(String value);
+
     void setListener(Listener listener);
 
     String addSubAppView(View view, String caption, boolean closable);
+
+    void closeSubAppView(String instanceId);
 
     void setActiveSubAppView(String instanceId);
 

@@ -61,4 +61,5 @@ public interface SubAppContext extends ModalLayer {
 
     String getInstanceId();
 
+    void close();
 }

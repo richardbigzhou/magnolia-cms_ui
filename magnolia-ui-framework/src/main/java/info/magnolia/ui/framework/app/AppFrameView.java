@@ -33,23 +33,20 @@
  */
 package info.magnolia.ui.framework.app;
 
-
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
-import info.magnolia.ui.vaadin.view.View;
 
-import javax.inject.Inject;
+import org.vaadin.cssinject.CSSInject;
 
 import com.vaadin.server.KeyMapper;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Component;
 
 /**
  * View used to give all apps a uniform look-and-feel.
  */
 public class AppFrameView implements AppView {
-
-    private final Shell shell;
 
     private Listener listener;
 
@@ -65,7 +62,7 @@ public class AppFrameView implements AppView {
         }
 
         @Override
-        protected void closeTab(MagnoliaTab tab) {
+        public void closeTab(MagnoliaTab tab) {
             super.closeTab(tab);
             String key = mapper.key(tab);
             listener.onClose(key);
@@ -73,10 +70,8 @@ public class AppFrameView implements AppView {
         }
     };
 
-    @Inject
-    public AppFrameView(final Shell shell) {
+    public AppFrameView() {
         super();
-        this.shell = shell;
         tabsheet.setSizeFull();
         tabsheet.addStyleName("app");
     }
@@ -108,6 +103,20 @@ public class AppFrameView implements AppView {
     }
 
     @Override
+    public void setTheme(String themeName) {
+        String stylename = String.format("app-%s", themeName);
+        Component vaadinComponent = asVaadinComponent();
+        vaadinComponent.addStyleName(stylename);
+
+        if (vaadinComponent.getUI() != null) {
+            String themeUrl = String.format("../%s/styles.css", themeName);
+            ThemeResource res = new ThemeResource(themeUrl);
+            CSSInject cssInject = new CSSInject(vaadinComponent.getUI());
+            cssInject.addStyleSheet(res);
+        }
+    }
+
+    @Override
     public void setListener(Listener listener) {
         this.listener = listener;
     }
@@ -128,6 +137,11 @@ public class AppFrameView implements AppView {
             }
 
         };
+    }
+
+    @Override
+    public void closeSubAppView(String instanceId) {
+        tabsheet.closeTabFromServer(mapper.get(instanceId));
     }
 
 }

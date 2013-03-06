@@ -60,10 +60,6 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.cssinject.CSSInject;
-
-import com.vaadin.server.ThemeResource;
-import com.vaadin.ui.Component;
 
 /**
  * Implements both - the controlling of an app instance as well as the housekeeping of the context for an app.
@@ -166,7 +162,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
         if (isThemedApp(app)) {
             AppTheme themeAnnotation = app.getClass().getAnnotation(AppTheme.class);
-            setThemeForApp(app.getView(), themeAnnotation.value());
+            app.getView().setTheme(themeAnnotation.value());
         }
     }
 
@@ -178,18 +174,6 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         return false;
     }
 
-    private void setThemeForApp(AppView view, String themeName) {
-        String stylename = String.format("app-%s", themeName);
-        Component vaadinComponent = view.asVaadinComponent();
-        vaadinComponent.addStyleName(stylename);
-
-        if (vaadinComponent.getUI() != null) {
-            String themeUrl = String.format("../%s/styles.css", themeName);
-            ThemeResource res = new ThemeResource(themeUrl);
-            CSSInject cssInject = new CSSInject(vaadinComponent.getUI());
-            cssInject.addStyleSheet(res);
-        }
-    }
 
     /**
      * Called when a location change occurs and the app is already running.
@@ -239,14 +223,14 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         if (subAppContext != null) {
             return subAppContext.getLocation();
         }
-        return new DefaultLocation(Location.LOCATION_TYPE_APP, appDescriptor.getName(), "", "");
+        return new DefaultLocation(Location.LOCATION_TYPE_APP, appDescriptor.getName());
     }
 
     @Override
     public Location getDefaultLocation() {
         SubAppDescriptor subAppDescriptor = getDefaultSubAppDescriptor();
         if (subAppDescriptor != null) {
-            return new DefaultLocation(Location.LOCATION_TYPE_APP, appDescriptor.getName(), subAppDescriptor.getName(), "");
+            return new DefaultLocation(Location.LOCATION_TYPE_APP, appDescriptor.getName(), subAppDescriptor.getName());
         } else {
             return null;
         }
@@ -254,6 +238,20 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
     @Override
     public void openSubApp(Location location) {
+        // main sub app has always to be there - open it if not yet running
+        final Location defaultLocation = getDefaultLocation();
+        boolean isDefaultSubApp = defaultLocation.getSubAppId().equals(location.getSubAppId());
+        if (!isDefaultSubApp) {
+            SubAppContext subAppContext = getSupportingSubAppContext(defaultLocation);
+            if (subAppContext != null) {
+                if (!location.equals(subAppContext.getLocation())) {
+                    subAppContext.setLocation(defaultLocation);
+                    subAppContext.getSubApp().locationChanged(defaultLocation);
+                }
+            } else {
+                startSubApp(defaultLocation, false);
+            }
+        }
         // If the location targets an existing sub app then activate it and update its location
         // launch running subapp
         SubAppContext subAppContext = getSupportingSubAppContext(location);
@@ -267,13 +265,23 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
                 app.getView().setActiveSubAppView(subAppContext.getInstanceId());
             }
         } else {
-            subAppContext = startSubApp(location);
+            subAppContext = startSubApp(location, !isDefaultSubApp);
         }
         currentSubAppContext = subAppContext;
 
     }
 
-    private SubAppContext startSubApp(Location location) {
+    /**
+     * Used to close a running subApp from server side. Delegates to {@link AppView#closeSubAppView(String)}.
+     * The actual closing and cleaning up, will be handled by the callback {@link AppView.Listener#onClose(String)}
+     * implemented in {@link #onClose(String)}.
+     */
+    @Override
+    public void closeSubApp(String instanceId) {
+       getView().closeSubAppView(instanceId);
+    }
+
+    private SubAppContext startSubApp(Location location, boolean isClosable) {
 
         SubAppDescriptor subAppDescriptor = getSubAppDescriptorById(location.getSubAppId());
 
@@ -289,7 +297,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         SubApp subApp = subAppComponentProvider.newInstance(subAppDescriptor.getSubAppClass());
         subAppContext.setSubApp(subApp);
 
-        String instanceId = app.getView().addSubAppView(subApp.start(location), subApp.getCaption(), !subAppContexts.isEmpty());
+        String instanceId = app.getView().addSubAppView(subApp.start(location), subApp.getCaption(), isClosable);
 
         subAppContext.setInstanceId(instanceId);
 

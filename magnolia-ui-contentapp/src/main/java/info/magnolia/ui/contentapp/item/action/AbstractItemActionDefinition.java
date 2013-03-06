@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,50 +31,63 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
+package info.magnolia.ui.contentapp.item.action;
 
-import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeHeaderWidget;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
+import org.apache.commons.lang.StringUtils;
 
 /**
- * DialogHeaderWidget.
+ * Base ContentApp ItemActionDefinition.
  */
-public class DialogHeaderWidget extends EditorLikeHeaderWidget {
+public abstract class AbstractItemActionDefinition extends ConfiguredActionDefinition {
+    private String nodeType = StringUtils.EMPTY;
+    private String appId;
+    private String subAppId;
 
-    private static final String CLASSNAME_CLOSEBUTTON = "btn-dialog-close";
 
     /**
-     * Callback interface for the EditorLike header.
+     * @return the nodeType.
      */
-    public interface VDialogHeaderCallback extends EditorLikeHeaderWidget.VEditorLikeHeaderCallback {
-
-        void onCloseFired();
+    public String getNodeType() {
+        return nodeType;
     }
 
-    protected Button closeButton;
-
-    public DialogHeaderWidget(VDialogHeaderCallback callback) {
-        super(callback);
+    /**
+     * @param nodeType
+     *            the nodeType to set.
+     */
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
     }
 
-    @Override
-    public void construct() {
+    /**
+     * @return the appId.
+     */
+    public String getAppId() {
+        return appId;
+    }
 
-        closeButton = new Button("", new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                ((VDialogHeaderCallback) callback).onCloseFired();
-            }
-        });
+    /**
+     * @param appId
+     *            the appId to set.
+     */
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
 
-        closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
-        closeButton.addStyleName("green");
-        add(closeButton, headerPanel);
+    /**
+     * @return the subAppId.
+     */
+    public String getSubAppId() {
+        return subAppId;
+    }
 
-        super.construct();
-
+    /**
+     * @param subAppId
+     *            the subAppId to set.
+     */
+    public void setSubAppId(String subAppId) {
+        this.subAppId = subAppId;
     }
 }

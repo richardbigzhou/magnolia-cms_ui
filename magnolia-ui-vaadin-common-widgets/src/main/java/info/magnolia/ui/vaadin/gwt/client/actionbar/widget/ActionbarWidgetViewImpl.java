@@ -296,7 +296,8 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         sections.clear();
         for (final ActionbarSection section : newSections) {
             addSection(section);
-            for (final ActionbarItem action : section.getActions().values()) {
+            for (final String actionName : section.getActionOrder()) {
+                ActionbarItem action = section.getActions().get(actionName);
                 if (action.getIconFontId() == null) {
                     action.setResourceUrl(presenter.getIconResourceURL(action.getName()));
                 }

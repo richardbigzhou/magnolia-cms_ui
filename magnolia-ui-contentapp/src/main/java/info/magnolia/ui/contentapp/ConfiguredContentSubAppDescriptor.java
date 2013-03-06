@@ -51,5 +51,4 @@ public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescripto
     public void setWorkbench(WorkbenchDefinition workBench) {
         this.workbench = workBench;
     }
-
 }

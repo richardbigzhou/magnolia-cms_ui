@@ -77,17 +77,18 @@ public class ContentPresenter implements ContentView.Listener {
 
     private final String workspaceName;
 
+    private final ContentSubAppDescriptor contentSubAppDescriptor;
+
     private final ContentViewBuilder contentViewBuilder;
 
     protected WorkbenchDefinition workbenchDefinition;
-
     private String selectedItemPath;
 
     protected ContentPresenter(final ContentSubAppDescriptor contentSubAppDescriptor, final ContentViewBuilder contentViewBuilder, final EventBus subAppEventBus, final Shell shell) {
         this.contentViewBuilder = contentViewBuilder;
         this.subAppEventBus = subAppEventBus;
         this.shell = shell;
-
+        this.contentSubAppDescriptor = contentSubAppDescriptor;
         this.workbenchDefinition = contentSubAppDescriptor.getWorkbench();
         this.workspaceName = contentSubAppDescriptor.getWorkbench().getWorkspace();
     }
@@ -108,7 +109,7 @@ public class ContentPresenter implements ContentView.Listener {
         log.debug("Initializing workbench {}...", workbenchDefinition.getName());
 
         for (final ViewType type : ViewType.values()) {
-            final ContentView contentView = contentViewBuilder.build(workbenchDefinition, type);
+            final ContentView contentView = contentViewBuilder.build(workbenchDefinition, contentSubAppDescriptor.getImageProvider(), type);
             contentView.setListener(this);
             contentView.select("/");
             parentView.addContentView(type, contentView);

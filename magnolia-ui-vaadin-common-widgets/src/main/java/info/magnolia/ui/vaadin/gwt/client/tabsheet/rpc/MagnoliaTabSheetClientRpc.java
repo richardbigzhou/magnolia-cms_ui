@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.tabsheet.rpc;
 
+import com.vaadin.shared.Connector;
 import com.vaadin.shared.communication.ClientRpc;
 
 /**
@@ -41,4 +42,6 @@ import com.vaadin.shared.communication.ClientRpc;
 public interface MagnoliaTabSheetClientRpc extends ClientRpc {
 
     void toggleFullScreenMode(boolean isFullScreen);
+
+    void closeTab(Connector tabConnector);
 }
