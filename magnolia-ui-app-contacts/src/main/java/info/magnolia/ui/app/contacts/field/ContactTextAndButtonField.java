@@ -101,7 +101,7 @@ public class ContactTextAndButtonField extends CustomField<String> {
     public void setPropertyDataSource(Property newDataSource) {
         textAndButtonField.setPropertyDataSource(newDataSource);
         super.setPropertyDataSource(newDataSource);
-        thumbnail.setLabelAndImage(getPathFromIdentifier(newDataSource.getValue().toString()));
+        thumbnail.setLabelAndImage(getPathFromIdentifier(newDataSource.toString()));
     }
 
     /**
