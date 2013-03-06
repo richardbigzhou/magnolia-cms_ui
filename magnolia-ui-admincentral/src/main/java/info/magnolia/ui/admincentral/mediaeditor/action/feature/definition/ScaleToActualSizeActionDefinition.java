@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.mediaeditor.action.feature.definition;
 
 import info.magnolia.ui.admincentral.mediaeditor.action.feature.Scalable;
+import info.magnolia.ui.admincentral.mediaeditor.action.feature.ScaleToActualSizeAction;
 import info.magnolia.ui.model.mediaeditor.features.ConfiguredMediaEditorFeatureDefinition;
 
 
@@ -41,6 +42,10 @@ import info.magnolia.ui.model.mediaeditor.features.ConfiguredMediaEditorFeatureD
  * Definition of {@link info.magnolia.ui.admincentral.mediaeditor.action.feature.ScaleToActualSizeAction}.
  */
 public class ScaleToActualSizeActionDefinition extends ConfiguredMediaEditorFeatureDefinition {
+    
+    public ScaleToActualSizeActionDefinition() {
+        setImplementationClass(ScaleToActualSizeAction.class);
+    }
     
     @Override
     public String getRequiredInterfaceName() {

@@ -36,17 +36,18 @@ package info.magnolia.ui.admincentral.mediaeditor;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.mediaeditor.action.MediaEditorActionExecutor;
 import info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent.CompletionType;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent.Handler;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorInternalEvent;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider.ActionContext;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition;
 import info.magnolia.ui.model.mediaeditor.features.MediaEditorFeatureDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
@@ -55,9 +56,6 @@ import info.magnolia.ui.vaadin.view.View;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -69,7 +67,6 @@ import com.vaadin.data.util.TransactionalPropertyWrapper;
 /**
  * Implementation of {@link MediaEditorPresenter}.
  */
-@Singleton
 public class MediaEditorPresenterImpl implements MediaEditorPresenter, ActionbarPresenter.Listener, MediaEditorInternalEvent.Handler {
 
     private Logger log = Logger.getLogger(getClass());
@@ -90,26 +87,32 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
 
     private EventBus eventBus;
 
-    private MediaEditorActionExecutor actionExecutor;
+    private ActionExecutor actionExecutor;
 
-    @Inject
+    private EditModeProviderFactory providerFactory;
+    
     public MediaEditorPresenterImpl(
             MediaEditorDefinition definition,
             EventBus eventBus,
             MediaEditorView view,
             ActionbarPresenter actionbarPresenter,
-            MediaEditorActionFactory actionFactory,
-            MediaEditorActionExecutor actionExecutor) {
+            MediaEditorActionFactory actionFactory, 
+            EditModeProviderFactory providerFactory) {
         this.eventBus = eventBus;
         this.view = view;
         this.actionFactory = actionFactory;
         this.actionbarPresenter = actionbarPresenter;
         this.definition = definition;
-        this.actionExecutor = actionExecutor;
         this.actionbarPresenter.setListener(this);
+        this.providerFactory = providerFactory;
         eventBus.addHandler(MediaEditorInternalEvent.class, this);
     }
 
+    @Override
+    public void setActionExecutor(ActionExecutor actionExecutor) {
+        this.actionExecutor = actionExecutor;
+    }
+    
     @Override
     public View start(final InputStream stream) {
         try {
@@ -200,11 +203,10 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     @Override
     public void onExecute(String actionName) {
         try {
-            actionExecutor.execute(actionName, currentMediaField);
+            actionExecutor.execute(actionName, this, providerFactory);
         } catch (ActionExecutionException e) {
             e.printStackTrace();
         }
-        //dispatchActionbarEvent(actionDefinition);
     }
 
     @Override

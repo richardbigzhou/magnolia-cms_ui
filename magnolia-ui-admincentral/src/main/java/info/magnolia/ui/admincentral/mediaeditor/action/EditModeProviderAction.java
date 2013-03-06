@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor.action;
 
-import org.apache.log4j.Logger;
-
 import info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenter;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory;
 import info.magnolia.ui.admincentral.mediaeditor.editmode.provider.EditModeProvider;
@@ -42,10 +40,12 @@ import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinition;
 
+import org.apache.log4j.Logger;
+
 /**
  * EditModeProviderAction.
  */
-public class EditModeProviderAction extends ActionBase<EditModeProviderActionDefinition> {
+public class EditModeProviderAction/*<T extends EditModeProviderActionDefinition>*/ extends ActionBase<EditModeProviderActionDefinition> {
 
     private Logger log = Logger.getLogger(getClass());
     

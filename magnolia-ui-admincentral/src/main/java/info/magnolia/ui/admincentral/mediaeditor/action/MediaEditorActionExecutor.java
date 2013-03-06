@@ -35,10 +35,10 @@ package info.magnolia.ui.admincentral.mediaeditor.action;
 
 import info.magnolia.cms.beans.config.ConfigurationException;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenter;
 import info.magnolia.ui.framework.app.action.AbstractActionExecutor;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition;
 
 import javax.inject.Inject;
 
@@ -47,22 +47,26 @@ import javax.inject.Inject;
  */
 public class MediaEditorActionExecutor extends AbstractActionExecutor {
 
-    private MediaEditorPresenter mediaEditorPresenter;
+    private MediaEditorDefinition def;
     
     @Inject
-    public MediaEditorActionExecutor(ComponentProvider componentProvider, MediaEditorPresenter mediaEditor) {
+    public MediaEditorActionExecutor(ComponentProvider componentProvider) {
         super(componentProvider);
-        this.mediaEditorPresenter = mediaEditor;
     }
 
+
+    public void setDef(MediaEditorDefinition def) {
+        this.def = def;
+    }
+    
     @Override
     protected Action createAction(String actionName, Object... args) throws ConfigurationException {
-        return super.createAction(actionName, args, mediaEditorPresenter.getCurrentMediaField());
+        return super.createAction(actionName, args);
     }
     
     @Override
     public ActionDefinition getActionDefinition(String actionName) {
-        return mediaEditorPresenter.getDefinition().getActions().get(actionName);
+        return def.getActions().get(actionName);
     }
 
 }

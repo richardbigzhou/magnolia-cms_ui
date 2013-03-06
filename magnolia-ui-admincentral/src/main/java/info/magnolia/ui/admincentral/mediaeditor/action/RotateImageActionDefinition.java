@@ -41,4 +41,7 @@ import info.magnolia.ui.model.mediaeditor.provider.EditModeProviderActionDefinit
  */
 public class RotateImageActionDefinition extends EditModeProviderActionDefinition {
 
+    public RotateImageActionDefinition() {
+        setImplementationClass(EditModeProviderAction.class);
+    }
 }

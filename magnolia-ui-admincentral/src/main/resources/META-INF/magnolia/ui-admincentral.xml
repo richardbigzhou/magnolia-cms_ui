@@ -352,24 +352,18 @@
     <!-- Media Editor Configuration -->
 
     <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactoryImpl</implementation>
-      <scope>singleton</scope>
-    </component>
-
-    <component>
       <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactory</type>
       <implementation>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactoryImpl</implementation>
-      <scope>singleton</scope>
     </component>
+   
   </components>
 
   <components>
     <id>mediaeditor</id>
+     
     <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterImpl</implementation>
-      <scope>singleton</scope>
+      <type>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactoryImpl</implementation>
     </component>
 
     <component>
@@ -381,6 +375,17 @@
       <type>info.magnolia.ui.model.action.ActionExecutor</type>
       <implementation>info.magnolia.ui.admincentral.mediaeditor.action.MediaEditorActionExecutor</implementation>
     </component>
+    
+    <component>
+      <type>info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition</type>
+      <implementation>info.magnolia.ui.model.mediaeditor.definition.ConfiguredMediaEditorDefinition</implementation>
+    </component>
+    
+    <component>
+      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory</type>
+      <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory</implementation>
+    </component>
+    
   </components>
   <!-- End of Media Editor Configuration -->
 
