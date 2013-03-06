@@ -37,6 +37,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.admincentral.field.upload.UploadFileFieldImpl;
 import info.magnolia.ui.admincentral.file.FileItemWrapper;
 import info.magnolia.ui.admincentral.file.FileItemWrapperImpl;
+import info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactory;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
@@ -70,11 +71,14 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
 
     private final SubAppContext subAppContext;
 
+    private MediaEditorPresenterFactory mediaEditorFactory;
+
     @Inject
-    public FileUploadFieldBuilder(FileUploadFieldDefinition definition, Item relatedFieldItem, Shell shell, SubAppContext subAppContext) {
+    public FileUploadFieldBuilder(FileUploadFieldDefinition definition, Item relatedFieldItem, Shell shell, SubAppContext subAppContext, MediaEditorPresenterFactory mediaEditorFactory) {
         super(definition, relatedFieldItem);
         this.shell = shell;
         this.subAppContext = subAppContext;
+        this.mediaEditorFactory = mediaEditorFactory;
     }
 
     @Override
@@ -93,7 +97,7 @@ public class FileUploadFieldBuilder extends AbstractFieldBuilder<FileUploadField
         // Create the File Wrapper.
         FileItemWrapper fileItem = new FileItemWrapperImpl(binaryDataSubNodeItem);
         // Create Upload Filed.
-        UploadFileFieldImpl uploadField = new UploadFileFieldImpl(fileItem, shell, subAppContext);
+        UploadFileFieldImpl uploadField = new UploadFileFieldImpl(fileItem, shell, subAppContext, mediaEditorFactory);
         uploadField.setInfo(true);
         uploadField.setProgressInfo(true);
         uploadField.setFileDeletion(true);

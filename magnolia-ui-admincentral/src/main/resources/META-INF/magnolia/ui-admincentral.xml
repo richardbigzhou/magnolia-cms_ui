@@ -40,7 +40,15 @@
     <component>
       <type>info.magnolia.ui.model.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager</type>
       <implementation>info.magnolia.ui.model.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager</implementation>
+      <scope>singleton</scope>
     </component>
+
+    <component>
+      <type>info.magnolia.ui.model.mediaeditor.registry.MediaEditorRegistry</type>
+      <implementation>info.magnolia.ui.model.mediaeditor.registry.MediaEditorRegistry</implementation>
+      <scope>singleton</scope>
+    </component>
+
     <component>
       <type>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeRegistry</type>
       <workspace>config</workspace>
@@ -121,8 +129,8 @@
     <type-mapping>
       <type>info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition</type>
       <implementation>info.magnolia.ui.model.mediaeditor.definition.ConfiguredMediaEditorDefinition</implementation>
-    </type-mapping>    
-    
+    </type-mapping>
+
   </components>
 
   <components>
@@ -333,7 +341,7 @@
       <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
 
-    <!-- Declaring page view for all apps embedding old adminCentral views 
+    <!-- Declaring page view for all apps embedding old adminCentral views
       in iFrame -->
     <component>
       <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
@@ -346,11 +354,13 @@
     <component>
       <type>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactory</type>
       <implementation>info.magnolia.ui.admincentral.mediaeditor.actionfactory.MediaEditorActionFactoryImpl</implementation>
+      <scope>singleton</scope>
     </component>
 
     <component>
       <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactory</type>
       <implementation>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactoryImpl</implementation>
+      <scope>singleton</scope>
     </component>
   </components>
 

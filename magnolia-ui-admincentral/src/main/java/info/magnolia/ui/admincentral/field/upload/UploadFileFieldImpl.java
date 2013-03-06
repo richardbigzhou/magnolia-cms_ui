@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.field.upload;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.file.FileItemWrapper;
 import info.magnolia.ui.admincentral.image.ImageSize;
+import info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactory;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.lightbox.Lightbox;
@@ -83,8 +84,8 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
     /**
      * Initialize basic components.
      */
-    public UploadFileFieldImpl(FileItemWrapper fileItem, Shell shell, SubAppContext subAppContext) {
-        super(fileItem, shell, subAppContext);
+    public UploadFileFieldImpl(FileItemWrapper fileItem, Shell shell, SubAppContext subAppContext, MediaEditorPresenterFactory mediaEditorFactory) {
+        super(fileItem, shell, subAppContext, mediaEditorFactory);
 
         initMessages();
 

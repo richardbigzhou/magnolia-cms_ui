@@ -36,10 +36,13 @@ package info.magnolia.ui.admincentral.field.upload;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.file.FileBufferPropertiesAdapter;
 import info.magnolia.ui.admincentral.file.FileItemWrapper;
+import info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenter;
+import info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactory;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent;
+import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent.Handler;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.view.ModalCloser;
-import info.magnolia.ui.vaadin.view.View;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -158,16 +161,19 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     // For opening mediaEditor on a modal on the subApp.
     private final SubAppContext subAppContext;
 
+    private MediaEditorPresenterFactory mediaEditorFactory;
+
     /**
      * Basic constructor.
      *
      * @param fileItem used to store the File properties like binary data, file name,
      * etc.
      */
-    public AbstractUploadFileField(D fileItem, Shell shell, SubAppContext subAppContext) {
+    public AbstractUploadFileField(D fileItem, Shell shell, SubAppContext subAppContext, MediaEditorPresenterFactory mediaEditorFactory) {
         this.fileItem = fileItem;
         this.shell = shell;
         this.subAppContext = subAppContext;
+        this.mediaEditorFactory = mediaEditorFactory;
         deleteFileCaption = MessagesUtil.get("field.upload.remove.file");
         editFileCaption = MessagesUtil.get("field.upload.edit.file");
         setStorageMode();
@@ -382,34 +388,24 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
 
         ByteArrayInputStream inputStream = this.fileItem.getStream();
 
-        View placeholderView = new View() {
+        MediaEditorPresenter mediaEditorPresenter = mediaEditorFactory.getPresenterById("ui-admincentral:image");
+
+        final ModalCloser modalCloser = subAppContext.openModal(mediaEditorPresenter.start(inputStream));
+        mediaEditorPresenter.addCompletionHandler(new Handler() {
             @Override
-            public Component asVaadinComponent() {
-                return mediaEditorPlaceholder;
+            public void onSubmit(MediaEditorCompletedEvent event) {
+                final InputStream is = event.getStream();
+                updateFileMedia(is);
+                // Update the display to show changes to media.
+                updateDisplay();
+                modalCloser.close();
             }
-        };
 
-        final ModalCloser modalCloser = subAppContext.openModal(placeholderView);
-
-        mediaEditorPlaceholder.addClickListener(new Button.ClickListener() {
             @Override
-            public void buttonClick(ClickEvent event) {
+            public void onCancel(MediaEditorCompletedEvent event) {
                 modalCloser.close();
             }
         });
-    }
-
-    /**
-     * Handle the {@link MediaEditorCompletedEvent}.
-     */
-    protected void handleMediaEditorCompletedEvent(Event event) {
-
-        // Create test stream.
-        InputStream inputStream = new ByteArrayInputStream(null);
-        updateFileMedia(inputStream);
-
-        // Update the display to show changes to media.
-        updateDisplay();
     }
 
     protected void updateFileMedia(InputStream inputStream) {

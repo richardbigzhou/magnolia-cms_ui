@@ -52,11 +52,11 @@ import info.magnolia.ui.model.mediaeditor.features.MediaEditorFeatureDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.view.View;
 
-import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.apache.commons.io.IOUtils;
@@ -92,6 +92,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
 
     private MediaEditorActionExecutor actionExecutor;
 
+    @Inject
     public MediaEditorPresenterImpl(
             MediaEditorDefinition definition,
             EventBus eventBus,
@@ -145,26 +146,16 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     @Override
     public void onSubmit(MediaEditorInternalEvent event) {
         transactionHandler.commit();
-        try {
-            OutputStream stream = new ByteArrayOutputStream();
-            stream.write(transactionHandler.getValue());
-            eventBus.fireEvent(new MediaEditorCompletedEvent(CompletionType.SUBMIT, stream));
-        } catch (IOException e) {
-            log.error("Error occured while producing the output stream: " + e.getMessage(), e);
-        }
+        InputStream is = new ByteArrayInputStream(transactionHandler.getValue());
+        eventBus.fireEvent(new MediaEditorCompletedEvent(CompletionType.SUBMIT, is));
     }
 
     @Override
     public void onCancelAll(MediaEditorInternalEvent event) {
         transactionHandler.rollback();
         transactionHandler.startTransaction();
-        try {
-            OutputStream stream = new ByteArrayOutputStream();
-            stream.write(transactionHandler.getValue());
-            eventBus.fireEvent(new MediaEditorCompletedEvent(CompletionType.CANCEL, stream));
-        } catch (IOException e) {
-            log.error("Error occured while producing the output stream: " + e.getMessage(), e);
-        }
+        InputStream is = new ByteArrayInputStream(transactionHandler.getValue());
+        eventBus.fireEvent(new MediaEditorCompletedEvent(CompletionType.CANCEL, is));
     }
 
     @Override
@@ -197,7 +188,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     }
 
     private void switchToDefaultMode() {
-        
+
         //switchEditMode(definition.getDefaultEditModeProvider());
     }
 

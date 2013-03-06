@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.admincentral.mediaeditor.editmode.event;
 
-import java.io.OutputStream;
-
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
+
+import java.io.InputStream;
 
 /**
  * MediaEditorCompletedEvent.
@@ -46,37 +46,37 @@ public class MediaEditorCompletedEvent implements Event<MediaEditorCompletedEven
     /**
      * CompletionType.
      */
-    public enum CompletionType {  
+    public enum CompletionType {
         SUBMIT,
         CANCEL;
     };
-    
+
     private CompletionType type;
-    
-    private OutputStream stream;
-    
-    public MediaEditorCompletedEvent(CompletionType type, OutputStream stream) {
+
+    private InputStream stream;
+
+    public MediaEditorCompletedEvent(CompletionType type, InputStream stream) {
         this.stream = stream;
         this.type = type;
     }
-    
-    public OutputStream getStream() {
+
+    public InputStream getStream() {
         return stream;
     }
-    
+
     public CompletionType getType() {
         return type;
     }
-    
-    /** 
+
+    /**
      * Handler.
      */
     public interface Handler extends EventHandler {
-        
+
         void onSubmit(MediaEditorCompletedEvent event);
-        
+
         void onCancel(MediaEditorCompletedEvent event);
-        
+
     }
 
     @Override

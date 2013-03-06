@@ -66,13 +66,13 @@ import org.slf4j.LoggerFactory;
 public class ConfiguredMediaEditorDefinitionManager  extends ModuleConfigurationObservingManager {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-    
+
     public static final String MEDIA_EDITORS_CONFIG_NODE_NAME = "mediaEditors";
 
     private Set<String> registeredIds = new HashSet<String>();
-    
+
     private final MediaEditorRegistry registry;
-    
+
     @Inject
     protected ConfiguredMediaEditorDefinitionManager(ModuleRegistry moduleRegistry, MediaEditorRegistry registry) {
         super(MEDIA_EDITORS_CONFIG_NODE_NAME, moduleRegistry);
@@ -92,7 +92,7 @@ public class ConfiguredMediaEditorDefinitionManager  extends ModuleConfiguration
                             // This will filter the fields in dialogs used by the extends mechanism.
                             MediaEditorDefinition definition = createMediaEditorDefinition(editorNode);
                             if (definition != null) {
-                                definitions.add(definition);   
+                                definitions.add(definition);
                             }
                         } else {
                             log.warn("node " + editorNode.getName() + " will not be handled as Dialog.");
@@ -103,7 +103,7 @@ public class ConfiguredMediaEditorDefinitionManager  extends ModuleConfiguration
         }
         this.registeredIds = registry.unregisterAndRegister(registeredIds, definitions);
     }
-    
+
     protected MediaEditorDefinition createMediaEditorDefinition(Node editorNode) throws RepositoryException {
         String id = createId(editorNode);
         try {
@@ -126,7 +126,7 @@ public class ConfiguredMediaEditorDefinitionManager  extends ModuleConfiguration
         final String moduleName = pathElements[2];
         return moduleName + ":" + StringUtils.removeStart(path, "/modules/" + moduleName + "/" + MEDIA_EDITORS_CONFIG_NODE_NAME + "/");
     }
-    
+
     private boolean isMediaEditor(Node mediaEditorNode) {
         return true;
     }
