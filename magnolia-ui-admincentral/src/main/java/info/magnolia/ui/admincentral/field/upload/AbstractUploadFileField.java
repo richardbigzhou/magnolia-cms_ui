@@ -158,7 +158,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     private final Shell shell;
 
     // For opening mediaEditor on a modal on the subApp.
-    private final SubAppContext subAppContext;
+    protected final SubAppContext subAppContext;
 
     /**
      * Basic constructor.

@@ -38,6 +38,8 @@ import info.magnolia.ui.admincentral.file.FileItemWrapper;
 import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.view.View;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -51,8 +53,10 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.Upload.StartedEvent;
 
 /**
@@ -242,13 +246,36 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
             @Override
             public void buttonClick(ClickEvent event) {
                 // Launch Lightbox component
-                // Lightbox lightbox = new Lightbox();
-                // lightbox.setSource(previewResource);
-                // lightbox.attach();
+                openLightbox(previewResource);
             }
         });
 
         return previewLayout;
+    }
+
+    /**
+     * Open a lightbox with the media of this file.
+     */
+    protected void openLightbox(final Resource imageResource) {
+
+        final NativeButton mediaEditorPlaceholder = new NativeButton("Media Editor Placeholder (Close Dialog)");
+        mediaEditorPlaceholder.addStyleName("btn-form btn-form-commit");
+
+        View lightboxView = new View() {
+            @Override
+            public Component asVaadinComponent() {
+                return new Embedded("", imageResource);
+            }
+        };
+
+        final ModalCloser modalCloser = subAppContext.openModal(lightboxView);
+
+        // mediaEditorPlaceholder.addClickListener(new Button.ClickListener() {
+        // @Override
+        // public void buttonClick(ClickEvent event) {
+        // modalCloser.close();
+        // }
+        // });
     }
 
     @Override
