@@ -75,7 +75,9 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
     private String chooseNewCaption;
     private String dragHintCaption;
     private String fileNameCaption;
+    private String fileFormatCaption;
     private String fileSizeCaption;
+
     private String mimeTypeRegExp;
 
     private final CssLayout layout;
@@ -191,11 +193,9 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         if (preview && !fileItem.isEmpty()) {
             Component preview = fileItem.createPreview();
             Resource previewResource = fileItem.getResource();
-            // layout.addComponent(preview);
 
-            Component previewComponent = buildPreviewComponent(preview, previewResource);
+            Component previewComponent = createFullPreviewComponent(preview, previewResource);
             layout.addComponent(previewComponent);
-
         }
         getRootLayout().addStyleName("upload");
         getRootLayout().removeStyleName("in-progress");
@@ -203,31 +203,34 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         getRootLayout().addStyleName("done");
     }
 
-    public Component buildPreviewComponent(Component preview, final Resource previewResource) {
+    /**
+     * Create a preview image with a button in lower-left to open the media in a lightbox,
+     * and a button in the lower-right to open the MediaEditor.
+     */
+    protected Component createFullPreviewComponent(Component preview, final Resource previewResource) {
 
         AbsoluteLayout previewLayout = new AbsoluteLayout();
-
         previewLayout.addStyleName("file-preview-area");
-
-        // previewLayout.setWidth(preview.getWidth() + "px");
-        // previewLayout.setHeight(preview.getHeight() + "px");
         previewLayout.setWidth("150px");
         previewLayout.setHeight("150px");
 
         previewLayout.addComponent(preview, "top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 0;");
 
-        // Add buttons to the preview image
+        // Add buttons to the preview layout
+
         Button lightboxButton = new Button();
         lightboxButton.setHtmlContentAllowed(true);
         lightboxButton.setCaption("<span class=\"" + "icon-search" + "\"></span>");
-        lightboxButton.setDescription("View in Lightbox");
+        lightboxButton.setDescription(lightboxCaption);
         previewLayout.addComponent(lightboxButton, "left: 0px; bottom: 0px; z-index: 1;");
 
         Button editButton = new Button();
         editButton.setHtmlContentAllowed(true);
         editButton.setCaption("<span class=\"" + "icon-edit" + "\"></span>");
-        editButton.setDescription("Edit media");
+        editButton.setDescription(editFileCaption);
         previewLayout.addComponent(editButton, "right: 0px; bottom: 0px; z-index: 1;");
+
+        // Button handlers
 
         editButton.addClickListener(new Button.ClickListener() {
             @Override
@@ -245,12 +248,10 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
                 Lightbox lightbox = new Lightbox();
                 lightbox.setSource(previewResource);
                 lightbox.attach();
-
             }
         });
 
         return previewLayout;
-
     }
 
     @Override
@@ -282,7 +283,7 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
 
         // Title
         sb.append("<span class=\"value\">");
-        sb.append("Image details"); // TODO CLZ Should be dynamic based on type - should come from string resource. - should have own css class.
+        sb.append("Image details");
         sb.append("</span>");
         sb.append("<br/><br/>");
 
@@ -310,7 +311,7 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
 
         // Format
         sb.append("<span class=\"key\">");
-        sb.append("Format"); // TODO CLZ use a variable.
+        sb.append("Format");
         sb.append("</span>");
         sb.append("<span class=\"value\">");
         sb.append(this.fileItem.getFormat());
@@ -326,6 +327,7 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         dragHintCaption = MessagesUtil.get("field.upload.drag.hint");
         fileNameCaption = MessagesUtil.get("field.upload.file.name");
         fileSizeCaption = MessagesUtil.get("field.upload.file.size");
+        fileFormatCaption = MessagesUtil.get("field.upload.file.format");
     }
 
     /**

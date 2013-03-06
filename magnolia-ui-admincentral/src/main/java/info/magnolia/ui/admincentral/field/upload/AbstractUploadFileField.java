@@ -120,9 +120,11 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
 
     private long maxUploadSize = Long.MAX_VALUE;
 
-    private final String deleteFileCaption;
+    protected final String deleteFileCaption;
 
-    private final String editFileCaption;
+    protected final String editFileCaption;
+
+    protected final String lightboxCaption;
 
     // Define global variable used by this implementation
     protected D fileItem;
@@ -170,6 +172,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
         this.subAppContext = subAppContext;
         deleteFileCaption = MessagesUtil.get("field.upload.remove.file");
         editFileCaption = MessagesUtil.get("field.upload.edit.file");
+        lightboxCaption = MessagesUtil.get("lightbox.view");
         setStorageMode();
         createUpload();
     }
@@ -361,8 +364,6 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
                 // Launch MediaEditor for this item.
                 openMediaEditor();
 
-                // fileItem.unLinkItemFromParent();
-                // fileItem.clearProperties();
                 updateDisplay();
             }
         });
@@ -414,8 +415,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
 
     protected void updateFileMedia(InputStream inputStream) {
         this.fileItem.updateMediaWithStream(inputStream);
-        // buildUploadDoneLayout();
-        // fireValueChange(true);
+        fireValueChange(true);
         this.fileItem.populateJcrItemProperty();
     }
 
