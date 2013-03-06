@@ -95,8 +95,8 @@ public class FileItemWrapperImpl implements FileItemWrapper {
             if (data != null) {
                 binaryData = (byte[]) data.getValue();
                 fileSize = Long.parseLong(jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).getValue().toString());
-                mimeType = (String) jcrItem.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue();
-                extension = (String) jcrItem.getItemProperty(FileProperties.PROPERTY_EXTENSION).getValue();
+                mimeType = String.valueOf(jcrItem.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue());
+                extension = String.valueOf(jcrItem.getItemProperty(FileProperties.PROPERTY_EXTENSION).getValue());
                 if (isImage()) {
                     imageSize = new ImageSize(Long.parseLong(jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue().toString()), Long.parseLong(jcrItem.getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue().toString()));
                     width = imageSize.getWidth();
@@ -128,11 +128,11 @@ public class FileItemWrapperImpl implements FileItemWrapper {
         jcrItem.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(StringUtils.substringBefore(fileName, "."));
         jcrItem.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).setValue(mimeType);
         jcrItem.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED).setValue(new Date());
-        jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(fileSize);
+        jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(String.valueOf(fileSize));
         jcrItem.getItemProperty(FileProperties.PROPERTY_EXTENSION).setValue(PathUtil.getExtension(fileName));
         if (isImage()) {
-            jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).setValue(width);
-            jcrItem.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(height);
+            jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).setValue(String.valueOf(width));
+            jcrItem.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(String.valueOf(height));
         }
     }
 
