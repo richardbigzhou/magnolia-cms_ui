@@ -69,7 +69,7 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
     /**
      * Creates an action using the implementation configured for the given action definition. The
      * parameters are made available for injection when the instance is created. The definition
-     * object given is also available for injection. The method has package visibility for the sake of testing.
+     * object given is also available for injection.
      */
     protected Action createAction(String actionName, Object... args) throws ConfigurationException {
         final ActionDefinition actionDefinition = getActionDefinition(actionName);
