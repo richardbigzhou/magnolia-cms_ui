@@ -160,9 +160,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
         fileSize = receiver.getFileSize();
         mimeType = receiver.getMimeType();
         if (isImage()) {
-            imageSize = ImageSize.valueOf(new ByteArrayInputStream(getBinaryData()));
-            width = imageSize.getWidth();
-            height = imageSize.getHeight();
+            updateImageProperties();
         }
     }
 
@@ -175,11 +173,18 @@ public class FileItemWrapperImpl implements FileItemWrapper {
             return;
         }
 
-        // if (isImage()) {
-            imageSize = ImageSize.valueOf(new ByteArrayInputStream(getBinaryData()));
-            width = imageSize.getWidth();
-            height = imageSize.getHeight();
-        // }
+        if (isImage()) {
+            updateImageProperties();
+        }
+    }
+
+    /**
+     * Update the imageSize, width, height members based on the binaryData.
+     */
+    private void updateImageProperties() {
+        imageSize = ImageSize.valueOf(new ByteArrayInputStream(getBinaryData()));
+        width = imageSize.getWidth();
+        height = imageSize.getHeight();
     }
 
     /**

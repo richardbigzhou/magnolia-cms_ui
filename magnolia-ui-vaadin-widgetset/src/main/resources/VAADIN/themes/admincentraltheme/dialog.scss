@@ -3,12 +3,7 @@
 @mixin dialog {
 
 .dialog-panel {
-  position:absolute;
-  top:2px;
-  bottom:2px;
-  left:50%;
   width:720px;
-  margin-left:-360px;
   padding:0;
 }
 
@@ -55,37 +50,33 @@
   margin-right: 35px;
 }
 
-/* TODO: Remove defintion: .dialog-panel.content-view-field-wrapper, see:MGNLUI-766 */
-.dialog-panel.content-view-field-wrapper,
-.dialog-panel {
-  position:absolute;
-  top:2px;
-  bottom:2px;
-  left:50%;
-  width:720px;
-  margin-left:-360px;
-  padding:0;
-}
-
-
 .modal{
 	position: absolute;
-	display: block;
 	top: 0px;
 	bottom:0px;
 	left: 0px;
 	right: 0px;
+	text-align: center;
 }
-.modal-child{
-    position:absolute;
+
+.modal-child {
+  display: inline-block;
+  position: relative;
+  margin-top: 2px;
 }
+
+.lightbox-image > img {
+    max-width: 720px;
+    max-height: 400px;
+    cursor: pointer;
+}
+
 .modal-curtain{
     position:absolute;
     top:0px;
     bottom:0px;
     left:0px;
     right:0px;
-
     background-color:#000;
     opacity:0.8;
     filter:alpha(opacity = 80);
@@ -93,14 +84,16 @@
 
 /* Set proper stacking for modals */
 .modal.app,
-.modal.sub-app{
+.modal.sub-app {
     z-index:50;
 }
+
 .modal.shell{
 	z-index:500;
 }
+
 .modal.shell .modal-child{
-    top:60px;
+  top:60px;
 }
 
 

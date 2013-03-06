@@ -43,6 +43,7 @@ import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompl
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.view.View;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -54,10 +55,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.server.Resource;
 import com.vaadin.server.StreamVariable;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
@@ -123,9 +126,11 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
 
     private long maxUploadSize = Long.MAX_VALUE;
 
-    private final String deleteFileCaption;
+    protected final String deleteFileCaption;
 
-    private final String editFileCaption;
+    protected final String editFileCaption;
+
+    protected final String lightboxCaption;
 
     // Define global variable used by this implementation
     protected D fileItem;
@@ -176,6 +181,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
         this.mediaEditorFactory = mediaEditorFactory;
         deleteFileCaption = MessagesUtil.get("field.upload.remove.file");
         editFileCaption = MessagesUtil.get("field.upload.edit.file");
+        lightboxCaption = MessagesUtil.get("lightbox.view");
         setStorageMode();
         createUpload();
     }
@@ -367,8 +373,6 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
                 // Launch MediaEditor for this item.
                 openMediaEditor();
 
-                // fileItem.unLinkItemFromParent();
-                // fileItem.clearProperties();
                 updateDisplay();
             }
         });
@@ -408,10 +412,46 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
         });
     }
 
+    /**
+     * Open a lightbox with the media of this file.
+     */
+    protected void openLightbox(final Resource imageResource) {
+
+        final Embedded imageComponent = new Embedded("", imageResource);
+        imageComponent.addStyleName("lightbox-image");
+        View lightboxView = new View() {
+            @Override
+            public Component asVaadinComponent() {
+                return imageComponent;
+            }
+        };
+
+        final ModalCloser lightbox = subAppContext.openModal(lightboxView);
+        imageComponent.addClickListener(new ClickListener() {
+
+            @Override
+            public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
+                lightbox.close();
+            }
+        });
+    }
+
+    /**
+     * Handle the {@link MediaEditorCompletedEvent}.
+     */
+    protected void handleMediaEditorCompletedEvent(Event event) {
+
+        // Create test stream.
+        InputStream inputStream = new ByteArrayInputStream(null);
+        updateFileMedia(inputStream);
+
+        // Update the display to show changes to media.
+        updateDisplay();
+    }
+
     protected void updateFileMedia(InputStream inputStream) {
         this.fileItem.updateMediaWithStream(inputStream);
-        // buildUploadDoneLayout();
-        // fireValueChange(true);
+        fireValueChange(true);
         this.fileItem.populateJcrItemProperty();
     }
 

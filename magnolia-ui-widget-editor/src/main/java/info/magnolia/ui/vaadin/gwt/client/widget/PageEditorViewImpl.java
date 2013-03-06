@@ -110,6 +110,7 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
     @Override
     public void reload() {
         handler.reloadIFrame(iframe.getElement());
+        handler.notifyUrlChange();
     }
 
     @Override
