@@ -51,10 +51,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.server.Resource;
 import com.vaadin.server.StreamVariable;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
@@ -158,7 +160,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     private final Shell shell;
 
     // For opening mediaEditor on a modal on the subApp.
-    protected final SubAppContext subAppContext;
+    private final SubAppContext subAppContext;
 
     /**
      * Basic constructor.
@@ -396,6 +398,30 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
             @Override
             public void buttonClick(ClickEvent event) {
                 modalCloser.close();
+            }
+        });
+    }
+
+    /**
+     * Open a lightbox with the media of this file.
+     */
+    protected void openLightbox(final Resource imageResource) {
+
+        final Embedded imageComponent = new Embedded("", imageResource);
+        imageComponent.addStyleName("lightbox-image");
+        View lightboxView = new View() {
+            @Override
+            public Component asVaadinComponent() {
+                return imageComponent;
+            }
+        };
+
+        final ModalCloser lightbox = subAppContext.openModal(lightboxView);
+        imageComponent.addClickListener(new ClickListener() {
+
+            @Override
+            public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
+                lightbox.close();
             }
         });
     }

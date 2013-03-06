@@ -38,14 +38,11 @@ import info.magnolia.ui.admincentral.file.FileItemWrapper;
 import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.view.ModalCloser;
-import info.magnolia.ui.vaadin.view.View;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
@@ -54,7 +51,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Upload.StartedEvent;
@@ -251,30 +247,6 @@ public class UploadFileFieldImpl extends AbstractUploadFileField<FileItemWrapper
         });
 
         return previewLayout;
-    }
-
-    /**
-     * Open a lightbox with the media of this file.
-     */
-    protected void openLightbox(final Resource imageResource) {
-
-        final Embedded imageComponent = new Embedded("", imageResource);
-        imageComponent.addStyleName("lightbox-image");
-        View lightboxView = new View() {
-            @Override
-            public Component asVaadinComponent() {
-                return imageComponent;
-            }
-        };
-
-        final ModalCloser lightbox = subAppContext.openModal(lightboxView);
-        imageComponent.addClickListener(new ClickListener() {
-
-            @Override
-            public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
-                lightbox.close();
-            }
-        });
     }
 
     @Override
