@@ -183,8 +183,10 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      */
     private void updateImageProperties() {
         imageSize = ImageSize.valueOf(new ByteArrayInputStream(getBinaryData()));
-        width = imageSize.getWidth();
-        height = imageSize.getHeight();
+        if (imageSize != null) {
+            width = imageSize.getWidth();
+            height = imageSize.getHeight();   
+        }
     }
 
     /**
