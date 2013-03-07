@@ -62,7 +62,7 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 
 /**
- * Basic Bean containing the File informations.
+ * Basic Bean containing the File information.
  */
 public class FileItemWrapperImpl implements FileItemWrapper {
     private static final Logger log = LoggerFactory.getLogger(FileItemWrapperImpl.class);
@@ -74,8 +74,6 @@ public class FileItemWrapperImpl implements FileItemWrapper {
     private String extension;
     private String fileName;
     private ImageSize imageSize;
-    private long width;
-    private long height;
 
     protected JcrItemNodeAdapter jcrItem;
 
@@ -99,8 +97,6 @@ public class FileItemWrapperImpl implements FileItemWrapper {
                 }
                 if (isImage()) {
                     imageSize = new ImageSize(Long.parseLong(jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).getValue().toString()), Long.parseLong(jcrItem.getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue().toString()));
-                    width = imageSize.getWidth();
-                    height = imageSize.getHeight();
                 }
             }
         }
@@ -129,9 +125,9 @@ public class FileItemWrapperImpl implements FileItemWrapper {
         jcrItem.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).setValue(mimeType);
         jcrItem.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED).setValue(new Date());
         jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(fileSize);
-        if (isImage()) {
-            jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).setValue(width);
-            jcrItem.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(height);
+        if (isImage() && imageSize != null) {
+            jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).setValue(imageSize.getWidth());
+            jcrItem.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(imageSize.getHeight());
         }
     }
 
@@ -182,10 +178,6 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      */
     private void updateImageProperties() {
         imageSize = ImageSize.valueOf(new ByteArrayInputStream(getBinaryData()));
-        if (imageSize != null) {
-            width = imageSize.getWidth();
-            height = imageSize.getHeight();   
-        }
     }
 
     /**
@@ -198,8 +190,6 @@ public class FileItemWrapperImpl implements FileItemWrapper {
         fileSize = -1;
         if (isImage()) {
             imageSize = null;
-            width = -1;
-            height = -1;
         }
         mimeType = null;
     }
