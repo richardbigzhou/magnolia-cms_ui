@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.file;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
+import info.magnolia.cms.util.PathUtil;
 import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
@@ -125,10 +126,10 @@ public class FileItemWrapperImpl implements FileItemWrapper {
         jcrItem.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).setValue(mimeType);
         jcrItem.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED).setValue(new Date());
         jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(fileSize);
+        jcrItem.getItemProperty(FileProperties.PROPERTY_EXTENSION).setValue(StringUtils.isNotBlank(PathUtil.getExtension(fileName)) ? PathUtil.getExtension(fileName) : extension);
         if (isImage() && imageSize != null) {
             jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).setValue(imageSize.getWidth());
-            jcrItem.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(imageSize.getHeight());
-        }
+            jcrItem.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(imageSize.getHeight());        }
     }
 
     /**

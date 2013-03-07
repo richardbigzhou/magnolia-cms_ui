@@ -93,6 +93,7 @@ public class FileItemWrapperImplTest {
         adapter.addItemProperty(FileProperties.PROPERTY_SIZE, new DefaultProperty(FileProperties.PROPERTY_SIZE, Long.class, size));
         adapter.addItemProperty(FileProperties.PROPERTY_HEIGHT, new DefaultProperty(FileProperties.PROPERTY_HEIGHT, Long.class, height));
         adapter.addItemProperty(FileProperties.PROPERTY_WIDTH, new DefaultProperty(FileProperties.PROPERTY_WIDTH, Long.class, widht));
+        adapter.addItemProperty(FileProperties.PROPERTY_EXTENSION, new DefaultProperty(FileProperties.PROPERTY_EXTENSION, String.class, "gif"));
 
         FileItemWrapperImpl wrapper = new FileItemWrapperImpl(adapter);
 
