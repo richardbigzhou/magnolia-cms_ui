@@ -129,10 +129,10 @@ public class FileItemWrapperImpl implements FileItemWrapper {
         jcrItem.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(StringUtils.substringBefore(fileName, "."));
         jcrItem.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).setValue(mimeType);
         jcrItem.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED).setValue(new Date());
-        jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(String.valueOf(fileSize));
+        jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(fileSize);
         if (isImage()) {
-            jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).setValue(String.valueOf(width));
-            jcrItem.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(String.valueOf(height));
+            jcrItem.getItemProperty(FileProperties.PROPERTY_WIDTH).setValue(width);
+            jcrItem.getItemProperty(FileProperties.PROPERTY_HEIGHT).setValue(height);
         }
     }
 
