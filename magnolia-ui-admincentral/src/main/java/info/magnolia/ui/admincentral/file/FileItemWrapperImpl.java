@@ -55,7 +55,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
 import com.vaadin.server.Resource;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.Component;
@@ -222,7 +221,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      * Create an Resource from the contents.
      */
     private Resource getImageResource() {
-        ImageSize scaledImageSize = imageSize.scaleToFitIfLarger(1000, 1000);
+        imageSize.scaleToFitIfLarger(1000, 1000);
 
         final StreamSource source = new StreamResource.StreamSource() {
             @Override
@@ -260,8 +259,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      * Create an Embedded Image.
      */
     private Component createImagePreview() {
-        ImageSize scaledImageSize = imageSize.scaleToFitIfLarger(150, 150);
-
+        imageSize.scaleToFitIfLarger(150, 150);
         final StreamSource source = new StreamResource.StreamSource() {
             @Override
             public InputStream getStream() {
@@ -276,12 +274,10 @@ public class FileItemWrapperImpl implements FileItemWrapper {
             }
         };
 
-        final Image embedded = new Image(null, imageResource);
-        embedded.setWidth(scaledImageSize.getWidth(), Unit.PIXELS);
-        embedded.setHeight(scaledImageSize.getHeight(), Unit.PIXELS);
-        // TODO: CLZ: embedded.addStyleName("image");
+        final Image image = new Image(null, imageResource);
+        image.addStyleName("preview-image");
 
-        return embedded;
+        return image;
     }
 
 
@@ -290,7 +286,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
      */
     private Component createFilePreview() {
         Label preview = new Label();
-        preview.addStyleName("image");
+        preview.addStyleName("preview-image");
         preview.addStyleName("file-preview");
         preview.addStyleName(resolveIconClassName());
         return preview;
