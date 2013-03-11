@@ -10,7 +10,7 @@
     <sv:value>97f20031-1ae4-4ef8-97df-0e9b1a21b926</sv:value>
   </sv:property>
   <sv:property sv:name="definition" sv:type="String">
-    <sv:value>info.magnolia.ui.app.contacts.form.action.SaveContactFormActionDefinition</sv:value>
+    <sv:value>info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition</sv:value>
   </sv:property>
   <sv:property sv:name="implementation" sv:type="String">
     <sv:value>info.magnolia.ui.app.contacts.form.action.SaveContactFormAction</sv:value>
