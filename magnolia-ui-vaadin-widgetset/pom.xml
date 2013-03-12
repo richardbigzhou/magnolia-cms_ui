@@ -94,45 +94,6 @@
   </build>
   <profiles>
     <profile>
-        <id>sass-compile-production</id>
-        <build>
-            <plugins>
-              <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>groovy-maven-plugin</artifactId>
-                <executions>
-                  <execution>
-                    <phase>prepare-package</phase>
-                    <goals>
-                      <goal>execute</goal>
-                    </goals>
-                    <configuration>
-                      <classpath>
-                        <element>
-                          <groupId>info.magnolia.ui</groupId>
-                          <artifactId>magnolia-ui-vaadin-theme</artifactId>
-                        </element>
-                      </classpath>
-                      <source>
-                        import com.vaadin.sass.SassCompiler
-
-                        new File("./").eachFileRecurse{
-                          if(it.path =~ /\/target\/.*\/VAADIN\/.*\.scss$/) {
-                              def sassFile = it.path
-                              def cssFile = it.path.replaceAll(".scss", ".css")
-                              println "Compiling Sass file " + sassFile + " -&gt; " + cssFile
-                              SassCompiler.main([sassFile, cssFile] as String[])
-                          }
-                        }
-                      </source>
-                    </configuration>
-                  </execution>
-                </executions>
-              </plugin>
-            </plugins>
-        </build>
-    </profile>
-    <profile>
       <id>gwt-compile-production</id>
       <activation>
         <activeByDefault>true</activeByDefault>
@@ -141,6 +102,45 @@
         <draftCompile>false</draftCompile>
         <inplace>false</inplace>
       </properties>
+        <build>
+          <plugins>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>groovy-maven-plugin</artifactId>
+              <executions>
+                <execution>
+                  <phase>prepare-package</phase>
+                  <goals>
+                    <goal>execute</goal>
+                  </goals>
+                  <configuration>
+                    <classpath>
+                      <element>
+                        <groupId>info.magnolia.ui</groupId>
+                        <artifactId>magnolia-ui-vaadin-theme</artifactId>
+                      </element>
+                    </classpath>
+                    <source>
+                      import com.vaadin.sass.SassCompiler
+                      import java.util.regex.Matcher
+
+                      new File("${project.basedir}/..").eachFileRecurse {
+                        if (it.path =~ /\/target\/.*(\/VAADIN\/.*)(\/.*)\.scss$/) {
+                            def sassFile = it.path
+                            def cssPath = "${project.basedir}/target/classes"+Matcher.lastMatcher[0][1]
+                            def cssFile = cssPath + Matcher.lastMatcher[0][2]+".css" 
+                            println "Compiling Sass file " + sassFile + " -&gt; " + cssFile
+                            new File(cssPath).mkdirs();
+                            SassCompiler.main([sassFile, cssFile] as String[])
+                        }
+                      }
+                    </source>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </build>
     </profile>
     <profile>
       <id>gwt-compile-draft-inplace</id>

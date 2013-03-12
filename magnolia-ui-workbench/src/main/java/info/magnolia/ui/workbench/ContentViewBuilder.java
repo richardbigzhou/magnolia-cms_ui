@@ -38,7 +38,7 @@ import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 /**
- * Used to transform tree or list and column definitions into components.
+ * Builds a {@link ContentView} for a specific view type based on a workbench definition.
  */
 public interface ContentViewBuilder {
 

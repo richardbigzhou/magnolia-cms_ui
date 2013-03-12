@@ -67,6 +67,14 @@
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
+      <type>info.magnolia.ui.contentapp.ContentSubAppDescriptor</type>
+      <implementation>info.magnolia.ui.contentapp.ConfiguredContentSubAppDescriptor</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.contentapp.ItemSubAppDescriptor</type>
+      <implementation>info.magnolia.ui.contentapp.ConfiguredItemSubAppDescriptor</implementation>
+    </type-mapping>
+    <type-mapping>
       <type>info.magnolia.ui.workbench.definition.WorkbenchDefinition</type>
       <implementation>info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
     </type-mapping>

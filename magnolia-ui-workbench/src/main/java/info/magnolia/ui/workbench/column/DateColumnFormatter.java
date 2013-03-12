@@ -48,7 +48,7 @@ import com.vaadin.data.Property;
 import com.vaadin.ui.Table;
 
 /**
- * Date Column formatter. Formats dates to a compact format.
+ * Formats a column's value as a date in a compact form.
  */
 public class DateColumnFormatter extends AbstractColumnFormatter<MetaDataColumnDefinition> {
 
@@ -66,11 +66,12 @@ public class DateColumnFormatter extends AbstractColumnFormatter<MetaDataColumnD
     public Object generateCell(Table source, Object itemId, Object columnId) {
         Item item = source.getItem(itemId);
         Property prop = item.getItemProperty(columnId);
-        // Need to check prop.getValue() before prop.getType() to avoid
-        // nullpointerexception if value is null.
+
+        // Need to check prop.getValue() before prop.getType() to avoid nullpointerexception if value is null.
         if (prop != null && prop.getValue() != null && prop.getType().equals(Date.class)) {
             return dateFormatter.format(prop.getValue());
         }
+
         return null;
     }
 }

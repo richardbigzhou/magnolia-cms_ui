@@ -67,7 +67,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
 
     private static final Logger log = LoggerFactory.getLogger(LinkFieldSelectionBuilder.class);
 
-    private final EventBus appEventBus;
+    private final EventBus chooseDialogEventBus;
 
     private final ChooseDialogContentPresenter contentPresenter;
 
@@ -76,10 +76,10 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
     private TextAndContentViewField textContent;
 
     @Inject
-    public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem, ChooseDialogContentPresenter contentPresenter, @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) final EventBus eventbus) {
+    public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem, ChooseDialogContentPresenter contentPresenter, @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) final EventBus chooseDialogEventBus) {
         super(definition, relatedFieldItem);
         this.contentPresenter = contentPresenter;
-        this.appEventBus = eventbus;
+        this.chooseDialogEventBus = chooseDialogEventBus;
         // Item is build by the LinkFieldBuilder and has only one property.
         // This property has the name of property we are supposed to propagate.
         propertyName = String.valueOf(relatedFieldItem.getItemPropertyIds().iterator().next());
@@ -97,7 +97,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
         // Set selected item.
         restoreContentSelection();
         // On a selected Item, propagate the specified Column Value to the TextField.
-        appEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+        chooseDialogEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
                 final Node selected = SessionUtil.getNode(event.getWorkspace(), event.getPath());

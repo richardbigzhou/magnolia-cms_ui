@@ -37,7 +37,10 @@ import info.magnolia.ui.workbench.column.builder.ColumnBuilder;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
 /**
- * Builder for building a workbench definition.
+ * Builder for creating a workbench definition.
+ *
+ * @see info.magnolia.ui.workbench.definition.WorkbenchDefinition
+ * @see WorkbenchConfig
  */
 public class WorkbenchBuilder {
 
