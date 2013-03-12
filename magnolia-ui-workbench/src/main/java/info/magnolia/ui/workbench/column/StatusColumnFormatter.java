@@ -47,9 +47,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 
 /**
- * Status Column formatter.
- * Used to create activation and permission Icons based on the related Item.
- * Use the Definition to configure Icon's to be displayed.
+ * Column formatter for displaying the activation status of an item. Creates icons that represents the activation and
+ * permission status. Use the definition to configure which icons should be included.
  */
 public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnDefinition> {
 
@@ -97,7 +96,7 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
                     permissionStatus = new Label();
                     permissionStatus.setSizeUndefined();
                     permissionStatus.setStyleName("icon-edit");
-                    // TODO dlipp: verify, this shows the same behavior as old Content-API based
+                    // TODO dlipp: MGNLUI-864 verify, this shows the same behavior as old Content-API based
                     // implementation:
                     // if (permissions && !node.isGranted(info.magnolia.cms.security.Permission.WRITE))
                     node.getSession().checkPermission(node.getPath(), Session.ACTION_SET_PROPERTY);

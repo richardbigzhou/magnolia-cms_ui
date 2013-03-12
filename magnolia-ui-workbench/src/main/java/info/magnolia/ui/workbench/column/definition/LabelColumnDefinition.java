@@ -34,7 +34,7 @@
 package info.magnolia.ui.workbench.column.definition;
 
 /**
- * Definition for LabelColumns.
+ * Defines a column that displays the label of an item.
  */
 public class LabelColumnDefinition extends AbstractColumnDefinition {
 

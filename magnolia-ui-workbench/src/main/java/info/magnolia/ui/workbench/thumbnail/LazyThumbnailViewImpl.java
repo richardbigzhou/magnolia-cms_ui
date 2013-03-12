@@ -53,7 +53,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 
 /**
- * LazyThumbnailViewImpl.
+ * Vaadin UI component that displays thumbnails.
  */
 public class LazyThumbnailViewImpl implements ThumbnailView {
 

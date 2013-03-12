@@ -34,7 +34,9 @@
 package info.magnolia.ui.workbench.column.definition;
 
 /**
- * Interface for a column definition.
+ * Defines a column in a workbench.
+ *
+ * @see info.magnolia.ui.workbench.definition.WorkbenchDefinition
  */
 public interface ColumnDefinition {
 

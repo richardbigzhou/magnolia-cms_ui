@@ -39,7 +39,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Contains all elements which define a workbench configuration.
+ * Defines a workbench. Contains all elements which define a workbench configuration.
  */
 public interface WorkbenchDefinition extends Serializable {
 

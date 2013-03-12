@@ -34,8 +34,9 @@
 package info.magnolia.ui.workbench.definition;
 
 /**
- * Defines an item type. e.g. used for inclusion of a certain node type in a tree.
+ * Defines a node type to be displayed in a workbench.
  *
+ * @see WorkbenchDefinition
  * @see info.magnolia.jcr.util.NodeTypes
  */
 public interface NodeTypeDefinition {

@@ -34,7 +34,7 @@
 package info.magnolia.ui.workbench.builder;
 
 /**
- * Config object creating builders for workbench related definitions.
+ * Configuration object for creating builders for workbench related definitions.
  */
 public class WorkbenchConfig {
 

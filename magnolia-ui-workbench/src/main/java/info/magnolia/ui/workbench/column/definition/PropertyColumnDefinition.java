@@ -34,7 +34,7 @@
 package info.magnolia.ui.workbench.column.definition;
 
 /**
- * Definition for a column that shows the value of a property.
+ * Defines a column that displays the value of a property.
  */
 public class PropertyColumnDefinition extends AbstractColumnDefinition {
 

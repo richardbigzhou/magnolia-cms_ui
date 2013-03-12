@@ -34,12 +34,13 @@
 package info.magnolia.ui.workbench.container;
 
 /**
- * Definition for Properties.
+ * Definition for a property managed by a container.
  */
 public class PropertyDefinition {
-    private Object defaultValue;
+
     private String propertyId;
     private Class<?> type;
+    private Object defaultValue;
 
     public PropertyDefinition(String propertyId, Class<?> type, Object defaultValue) {
         setPropertyId(propertyId);

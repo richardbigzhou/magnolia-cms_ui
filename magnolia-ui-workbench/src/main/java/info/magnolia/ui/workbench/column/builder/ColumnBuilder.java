@@ -41,6 +41,7 @@ import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
  *
  * @param <T> type of field definition
  * @see info.magnolia.ui.workbench.builder.WorkbenchBuilder
+ * @see ColumnConfig
  */
 public class ColumnBuilder<T extends AbstractColumnDefinition> {
 

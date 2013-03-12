@@ -37,7 +37,8 @@ import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
 
 /**
- * This event is fired when an item is double clicked (ie a row in the data grid within the workbench representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
+ * This event is fired when an item is double clicked (i.e. a row in the data grid within the workbench representing
+ * either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
  */
 public class ItemDoubleClickedEvent implements Event<ItemDoubleClickedEvent.Handler> {
 

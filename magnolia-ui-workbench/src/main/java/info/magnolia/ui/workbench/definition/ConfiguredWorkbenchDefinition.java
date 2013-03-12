@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Default configured implementation for the WorkbenchDefinition.
+ * Default configured implementation of {@link WorkbenchDefinition}.
  */
 public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
