@@ -42,7 +42,7 @@ import javax.jcr.Item;
 import com.vaadin.ui.Table;
 
 /**
- * Abstract ColumnFormatter implementations, initializes common attributes.
+ * Abstract ColumnFormatter implementation, initializes common attributes.
  *
  * @param <D> definition type
  */

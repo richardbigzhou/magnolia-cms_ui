@@ -34,12 +34,13 @@
 package info.magnolia.ui.workbench.column.definition;
 
 /**
- * Definition for StatusColumns.
+ * Defines a column that displays the activation status of an item.
  */
 public class StatusColumnDefinition extends AbstractColumnDefinition {
 
     // Show Activation Status
     private boolean activation = true;
+
     // Show Permission Status
     private boolean permissions = false;
 

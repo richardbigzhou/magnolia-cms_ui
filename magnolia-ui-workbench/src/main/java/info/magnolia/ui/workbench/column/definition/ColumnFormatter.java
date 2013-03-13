@@ -36,7 +36,7 @@ package info.magnolia.ui.workbench.column.definition;
 import com.vaadin.ui.Table;
 
 /**
- * Common definition for Column formatter.
+ * Defines how a column's value is displayed in the UI.
  */
 public interface ColumnFormatter extends Table.ColumnGenerator {
 

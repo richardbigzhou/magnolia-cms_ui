@@ -37,9 +37,11 @@ import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 /**
- * Builds NodeType definitions.
+ * Builder for creating a node type definition.
  *
  * @see WorkbenchBuilder
+ * @see NodeTypeDefinition
+ * @see WorkbenchConfig
  */
 public class NodeTypeBuilder {
 

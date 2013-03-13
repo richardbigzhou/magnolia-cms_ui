@@ -39,12 +39,12 @@ import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import com.vaadin.data.Item;
 
 /**
- * UI component that displays content (from JCR).
+ * UI component that displays content in one of the supported view types (list, tree etc).
  */
 public interface ContentView extends View {
 
     /**
-     * Enumeration for the default view types.
+     * Enumeration of the supported view types.
      * <ul>
      * <li>tree
      * <li>list

@@ -37,7 +37,9 @@ import info.magnolia.ui.workbench.column.definition.AbstractColumnDefinition;
 import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
 
 /**
- * Config object creating builders for column definitions.
+ * Configuration object for creating builders for column definitions.
+ *
+ * @see info.magnolia.ui.workbench.column.definition.ColumnDefinition
  */
 public class ColumnConfig {
 

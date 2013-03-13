@@ -57,8 +57,8 @@ import com.rits.cloning.Cloner;
 public class ChooseDialogContentPresenter extends ContentPresenter {
 
     @Inject
-    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, Shell shell) {
-        super(context, contentViewBuilder, subAppEventBus, shell);
+    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) EventBus chooseDialogEventBus, Shell shell) {
+        super(context, contentViewBuilder, chooseDialogEventBus, shell);
         workbenchDefinition = new Cloner().deepClone(workbenchDefinition);
         ((ConfiguredWorkbenchDefinition) workbenchDefinition).setDialogWorkbench(true);
     }

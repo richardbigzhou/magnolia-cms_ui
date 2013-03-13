@@ -34,7 +34,7 @@
 package info.magnolia.ui.workbench.column.definition;
 
 /**
- * Definition for MetaDataColumns.
+ * Defines a column that displays the last modification date.
  */
 public class MetaDataColumnDefinition extends AbstractColumnDefinition {
 }
