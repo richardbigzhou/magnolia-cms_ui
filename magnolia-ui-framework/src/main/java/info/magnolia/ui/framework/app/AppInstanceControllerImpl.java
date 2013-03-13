@@ -256,7 +256,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
                 subAppContext.getSubApp().locationChanged(location);
             }
 
-            if (subAppContext.getInstanceId() != app.getView().getActiveSubAppView()) {
+            if (!subAppContext.getInstanceId().equals(app.getView().getActiveSubAppView())) {
                 app.getView().setActiveSubAppView(subAppContext.getInstanceId());
             }
         } else {
