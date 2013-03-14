@@ -35,6 +35,7 @@ package info.magnolia.ui.mediaeditor;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.event.HandlerRegistration;
+import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent.CompletionType;
@@ -44,8 +45,10 @@ import info.magnolia.ui.mediaeditor.editmode.factory.EditModeProviderFactory;
 import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.mediaeditor.editmode.provider.EditModeProvider;
 import info.magnolia.ui.mediaeditor.editmode.provider.EditModeProvider.ActionContext;
+import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.view.View;
 
 import java.io.ByteArrayInputStream;
@@ -62,11 +65,13 @@ import com.vaadin.data.util.TransactionalPropertyWrapper;
 /**
  * Implementation of {@link MediaEditorPresenter}.
  */
-public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEditorInternalEvent.Handler {
+public class MediaEditorPresenterImpl implements MediaEditorPresenter, ActionbarPresenter.Listener, MediaEditorInternalEvent.Handler {
 
     private Logger log = Logger.getLogger(getClass());
 
     private MediaEditorView view;
+
+    private ActionbarPresenter actionbarPresenter;
 
     private MediaEditorDefinition definition;
 
@@ -81,15 +86,18 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEdit
     private ActionExecutor actionExecutor;
 
     private EditModeProviderFactory providerFactory;
-    
+
     public MediaEditorPresenterImpl(
             MediaEditorDefinition definition,
             EventBus eventBus,
             MediaEditorView view,
+            ActionbarPresenter actionbarPresenter,
             EditModeProviderFactory providerFactory) {
         this.eventBus = eventBus;
         this.view = view;
+        this.actionbarPresenter = actionbarPresenter;
         this.definition = definition;
+        this.actionbarPresenter.setListener(this);
         this.providerFactory = providerFactory;
         eventBus.addHandler(MediaEditorInternalEvent.class, this);
     }
@@ -102,12 +110,12 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEdit
     @Override
     public View start(final InputStream stream) {
         try {
-            //final ActionbarView actionbar = actionbarPresenter.start(definition.getActionBar());
+            final ActionbarView actionbar = actionbarPresenter.start(definition.getActionBar());
             final byte[] bytes = IOUtils.toByteArray(stream);
             dataSource = new ObjectProperty<byte[]>(bytes);
             transactionHandler = new TransactionalPropertyWrapper<byte[]>(dataSource);
             transactionHandler.startTransaction();
-            //view.setActionBar(actionbar);
+            view.setActionBar(actionbar);
             switchToDefaultMode();
             return view;
         } catch (IOException e) {
@@ -169,10 +177,10 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEdit
         return eventBus.addHandler(MediaEditorCompletedEvent.class, handler);
     }
 
-/*    @Override
+    @Override
     public void onExecute(String actionName) {
         doExecuteMediaEditorAction(actionName);
-    }*/
+    }
 
     private void doExecuteMediaEditorAction(String actionName) {
         try {
@@ -187,7 +195,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEdit
         }
     }
 
-/*    @Override
+    @Override
     public String getLabel(String actionName) {
         ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
         return actionDefinition != null ? actionDefinition.getLabel() : null;
@@ -203,7 +211,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, MediaEdit
     public void setFullScreen(boolean fullscreen) {
         // TODO Auto-generated method stub
 
-    }*/
+    }
 
     @Override
     public MediaEditorDefinition getDefinition() {
