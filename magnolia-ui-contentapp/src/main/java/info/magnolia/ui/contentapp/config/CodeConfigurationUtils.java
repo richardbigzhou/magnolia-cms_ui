@@ -35,8 +35,8 @@ package info.magnolia.ui.contentapp.config;
 
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.builder.App;
-import info.magnolia.ui.framework.app.builder.AppBuilder;
+import info.magnolia.ui.framework.app.config.App;
+import info.magnolia.ui.framework.app.config.AppBuilder;
 import info.magnolia.ui.framework.app.registry.AppDescriptorProvider;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.config.UiConfig;

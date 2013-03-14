@@ -57,7 +57,7 @@ import info.magnolia.ui.app.security.dialog.field.RoleManagementFieldBuilder;
 import info.magnolia.ui.app.security.dialog.field.validator.UniqueGroupIdValidatorDefinition;
 import info.magnolia.ui.app.security.dialog.field.validator.UniqueRoleIdValidatorDefinition;
 import info.magnolia.ui.app.security.dialog.field.validator.UniqueUserIdValidatorDefinition;
-import info.magnolia.ui.framework.app.builder.App;
+import info.magnolia.ui.framework.app.config.App;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.framework.config.UiConfig;

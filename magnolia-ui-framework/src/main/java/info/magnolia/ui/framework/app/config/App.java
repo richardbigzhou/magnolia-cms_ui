@@ -31,54 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.builder;
+package info.magnolia.ui.framework.app.config;
 
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * Builder used to build an app descriptor.
+ * Annotation used on methods in a module class that provide an app descriptor.
  */
-public class AppBuilder {
+@Target(ElementType.METHOD)
+@Retention(RUNTIME)
+public @interface App {
 
-    private ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
-
-    public AppBuilder(String name) {
-        descriptor.setName(name);
-    }
-
-    public AppBuilder label(String label) {
-        descriptor.setLabel(label);
-        return this;
-    }
-
-    public AppBuilder icon(String icon) {
-        descriptor.setIcon(icon);
-        return this;
-    }
-
-    public AppBuilder appClass(Class<? extends info.magnolia.ui.framework.app.App> appClass) {
-        descriptor.setAppClass(appClass);
-        return this;
-    }
-
-    public AppBuilder enabled(boolean enabled) {
-        descriptor.setEnabled(enabled);
-        return this;
-    }
-
-    public SubAppBuilder subApp(String name) {
-        return new SubAppBuilder(name);
-    }
-
-    public AppBuilder subApps(SubAppBuilder... builders) {
-        for (SubAppBuilder builder : builders) {
-            descriptor.addSubApp(builder.exec());
-        }
-        return this;
-    }
-
-    public AppDescriptor exec() {
-        return descriptor;
-    }
+    String value();
 }

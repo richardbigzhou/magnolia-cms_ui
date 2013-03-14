@@ -31,49 +31,54 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.builder;
+package info.magnolia.ui.framework.app.config;
 
-import info.magnolia.ui.model.action.builder.ActionBuilder;
-import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.framework.app.SubAppDescriptor;
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
-import info.magnolia.ui.model.actionbar.builder.ActionbarBuilder;
-import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 
 /**
- * Builder used to build a sub app descriptor.
+ * Builder used to build an app descriptor.
  */
-public class SubAppBuilder {
+public class AppBuilder {
 
-    private ConfiguredSubAppDescriptor descriptor = new ConfiguredSubAppDescriptor();
+    private ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
 
-    public SubAppBuilder(String name) {
-        this.descriptor.setName(name);
+    public AppBuilder(String name) {
+        descriptor.setName(name);
     }
 
-    public SubAppBuilder subAppClass(Class<? extends SubApp> subAppClass) {
-        descriptor.setSubAppClass(subAppClass);
+    public AppBuilder label(String label) {
+        descriptor.setLabel(label);
         return this;
     }
 
-    public SubAppBuilder actions(ActionBuilder... builders) {
-        for (ActionBuilder builder : builders) {
-            descriptor.getActions().put(builder.getName(), builder.exec());
+    public AppBuilder icon(String icon) {
+        descriptor.setIcon(icon);
+        return this;
+    }
+
+    public AppBuilder appClass(Class<? extends info.magnolia.ui.framework.app.App> appClass) {
+        descriptor.setAppClass(appClass);
+        return this;
+    }
+
+    public AppBuilder enabled(boolean enabled) {
+        descriptor.setEnabled(enabled);
+        return this;
+    }
+
+    public SubAppBuilder subApp(String name) {
+        return new SubAppBuilder(name);
+    }
+
+    public AppBuilder subApps(SubAppBuilder... builders) {
+        for (SubAppBuilder builder : builders) {
+            descriptor.addSubApp(builder.exec());
         }
         return this;
     }
 
-    public SubAppBuilder actionbar(ActionbarBuilder builder) {
-        descriptor.setActionbar(builder.exec());
-        return this;
-    }
-
-    public SubAppBuilder imageProvider(ImageProviderDefinition imageProvider) {
-        descriptor.setImageProvider(imageProvider);
-        return this;
-    }
-
-    public SubAppDescriptor exec() {
+    public AppDescriptor exec() {
         return descriptor;
     }
 }
