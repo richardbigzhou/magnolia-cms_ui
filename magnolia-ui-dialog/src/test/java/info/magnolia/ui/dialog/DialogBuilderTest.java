@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.builder;
+package info.magnolia.ui.dialog;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
