@@ -78,7 +78,7 @@ public class FileItemWrapperImplTest {
     public void testPopulateJcrItemProperty() throws Exception{
         // GIVEN
         long size = 12;
-        long widht = 20;
+        long width = 20;
         long height = 39;
         Node node = session.getRootNode().addNode("mock");
 
@@ -90,10 +90,10 @@ public class FileItemWrapperImplTest {
         adapter.addItemProperty(FileProperties.PROPERTY_CONTENTTYPE, new DefaultProperty(FileProperties.PROPERTY_CONTENTTYPE, String.class, "image.gif"));
 
         adapter.addItemProperty(FileProperties.PROPERTY_LASTMODIFIED, new DefaultProperty(FileProperties.PROPERTY_LASTMODIFIED, Date.class, new Date()));
-        adapter.addItemProperty(JcrConstants.JCR_DATA, new DefaultProperty(JcrConstants.JCR_DATA, Binary.class, "Doenst matter".getBytes()));
+        adapter.addItemProperty(JcrConstants.JCR_DATA, new DefaultProperty(JcrConstants.JCR_DATA, Binary.class, "Does not matter".getBytes()));
         adapter.addItemProperty(FileProperties.PROPERTY_SIZE, new DefaultProperty(FileProperties.PROPERTY_SIZE, Long.class, size));
         adapter.addItemProperty(FileProperties.PROPERTY_HEIGHT, new DefaultProperty(FileProperties.PROPERTY_HEIGHT, Long.class, height));
-        adapter.addItemProperty(FileProperties.PROPERTY_WIDTH, new DefaultProperty(FileProperties.PROPERTY_WIDTH, Long.class, widht));
+        adapter.addItemProperty(FileProperties.PROPERTY_WIDTH, new DefaultProperty(FileProperties.PROPERTY_WIDTH, Long.class, width));
         adapter.addItemProperty(FileProperties.PROPERTY_EXTENSION, new DefaultProperty(FileProperties.PROPERTY_EXTENSION, String.class, "gif"));
 
         FileItemWrapperImpl wrapper = new FileItemWrapperImpl(adapter);
@@ -103,7 +103,7 @@ public class FileItemWrapperImplTest {
 
         // THEN
         assertEquals(size, wrapper.getJcrItem().getItemProperty(FileProperties.PROPERTY_SIZE).getValue());
-        assertEquals(widht, wrapper.getJcrItem().getItemProperty(FileProperties.PROPERTY_WIDTH).getValue());
+        assertEquals(width, wrapper.getJcrItem().getItemProperty(FileProperties.PROPERTY_WIDTH).getValue());
         assertEquals(height, wrapper.getJcrItem().getItemProperty(FileProperties.PROPERTY_HEIGHT).getValue());
     }
 }
