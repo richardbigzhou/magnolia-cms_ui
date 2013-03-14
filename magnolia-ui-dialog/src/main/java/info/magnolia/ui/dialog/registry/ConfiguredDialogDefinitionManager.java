@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.registry;
+package info.magnolia.ui.dialog.registry;
 
 import info.magnolia.cms.util.ModuleConfigurationObservingManager;
 import info.magnolia.jcr.predicate.NodeTypePredicate;
@@ -39,7 +39,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.NodeVisitor;
 import info.magnolia.module.ModuleRegistry;
-import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
+import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 
 import java.util.ArrayList;
 import java.util.HashSet;

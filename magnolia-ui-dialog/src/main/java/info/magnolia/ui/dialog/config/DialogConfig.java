@@ -31,34 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.builder;
-
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
-import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
+package info.magnolia.ui.dialog.config;
 
 /**
- * Builder for building a dialog action.
+ * Config object creating builders for dialog related definitions.
  */
-public class DialogActionBuilder {
+public class DialogConfig {
 
-    private final ConfiguredDialogActionDefinition definition = new ConfiguredDialogActionDefinition();
-
-    public DialogActionBuilder(String name) {
-        this.definition.setName(name);
-    }
-
-    public DialogActionBuilder label(String label) {
-        definition.setLabel(label);
-        return this;
-    }
-
-    public DialogActionBuilder action(ActionDefinition actionDefinition) {
-        definition.setActionDefinition(actionDefinition);
-        return this;
-    }
-
-    public DialogActionDefinition exec() {
-        return definition;
+    public DialogActionBuilder action(String name) {
+        return new DialogActionBuilder(name);
     }
 }

@@ -31,22 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.action;
+package info.magnolia.ui.dialog.config;
 
 import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.dialog.action.ConfiguredDialogActionDefinition;
+import info.magnolia.ui.dialog.action.DialogActionDefinition;
 
 /**
- * Defines a choice of action for the user interacting with a dialog. Typically save and cancel to persist or stop
- * editing respectively.
+ * Builder for building a dialog action.
  */
-public interface DialogActionDefinition {
+public class DialogActionBuilder {
 
-    String getName();
+    private final ConfiguredDialogActionDefinition definition = new ConfiguredDialogActionDefinition();
 
-    String getLabel();
+    public DialogActionBuilder(String name) {
+        this.definition.setName(name);
+    }
 
-    String getI18nBasename();
+    public DialogActionBuilder label(String label) {
+        definition.setLabel(label);
+        return this;
+    }
 
-    ActionDefinition getActionDefinition();
+    public DialogActionBuilder action(ActionDefinition actionDefinition) {
+        definition.setActionDefinition(actionDefinition);
+        return this;
+    }
 
+    public DialogActionDefinition exec() {
+        return definition;
+    }
 }

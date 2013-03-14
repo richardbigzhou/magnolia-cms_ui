@@ -42,8 +42,8 @@ import info.magnolia.ui.admincentral.field.builder.FieldFactory;
 import info.magnolia.ui.admincentral.form.FormPresenterFactory;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
 
 import javax.inject.Inject;

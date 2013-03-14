@@ -31,14 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.builder;
+package info.magnolia.ui.dialog.config;
+
+import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.model.form.builder.FormBuilder;
 
 /**
- * Config object creating builders for dialog related definitions.
+ * Builder for building a dialog definition.
  */
-public class DialogConfig {
+public class DialogBuilder {
 
-    public DialogActionBuilder action(String name) {
-        return new DialogActionBuilder(name);
+    private final ConfiguredDialogDefinition definition = new ConfiguredDialogDefinition();
+
+    public DialogBuilder(String id) {
+        definition.setId(id);
+    }
+
+    public DialogBuilder label(String label) {
+        definition.setLabel(label);
+        return this;
+    }
+
+    public DialogBuilder i18nBasename(String i18nBasename) {
+        definition.setI18nBasename(i18nBasename);
+        return this;
+    }
+
+    public DialogBuilder description(String description) {
+        definition.setDescription(description);
+        return this;
+    }
+
+    public DialogDefinition exec() {
+        return definition;
+    }
+
+    public DialogBuilder form(FormBuilder builder) {
+        this.definition.setFormDefinition(builder.exec());
+        return this;
+    }
+
+    public DialogBuilder actions(DialogActionBuilder... builders) {
+        for (DialogActionBuilder builder : builders) {
+            definition.addAction(builder.exec());
+        }
+        return this;
     }
 }

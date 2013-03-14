@@ -31,9 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.definition;
+package info.magnolia.ui.dialog.definition;
 
-import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
+import info.magnolia.ui.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.model.form.definition.FormDefinition;
 
 import java.util.List;

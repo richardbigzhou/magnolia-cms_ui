@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.registry;
+package info.magnolia.ui.dialog.registry;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -49,10 +49,10 @@ import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
-import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
-import info.magnolia.ui.model.dialog.action.DialogActionDefinition;
-import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.dialog.action.ConfiguredDialogActionDefinition;
+import info.magnolia.ui.dialog.action.DialogActionDefinition;
+import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.model.form.definition.TabDefinition;
 

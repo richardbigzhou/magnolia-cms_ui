@@ -29,12 +29,12 @@
       <implementation>info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</type>
-      <implementation>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</implementation>
+      <type>info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager</type>
+      <implementation>info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry</type>
-      <implementation>info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry</implementation>
+      <type>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</type>
+      <implementation>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</implementation>
     </component>
     <!-- MEDIA EDITOR CONFIG HERE -->
     <component>
@@ -103,8 +103,8 @@
       <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.dialog.definition.DialogDefinition</type>
-      <implementation>info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition</implementation>
+      <type>info.magnolia.ui.dialog.definition.DialogDefinition</type>
+      <implementation>info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.form.definition.TabDefinition</type>
@@ -119,8 +119,8 @@
       <implementation>info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.dialog.action.DialogActionDefinition</type>
-      <implementation>info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition</implementation>
+      <type>info.magnolia.ui.dialog.action.DialogActionDefinition</type>
+      <implementation>info.magnolia.ui.dialog.action.ConfiguredDialogActionDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition</type>

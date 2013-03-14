@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.dialog.builder;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
 

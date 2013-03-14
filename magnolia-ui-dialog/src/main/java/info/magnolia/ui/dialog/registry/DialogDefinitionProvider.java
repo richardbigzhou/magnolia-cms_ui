@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,20 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.builder;
+package info.magnolia.ui.dialog.registry;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 
 /**
- * Annotation used on methods on a module class that provides a dialog definition.
+ * Provides a dialog definition.
+ *
+ * @see DialogDefinitionRegistry
  */
-@Target(ElementType.METHOD)
-@Retention(RUNTIME)
-public @interface Dialog {
+public interface DialogDefinitionProvider {
 
-    String value();
+    String getId();
+
+    DialogDefinition getDialogDefinition() throws RegistrationException;
 }

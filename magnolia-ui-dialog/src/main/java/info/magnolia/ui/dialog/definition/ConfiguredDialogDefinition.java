@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2010-2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.action;
+package info.magnolia.ui.dialog.definition;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.dialog.action.DialogActionDefinition;
+import info.magnolia.ui.model.form.definition.FormDefinition;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * ConfiguredDialogActionDefinition.
+ * A definition of a configured dialog.
  */
-public class ConfiguredDialogActionDefinition implements DialogActionDefinition {
+public class ConfiguredDialogDefinition implements DialogDefinition {
 
-    private String name;
+    public static final String ACTIONS_NODE_NAME = "actions";
+    public static final String EXTEND_PROPERTY_NAME = "extends";
+    public static final String FORM_NODE_NAME = "formDefinition";
+
+    private String id;
 
     private String label;
 
     private String i18nBasename;
 
-    private ActionDefinition actionDefinition;
+    private String description;
+
+    private FormDefinition formDefinition;
+
+    private List<DialogActionDefinition> actions = new ArrayList<DialogActionDefinition>();
 
     @Override
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
@@ -76,11 +88,34 @@ public class ConfiguredDialogActionDefinition implements DialogActionDefinition 
     }
 
     @Override
-    public ActionDefinition getActionDefinition() {
-        return actionDefinition;
+    public String getDescription() {
+        return description;
     }
 
-    public void setActionDefinition(ActionDefinition actionDefinition) {
-        this.actionDefinition = actionDefinition;
+    public void setDescription(String description) {
+        this.description = description;
     }
+
+    public void setFormDefinition(FormDefinition formDefinition) {
+        this.formDefinition = formDefinition;
+    }
+
+    @Override
+    public FormDefinition getFormDefinition() {
+        return formDefinition;
+    }
+
+    @Override
+    public List<DialogActionDefinition> getActions() {
+        return actions;
+    }
+
+    public void setActions(List<DialogActionDefinition> actions) {
+        this.actions = actions;
+    }
+
+    public boolean addAction(DialogActionDefinition actionDefinition) {
+        return this.actions.add(actionDefinition);
+    }
+
 }

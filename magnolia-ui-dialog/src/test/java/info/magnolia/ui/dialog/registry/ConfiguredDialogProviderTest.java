@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.registry;
+package info.magnolia.ui.dialog.registry;
 
 /*import info.magnolia.cms.beans.config.ContentRepository;
  import info.magnolia.cms.core.HierarchyManager;

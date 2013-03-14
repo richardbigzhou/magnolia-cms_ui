@@ -31,46 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.registry;
+package info.magnolia.ui.dialog.registry;
 
+import info.magnolia.jcr.node2bean.Node2BeanException;
+import info.magnolia.jcr.node2bean.Node2BeanProcessor;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.registry.RegistryMap;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 
-import java.util.List;
-import java.util.Set;
-
-import javax.inject.Singleton;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * Maintains a registry of dialog providers registered by id.
+ * DialogProvider that instantiates a dialog from a configuration node.
  */
-@Singleton
-public class DialogDefinitionRegistry {
+public class ConfiguredDialogDefinitionProvider implements DialogDefinitionProvider {
 
-    private final RegistryMap<String, DialogDefinitionProvider> registry = new RegistryMap<String, DialogDefinitionProvider>() {
+    private final String id;
 
-        @Override
-        protected String keyFromValue(DialogDefinitionProvider value) {
-            return value.getId();
+    private final ConfiguredDialogDefinition dialogDefinition;
+
+    public ConfiguredDialogDefinitionProvider(String id, Node configNode) throws RepositoryException, Node2BeanException {
+        this.id = id;
+        this.dialogDefinition = (ConfiguredDialogDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, DialogDefinition.class);
+        if (this.dialogDefinition != null) {
+            this.dialogDefinition.setId(id);
         }
-    };
-
-    public DialogDefinition get(String id) throws RegistrationException {
-        DialogDefinitionProvider provider;
-        try {
-            provider = registry.getRequired(id);
-        } catch (RegistrationException e) {
-            throw new RegistrationException("No dialog definition registered for id: " + id, e);
-        }
-        return provider.getDialogDefinition();
     }
 
-    public void register(DialogDefinitionProvider provider) {
-        registry.put(provider);
+    @Override
+    public String getId() {
+        return id;
     }
 
-    public Set<String> unregisterAndRegister(Set<String> registeredIds, List<DialogDefinitionProvider> providers) {
-        return registry.removeAndPutAll(registeredIds, providers);
+    @Override
+    public DialogDefinition getDialogDefinition() throws RegistrationException {
+        return dialogDefinition;
     }
 }

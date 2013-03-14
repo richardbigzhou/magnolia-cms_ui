@@ -31,51 +31,56 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.dialog.builder;
+package info.magnolia.ui.dialog.action;
 
-import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.form.builder.FormBuilder;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * Builder for building a dialog definition.
+ * ConfiguredDialogActionDefinition.
  */
-public class DialogBuilder {
+public class ConfiguredDialogActionDefinition implements DialogActionDefinition {
 
-    private final ConfiguredDialogDefinition definition = new ConfiguredDialogDefinition();
+    private String name;
 
-    public DialogBuilder(String id) {
-        definition.setId(id);
+    private String label;
+
+    private String i18nBasename;
+
+    private ActionDefinition actionDefinition;
+
+    @Override
+    public String getName() {
+        return name;
     }
 
-    public DialogBuilder label(String label) {
-        definition.setLabel(label);
-        return this;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public DialogBuilder i18nBasename(String i18nBasename) {
-        definition.setI18nBasename(i18nBasename);
-        return this;
+    @Override
+    public String getLabel() {
+        return label;
     }
 
-    public DialogBuilder description(String description) {
-        definition.setDescription(description);
-        return this;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
-    public DialogDefinition exec() {
-        return definition;
+    @Override
+    public String getI18nBasename() {
+        return i18nBasename;
     }
 
-    public DialogBuilder form(FormBuilder builder) {
-        this.definition.setFormDefinition(builder.exec());
-        return this;
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
     }
 
-    public DialogBuilder actions(DialogActionBuilder... builders) {
-        for (DialogActionBuilder builder : builders) {
-            definition.addAction(builder.exec());
-        }
-        return this;
+    @Override
+    public ActionDefinition getActionDefinition() {
+        return actionDefinition;
+    }
+
+    public void setActionDefinition(ActionDefinition actionDefinition) {
+        this.actionDefinition = actionDefinition;
     }
 }

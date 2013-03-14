@@ -40,7 +40,6 @@ import java.util.List;
 /**
  * Defines a field within a dialog.
  *
- * @see info.magnolia.ui.model.dialog.definition.DialogDefinition
  * @see FieldDefinition
  * @see ConfiguredFieldValidatorDefinition
  */

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 
 /**
  * Creates {@link FormDialogPresenterImpl} instances that are use to display a dialog.

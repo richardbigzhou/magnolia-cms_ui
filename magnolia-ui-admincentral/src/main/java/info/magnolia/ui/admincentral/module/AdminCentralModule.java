@@ -38,7 +38,7 @@ import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager;
-import info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager;
+import info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager;
 import info.magnolia.ui.model.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager;
 
 import javax.inject.Inject;

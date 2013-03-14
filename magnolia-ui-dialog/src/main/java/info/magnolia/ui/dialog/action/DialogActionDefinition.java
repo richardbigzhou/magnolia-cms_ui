@@ -31,27 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.dialog.action;
 
-import info.magnolia.ui.admincentral.form.AbstractFormItem;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * Represents a dialog.
- *
- * @see info.magnolia.ui.admincentral.form.FormTab
- * @see info.magnolia.ui.admincentral.field.FieldBuilder
+ * Defines a choice of action for the user interacting with a dialog. Typically save and cancel to persist or stop
+ * editing respectively.
  */
-public class Dialog extends AbstractFormItem {
+public interface DialogActionDefinition {
 
-    private DialogDefinition dialogDefinition;
+    String getName();
 
-    public Dialog(DialogDefinition dialogDefinition) {
-        this.dialogDefinition = dialogDefinition;
-    }
+    String getLabel();
 
-    @Override
-    protected String getI18nBasename() {
-        return dialogDefinition.getI18nBasename();
-    }
+    String getI18nBasename();
+
+    ActionDefinition getActionDefinition();
+
 }
