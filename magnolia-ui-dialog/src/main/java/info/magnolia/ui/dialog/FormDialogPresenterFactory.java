@@ -31,17 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.action;
+package info.magnolia.ui.dialog;
 
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 
 /**
- * Creates an action based on an {@link ActionDefinition}.
+ * Creates {@link FormDialogPresenterImpl} instances that are use to display a dialog.
  */
-public interface DialogActionFactory {
+public interface FormDialogPresenterFactory {
 
-    Action createAction(ActionDefinition actionDefinition, DialogPresenter dialogPresenter);
+    FormDialogPresenter createDialogPresenterByName(String dialogName);
 
+    FormDialogPresenter createDialogPresenterByDefinition(DialogDefinition definition);
+
+    DialogDefinition getDialogDefinition(String dialogName) throws RuntimeException;
 }

@@ -34,7 +34,7 @@
 package info.magnolia.ui.contentapp.choosedialog;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.admincentral.dialog.BaseDialogPresenter;
+import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.view.View;

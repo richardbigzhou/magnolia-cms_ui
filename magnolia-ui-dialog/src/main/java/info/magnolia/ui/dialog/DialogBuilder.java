@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.builder;
+package info.magnolia.ui.dialog;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
@@ -44,7 +44,7 @@ import org.apache.commons.lang.StringUtils;
  * Builder for {@link DialogView} and {@link FormDialogView}.
  * Receives the definition parameters for the dialog surrounding (like i18n base and caption/description).
  *
- * @see info.magnolia.ui.admincentral.dialog.FormDialogPresenter
+ * @see FormDialogPresenter
  */
 public class DialogBuilder {
 

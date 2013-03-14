@@ -31,10 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.dialog;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
@@ -52,7 +51,7 @@ public class BaseDialogPresenter implements DialogPresenter {
     private final EventBus adminCentralEventBus;
 
     @Inject
-    public BaseDialogPresenter(DialogView view, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus) {
+    public BaseDialogPresenter(DialogView view, @Named("admincentral") EventBus eventBus) {
         this.view = view;
         this.adminCentralEventBus = eventBus;
     }

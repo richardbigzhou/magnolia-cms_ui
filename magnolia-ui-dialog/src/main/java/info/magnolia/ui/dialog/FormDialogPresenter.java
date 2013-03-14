@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.dialog;
 
-import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.form.FormPresenter;
+import info.magnolia.ui.vaadin.view.ModalLayer;
+import info.magnolia.ui.vaadin.dialog.DialogView;
+import info.magnolia.ui.vaadin.dialog.FormDialogView;
+
+import com.vaadin.data.Item;
 
 /**
- * Creates {@link FormDialogPresenterImpl} instances that are use to display a dialog.
+ * Interface for {@link FormDialogPresenterImpl}.
  */
-public interface FormDialogPresenterFactory {
+public interface FormDialogPresenter extends DialogPresenter {
 
-    FormDialogPresenter createDialogPresenterByName(String dialogName);
+    DialogView start(Item item, ModalLayer modalLayer, DialogPresenter.Callback callback);
 
-    FormDialogPresenter createDialogPresenterByDefinition(DialogDefinition definition);
+    @Override
+    FormDialogView getView();
 
-    DialogDefinition getDialogDefinition(String dialogName) throws RuntimeException;
+    FormPresenter getForm();
 }

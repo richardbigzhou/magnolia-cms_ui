@@ -31,13 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.action;
+package info.magnolia.ui.dialog.action;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.dialog.DialogPresenter;
+import info.magnolia.ui.dialog.DialogPresenter;
 import info.magnolia.ui.form.action.DialogActionRegistry;
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
@@ -55,7 +54,7 @@ public class DialogActionFactoryImpl extends MappingFactoryBase<ActionDefinition
     private final EventBus eventBus;
 
     @Inject
-    public DialogActionFactoryImpl(ComponentProvider componentProvider, DialogActionRegistry dialogActionRegistry, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus) {
+    public DialogActionFactoryImpl(ComponentProvider componentProvider, DialogActionRegistry dialogActionRegistry, @Named("admincentral") EventBus eventBus) {
         super(componentProvider);
         this.eventBus = eventBus;
         for (DefinitionToImplementationMapping<ActionDefinition, Action> definitionToImplementationMapping : dialogActionRegistry.getDefinitionToImplementationMappings()) {

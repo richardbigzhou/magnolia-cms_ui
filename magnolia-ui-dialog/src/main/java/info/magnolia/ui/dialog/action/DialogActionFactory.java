@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.dialog.action;
 
-import info.magnolia.ui.form.AbstractFormItem;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.dialog.DialogPresenter;
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 /**
- * Represents a dialog.
- *
- * @see info.magnolia.ui.form.FormTab
- * @see info.magnolia.ui.form.field.builder.FieldBuilder
+ * Creates an action based on an {@link ActionDefinition}.
  */
-public class Dialog extends AbstractFormItem {
+public interface DialogActionFactory {
 
-    private DialogDefinition dialogDefinition;
+    Action createAction(ActionDefinition actionDefinition, DialogPresenter dialogPresenter);
 
-    public Dialog(DialogDefinition dialogDefinition) {
-        this.dialogDefinition = dialogDefinition;
-    }
-
-    @Override
-    protected String getI18nBasename() {
-        return dialogDefinition.getI18nBasename();
-    }
 }

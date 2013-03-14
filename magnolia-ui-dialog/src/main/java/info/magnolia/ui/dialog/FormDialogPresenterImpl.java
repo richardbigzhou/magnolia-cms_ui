@@ -31,15 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.dialog;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
-import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
+import info.magnolia.ui.dialog.action.DialogActionFactory;
 import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.ui.form.FormPresenterFactory;
 import info.magnolia.ui.vaadin.view.ModalLayer;
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
@@ -61,8 +59,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private final DialogDefinition dialogDefinition;
 
-    private final Shell shell;
-
     private final FormDialogView view;
 
     private Callback callback;
@@ -72,13 +68,12 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
 
     public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final FormPresenterFactory formPresenterFactory,
-            final DialogDefinition dialogDefinition, final Shell shell, EventBus eventBus, final DialogActionFactory actionFactory) {
+                                   final DialogDefinition dialogDefinition, EventBus eventBus, final DialogActionFactory actionFactory) {
         super(view, eventBus);
         this.view = view;
         this.dialogBuilder = dialogBuilder;
         this.formPresenterFactory = formPresenterFactory;
         this.dialogDefinition = dialogDefinition;
-        this.shell = shell;
         this.dialogActionFactory = actionFactory;
         initActions(dialogDefinition);
     }

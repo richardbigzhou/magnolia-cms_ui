@@ -238,8 +238,8 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.action.DialogActionFactory</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.action.DialogActionFactoryImpl</implementation>
+      <type>info.magnolia.ui.dialog.action.DialogActionFactory</type>
+      <implementation>info.magnolia.ui.dialog.action.DialogActionFactoryImpl</implementation>
     </component>
 
     <component>
@@ -321,8 +321,8 @@
       <implementation>info.magnolia.ui.form.FormPresenterFactoryImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactoryImpl</implementation>
+      <type>info.magnolia.ui.dialog.FormDialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.dialog.FormDialogPresenterFactoryImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.form.field.builder.FieldFactory</type>

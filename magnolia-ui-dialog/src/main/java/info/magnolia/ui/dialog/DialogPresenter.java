@@ -31,10 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.dialog;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
+import info.magnolia.ui.dialog.action.DialogActionFactory;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;

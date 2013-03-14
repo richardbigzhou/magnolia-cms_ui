@@ -31,24 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.dialog;
 
-import info.magnolia.ui.form.FormPresenter;
-import info.magnolia.ui.vaadin.view.ModalLayer;
-import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.dialog.FormDialogView;
-
-import com.vaadin.data.Item;
+import info.magnolia.ui.form.AbstractFormItem;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 
 /**
- * Interface for {@link FormDialogPresenterImpl}.
+ * Represents a dialog.
+ *
+ * @see info.magnolia.ui.form.FormTab
+ * @see info.magnolia.ui.form.field.builder.FieldBuilder
  */
-public interface FormDialogPresenter extends DialogPresenter {
+public class Dialog extends AbstractFormItem {
 
-    DialogView start(Item item, ModalLayer modalLayer, DialogPresenter.Callback callback);
+    private DialogDefinition dialogDefinition;
+
+    public Dialog(DialogDefinition dialogDefinition) {
+        this.dialogDefinition = dialogDefinition;
+    }
 
     @Override
-    FormDialogView getView();
-
-    FormPresenter getForm();
+    protected String getI18nBasename() {
+        return dialogDefinition.getI18nBasename();
+    }
 }

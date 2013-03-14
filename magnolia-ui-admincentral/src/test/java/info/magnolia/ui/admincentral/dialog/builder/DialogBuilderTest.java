@@ -49,6 +49,7 @@ import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.dialog.DialogBuilder;
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.vaadin.dialog.FormDialog;
@@ -61,7 +62,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Main test for {@link DialogBuilder}.
+ * Main test for {@link info.magnolia.ui.dialog.DialogBuilder}.
  */
 public class DialogBuilderTest {
 

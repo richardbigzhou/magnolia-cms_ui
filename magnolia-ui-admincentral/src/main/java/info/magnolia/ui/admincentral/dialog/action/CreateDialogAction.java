@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
-import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
+import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.view.ModalLayer;

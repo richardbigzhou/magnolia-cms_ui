@@ -31,17 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog;
+package info.magnolia.ui.dialog;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
-import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
+import info.magnolia.ui.dialog.action.DialogActionFactory;
 import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.form.FormPresenterFactory;
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
@@ -56,7 +53,6 @@ import javax.inject.Singleton;
 @Singleton
 public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactory {
 
-    private final Shell shell;
     private final EventBus eventBus;
     private final DialogActionFactory actionFactory;
     private final ComponentProvider componentProvider;
@@ -69,14 +65,13 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
     @Inject
     public FormDialogPresenterFactoryImpl(ComponentProvider componentProvider,
                                           DialogDefinitionRegistry dialogDefinitionRegistry, DialogBuilder dialogBuilder, FormPresenterFactory formPresenterFactory,
-                                          FieldFactory fieldFactory, Shell shell,
-            @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, final DialogActionFactory actionFactory) {
+                                          FieldFactory fieldFactory,
+                                          @Named("admincentral") EventBus eventBus, final DialogActionFactory actionFactory) {
 
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.dialogBuilder = dialogBuilder;
         this.formPresenterFactory = formPresenterFactory;
         this.fieldFactory = fieldFactory;
-        this.shell = shell;
         this.eventBus = eventBus;
         this.actionFactory = actionFactory;
         this.componentProvider = componentProvider;
@@ -106,7 +101,7 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
     @Override
     public FormDialogPresenter createDialogPresenterByDefinition(DialogDefinition definition) {
         FormDialogView view = componentProvider.getComponent(FormDialogView.class);
-        return new FormDialogPresenterImpl(view, dialogBuilder, formPresenterFactory, definition, shell, eventBus, actionFactory);
+        return new FormDialogPresenterImpl(view, dialogBuilder, formPresenterFactory, definition, eventBus, actionFactory);
 
     }
 }
