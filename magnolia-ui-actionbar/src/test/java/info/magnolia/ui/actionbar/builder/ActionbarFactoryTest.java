@@ -31,19 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.actionbar.builder;
+package info.magnolia.ui.actionbar.builder;
 
 import static org.junit.Assert.*;
 
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
+import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
+import info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition;
+import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
@@ -57,7 +57,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
-public class ActionbarBuilderTest {
+public class ActionbarFactoryTest {
 
     private static final String SECTION_A = "sectionA";
 
@@ -103,7 +103,7 @@ public class ActionbarBuilderTest {
         int bActionCount = getActionsCount(bSection);
 
         // WHEN
-        ActionbarView actionbar = ActionbarBuilder.build(def, listener);
+        ActionbarView actionbar = ActionbarFactory.build(def, listener);
 
         // THEN
         Map<String, ActionbarSection> sections = ((Actionbar) actionbar).getSections();
@@ -141,7 +141,7 @@ public class ActionbarBuilderTest {
         ActionbarListener listener = new ActionbarListener(actionDefs);
 
         // WHEN
-        ActionbarView actionbar = ActionbarBuilder.build(def, listener);
+        ActionbarView actionbar = ActionbarFactory.build(def, listener);
 
         // THEN
         Map<String, ActionbarItem> actions = ((Actionbar) actionbar).getSections().get(SECTION_A).getActions();
@@ -198,7 +198,7 @@ public class ActionbarBuilderTest {
 
         
         // WHEN
-        ActionbarView actionbar = ActionbarBuilder.build(def, listener);
+        ActionbarView actionbar = ActionbarFactory.build(def, listener);
 
         // THEN
         Map<String, ActionbarItem> aActions = ((Actionbar) actionbar).getSections().get(SECTION_A).getActions();

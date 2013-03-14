@@ -31,13 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.actionbar.builder;
+package info.magnolia.ui.actionbar.builder;
 
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
+import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
@@ -54,9 +54,9 @@ import com.vaadin.server.ThemeResource;
 /**
  * Basic builder for an action bar widget based on an action bar definition.
  */
-public class ActionbarBuilder {
+public class ActionbarFactory {
 
-    private static final Logger log = LoggerFactory.getLogger(ActionbarBuilder.class);
+    private static final Logger log = LoggerFactory.getLogger(ActionbarFactory.class);
 
     public static ActionbarView build(ActionbarDefinition definition, ActionbarPresenter.Listener listener) {
         Actionbar actionbar = new Actionbar();

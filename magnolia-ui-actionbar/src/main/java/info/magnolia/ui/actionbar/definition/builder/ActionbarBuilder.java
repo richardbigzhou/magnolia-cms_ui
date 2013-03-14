@@ -31,10 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.actionbar.builder;
+package info.magnolia.ui.actionbar.definition.builder;
 
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
 
 /**
  * Builder for building an actionbar definition.

@@ -31,10 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.actionbar;
+package info.magnolia.ui.actionbar;
 
-import info.magnolia.ui.admincentral.actionbar.builder.ActionbarBuilder;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.actionbar.builder.ActionbarFactory;
+import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
@@ -66,7 +66,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
      */
     public ActionbarView start(final ActionbarDefinition definition) {
         this.definition = definition;
-        actionbar = ActionbarBuilder.build(definition, listener);
+        actionbar = ActionbarFactory.build(definition, listener);
         actionbar.setListener(this);
         return actionbar;
     }

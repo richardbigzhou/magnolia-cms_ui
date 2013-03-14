@@ -31,25 +31,68 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.actionbar.definition;
+package info.magnolia.ui.actionbar.definition;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * The definition for a section of the action bar, made of groups of actions.
+ * Simple implementation for {@link ActionbarSectionDefinition}.
  */
-public interface ActionbarSectionDefinition {
+public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDefinition {
 
-    String getName();
+    private String name;
 
-    String getLabel();
+    private String label;
 
-    String getI18nBasename();
+    private String i18nBasename;
+
+    private List<ActionbarGroupDefinition> groups = new ArrayList<ActionbarGroupDefinition>();
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @Override
+    public String getI18nBasename() {
+        return i18nBasename;
+    }
+
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
+    }
+
+    @Override
+    public List<ActionbarGroupDefinition> getGroups() {
+        return Collections.unmodifiableList(groups);
+    }
+
+    public void setGroups(List<ActionbarGroupDefinition> groups) {
+        this.groups = groups;
+    }
 
     /**
-     * Gets the groups within this section.
+     * Adds a group to this section.
      *
-     * @return the list of groups
+     * @param groupDefinition the group definition
      */
-    List<ActionbarGroupDefinition> getGroups();
+    public void addGroup(ActionbarGroupDefinition groupDefinition) {
+        groups.add(groupDefinition);
+    }
+
 }

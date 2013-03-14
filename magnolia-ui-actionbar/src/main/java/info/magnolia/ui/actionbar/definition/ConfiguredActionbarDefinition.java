@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.actionbar.definition;
+package info.magnolia.ui.actionbar.definition;
 
 import java.util.ArrayList;
 import java.util.Collections;

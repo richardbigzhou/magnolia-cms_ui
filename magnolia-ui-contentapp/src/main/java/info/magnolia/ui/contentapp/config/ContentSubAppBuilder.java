@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.contentapp.config;
 
+import info.magnolia.ui.actionbar.definition.builder.ActionbarBuilder;
 import info.magnolia.ui.contentapp.ConfiguredContentSubAppDescriptor;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.builder.ActionBuilder;
-import info.magnolia.ui.model.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.workbench.builder.WorkbenchBuilder;
 

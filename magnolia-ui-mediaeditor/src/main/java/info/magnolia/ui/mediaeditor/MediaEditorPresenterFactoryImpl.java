@@ -45,7 +45,6 @@ import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.mediaeditor.action.MediaEditorActionExecutor;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 import info.magnolia.ui.mediaeditor.editmode.factory.EditModeProviderFactory;
@@ -81,11 +80,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
     private EventBus eventBus = new SimpleEventBus();
 
     @Inject
-    public MediaEditorPresenterFactoryImpl(
-            ComponentProvider subAppComponentProvider,
-            ModuleRegistry moduleRegistry,
-            MediaEditorRegistry registry,
-            Shell shell) {
+    public MediaEditorPresenterFactoryImpl(ComponentProvider subAppComponentProvider, ModuleRegistry moduleRegistry, MediaEditorRegistry registry) {
         this.subAppComponentProvider = subAppComponentProvider;
         this.moduleRegistry = moduleRegistry;
         this.registry = registry;

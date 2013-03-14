@@ -7,35 +7,17 @@
     <version>5.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>magnolia-ui-mediaeditor</artifactId>
-  <name>magnolia-ui-mediaeditor</name>
+  <artifactId>magnolia-ui-actionbar</artifactId>
+  <name>magnolia-ui-actionbar</name>
   <properties>
     <cloverCoverageThreshold>0</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>info.magnolia</groupId>
-      <artifactId>magnolia-core</artifactId>
-      <version>${magnoliaVersion}</version>
-    </dependency>
-    <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-framework</artifactId>
+      <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
       <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.jhlabs</groupId>
-      <artifactId>filters</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.devlib.schmidt</groupId>
-      <artifactId>imageinfo</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>uk.com.robust-it</groupId>
-      <artifactId>cloning</artifactId>
     </dependency>
 
     <dependency>

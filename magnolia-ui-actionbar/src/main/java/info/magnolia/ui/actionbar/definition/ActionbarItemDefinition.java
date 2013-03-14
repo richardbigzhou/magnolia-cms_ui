@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.actionbar.definition;
-
-import java.util.List;
+package info.magnolia.ui.actionbar.definition;
 
 /**
- * The definition for a group of actions in a section of the action bar.
+ * A simple item definition used inside {@link ActionbarGroupDefinition}. The name
  */
-public interface ActionbarGroupDefinition {
+public class ActionbarItemDefinition {
 
-    /**
-     * Gets the group name.
-     *
-     * @return the name string
-     */
-    String getName();
+    private String name;
 
-    /**
-     * Gets the action items within this group.
-     *
-     * @return the list of action items
-     */
-    List<ActionbarItemDefinition> getItems();
+    public ActionbarItemDefinition() {
+    }
+
+    public ActionbarItemDefinition(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

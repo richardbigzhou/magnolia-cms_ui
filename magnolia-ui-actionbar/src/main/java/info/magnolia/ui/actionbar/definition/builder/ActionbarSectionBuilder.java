@@ -31,30 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.actionbar.builder;
+package info.magnolia.ui.actionbar.definition.builder;
 
-import info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarItemDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
+import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
 
 /**
- * Builder for building an actionbar group definition.
+ * Builder for building an actionbar section definition.
  */
-public class ActionbarGroupBuilder {
+public class ActionbarSectionBuilder {
 
-    private ConfiguredActionbarGroupDefinition definition = new ConfiguredActionbarGroupDefinition();
+    private ConfiguredActionbarSectionDefinition definition = new ConfiguredActionbarSectionDefinition();
 
-    public ActionbarGroupBuilder(String name) {
+    public ActionbarSectionBuilder(String name) {
         definition.setName(name);
     }
 
-    public ActionbarGroupDefinition exec() {
+    public ActionbarSectionBuilder label(String label) {
+        definition.setLabel(label);
+        return this;
+    }
+
+    public ActionbarSectionDefinition exec() {
         return definition;
     }
 
-    public ActionbarGroupBuilder actions(String... actions) {
-        for (String action : actions) {
-            definition.addItem(new ActionbarItemDefinition(action));
+    public ActionbarSectionBuilder i18nBasename(String i18nBasename) {
+        definition.setI18nBasename(i18nBasename);
+        return this;
+    }
+
+    public ActionbarSectionBuilder groups(ActionbarGroupBuilder... groups) {
+        for (ActionbarGroupBuilder group : groups) {
+            definition.addGroup(group.exec());
         }
         return this;
     }

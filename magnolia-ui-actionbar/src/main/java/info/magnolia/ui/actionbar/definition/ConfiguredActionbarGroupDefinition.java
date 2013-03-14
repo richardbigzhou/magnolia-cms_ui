@@ -31,40 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.actionbar.builder;
+package info.magnolia.ui.actionbar.definition;
 
-import info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition;
-import info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Builder for building an actionbar section definition.
+ * Simple implementation for {@link ActionbarGroupDefinition}.
  */
-public class ActionbarSectionBuilder {
+public class ConfiguredActionbarGroupDefinition implements ActionbarGroupDefinition {
 
-    private ConfiguredActionbarSectionDefinition definition = new ConfiguredActionbarSectionDefinition();
+    private String name;
 
-    public ActionbarSectionBuilder(String name) {
-        definition.setName(name);
+    private List<ActionbarItemDefinition> items = new ArrayList<ActionbarItemDefinition>();
+
+    @Override
+    public String getName() {
+        return name;
     }
 
-    public ActionbarSectionBuilder label(String label) {
-        definition.setLabel(label);
-        return this;
+    /**
+     * Sets the group name.
+     *
+     * @param name the new name
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public ActionbarSectionDefinition exec() {
-        return definition;
+    @Override
+    public List<ActionbarItemDefinition> getItems() {
+        return Collections.unmodifiableList(items);
     }
 
-    public ActionbarSectionBuilder i18nBasename(String i18nBasename) {
-        definition.setI18nBasename(i18nBasename);
-        return this;
+    public void setItems(List<ActionbarItemDefinition> items) {
+        this.items = items;
     }
 
-    public ActionbarSectionBuilder groups(ActionbarGroupBuilder... groups) {
-        for (ActionbarGroupBuilder group : groups) {
-            definition.addGroup(group.exec());
-        }
-        return this;
+    /**
+     * Adds an action item to this group.
+     *
+     * @param itemDefinition the item definition
+     */
+    public void addItem(ActionbarItemDefinition itemDefinition) {
+        items.add(itemDefinition);
     }
+
 }

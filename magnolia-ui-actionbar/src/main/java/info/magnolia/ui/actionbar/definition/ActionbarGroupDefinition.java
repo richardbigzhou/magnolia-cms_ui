@@ -31,23 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.actionbar.builder;
+package info.magnolia.ui.actionbar.definition;
+
+import java.util.List;
 
 /**
- * Config object creating builders for actionbar related definitions.
+ * The definition for a group of actions in a section of the action bar.
  */
-public class ActionbarConfig {
+public interface ActionbarGroupDefinition {
 
-    public ActionbarBuilder actionbar() {
-        return new ActionbarBuilder();
-    }
+    /**
+     * Gets the group name.
+     *
+     * @return the name string
+     */
+    String getName();
 
-    public ActionbarSectionBuilder section(String name) {
-        return new ActionbarSectionBuilder(name);
-    }
-
-    public ActionbarGroupBuilder group(String name) {
-        return new ActionbarGroupBuilder(name);
-    }
-
+    /**
+     * Gets the action items within this group.
+     *
+     * @return the list of action items
+     */
+    List<ActionbarItemDefinition> getItems();
 }

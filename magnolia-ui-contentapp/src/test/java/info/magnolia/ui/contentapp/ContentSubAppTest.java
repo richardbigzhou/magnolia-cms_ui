@@ -35,7 +35,7 @@ package info.magnolia.ui.contentapp;
 
 import static org.mockito.Mockito.*;
 
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;

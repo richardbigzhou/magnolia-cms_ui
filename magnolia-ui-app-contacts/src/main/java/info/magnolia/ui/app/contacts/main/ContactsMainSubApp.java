@@ -37,7 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.ContentSubApp;
 import info.magnolia.ui.contentapp.WorkbenchSubAppView;
 import info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter;

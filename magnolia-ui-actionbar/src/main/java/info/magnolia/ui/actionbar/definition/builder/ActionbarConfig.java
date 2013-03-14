@@ -31,51 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.actionbar.definition;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+package info.magnolia.ui.actionbar.definition.builder;
 
 /**
- * Simple implementation for {@link ActionbarGroupDefinition}.
+ * Config object creating builders for actionbar related definitions.
  */
-public class ConfiguredActionbarGroupDefinition implements ActionbarGroupDefinition {
+public class ActionbarConfig {
 
-    private String name;
-
-    private List<ActionbarItemDefinition> items = new ArrayList<ActionbarItemDefinition>();
-
-    @Override
-    public String getName() {
-        return name;
+    public ActionbarBuilder actionbar() {
+        return new ActionbarBuilder();
     }
 
-    /**
-     * Sets the group name.
-     *
-     * @param name the new name
-     */
-    public void setName(String name) {
-        this.name = name;
+    public ActionbarSectionBuilder section(String name) {
+        return new ActionbarSectionBuilder(name);
     }
 
-    @Override
-    public List<ActionbarItemDefinition> getItems() {
-        return Collections.unmodifiableList(items);
-    }
-
-    public void setItems(List<ActionbarItemDefinition> items) {
-        this.items = items;
-    }
-
-    /**
-     * Adds an action item to this group.
-     *
-     * @param itemDefinition the item definition
-     */
-    public void addItem(ActionbarItemDefinition itemDefinition) {
-        items.add(itemDefinition);
+    public ActionbarGroupBuilder group(String name) {
+        return new ActionbarGroupBuilder(name);
     }
 
 }
