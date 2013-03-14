@@ -54,7 +54,7 @@ import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.builder.WorkbenchBuilder;
+import info.magnolia.ui.workbench.config.WorkbenchBuilder;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 
 import java.util.Calendar;

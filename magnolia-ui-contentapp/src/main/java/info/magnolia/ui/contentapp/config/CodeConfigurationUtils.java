@@ -48,7 +48,7 @@ import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionProvider;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.config.FormConfig;
-import info.magnolia.ui.workbench.builder.WorkbenchConfig;
+import info.magnolia.ui.workbench.config.WorkbenchConfig;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;

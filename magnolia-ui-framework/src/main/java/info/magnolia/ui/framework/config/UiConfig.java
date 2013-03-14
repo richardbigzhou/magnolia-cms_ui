@@ -39,8 +39,8 @@ import info.magnolia.ui.dialog.config.DialogConfig;
 import info.magnolia.ui.form.config.ValidatorConfig;
 import info.magnolia.ui.form.config.FieldsConfig;
 import info.magnolia.ui.form.config.FormConfig;
-import info.magnolia.ui.workbench.builder.WorkbenchConfig;
-import info.magnolia.ui.workbench.column.builder.ColumnConfig;
+import info.magnolia.ui.workbench.config.WorkbenchConfig;
+import info.magnolia.ui.workbench.config.ColumnConfig;
 
 /**
  * Main config object for creating UI definitions.

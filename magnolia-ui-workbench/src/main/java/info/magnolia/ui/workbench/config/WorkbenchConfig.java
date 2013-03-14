@@ -31,24 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.column.builder;
-
-import info.magnolia.ui.workbench.column.definition.AbstractColumnDefinition;
-import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
+package info.magnolia.ui.workbench.config;
 
 /**
- * Configuration object for creating builders for column definitions.
- *
- * @see info.magnolia.ui.workbench.column.definition.ColumnDefinition
+ * Configuration object for creating builders for workbench related definitions.
  */
-public class ColumnConfig {
+public class WorkbenchConfig {
 
-    public <T extends AbstractColumnDefinition> ColumnBuilder<T> column(T definition) {
-        return new ColumnBuilder<T>(definition);
+    public WorkbenchBuilder workbench() {
+        return new WorkbenchBuilder();
     }
 
-    public ColumnBuilder property(String propertyName, String label) {
-        ColumnBuilder<PropertyColumnDefinition> columnBuilder = new ColumnBuilder<PropertyColumnDefinition>(new PropertyColumnDefinition());
-        return columnBuilder.name(propertyName).label(label).propertyName(propertyName);
+    public NodeTypeBuilder nodeType(String nodeType) {
+        return new NodeTypeBuilder(nodeType);
     }
 }

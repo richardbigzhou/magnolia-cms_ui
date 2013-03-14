@@ -31,32 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.builder;
+package info.magnolia.ui.workbench.config;
 
-import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+import info.magnolia.ui.workbench.column.definition.AbstractColumnDefinition;
+import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
 
 /**
- * Builder for creating a node type definition.
+ * Configuration object for creating builders for column definitions.
  *
- * @see WorkbenchBuilder
- * @see NodeTypeDefinition
- * @see WorkbenchConfig
+ * @see info.magnolia.ui.workbench.column.definition.ColumnDefinition
  */
-public class NodeTypeBuilder {
+public class ColumnConfig {
 
-    private ConfiguredNodeTypeDefinition definition = new ConfiguredNodeTypeDefinition();
-
-    public NodeTypeBuilder(String nodeTypeName) {
-        definition.setName(nodeTypeName);
+    public <T extends AbstractColumnDefinition> ColumnBuilder<T> column(T definition) {
+        return new ColumnBuilder<T>(definition);
     }
 
-    public NodeTypeBuilder icon(String icon) {
-        definition.setIcon(icon);
-        return this;
-    }
-
-    public NodeTypeDefinition exec() {
-        return definition;
+    public ColumnBuilder property(String propertyName, String label) {
+        ColumnBuilder<PropertyColumnDefinition> columnBuilder = new ColumnBuilder<PropertyColumnDefinition>(new PropertyColumnDefinition());
+        return columnBuilder.name(propertyName).label(label).propertyName(propertyName);
     }
 }

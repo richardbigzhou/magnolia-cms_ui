@@ -31,18 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.builder;
+package info.magnolia.ui.workbench.config;
+
+import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 /**
- * Configuration object for creating builders for workbench related definitions.
+ * Builder for creating a node type definition.
+ *
+ * @see WorkbenchBuilder
+ * @see NodeTypeDefinition
+ * @see WorkbenchConfig
  */
-public class WorkbenchConfig {
+public class NodeTypeBuilder {
 
-    public WorkbenchBuilder workbench() {
-        return new WorkbenchBuilder();
+    private ConfiguredNodeTypeDefinition definition = new ConfiguredNodeTypeDefinition();
+
+    public NodeTypeBuilder(String nodeTypeName) {
+        definition.setName(nodeTypeName);
     }
 
-    public NodeTypeBuilder nodeType(String nodeType) {
-        return new NodeTypeBuilder(nodeType);
+    public NodeTypeBuilder icon(String icon) {
+        definition.setIcon(icon);
+        return this;
+    }
+
+    public NodeTypeDefinition exec() {
+        return definition;
     }
 }

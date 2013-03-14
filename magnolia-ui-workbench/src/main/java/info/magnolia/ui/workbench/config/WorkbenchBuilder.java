@@ -31,67 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.column.builder;
+package info.magnolia.ui.workbench.config;
 
-import info.magnolia.ui.workbench.column.definition.AbstractColumnDefinition;
-import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
+import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
 /**
- * Builder for building a column definition.
+ * Builder for creating a workbench definition.
  *
- * @param <T> type of field definition
- * @see info.magnolia.ui.workbench.builder.WorkbenchBuilder
- * @see ColumnConfig
+ * @see info.magnolia.ui.workbench.definition.WorkbenchDefinition
+ * @see WorkbenchConfig
  */
-public class ColumnBuilder<T extends AbstractColumnDefinition> {
+public class WorkbenchBuilder {
 
-    private T definition;
+    private ConfiguredWorkbenchDefinition definition = new ConfiguredWorkbenchDefinition();
 
-    public ColumnBuilder(T definition) {
-        this.definition = definition;
-    }
-
-    public ColumnBuilder<T> name(String name) {
-        definition.setName(name);
+    public WorkbenchBuilder workspace(String workspace) {
+        definition.setWorkspace(workspace);
         return this;
     }
 
-    public ColumnBuilder<T> label(String label) {
-        definition.setLabel(label);
+    public WorkbenchBuilder root(String path) {
+        definition.setPath(path);
         return this;
     }
 
-    public ColumnBuilder<T> expandRatio(float expandRatio) {
-        definition.setExpandRatio(expandRatio);
+    public WorkbenchBuilder defaultOrder(String defaultOrder) {
+        definition.setDefaultOrder(defaultOrder);
         return this;
     }
 
-    public ColumnBuilder<T> width(int width) {
-        definition.setWidth(width);
+    public WorkbenchBuilder columns(ColumnBuilder... columns) {
+        for (ColumnBuilder column : columns) {
+            definition.addColumn(column.exec());
+        }
         return this;
     }
 
-    public ColumnBuilder<T> sortable(boolean sortable) {
-        definition.setSortable(sortable);
+    public WorkbenchBuilder nodeType(NodeTypeBuilder nodeTypeBuilder) {
+        definition.addNodeType(nodeTypeBuilder.exec());
         return this;
     }
 
-    public ColumnBuilder<T> formatterClass(Class<? extends ColumnFormatter> formatterClass) {
-        definition.setFormatterClass(formatterClass);
-        return this;
-    }
-
-    public ColumnBuilder<T> propertyName(String propertyName) {
-        definition.setPropertyName(propertyName);
-        return this;
-    }
-
-    public ColumnBuilder<T> displayInDialog(boolean displayInDialog) {
-        definition.setDisplayInDialog(displayInDialog);
-        return this;
-    }
-
-    public T exec() {
+    public ConfiguredWorkbenchDefinition exec() {
         return definition;
     }
 }

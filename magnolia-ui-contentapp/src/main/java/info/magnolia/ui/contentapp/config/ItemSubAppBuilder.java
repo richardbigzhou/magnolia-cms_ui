@@ -41,7 +41,7 @@ import info.magnolia.ui.model.action.builder.ActionBuilder;
 import info.magnolia.ui.model.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.form.config.FormBuilder;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.workbench.builder.NodeTypeBuilder;
+import info.magnolia.ui.workbench.config.NodeTypeBuilder;
 
 /**
  * ItemSubAppBuilder.
