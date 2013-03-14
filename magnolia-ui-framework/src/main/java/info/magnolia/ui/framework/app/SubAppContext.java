@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.shell.ModalLayer;
+import info.magnolia.ui.vaadin.view.ModalLayer;
 
 /**
  * Provides functionality used by a sub app to interact with the Magnolia shell.

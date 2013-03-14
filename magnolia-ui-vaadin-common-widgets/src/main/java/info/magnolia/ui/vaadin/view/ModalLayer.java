@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.shell;
+package info.magnolia.ui.vaadin.view;
 
 import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;

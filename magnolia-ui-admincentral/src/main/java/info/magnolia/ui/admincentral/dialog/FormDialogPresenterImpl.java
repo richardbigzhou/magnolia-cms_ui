@@ -38,7 +38,7 @@ import info.magnolia.ui.admincentral.dialog.action.DialogActionFactory;
 import info.magnolia.ui.admincentral.dialog.builder.DialogBuilder;
 import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.ui.form.FormPresenterFactory;
-import info.magnolia.ui.framework.shell.ModalLayer;
+import info.magnolia.ui.vaadin.view.ModalLayer;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
