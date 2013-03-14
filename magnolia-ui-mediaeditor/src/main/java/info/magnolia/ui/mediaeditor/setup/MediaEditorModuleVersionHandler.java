@@ -36,7 +36,7 @@ package info.magnolia.ui.mediaeditor.setup;
 import info.magnolia.module.DefaultModuleVersionHandler;
 
 /**
- * MediaEditorModuleVersionHandler.
+ * Version handler for the mediaeditor module.
  */
 public class MediaEditorModuleVersionHandler extends DefaultModuleVersionHandler {
 }

@@ -40,21 +40,19 @@ import info.magnolia.ui.mediaeditor.registry.ConfiguredMediaEditorDefinitionMana
 import javax.inject.Inject;
 
 /**
- * MediaEditorModule.
+ * Registers the observed managers: {@link ConfiguredMediaEditorDefinitionManager}.
  */
 public class MediaEditorModule implements ModuleLifecycle {
     private ConfiguredMediaEditorDefinitionManager configuredMediaEditorDefinitionManager;
 
     @Inject
     public MediaEditorModule(ConfiguredMediaEditorDefinitionManager configuredMediaEditorDefinitionManager) {
-
         this.configuredMediaEditorDefinitionManager = configuredMediaEditorDefinitionManager;
     }
 
     @Override
     public void start(ModuleLifecycleContext context) {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
-
             this.configuredMediaEditorDefinitionManager.start();
         }
     }
