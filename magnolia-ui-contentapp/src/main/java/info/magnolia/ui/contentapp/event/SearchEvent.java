@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.event;
+package info.magnolia.ui.contentapp.event;
 
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
