@@ -9,6 +9,9 @@
   </parent>
   <artifactId>magnolia-ui-form</artifactId>
   <name>magnolia-ui-form</name>
+  <properties>
+    <cloverCoverageThreshold>33</cloverCoverageThreshold>
+  </properties>
 
   <build>
     <plugins>

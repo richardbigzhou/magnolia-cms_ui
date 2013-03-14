@@ -9,7 +9,9 @@
   </parent>
   <artifactId>magnolia-ui-dialog</artifactId>
   <name>magnolia-ui-dialog</name>
-
+  <properties>
+    <cloverCoverageThreshold>33</cloverCoverageThreshold>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>info.magnolia</groupId>
