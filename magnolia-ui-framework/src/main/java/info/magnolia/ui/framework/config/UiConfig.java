@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.config;
 
 import info.magnolia.ui.model.action.builder.ActionConfig;
-import info.magnolia.ui.model.actionbar.builder.ActionbarConfig;
+import info.magnolia.ui.actionbar.definition.builder.ActionbarConfig;
 import info.magnolia.ui.dialog.config.DialogConfig;
 import info.magnolia.ui.form.config.ValidatorConfig;
 import info.magnolia.ui.form.config.FieldsConfig;

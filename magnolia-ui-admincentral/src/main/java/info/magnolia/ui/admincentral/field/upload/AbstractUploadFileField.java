@@ -34,10 +34,10 @@
 package info.magnolia.ui.admincentral.field.upload;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenter;
-import info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactory;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent;
-import info.magnolia.ui.admincentral.mediaeditor.editmode.event.MediaEditorCompletedEvent.Handler;
+import info.magnolia.ui.mediaeditor.MediaEditorPresenter;
+import info.magnolia.ui.mediaeditor.MediaEditorPresenterFactory;
+import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent;
+import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent.Handler;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.view.ModalCloser;
@@ -390,7 +390,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
 
         ByteArrayInputStream inputStream = this.fileItem.getStream();
 
-        MediaEditorPresenter mediaEditorPresenter = mediaEditorFactory.getPresenterById("ui-admincentral:image");
+        MediaEditorPresenter mediaEditorPresenter = mediaEditorFactory.getPresenterById("ui-mediaeditor:image");
 
         final ModalCloser modalCloser = subAppContext.openModal(mediaEditorPresenter.start(inputStream));
         mediaEditorPresenter.addCompletionHandler(new Handler() {

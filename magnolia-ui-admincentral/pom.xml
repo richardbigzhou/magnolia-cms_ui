@@ -10,7 +10,7 @@
   <packaging>jar</packaging>
   <name>magnolia-ui-admincentral</name>
   <properties>
-    <cloverCoverageThreshold>15</cloverCoverageThreshold>
+    <cloverCoverageThreshold>18</cloverCoverageThreshold>
   </properties>
   <dependencies>
     <dependency>
@@ -56,24 +56,17 @@
       <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-mediaeditor</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <!--  <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>easyuploads</artifactId>
     </dependency>-->
-    
-     <dependency>
-      <groupId>com.jhlabs</groupId>
-      <artifactId>filters</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.devlib.schmidt</groupId>
-      <artifactId>imageinfo</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>uk.com.robust-it</groupId>
-      <artifactId>cloning</artifactId>
-    </dependency>
+
     <!-- For tests -->
     <dependency>
       <groupId>junit</groupId>

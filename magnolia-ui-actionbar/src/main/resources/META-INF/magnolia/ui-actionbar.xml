@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd">
+<module>
+  <name>ui-actionbar</name>
+  <displayName>Actionbar</displayName>
+  <description>Actionbar for displaying and configuring ui actions.</description>
+  <version>${project.version}</version>
+  <components>
+    <id>main</id>
+    <type-mapping>
+      <type>info.magnolia.ui.actionbar.definition.ActionbarDefinition</type>
+      <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition</type>
+      <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition</type>
+      <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition</implementation>
+    </type-mapping>
+  </components>
+</module>
+

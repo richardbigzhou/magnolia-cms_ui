@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 
 import java.util.Map;

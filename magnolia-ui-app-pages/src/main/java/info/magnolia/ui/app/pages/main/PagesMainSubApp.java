@@ -38,7 +38,7 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.ContentSubApp;
 import info.magnolia.ui.contentapp.WorkbenchSubAppView;
 import info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter;

@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.security;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.ContentSubApp;
 import info.magnolia.ui.contentapp.WorkbenchSubAppView;
 import info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter;
