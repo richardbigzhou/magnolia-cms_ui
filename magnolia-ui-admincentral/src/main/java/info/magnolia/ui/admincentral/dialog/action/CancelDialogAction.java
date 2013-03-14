@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
+import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 

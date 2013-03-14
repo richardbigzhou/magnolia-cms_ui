@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.security.dialog.field.validator;
 
-import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition;
 
 /**
  * Defines a validator that checks for unique group name.

@@ -35,10 +35,10 @@ package info.magnolia.ui.admincentral.module;
 
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager;
-import info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager;
 
 import javax.inject.Inject;
 

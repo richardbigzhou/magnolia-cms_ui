@@ -37,6 +37,7 @@ import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.vaadin.dialog.Modal;
 import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.view.ModalLayer;
 import info.magnolia.ui.vaadin.view.View;
 
 import java.util.List;

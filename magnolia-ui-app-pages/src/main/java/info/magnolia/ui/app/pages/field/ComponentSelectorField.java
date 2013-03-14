@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.app.pages.field;
 
-import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.form.field.builder.SelectFieldBuilder;
+import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 import java.util.List;
 

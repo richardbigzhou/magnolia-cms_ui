@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.security.dialog.field.validator;
 
-import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition;
 
 /**
  * A definition for the UniqueRoleIdValidator.

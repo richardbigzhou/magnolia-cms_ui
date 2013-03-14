@@ -36,7 +36,7 @@ package info.magnolia.ui.contentapp;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.location.ContentLocation;
-import info.magnolia.ui.admincentral.event.SearchEvent;
+import info.magnolia.ui.contentapp.event.SearchEvent;
 import info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;

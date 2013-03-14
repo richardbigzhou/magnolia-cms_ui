@@ -34,8 +34,6 @@
 package info.magnolia.ui.admincentral.field.upload;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.admincentral.file.FileBufferPropertiesAdapter;
-import info.magnolia.ui.admincentral.file.FileItemWrapper;
 import info.magnolia.ui.mediaeditor.MediaEditorPresenter;
 import info.magnolia.ui.mediaeditor.MediaEditorPresenterFactory;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent;

@@ -35,13 +35,14 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.admincentral.field.upload.UploadFileFieldImpl;
-import info.magnolia.ui.admincentral.file.FileItemWrapper;
-import info.magnolia.ui.admincentral.file.FileItemWrapperImpl;
+import info.magnolia.ui.admincentral.field.upload.FileItemWrapper;
+import info.magnolia.ui.admincentral.field.upload.FileItemWrapperImpl;
 import info.magnolia.ui.mediaeditor.MediaEditorPresenterFactory;
+import info.magnolia.ui.form.field.builder.AbstractFieldBuilder;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.FileUploadFieldDefinition;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;

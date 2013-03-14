@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.contacts.form.action;
 
-import info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition;
+import info.magnolia.ui.form.action.SaveFormActionDefinition;
 
 /**
  * Action Definition for saving contacts in forms.

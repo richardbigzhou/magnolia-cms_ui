@@ -38,7 +38,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.admincentral.event.SearchEvent;
+import info.magnolia.ui.contentapp.event.SearchEvent;
 import info.magnolia.ui.contentapp.ContentPresenter;
 import info.magnolia.ui.contentapp.ContentSubAppDescriptor;
 import info.magnolia.ui.framework.app.AppContext;

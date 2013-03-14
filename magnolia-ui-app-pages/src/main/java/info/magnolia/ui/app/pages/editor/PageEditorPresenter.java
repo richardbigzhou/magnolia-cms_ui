@@ -41,8 +41,8 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
-import info.magnolia.ui.admincentral.dialog.FormDialogPresenter;
-import info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory;
+import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.app.pages.field.TemplateSelectorField;
@@ -50,15 +50,15 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.ModelConstants;
-import info.magnolia.ui.model.dialog.builder.DialogBuilder;
-import info.magnolia.ui.model.dialog.builder.DialogConfig;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.form.builder.FieldsConfig;
-import info.magnolia.ui.model.form.builder.FormBuilder;
-import info.magnolia.ui.model.form.builder.FormConfig;
-import info.magnolia.ui.model.form.builder.OptionBuilder;
-import info.magnolia.ui.model.form.builder.SelectFieldBuilder;
-import info.magnolia.ui.model.form.builder.TabBuilder;
+import info.magnolia.ui.dialog.config.DialogBuilder;
+import info.magnolia.ui.dialog.config.DialogConfig;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.form.config.FieldsConfig;
+import info.magnolia.ui.form.config.FormBuilder;
+import info.magnolia.ui.form.config.FormConfig;
+import info.magnolia.ui.form.config.OptionBuilder;
+import info.magnolia.ui.form.config.SelectFieldBuilder;
+import info.magnolia.ui.form.config.TabBuilder;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
@@ -214,8 +214,8 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     /**
-     * Builds a new {@link DialogDefinition} containing actions and {@link info.magnolia.ui.model.form.definition.FormDefinition}.
-     * The definition will hold a {@link info.magnolia.ui.model.field.definition.SelectFieldDefinition} with the available components as options.
+     * Builds a new {@link DialogDefinition} containing actions and {@link info.magnolia.ui.form.definition.FormDefinition}.
+     * The definition will hold a {@link info.magnolia.ui.form.field.definition.SelectFieldDefinition} with the available components as options.
      */
     private DialogDefinition buildNewComponentDialog(String availableComponents) {
 

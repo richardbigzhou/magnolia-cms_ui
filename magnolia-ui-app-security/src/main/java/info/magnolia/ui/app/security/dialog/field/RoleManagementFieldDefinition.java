@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
-import info.magnolia.ui.model.field.definition.TwinColSelectFieldDefinition;
+import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
 
 /**
  * A definition for the Role Management field.
