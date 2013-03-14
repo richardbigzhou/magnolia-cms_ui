@@ -35,11 +35,11 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
 import info.magnolia.ui.admincentral.field.translator.IdentifierToPathTranslator;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.ItemChosenListener;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.model.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.inject.Inject;

@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.model.field.definition.HiddenFieldDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;

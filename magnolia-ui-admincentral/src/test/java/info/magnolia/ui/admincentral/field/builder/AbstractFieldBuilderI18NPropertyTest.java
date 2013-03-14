@@ -37,8 +37,8 @@ import static org.junit.Assert.assertEquals;
 
 import info.magnolia.cms.i18n.LocaleDefinition;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Locale;

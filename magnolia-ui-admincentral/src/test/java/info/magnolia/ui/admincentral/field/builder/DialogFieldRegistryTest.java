@@ -42,10 +42,10 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.admincentral.field.FieldBuilder;
+import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
+import info.magnolia.ui.form.field.definition.DateFieldDefinition;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
-import info.magnolia.ui.model.field.definition.DateFieldDefinition;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 import java.util.List;
 

@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.model.field.definition.TextFieldDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractTextField;

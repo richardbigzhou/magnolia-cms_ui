@@ -37,7 +37,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.field.validator.FieldValidatorBuilder;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.builder.MappingFactoryBase;
-import info.magnolia.ui.model.field.validation.definition.FieldValidatorDefinition;
+import info.magnolia.ui.form.field.validation.FieldValidatorDefinition;
 
 import java.io.Serializable;
 
@@ -46,7 +46,7 @@ import javax.inject.Inject;
 /**
  * Factory for creating DialogField instances using an internal set of mappings connecting a {@link FieldValidatorDefinition} class with a {@link FieldValidatorBuilder} class.
  *
- * @see info.magnolia.ui.model.field.definition.FieldDefinition
+ * @see info.magnolia.ui.form.field.definition.FieldDefinition
  * @see info.magnolia.ui.admincentral.field.FieldBuilder
  */
 public class ValidatorFieldFactory extends MappingFactoryBase<FieldValidatorDefinition, FieldValidatorBuilder> implements Serializable {

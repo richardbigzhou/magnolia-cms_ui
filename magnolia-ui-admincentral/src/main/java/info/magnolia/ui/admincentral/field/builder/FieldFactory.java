@@ -37,9 +37,9 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.field.FieldBuilder;
 import info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.builder.MappingFactoryBase;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
 
 import java.io.Serializable;
 
@@ -48,7 +48,7 @@ import javax.inject.Inject;
 import com.vaadin.data.Item;
 
 /**
- * Factory for creating DialogField instances using an internal set of mappings connecting a {@link FieldDefinition} class with a {@link FieldBuilder} class.
+ * Factory for creating DialogField instances using an internal set of mappings connecting a {@link info.magnolia.ui.form.field.definition.FieldDefinition} class with a {@link FieldBuilder} class.
  *
  * @see FieldDefinition
  * @see FieldBuilder

@@ -87,12 +87,12 @@
       <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.form.definition.FormDefinition</type>
-      <implementation>info.magnolia.ui.model.form.definition.ConfiguredFormDefinition</implementation>
+      <type>info.magnolia.ui.form.definition.FormDefinition</type>
+      <implementation>info.magnolia.ui.form.definition.ConfiguredFormDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.form.action.FormActionDefinition</type>
-      <implementation>info.magnolia.ui.model.form.action.ConfiguredFormActionDefinition</implementation>
+      <type>info.magnolia.ui.form.definition.FormActionDefinition</type>
+      <implementation>info.magnolia.ui.form.definition.ConfiguredFormActionDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition</type>
@@ -107,16 +107,16 @@
       <implementation>info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.form.definition.TabDefinition</type>
-      <implementation>info.magnolia.ui.model.form.definition.ConfiguredTabDefinition</implementation>
+      <type>info.magnolia.ui.form.definition.TabDefinition</type>
+      <implementation>info.magnolia.ui.form.definition.ConfiguredTabDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.form.definition.FormDefinition</type>
-      <implementation>info.magnolia.ui.model.form.definition.ConfiguredFormDefinition</implementation>
+      <type>info.magnolia.ui.form.definition.FormDefinition</type>
+      <implementation>info.magnolia.ui.form.definition.ConfiguredFormDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.field.definition.FieldDefinition</type>
-      <implementation>info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition</implementation>
+      <type>info.magnolia.ui.form.field.definition.FieldDefinition</type>
+      <implementation>info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.dialog.action.DialogActionDefinition</type>

@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.field.builder;
 import static org.junit.Assert.assertEquals;
 
 import info.magnolia.ui.admincentral.field.PasswordFields;
-import info.magnolia.ui.model.field.definition.PasswordFieldDefinition;
+import info.magnolia.ui.form.field.definition.PasswordFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.form;
 
-import info.magnolia.ui.model.form.definition.FormDefinition;
+import info.magnolia.ui.form.definition.FormDefinition;
 
 /**
  * Interface for {@link FormPresenterFactoryImpl}.

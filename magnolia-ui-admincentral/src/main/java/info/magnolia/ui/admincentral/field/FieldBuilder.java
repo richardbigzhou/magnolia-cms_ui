@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.field;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory;
 import info.magnolia.ui.admincentral.form.FormItem;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 import com.vaadin.ui.Field;
 
@@ -48,7 +48,7 @@ import com.vaadin.ui.Field;
  * <p>
  * Implementations of this interface will be instantiated with the
  * <ul>
- * <li>{@link FieldDefinition} they should use for configuration
+ * <li>{@link info.magnolia.ui.form.field.definition.FieldDefinition} they should use for configuration
  * <li>{@link com.vaadin.data.Item} they will be operating on additional injected constructor arguments.
  * </ul>
  * <strong>FieldBuilder are responsible to create/initialize Items that are by the Vaadin Field.</strong>

@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.ui.admincentral.field.StaticField;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.model.field.definition.StaticFieldDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;

@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.ui.model.field.definition.DateFieldDefinition;
+import info.magnolia.ui.form.field.definition.DateFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.text.SimpleDateFormat;

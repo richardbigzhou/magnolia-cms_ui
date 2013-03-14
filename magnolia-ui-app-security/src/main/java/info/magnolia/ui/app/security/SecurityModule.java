@@ -66,8 +66,8 @@ import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
 import info.magnolia.ui.dialog.config.Dialog;
 import info.magnolia.ui.dialog.config.DialogBuilder;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
-import info.magnolia.ui.model.form.builder.AbstractFieldBuilder;
-import info.magnolia.ui.model.form.builder.OptionBuilder;
+import info.magnolia.ui.form.config.AbstractFieldBuilder;
+import info.magnolia.ui.form.config.OptionBuilder;
 import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
 
 import javax.inject.Inject;

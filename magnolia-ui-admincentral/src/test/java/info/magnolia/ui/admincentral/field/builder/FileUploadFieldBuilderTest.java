@@ -37,7 +37,7 @@ import static org.junit.Assert.assertEquals;
 
 import info.magnolia.ui.admincentral.field.upload.AbstractUploadFileField.DefaultComponent;
 import info.magnolia.ui.admincentral.field.upload.UploadFileFieldImpl;
-import info.magnolia.ui.model.field.definition.FileUploadFieldDefinition;
+import info.magnolia.ui.form.field.definition.FileUploadFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 
 import org.junit.Test;

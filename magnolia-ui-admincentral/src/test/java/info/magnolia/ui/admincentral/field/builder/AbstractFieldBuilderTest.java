@@ -36,8 +36,8 @@ package info.magnolia.ui.admincentral.field.builder;
 import static org.junit.Assert.*;
 
 import info.magnolia.objectfactory.Components;
-import info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 

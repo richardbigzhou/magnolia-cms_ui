@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.field.validator;
 
 import info.magnolia.ui.admincentral.form.AbstractFormItem;
-import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition;
 
 /**
  * Base type for FieldValidationBuilders.

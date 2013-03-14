@@ -73,7 +73,7 @@
         <sv:value>1a6ba7be-65fb-4130-9be3-94a95c8e10bb</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.builder.TextFieldBuilder</sv:value>
@@ -113,7 +113,7 @@
         <sv:value>029dc8e0-68f6-4b23-ac01-2c886ba68ae2</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.definition.DateFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.form.field.definition.DateFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.builder.DateFieldBuilder</sv:value>
@@ -153,7 +153,7 @@
         <sv:value>799358ff-a398-4f84-9e6f-c56ba00b21c4</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.definition.SelectFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.form.field.definition.SelectFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder</sv:value>
@@ -193,7 +193,7 @@
         <sv:value>e89576da-6efc-42d3-8fc6-0eb2e043505f</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.builder.OptionGroupFieldBuilder</sv:value>
@@ -233,7 +233,7 @@
         <sv:value>ac6cdb0d-f3c6-499c-95b8-0842909e2a3c</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.definition.FileUploadFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.form.field.definition.FileUploadFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.builder.FileUploadFieldBuilder</sv:value>
@@ -270,7 +270,7 @@
         <sv:value>4426c1a7-8bd2-4928-99c1-cf9aa80e2bd5</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.definition.AssetUploadFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.form.field.definition.AssetUploadFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.dam.app.assets.field.builder.AssetUploadFieldBuilder</sv:value>
@@ -310,7 +310,7 @@
         <sv:value>95a5f391-775e-431f-ad76-7bdd174d6f75</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.definition.LinkFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.form.field.definition.LinkFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder</sv:value>
@@ -350,7 +350,7 @@
         <sv:value>663be6b9-1c00-4cd8-b6fe-eb7bf89dbe52</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.definition.LinkFieldSelectionDefinition</sv:value>
+        <sv:value>info.magnolia.ui.form.field.definition.LinkFieldSelectionDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.contentapp.field.LinkFieldSelectionBuilder</sv:value>
@@ -390,7 +390,7 @@
         <sv:value>f6ccf72d-8907-4732-b9df-0b0f8e071626</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.definition.RichTextFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.form.field.definition.RichTextFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.builder.RichTextFieldBuilder</sv:value>
@@ -430,7 +430,7 @@
         <sv:value>178586cc-2561-4804-9798-7431c474e734</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.definition.StaticFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.form.field.definition.StaticFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.builder.StaticFieldBuilder</sv:value>
@@ -470,7 +470,7 @@
         <sv:value>d3930d2d-e9ba-43b1-82bc-d95d78ea6649</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.definition.CheckboxFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.form.field.definition.CheckboxFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.builder.CheckBoxFieldBuilder</sv:value>
@@ -510,7 +510,7 @@
         <sv:value>c17d39e3-3d95-4dd8-9d82-8dfaf0d104fb</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.definition.HiddenFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.form.field.definition.HiddenFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.builder.HiddenFieldBuilder</sv:value>
@@ -550,7 +550,7 @@
         <sv:value>f9a82a67-a8bf-4cd8-85db-6fc52515b165</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.definition.PasswordFieldDefinition</sv:value>
+        <sv:value>info.magnolia.ui.form.field.definition.PasswordFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.field.builder.PasswordFieldBuilder</sv:value>
@@ -630,7 +630,7 @@
 	    <sv:value>602ef3ca-2f66-41cc-8d20-6dba03a29237</sv:value>
 	  </sv:property>
 	  <sv:property sv:name="definition" sv:type="String">
-	    <sv:value>info.magnolia.ui.model.field.definition.TwinColSelectFieldDefinition</sv:value>
+	    <sv:value>info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition</sv:value>
 	  </sv:property>
 	  <sv:property sv:name="implementation" sv:type="String">
 	    <sv:value>info.magnolia.ui.admincentral.field.builder.TwinColSelectFieldBuilder</sv:value>

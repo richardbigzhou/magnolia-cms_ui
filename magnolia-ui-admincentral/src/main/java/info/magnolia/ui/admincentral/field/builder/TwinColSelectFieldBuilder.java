@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.model.field.definition.TwinColSelectFieldDefinition;
+import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;

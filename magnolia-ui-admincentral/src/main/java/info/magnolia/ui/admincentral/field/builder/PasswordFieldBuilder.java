@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.ui.admincentral.field.PasswordFields;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
-import info.magnolia.ui.model.field.definition.PasswordFieldDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.PasswordFieldDefinition;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;

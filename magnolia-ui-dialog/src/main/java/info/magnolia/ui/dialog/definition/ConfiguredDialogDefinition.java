@@ -34,7 +34,7 @@
 package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.dialog.action.DialogActionDefinition;
-import info.magnolia.ui.model.form.definition.FormDefinition;
+import info.magnolia.ui.form.definition.FormDefinition;
 
 import java.util.ArrayList;
 import java.util.List;

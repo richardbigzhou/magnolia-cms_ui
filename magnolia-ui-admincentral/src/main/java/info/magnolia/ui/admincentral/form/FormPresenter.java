@@ -38,7 +38,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.form.action.FormActionDefinition;
+import info.magnolia.ui.form.definition.FormActionDefinition;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
 

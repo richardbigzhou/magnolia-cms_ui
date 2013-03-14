@@ -34,14 +34,14 @@
 package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.dialog.action.DialogActionDefinition;
-import info.magnolia.ui.model.form.definition.FormDefinition;
+import info.magnolia.ui.form.definition.FormDefinition;
 
 import java.util.List;
 
 /**
  * Defines a dialog.
  *
- * @see info.magnolia.ui.model.field.definition.FieldDefinition
+ * @see info.magnolia.ui.form.field.definition.FieldDefinition
  * @see DialogActionDefinition
  */
 public interface DialogDefinition {

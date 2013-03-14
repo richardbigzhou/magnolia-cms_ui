@@ -39,7 +39,7 @@ import info.magnolia.ui.admincentral.form.FormPresenterFactory;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
-import info.magnolia.ui.model.form.definition.FormDefinition;
+import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 

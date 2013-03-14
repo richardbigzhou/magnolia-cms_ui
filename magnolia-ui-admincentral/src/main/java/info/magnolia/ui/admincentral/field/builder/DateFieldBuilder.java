@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.model.field.definition.DateFieldDefinition;
+import info.magnolia.ui.form.field.definition.DateFieldDefinition;
 
 import java.util.Date;
 

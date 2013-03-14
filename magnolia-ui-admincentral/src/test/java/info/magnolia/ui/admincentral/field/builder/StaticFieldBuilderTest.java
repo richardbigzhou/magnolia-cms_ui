@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.field.builder;
 import static org.junit.Assert.assertEquals;
 
 import info.magnolia.ui.admincentral.field.StaticField;
-import info.magnolia.ui.model.field.definition.StaticFieldDefinition;
+import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 
 import org.junit.Test;
 

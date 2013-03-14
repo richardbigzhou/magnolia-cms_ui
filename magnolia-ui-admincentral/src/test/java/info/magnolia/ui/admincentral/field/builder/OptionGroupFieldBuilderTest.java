@@ -35,8 +35,8 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition;
-import info.magnolia.ui.model.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
+import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 
 import java.util.ArrayList;
 import java.util.Collection;

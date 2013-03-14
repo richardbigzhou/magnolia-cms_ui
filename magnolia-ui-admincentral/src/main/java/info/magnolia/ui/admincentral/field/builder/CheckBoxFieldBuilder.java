@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.field.builder;
 
 import info.magnolia.ui.admincentral.field.CheckBoxAndLabelField;
-import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
-import info.magnolia.ui.model.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;

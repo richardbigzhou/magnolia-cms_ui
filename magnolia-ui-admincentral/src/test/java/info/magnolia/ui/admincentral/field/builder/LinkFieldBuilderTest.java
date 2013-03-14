@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.field.builder;
 import static org.junit.Assert.assertEquals;
 
 import info.magnolia.ui.admincentral.field.TextAndButtonField;
-import info.magnolia.ui.model.field.definition.LinkFieldDefinition;
+import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import org.junit.Test;

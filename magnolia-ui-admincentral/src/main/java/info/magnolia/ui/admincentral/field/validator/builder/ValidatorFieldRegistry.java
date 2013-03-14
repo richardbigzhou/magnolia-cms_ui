@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.field.validator.builder;
 
 import info.magnolia.ui.admincentral.field.validator.FieldValidatorBuilder;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.field.validation.definition.FieldValidatorDefinition;
+import info.magnolia.ui.form.field.validation.FieldValidatorDefinition;
 
 import java.io.Serializable;
 import java.util.ArrayList;

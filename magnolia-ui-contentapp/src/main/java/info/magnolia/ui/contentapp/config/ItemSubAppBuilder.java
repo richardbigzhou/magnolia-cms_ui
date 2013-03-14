@@ -39,7 +39,7 @@ import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.builder.ActionBuilder;
 import info.magnolia.ui.model.actionbar.builder.ActionbarBuilder;
-import info.magnolia.ui.model.form.builder.FormBuilder;
+import info.magnolia.ui.form.config.FormBuilder;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.workbench.builder.NodeTypeBuilder;
 

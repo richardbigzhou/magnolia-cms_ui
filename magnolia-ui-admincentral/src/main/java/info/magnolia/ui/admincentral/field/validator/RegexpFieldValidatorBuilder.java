@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.field.validator;
 
-import info.magnolia.ui.model.field.validation.definition.RegexpValidatorDefinition;
+import info.magnolia.ui.form.field.validation.RegexpValidatorDefinition;
 
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.RegexpValidator;
