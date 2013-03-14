@@ -10,7 +10,7 @@
     <sv:value>4723fe63-3f13-4917-8d3a-1c182c547459</sv:value>
   </sv:property>
   <sv:property sv:name="class" sv:type="String">
-    <sv:value>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldRegistry</sv:value>
+    <sv:value>info.magnolia.ui.form.field.validation.ValidatorFieldRegistry</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
@@ -73,10 +73,10 @@
         <sv:value>664be1b3-5fe8-4273-8ad2-8f0f916d02de</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.validation.definition.RegexpValidatorDefinition</sv:value>
+        <sv:value>info.magnolia.ui.form.field.validation.RegexpValidatorDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.validator.RegexpFieldValidatorBuilder</sv:value>
+        <sv:value>info.magnolia.ui.form.field.validation.RegexpFieldValidatorBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -110,10 +110,10 @@
         <sv:value>d02c9cc4-be6f-41d7-95f5-ecae10e32a44</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.model.field.validation.definition.EmailValidatorDefinition</sv:value>
+        <sv:value>info.magnolia.ui.form.field.validation.EmailValidatorDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.validator.EmailFieldValidatorBuilder</sv:value>
+        <sv:value>info.magnolia.ui.form.field.validation.EmailFieldValidatorBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>

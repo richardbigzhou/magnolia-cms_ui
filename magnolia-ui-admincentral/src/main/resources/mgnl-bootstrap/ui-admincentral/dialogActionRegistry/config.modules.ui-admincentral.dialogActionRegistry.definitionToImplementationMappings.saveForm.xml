@@ -10,10 +10,10 @@
     <sv:value>72703eb5-4b71-4ba5-b5f8-3a1dff64bca7</sv:value>
   </sv:property>
   <sv:property sv:name="definition" sv:type="String">
-    <sv:value>info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition</sv:value>
+    <sv:value>info.magnolia.ui.form.action.SaveFormActionDefinition</sv:value>
   </sv:property>
   <sv:property sv:name="implementation" sv:type="String">
-    <sv:value>info.magnolia.ui.admincentral.form.action.SaveFormAction</sv:value>
+    <sv:value>info.magnolia.ui.form.action.SaveFormAction</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>

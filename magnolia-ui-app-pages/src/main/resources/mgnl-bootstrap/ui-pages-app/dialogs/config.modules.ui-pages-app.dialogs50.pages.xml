@@ -277,7 +277,7 @@
               <sv:value>67cfc9f2-17a9-4692-9e0f-1dc630b03f41</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Page Name. This name is also used as node name.</sv:value>
@@ -318,7 +318,7 @@
               <sv:value>c0b8baf9-c28a-4469-b638-a1c97c2d1384</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
-              <sv:value>info.magnolia.ui.model.field.definition.TextFieldDefinition</sv:value>
+              <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
             <sv:property sv:name="description" sv:type="String">
               <sv:value>Page Title used as default header title.  </sv:value>

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.contacts.field.definition;
 
-import info.magnolia.ui.model.field.definition.LinkFieldDefinition;
+import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 
 /**
  * .

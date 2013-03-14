@@ -29,12 +29,12 @@
       <implementation>info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</type>
-      <implementation>info.magnolia.ui.model.dialog.registry.ConfiguredDialogDefinitionManager</implementation>
+      <type>info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager</type>
+      <implementation>info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry</type>
-      <implementation>info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry</implementation>
+      <type>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</type>
+      <implementation>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</implementation>
     </component>
     <!-- MEDIA EDITOR CONFIG HERE -->
     <component>
@@ -87,12 +87,12 @@
       <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.form.definition.FormDefinition</type>
-      <implementation>info.magnolia.ui.model.form.definition.ConfiguredFormDefinition</implementation>
+      <type>info.magnolia.ui.form.definition.FormDefinition</type>
+      <implementation>info.magnolia.ui.form.definition.ConfiguredFormDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.form.action.FormActionDefinition</type>
-      <implementation>info.magnolia.ui.model.form.action.ConfiguredFormActionDefinition</implementation>
+      <type>info.magnolia.ui.form.definition.FormActionDefinition</type>
+      <implementation>info.magnolia.ui.form.definition.ConfiguredFormActionDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition</type>
@@ -103,24 +103,24 @@
       <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.dialog.definition.DialogDefinition</type>
-      <implementation>info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition</implementation>
+      <type>info.magnolia.ui.dialog.definition.DialogDefinition</type>
+      <implementation>info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.form.definition.TabDefinition</type>
-      <implementation>info.magnolia.ui.model.form.definition.ConfiguredTabDefinition</implementation>
+      <type>info.magnolia.ui.form.definition.TabDefinition</type>
+      <implementation>info.magnolia.ui.form.definition.ConfiguredTabDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.form.definition.FormDefinition</type>
-      <implementation>info.magnolia.ui.model.form.definition.ConfiguredFormDefinition</implementation>
+      <type>info.magnolia.ui.form.definition.FormDefinition</type>
+      <implementation>info.magnolia.ui.form.definition.ConfiguredFormDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.field.definition.FieldDefinition</type>
-      <implementation>info.magnolia.ui.model.field.definition.ConfiguredFieldDefinition</implementation>
+      <type>info.magnolia.ui.form.field.definition.FieldDefinition</type>
+      <implementation>info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.dialog.action.DialogActionDefinition</type>
-      <implementation>info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition</implementation>
+      <type>info.magnolia.ui.dialog.action.DialogActionDefinition</type>
+      <implementation>info.magnolia.ui.dialog.action.ConfiguredDialogActionDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition</type>
@@ -148,21 +148,21 @@
       <class>info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer</class>
     </configurer>
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.action.DialogActionRegistry</type>
+      <type>info.magnolia.ui.form.action.DialogActionRegistry</type>
       <workspace>config</workspace>
       <path>/modules/ui-admincentral/dialogActionRegistry</path>
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.field.builder.DialogFieldRegistry</type>
+      <type>info.magnolia.ui.form.field.builder.DialogFieldRegistry</type>
       <workspace>config</workspace>
       <path>/modules/ui-admincentral/dialogFieldRegistry</path>
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldRegistry</type>
+      <type>info.magnolia.ui.form.field.validation.ValidatorFieldRegistry</type>
       <workspace>config</workspace>
       <path>/modules/ui-admincentral/dialogFieldValidatorRegistry</path>
       <observed>true</observed>
@@ -238,8 +238,8 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.action.DialogActionFactory</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.action.DialogActionFactoryImpl</implementation>
+      <type>info.magnolia.ui.dialog.action.DialogActionFactory</type>
+      <implementation>info.magnolia.ui.dialog.action.DialogActionFactoryImpl</implementation>
     </component>
 
     <component>
@@ -251,8 +251,8 @@
       <implementation>info.magnolia.ui.workbench.ContentViewBuilderImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</type>
-      <implementation>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</implementation>
+      <type>info.magnolia.ui.form.field.validation.ValidatorFieldFactory</type>
+      <implementation>info.magnolia.ui.form.field.validation.ValidatorFieldFactory</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter</type>
@@ -317,24 +317,24 @@
 
     <!-- Moved into subApp due to use of subApps EventBus -->
     <component>
-      <type>info.magnolia.ui.admincentral.form.FormPresenterFactory</type>
-      <implementation>info.magnolia.ui.admincentral.form.FormPresenterFactoryImpl</implementation>
+      <type>info.magnolia.ui.form.FormPresenterFactory</type>
+      <implementation>info.magnolia.ui.form.FormPresenterFactoryImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory</type>
-      <implementation>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactoryImpl</implementation>
+      <type>info.magnolia.ui.dialog.FormDialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.dialog.FormDialogPresenterFactoryImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.field.builder.FieldFactory</type>
-      <implementation>info.magnolia.ui.admincentral.field.builder.FieldFactory</implementation>
+      <type>info.magnolia.ui.form.field.builder.FieldFactory</type>
+      <implementation>info.magnolia.ui.form.field.builder.FieldFactory</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.form.action.FormActionFactory</type>
-      <implementation>info.magnolia.ui.admincentral.form.action.FormActionFactoryImpl</implementation>
+      <type>info.magnolia.ui.form.action.FormActionFactory</type>
+      <implementation>info.magnolia.ui.form.action.FormActionFactoryImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition</type>
-      <implementation>info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition</implementation>
+      <type>info.magnolia.ui.form.action.SaveFormActionDefinition</type>
+      <implementation>info.magnolia.ui.form.action.SaveFormActionDefinition</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.vaadin.dialog.DialogView</type>

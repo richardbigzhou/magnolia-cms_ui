@@ -40,7 +40,7 @@ import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.builder.ActionBuilder;
 import info.magnolia.ui.model.actionbar.builder.ActionbarBuilder;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.workbench.builder.WorkbenchBuilder;
+import info.magnolia.ui.workbench.config.WorkbenchBuilder;
 
 /**
  * Builder used to build a sub app descriptor.

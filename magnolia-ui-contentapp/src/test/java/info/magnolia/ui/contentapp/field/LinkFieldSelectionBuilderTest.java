@@ -37,15 +37,15 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import info.magnolia.event.SimpleEventBus;
-import info.magnolia.ui.admincentral.field.builder.AbstractBuilderTest;
-import info.magnolia.ui.admincentral.field.builder.AbstractFieldBuilderTest;
+import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
+import info.magnolia.ui.form.field.builder.AbstractFieldBuilderTest;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter;
+import info.magnolia.ui.form.field.definition.LinkFieldSelectionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
-import info.magnolia.ui.model.field.definition.LinkFieldSelectionDefinition;
 
 import javax.jcr.RepositoryException;
 

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
-import info.magnolia.ui.model.field.definition.CheckboxFieldDefinition;
+import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 
 /**
  * A definition for the Enabled field.

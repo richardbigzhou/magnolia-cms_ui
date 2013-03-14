@@ -53,7 +53,7 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.framework.shell.ModalLayer;
+import info.magnolia.ui.vaadin.view.ModalLayer;
 import info.magnolia.ui.vaadin.view.Viewport;
 
 import java.util.HashMap;

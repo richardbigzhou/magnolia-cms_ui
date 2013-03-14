@@ -195,39 +195,39 @@ public class DialogMigrationTask extends AbstractTask {
         if (fieldNode.hasProperty("controlType")) {
             if (fieldNode.getProperty("controlType").getString().equals("edit")) {
                 fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.TextFieldDefinition");
+                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.TextFieldDefinition");
             } else if (fieldNode.getProperty("controlType").getString().equals("fckEdit")) {
                 fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.RichTextFieldDefinition");
+                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.RichTextFieldDefinition");
             } else if (fieldNode.getProperty("controlType").getString().equals("date")) {
                 fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.DateFieldDefinition");
+                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.DateFieldDefinition");
             } else if (fieldNode.getProperty("controlType").getString().equals("select")) {
                 fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.SelectFieldDefinition");
+                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.SelectFieldDefinition");
             } else if (fieldNode.getProperty("controlType").getString().equals("checkbox")) {
                 fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition");
+                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition");
                 fieldNode.setProperty("multiselect", "true");
             } else if (fieldNode.getProperty("controlType").getString().equals("checkboxSwitch")) {
                 fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.CheckboxFieldDefinition");
+                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.CheckboxFieldDefinition");
             } else if (fieldNode.getProperty("controlType").getString().equals("radio")) {
                 fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.OptionGroupFieldDefinition");
+                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition");
             } else if (fieldNode.getProperty("controlType").getString().equals("dam")) {
                 fieldNode.getProperty("controlType").remove();
                 setDamField(fieldNode, "image.*");
             } else if (fieldNode.getProperty("controlType").getString().equals("hidden")) {
                 fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.HiddenFieldDefinition");
+                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.HiddenFieldDefinition");
             } else if (fieldNode.getProperty("controlType").getString().equals("uuidLink")) {
                 if (fieldNode.hasProperty("repository")) {
                     fieldNode.getProperty("controlType").remove();
                     fieldNode.setProperty("identifier", "true");
                     if (fieldNode.getProperty("repository").getString().equals("website")) {
                         fieldNode.setProperty("appName", "pages");
-                        fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.LinkFieldDefinition");
+                        fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.LinkFieldDefinition");
                         fieldNode.setProperty("dialogName", "ui-pages-app:link");
                     } else if (fieldNode.getProperty("repository").getString().equals("data")) {
                         // Handle contacts
@@ -241,11 +241,11 @@ public class DialogMigrationTask extends AbstractTask {
                         setDamField(fieldNode, null);
                     }
                 } else {
-                    fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.StaticFieldDefinition");
+                    fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.StaticFieldDefinition");
                     fieldNode.setProperty("value", "Field not yet supported");
                 }
             } else {
-                fieldNode.setProperty("class", "info.magnolia.ui.model.field.definition.StaticFieldDefinition");
+                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.StaticFieldDefinition");
                 if (!fieldNode.hasProperty("value")) {
                     fieldNode.setProperty("value", "Field not yet supported");
                 }

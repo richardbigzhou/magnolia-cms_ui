@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.contacts.field;
 
-import info.magnolia.ui.admincentral.field.ThumbnailField;
+import info.magnolia.ui.form.field.ThumbnailField;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 
 import javax.jcr.Node;

@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.field.upload;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.admincentral.file.FileItemWrapper;
 import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactory;
 import info.magnolia.ui.framework.app.SubAppContext;

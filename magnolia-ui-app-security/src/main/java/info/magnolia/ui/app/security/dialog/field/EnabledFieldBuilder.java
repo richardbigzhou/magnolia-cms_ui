@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
-import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
-import info.magnolia.ui.model.form.builder.CheckboxFieldBuilder;
+import info.magnolia.ui.form.config.GenericValidatorBuilder;
+import info.magnolia.ui.form.config.CheckboxFieldBuilder;
 
 /**
  * Config-by-code builder for the Enabled field.

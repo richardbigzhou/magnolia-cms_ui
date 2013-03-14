@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
-import info.magnolia.ui.model.field.builder.GenericValidatorBuilder;
-import info.magnolia.ui.model.field.validation.definition.ConfiguredFieldValidatorDefinition;
-import info.magnolia.ui.model.form.builder.OptionBuilder;
-import info.magnolia.ui.model.form.builder.TwinColSelectFieldBuilder;
+import info.magnolia.ui.form.config.GenericValidatorBuilder;
+import info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.form.config.OptionBuilder;
+import info.magnolia.ui.form.config.TwinColSelectFieldBuilder;
 
 /**
  * Config-by-code builder for the Group Management field.

@@ -40,7 +40,7 @@ import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.ItemChosenListener;
-import info.magnolia.ui.framework.shell.ModalLayer;
+import info.magnolia.ui.vaadin.view.ModalLayer;
 import info.magnolia.ui.vaadin.view.ModalCloser;
 
 import javax.inject.Inject;

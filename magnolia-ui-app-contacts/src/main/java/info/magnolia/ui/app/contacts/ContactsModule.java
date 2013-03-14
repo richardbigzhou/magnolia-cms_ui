@@ -39,14 +39,14 @@ import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
-import info.magnolia.ui.admincentral.form.action.CancelFormActionDefinition;
-import info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition;
+import info.magnolia.ui.form.action.CancelFormActionDefinition;
 import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.contacts.ContactNodeType.Contact;
 import info.magnolia.ui.app.contacts.action.AddFolderActionDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
+import info.magnolia.ui.app.contacts.form.action.SaveContactFormActionDefinition;
 import info.magnolia.ui.app.contacts.main.ContactsMainSubApp;
 import info.magnolia.ui.contentapp.ContentApp;
 import info.magnolia.ui.contentapp.ItemSubApp;
@@ -54,18 +54,18 @@ import info.magnolia.ui.contentapp.config.CodeConfigurationUtils;
 import info.magnolia.ui.contentapp.config.ContentAppBuilder;
 import info.magnolia.ui.contentapp.item.action.CreateItemActionDefinition;
 import info.magnolia.ui.contentapp.item.action.EditItemActionDefinition;
+import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.framework.app.builder.App;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.config.UiConfig;
 import info.magnolia.ui.model.ModelConstants;
-import info.magnolia.ui.model.dialog.action.ConfiguredDialogActionDefinition;
-import info.magnolia.ui.model.dialog.builder.Dialog;
-import info.magnolia.ui.model.dialog.definition.ConfiguredDialogDefinition;
-import info.magnolia.ui.model.dialog.definition.DialogDefinition;
-import info.magnolia.ui.model.dialog.registry.DialogDefinitionRegistry;
-import info.magnolia.ui.model.field.definition.TextFieldDefinition;
-import info.magnolia.ui.model.form.definition.ConfiguredFormDefinition;
-import info.magnolia.ui.model.form.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.dialog.action.ConfiguredDialogActionDefinition;
+import info.magnolia.ui.dialog.config.Dialog;
+import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
+import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
+import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
 import info.magnolia.ui.workbench.column.StatusColumnFormatter;
@@ -236,7 +236,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                                         .validator(cfg.validators.email().errorMessage("validation.message.non.valid.email")),
                                                                 cfg.fields.text(Contact.PROPERTY_WEBSITE).label("Website")
                                                                         .description("Please enter the Website")))
-                                        .actions(cfg.forms.action("commit").label("save changes").action(new SaveFormActionDefinition()),
+                                        .actions(cfg.forms.action("commit").label("save changes").action(new SaveContactFormActionDefinition()),
                                                 cfg.forms.action("cancel").label("cancel").action(new CancelFormActionDefinition())
                                         )
                                 ).exec()

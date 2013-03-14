@@ -10,7 +10,7 @@
   <packaging>jar</packaging>
   <name>magnolia-ui-admincentral</name>
   <properties>
-    <cloverCoverageThreshold>22</cloverCoverageThreshold>
+    <cloverCoverageThreshold>15</cloverCoverageThreshold>
   </properties>
   <dependencies>
     <dependency>
@@ -93,6 +93,13 @@
       <artifactId>magnolia-core</artifactId>
       <type>test-jar</type>
       <version>${magnoliaVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-form</artifactId>
+      <type>test-jar</type>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

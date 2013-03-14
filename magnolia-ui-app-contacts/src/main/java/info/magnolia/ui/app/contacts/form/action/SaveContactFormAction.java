@@ -36,9 +36,8 @@ package info.magnolia.ui.app.contacts.form.action;
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.admincentral.form.FormPresenter;
-import info.magnolia.ui.admincentral.form.action.SaveFormAction;
-import info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition;
+import info.magnolia.ui.form.FormPresenter;
+import info.magnolia.ui.form.action.SaveFormAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -52,9 +51,11 @@ import javax.jcr.RepositoryException;
  * This must be properly solved by passing the node identifier to {@link info.magnolia.ui.framework.event.ContentChangedEvent}.
  *
  * See MGNLUI-226.
+ *
+ * @see SaveContactFormActionDefinition
  */
 public class SaveContactFormAction extends SaveFormAction {
-    public SaveContactFormAction(SaveFormActionDefinition definition, FormPresenter presenter) {
+    public SaveContactFormAction(SaveContactFormActionDefinition definition, FormPresenter presenter) {
         super(definition, presenter);
     }
 
