@@ -40,13 +40,13 @@ import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.admincentral.form.action.CancelFormActionDefinition;
-import info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition;
 import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.contacts.ContactNodeType.Contact;
 import info.magnolia.ui.app.contacts.action.AddFolderActionDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
+import info.magnolia.ui.app.contacts.form.action.SaveContactFormActionDefinition;
 import info.magnolia.ui.app.contacts.main.ContactsMainSubApp;
 import info.magnolia.ui.contentapp.ContentApp;
 import info.magnolia.ui.contentapp.ItemSubApp;
@@ -236,7 +236,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                                         .validator(cfg.validators.email().errorMessage("validation.message.non.valid.email")),
                                                                 cfg.fields.text(Contact.PROPERTY_WEBSITE).label("Website")
                                                                         .description("Please enter the Website")))
-                                        .actions(cfg.forms.action("commit").label("save changes").action(new SaveFormActionDefinition()),
+                                        .actions(cfg.forms.action("commit").label("save changes").action(new SaveContactFormActionDefinition()),
                                                 cfg.forms.action("cancel").label("cancel").action(new CancelFormActionDefinition())
                                         )
                                 ).exec()

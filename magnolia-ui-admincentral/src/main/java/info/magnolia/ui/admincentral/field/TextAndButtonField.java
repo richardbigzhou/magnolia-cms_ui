@@ -76,11 +76,12 @@ public class TextAndButtonField extends CustomField<String> {
         HorizontalLayout root = new HorizontalLayout();
         root.setSizeFull();
         root.setSpacing(true);
-        
+
         textField.setImmediate(true);
         textField.setWidth(100, Unit.PERCENTAGE);
+        textField.setNullRepresentation("");
         selectButton.addStyleName("magnoliabutton");
-        
+
         root.addComponent(textField);
         root.addComponent(selectButton);
         root.setExpandRatio(textField, 1);
