@@ -10,7 +10,7 @@
     <sv:value>0fda1ec0-7a01-4c9e-8678-5da1ffac501a</sv:value>
   </sv:property>
   <sv:property sv:name="class" sv:type="String">
-    <sv:value>info.magnolia.ui.admincentral.field.builder.DialogFieldRegistry</sv:value>
+    <sv:value>info.magnolia.ui.form.field.builder.DialogFieldRegistry</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
@@ -76,7 +76,7 @@
         <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.builder.TextFieldBuilder</sv:value>
+        <sv:value>info.magnolia.ui.form.field.builder.TextFieldBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -116,7 +116,7 @@
         <sv:value>info.magnolia.ui.form.field.definition.DateFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.builder.DateFieldBuilder</sv:value>
+        <sv:value>info.magnolia.ui.form.field.builder.DateFieldBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -156,7 +156,7 @@
         <sv:value>info.magnolia.ui.form.field.definition.SelectFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder</sv:value>
+        <sv:value>info.magnolia.ui.form.field.builder.SelectFieldBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -196,7 +196,7 @@
         <sv:value>info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.builder.OptionGroupFieldBuilder</sv:value>
+        <sv:value>info.magnolia.ui.form.field.builder.OptionGroupFieldBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -433,7 +433,7 @@
         <sv:value>info.magnolia.ui.form.field.definition.StaticFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.builder.StaticFieldBuilder</sv:value>
+        <sv:value>info.magnolia.ui.form.field.builder.StaticFieldBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -473,7 +473,7 @@
         <sv:value>info.magnolia.ui.form.field.definition.CheckboxFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.builder.CheckBoxFieldBuilder</sv:value>
+        <sv:value>info.magnolia.ui.form.field.builder.CheckBoxFieldBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -513,7 +513,7 @@
         <sv:value>info.magnolia.ui.form.field.definition.HiddenFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.builder.HiddenFieldBuilder</sv:value>
+        <sv:value>info.magnolia.ui.form.field.builder.HiddenFieldBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -553,7 +553,7 @@
         <sv:value>info.magnolia.ui.form.field.definition.PasswordFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
-        <sv:value>info.magnolia.ui.admincentral.field.builder.PasswordFieldBuilder</sv:value>
+        <sv:value>info.magnolia.ui.form.field.builder.PasswordFieldBuilder</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -633,7 +633,7 @@
 	    <sv:value>info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition</sv:value>
 	  </sv:property>
 	  <sv:property sv:name="implementation" sv:type="String">
-	    <sv:value>info.magnolia.ui.admincentral.field.builder.TwinColSelectFieldBuilder</sv:value>
+	    <sv:value>info.magnolia.ui.form.field.builder.TwinColSelectFieldBuilder</sv:value>
 	  </sv:property>
 	  <sv:property sv:name="jcr:createdBy" sv:type="String">
 	    <sv:value>admin</sv:value>

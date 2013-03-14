@@ -39,7 +39,7 @@ import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
-import info.magnolia.ui.admincentral.form.action.CancelFormActionDefinition;
+import info.magnolia.ui.form.action.CancelFormActionDefinition;
 import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.contacts.ContactNodeType.Contact;

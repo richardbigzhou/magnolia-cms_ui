@@ -36,7 +36,7 @@ package info.magnolia.ui.app.security.dialog.field;
 import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.ui.admincentral.field.builder.TwinColSelectFieldBuilder;
+import info.magnolia.ui.form.field.builder.TwinColSelectFieldBuilder;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 

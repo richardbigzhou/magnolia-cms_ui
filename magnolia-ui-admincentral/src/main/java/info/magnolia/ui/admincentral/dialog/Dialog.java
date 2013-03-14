@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.form.AbstractFormItem;
+import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 
 /**
  * Represents a dialog.
  *
- * @see info.magnolia.ui.admincentral.form.FormTab
- * @see info.magnolia.ui.admincentral.field.FieldBuilder
+ * @see info.magnolia.ui.form.FormTab
+ * @see info.magnolia.ui.form.field.builder.FieldBuilder
  */
 public class Dialog extends AbstractFormItem {
 

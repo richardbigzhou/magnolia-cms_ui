@@ -148,21 +148,21 @@
       <class>info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer</class>
     </configurer>
     <component>
-      <type>info.magnolia.ui.admincentral.dialog.action.DialogActionRegistry</type>
+      <type>info.magnolia.ui.form.action.DialogActionRegistry</type>
       <workspace>config</workspace>
       <path>/modules/ui-admincentral/dialogActionRegistry</path>
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.field.builder.DialogFieldRegistry</type>
+      <type>info.magnolia.ui.form.field.builder.DialogFieldRegistry</type>
       <workspace>config</workspace>
       <path>/modules/ui-admincentral/dialogFieldRegistry</path>
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldRegistry</type>
+      <type>info.magnolia.ui.form.field.validation.ValidatorFieldRegistry</type>
       <workspace>config</workspace>
       <path>/modules/ui-admincentral/dialogFieldValidatorRegistry</path>
       <observed>true</observed>
@@ -251,8 +251,8 @@
       <implementation>info.magnolia.ui.workbench.ContentViewBuilderImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</type>
-      <implementation>info.magnolia.ui.admincentral.field.validator.builder.ValidatorFieldFactory</implementation>
+      <type>info.magnolia.ui.form.field.validation.ValidatorFieldFactory</type>
+      <implementation>info.magnolia.ui.form.field.validation.ValidatorFieldFactory</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter</type>
@@ -317,24 +317,24 @@
 
     <!-- Moved into subApp due to use of subApps EventBus -->
     <component>
-      <type>info.magnolia.ui.admincentral.form.FormPresenterFactory</type>
-      <implementation>info.magnolia.ui.admincentral.form.FormPresenterFactoryImpl</implementation>
+      <type>info.magnolia.ui.form.FormPresenterFactory</type>
+      <implementation>info.magnolia.ui.form.FormPresenterFactoryImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactory</type>
       <implementation>info.magnolia.ui.admincentral.dialog.FormDialogPresenterFactoryImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.field.builder.FieldFactory</type>
-      <implementation>info.magnolia.ui.admincentral.field.builder.FieldFactory</implementation>
+      <type>info.magnolia.ui.form.field.builder.FieldFactory</type>
+      <implementation>info.magnolia.ui.form.field.builder.FieldFactory</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.form.action.FormActionFactory</type>
-      <implementation>info.magnolia.ui.admincentral.form.action.FormActionFactoryImpl</implementation>
+      <type>info.magnolia.ui.form.action.FormActionFactory</type>
+      <implementation>info.magnolia.ui.form.action.FormActionFactoryImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition</type>
-      <implementation>info.magnolia.ui.admincentral.form.action.SaveFormActionDefinition</implementation>
+      <type>info.magnolia.ui.form.action.SaveFormActionDefinition</type>
+      <implementation>info.magnolia.ui.form.action.SaveFormActionDefinition</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.vaadin.dialog.DialogView</type>

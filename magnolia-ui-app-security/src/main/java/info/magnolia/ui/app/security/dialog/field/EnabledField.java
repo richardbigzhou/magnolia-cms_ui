@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
-import info.magnolia.ui.admincentral.field.builder.CheckBoxFieldBuilder;
+import info.magnolia.ui.form.field.builder.CheckBoxFieldBuilder;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 

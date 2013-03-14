@@ -35,7 +35,7 @@ package info.magnolia.ui.contentapp.field;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.ui.admincentral.field.builder.AbstractFieldBuilder;
+import info.magnolia.ui.form.field.builder.AbstractFieldBuilder;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter;
 import info.magnolia.ui.contentapp.workbench.ContentWorkbenchViewImpl;

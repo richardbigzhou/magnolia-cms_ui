@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.contacts.field;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.admincentral.field.TextAndButtonField;
+import info.magnolia.ui.form.field.TextAndButtonField;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 
 import javax.jcr.RepositoryException;

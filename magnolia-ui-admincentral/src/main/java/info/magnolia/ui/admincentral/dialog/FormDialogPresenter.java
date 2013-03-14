@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog;
 
-import info.magnolia.ui.admincentral.form.FormPresenter;
+import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.ui.framework.shell.ModalLayer;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.pages.field;
 
-import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
+import info.magnolia.ui.form.field.builder.SelectFieldBuilder;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 

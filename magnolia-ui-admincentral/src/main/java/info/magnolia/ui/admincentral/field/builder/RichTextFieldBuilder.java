@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
+import info.magnolia.ui.form.field.builder.AbstractFieldBuilder;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.ItemChosenListener;

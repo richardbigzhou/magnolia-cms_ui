@@ -38,7 +38,7 @@ import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
-import info.magnolia.ui.admincentral.field.builder.SelectFieldBuilder;
+import info.magnolia.ui.form.field.builder.SelectFieldBuilder;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;

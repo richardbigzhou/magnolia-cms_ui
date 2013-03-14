@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.contacts.field.builder;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.field.TextAndButtonField;
+import info.magnolia.ui.form.field.TextAndButtonField;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
 import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.app.contacts.ContactNodeType.Contact;

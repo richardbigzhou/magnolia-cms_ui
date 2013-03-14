@@ -33,8 +33,9 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.admincentral.field.TextAndButtonField;
-import info.magnolia.ui.admincentral.field.translator.IdentifierToPathTranslator;
+import info.magnolia.ui.form.field.TextAndButtonField;
+import info.magnolia.ui.form.field.builder.AbstractFieldBuilder;
+import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.framework.app.AppController;
@@ -82,9 +83,9 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
     @Override
     protected Field<String> buildField() {
         // Create Translator if we need to store the Identifier
-        IdentifierToPathTranslator converter = null;
+        IdentifierToPathConverter converter = null;
         if (definition.isIdentifier()) {
-            converter = new IdentifierToPathTranslator(definition.getWorkspace());
+            converter = new IdentifierToPathConverter(definition.getWorkspace());
         }
         textButton = new TextAndButtonField(converter, getMessage(definition.getButtonSelectNewLabel()), getMessage(definition.getButtonSelectOtherLabel()));
         final Button selectButton = textButton.getSelectButton();

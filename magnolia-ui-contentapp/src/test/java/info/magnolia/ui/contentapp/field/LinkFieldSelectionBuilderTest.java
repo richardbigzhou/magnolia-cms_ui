@@ -37,8 +37,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import info.magnolia.event.SimpleEventBus;
-import info.magnolia.ui.admincentral.field.builder.AbstractBuilderTest;
-import info.magnolia.ui.admincentral.field.builder.AbstractFieldBuilderTest;
+import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
+import info.magnolia.ui.form.field.builder.AbstractFieldBuilderTest;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter;
 import info.magnolia.ui.form.field.definition.LinkFieldSelectionDefinition;
