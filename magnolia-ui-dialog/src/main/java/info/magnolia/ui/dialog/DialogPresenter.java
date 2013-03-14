@@ -34,11 +34,6 @@
 package info.magnolia.ui.dialog;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.dialog.action.DialogActionFactory;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
@@ -88,26 +83,5 @@ public interface DialogPresenter {
 
         }
 
-    }
-
-    /**
-     * A Helper class for operations with {@link DialogPresenter}.
-     */
-    public class DialogPresenterUtil {
-
-        public static void addActionFromDefinition(final DialogPresenter presenter, final DialogActionDefinition definition, final DialogActionFactory factory) {
-            presenter.addAction(definition.getName(), definition.getLabel(), new EditorLikeActionListener() {
-                @Override
-                public void onActionExecuted(final String actionName) {
-                    final ActionDefinition actionDefinition = definition.getActionDefinition();
-                    final Action action = factory.createAction(actionDefinition, presenter);
-                    try {
-                        action.execute();
-                    } catch (final ActionExecutionException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
     }
 }

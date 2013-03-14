@@ -37,6 +37,10 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.dialog.action.DialogActionFactory;
 import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.ui.form.FormPresenterFactory;
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.view.ModalLayer;
 import info.magnolia.ui.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
@@ -115,7 +119,18 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private void initActions(final DialogDefinition dialogDefinition) {
         for (final DialogActionDefinition action : dialogDefinition.getActions()) {
-            DialogPresenterUtil.addActionFromDefinition(this, action, dialogActionFactory);
+            addAction(action.getName(), action.getLabel(), new EditorLikeActionListener() {
+                @Override
+                public void onActionExecuted(final String actionName) {
+                    final ActionDefinition actionDefinition = action.getActionDefinition();
+                    final Action action1 = dialogActionFactory.createAction(actionDefinition, FormDialogPresenterImpl.this);
+                    try {
+                        action1.execute();
+                    } catch (final ActionExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
     }
 

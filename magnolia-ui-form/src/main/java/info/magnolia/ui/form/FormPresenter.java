@@ -33,12 +33,7 @@
  */
 package info.magnolia.ui.form;
 
-import info.magnolia.ui.form.action.FormActionFactory;
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.form.definition.FormActionDefinition;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
 
@@ -70,27 +65,6 @@ public interface FormPresenter {
 
         void onSuccess(String actionName);
 
-    }
-
-    /**
-     * A Helper class for operations with {@link FormPresenter}.
-     */
-    public class FormPresenterUtil {
-
-        public static void addActionFromDefinition(final FormPresenter presenter, final FormActionDefinition definition, final FormActionFactory factory) {
-            presenter.addAction(definition.getName(), definition.getLabel(), new EditorLikeActionListener() {
-                @Override
-                public void onActionExecuted(final String actionName) {
-                    final ActionDefinition actionDefinition = definition.getActionDefinition();
-                    final Action action = factory.createAction(actionDefinition, presenter);
-                    try {
-                        action.execute();
-                    } catch (final ActionExecutionException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
     }
 
     void showValidation(boolean isVisible);

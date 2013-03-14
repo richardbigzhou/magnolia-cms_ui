@@ -38,6 +38,9 @@ import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.form.action.FormActionFactory;
 import info.magnolia.ui.form.definition.FormActionDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.model.action.Action;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
 
@@ -74,7 +77,18 @@ public class FormPresenterImpl implements FormPresenter {
 
     private void initActions(final FormDefinition formDefinition) {
         for (final FormActionDefinition action : formDefinition.getActions()) {
-            FormPresenterUtil.addActionFromDefinition(this, action, actionFactory);
+            addAction(action.getName(), action.getLabel(), new EditorLikeActionListener() {
+                @Override
+                public void onActionExecuted(final String actionName) {
+                    final ActionDefinition actionDefinition = action.getActionDefinition();
+                    final Action action1 = actionFactory.createAction(actionDefinition, FormPresenterImpl.this);
+                    try {
+                        action1.execute();
+                    } catch (final ActionExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
     }
 
