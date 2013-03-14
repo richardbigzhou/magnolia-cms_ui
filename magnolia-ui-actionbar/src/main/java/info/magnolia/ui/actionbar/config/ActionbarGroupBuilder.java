@@ -31,23 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.actionbar.definition.builder;
+package info.magnolia.ui.actionbar.config;
+
+import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
+import info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition;
 
 /**
- * Config object creating builders for actionbar related definitions.
+ * Builder for building an actionbar group definition.
  */
-public class ActionbarConfig {
+public class ActionbarGroupBuilder {
 
-    public ActionbarBuilder actionbar() {
-        return new ActionbarBuilder();
+    private ConfiguredActionbarGroupDefinition definition = new ConfiguredActionbarGroupDefinition();
+
+    public ActionbarGroupBuilder(String name) {
+        definition.setName(name);
     }
 
-    public ActionbarSectionBuilder section(String name) {
-        return new ActionbarSectionBuilder(name);
+    public ActionbarGroupDefinition exec() {
+        return definition;
     }
 
-    public ActionbarGroupBuilder group(String name) {
-        return new ActionbarGroupBuilder(name);
+    public ActionbarGroupBuilder actions(String... actions) {
+        for (String action : actions) {
+            definition.addItem(new ActionbarItemDefinition(action));
+        }
+        return this;
     }
-
 }

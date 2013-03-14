@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.actionbar.definition.builder;
+package info.magnolia.ui.actionbar.config;
 
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;

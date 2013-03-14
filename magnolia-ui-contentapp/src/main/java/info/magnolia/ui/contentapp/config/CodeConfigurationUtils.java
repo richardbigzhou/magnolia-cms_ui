@@ -40,7 +40,7 @@ import info.magnolia.ui.framework.app.config.AppBuilder;
 import info.magnolia.ui.framework.app.registry.AppDescriptorProvider;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.config.UiConfig;
-import info.magnolia.ui.actionbar.definition.builder.ActionbarConfig;
+import info.magnolia.ui.actionbar.config.ActionbarConfig;
 import info.magnolia.ui.dialog.config.Dialog;
 import info.magnolia.ui.dialog.config.DialogBuilder;
 import info.magnolia.ui.dialog.config.DialogConfig;

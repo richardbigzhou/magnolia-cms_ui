@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.framework.app.config;
 
-import info.magnolia.ui.actionbar.definition.builder.ActionbarBuilder;
+import info.magnolia.ui.actionbar.config.ActionbarBuilder;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;

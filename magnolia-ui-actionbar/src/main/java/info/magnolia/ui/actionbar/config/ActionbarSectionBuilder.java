@@ -31,37 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.event;
+package info.magnolia.ui.actionbar.config;
 
-import info.magnolia.event.Event;
-import info.magnolia.event.EventHandler;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
+import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
 
 /**
- * This event is fired when an item in the action bar is clicked.
+ * Builder for building an actionbar section definition.
  */
-public class ActionbarItemClickedEvent implements Event<ActionbarItemClickedEvent.Handler> {
+public class ActionbarSectionBuilder {
 
-    /**
-     * Handles {@link ActionbarItemClickedEvent} events.
-     */
-    public interface Handler extends EventHandler {
+    private ConfiguredActionbarSectionDefinition definition = new ConfiguredActionbarSectionDefinition();
 
-        void onActionbarItemClicked(ActionbarItemClickedEvent event);
+    public ActionbarSectionBuilder(String name) {
+        definition.setName(name);
     }
 
-    private final ActionDefinition actionDefinition;
-
-    public ActionbarItemClickedEvent(ActionDefinition actionDefinition) {
-        this.actionDefinition = actionDefinition;
+    public ActionbarSectionBuilder label(String label) {
+        definition.setLabel(label);
+        return this;
     }
 
-    public ActionDefinition getActionDefinition() {
-        return actionDefinition;
+    public ActionbarSectionDefinition exec() {
+        return definition;
     }
 
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onActionbarItemClicked(this);
+    public ActionbarSectionBuilder i18nBasename(String i18nBasename) {
+        definition.setI18nBasename(i18nBasename);
+        return this;
+    }
+
+    public ActionbarSectionBuilder groups(ActionbarGroupBuilder... groups) {
+        for (ActionbarGroupBuilder group : groups) {
+            definition.addGroup(group.exec());
+        }
+        return this;
     }
 }
