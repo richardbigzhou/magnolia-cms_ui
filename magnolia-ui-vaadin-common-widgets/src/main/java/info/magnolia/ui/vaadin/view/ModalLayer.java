@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.vaadin.view;
 
-import info.magnolia.ui.vaadin.view.ModalCloser;
-import info.magnolia.ui.vaadin.view.View;
-
 /**
  * Implementers can open modal views over their display area.
  */
@@ -44,8 +41,7 @@ public interface ModalLayer {
     /**
      * Open a Modal on top of the ModalLayer implementer.
      * 
-     * @param view
-     *            View to be displayed modally.
+     * @param view View to be displayed modally.
      */
     ModalCloser openModal(View view);
 
