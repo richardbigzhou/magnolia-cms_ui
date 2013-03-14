@@ -37,7 +37,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.admincentral.field.upload.UploadFileFieldImpl;
 import info.magnolia.ui.admincentral.file.FileItemWrapper;
 import info.magnolia.ui.admincentral.file.FileItemWrapperImpl;
-import info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactory;
+import info.magnolia.ui.mediaeditor.MediaEditorPresenterFactory;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.field.definition.FieldDefinition;
