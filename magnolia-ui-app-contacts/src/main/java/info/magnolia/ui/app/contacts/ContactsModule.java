@@ -39,7 +39,6 @@ import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
-import info.magnolia.ui.form.action.CancelFormActionDefinition;
 import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.contacts.ContactNodeType.Contact;
@@ -54,18 +53,19 @@ import info.magnolia.ui.contentapp.config.CodeConfigurationUtils;
 import info.magnolia.ui.contentapp.config.ContentAppBuilder;
 import info.magnolia.ui.contentapp.item.action.CreateItemActionDefinition;
 import info.magnolia.ui.contentapp.item.action.EditItemActionDefinition;
-import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.framework.app.config.App;
-import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
-import info.magnolia.ui.framework.config.UiConfig;
-import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.dialog.action.ConfiguredDialogActionDefinition;
 import info.magnolia.ui.dialog.config.Dialog;
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
+import info.magnolia.ui.form.action.CancelFormActionDefinition;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.form.field.definition.TextFieldDefinition;
+import info.magnolia.ui.framework.app.config.App;
+import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.framework.config.UiConfig;
+import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
 import info.magnolia.ui.workbench.column.StatusColumnFormatter;
@@ -149,10 +149,11 @@ public class ContactsModule implements ModuleLifecycle {
                                         cfg.workbenches
                                         .workbench()
                                         .workspace("contacts")
-                                        .root("/")
+                                                .path("/")
                                         .defaultOrder(ModelConstants.JCR_NAME)
-                                        .nodeType(cfg.workbenches.nodeType(Contact.NAME).icon("icon-node-content"))
-                                        .nodeType(cfg.workbenches.nodeType("mgnl:folder").icon("icon-folder"))
+                                                .nodeTypes(
+                                                        cfg.workbenches.nodeType(Contact.NAME).icon("icon-node-content"),
+                                                        cfg.workbenches.nodeType("mgnl:folder").icon("icon-folder"))
                                         .columns(
                                                 cfg.columns.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME)
                                                         .formatterClass(ContactNameColumnFormatter.class).expandRatio(2),
