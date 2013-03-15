@@ -149,7 +149,7 @@ public class ContactsModule implements ModuleLifecycle {
                                         cfg.workbenches
                                         .workbench()
                                         .workspace("contacts")
-                                        .root("/")
+                                                .path("/")
                                         .defaultOrder(ModelConstants.JCR_NAME)
                                                 .nodeTypes(
                                                         cfg.workbenches.nodeType(Contact.NAME).icon("icon-node-content"),

@@ -55,7 +55,7 @@ public class WorkbenchBuilder {
         return this;
     }
 
-    public WorkbenchBuilder root(String path) {
+    public WorkbenchBuilder path(String path) {
         definition.setPath(path);
         return this;
     }

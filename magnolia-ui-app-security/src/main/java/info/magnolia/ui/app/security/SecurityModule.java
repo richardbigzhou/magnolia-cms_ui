@@ -141,7 +141,7 @@ public class SecurityModule implements ModuleLifecycle {
                         app.workbenchSubApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
                                 .actions(addGroupAction, editGroupAction, deleteGroupActionDefinition)
                                 .imageProvider(cipd)
-                                .workbench(cfg.workbenches.workbench().workspace("usergroups").root("/").defaultOrder(ModelConstants.JCR_NAME)
+                                .workbench(cfg.workbenches.workbench().workspace("usergroups").path("/").defaultOrder(ModelConstants.JCR_NAME)
                                         .nodeTypes(
                                                 cfg.workbenches.nodeType(NodeTypes.Group.NAME).icon("icon-user-group"),
                                                 cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
@@ -164,7 +164,7 @@ public class SecurityModule implements ModuleLifecycle {
                         app.workbenchSubApp("roles").subAppClass(SecurityRolesSubApp.class).label("Roles")
                                 .actions(addRoleAction, editRoleAction, deleteRoleActionDefinition)
                                 .imageProvider(cipd)
-                                .workbench(cfg.workbenches.workbench().workspace("userroles").root("/").defaultOrder(ModelConstants.JCR_NAME)
+                                .workbench(cfg.workbenches.workbench().workspace("userroles").path("/").defaultOrder(ModelConstants.JCR_NAME)
                                         .nodeTypes(
                                                 cfg.workbenches.nodeType(NodeTypes.Role.NAME).icon("icon-user-role"),
                                                 cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
@@ -217,7 +217,7 @@ public class SecurityModule implements ModuleLifecycle {
         return app.workbenchSubApp(name).subAppClass(SecurityUsersSubApp.class)
                 .actions(addUserAction, editUserAction, deleteUserActionDefinition)
                 .imageProvider(cipd)
-                .workbench(cfg.workbenches.workbench().workspace("users").root(root).defaultOrder(ModelConstants.JCR_NAME)
+                .workbench(cfg.workbenches.workbench().workspace("users").path(root).defaultOrder(ModelConstants.JCR_NAME)
                         .nodeTypes(
                                 cfg.workbenches.nodeType(NodeTypes.User.NAME).icon("icon-user-magnolia"),
                                 cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder")) // see MGNLPUR-77
