@@ -73,7 +73,7 @@ public class ActionbarFactory {
                     log.debug("Group actions: " + group.getItems());
                     for (ActionbarItemDefinition action : group.getItems()) {
 
-                        if (actionNames.contains(action)) {
+                        if (actionNames.contains(action.getName())) {
                             log.warn("Action was not added: an action with name " + action + "': was already added to the section" + section.getName() + ".");
                             continue;
                         }
