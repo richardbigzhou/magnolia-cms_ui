@@ -98,7 +98,6 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
         return new TwinColSelect() {
             @Override
             public void setConverter(Converter<Object, ?> converter) {
-                System.out.println("Set the converter bldjad! " + converter);
                 super.setConverter(converter);
             }
         };
