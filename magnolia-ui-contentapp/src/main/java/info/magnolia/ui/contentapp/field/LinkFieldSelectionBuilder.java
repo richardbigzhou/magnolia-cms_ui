@@ -42,7 +42,6 @@ import info.magnolia.ui.contentapp.workbench.ContentWorkbenchViewImpl;
 import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.field.definition.LinkFieldSelectionDefinition;
 
 import javax.inject.Inject;
 import javax.inject.Named;

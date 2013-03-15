@@ -350,7 +350,7 @@
         <sv:value>663be6b9-1c00-4cd8-b6fe-eb7bf89dbe52</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.form.field.definition.LinkFieldSelectionDefinition</sv:value>
+        <sv:value>info.magnolia.ui.contentapp.field.LinkFieldSelectionDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.ui.contentapp.field.LinkFieldSelectionBuilder</sv:value>

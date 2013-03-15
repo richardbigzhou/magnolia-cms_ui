@@ -31,7 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.definition;
+package info.magnolia.ui.contentapp.field;
+
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 
 /**
  * Configuration definition for a LinkFieldSelection field Display.

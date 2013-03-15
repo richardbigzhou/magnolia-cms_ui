@@ -308,7 +308,7 @@
                 <sv:value>e92540b8-586e-4971-9ce1-8f1c0ff53c36</sv:value>
               </sv:property>
               <sv:property sv:name="class" sv:type="String">
-                <sv:value>info.magnolia.ui.form.field.definition.LinkFieldSelectionDefinition</sv:value>
+                <sv:value>info.magnolia.ui.contentapp.field.LinkFieldSelectionDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="description" sv:type="String">
                 <sv:value>Select a Link</sv:value>
