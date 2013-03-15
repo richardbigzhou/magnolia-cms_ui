@@ -55,7 +55,7 @@ import info.magnolia.ui.contentapp.config.ContentAppBuilder;
 import info.magnolia.ui.contentapp.item.action.CreateItemActionDefinition;
 import info.magnolia.ui.contentapp.item.action.EditItemActionDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.framework.app.builder.App;
+import info.magnolia.ui.framework.app.config.App;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.config.UiConfig;
 import info.magnolia.ui.model.ModelConstants;

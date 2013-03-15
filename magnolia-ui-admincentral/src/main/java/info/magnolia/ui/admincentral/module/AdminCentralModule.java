@@ -35,11 +35,10 @@ package info.magnolia.ui.admincentral.module;
 
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager;
-import info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager;
-import info.magnolia.ui.model.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager;
 
 import javax.inject.Inject;
 
@@ -52,15 +51,12 @@ public class AdminCentralModule implements ModuleLifecycle {
     private AppLauncherLayoutManager appLauncherLayoutManager;
     private ConfiguredAppDescriptorManager configuredAppDescriptorManager;
     private ConfiguredDialogDefinitionManager configuredDialogDefinitionManager;
-    private ConfiguredMediaEditorDefinitionManager configuredMediaEditorDefinitionManager;
-    
+
     @Inject
-    public AdminCentralModule(AppLauncherLayoutManager appLauncherLayoutManager, ConfiguredAppDescriptorManager configuredAppDescriptorManager,
-            ConfiguredDialogDefinitionManager configuredDialogDefinitionManager, ConfiguredMediaEditorDefinitionManager configuredMediaEditorDefinitionManager) {
+    public AdminCentralModule(AppLauncherLayoutManager appLauncherLayoutManager, ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager) {
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.configuredAppDescriptorManager = configuredAppDescriptorManager;
         this.configuredDialogDefinitionManager = configuredDialogDefinitionManager;
-        this.configuredMediaEditorDefinitionManager = configuredMediaEditorDefinitionManager;
     }
 
     @Override
@@ -68,7 +64,6 @@ public class AdminCentralModule implements ModuleLifecycle {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
             this.configuredAppDescriptorManager.start();
             this.configuredDialogDefinitionManager.start();
-            this.configuredMediaEditorDefinitionManager.start();
             appLauncherLayoutManager.setLayout(getAppLauncherLayout());
         }
         if (context.getPhase() == ModuleLifecycleContext.PHASE_MODULE_RESTART) {

@@ -248,12 +248,14 @@
     <module>magnolia-ui-widget-editor</module>
     <module>magnolia-ui-vaadin-widgetset</module>
     <module>magnolia-ui-admincentral</module>
+    <module>magnolia-ui-actionbar</module>
     <module>magnolia-ui-app-sample</module>
     <module>magnolia-ui-app-config</module>
     <module>magnolia-ui-app-contacts</module>
     <module>magnolia-ui-app-messages</module>
     <module>magnolia-ui-app-pages</module>
     <module>magnolia-ui-app-security</module>
+    <module>magnolia-ui-mediaeditor</module>
     <module>magnolia-ui-vaadin-theme</module>
   </modules>
   <distributionManagement>

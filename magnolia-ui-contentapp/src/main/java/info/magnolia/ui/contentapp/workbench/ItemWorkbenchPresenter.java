@@ -35,7 +35,7 @@ package info.magnolia.ui.contentapp.workbench;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.ui.admincentral.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.ItemSubAppDescriptor;
 import info.magnolia.ui.contentapp.item.ItemPresenter;
 import info.magnolia.ui.contentapp.item.ItemView;

@@ -36,7 +36,6 @@ package info.magnolia.ui.contentapp.workbench;
 import info.magnolia.ui.contentapp.item.ItemView;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.view.View;
-import info.magnolia.ui.workbench.ContentView;
 
 import com.vaadin.ui.ComponentContainer;
 
@@ -76,6 +75,4 @@ public interface ItemWorkbenchView extends ComponentContainer, View {
      * Use this method to add an action bar to this sub app view.
      */
     void setActionbarView(ActionbarView actionbar);
-
-    ContentView getSelectedView();
 }

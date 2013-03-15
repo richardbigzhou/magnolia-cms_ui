@@ -36,27 +36,6 @@
       <type>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</type>
       <implementation>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</implementation>
     </component>
-    <!-- MEDIA EDITOR CONFIG HERE -->
-    <component>
-      <type>info.magnolia.ui.model.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager</type>
-      <implementation>info.magnolia.ui.model.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager</implementation>
-      <scope>singleton</scope>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.model.mediaeditor.registry.MediaEditorRegistry</type>
-      <implementation>info.magnolia.ui.model.mediaeditor.registry.MediaEditorRegistry</implementation>
-      <scope>singleton</scope>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeRegistry</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-admincentral/mediaEditorModeRegistry</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-    <!-- ENDOF MEDIA EDITOR CONFIG -->
 
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppDescriptor</type>
@@ -83,24 +62,12 @@
       <implementation>info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.actionbar.definition.ActionbarDefinition</type>
-      <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
       <type>info.magnolia.ui.form.definition.FormDefinition</type>
       <implementation>info.magnolia.ui.form.definition.ConfiguredFormDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.form.definition.FormActionDefinition</type>
       <implementation>info.magnolia.ui.form.definition.ConfiguredFormActionDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.model.actionbar.definition.ActionbarSectionDefinition</type>
-      <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarSectionDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.model.actionbar.definition.ActionbarGroupDefinition</type>
-      <implementation>info.magnolia.ui.model.actionbar.definition.ConfiguredActionbarGroupDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.dialog.definition.DialogDefinition</type>
@@ -133,10 +100,6 @@
     <type-mapping>
       <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherGroupEntryDefinition</type>
       <implementation>info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherGroupEntryDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition</type>
-      <implementation>info.magnolia.ui.model.mediaeditor.definition.ConfiguredMediaEditorDefinition</implementation>
     </type-mapping>
 
   </components>
@@ -355,42 +318,7 @@
       <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
       <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
     </component>
-
-
-    <!-- Media Editor Configuration -->
-
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactory</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.MediaEditorPresenterFactoryImpl</implementation>
-    </component>
-
   </components>
-
-  <components>
-    <id>mediaeditor</id>
-
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.MediaEditorView</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.MediaEditorViewImpl</implementation>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.model.action.ActionExecutor</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.action.MediaEditorActionExecutor</implementation>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.model.mediaeditor.definition.MediaEditorDefinition</type>
-      <implementation>info.magnolia.ui.model.mediaeditor.definition.ConfiguredMediaEditorDefinition</implementation>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory</type>
-      <implementation>info.magnolia.ui.admincentral.mediaeditor.editmode.factory.EditModeProviderFactory</implementation>
-    </component>
-
-  </components>
-  <!-- End of Media Editor Configuration -->
 
   <dependencies>
     <dependency>

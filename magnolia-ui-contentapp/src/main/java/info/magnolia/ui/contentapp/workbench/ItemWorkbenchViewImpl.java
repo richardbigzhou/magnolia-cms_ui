@@ -36,7 +36,6 @@ package info.magnolia.ui.contentapp.workbench;
 import info.magnolia.ui.contentapp.item.ItemView;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.view.View;
-import info.magnolia.ui.workbench.ContentView;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -52,7 +51,7 @@ import com.vaadin.ui.HorizontalLayout;
 public class ItemWorkbenchViewImpl extends HorizontalLayout implements ItemWorkbenchView {
 
     private final CssLayout itemViewContainer = new CssLayout();
-    private final Map<ContentView.ViewType, ContentView> contentViews = new EnumMap<ContentView.ViewType, ContentView>(ContentView.ViewType.class);
+    private final Map<ItemView.ViewType, ItemView> itemViews = new EnumMap<ItemView.ViewType, ItemView>(ItemView.ViewType.class);
 
     private ActionbarView actionbar;
 
@@ -84,8 +83,8 @@ public class ItemWorkbenchViewImpl extends HorizontalLayout implements ItemWorkb
     @Override
     public void setViewType(final ItemView.ViewType type) {
 
-        itemViewContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
-        final Component c = contentViews.get(type).asVaadinComponent();
+        itemViewContainer.removeComponent(itemViews.get(currentViewType).asVaadinComponent());
+        final Component c = itemViews.get(type).asVaadinComponent();
 
         c.setSizeFull();
         itemViewContainer.addComponent(c);
@@ -123,8 +122,4 @@ public class ItemWorkbenchViewImpl extends HorizontalLayout implements ItemWorkb
         this.actionbar = actionbar;
     }
 
-    @Override
-    public ContentView getSelectedView() {
-        return null;
-    }
 }
