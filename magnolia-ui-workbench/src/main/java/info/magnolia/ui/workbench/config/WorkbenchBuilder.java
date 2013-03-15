@@ -45,6 +45,11 @@ public class WorkbenchBuilder {
 
     private ConfiguredWorkbenchDefinition definition = new ConfiguredWorkbenchDefinition();
 
+    public WorkbenchBuilder name(String name) {
+        definition.setName(name);
+        return this;
+    }
+
     public WorkbenchBuilder workspace(String workspace) {
         definition.setWorkspace(workspace);
         return this;
@@ -67,8 +72,25 @@ public class WorkbenchBuilder {
         return this;
     }
 
-    public WorkbenchBuilder nodeType(NodeTypeBuilder nodeTypeBuilder) {
-        definition.addNodeType(nodeTypeBuilder.exec());
+    public WorkbenchBuilder nodeTypes(NodeTypeBuilder... nodeTypes) {
+        for (NodeTypeBuilder nodeType : nodeTypes) {
+            definition.addNodeType(nodeType.exec());
+        }
+        return this;
+    }
+
+    public WorkbenchBuilder includeProperties(boolean includeProperties) {
+        definition.setIncludeProperties(includeProperties);
+        return this;
+    }
+
+    public WorkbenchBuilder editable(boolean editable) {
+        definition.setEditable(editable);
+        return this;
+    }
+
+    public WorkbenchBuilder dialogWorkbench(boolean isDialogWorkbench) {
+        definition.setDialogWorkbench(isDialogWorkbench);
         return this;
     }
 

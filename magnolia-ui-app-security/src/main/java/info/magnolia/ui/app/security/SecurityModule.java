@@ -36,11 +36,6 @@ package info.magnolia.ui.app.security;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
-import info.magnolia.ui.contentapp.config.CodeConfigurationUtils;
-import info.magnolia.ui.contentapp.config.ContentAppBuilder;
-import info.magnolia.ui.contentapp.config.ContentSubAppBuilder;
-import info.magnolia.ui.workbench.column.DateColumnFormatter;
-import info.magnolia.ui.workbench.column.StatusColumnFormatter;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
@@ -57,18 +52,23 @@ import info.magnolia.ui.app.security.dialog.field.RoleManagementFieldBuilder;
 import info.magnolia.ui.app.security.dialog.field.validator.UniqueGroupIdValidatorDefinition;
 import info.magnolia.ui.app.security.dialog.field.validator.UniqueRoleIdValidatorDefinition;
 import info.magnolia.ui.app.security.dialog.field.validator.UniqueUserIdValidatorDefinition;
-import info.magnolia.ui.framework.app.config.App;
-import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
-import info.magnolia.ui.model.ModelConstants;
-import info.magnolia.ui.framework.config.UiConfig;
-import info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition;
-import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
+import info.magnolia.ui.contentapp.config.CodeConfigurationUtils;
+import info.magnolia.ui.contentapp.config.ContentAppBuilder;
+import info.magnolia.ui.contentapp.config.ContentSubAppBuilder;
 import info.magnolia.ui.dialog.config.Dialog;
 import info.magnolia.ui.dialog.config.DialogBuilder;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.config.AbstractFieldBuilder;
 import info.magnolia.ui.form.config.OptionBuilder;
+import info.magnolia.ui.framework.app.config.App;
+import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.framework.config.UiConfig;
+import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition;
+import info.magnolia.ui.workbench.column.DateColumnFormatter;
+import info.magnolia.ui.workbench.column.StatusColumnFormatter;
+import info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition;
+import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
 
 import javax.inject.Inject;
 
@@ -142,8 +142,9 @@ public class SecurityModule implements ModuleLifecycle {
                                 .actions(addGroupAction, editGroupAction, deleteGroupActionDefinition)
                                 .imageProvider(cipd)
                                 .workbench(cfg.workbenches.workbench().workspace("usergroups").root("/").defaultOrder(ModelConstants.JCR_NAME)
-                                        .nodeType(cfg.workbenches.nodeType(NodeTypes.Group.NAME).icon("icon-user-group"))
-                                        .nodeType(cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
+                                        .nodeTypes(
+                                                cfg.workbenches.nodeType(NodeTypes.Group.NAME).icon("icon-user-group"),
+                                                cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                         .columns(
                                                 cfg.columns.property(ModelConstants.JCR_NAME, "Group name").sortable(true).expandRatio(2),
                                                 cfg.columns.property("title", "Full group name").sortable(true).displayInDialog(false).expandRatio(2),
@@ -164,8 +165,9 @@ public class SecurityModule implements ModuleLifecycle {
                                 .actions(addRoleAction, editRoleAction, deleteRoleActionDefinition)
                                 .imageProvider(cipd)
                                 .workbench(cfg.workbenches.workbench().workspace("userroles").root("/").defaultOrder(ModelConstants.JCR_NAME)
-                                        .nodeType(cfg.workbenches.nodeType(NodeTypes.Role.NAME).icon("icon-user-role"))
-                                        .nodeType(cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
+                                        .nodeTypes(
+                                                cfg.workbenches.nodeType(NodeTypes.Role.NAME).icon("icon-user-role"),
+                                                cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                         .columns(
                                                 cfg.columns.property(ModelConstants.JCR_NAME, "Role name").sortable(true).expandRatio(2),
                                                 cfg.columns.property("title", "Full role name").sortable(true).displayInDialog(false).expandRatio(2),
@@ -216,8 +218,9 @@ public class SecurityModule implements ModuleLifecycle {
                 .actions(addUserAction, editUserAction, deleteUserActionDefinition)
                 .imageProvider(cipd)
                 .workbench(cfg.workbenches.workbench().workspace("users").root(root).defaultOrder(ModelConstants.JCR_NAME)
-                        .nodeType(cfg.workbenches.nodeType(NodeTypes.User.NAME).icon("icon-user-magnolia"))
-                        .nodeType(cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder")) // see MGNLPUR-77
+                        .nodeTypes(
+                                cfg.workbenches.nodeType(NodeTypes.User.NAME).icon("icon-user-magnolia"),
+                                cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder")) // see MGNLPUR-77
                         .columns(
                                 cfg.columns.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME).formatterClass(UserNameColumnFormatter.class).expandRatio(2),
                                 cfg.columns.property("title", "Full name").sortable(true).expandRatio(2),
