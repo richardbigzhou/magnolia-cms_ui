@@ -270,7 +270,7 @@
         <sv:value>4426c1a7-8bd2-4928-99c1-cf9aa80e2bd5</sv:value>
       </sv:property>
       <sv:property sv:name="definition" sv:type="String">
-        <sv:value>info.magnolia.ui.form.field.definition.AssetUploadFieldDefinition</sv:value>
+        <sv:value>info.magnolia.dam.app.assets.field.definition.AssetUploadFieldDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="implementation" sv:type="String">
         <sv:value>info.magnolia.dam.app.assets.field.builder.AssetUploadFieldBuilder</sv:value>
