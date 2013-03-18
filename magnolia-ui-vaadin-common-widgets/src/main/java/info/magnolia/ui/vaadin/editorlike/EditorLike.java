@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -119,7 +119,7 @@ public abstract class EditorLike extends AbstractComponent implements HasCompone
                 } else {
                     // If the component already has a parent, try to remove it
                     AbstractSingleComponentContainer
-                            .removeFromParent(newContent);   
+                            .removeFromParent(newContent);
                 }
             }
             newContent.setParent(this);
@@ -137,12 +137,12 @@ public abstract class EditorLike extends AbstractComponent implements HasCompone
         getState().actions.clear();
         actionCallbackMap.clear();
     }
-    
+
     public void removeAction(String actionName) {
         getState().actions.remove(actionName);
         actionCallbackMap.removeAll(actionName);
     }
-    
+
     public void addAction(String actionName, String actionLabel) {
         getState().actions.put(actionName, actionLabel);
     }

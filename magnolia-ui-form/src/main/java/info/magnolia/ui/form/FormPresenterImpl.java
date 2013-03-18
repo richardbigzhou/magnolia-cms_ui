@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,10 +34,10 @@
 package info.magnolia.ui.form;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.form.action.FormActionFactory;
 import info.magnolia.ui.form.definition.FormActionDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
