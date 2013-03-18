@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) Unit.PIXELS Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
