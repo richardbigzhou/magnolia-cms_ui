@@ -35,7 +35,6 @@ package info.magnolia.ui.mediaeditor.action.feature.definition;
 
 import info.magnolia.ui.mediaeditor.action.feature.Scalable;
 import info.magnolia.ui.mediaeditor.action.feature.ScaleToActualSizeAction;
-import info.magnolia.ui.mediaeditor.features.ConfiguredMediaEditorFeatureDefinition;
 
 
 /**

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.features;
+package info.magnolia.ui.mediaeditor.action.feature.definition;
 
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
