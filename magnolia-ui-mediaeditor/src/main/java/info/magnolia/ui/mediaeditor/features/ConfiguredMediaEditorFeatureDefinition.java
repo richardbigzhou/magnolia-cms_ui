@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) Unit.PIXELS Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,7 +36,7 @@ package info.magnolia.ui.mediaeditor.features;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
- * ConfiguredMediaEditorFeatureDefinition.
+ * Implementation of {@link MediaEditorFeatureDefinition}.
  */
 public class ConfiguredMediaEditorFeatureDefinition extends ConfiguredActionDefinition implements MediaEditorFeatureDefinition {
 

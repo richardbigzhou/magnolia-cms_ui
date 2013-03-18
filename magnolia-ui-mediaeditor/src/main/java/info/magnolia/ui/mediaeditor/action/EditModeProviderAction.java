@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) Unit.PIXELS Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -43,9 +43,9 @@ import info.magnolia.ui.mediaeditor.provider.EditModeProviderActionDefinition;
 import org.apache.log4j.Logger;
 
 /**
- * EditModeProviderAction.
+ * Causes the {@link MediaEditorPresenter} to switch the edit mode.
  */
-public class EditModeProviderAction/*<T extends EditModeProviderActionDefinition>*/ extends ActionBase<EditModeProviderActionDefinition> {
+public class EditModeProviderAction extends ActionBase<EditModeProviderActionDefinition> {
 
     private Logger log = Logger.getLogger(getClass());
     

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) Unit.PIXELS Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -44,7 +44,7 @@ import java.util.Set;
 import javax.inject.Singleton;
 
 /**
- * MediaEditorRegistry.
+ * Contains a mapping of the availble media editors.
  */
 @Singleton
 public class MediaEditorRegistry implements Serializable {

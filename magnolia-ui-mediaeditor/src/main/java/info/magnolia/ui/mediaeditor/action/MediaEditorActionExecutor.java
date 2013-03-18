@@ -43,7 +43,9 @@ import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 import javax.inject.Inject;
 
 /**
- * MediaEditorActionExecutor.
+ * Executes actions on behalf of
+ * {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter}. Needs the
+ * {@link MediaEditorDefinition} in order to resolve action definitions.
  */
 public class MediaEditorActionExecutor extends AbstractActionExecutor {
 
