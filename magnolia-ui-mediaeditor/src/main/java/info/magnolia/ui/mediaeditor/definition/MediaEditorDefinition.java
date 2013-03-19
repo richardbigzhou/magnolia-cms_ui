@@ -34,7 +34,6 @@
 package info.magnolia.ui.mediaeditor.definition;
 
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.mediaeditor.action.MediaEditorActionExecutor;
 import info.magnolia.ui.model.action.ActionDefinition;
 
 import java.util.Map;
@@ -43,7 +42,7 @@ import java.util.Map;
 /**
  * Definition of the media editor. Used by
  * {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter} for configuration
- * of the view. Also used by {@link MediaEditorActionExecutor} for resolution of
+ * of the view. Also used by {@link info.magnolia.ui.mediaeditor.action.MediaEditorActionExecutor} for resolution of
  * action definitions.
  */
 public interface MediaEditorDefinition {
