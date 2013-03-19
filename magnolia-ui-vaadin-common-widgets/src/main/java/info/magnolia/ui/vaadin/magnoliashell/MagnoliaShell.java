@@ -43,7 +43,6 @@ import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 import info.magnolia.ui.vaadin.magnoliashell.rpc.MagnoliaShellRpcDelegate;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.AppsViewport;
-import info.magnolia.ui.vaadin.magnoliashell.viewport.DialogViewport;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellAppsViewport;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
 import info.magnolia.ui.vaadin.view.ModalCloser;
@@ -110,11 +109,9 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     private void initializeViewports() {
         final ShellAppsViewport shellAppsViewport = new ShellAppsViewport(MagnoliaShell.this);
         final AppsViewport appsViewport = new AppsViewport(MagnoliaShell.this);
-        final DialogViewport dialogViewport = new DialogViewport(MagnoliaShell.this);
 
         getState().viewports.put(ViewportType.SHELL_APP, shellAppsViewport);
         getState().viewports.put(ViewportType.APP, appsViewport);
-        getState().viewports.put(ViewportType.DIALOG, dialogViewport);
 
         getState().indications.put(ShellAppType.APPLAUNCHER, 0);
         getState().indications.put(ShellAppType.PULSE, 0);
@@ -122,7 +119,6 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
 
         shellAppsViewport.setParent(this);
         appsViewport.setParent(this);
-        dialogViewport.setParent(this);
     }
 
     public void propagateFragmentToClient(Fragment fragment) {
@@ -191,17 +187,10 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         }
     }
 
-    public void removeDialog(Component dialog) {
-        ((ShellViewport) getState().viewports.get(ViewportType.DIALOG)).removeComponent(dialog);
-    }
-
-    public void addDialog(Component dialog) {
-        ((ShellViewport) getState().viewports.get(ViewportType.DIALOG)).addComponent(dialog);
-    }
 
     /**
      * Open a Modal on top of a specific View.
-     * 
+     *
      * @param view
      *            View to be displayed modally.
      * @param parent
@@ -222,6 +211,11 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         };
     }
 
+    /**
+     * Close an open modal, such as a dialog.
+     *
+     * @param modalComponent The component of the view which was opened modally.
+     */
     public void closeModal(Component modalComponent) {
         Modal modal = (Modal) modalComponent.getParent();
         getState().modals.remove(modal);
@@ -315,10 +309,6 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
 
     public ShellViewport getShellAppViewport() {
         return (ShellViewport) getState(false).viewports.get(ViewportType.SHELL_APP);
-    }
-
-    public ShellViewport getDialogViewport() {
-        return (ShellViewport) getState(false).viewports.get(ViewportType.DIALOG);
     }
 
     @Override

@@ -46,7 +46,6 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VWarningMes
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ShellAppsViewportConnector;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget.PreloaderCallback;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.DialogViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ShellAppsViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
@@ -111,10 +110,6 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
     protected ShellAppsViewportWidget getShellAppViewport() {
         return (ShellAppsViewportWidget) viewports.get(ViewportType.SHELL_APP);
-    }
-
-    protected DialogViewportWidget getDialogViewport() {
-        return (DialogViewportWidget) viewports.get(ViewportType.DIALOG);
     }
 
     @Override
