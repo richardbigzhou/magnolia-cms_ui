@@ -39,6 +39,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.ItemSubAppDescriptor;
+import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.contentapp.item.ItemView;
 import info.magnolia.ui.contentapp.location.ItemLocation;
 import info.magnolia.ui.framework.app.AppContext;
@@ -88,6 +89,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private String caption;
 
     private AppContext appContext;
+    private final EditorDefinition editorDefinition;
 
     @Inject
     public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter) {
@@ -98,7 +100,8 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.eventBus = eventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
-        this.workspace = ((ItemSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkspace();
+        this.editorDefinition = ((ItemSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
+        this.workspace = editorDefinition.getWorkspace();
         this.appContext = subAppContext.getAppContext();
 
         bindHandlers();

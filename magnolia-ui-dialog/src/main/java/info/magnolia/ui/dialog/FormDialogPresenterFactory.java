@@ -34,15 +34,16 @@
 package info.magnolia.ui.dialog;
 
 import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.vaadin.view.ModalLayer;
+
+import com.vaadin.data.Item;
 
 /**
  * Creates {@link FormDialogPresenterImpl} instances that are use to display a dialog.
  */
 public interface FormDialogPresenterFactory {
 
-    FormDialogPresenter createDialogPresenterByName(String dialogName);
-
-    FormDialogPresenter createDialogPresenterByDefinition(DialogDefinition definition);
-
     DialogDefinition getDialogDefinition(String dialogName) throws RuntimeException;
+
+    FormDialogPresenter openDialog(String dialogName, Item item, ModalLayer modalLayer);
 }

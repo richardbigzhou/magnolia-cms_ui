@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
   <name>ui-admincentral</name>
@@ -52,6 +53,14 @@
     <type-mapping>
       <type>info.magnolia.ui.contentapp.ItemSubAppDescriptor</type>
       <implementation>info.magnolia.ui.contentapp.ConfiguredItemSubAppDescriptor</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.contentapp.definition.EditorDefinition</type>
+      <implementation>info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.contentapp.definition.FormActionItemDefinition</type>
+      <implementation>info.magnolia.ui.contentapp.definition.ConfiguredFormActionItemDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.workbench.definition.WorkbenchDefinition</type>
@@ -280,12 +289,16 @@
 
     <!-- Moved into subApp due to use of subApps EventBus -->
     <component>
-      <type>info.magnolia.ui.form.FormPresenterFactory</type>
-      <implementation>info.magnolia.ui.form.FormPresenterFactoryImpl</implementation>
+      <type>info.magnolia.ui.form.FormPresenter</type>
+      <implementation>info.magnolia.ui.form.FormPresenterImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.dialog.FormDialogPresenterFactory</type>
       <implementation>info.magnolia.ui.dialog.FormDialogPresenterFactoryImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.dialog.FormDialogPresenter</type>
+      <implementation>info.magnolia.ui.dialog.FormDialogPresenterImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.form.field.builder.FieldFactory</type>

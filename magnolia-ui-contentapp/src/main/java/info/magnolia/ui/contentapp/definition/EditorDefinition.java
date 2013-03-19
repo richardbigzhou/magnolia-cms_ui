@@ -31,25 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp;
+package info.magnolia.ui.contentapp.definition;
 
-import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+
+import java.util.List;
 
 /**
- * ConfiguredItemSubAppDescriptor.
+ * EditorDefinition.
  */
-public class ConfiguredItemSubAppDescriptor extends ConfiguredSubAppDescriptor implements ItemSubAppDescriptor {
+public interface EditorDefinition {
 
-    private EditorDefinition editor;
+    String getLabel();
 
-    @Override
-    public EditorDefinition getEditor() {
-        return editor;
-    }
+    String getI18nBasename();
 
-    public void setEditor(EditorDefinition editorDefinition) {
-        this.editor = editorDefinition;
-    }
+    String getDescription();
 
+    String getWorkspace();
+
+    NodeTypeDefinition getNodeType();
+
+    FormDefinition getForm();
+
+    List<FormActionItemDefinition> getActions();
 }

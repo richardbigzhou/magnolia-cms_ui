@@ -34,12 +34,18 @@
 package info.magnolia.ui.contentapp.item;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.contentapp.definition.EditorDefinition;
+import info.magnolia.ui.contentapp.definition.FormActionItemDefinition;
 import info.magnolia.ui.form.FormPresenter;
-import info.magnolia.ui.form.FormPresenterFactory;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
-import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.action.ActionExecutor;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -50,29 +56,31 @@ import javax.inject.Named;
  * Presenter for the item displayed in the {@link info.magnolia.ui.contentapp.workbench.ItemWorkbenchPresenter}. Takes
  * care of building and switching between the right {@link ItemView.ViewType}.
  */
-public class ItemPresenter {
+public class ItemPresenter implements EditorLikeActionListener, FormPresenter.Callback, FormPresenter.Validator {
 
     private SubAppContext subAppContext;
+    private ActionExecutor actionExecutor;
     private final EventBus eventBus;
 
     private final ItemView view;
 
-    private final FormPresenterFactory formPresenterFactory;
+    private FormPresenter formPresenter;
 
-    private FormDefinition formDefinition;
+    private EditorDefinition editorDefinition;
 
     private JcrNodeAdapter item;
 
     @Inject
-    public ItemPresenter(SubAppContext subAppContext, final @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, ItemView view, FormPresenterFactory formPresenterFactory) {
+    public ItemPresenter(SubAppContext subAppContext, final ActionExecutor actionExecutor, final @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, ItemView view, FormPresenter formPresenter) {
         this.subAppContext = subAppContext;
+        this.actionExecutor = actionExecutor;
         this.eventBus = eventBus;
         this.view = view;
-        this.formPresenterFactory = formPresenterFactory;
+        this.formPresenter = formPresenter;
     }
 
-    public ItemView start(FormDefinition formDefinition, final JcrNodeAdapter item, ItemView.ViewType viewType) {
-        this.formDefinition = formDefinition;
+    public ItemView start(EditorDefinition editorDefinition, final JcrNodeAdapter item, ItemView.ViewType viewType) {
+        this.editorDefinition = editorDefinition;
         this.item = item;
 
         setItemView(viewType);
@@ -80,31 +88,60 @@ public class ItemPresenter {
     }
 
     private void setItemView(ItemView.ViewType viewType) {
-        final FormPresenter formPresenter = formPresenterFactory.createFormPresenterByDefinition(formDefinition);
 
         switch (viewType) {
         case VIEW:
         case EDIT:
         default:
-            final FormView formView = formPresenter.start(item, new FormPresenter.Callback() {
+            final FormView formView = formPresenter.start(item, editorDefinition.getForm(), this, null);
 
-                @Override
-                public void onCancel() {
-                    //setItemView(ItemView.ViewType.VIEW);
-                    subAppContext.close();
-                }
-
-                @Override
-                public void onSuccess(String actionName) {
-                    eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
-                    //setItemView(ItemView.ViewType.VIEW);
-                    subAppContext.close();
-                }
-            });
+            initActions();
             view.setItemView(formView.asVaadinComponent(), viewType);
             break;
 
         }
+    }
 
+    private void initActions() {
+        for (final FormActionItemDefinition action : this.editorDefinition.getActions()) {
+            formPresenter.addAction(action.getName(), getLabel(action.getName()), this);
+        }
+    }
+    @Override
+    public void onActionExecuted(String actionName) {
+        try {
+            actionExecutor.execute(actionName, item, this, this);
+        } catch (ActionExecutionException e) {
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            subAppContext.getAppContext().broadcastMessage(error);
+        }
+    }
+
+    public String getLabel(String actionName) {
+        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
+        return actionDefinition != null ? actionDefinition.getLabel() : null;
+    }
+
+    @Override
+    public void onCancel() {
+        //setItemView(ItemView.ViewType.VIEW);
+        subAppContext.close();
+    }
+
+    @Override
+    public void onSuccess(String actionName) {
+        eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
+        //setItemView(ItemView.ViewType.VIEW);
+        subAppContext.close();
+    }
+
+    @Override
+    public void showValidation(boolean visible) {
+        formPresenter.showValidation(visible);
+    }
+
+    @Override
+    public boolean isValid() {
+        return formPresenter.isValid();
     }
 }

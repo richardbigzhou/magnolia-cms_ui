@@ -54,6 +54,7 @@ import info.magnolia.ui.app.security.dialog.field.validator.UniqueRoleIdValidato
 import info.magnolia.ui.app.security.dialog.field.validator.UniqueUserIdValidatorDefinition;
 import info.magnolia.ui.contentapp.config.CodeConfigurationUtils;
 import info.magnolia.ui.contentapp.config.ContentAppBuilder;
+import info.magnolia.ui.contentapp.config.ContentAppConfig;
 import info.magnolia.ui.contentapp.config.ContentSubAppBuilder;
 import info.magnolia.ui.dialog.config.Dialog;
 import info.magnolia.ui.dialog.config.DialogBuilder;
@@ -87,7 +88,7 @@ public class SecurityModule implements ModuleLifecycle {
     }
 
     @App("security")
-    public void securityApp(ContentAppBuilder app, UiConfig cfg) {
+    public void securityApp(ContentAppBuilder app, UiConfig cfg, ContentAppConfig contentAppConfig) {
 
         // group
         CreateDialogActionDefinition addGroupAction = new CreateDialogActionDefinition();
@@ -136,15 +137,15 @@ public class SecurityModule implements ModuleLifecycle {
 
         app.label("Security").icon("icon-security-app").appClass(SecurityApp.class) // .categoryName("MANAGE")
                 .subApps(
-                        userSubApp(app, cfg, "users", "/admin").label("Users").exec(),
-                        userSubApp(app, cfg, "systemUsers", "/system").label("System users").exec(),
+                        userSubApp(app, cfg, contentAppConfig, "users", "/admin").label("Users").exec(),
+                        userSubApp(app, cfg, contentAppConfig, "systemUsers", "/system").label("System users").exec(),
                         app.workbenchSubApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
                                 .actions(addGroupAction, editGroupAction, deleteGroupActionDefinition)
                                 .imageProvider(cipd)
-                                .workbench(cfg.workbenches.workbench().workspace("usergroups").path("/").defaultOrder(ModelConstants.JCR_NAME)
+                                .workbench(contentAppConfig.workbench.workbench().workspace("usergroups").path("/").defaultOrder(ModelConstants.JCR_NAME)
                                         .nodeTypes(
-                                                cfg.workbenches.nodeType(NodeTypes.Group.NAME).icon("icon-user-group"),
-                                                cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
+                                                contentAppConfig.workbench.nodeType(NodeTypes.Group.NAME).icon("icon-user-group"),
+                                                contentAppConfig.workbench.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                         .columns(
                                                 cfg.columns.property(ModelConstants.JCR_NAME, "Group name").sortable(true).expandRatio(2),
                                                 cfg.columns.property("title", "Full group name").sortable(true).displayInDialog(false).expandRatio(2),
@@ -164,10 +165,10 @@ public class SecurityModule implements ModuleLifecycle {
                         app.workbenchSubApp("roles").subAppClass(SecurityRolesSubApp.class).label("Roles")
                                 .actions(addRoleAction, editRoleAction, deleteRoleActionDefinition)
                                 .imageProvider(cipd)
-                                .workbench(cfg.workbenches.workbench().workspace("userroles").path("/").defaultOrder(ModelConstants.JCR_NAME)
+                                .workbench(contentAppConfig.workbench.workbench().workspace("userroles").path("/").defaultOrder(ModelConstants.JCR_NAME)
                                         .nodeTypes(
-                                                cfg.workbenches.nodeType(NodeTypes.Role.NAME).icon("icon-user-role"),
-                                                cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
+                                                contentAppConfig.workbench.nodeType(NodeTypes.Role.NAME).icon("icon-user-role"),
+                                                contentAppConfig.workbench.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                         .columns(
                                                 cfg.columns.property(ModelConstants.JCR_NAME, "Role name").sortable(true).expandRatio(2),
                                                 cfg.columns.property("title", "Full role name").sortable(true).displayInDialog(false).expandRatio(2),
@@ -189,7 +190,7 @@ public class SecurityModule implements ModuleLifecycle {
                 );
     }
 
-    protected ContentSubAppBuilder userSubApp(ContentAppBuilder app, UiConfig cfg, String name, String root) {
+    protected ContentSubAppBuilder userSubApp(ContentAppBuilder app, UiConfig cfg, ContentAppConfig contentAppConfig,String name, String root) {
         // user
         CreateDialogActionDefinition addUserAction = new CreateDialogActionDefinition();
         addUserAction.setName("addUser");
@@ -217,10 +218,10 @@ public class SecurityModule implements ModuleLifecycle {
         return app.workbenchSubApp(name).subAppClass(SecurityUsersSubApp.class)
                 .actions(addUserAction, editUserAction, deleteUserActionDefinition)
                 .imageProvider(cipd)
-                .workbench(cfg.workbenches.workbench().workspace("users").path(root).defaultOrder(ModelConstants.JCR_NAME)
+                .workbench(contentAppConfig.workbench.workbench().workspace("users").path(root).defaultOrder(ModelConstants.JCR_NAME)
                         .nodeTypes(
-                                cfg.workbenches.nodeType(NodeTypes.User.NAME).icon("icon-user-magnolia"),
-                                cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder")) // see MGNLPUR-77
+                                contentAppConfig.workbench.nodeType(NodeTypes.User.NAME).icon("icon-user-magnolia"),
+                                contentAppConfig.workbench.nodeType(NodeTypes.Folder.NAME).icon("icon-folder")) // see MGNLPUR-77
                         .columns(
                                 cfg.columns.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME).formatterClass(UserNameColumnFormatter.class).expandRatio(2),
                                 cfg.columns.property("title", "Full name").sortable(true).expandRatio(2),

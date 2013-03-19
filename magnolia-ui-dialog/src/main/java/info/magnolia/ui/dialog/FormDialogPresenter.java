@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.dialog;
 
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.ui.vaadin.view.ModalLayer;
 import info.magnolia.ui.vaadin.dialog.DialogView;
@@ -45,10 +46,12 @@ import com.vaadin.data.Item;
  */
 public interface FormDialogPresenter extends DialogPresenter {
 
-    DialogView start(Item item, ModalLayer modalLayer, DialogPresenter.Callback callback);
-
     @Override
     FormDialogView getView();
 
     FormPresenter getForm();
+
+    void setCallback(Callback callback);
+
+    DialogView start(Item item, DialogDefinition dialogDefinition, ModalLayer modalLayer);
 }

@@ -39,9 +39,7 @@ import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.builder.ActionBuilder;
-import info.magnolia.ui.form.config.FormBuilder;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.workbench.config.NodeTypeBuilder;
 
 /**
  * ItemSubAppBuilder.
@@ -63,20 +61,11 @@ public class ItemSubAppBuilder {
         return this;
     }
 
-    public ItemSubAppBuilder nodeType(NodeTypeBuilder nodeTypeBuilder) {
-        descriptor.setNodeType(nodeTypeBuilder.exec());
+    public ItemSubAppBuilder editor(EditorBuilder builder) {
+        descriptor.setEditor(builder.exec());
         return this;
     }
 
-    public ItemSubAppBuilder workspace(String workspace) {
-        descriptor.setWorkspace(workspace);
-        return this;
-    }
-
-    public ItemSubAppBuilder form(FormBuilder builder) {
-        descriptor.setFormDefinition(builder.exec());
-        return this;
-    }
 
     public ItemSubAppBuilder actions(ActionBuilder... builders) {
         for (ActionBuilder builder : builders) {

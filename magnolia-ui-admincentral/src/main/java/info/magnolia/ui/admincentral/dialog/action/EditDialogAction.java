@@ -47,6 +47,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -60,24 +61,24 @@ import javax.jcr.RepositoryException;
  */
 public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
-    private final FormDialogPresenterFactory dialogPresenterFactory;
+    private final FormDialogPresenterFactory formDialogPresenterFactory;
 
     private final Node nodeToEdit;
 
     private final ModalLayer modalLayer;
+    private EventBus eventBus;
 
     @Inject
-    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, FormDialogPresenterFactory dialogPresenterFactory, final SubAppContext subAppContext) {
+    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, FormDialogPresenterFactory formDialogPresenterFactory, final SubAppContext subAppContext, @Named("admincentral") final EventBus eventBus) {
         super(definition);
         this.nodeToEdit = nodeToEdit;
-        this.dialogPresenterFactory = dialogPresenterFactory;
+        this.formDialogPresenterFactory = formDialogPresenterFactory;
         this.modalLayer = subAppContext;
+        this.eventBus = eventBus;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByName(getDefinition().getDialogName());
-        final EventBus eventBus = dialogPresenter.getEventBus();
 
         String tempParentNodePath;
         try {
@@ -89,20 +90,22 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
         final String parentNodePath = tempParentNodePath;
 
         final JcrNodeAdapter item = new JcrNodeAdapter(nodeToEdit);
-        dialogPresenter.start(item, modalLayer, new FormDialogPresenter.Callback() {
+        final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.openDialog(getDefinition().getDialogName(), item, modalLayer);
+
+        formDialogPresenter.setCallback(new FormDialogPresenter.Callback() {
 
             @Override
             public void onSuccess(String actionName) {
                 final String newItemId = (String) item.getItemProperty(ModelConstants.JCR_NAME).getValue();
-
                 final String itemId = newItemId == null ? item.getPath() : NodeUtil.combinePathAndName(parentNodePath, newItemId);
+
                 eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), itemId));
-                dialogPresenter.closeDialog();
+                formDialogPresenter.closeDialog();
             }
 
             @Override
             public void onCancel() {
-                dialogPresenter.closeDialog();
+                formDialogPresenter.closeDialog();
             }
         });
     }

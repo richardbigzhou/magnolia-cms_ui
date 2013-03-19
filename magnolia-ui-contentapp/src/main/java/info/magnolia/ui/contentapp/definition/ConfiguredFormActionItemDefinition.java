@@ -31,25 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp;
-
-import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+package info.magnolia.ui.contentapp.definition;
 
 /**
- * ConfiguredItemSubAppDescriptor.
+ * ConfiguredFormActionItemDefinition.
  */
-public class ConfiguredItemSubAppDescriptor extends ConfiguredSubAppDescriptor implements ItemSubAppDescriptor {
+public class ConfiguredFormActionItemDefinition implements FormActionItemDefinition {
 
-    private EditorDefinition editor;
+    private String name;
+
+    // used for configuration to work
+    public ConfiguredFormActionItemDefinition() {
+    }
+
+    public ConfiguredFormActionItemDefinition(String name) {
+        this.name = name;
+    }
 
     @Override
-    public EditorDefinition getEditor() {
-        return editor;
+    public String getName() {
+        return name;
     }
 
-    public void setEditor(EditorDefinition editorDefinition) {
-        this.editor = editorDefinition;
+    public void setName(String name) {
+        this.name = name;
     }
-
 }

@@ -41,15 +41,16 @@ import info.magnolia.ui.model.action.ActionExecutionException;
  * CancelFormAction.
  */
 public class CancelFormAction extends ActionBase<CancelFormActionDefinition> {
-    private final FormPresenter presenter;
 
-    public CancelFormAction(CancelFormActionDefinition definition, FormPresenter presenter) {
+    private FormPresenter.Callback callback;
+
+    public CancelFormAction(CancelFormActionDefinition definition, FormPresenter.Callback callback) {
         super(definition);
-        this.presenter = presenter;
+        this.callback = callback;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        presenter.getCallback().onCancel();
+        callback.onCancel();
     }
 }

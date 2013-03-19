@@ -56,20 +56,22 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(SaveFormAction.class);
 
-    private final FormPresenter presenter;
-    private final Item item;
+    protected FormPresenter.Callback callback;
+    protected final FormPresenter.Validator validator;
+    protected final Item item;
 
-    public SaveFormAction(SaveFormActionDefinition definition, FormPresenter presenter) {
+    public SaveFormAction(SaveFormActionDefinition definition, Item item, FormPresenter.Callback callback, FormPresenter.Validator validator) {
         super(definition);
-        this.presenter = presenter;
-        this.item = presenter.getItemDataSource();
+        this.callback = callback;
+        this.validator = validator;
+        this.item = item;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
-        presenter.showValidation(true);
-        if (presenter.isValid()) {
+        validator.showValidation(true);
+        if (validator.isValid()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
                 final Node node = itemChanged.getNode();
@@ -78,14 +80,14 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
             }
-            presenter.getCallback().onSuccess(getDefinition().getName());
+            callback.onSuccess(getDefinition().getName());
         } else {
             log.info("Validation error(s) occured. No save performed.");
         }
     }
 
-    protected FormPresenter getPresenter() {
-        return presenter;
+    protected FormPresenter.Validator getValidator() {
+        return validator;
     }
 
     protected Item getItem() {

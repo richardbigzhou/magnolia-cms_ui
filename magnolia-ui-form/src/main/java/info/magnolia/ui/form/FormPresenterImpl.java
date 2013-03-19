@@ -34,15 +34,13 @@
 package info.magnolia.ui.form;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.form.action.FormActionFactory;
-import info.magnolia.ui.form.definition.FormActionDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.field.builder.FieldFactory;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.vaadin.data.Item;
 
@@ -50,7 +48,6 @@ import com.vaadin.data.Item;
  * Implementation of {@link FormPresenter}.
  * Delegates building of {@link FormView}s to the {@link FormBuilder}.
  * Maps the {@link Item} to the form and registers callback function created by the caller.
- * Binds the actions defined in {@link FormActionDefinition} to the form.
  * Provides methods for checking and displaying the validation of forms.
  */
 public class FormPresenterImpl implements FormPresenter {
@@ -58,38 +55,17 @@ public class FormPresenterImpl implements FormPresenter {
     private final FormView view;
     private final FormBuilder formBuilder;
     private final FieldFactory fieldFactory;
-    private final FormDefinition formDefinition;
     private final EventBus eventBus;
-    private final FormActionFactory actionFactory;
     private Item item;
     private Callback callback;
 
-    public FormPresenterImpl(final FormView view, final FormBuilder formBuilder, final FieldFactory fieldFactory, final FormDefinition formDefinition, EventBus eventBus, final FormActionFactory actionFactory) {
+    @Inject
+    public FormPresenterImpl(final FormView view, final FormBuilder formBuilder, final FieldFactory fieldFactory, @Named("admincentral") EventBus eventBus) {
 
         this.view = view;
         this.formBuilder = formBuilder;
         this.fieldFactory = fieldFactory;
-        this.formDefinition = formDefinition;
         this.eventBus = eventBus;
-        this.actionFactory = actionFactory;
-        initActions(formDefinition);
-    }
-
-    private void initActions(final FormDefinition formDefinition) {
-        for (final FormActionDefinition action : formDefinition.getActions()) {
-            addAction(action.getName(), action.getLabel(), new EditorLikeActionListener() {
-                @Override
-                public void onActionExecuted(final String actionName) {
-                    final ActionDefinition actionDefinition = action.getActionDefinition();
-                    final Action action1 = actionFactory.createAction(actionDefinition, FormPresenterImpl.this);
-                    try {
-                        action1.execute();
-                    } catch (final ActionExecutionException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
     }
 
     @Override
@@ -97,14 +73,16 @@ public class FormPresenterImpl implements FormPresenter {
         return callback;
     }
 
+
+
     @Override
     public EventBus getEventBus() {
         return eventBus;
     }
 
     @Override
-    public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
-        view.addAction(actionName, actionLabel, callback);
+    public void addAction(String actionName, String actionLabel, EditorLikeActionListener listener) {
+        view.addAction(actionName, actionLabel, listener);
 
     }
 
@@ -122,20 +100,10 @@ public class FormPresenterImpl implements FormPresenter {
      * Builds the form based on formDefinition.
      */
     @Override
-    public FormView start(Item item, FormPresenter.Callback callback) {
+    public FormView start(Item item, FormDefinition formDefinition, Callback callback, FormItem formItem) {
         this.item = item;
         this.callback = callback;
-        formBuilder.buildForm(fieldFactory, formDefinition, item, view, null);
-        return view;
-    }
-
-    /**
-     * Builds the form based on formDefinition.
-     */
-    @Override
-    public FormView start(Item item, FormItem parent) {
-        this.item = item;
-        formBuilder.buildForm(fieldFactory, formDefinition, item, view, parent);
+        formBuilder.buildForm(fieldFactory, formDefinition, item, view, formItem);
         return view;
     }
 

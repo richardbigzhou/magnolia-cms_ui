@@ -182,7 +182,11 @@ public class CodeConfigurationUtils {
                         parameters[parameterIndex] = new ActionbarConfig();
                     } else if (parameterType.equals(FormConfig.class)) {
                         parameters[parameterIndex] = new FormConfig();
-                    } else {
+                    }
+                    else if (parameterType.equals(ContentAppConfig.class)) {
+                        parameters[parameterIndex] = new ContentAppConfig();
+                    }
+                    else {
                         throw new RegistrationException("Unable to resolve parameter " + parameterIndex + " for method " + method);
                     }
                 }
