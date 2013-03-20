@@ -51,5 +51,12 @@ public interface App {
 
     AppContext getAppContext();
 
+    /**
+     * Open a dialog which enables a user to choose an item from the app.
+     * 
+     * @param path The path of an item that should be selected when the dialog is opened. Path relative to the tree root, must start with '/'.
+     * @param modalLayer The layer over which the opened dialog should be modal. See {@link Shell}, {@link SubAppContext}, {@link AppContext}.
+     * @param listener A listener to handle when user clicks one of the dialog buttons.
+     */
     void openChooseDialog(String path, ModalLayer modalLayer, ItemChosenListener listener);
 }

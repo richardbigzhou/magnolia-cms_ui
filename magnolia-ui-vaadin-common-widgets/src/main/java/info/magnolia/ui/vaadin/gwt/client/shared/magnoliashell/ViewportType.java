@@ -38,8 +38,7 @@ package info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell;
  */
 public enum ViewportType {
     SHELL_APP("shell:"),
-    APP("app:"),
-    DIALOG("");
+    APP("app:");
 
     private String fragmentPrefix;
 
