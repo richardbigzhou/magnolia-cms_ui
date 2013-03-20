@@ -34,20 +34,22 @@
 package info.magnolia.ui.dialog;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.dialog.action.DialogActionFactory;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.FormPresenter;
-import info.magnolia.ui.form.FormPresenterFactory;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
-import info.magnolia.ui.vaadin.view.ModalLayer;
-import info.magnolia.ui.dialog.action.DialogActionDefinition;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.view.ModalLayer;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.vaadin.data.Item;
 
@@ -59,49 +61,41 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private final DialogBuilder dialogBuilder;
 
-    private FormPresenterFactory formPresenterFactory;
-
-    private final DialogDefinition dialogDefinition;
-
     private final FormDialogView view;
 
     private Callback callback;
 
     private final DialogActionFactory dialogActionFactory;
+
     private FormPresenter formPresenter;
 
 
-    public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final FormPresenterFactory formPresenterFactory,
-                                   final DialogDefinition dialogDefinition, EventBus eventBus, final DialogActionFactory actionFactory) {
+    @Inject
+    public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final FormPresenter formPresenter, @Named("admincentral") EventBus eventBus, final DialogActionFactory actionFactory) {
         super(view, eventBus);
         this.view = view;
         this.dialogBuilder = dialogBuilder;
-        this.formPresenterFactory = formPresenterFactory;
-        this.dialogDefinition = dialogDefinition;
+        this.formPresenter = formPresenter;
         this.dialogActionFactory = actionFactory;
-        initActions(dialogDefinition);
     }
 
     /**
      * Returns a {@link DialogView} containing {@link info.magnolia.ui.vaadin.form.FormView} as content.
      * <ul>
-     * <li>Delegates the building of the {@link FormPresenter} to the {@link FormPresenterFactory}.</li>
      * <li>Delegates the building of the {@link FormDialogPresenter} to the {@link FormDialogPresenterFactory}.</li>
      * <li>Sets the created {@link info.magnolia.ui.vaadin.form.FormView} as content of the created {@link DialogView}.</li>
      * </ul>
      *
      * @param item passed on to{@link FormDialogPresenter}
-     * @param callback registers callback functions created by caller
+     * @param dialogDefinition
      */
     @Override
-    public DialogView start(final Item item, final ModalLayer modalLayer, final Callback callback) {
-        this.callback = callback;
+    public DialogView start(final Item item, DialogDefinition dialogDefinition, final ModalLayer modalLayer) {
         dialogBuilder.buildFormDialog(dialogDefinition, view);
-        this.formPresenter = formPresenterFactory.createFormPresenterByDefinition(dialogDefinition.getFormDefinition());
 
         // This is needed to access properties from the parent. Currently only the i18basename.
         Dialog dialog = new Dialog(dialogDefinition);
-        view.setFormView(formPresenter.start(item, dialog));
+        view.setFormView(formPresenter.start(item, dialogDefinition.getFormDefinition(), null, dialog));
 
         final ModalCloser modalCloser = modalLayer.openModal(view);
 
@@ -113,6 +107,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
                  event.getView().asVaadinComponent().removeDialogCloseHandler(this);
              }
          });
+        initActions(dialogDefinition);
 
         return view;
     }
@@ -147,6 +142,14 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     @Override
     public Callback getCallback() {
         return this.callback;
+    }
+
+    /**
+     * Registers callback functions created by caller.
+     */
+    @Override
+    public void setCallback(Callback callback) {
+        this.callback = callback;
     }
 
 }

@@ -37,14 +37,17 @@ import static org.junit.Assert.assertEquals;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.FormItem;
 import info.magnolia.ui.form.FormPresenter;
-import info.magnolia.ui.vaadin.view.ModalLayer;
+import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
+import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.view.ModalLayer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -136,12 +139,7 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public FormView start(Item item, Callback callback) {
-            return null;
-        }
-
-        @Override
-        public FormView start(Item item, FormItem parent) {
+        public FormView start(Item item, FormDefinition formDefinition, Callback callback, FormItem formItem) {
             return null;
         }
 
@@ -211,12 +209,17 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public EventBus getEventBus() {
+        public void setCallback(Callback callback) {
+
+        }
+
+        @Override
+        public DialogView start(Item item, DialogDefinition dialogDefinition, ModalLayer modalLayer) {
             return null;
         }
 
         @Override
-        public FormDialogView start(Item item, ModalLayer modalLayer, Callback callback) {
+        public EventBus getEventBus() {
             return null;
         }
 

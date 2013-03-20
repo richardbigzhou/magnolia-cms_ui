@@ -31,25 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp;
-
-import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+package info.magnolia.ui.contentapp.config;
 
 /**
- * ConfiguredItemSubAppDescriptor.
+ * EditorConfig.
  */
-public class ConfiguredItemSubAppDescriptor extends ConfiguredSubAppDescriptor implements ItemSubAppDescriptor {
+public class EditorConfig {
 
-    private EditorDefinition editor;
-
-    @Override
-    public EditorDefinition getEditor() {
-        return editor;
+    public EditorBuilder editor() {
+        return new EditorBuilder();
     }
-
-    public void setEditor(EditorDefinition editorDefinition) {
-        this.editor = editorDefinition;
-    }
-
 }

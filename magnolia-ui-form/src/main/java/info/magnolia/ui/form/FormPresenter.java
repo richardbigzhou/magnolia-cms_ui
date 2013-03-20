@@ -34,6 +34,7 @@
 package info.magnolia.ui.form;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
 
@@ -48,9 +49,7 @@ public interface FormPresenter {
 
     EventBus getEventBus();
 
-    FormView start(Item item, Callback callback);
-
-    FormView start(Item item, FormItem parent);
+    FormView start(Item item, FormDefinition formDefinition, Callback callback, FormItem formItem);
 
     void addAction(String actionName, String actionLabel, EditorLikeActionListener callback);
 
@@ -67,9 +66,21 @@ public interface FormPresenter {
 
     }
 
+    /**
+     * Validator interface.
+     */
+    interface Validator {
+
+        void showValidation(boolean visible);
+
+        boolean isValid();
+
+    }
+
     void showValidation(boolean isVisible);
 
     Item getItemDataSource();
 
     FormView getView();
+
 }

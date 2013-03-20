@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.form;
+package info.magnolia.ui.contentapp.config;
 
-import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.workbench.config.WorkbenchConfig;
 
 /**
- * FormPresenterFactory.
+ * ContentAppConfig.
  */
-public interface FormPresenterFactory {
+public class ContentAppConfig {
 
-    FormPresenter createFormPresenterByDefinition(FormDefinition formDefinition);
+    public final EditorConfig editor = new EditorConfig();
+    public final WorkbenchConfig workbench = new WorkbenchConfig();
+
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,58 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.config;
+package info.magnolia.ui.contentapp.config;
 
-import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition;
+import info.magnolia.ui.contentapp.definition.ConfiguredFormActionItemDefinition;
+import info.magnolia.ui.form.config.FormBuilder;
+import info.magnolia.ui.workbench.config.NodeTypeBuilder;
 
 /**
- * FormBuilder that builds form containing tabs and actions.
- * Returns a {@link FormDefinition}.
+ * EditorBuilder.
  */
-public class FormBuilder {
-    private final ConfiguredFormDefinition definition = new ConfiguredFormDefinition();
+public class EditorBuilder {
 
-    public FormBuilder(String id) {
-        definition.setId(id);
-    }
+    private final ConfiguredEditorDefinition definition = new ConfiguredEditorDefinition();
 
-    public FormBuilder label(String label) {
+    public EditorBuilder label(String label) {
         definition.setLabel(label);
         return this;
     }
 
-    public FormBuilder i18nBasename(String i18nBasename) {
+    public EditorBuilder i18nBasename(String i18nBasename) {
         definition.setI18nBasename(i18nBasename);
         return this;
     }
 
-    public FormBuilder description(String description) {
+    public EditorBuilder description(String description) {
         definition.setDescription(description);
         return this;
     }
 
-    public FormDefinition exec() {
-        return definition;
+    public EditorBuilder workspace(String workspace) {
+        definition.setWorkspace(workspace);
+        return this;
     }
 
-    public FormBuilder tabs(TabBuilder... builders) {
-        for (TabBuilder builder : builders) {
-            definition.addTab(builder.exec());
+    public EditorBuilder nodeType(NodeTypeBuilder nodeTypeBuilder) {
+        definition.setNodeType(nodeTypeBuilder.exec());
+        return this;
+    }
+
+    public EditorBuilder form(FormBuilder builder) {
+        definition.setForm(builder.exec());
+        return this;
+    }
+
+    public EditorBuilder actions(String... actions) {
+        for (String action : actions) {
+            definition.getActions().add(new ConfiguredFormActionItemDefinition(action));
         }
         return this;
     }
 
+    public ConfiguredEditorDefinition exec() {
+        return definition;
+    }
 }

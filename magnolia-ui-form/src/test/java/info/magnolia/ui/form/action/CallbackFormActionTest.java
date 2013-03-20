@@ -38,6 +38,7 @@ import static org.junit.Assert.assertEquals;
 import info.magnolia.ui.form.FormItem;
 import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
@@ -111,7 +112,7 @@ public class CallbackFormActionTest {
         this.formActionDefinition.setSuccessActionName(successActionName != null ? successActionName : "success");
     }
 
-    public static class FormPresenterTest implements FormPresenter {
+    public static class FormPresenterTest implements FormPresenter, FormPresenter.Validator {
 
         private Item item;
 
@@ -147,12 +148,7 @@ public class CallbackFormActionTest {
         }
 
         @Override
-        public FormView start(Item item, Callback callback) {
-            return null;
-        }
-
-        @Override
-        public FormView start(Item item, FormItem parent) {
+        public FormView start(Item item, FormDefinition formDefinition, Callback callback, FormItem formItem) {
             return null;
         }
 

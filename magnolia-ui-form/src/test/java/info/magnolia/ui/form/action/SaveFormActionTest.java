@@ -88,7 +88,7 @@ public class SaveFormActionTest extends RepositoryTestCase {
         item = new JcrNodeAdapter(node);
         this.presenter.setTestItem(item);
         initDefinition("name", "label");
-        formAction = new SaveFormAction(formActionDefinition, presenter);
+        formAction = new SaveFormAction(formActionDefinition, item, presenter.getCallback(), presenter);
 
         // WHEN
         formAction.execute();
@@ -106,7 +106,7 @@ public class SaveFormActionTest extends RepositoryTestCase {
         item.getItemProperty("property").setValue("changed");
         this.presenter.setTestItem(item);
         initDefinition("name", "label");
-        formAction = new SaveFormAction(formActionDefinition, presenter);
+        formAction = new SaveFormAction(formActionDefinition,item, presenter.getCallback(), presenter);
 
         // WHEN
         formAction.execute();
@@ -126,7 +126,7 @@ public class SaveFormActionTest extends RepositoryTestCase {
         item.addItemProperty("property", DefaultPropertyUtil.newDefaultProperty("property", null, "changed"));
         this.presenter.setTestItem(item);
         initDefinition("name", "label");
-        formAction = new SaveFormAction(formActionDefinition, presenter);
+        formAction = new SaveFormAction(formActionDefinition, item, presenter.getCallback(), presenter);
 
         // WHEN
         formAction.execute();
@@ -146,7 +146,7 @@ public class SaveFormActionTest extends RepositoryTestCase {
         item.removeItemProperty("property");
         this.presenter.setTestItem(item);
         initDefinition("name", "label");
-        formAction = new SaveFormAction(formActionDefinition, presenter);
+        formAction = new SaveFormAction(formActionDefinition, item, presenter.getCallback(), presenter);
         assertEquals(true, node.hasProperty("property"));
         // WHEN
         formAction.execute();
