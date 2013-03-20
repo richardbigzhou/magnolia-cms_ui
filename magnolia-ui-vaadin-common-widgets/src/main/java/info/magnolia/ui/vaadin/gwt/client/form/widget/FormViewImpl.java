@@ -53,8 +53,10 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.Util;
 
@@ -76,6 +78,8 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
 
     private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
 
+    private static final String ClASSNAME_ERROR = "form-error";
+
     private final Map<String, Button> actionMap = new HashMap<String, Button>();
 
     private final List<FormTabWidget> formTabs = new ArrayList<FormTabWidget>();
@@ -95,6 +99,8 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
 
     private Widget footerToolbar;
 
+    private FlowPanel errorPanel;
+
 
     private final FormHeaderWidget formHeader = new FormHeaderWidget(new FormHeaderWidget.FormHeaderCallback() {
 
@@ -106,10 +112,6 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
             }
         }
 
-        @Override
-        public void jumpToNextError() {
-            presenter.jumpToNextError(lastFocused);
-        }
     });
 
     public FormViewImpl() {
@@ -124,6 +126,11 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
         getElement().appendChild(footerEl);
         footerEl.appendChild(footerToolbarEl);
         footerToolbarEl.addClassName(CLASSNAME_FOOTER_TOOLBAR);
+
+        errorPanel = new FlowPanel();
+        errorPanel.addStyleName(ClASSNAME_ERROR);
+        add(errorPanel);
+        errorPanel.setVisible(false);
     }
 
     @Override
@@ -225,6 +232,7 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
         }
     }
 
+
     @Override
     public void onValidationChanged(ValidationChangedEvent event) {
         errorAmounts.put(event.getSender(), event.getErrorAmount());
@@ -232,8 +240,31 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
         for (Integer amount : errorAmounts.values()) {
             res += amount;
         }
-        formHeader.setErrorAmount(res);
+        setErrorAmount(res);
     }
+
+    public void setErrorAmount(int totalProblematicFields) {
+        errorPanel.setVisible(totalProblematicFields > 0);
+        if (totalProblematicFields > 0) {
+            errorPanel.getElement().setInnerHTML("<span>Please correct the <b>" + totalProblematicFields + " errors </b> in this form </span>");
+
+            final HTML errorButton = new HTML("[Jump to next error]");
+            errorButton.setStyleName("action-jump-to-next-error");
+            DOM.sinkEvents(errorButton.getElement(), Event.MOUSEEVENTS);
+            errorButton.addDomHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    jumpToNextError();
+                }
+            }, ClickEvent.getType());
+            errorPanel.add(errorButton);
+        }
+    }
+
+    public void jumpToNextError() {
+        presenter.jumpToNextError(lastFocused);
+    }
+
 
     @Override
     public void setCaption(String caption) {
