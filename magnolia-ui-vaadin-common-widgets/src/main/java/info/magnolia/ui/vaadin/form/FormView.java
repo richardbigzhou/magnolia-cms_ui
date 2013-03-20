@@ -49,6 +49,8 @@ public interface FormView extends View, Item.Editor {
 
     void addField(Field<?> field);
 
+    void setDescriptionVisbility(boolean isVisible);
+
     @Override
     public Form asVaadinComponent();
 

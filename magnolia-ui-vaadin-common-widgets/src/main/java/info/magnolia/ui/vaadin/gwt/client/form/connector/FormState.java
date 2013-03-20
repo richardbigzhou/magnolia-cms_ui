@@ -41,4 +41,6 @@ import info.magnolia.ui.vaadin.gwt.client.editorlike.connector.EditorLikeCompone
 public class FormState extends EditorLikeComponentState {
 
     public boolean actionsSuppressed = false;
+
+    public boolean descriptionsVisible = false;
 }

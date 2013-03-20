@@ -37,7 +37,7 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
 import info.magnolia.ui.vaadin.editorlike.EditorLike;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.gwt.client.dialog.connector.BaseDialogState;
-import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.ActionFiringServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.DialogServerRpc;
 
 import com.vaadin.ui.Component;
 
@@ -51,7 +51,7 @@ public class BaseDialog extends EditorLike implements DialogView {
     public BaseDialog() {
         super();
 
-        registerRpc(new ActionFiringServerRpc() {
+        registerRpc(new DialogServerRpc() {
             @Override
             public void fireAction(String actionId) {
                 Object[] array = actionCallbackMap.get(actionId).toArray();
@@ -63,6 +63,11 @@ public class BaseDialog extends EditorLike implements DialogView {
             @Override
             public void closeSelf() {
                 BaseDialog.this.closeSelf();
+            }
+
+            @Override
+            public void toggleDescription() {
+                BaseDialog.this.toggleDescription();
             }
         });
     }
@@ -79,6 +84,10 @@ public class BaseDialog extends EditorLike implements DialogView {
 
     public void closeSelf() {
         fireEvent(new DialogCloseEvent(this, this));
+    }
+
+    public void toggleDescription() {
+        // CLZ TODO Implement what happens. fire event which form should catch.
     }
 
     @Override

@@ -58,4 +58,6 @@ public interface FormView extends EditorLikeView<FormView.Presenter> {
 
     }
 
+    void setDescriptionVisible(boolean isVisible);
+
 }

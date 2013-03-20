@@ -36,11 +36,13 @@ package info.magnolia.ui.vaadin.gwt.client.dialog.rpc;
 import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * BaseDialogServerRpc.
+ * DialogServerRpc.
  */
-public interface ActionFiringServerRpc extends ServerRpc {
+public interface DialogServerRpc extends ServerRpc {
 
     void fireAction(String actionId);
 
     void closeSelf();
+
+    void toggleDescription();
 }

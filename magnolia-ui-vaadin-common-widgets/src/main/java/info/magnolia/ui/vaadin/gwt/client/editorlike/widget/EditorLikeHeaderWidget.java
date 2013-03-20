@@ -79,6 +79,7 @@ public abstract class EditorLikeHeaderWidget extends FlowPanel {
             if (hasDescription) {
                 descriptionPanel.setVisible(isDescriptionVisible);
             }
+            // TODO CLZ old style.
             callback.onDescriptionVisibilityChanged(isDescriptionVisible);
         }
     });

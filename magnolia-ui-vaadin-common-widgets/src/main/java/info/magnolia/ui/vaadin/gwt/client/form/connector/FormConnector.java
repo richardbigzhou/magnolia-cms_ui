@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.form.connector;
 
 import info.magnolia.ui.vaadin.form.Form;
-import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.ActionFiringServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.DialogServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.editorlike.connector.EditorLikeComponentConnector;
 import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormFieldWrapper;
@@ -46,6 +46,8 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.Util;
 import com.vaadin.client.communication.RpcProxy;
+import com.vaadin.client.communication.StateChangeEvent;
+import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ui.Connect;
@@ -56,7 +58,7 @@ import com.vaadin.shared.ui.Connect;
 @Connect(Form.class)
 public class FormConnector extends EditorLikeComponentConnector<FormView.Presenter, FormView> {
 
-    private final ActionFiringServerRpc actionRpc = RpcProxy.create(ActionFiringServerRpc.class, this);
+    private final DialogServerRpc actionRpc = RpcProxy.create(DialogServerRpc.class, this);
 
     private final FormServerRpc focusRpc = RpcProxy.create(FormServerRpc.class, this);
 
@@ -67,6 +69,13 @@ public class FormConnector extends EditorLikeComponentConnector<FormView.Present
             @Override
             public void onElementResize(ElementResizeEvent e) {
                 getView().getContentElement().getStyle().setTop(e.getLayoutManager().getOuterHeight(e.getElement()), Unit.PX);
+            }
+        });
+
+        addStateChangeHandler("descriptionsVisible", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                getView().setDescriptionVisible(getState().descriptionsVisible);
             }
         });
     }

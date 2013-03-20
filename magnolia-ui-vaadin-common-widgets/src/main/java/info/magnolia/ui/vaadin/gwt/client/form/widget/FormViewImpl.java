@@ -226,7 +226,8 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
         formHeader.setDescription(description);
     }
 
-    void setDescriptionVisible(boolean isVisible) {
+    @Override
+    public void setDescriptionVisible(boolean isVisible) {
         for (final FormTabWidget tab : formTabs) {
             tab.setDescriptionVisible(isVisible);
         }

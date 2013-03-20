@@ -108,6 +108,9 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
         return new DialogHeaderWidget.VDialogHeaderCallback() {
             @Override
             public void onDescriptionVisibilityChanged(boolean isVisible) {
+                if (presenter != null) {
+                    presenter.toggleDescription();
+                }
             }
 
             @Override
