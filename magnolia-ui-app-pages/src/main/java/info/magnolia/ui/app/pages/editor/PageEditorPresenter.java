@@ -122,7 +122,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     @Override
     public void editComponent(String workspace, String path, String dialog) {
-        final FormDialogPresenter dialogPresenter = componentProvider.newInstance(FormDialogPresenter.class);
+        final FormDialogPresenter dialogPresenter = componentProvider.getComponent(FormDialogPresenter.class);
         final DialogDefinition dialogDefinition = dialogPresenterFactory.getDialogDefinition(dialog);
 
         try {
@@ -152,7 +152,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
         final DialogDefinition dialogDefinition = buildNewComponentDialog(availableComponents);
 
-        final FormDialogPresenter dialogPresenter = componentProvider.newInstance(FormDialogPresenter.class);
+        final FormDialogPresenter dialogPresenter = componentProvider.getComponent(FormDialogPresenter.class);
         try {
             Session session = MgnlContext.getJCRSession(workspace);
 
@@ -179,7 +179,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                         String dialog = templateDef.getDialog();
 
 
-                        final FormDialogPresenter dialogPresenter = componentProvider.newInstance(FormDialogPresenter.class);
+                        final FormDialogPresenter dialogPresenter = componentProvider.getComponent(FormDialogPresenter.class);
 
                         DialogDefinition newDialogDefinition = dialogPresenterFactory.getDialogDefinition(dialog);
 
