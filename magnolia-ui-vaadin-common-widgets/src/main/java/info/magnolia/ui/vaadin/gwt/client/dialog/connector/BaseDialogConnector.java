@@ -37,7 +37,6 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.DialogServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
 import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogViewImpl;
-import info.magnolia.ui.vaadin.gwt.client.editorlike.connector.EditorLikeComponentState;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
@@ -88,13 +87,13 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
     }
 
     @Override
-    protected EditorLikeComponentState createState() {
-        return new EditorLikeComponentState();
+    protected BaseDialogState createState() {
+        return new BaseDialogState();
     }
 
     @Override
-    public EditorLikeComponentState getState() {
-        return (EditorLikeComponentState) super.getState();
+    public BaseDialogState getState() {
+        return (BaseDialogState) super.getState();
     }
 
     @Override
