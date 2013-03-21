@@ -194,7 +194,7 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
 
     @Override
     public void setViewType(final ViewType type) {
-        contentViewContainer.removeComponent(contentViews.get(currentViewType).asVaadinComponent());
+        contentViewContainer.removeComponent(getSelectedView().asVaadinComponent());
         final Component c = contentViews.get(type).asVaadinComponent();
         c.setSizeFull();
         contentViewContainer.addComponent(c);
@@ -214,7 +214,7 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
 
     @Override
     public void refresh() {
-        contentViews.get(currentViewType).refresh();
+        getSelectedView().refresh();
     }
 
     public void setContentViews(Map<ViewType, ContentView> contentViews) {
@@ -244,9 +244,7 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
 
     @Override
     public void selectPath(String path) {
-        for (ContentView contentView : contentViews.values()) {
-            contentView.select(path);
-        }
+        getSelectedView().select(path);
     }
 
     @Override
