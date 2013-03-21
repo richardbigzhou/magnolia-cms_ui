@@ -34,10 +34,9 @@
 package info.magnolia.ui.dialog;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.dialog.action.DialogActionFactory;
+import info.magnolia.ui.dialog.action.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.FormPresenter;
-import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
@@ -64,18 +63,18 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private Callback callback;
 
-    private final DialogActionFactory dialogActionFactory;
-
     private FormPresenter formPresenter;
+
+    private DialogActionExecutor actionExecutor;
 
 
     @Inject
-    public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final FormPresenter formPresenter, @Named("admincentral") EventBus eventBus, final DialogActionFactory actionFactory) {
+    public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final FormPresenter formPresenter, @Named("admincentral") EventBus eventBus, final DialogActionExecutor actionExecutor) {
         super(view, eventBus);
         this.view = view;
         this.dialogBuilder = dialogBuilder;
         this.formPresenter = formPresenter;
-        this.dialogActionFactory = actionFactory;
+        this.actionExecutor = actionExecutor;
     }
 
     /**
@@ -90,6 +89,8 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      */
     @Override
     public DialogView start(final Item item, DialogDefinition dialogDefinition, final ModalLayer modalLayer) {
+        actionExecutor.setDialogDefinition(dialogDefinition);
+
         dialogBuilder.buildFormDialog(dialogDefinition, view);
 
         // This is needed to access properties from the parent. Currently only the i18basename.
@@ -112,15 +113,15 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     }
 
     private void initActions(final DialogDefinition dialogDefinition) {
-        for (final ActionDefinition action : dialogDefinition.getActions()) {
+        for (final ActionDefinition action : dialogDefinition.getActions().values()) {
             addAction(action.getName(), action.getLabel(), new EditorLikeActionListener() {
                 @Override
                 public void onActionExecuted(final String actionName) {
-                    final Action action1 = dialogActionFactory.createAction(action, FormDialogPresenterImpl.this);
+
                     try {
-                        action1.execute();
-                    } catch (final ActionExecutionException e) {
-                        e.printStackTrace();
+                        actionExecutor.execute(action.getName(), FormDialogPresenterImpl.this);
+                    } catch (ActionExecutionException e) {
+                         throw new RuntimeException("Could not execute action: ", e);
                     }
                 }
             });

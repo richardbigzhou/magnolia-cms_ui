@@ -205,11 +205,6 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.dialog.action.DialogActionFactory</type>
-      <implementation>info.magnolia.ui.dialog.action.DialogActionFactoryImpl</implementation>
-    </component>
-
-    <component>
       <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory</type>
       <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenterFactory</implementation>
     </component>
