@@ -234,52 +234,67 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     // TODO these move methods need to be commands instead
 
-    public boolean moveItem(Item source, Item target) throws RepositoryException {
+    public boolean moveItem(Item source, Item target) {
         if (!basicMoveCheck(source, target)) {
             return false;
         }
-        NodeUtil.moveNode((Node) source, (Node) target);
-        source.getSession().save();
-
-        return true;
+        try {
+            NodeUtil.moveNode((Node) source, (Node) target);
+            source.getSession().save();
+            return true;
+        } catch (RepositoryException re) {
+            log.warn("Got exception in drag and drop action", re);
+            return false;
+        }
     }
 
-    public boolean moveItemBefore(Item source, Item target) throws RepositoryException {
+    public boolean moveItemBefore(Item source, Item target) {
         if (!basicMoveCheck(source, target)) {
             return false;
         }
-
-        NodeUtil.moveNodeBefore((Node) source, (Node) target);
-        source.getSession().save();
-
-        return true;
+        try {
+            NodeUtil.moveNodeBefore((Node) source, (Node) target);
+            source.getSession().save();
+            return true;
+        } catch (RepositoryException re) {
+            log.warn("Got exception in drag and drop action", re);
+            return false;
+        }
     }
 
-    public boolean moveItemAfter(Item source, Item target) throws RepositoryException {
+    public boolean moveItemAfter(Item source, Item target) {
         if (!basicMoveCheck(source, target)) {
             return false;
         }
-
-        NodeUtil.moveNodeAfter((Node) source, (Node) target);
-        source.getSession().save();
-
-        return true;
+        try {
+            NodeUtil.moveNodeAfter((Node) source, (Node) target);
+            source.getSession().save();
+            return true;
+        } catch (RepositoryException re) {
+            log.warn("Got exception in drag and drop action", re);
+            return false;
+        }
     }
 
     /**
      * Perform basic check.
      */
-    private boolean basicMoveCheck(Item source, Item target) throws RepositoryException {
-        // One or both are not node... do nothing
-        if (!target.isNode() && !source.isNode()) {
+    private boolean basicMoveCheck(Item source, Item target) {
+        try {
+            // One or both are not node... do nothing
+            if (!target.isNode() && !source.isNode()) {
+                return false;
+            }
+            // Source and origin are the same... do nothing
+            if (target.getPath().equals(source.getPath())) {
+                return false;
+            }
+            // Source can not be a child of target.
+            return !target.getPath().startsWith(source.getPath());
+        } catch (RepositoryException re) {
+            log.warn("Got exception in drag and drop action", re);
             return false;
         }
-        // Source and origin are the same... do nothing
-        if (target.getPath().equals(source.getPath())) {
-            return false;
-        }
-        // Source can not be a child of target.
-        return !target.getPath().startsWith(source.getPath());
     }
 
     /**
