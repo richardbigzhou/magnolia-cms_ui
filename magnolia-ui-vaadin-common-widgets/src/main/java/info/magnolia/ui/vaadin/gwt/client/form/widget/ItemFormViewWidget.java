@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.rpc;
+package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
-import com.vaadin.shared.communication.ServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.form.connector.ItemFormViewConnector;
+
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * BaseDialogServerRpc.
+ * MagnoliaTabWidget.
  */
-public interface ActionFiringServerRpc extends ServerRpc {
+public class ItemFormViewWidget extends SimplePanel {
 
-    void fireAction(String actionId);
+    public ItemFormViewWidget(ItemFormViewConnector connector) {
+        super();
 
-    void closeSelf();
+        setStyleName("item-form-view");
+
+    }
+
 }

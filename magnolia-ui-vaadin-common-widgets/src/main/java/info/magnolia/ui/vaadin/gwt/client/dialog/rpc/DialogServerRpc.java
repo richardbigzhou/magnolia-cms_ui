@@ -31,45 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.form;
+package info.magnolia.ui.vaadin.gwt.client.dialog.rpc;
 
-
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
-import info.magnolia.ui.vaadin.view.View;
-
-import java.util.Collection;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
+import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * Interface for {@link Form}.
+ * DialogServerRpc.
  */
-public interface FormView extends View, Item.Editor {
+public interface DialogServerRpc extends ServerRpc {
 
-    void addField(Field<?> field);
+    void fireAction(String actionId);
 
-    void setDescriptionVisbility(boolean isVisible);
+    void closeSelf();
 
-    @Override
-    public ItemFormView asVaadinComponent();
-
-    void addAction(String actionName, String actionLabel, EditorLikeActionListener callback);
-
-    void setFormDescription(String description);
-
-    void setCaption(String caption);
-
-    void addFormSection(String tabName, FormSection inputFields);
-
-    void showValidation(boolean isVisible);
-
-    void setShowAllEnabled(boolean enabled);
-
-    // void suppressOwnActions();
-
-    boolean isValid();
-
-    Collection<Field<?>> getFields();
-
+    void toggleDescription();
 }

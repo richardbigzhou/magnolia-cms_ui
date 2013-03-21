@@ -49,6 +49,8 @@ public interface BaseDialogView extends EditorLikeView<BaseDialogView.Presenter>
     public interface Presenter extends EditorLikeView.Presenter {
 
         void closeDialog();
+
+        void toggleDescription();
     }
 
 }

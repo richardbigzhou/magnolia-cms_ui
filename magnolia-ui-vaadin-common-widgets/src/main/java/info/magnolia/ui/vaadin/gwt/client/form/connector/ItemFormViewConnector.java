@@ -31,31 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.form.widget;
+package info.magnolia.ui.vaadin.gwt.client.form.connector;
 
-import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeHeaderWidget;
+import info.magnolia.ui.vaadin.form.ItemFormView;
+import info.magnolia.ui.vaadin.gwt.client.form.widget.ItemFormViewWidget;
 
+import com.vaadin.client.ComponentConnector;
+import com.vaadin.client.ConnectorHierarchyChangeEvent;
+import com.vaadin.client.ui.AbstractSingleComponentContainerConnector;
+import com.vaadin.shared.ui.Connect;
 
 /**
- * FormHeaderWidget.
+ * Connector for FormComposer.
  */
-public class FormHeaderWidget extends EditorLikeHeaderWidget {
+@Connect(ItemFormView.class)
+public class ItemFormViewConnector extends AbstractSingleComponentContainerConnector {
 
+    @Override
+    protected void init() {
+        super.init();
+    }
 
+    @Override
+    public void updateCaption(ComponentConnector connector) {
+    }
 
+    @Override
+    public ItemFormViewWidget getWidget() {
+        return (ItemFormViewWidget) super.getWidget();
+    }
 
-    public FormHeaderWidget(FormHeaderCallback callback) {
-        super(callback);
+    @Override
+    protected ItemFormViewWidget createWidget() {
+        return new ItemFormViewWidget(this);
     }
 
 
-    /**
-     * Callback interface for the Form header.
-     */
-    public interface FormHeaderCallback extends EditorLikeHeaderWidget.VEditorLikeHeaderCallback {
+    @Override
+    public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent e) {
+        if (!e.getOldChildren().isEmpty()) {
+            final ComponentConnector oldContent = e.getOldChildren().get(0);
+            getWidget().remove(oldContent.getWidget());
+        }
 
+        if (getContent() != null) {
+            getWidget().setWidget(getContent().getWidget());
+        }
     }
-
-
 
 }

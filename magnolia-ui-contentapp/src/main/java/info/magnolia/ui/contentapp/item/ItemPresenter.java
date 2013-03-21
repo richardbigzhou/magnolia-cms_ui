@@ -97,6 +97,13 @@ public class ItemPresenter implements EditorLikeActionListener, FormPresenter.Ca
 
             initActions();
             view.setItemView(formView.asVaadinComponent(), viewType);
+
+            // final String description = formDefinition.getDescription();
+            // final String label = formDefinition.getLabel();
+            // final String basename = formDefinition.getI18nBasename();
+            //
+            // FormComposer formComposer = formView.asVaadinComponent();
+            // formComposer.setDialogValues(description, label, basename);
             break;
 
         }

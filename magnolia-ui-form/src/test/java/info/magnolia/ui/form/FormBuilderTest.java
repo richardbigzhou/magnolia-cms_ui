@@ -51,13 +51,13 @@ import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
+import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.form.field.builder.TextFieldBuilder;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
-import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.vaadin.form.Form;
 import info.magnolia.ui.vaadin.form.FormView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -105,7 +105,7 @@ public class FormBuilderTest {
         // GIVEN
         final FormBuilder builder = new FormBuilder();
         final FormDefinition def = new ConfiguredFormDefinition();
-        final FormView form = new Form();
+        final FormView form = (FormView) new Form();
 
         // WHEN
         final FormView result = builder.buildForm(null, def, null, form, null);
@@ -143,7 +143,7 @@ public class FormBuilderTest {
         when(fieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
 
         // WHEN
-        final FormView result = builder.buildForm(fieldFactory, formDef, item, form, null);
+        final FormView result = builder.buildForm(fieldFactory, formDef, item, (FormView) form, null);
 
         // THEN
         assertEquals(result, form);

@@ -37,7 +37,7 @@ import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.vaadin.editorlike.EditorLike;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.form.tab.MagnoliaFormTab;
-import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.ActionFiringServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.DialogServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.form.connector.FormState;
 import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormServerRpc;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
@@ -59,7 +59,7 @@ import com.vaadin.ui.Field;
  *
  * TODO: TAKE CARE OF FIELDGROUP IN THE FORM BUILDER LATER ON!
  */
-public class Form extends EditorLike implements FormView {
+public class Form extends EditorLike implements FormViewReduced {
 
     private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");
 
@@ -90,7 +90,7 @@ public class Form extends EditorLike implements FormView {
         tabSheet.showAllTab(true, SHOW_ALL);
         setContent(tabSheet);
 
-        registerRpc(new ActionFiringServerRpc() {
+        registerRpc(new DialogServerRpc() {
 
             @Override
             public void fireAction(String actionId) {
@@ -103,6 +103,11 @@ public class Form extends EditorLike implements FormView {
             @Override
             public void closeSelf() {
 
+            }
+
+            @Override
+            public void toggleDescription() {
+                // TODO CLZ evidence that Form should not be handling rpc for Dialog at all.
             }
 
         });
@@ -134,6 +139,10 @@ public class Form extends EditorLike implements FormView {
         });
     }
 
+    @Override
+    public void setDescriptionVisbility(boolean isVisible) {
+        getState().descriptionsVisible = isVisible;
+    }
 
     @Override
     public void setItemDataSource(Item newDataSource) {
@@ -185,10 +194,10 @@ public class Form extends EditorLike implements FormView {
         tabSheet.showAllTab(enabled, SHOW_ALL);
     }
 
-    @Override
-    public void setFormDescription(String description) {
-        getState().componentDescription = description;
-    }
+    // @Override
+    // public void setFormDescription(String description) {
+    // getState().componentDescription = description;
+    // }
 
     @Override
     protected FormState getState() {
@@ -205,9 +214,9 @@ public class Form extends EditorLike implements FormView {
         return this;
     }
 
-    @Override
-    public void suppressOwnActions() {
-        getState().actionsSuppressed = true;
-    }
+    // @Override
+    // public void suppressOwnActions() {
+    // getState().actionsSuppressed = true;
+    // }
 
 }

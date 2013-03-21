@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
 
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.ActionFiringServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.DialogServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
 import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView.Presenter;
 import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogViewImpl;
@@ -49,7 +49,7 @@ import com.vaadin.shared.ui.Connect;
 @Connect(BaseDialog.class)
 public class BaseDialogConnector extends EditorLikeComponentConnector<BaseDialogView.Presenter, BaseDialogView> {
 
-    private final ActionFiringServerRpc rpc = RpcProxy.create(ActionFiringServerRpc.class, this);
+    private final DialogServerRpc rpc = RpcProxy.create(DialogServerRpc.class, this);
 
     @Override
     protected BaseDialogView createView() {
@@ -67,6 +67,11 @@ public class BaseDialogConnector extends EditorLikeComponentConnector<BaseDialog
             @Override
             public void closeDialog() {
                 rpc.closeSelf();
+            }
+
+            @Override
+            public void toggleDescription() {
+                rpc.toggleDescription();
             }
         };
     }
