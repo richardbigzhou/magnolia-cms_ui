@@ -72,15 +72,18 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
     }
 
     /**
-     * Builds a map of parameters which will be passed to the current command for execution.
-     * Called by the constructor. Default implementation returns a map containing the parameters defined at {@link CommandActionDefinition#getParams()}.
-     * It also adds the following parameters with values retrieved from the passed node.
+     * Builds a map of parameters which will be passed to the current command
+     * for execution. Called by the constructor. Default implementation returns
+     * a map containing the parameters defined at
+     * {@link CommandActionDefinition#getParams()}. It also adds the following
+     * parameters with values retrieved from the passed node.
      * <ul>
      * <li>Context.ATTRIBUTE_REPOSITORY = current node's workspace name
      * <li>Context.ATTRIBUTE_UUID = current node's identifier
      * <li>Context.ATTRIBUTE_PATH = current node's path
      * </ul>
-     * Subclasses can override this method to add further parameters to the command execution. E.g.
+     * Subclasses can override this method to add further parameters to the
+     * command execution. E.g.
      * 
      * <pre>
      * protected Map&lt;String, Object&gt; buildParams(final Node node) {
@@ -145,10 +148,19 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
         try {
             log.debug("Executing command [{}] from catalog [{}] with the following parameters [{}]...", new Object[] { commandName, catalog, getParams() });
             commandsManager.executeCommand(command, getParams());
+            executePostCommand(command);
             log.debug("Command executed successfully in {} ms ", System.currentTimeMillis() - start);
         } catch (Exception e) {
             log.debug("Command execution failed after {} ms ", System.currentTimeMillis() - start);
             throw new ActionExecutionException(e);
         }
+    }
+
+    /**
+     * Post Command Execution. Class that implement CommansActionBase should use
+     * this in order to perform post Command Tasks.
+     */
+    protected void executePostCommand(Command command) throws Exception {
+        // Sub Class can override this method.
     }
 }
