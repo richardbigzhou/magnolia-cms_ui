@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -45,22 +45,22 @@ import com.vaadin.data.Item;
  * Interface for {@link FormDialogPresenterImpl}.
  */
 public interface FormDialogPresenter extends DialogPresenter {
-
-    /**
-     * Start the formDialogPresenter.
-     * 
-     * @param item The item on which the form will operate.
-     * @param modalLayer The layer over which the opened dialog should be modal. See {@link Shell}, {@link SubAppContext}, {@link AppContext}.
-     * @param callback A callback to handle when user clicks one of the dialog buttons.
-     */
-    DialogView start(Item item, ModalLayer modalLayer, DialogPresenter.Callback callback);
-
+    
     @Override
     FormDialogView getView();
 
     FormPresenter getForm();
 
+    /**
+     * callback A callback to handle when user clicks one of the dialog buttons.
+     */
     void setCallback(Callback callback);
-
+    
+    /**
+     * Start the formDialogPresenter.
+     *
+     * @param item The item on which the form will operate.
+     * @param modalLayer The layer over which the opened dialog should be modal. See {@link Shell}, {@link SubAppContext}, {@link AppContext}.
+     */
     DialogView start(Item item, DialogDefinition dialogDefinition, ModalLayer modalLayer);
 }

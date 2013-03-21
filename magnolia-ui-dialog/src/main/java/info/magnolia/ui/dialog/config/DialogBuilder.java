@@ -36,6 +36,8 @@ package info.magnolia.ui.dialog.config;
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.config.FormBuilder;
+import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.model.action.builder.ActionBuilder;
 
 /**
  * Builder for building a dialog definition.
@@ -72,10 +74,15 @@ public class DialogBuilder {
         return this;
     }
 
-    public DialogBuilder actions(DialogActionBuilder... builders) {
-        for (DialogActionBuilder builder : builders) {
+    public DialogBuilder actions(ActionBuilder... builders) {
+        for (ActionBuilder builder : builders) {
             definition.addAction(builder.exec());
         }
+        return this;
+    }
+
+    public DialogBuilder addAction(ActionDefinition actionDefinition) {
+        definition.addAction(actionDefinition);
         return this;
     }
 }

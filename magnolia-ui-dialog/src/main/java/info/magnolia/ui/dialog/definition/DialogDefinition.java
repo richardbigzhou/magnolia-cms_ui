@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.dialog.definition;
 
-import info.magnolia.ui.dialog.action.DialogActionDefinition;
+import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
 
 import java.util.List;
@@ -42,7 +42,7 @@ import java.util.List;
  * Defines a dialog.
  *
  * @see info.magnolia.ui.form.field.definition.FieldDefinition
- * @see DialogActionDefinition
+ * @see ActionDefinition
  */
 public interface DialogDefinition {
 
@@ -59,6 +59,6 @@ public interface DialogDefinition {
 
     FormDefinition getFormDefinition();
 
-    List<DialogActionDefinition> getActions();
+    List<ActionDefinition> getActions();
 
 }

@@ -49,12 +49,12 @@ import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
-import info.magnolia.ui.dialog.action.ConfiguredDialogActionDefinition;
-import info.magnolia.ui.dialog.action.DialogActionDefinition;
+import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -87,7 +87,7 @@ public class ConfiguredDialogDefinitionManagerTest {
 
         ComponentsTestUtil.setImplementation(DialogDefinition.class, ConfiguredDialogDefinition.class);
         ComponentsTestUtil.setImplementation(TabDefinition.class, ConfiguredTabDefinition.class);
-        ComponentsTestUtil.setImplementation(DialogActionDefinition.class, ConfiguredDialogActionDefinition.class);
+        ComponentsTestUtil.setImplementation(ActionDefinition.class, ConfiguredActionDefinition.class);
 
         session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
                 A_DIALOG_PATH + ".id=aModule:aDialog",

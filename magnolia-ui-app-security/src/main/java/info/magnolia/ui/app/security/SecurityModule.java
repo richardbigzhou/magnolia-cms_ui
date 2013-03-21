@@ -39,13 +39,14 @@ import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.security.column.UserNameColumnDefinition;
 import info.magnolia.ui.app.security.column.UserNameColumnFormatter;
-import info.magnolia.ui.app.security.dialog.action.SaveGroupDialogActionDefinition;
-import info.magnolia.ui.app.security.dialog.action.SaveRoleDialogActionDefinition;
-import info.magnolia.ui.app.security.dialog.action.SaveUserDialogActionDefinition;
+import info.magnolia.ui.app.security.dialog.action.SaveGroupDialogAction;
+import info.magnolia.ui.app.security.dialog.action.SaveRoleDialogAction;
+import info.magnolia.ui.app.security.dialog.action.SaveUserDialogAction;
 import info.magnolia.ui.app.security.dialog.field.EnabledFieldBuilder;
 import info.magnolia.ui.app.security.dialog.field.GroupManagementFieldBuilder;
 import info.magnolia.ui.app.security.dialog.field.RoleManagementFieldBuilder;
@@ -273,6 +274,17 @@ public class SecurityModule implements ModuleLifecycle {
         roles.leftColumnCaption("Other available roles");
         roles.rightColumnCaption("Granted roles");
 
+        SaveDialogActionDefinition commit = new SaveDialogActionDefinition();
+        commit.setImplementationClass(SaveUserDialogAction.class);
+        commit.setName("commit");
+        commit.setLabel("save changes");
+        dialog.addAction(commit);
+
+        CancelDialogActionDefinition cancel = new CancelDialogActionDefinition();
+        cancel.setName("cancel");
+        cancel.setLabel("cancel");
+        dialog.addAction(cancel);
+
         dialog.form(cfg.forms.form().description("Define the user information")
                 .tabs(
                         cfg.forms.tab("User").label("User info")
@@ -299,11 +311,7 @@ public class SecurityModule implements ModuleLifecycle {
                                         roles
                                 )
                 )
-        )
-                .actions(
-                        cfg.dialogs.action("commit").label("save changes").action(new SaveUserDialogActionDefinition()),
-                        cfg.dialogs.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
-                );
+        );
     }
 
     @Dialog("ui-security-app:groupAdd")
@@ -317,6 +325,7 @@ public class SecurityModule implements ModuleLifecycle {
     }
 
     public void groupDialog(DialogBuilder dialog, UiConfig cfg, boolean editMode) {
+
 
         AbstractFieldBuilder groupName = cfg.fields.text(ModelConstants.JCR_NAME)
                 .label("Group name")
@@ -337,6 +346,17 @@ public class SecurityModule implements ModuleLifecycle {
         roles.leftColumnCaption("Other available roles");
         roles.rightColumnCaption("Granted roles");
 
+        SaveDialogActionDefinition commit = new SaveDialogActionDefinition();
+        commit.setImplementationClass(SaveGroupDialogAction.class);
+        commit.setName("commit");
+        commit.setLabel("save changes");
+        dialog.addAction(commit);
+
+        CancelDialogActionDefinition cancel = new CancelDialogActionDefinition();
+        cancel.setName("cancel");
+        cancel.setLabel("cancel");
+        dialog.addAction(cancel);
+
         dialog.form(cfg.forms.form().description("Define the group information")
                 .tabs(
                         cfg.forms.tab("Group").label("Group info")
@@ -354,11 +374,7 @@ public class SecurityModule implements ModuleLifecycle {
                                         roles
                                 )
                 )
-        )
-                .actions(
-                        cfg.dialogs.action("commit").label("save changes").action(new SaveGroupDialogActionDefinition()),
-                        cfg.dialogs.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
-                );
+        );
     }
 
     @Dialog("ui-security-app:roleEdit")
@@ -382,6 +398,17 @@ public class SecurityModule implements ModuleLifecycle {
             roleName.validator(cfg.validators.custom(new UniqueRoleIdValidatorDefinition()).errorMessage("Role name already exists."));
         }
 
+        SaveDialogActionDefinition commit = new SaveDialogActionDefinition();
+        commit.setImplementationClass(SaveRoleDialogAction.class);
+        commit.setName("commit");
+        commit.setLabel("save changes");
+        dialog.addAction(commit);
+
+        CancelDialogActionDefinition cancel = new CancelDialogActionDefinition();
+        cancel.setName("cancel");
+        cancel.setLabel("cancel");
+        dialog.addAction(cancel);
+
         dialog.form(cfg.forms.form().description("Define the role information")
                 .tabs(
                         cfg.forms.tab("Role").label("Role info")
@@ -395,11 +422,7 @@ public class SecurityModule implements ModuleLifecycle {
                                         cfg.fields.staticField("placeholder").label("Placeholder for ACL control")
                                 )
                 )
-        )
-                .actions(
-                        cfg.dialogs.action("commit").label("save changes").action(new SaveRoleDialogActionDefinition()),
-                        cfg.dialogs.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
-                );
+        );
     }
 
     @Override

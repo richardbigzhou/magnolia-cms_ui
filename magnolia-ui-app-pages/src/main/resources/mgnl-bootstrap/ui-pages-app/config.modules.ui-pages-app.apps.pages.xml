@@ -16,7 +16,7 @@
     <sv:value>EDIT</sv:value>
   </sv:property>
   <sv:property sv:name="class" sv:type="String">
-    <sv:value>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</sv:value>
+    <sv:value>info.magnolia.ui.framework.app.AppDescriptor</sv:value>
   </sv:property>
   <sv:property sv:name="icon" sv:type="String">
     <sv:value>icon-webpages-app</sv:value>

@@ -30,7 +30,7 @@
   </components>
 
   <components>
-    <id>app-pages-editor</id>
+    <id>app-pages-item</id>
     <component>
       <type>info.magnolia.ui.app.pages.editor.PagesEditorSubApp</type>
       <implementation>info.magnolia.ui.app.pages.editor.PagesEditorSubApp</implementation>

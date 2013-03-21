@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
   <name>ui-admincentral</name>
@@ -93,10 +92,6 @@
     <type-mapping>
       <type>info.magnolia.ui.form.field.definition.FieldDefinition</type>
       <implementation>info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.dialog.action.DialogActionDefinition</type>
-      <implementation>info.magnolia.ui.dialog.action.ConfiguredDialogActionDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition</type>
