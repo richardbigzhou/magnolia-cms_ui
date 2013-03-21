@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.dialog;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.dialog.action.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
@@ -49,6 +50,8 @@ import info.magnolia.ui.vaadin.view.ModalLayer;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.vaadin.data.Item;
 
 /**
@@ -56,8 +59,6 @@ import com.vaadin.data.Item;
  * Combines functionality of {@link DialogPresenter} and {@link FormPresenter}.
  */
 public class FormDialogPresenterImpl extends BaseDialogPresenter implements FormDialogPresenter {
-
-    private final DialogBuilder dialogBuilder;
 
     private final FormDialogView view;
 
@@ -69,10 +70,9 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
 
     @Inject
-    public FormDialogPresenterImpl(final FormDialogView view, final DialogBuilder dialogBuilder, final FormPresenter formPresenter, @Named("admincentral") EventBus eventBus, final DialogActionExecutor actionExecutor) {
+    public FormDialogPresenterImpl(final FormDialogView view, final FormPresenter formPresenter, @Named("admincentral") EventBus eventBus, final DialogActionExecutor actionExecutor) {
         super(view, eventBus);
         this.view = view;
-        this.dialogBuilder = dialogBuilder;
         this.formPresenter = formPresenter;
         this.actionExecutor = actionExecutor;
     }
@@ -91,7 +91,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     public DialogView start(final Item item, DialogDefinition dialogDefinition, final ModalLayer modalLayer) {
         actionExecutor.setDialogDefinition(dialogDefinition);
 
-        dialogBuilder.buildFormDialog(dialogDefinition, view);
+        buildView(dialogDefinition);
 
         // This is needed to access properties from the parent. Currently only the i18basename.
         Dialog dialog = new Dialog(dialogDefinition);
@@ -110,6 +110,22 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         initActions(dialogDefinition);
 
         return view;
+    }
+
+    private void buildView(DialogDefinition dialogDefinition) {
+        final String description = dialogDefinition.getDescription();
+        final String label = dialogDefinition.getLabel();
+        final String basename = dialogDefinition.getI18nBasename();
+
+        if (StringUtils.isNotBlank(description)) {
+            String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
+            view.setDialogDescription(i18nDescription);
+        }
+
+        if (StringUtils.isNotBlank(label)) {
+            String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
+            view.setCaption(i18nLabel);
+        }
     }
 
     private void initActions(final DialogDefinition dialogDefinition) {

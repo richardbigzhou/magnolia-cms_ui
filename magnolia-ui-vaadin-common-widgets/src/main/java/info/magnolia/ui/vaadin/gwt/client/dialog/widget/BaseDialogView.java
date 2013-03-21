@@ -35,8 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
 import java.util.Map;
 
-import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView;
-
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
