@@ -87,7 +87,7 @@ public class BaseDialog extends EditorLike implements DialogView {
     }
 
     public void toggleDescription() {
-        // CLZ TODO Implement what happens. fire event which form should catch.
+        fireEvent(new DescriptionVisibilityEvent(this, true));
     }
 
     @Override
@@ -102,6 +102,14 @@ public class BaseDialog extends EditorLike implements DialogView {
 
     public void removeDialogCloseHandler(Handler handler) {
         removeListener("dialogCloseEvent", DialogCloseEvent.class, handler);
+    }
+
+    public void addDescriptionVisibilityHandler(DescriptionVisibilityEvent.Handler handler) {
+        addListener("descriptionVisibilityEvent", DescriptionVisibilityEvent.class, handler, DescriptionVisibilityEvent.ON_DESCRIPTION_VISIBILITY_CHANGED);
+    }
+
+    public void removeDescriptionVisibilityHandler(DescriptionVisibilityEvent.Handler handler) {
+        removeListener("descriptionVisibilityEvent", DescriptionVisibilityEvent.class, handler);
     }
 
     /**
@@ -138,6 +146,36 @@ public class BaseDialog extends EditorLike implements DialogView {
         }
     }
 
+    /**
+     * DescriptionVisibilityEvent.
+     */
+    public static class DescriptionVisibilityEvent extends com.vaadin.ui.Component.Event {
+        /**
+         * Handler.
+         */
+        public interface Handler {
+            void onDescriptionVisibilityChanged(DescriptionVisibilityEvent event);
+        }
 
+        public static final java.lang.reflect.Method ON_DESCRIPTION_VISIBILITY_CHANGED;
 
+        private boolean isVisible;
+
+        static {
+            try {
+                ON_DESCRIPTION_VISIBILITY_CHANGED = DescriptionVisibilityEvent.Handler.class.getDeclaredMethod("onDescriptionVisibilityChanged", new Class[] { DescriptionVisibilityEvent.class });
+            } catch (final java.lang.NoSuchMethodException e) {
+                throw new java.lang.RuntimeException(e);
+            }
+        }
+
+        public DescriptionVisibilityEvent(Component source, boolean isVisible) {
+            super(source);
+        }
+
+        public boolean isVisible() {
+            return isVisible;
+        }
+
+    }
 }
