@@ -282,7 +282,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     private boolean basicMoveCheck(Item source, Item target) {
         try {
             // One or both are not node... do nothing
-            if (!target.isNode() && !source.isNode()) {
+            if (!target.isNode() || !source.isNode()) {
                 return false;
             }
             // Source and origin are the same... do nothing
