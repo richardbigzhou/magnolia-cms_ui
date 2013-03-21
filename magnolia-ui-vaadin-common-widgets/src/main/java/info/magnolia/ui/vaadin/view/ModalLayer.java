@@ -41,7 +41,7 @@ public interface ModalLayer {
     /**
      * Open a Modal on top of the ModalLayer implementer.
      * 
-     * @param view View to be displayed modally.
+     * @param view View of the component to be displayed modally.
      */
     ModalCloser openModal(View view);
 
