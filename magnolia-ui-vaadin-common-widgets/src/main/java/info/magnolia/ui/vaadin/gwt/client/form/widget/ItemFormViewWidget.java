@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.form;
+package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.form.connector.ItemFormViewConnector;
 
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
-import info.magnolia.ui.vaadin.view.View;
-
-import java.util.Collection;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * Interface for {@link Form}.
+ * MagnoliaTabWidget.
  */
-public interface FormView extends View, Item.Editor {
+public class ItemFormViewWidget extends SimplePanel {
 
-    void addField(Field<?> field);
+    public ItemFormViewWidget(ItemFormViewConnector connector) {
+        super();
 
-    void setDescriptionVisbility(boolean isVisible);
+        setStyleName("item-form-view");
 
-    @Override
-    public ItemFormView asVaadinComponent();
-
-    void addAction(String actionName, String actionLabel, EditorLikeActionListener callback);
-
-    void setFormDescription(String description);
-
-    void setCaption(String caption);
-
-    void addFormSection(String tabName, FormSection inputFields);
-
-    void showValidation(boolean isVisible);
-
-    void setShowAllEnabled(boolean enabled);
-
-    // void suppressOwnActions();
-
-    boolean isValid();
-
-    Collection<Field<?>> getFields();
+    }
 
 }

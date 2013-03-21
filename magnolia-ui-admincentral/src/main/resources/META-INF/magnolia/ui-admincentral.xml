@@ -309,10 +309,16 @@
     </component>
     <component>
       <type>info.magnolia.ui.vaadin.form.FormView</type>
+      <implementation>info.magnolia.ui.vaadin.form.ItemFormView</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.vaadin.form.FormViewReduced</type>
       <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
 
-    <!-- Declaring page view for all apps embedding old adminCentral views 
+
+    <!-- Declaring page view for all apps embedding old adminCentral views
       in iFrame -->
     <component>
       <type>info.magnolia.ui.admincentral.app.tools.PageView</type>

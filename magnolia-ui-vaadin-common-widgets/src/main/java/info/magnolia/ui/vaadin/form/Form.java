@@ -59,7 +59,7 @@ import com.vaadin.ui.Field;
  *
  * TODO: TAKE CARE OF FIELDGROUP IN THE FORM BUILDER LATER ON!
  */
-public class Form extends EditorLike implements FormView {
+public class Form extends EditorLike implements FormViewReduced {
 
     private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");
 
@@ -194,10 +194,10 @@ public class Form extends EditorLike implements FormView {
         tabSheet.showAllTab(enabled, SHOW_ALL);
     }
 
-    @Override
-    public void setFormDescription(String description) {
-        getState().componentDescription = description;
-    }
+    // @Override
+    // public void setFormDescription(String description) {
+    // getState().componentDescription = description;
+    // }
 
     @Override
     protected FormState getState() {
@@ -214,9 +214,9 @@ public class Form extends EditorLike implements FormView {
         return this;
     }
 
-    @Override
-    public void suppressOwnActions() {
-        getState().actionsSuppressed = true;
-    }
+    // @Override
+    // public void suppressOwnActions() {
+    // getState().actionsSuppressed = true;
+    // }
 
 }
