@@ -34,44 +34,34 @@
 package info.magnolia.ui.vaadin.gwt.client.form.connector;
 
 import info.magnolia.ui.vaadin.form.Form;
-import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.DialogServerRpc;
-import info.magnolia.ui.vaadin.gwt.client.editorlike.connector.EditorLikeComponentConnector;
 import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormFieldWrapper;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormView;
-import info.magnolia.ui.vaadin.gwt.client.form.widget.FormView.Presenter;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormViewImpl;
 
-import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
+import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.Util;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
-import com.vaadin.client.ui.layout.ElementResizeEvent;
-import com.vaadin.client.ui.layout.ElementResizeListener;
+import com.vaadin.client.ui.AbstractSingleComponentContainerConnector;
 import com.vaadin.shared.ui.Connect;
 
 /**
  * Client-side connector, a counter-part for {@link Form}.
  */
 @Connect(Form.class)
-public class FormConnector extends EditorLikeComponentConnector<FormView.Presenter, FormView> {
-
-    private final DialogServerRpc actionRpc = RpcProxy.create(DialogServerRpc.class, this);
+public class FormConnector extends AbstractSingleComponentContainerConnector implements FormView.Presenter {
 
     private final FormServerRpc focusRpc = RpcProxy.create(FormServerRpc.class, this);
+
+    private FormView view;
 
     @Override
     protected void init() {
         super.init();
-        getLayoutManager().addElementResizeListener(getView().getHeaderElement(), new ElementResizeListener() {
-            @Override
-            public void onElementResize(ElementResizeEvent e) {
-                getView().getContentElement().getStyle().setTop(e.getLayoutManager().getOuterHeight(e.getElement()), Unit.PX);
-            }
-        });
-
         addStateChangeHandler("descriptionsVisible", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
@@ -79,45 +69,18 @@ public class FormConnector extends EditorLikeComponentConnector<FormView.Present
             }
         });
     }
-
+    
     @Override
-    protected FormView createView() {
-        final FormView view = new FormViewImpl();
-        return view;
+    protected Widget createWidget() {
+        view = new FormViewImpl();
+        return view.asWidget();
     }
 
-    @Override
-    protected Presenter createPresenter() {
-        return new Presenter() {
-
-            @Override
-            public void fireAction(String action) {
-                actionRpc.fireAction(action);
-            }
-
-            @Override
-            public void runLayout() {
-                getLayoutManager().setNeedsMeasure(FormConnector.this);
-            }
-
-            @Override
-            public void jumpToNextError(FormFieldWrapper fieldWrapper) {
-                ComponentConnector cc = fieldWrapper == null ? null : Util.findConnectorFor(fieldWrapper.getField());
-                focusRpc.focusNextProblematicField(cc);
-            }
-        };
-    }
-
-    @Override
-    protected void updateActionsFromState() {
-        /**
-         * Quite an ugly hack caused by rather complex (a bit crazy) mutual integration of
-         * FormDialog and Form (action arrangement instructions tend to overlap and we end up with
-         * no actions at all - so we suppress them for the form).
-         */
-        if (!getState().actionsSuppressed) {
-            super.updateActionsFromState();
+    protected FormView getView() {
+        if (view == null) {
+            createWidget();
         }
+        return view;
     }
 
     @Override
@@ -130,4 +93,32 @@ public class FormConnector extends EditorLikeComponentConnector<FormView.Present
         return new FormState();
     }
 
+    @Override
+    public void runLayout() {
+        getLayoutManager().setNeedsMeasure(FormConnector.this);
+    }
+
+    @Override
+    public void jumpToNextError(FormFieldWrapper fieldWrapper) {
+        ComponentConnector cc = fieldWrapper == null ? null : Util.findConnectorFor(fieldWrapper.getField());
+        focusRpc.focusNextProblematicField(cc);
+    }
+
+    @Override
+    public void updateCaption(ComponentConnector connector) {
+        //NOP
+    }
+    
+    @Override
+    public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {
+        updateContent();
+    }
+    
+    protected void updateContent() {
+        final ComponentConnector content = getContent();
+        if (content != null) {
+            this.view.setContent(content.getWidget());
+        }
+    }
+    
 }

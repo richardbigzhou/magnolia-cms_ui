@@ -14,10 +14,7 @@
 }
 
 .dialog-content {
-	top: 40px;
 	width:100%;
-	bottom: 43px;
-	position: absolute;
 }
 
 .dialog-header {
@@ -101,10 +98,8 @@
 .dialog-footer {
   background-color: #ccc;
   text-align: right;
-  position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
 }
 
 .dialog-description,

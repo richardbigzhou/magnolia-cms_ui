@@ -34,10 +34,7 @@
 package info.magnolia.ui.vaadin.form;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.vaadin.editorlike.EditorLike;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.form.tab.MagnoliaFormTab;
-import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.DialogServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.form.connector.FormState;
 import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormServerRpc;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
@@ -50,6 +47,7 @@ import java.util.List;
 
 import com.vaadin.data.Item;
 import com.vaadin.shared.Connector;
+import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 
@@ -59,7 +57,7 @@ import com.vaadin.ui.Field;
  *
  * TODO: TAKE CARE OF FIELDGROUP IN THE FORM BUILDER LATER ON!
  */
-public class Form extends EditorLike implements FormViewReduced {
+public class Form extends AbstractSingleComponentContainer implements FormViewReduced {
 
     private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");
 
@@ -88,29 +86,7 @@ public class Form extends EditorLike implements FormViewReduced {
         // setImmediate(true);
         tabSheet.setSizeFull();
         tabSheet.showAllTab(true, SHOW_ALL);
-        setContent(tabSheet);
-
-        registerRpc(new DialogServerRpc() {
-
-            @Override
-            public void fireAction(String actionId) {
-                final Iterator<EditorLikeActionListener> it = actionCallbackMap.get(actionId).iterator();
-                while (it.hasNext()) {
-                    it.next().onActionExecuted(actionId);
-                }
-            }
-
-            @Override
-            public void closeSelf() {
-
-            }
-
-            @Override
-            public void toggleDescription() {
-                // TODO CLZ evidence that Form should not be handling rpc for Dialog at all.
-            }
-
-        });
+        setContent(tabSheet);;
 
         registerRpc(new FormServerRpc() {
             @Override
@@ -194,11 +170,6 @@ public class Form extends EditorLike implements FormViewReduced {
         tabSheet.showAllTab(enabled, SHOW_ALL);
     }
 
-    // @Override
-    // public void setFormDescription(String description) {
-    // getState().componentDescription = description;
-    // }
-
     @Override
     protected FormState getState() {
         return (FormState) super.getState();
@@ -213,10 +184,4 @@ public class Form extends EditorLike implements FormViewReduced {
     public Form asVaadinComponent() {
         return this;
     }
-
-    // @Override
-    // public void suppressOwnActions() {
-    // getState().actionsSuppressed = true;
-    // }
-
 }

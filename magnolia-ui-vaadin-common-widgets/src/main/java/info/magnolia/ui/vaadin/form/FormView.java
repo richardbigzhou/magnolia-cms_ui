@@ -34,13 +34,13 @@
 package info.magnolia.ui.vaadin.form;
 
 
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import info.magnolia.ui.vaadin.view.View;
 
 import java.util.Collection;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 
 /**
@@ -53,7 +53,7 @@ public interface FormView extends View, Item.Editor {
     void setDescriptionVisbility(boolean isVisible);
 
     @Override
-    public Component asVaadinComponent();
+    public BaseDialog asVaadinComponent();
 
     void addAction(String actionName, String actionLabel, EditorLikeActionListener callback);
 

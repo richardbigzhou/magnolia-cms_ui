@@ -40,7 +40,6 @@ import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 import java.util.Collection;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 
 /**
@@ -48,8 +47,9 @@ import com.vaadin.ui.Field;
  */
 public class ItemFormView implements FormView {
 
-    BaseDialog dialog;
-    Form form;
+    private BaseDialog dialog;
+    
+    private Form form;
 
     public ItemFormView() {
 
@@ -68,7 +68,7 @@ public class ItemFormView implements FormView {
     }
 
     @Override
-    public Component asVaadinComponent() {
+    public BaseDialog asVaadinComponent() {
         return dialog;
     }
 
@@ -128,12 +128,6 @@ public class ItemFormView implements FormView {
 
     }
 
-    // @Override
-    // public void suppressOwnActions() {
-    // // TODO Auto-generated method stub
-    //
-    // }
-
     @Override
     public boolean isValid() {
         return form.isValid();
@@ -143,24 +137,5 @@ public class ItemFormView implements FormView {
     public Collection<Field<?>> getFields() {
         return form.getFields();
     }
-
-
-    // public void setDialogValues(String description, String label, String basename){
-    //
-    // BaseDialog dialog = new BaseDialog();
-    //
-    // if (StringUtils.isNotBlank(description)) {
-    // String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
-    // dialog.setDialogDescription(i18nDescription);
-    // }
-    //
-    // if (StringUtils.isNotBlank(label)) {
-    // String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
-    // dialog.setCaption(i18nLabel);
-    // }
-    //
-    // setContent(dialog);
-    //
-    // }
 
 }

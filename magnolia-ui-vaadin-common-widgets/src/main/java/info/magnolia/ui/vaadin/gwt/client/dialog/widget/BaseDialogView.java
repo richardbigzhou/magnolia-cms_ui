@@ -33,21 +33,42 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
+import java.util.Map;
+
 import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * {@link BaseDialogView}.
  */
-public interface BaseDialogView extends EditorLikeView<BaseDialogView.Presenter>, IsWidget, HasWidgets {
+public interface BaseDialogView extends IsWidget, HasWidgets {
 
+    void setActions(Map<String, String> actionMap);
+
+    void setDescription(String description);
+
+    void setCaption(String caption);
+
+    void setContent(Widget contentWidget);
+
+    void setHeaderToolbar(Widget headerToolbarWidget);
+
+    void setFooterToolbar(Widget footerToolbarWidget);
+
+    void setPresenter(Presenter presenter);
+    
+    Presenter getPresenter();
+    
     /**
      * Presenter.
      */
-    public interface Presenter extends EditorLikeView.Presenter {
+    public interface Presenter {
 
+        void fireAction(String action);
+        
         void closeDialog();
 
         void toggleDescription();

@@ -33,14 +33,12 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.connector;
 
-import info.magnolia.ui.vaadin.gwt.client.editorlike.connector.EditorLikeComponentState;
+import com.vaadin.shared.ui.AbstractLayoutState;
 
 /**
  * FormState.
  */
-public class FormState extends EditorLikeComponentState {
-
-    public boolean actionsSuppressed = false;
+public class FormState extends AbstractLayoutState {
 
     public boolean descriptionsVisible = false;
 }

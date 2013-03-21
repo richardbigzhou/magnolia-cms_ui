@@ -33,40 +33,73 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeHeaderWidget;
+import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.thirdparty.guava.common.collect.ArrayListMultimap;
+import com.google.gwt.thirdparty.guava.common.collect.ListMultimap;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * DialogHeaderWidget.
  */
-public class DialogHeaderWidget extends EditorLikeHeaderWidget {
+public class DialogHeaderWidget extends FlowPanel {
 
+    private static final String CLASSNAME_HEADER = "form-header";
+    private static final String ClASSNAME_DESCRIPTION = "form-description";
+    private static final String CLASSNAME_HELPBUTTON = "btn-form-help";
+    private static final String CLASSNAME_HEADER_TOOLBAR = "form-header-toolbar";
     private static final String CLASSNAME_CLOSEBUTTON = "btn-dialog-close";
-
-    /**
-     * Callback interface for the EditorLike header.
-     */
-    public interface VDialogHeaderCallback extends EditorLikeHeaderWidget.VEditorLikeHeaderCallback {
-
-        void onCloseFired();
-    }
 
     protected Button closeButton;
 
-    public DialogHeaderWidget(VDialogHeaderCallback callback) {
-        super(callback);
-    }
+    protected DialogHeaderCallback callback = null;
 
-    @Override
+    protected final FlowPanel descriptionPanel = new FlowPanel();
+
+    protected final Element headerPanel = DOM.createDiv();
+
+    protected final Element caption = DOM.createSpan();
+
+    protected final Element toolbarEl = DOM.createSpan();
+
+    protected Widget toolbar;
+
+    protected boolean isDescriptionVisible = false;
+
+    protected boolean hasDescription = false;
+
+    protected final ListMultimap<String, EditorLikeActionListener> actionCallbackMap = ArrayListMultimap.<String, EditorLikeActionListener> create();
+    
+    protected final Button helpButton = new Button("", new ClickHandler() {
+        @Override
+        public void onClick(ClickEvent event) {
+            isDescriptionVisible = !isDescriptionVisible;
+            if (hasDescription) {
+                descriptionPanel.setVisible(isDescriptionVisible);
+            }
+            callback.onDescriptionVisibilityChanged(isDescriptionVisible);
+        }
+    });
+
+    public DialogHeaderWidget(DialogHeaderCallback callback) {
+        this.callback = callback;
+        callback.onDescriptionVisibilityChanged(false);
+        construct();
+    }
+    
     public void construct() {
 
         closeButton = new Button("", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                ((VDialogHeaderCallback) callback).onCloseFired();
+                callback.onCloseFired();
             }
         });
 
@@ -74,7 +107,47 @@ public class DialogHeaderWidget extends EditorLikeHeaderWidget {
         closeButton.addStyleName("green");
         add(closeButton, headerPanel);
 
-        super.construct();
+        headerPanel.addClassName(CLASSNAME_HEADER);
+        descriptionPanel.addStyleName(ClASSNAME_DESCRIPTION);
+        helpButton.setStyleName(CLASSNAME_HELPBUTTON);
+        toolbarEl.addClassName(CLASSNAME_HEADER_TOOLBAR);
 
+        getElement().appendChild(headerPanel);
+        headerPanel.appendChild(caption);
+        add(helpButton, headerPanel);
+        headerPanel.appendChild(toolbarEl);
+
+        descriptionPanel.setVisible(false);
+        add(descriptionPanel);
+
+    }
+
+    public void setDescription(String description) {
+        final Label content = new Label();
+        content.setText(description);
+        descriptionPanel.insert(content, 0);
+        hasDescription = !description.isEmpty();
+    }
+
+    public void setCaption(String caption) {
+        this.caption.setInnerText(caption);
+    }
+
+    public void setToolbar(Widget toolbarWidget) {
+        if (toolbar != null) {
+            remove(toolbar);
+        }
+        toolbar = toolbarWidget;
+        add(toolbarWidget, toolbarEl);
+    }
+    
+    /**
+     * Callback interface for the EditorLike header.
+     */
+    public interface DialogHeaderCallback {
+        
+        void onDescriptionVisibilityChanged(boolean isVisible);
+        
+        void onCloseFired();
     }
 }
