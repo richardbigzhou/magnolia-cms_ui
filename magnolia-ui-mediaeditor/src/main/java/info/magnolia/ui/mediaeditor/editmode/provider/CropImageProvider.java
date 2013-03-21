@@ -38,7 +38,7 @@ import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent.EventType;
 import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.mediaeditor.editmode.field.image.CropField;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +79,7 @@ public class CropImageProvider implements EditModeProvider {
     public List<ActionContext> getActionContextList() {
         List<ActionContext> result = new ArrayList<ActionContext>();
         
-        result.add(new ActionContext("cancel", "Cancel", new EditorLikeActionListener() {
+        result.add(new ActionContext("cancel", "Cancel", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
                 cropField.revertChanges();
@@ -87,7 +87,7 @@ public class CropImageProvider implements EditModeProvider {
             }
         }));
         
-        result.add(new ActionContext("crop", "Crop", new EditorLikeActionListener() {
+        result.add(new ActionContext("crop", "Crop", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
                 cropField.execute();

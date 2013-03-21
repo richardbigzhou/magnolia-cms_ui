@@ -40,7 +40,7 @@ import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
 
 import org.junit.Before;
@@ -153,7 +153,7 @@ public class CallbackFormActionTest {
         }
 
         @Override
-        public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
+        public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
 
         }
 

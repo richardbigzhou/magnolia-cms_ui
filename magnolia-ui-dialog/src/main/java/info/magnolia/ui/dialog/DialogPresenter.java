@@ -36,7 +36,7 @@ package info.magnolia.ui.dialog;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 /**
  * {@link DialogPresenter} takes care of {@link DialogView} presentation, the main responsibility
@@ -54,9 +54,9 @@ public interface DialogPresenter {
 
     void addDialogCloseHandler(final DialogCloseEvent.Handler listener);
 
-    void addAction(String actionName, String actionLabel, EditorLikeActionListener callback);
+    void addAction(String actionName, String actionLabel, DialogActionListener callback);
 
-    void addActionCallback(String actionName, EditorLikeActionListener callback);
+    void addActionCallback(String actionName, DialogActionListener callback);
 
     /**
      * Callback interface for DialogView.Presenter.

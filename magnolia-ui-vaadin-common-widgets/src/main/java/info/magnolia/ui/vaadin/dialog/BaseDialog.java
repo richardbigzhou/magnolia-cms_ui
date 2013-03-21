@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.dialog;
 
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.gwt.client.dialog.connector.BaseDialogState;
 import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.DialogServerRpc;
 
@@ -59,7 +59,7 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class BaseDialog extends AbstractComponent implements HasComponents, DialogView {
 
-    protected final ListMultimap<String, EditorLikeActionListener> actionCallbackMap = ArrayListMultimap.<String, EditorLikeActionListener> create();
+    protected final ListMultimap<String, DialogActionListener> actionCallbackMap = ArrayListMultimap.<String, DialogActionListener> create();
     
     public BaseDialog() {
         super();
@@ -70,7 +70,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
             public void fireAction(String actionId) {
                 Object[] array = actionCallbackMap.get(actionId).toArray();
                 for (Object l : array) {
-                    ((EditorLikeActionListener)l).onActionExecuted(actionId);
+                    ((DialogActionListener)l).onActionExecuted(actionId);
                 }
             }
 
@@ -216,12 +216,12 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         return new HorizontalLayout();
     }
 
-    public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
+    public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
         addAction(actionName, actionLabel);
         addActionCallback(actionName, callback);
     }
 
-    public void addActionCallback(String actionName, EditorLikeActionListener callback) {
+    public void addActionCallback(String actionName, DialogActionListener callback) {
         actionCallbackMap.put(actionName, callback);
     }
 

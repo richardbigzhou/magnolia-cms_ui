@@ -45,7 +45,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
 import info.magnolia.ui.vaadin.view.ModalLayer;
 
@@ -144,7 +144,7 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
+        public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
 
         }
 
@@ -232,13 +232,13 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
+        public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
             // TODO Auto-generated method stub
 
         }
 
         @Override
-        public void addActionCallback(String actionName, EditorLikeActionListener callback) {
+        public void addActionCallback(String actionName, DialogActionListener callback) {
             // TODO Auto-generated method stub
 
         }

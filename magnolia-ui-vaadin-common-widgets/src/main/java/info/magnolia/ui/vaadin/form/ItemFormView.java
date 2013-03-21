@@ -35,7 +35,7 @@ package info.magnolia.ui.vaadin.form;
 
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DescriptionVisibilityEvent;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import java.util.Collection;
 
@@ -96,7 +96,7 @@ public class ItemFormView implements FormView {
     }
 
     @Override
-    public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
+    public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
         dialog.addAction(actionName, actionLabel, callback);
     }
 

@@ -33,12 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.thirdparty.guava.common.collect.ArrayListMultimap;
-import com.google.gwt.thirdparty.guava.common.collect.ListMultimap;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
@@ -74,8 +70,6 @@ public class DialogHeaderWidget extends FlowPanel {
     protected boolean isDescriptionVisible = false;
 
     protected boolean hasDescription = false;
-
-    protected final ListMultimap<String, EditorLikeActionListener> actionCallbackMap = ArrayListMultimap.<String, EditorLikeActionListener> create();
     
     protected final Button helpButton = new Button("", new ClickHandler() {
         @Override

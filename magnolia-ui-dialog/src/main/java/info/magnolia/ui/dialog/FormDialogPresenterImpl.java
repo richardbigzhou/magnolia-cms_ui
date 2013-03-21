@@ -43,7 +43,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.ModalLayer;
 
@@ -113,7 +113,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private void initActions(final DialogDefinition dialogDefinition) {
         for (final ActionDefinition action : dialogDefinition.getActions()) {
-            addAction(action.getName(), action.getLabel(), new EditorLikeActionListener() {
+            addAction(action.getName(), action.getLabel(), new DialogActionListener() {
                 @Override
                 public void onActionExecuted(final String actionName) {
                     final Action action1 = dialogActionFactory.createAction(action, FormDialogPresenterImpl.this);

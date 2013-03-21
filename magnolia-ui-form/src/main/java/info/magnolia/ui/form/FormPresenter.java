@@ -35,7 +35,7 @@ package info.magnolia.ui.form;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
 
 import com.vaadin.data.Item;
@@ -51,7 +51,7 @@ public interface FormPresenter {
 
     FormView start(Item item, FormDefinition formDefinition, Callback callback, FormItem formItem);
 
-    void addAction(String actionName, String actionLabel, EditorLikeActionListener callback);
+    void addAction(String actionName, String actionLabel, DialogActionListener callback);
 
     boolean isValid();
 

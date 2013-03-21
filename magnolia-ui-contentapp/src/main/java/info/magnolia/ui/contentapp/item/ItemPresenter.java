@@ -45,7 +45,7 @@ import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -56,7 +56,7 @@ import javax.inject.Named;
  * Presenter for the item displayed in the {@link info.magnolia.ui.contentapp.workbench.ItemWorkbenchPresenter}. Takes
  * care of building and switching between the right {@link ItemView.ViewType}.
  */
-public class ItemPresenter implements EditorLikeActionListener, FormPresenter.Callback, FormPresenter.Validator {
+public class ItemPresenter implements DialogActionListener, FormPresenter.Callback, FormPresenter.Validator {
 
     private SubAppContext subAppContext;
     private ActionExecutor actionExecutor;

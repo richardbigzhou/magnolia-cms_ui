@@ -36,6 +36,6 @@ package info.magnolia.ui.vaadin.editorlike;
 /**
  * Action execution callback.
  */
-public interface EditorLikeActionListener {
+public interface DialogActionListener {
     void onActionExecuted(final String actionName);
 }
