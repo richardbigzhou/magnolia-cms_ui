@@ -54,7 +54,6 @@ import info.magnolia.ui.contentapp.config.ContentAppBuilder;
 import info.magnolia.ui.contentapp.config.ContentAppConfig;
 import info.magnolia.ui.contentapp.item.action.CreateItemActionDefinition;
 import info.magnolia.ui.contentapp.item.action.EditItemActionDefinition;
-import info.magnolia.ui.dialog.action.ConfiguredDialogActionDefinition;
 import info.magnolia.ui.dialog.config.Dialog;
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
@@ -278,16 +277,14 @@ public class ContactsModule implements ModuleLifecycle {
         name.setDescription("Folder name");
         tab.addField(name);
 
-        ConfiguredDialogActionDefinition commit = new ConfiguredDialogActionDefinition();
+        SaveDialogActionDefinition commit = new SaveDialogActionDefinition();
         commit.setName("commit");
         commit.setLabel("save changes");
-        commit.setActionDefinition(new SaveDialogActionDefinition());
         dialog.addAction(commit);
 
-        ConfiguredDialogActionDefinition cancel = new ConfiguredDialogActionDefinition();
+        CancelDialogActionDefinition cancel = new CancelDialogActionDefinition();
         cancel.setName("cancel");
         cancel.setLabel("cancel");
-        cancel.setActionDefinition(new CancelDialogActionDefinition());
         dialog.addAction(cancel);
 
         return dialog;

@@ -43,12 +43,10 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition;
-import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.app.pages.field.TemplateSelectorField;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.FormDialogPresenterFactory;
 import info.magnolia.ui.dialog.config.DialogBuilder;
-import info.magnolia.ui.dialog.config.DialogConfig;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.config.FieldsConfig;
 import info.magnolia.ui.form.config.FormBuilder;
@@ -60,6 +58,7 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.ModelConstants;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
@@ -228,16 +227,21 @@ public class PageEditorPresenter implements PageEditorView.Listener {
      */
     private DialogDefinition buildNewComponentDialog(String availableComponents) {
 
-        DialogConfig dialogConfig = new DialogConfig();
         FormConfig formConfig = new FormConfig();
         FieldsConfig fieldsConfig = new FieldsConfig();
 
         DialogBuilder dialogBuilder = new DialogBuilder("newComponent");
 
-        dialogBuilder.actions(
-                dialogConfig.action("commit").label("choose").action(new CallbackDialogActionDefinition()),
-                dialogConfig.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
-        );
+        CallbackDialogActionDefinition callbackAction = new CallbackDialogActionDefinition();
+        callbackAction.setName("commit");
+        callbackAction.setLabel("choose");
+
+        dialogBuilder.addAction(callbackAction);
+
+        ConfiguredActionDefinition cancelAction = new ConfiguredActionDefinition();
+        cancelAction.setName("commit");
+        cancelAction.setLabel("choose");
+        dialogBuilder.addAction(cancelAction);
 
         FormBuilder formBuilder = formConfig.form().description("Select the Component to add to the page.");
         TabBuilder tabBuilder = formConfig.tab("Components").label("Components");

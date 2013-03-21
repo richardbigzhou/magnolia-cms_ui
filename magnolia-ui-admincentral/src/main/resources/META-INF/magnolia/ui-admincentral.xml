@@ -94,10 +94,6 @@
       <implementation>info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.dialog.action.DialogActionDefinition</type>
-      <implementation>info.magnolia.ui.dialog.action.ConfiguredDialogActionDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
       <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition</type>
       <implementation>info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherLayoutDefinition</implementation>
     </type-mapping>

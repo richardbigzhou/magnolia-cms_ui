@@ -34,7 +34,6 @@
 package info.magnolia.ui.dialog;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.dialog.action.DialogActionDefinition;
 import info.magnolia.ui.dialog.action.DialogActionFactory;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.FormPresenter;
@@ -113,12 +112,11 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     }
 
     private void initActions(final DialogDefinition dialogDefinition) {
-        for (final DialogActionDefinition action : dialogDefinition.getActions()) {
+        for (final ActionDefinition action : dialogDefinition.getActions()) {
             addAction(action.getName(), action.getLabel(), new EditorLikeActionListener() {
                 @Override
                 public void onActionExecuted(final String actionName) {
-                    final ActionDefinition actionDefinition = action.getActionDefinition();
-                    final Action action1 = dialogActionFactory.createAction(actionDefinition, FormDialogPresenterImpl.this);
+                    final Action action1 = dialogActionFactory.createAction(action, FormDialogPresenterImpl.this);
                     try {
                         action1.execute();
                     } catch (final ActionExecutionException e) {

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.dialog.definition;
 
-import info.magnolia.ui.dialog.action.DialogActionDefinition;
+import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
 
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
 
     private FormDefinition formDefinition;
 
-    private List<DialogActionDefinition> actions = new ArrayList<DialogActionDefinition>();
+    private List<ActionDefinition> actions = new ArrayList<ActionDefinition>();
 
     @Override
     public String getId() {
@@ -106,15 +106,15 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
     }
 
     @Override
-    public List<DialogActionDefinition> getActions() {
+    public List<ActionDefinition> getActions() {
         return actions;
     }
 
-    public void setActions(List<DialogActionDefinition> actions) {
+    public void setActions(List<ActionDefinition> actions) {
         this.actions = actions;
     }
 
-    public boolean addAction(DialogActionDefinition actionDefinition) {
+    public boolean addAction(ActionDefinition actionDefinition) {
         return this.actions.add(actionDefinition);
     }
 
