@@ -34,22 +34,19 @@
 package info.magnolia.ui.workbench.tree;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.workbench.ContentView;
+import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
+import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
-import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -64,8 +61,6 @@ import com.vaadin.ui.TreeTable;
  * Vaadin UI component that displays a tree.
  */
 public class TreeViewImpl implements TreeView {
-
-    private static final Logger log = LoggerFactory.getLogger(TreeViewImpl.class);
 
     private final Layout layout;
 
@@ -91,7 +86,7 @@ public class TreeViewImpl implements TreeView {
         layout = buildLayout();
         layout.addComponent(treeTable);
 
-        treeTable.addListener(new ItemClickEvent.ItemClickListener() {
+        treeTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
 
             private Object previousSelection;
 
@@ -111,7 +106,7 @@ public class TreeViewImpl implements TreeView {
             }
         });
 
-        treeTable.addListener(new TreeTable.ValueChangeListener() {
+        treeTable.addValueChangeListener(new TreeTable.ValueChangeListener() {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
