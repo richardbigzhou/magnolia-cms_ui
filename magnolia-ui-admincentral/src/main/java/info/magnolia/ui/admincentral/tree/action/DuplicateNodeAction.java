@@ -33,31 +33,46 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.cms.core.Path;
+import info.magnolia.event.EventBus;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 
+import javax.inject.Named;
+import javax.jcr.Item;
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * The Class DuplicateNodeAction.
+ * The DuplicateNodeAction. Create a Copy of the selected Node. Use
+ * {@link Path#getUniqueLabel} to create the new node Name.
  */
-public class DuplicateNodeAction extends ActionBase<DuplicateNodeActionDefinition> {
+public class DuplicateNodeAction extends RepositoryOperationAction<DuplicateNodeActionDefinition> {
 
-    private final Node nodeToEdit;
+    private static final Logger log = LoggerFactory.getLogger(DuplicateNodeAction.class);
 
     /**
      * Instantiates a new duplicate node action.
-     *
-     * @param definition the definition
-     * @param nodeToEdit the node to edit
      */
-    public DuplicateNodeAction(DuplicateNodeActionDefinition definition, Node nodeToEdit) {
-        super(definition);
-        this.nodeToEdit = nodeToEdit;
+    public DuplicateNodeAction(DuplicateNodeActionDefinition definition, Item item, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus) {
+        super(definition, item, eventBus);
     }
 
+
     @Override
-    public void execute() throws ActionExecutionException {
+    protected void onExecute(Item item) throws RepositoryException {
+        Node node = (Node) item;
+        String newName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), node.getName());
+        String newPath = Path.getAbsolutePath(node.getParent().getPath(), newName);
+        // Duplicate Node
+        node.getSession().getWorkspace().copy(node.getPath(), newPath);
+        log.debug("Create a copy of {} with new Path {}", node.getPath(), newPath);
+        // Update dates.
+        Node duplicateNode = node.getSession().getNode(newPath);
+        NodeTypes.LastModified.update(duplicateNode);
     }
 
 }
