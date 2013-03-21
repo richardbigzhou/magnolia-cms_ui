@@ -51,6 +51,7 @@ import java.util.Collection;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -430,5 +431,85 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         assertEquals("/server/filters/aaa", items[2].getPath());
         assertEquals("/server/filters/foo", items[3].getPath());
         assertEquals("/server/filters/qux", items[4].getPath());
+    }
+
+
+
+    @Test
+    public void testmoveItem() throws RepositoryException {
+        Node source = AbstractJcrContainerTest.createNode(rootNode, "source", NodeTypes.Content.NAME, PROPERTY_1, "name1");
+        Node target = AbstractJcrContainerTest.createNode(rootNode, "target", NodeTypes.Content.NAME, PROPERTY_1, "name2");
+        target.getSession().save();
+
+        // WHEN
+        boolean res = hierarchicalJcrContainer.moveItem(source, target);
+
+        // THEN
+        assertTrue(res);
+        assertTrue(target.hasNode("source"));
+    }
+
+    @Test
+    public void testmoveItemFalseChildCanNotBeSetAsParent() throws RepositoryException {
+        Node source = AbstractJcrContainerTest.createNode(rootNode, "source", NodeTypes.Content.NAME, PROPERTY_1, "name1");
+        Node target = AbstractJcrContainerTest.createNode(source, "target", NodeTypes.Content.NAME, PROPERTY_1, "name2");
+        target.getSession().save();
+
+        // WHEN
+        boolean res = hierarchicalJcrContainer.moveItem(source, target);
+
+        // THEN
+        assertFalse(res);
+    }
+
+    @Test
+    public void testmoveItemFalseNoOperationOnProperty() throws RepositoryException {
+        Node source = AbstractJcrContainerTest.createNode(rootNode, "source", NodeTypes.Content.NAME, PROPERTY_1, "name1");
+        Property sourceProperty = source.setProperty("property","property");
+        source.getSession().save();
+
+        // WHEN
+        boolean res = hierarchicalJcrContainer.moveItem(sourceProperty, source);
+
+        // THEN
+        assertFalse(res);
+    }
+
+    @Test
+    public void tesmoveItemBefore() throws RepositoryException {
+        Node first = AbstractJcrContainerTest.createNode(rootNode, "first", NodeTypes.Content.NAME, PROPERTY_1, "name1");
+        Node second = AbstractJcrContainerTest.createNode(rootNode, "second", NodeTypes.Content.NAME, PROPERTY_1, "name2");
+        second.getSession().save();
+        NodeIterator nodeIterator = rootNode.getNodes();
+        nodeIterator.nextNode();
+        assertEquals("first", nodeIterator.nextNode().getName());
+
+        // WHEN
+        boolean res = hierarchicalJcrContainer.moveItemBefore(second, first);
+
+        // THEN
+        assertTrue(res);
+        nodeIterator = rootNode.getNodes();
+        nodeIterator.nextNode();
+        assertEquals("second", nodeIterator.nextNode().getName());
+    }
+
+    @Test
+    public void tesmoveItemAfter() throws RepositoryException {
+        Node first = AbstractJcrContainerTest.createNode(rootNode, "first", NodeTypes.Content.NAME, PROPERTY_1, "name1");
+        Node second = AbstractJcrContainerTest.createNode(rootNode, "second", NodeTypes.Content.NAME, PROPERTY_1, "name2");
+        second.getSession().save();
+        NodeIterator nodeIterator = rootNode.getNodes();
+        nodeIterator.nextNode();
+        assertEquals("first", nodeIterator.nextNode().getName());
+
+        // WHEN
+        boolean res = hierarchicalJcrContainer.moveItemAfter(first, second);
+
+        // THEN
+        assertTrue(res);
+        nodeIterator = rootNode.getNodes();
+        nodeIterator.nextNode();
+        assertEquals("second", nodeIterator.nextNode().getName());
     }
 }
