@@ -36,8 +36,8 @@ package info.magnolia.ui.dialog.definition;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * A definition of a configured dialog.
@@ -58,7 +58,7 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
 
     private FormDefinition formDefinition;
 
-    private List<ActionDefinition> actions = new ArrayList<ActionDefinition>();
+    private Map<String, ActionDefinition> actions = new LinkedHashMap<String, ActionDefinition>();
 
     @Override
     public String getId() {
@@ -106,16 +106,16 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
     }
 
     @Override
-    public List<ActionDefinition> getActions() {
+    public Map<String, ActionDefinition> getActions() {
         return actions;
     }
 
-    public void setActions(List<ActionDefinition> actions) {
+    public void setActions(Map<String, ActionDefinition> actions) {
         this.actions = actions;
     }
 
-    public boolean addAction(ActionDefinition actionDefinition) {
-        return this.actions.add(actionDefinition);
+    public void addAction(ActionDefinition actionDefinition) {
+        actions.put(actionDefinition.getName(), actionDefinition);
     }
 
 }

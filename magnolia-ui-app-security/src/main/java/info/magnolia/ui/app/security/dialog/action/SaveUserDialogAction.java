@@ -41,6 +41,7 @@ import info.magnolia.cms.security.User;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -62,7 +63,7 @@ public class SaveUserDialogAction extends SaveDialogAction {
 
     private static final Logger log = LoggerFactory.getLogger(SaveUserDialogAction.class);
 
-    public SaveUserDialogAction(SaveUserDialogActionDefinition definition, FormDialogPresenter presenter) {
+    public SaveUserDialogAction(SaveDialogActionDefinition definition, FormDialogPresenter presenter) {
         super(definition, presenter);
     }
 
