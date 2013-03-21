@@ -34,36 +34,42 @@
 package info.magnolia.ui.vaadin.form;
 
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.dialog.BaseDialog.DescriptionVisibilityEvent;
 import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
 
 import java.util.Collection;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractSingleComponentContainer;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 
 /**
  * Owns a Form and Dialog and connects them.
  */
-public class ItemFormView extends AbstractSingleComponentContainer implements FormView {
+public class ItemFormView implements FormView {
 
     BaseDialog dialog;
     Form form;
 
     public ItemFormView() {
-        setImmediate(true);
 
         form = new Form();
 
         dialog = new BaseDialog();
         dialog.setContent(form);
 
-        setContent(dialog);
+        dialog.addDescriptionVisibilityHandler(new BaseDialog.DescriptionVisibilityEvent.Handler() {
+
+            @Override
+            public void onDescriptionVisibilityChanged(DescriptionVisibilityEvent event) {
+                form.setDescriptionVisbility(event.isVisible());
+            }
+        });
     }
 
     @Override
-    public ItemFormView asVaadinComponent() {
-        return this;
+    public Component asVaadinComponent() {
+        return dialog;
     }
 
     @Override
@@ -101,6 +107,11 @@ public class ItemFormView extends AbstractSingleComponentContainer implements Fo
     }
 
     @Override
+    public void setCaption(String caption) {
+        dialog.setDialogDescription(caption);
+    }
+
+    @Override
     public void addFormSection(String tabName, FormSection inputFields) {
         form.addFormSection(tabName, inputFields);
     }
@@ -132,6 +143,7 @@ public class ItemFormView extends AbstractSingleComponentContainer implements Fo
     public Collection<Field<?>> getFields() {
         return form.getFields();
     }
+
 
     // public void setDialogValues(String description, String label, String basename){
     //
