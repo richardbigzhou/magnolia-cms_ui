@@ -229,6 +229,10 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         actionCallbackMap.clear();
     }
 
+    public void showCloseButton() {
+        getState().hasCloseButton = true;
+    }
+
     public void addDialogCloseHandler(Handler handler) {
         addListener("dialogCloseEvent", DialogCloseEvent.class, handler, DialogCloseEvent.ON_DIALOG_CLOSE);
     }

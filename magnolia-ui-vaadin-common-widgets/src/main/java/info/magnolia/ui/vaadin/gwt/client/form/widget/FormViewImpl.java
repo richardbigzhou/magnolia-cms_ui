@@ -89,13 +89,13 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
         super();
         setStylePrimaryName(CLASSNAME);
 
-        contentEl.addClassName(CLASSNAME_CONTENT);
-        getElement().appendChild(contentEl);
-
         errorPanel = new FlowPanel();
         errorPanel.addStyleName(ClASSNAME_ERROR);
         add(errorPanel);
         errorPanel.setVisible(false);
+
+        contentEl.addClassName(CLASSNAME_CONTENT);
+        getElement().appendChild(contentEl);
     }
 
     @Override

@@ -52,6 +52,8 @@ public interface DialogPresenter {
 
     void closeDialog();
 
+    void showCloseButton();
+
     void addDialogCloseHandler(final DialogCloseEvent.Handler listener);
 
     void addAction(String actionName, String actionLabel, DialogActionListener callback);

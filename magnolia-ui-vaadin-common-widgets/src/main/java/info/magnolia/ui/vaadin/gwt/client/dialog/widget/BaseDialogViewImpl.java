@@ -135,6 +135,11 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
     }
 
     @Override
+    public void showCloseButton() {
+        header.showCloseButton();
+    }
+
+    @Override
     public void setContent(Widget contentWidget) {
         if (content != null) {
             remove(content);

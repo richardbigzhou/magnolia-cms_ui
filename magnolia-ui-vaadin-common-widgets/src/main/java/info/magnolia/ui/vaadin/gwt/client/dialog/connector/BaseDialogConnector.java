@@ -71,6 +71,15 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
             }
         });
 
+        addStateChangeHandler("hasCloseButton", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                if (getState().hasCloseButton) {
+                    view.showCloseButton();
+                }
+            }
+        });
+
         addStateChangeHandler("componentDescription", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {

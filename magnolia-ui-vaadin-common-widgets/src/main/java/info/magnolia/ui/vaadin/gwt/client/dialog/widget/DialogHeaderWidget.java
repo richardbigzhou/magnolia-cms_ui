@@ -70,7 +70,7 @@ public class DialogHeaderWidget extends FlowPanel {
     protected boolean isDescriptionVisible = false;
 
     protected boolean hasDescription = false;
-    
+
     protected final Button helpButton = new Button("", new ClickHandler() {
         @Override
         public void onClick(ClickEvent event) {
@@ -87,7 +87,7 @@ public class DialogHeaderWidget extends FlowPanel {
         callback.onDescriptionVisibilityChanged(false);
         construct();
     }
-    
+
     public void construct() {
 
         closeButton = new Button("", new ClickHandler() {
@@ -99,6 +99,7 @@ public class DialogHeaderWidget extends FlowPanel {
 
         closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
         closeButton.addStyleName("green");
+        closeButton.setVisible(false);
         add(closeButton, headerPanel);
 
         headerPanel.addClassName(CLASSNAME_HEADER);
@@ -134,14 +135,18 @@ public class DialogHeaderWidget extends FlowPanel {
         toolbar = toolbarWidget;
         add(toolbarWidget, toolbarEl);
     }
-    
+
+    public void showCloseButton() {
+        closeButton.setVisible(true);
+    }
+
     /**
      * Callback interface for the EditorLike header.
      */
     public interface DialogHeaderCallback {
-        
+
         void onDescriptionVisibilityChanged(boolean isVisible);
-        
+
         void onCloseFired();
     }
 }

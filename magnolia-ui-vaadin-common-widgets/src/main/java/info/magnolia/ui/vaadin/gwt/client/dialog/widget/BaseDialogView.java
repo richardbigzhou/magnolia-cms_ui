@@ -50,6 +50,8 @@ public interface BaseDialogView extends IsWidget, HasWidgets {
 
     void setCaption(String caption);
 
+    void showCloseButton();
+
     void setContent(Widget contentWidget);
 
     void setHeaderToolbar(Widget headerToolbarWidget);
