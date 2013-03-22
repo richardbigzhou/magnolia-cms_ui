@@ -36,8 +36,10 @@ package info.magnolia.ui.app.security.dialog.action;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
+import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -49,6 +51,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
+
 /**
  * Save group dialog action.
  */
@@ -56,16 +60,16 @@ public class SaveGroupDialogAction extends SaveDialogAction {
 
     private static final Logger log = LoggerFactory.getLogger(SaveGroupDialogAction.class);
 
-    public SaveGroupDialogAction(SaveGroupDialogActionDefinition definition, FormDialogPresenter presenter) {
-        super(definition, presenter);
+    public SaveGroupDialogAction(SaveDialogActionDefinition definition, Item item, FormPresenter.Validator validator, FormDialogPresenter.Callback callback) {
+        super(definition, item, validator, callback);
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
-        getPresenter().getForm().showValidation(true);
-        if (getPresenter().getForm().isValid()) {
-            final JcrNodeAdapter itemChanged = (JcrNodeAdapter) getItem();
+        validator.showValidation(true);
+        if (validator.isValid()) {
+            final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
 
             try {
                 final Node node = itemChanged.getNode();
@@ -90,7 +94,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
             }
-            getPresenter().getCallback().onSuccess(getDefinition().getName());
+            callback.onSuccess(getDefinition().getName());
 
         } else {
             // validation errors are displayed in the UI.

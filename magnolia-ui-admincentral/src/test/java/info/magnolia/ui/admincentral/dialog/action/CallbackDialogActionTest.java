@@ -172,7 +172,7 @@ public class CallbackDialogActionTest {
     /**
      * Form dialog presenter test.
      */
-    public static class FormDialogPresenterTest implements FormDialogPresenter {
+    public static class FormDialogPresenterTest implements FormDialogPresenter, FormPresenter.Validator {
 
         private String callbackActionCalled;
 
@@ -204,17 +204,12 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public FormPresenter getForm() {
-            return form;
+        public DialogView start(Item item, DialogDefinition dialogDefinition, ModalLayer modalLayer, Callback callback) {
+            return null;
         }
 
         @Override
-        public void setCallback(Callback callback) {
-
-        }
-
-        @Override
-        public DialogView start(Item item, DialogDefinition dialogDefinition, ModalLayer modalLayer) {
+        public DialogView start(Item item, String dialogName, ModalLayer modalLayer, Callback callback) {
             return null;
         }
 
@@ -244,5 +239,14 @@ public class CallbackDialogActionTest {
         }
 
 
+        @Override
+        public void showValidation(boolean visible) {
+
+        }
+
+        @Override
+        public boolean isValid() {
+            return true;
+        }
     }
 }

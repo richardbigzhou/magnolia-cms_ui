@@ -283,10 +283,6 @@
       <implementation>info.magnolia.ui.form.FormPresenterImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.dialog.FormDialogPresenterFactory</type>
-      <implementation>info.magnolia.ui.dialog.FormDialogPresenterFactoryImpl</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.dialog.FormDialogPresenter</type>
       <implementation>info.magnolia.ui.dialog.FormDialogPresenterImpl</implementation>
     </component>

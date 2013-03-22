@@ -35,29 +35,33 @@ package info.magnolia.ui.app.contacts.dialog.action;
 
 import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
+import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import com.vaadin.data.Item;
+
 /**
  * A custom save action for contacts. It automatically creates a unique node name for a new contact based on their <code>firstName</code> and <code>lastName</code> properties.
  */
 public class SaveContactDialogAction extends SaveDialogAction {
 
-    public SaveContactDialogAction(final SaveContactDialogActionDefinition definition, final FormDialogPresenter presenter) {
-        super(definition, presenter);
+    public SaveContactDialogAction(SaveDialogActionDefinition definition, Item item, FormPresenter.Validator validator, FormDialogPresenter.Callback callback) {
+        super(definition, item, validator, callback);
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
-        getPresenter().getForm().showValidation(true);
-        if (getPresenter().getForm().isValid()) {
-            final JcrNodeAdapter itemChanged = (JcrNodeAdapter) getItem();
+        validator.showValidation(true);
+        if (validator.isValid()) {
+            final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
 
             try {
                 final Node node = itemChanged.getNode();
@@ -69,7 +73,7 @@ public class SaveContactDialogAction extends SaveDialogAction {
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
             }
-            getPresenter().getCallback().onSuccess(getDefinition().getName());
+            callback.onSuccess(getDefinition().getName());
 
         } else {
             // validation errors are displayed in the UI.

@@ -35,7 +35,6 @@ package info.magnolia.ui.form;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
 
@@ -52,19 +51,15 @@ import com.vaadin.data.Item;
  */
 public class FormPresenterImpl implements FormPresenter {
 
-    private final FormView view;
+    private FormView view;
     private final FormBuilder formBuilder;
-    private final FieldFactory fieldFactory;
     private final EventBus eventBus;
     private Item item;
     private Callback callback;
 
     @Inject
-    public FormPresenterImpl(final FormView view, final FormBuilder formBuilder, final FieldFactory fieldFactory, @Named("admincentral") EventBus eventBus) {
-
-        this.view = view;
+    public FormPresenterImpl(final FormBuilder formBuilder, @Named("admincentral") EventBus eventBus) {
         this.formBuilder = formBuilder;
-        this.fieldFactory = fieldFactory;
         this.eventBus = eventBus;
     }
 
@@ -103,7 +98,7 @@ public class FormPresenterImpl implements FormPresenter {
     public FormView start(Item item, FormDefinition formDefinition, Callback callback, FormItem formItem) {
         this.item = item;
         this.callback = callback;
-        formBuilder.buildForm(fieldFactory, formDefinition, item, view, formItem);
+        view = formBuilder.buildForm(formDefinition, item, formItem);
         return view;
     }
 

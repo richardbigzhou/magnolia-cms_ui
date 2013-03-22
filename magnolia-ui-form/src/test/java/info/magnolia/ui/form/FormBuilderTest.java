@@ -103,12 +103,12 @@ public class FormBuilderTest {
     @Test
     public void testBuildingWithoutTabsAndActions() {
         // GIVEN
-        final FormBuilder builder = new FormBuilder();
         final FormDefinition def = new ConfiguredFormDefinition();
         final FormView form = (FormView) new Form();
+        final FormBuilder builder = new FormBuilder(null, form);
 
         // WHEN
-        final FormView result = builder.buildForm(null, def, null, form, null);
+        final FormView result = builder.buildForm(def, null, null);
 
         // THEN
         assertEquals(result, form);
@@ -118,7 +118,6 @@ public class FormBuilderTest {
     public void testBuildingWithTabsAndActions() throws Exception {
         // GIVEN
         final String propertyName = "test";
-        final FormBuilder builder = new FormBuilder();
         final ConfiguredFormDefinition formDef = new ConfiguredFormDefinition();
         final TextFieldDefinition fieldTypeDef = new TextFieldDefinition();
         fieldTypeDef.setName(propertyName);
@@ -129,6 +128,8 @@ public class FormBuilderTest {
         final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
         final Form form = new Form();
+
+
         final ConfiguredTabDefinition tabDef = new ConfiguredTabDefinition();
         final ConfiguredFieldDefinition fieldDef = new ConfiguredFieldDefinition();
         fieldDef.setName(propertyName);
@@ -142,8 +143,9 @@ public class FormBuilderTest {
         editField.setI18nContentSupport(i18nContentSupport);
         when(fieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
 
+        final FormBuilder builder = new FormBuilder(fieldFactory, (FormView) form);
         // WHEN
-        final FormView result = builder.buildForm(fieldFactory, formDef, item, (FormView) form, null);
+        final FormView result = builder.buildForm(formDef, item, null);
 
         // THEN
         assertEquals(result, form);
