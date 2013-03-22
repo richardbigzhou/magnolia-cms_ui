@@ -48,7 +48,7 @@ import com.vaadin.ui.Field;
 public class ItemFormView implements FormView {
 
     private BaseDialog dialog;
-    
+
     private Form form;
 
     public ItemFormView() {
@@ -108,7 +108,7 @@ public class ItemFormView implements FormView {
 
     @Override
     public void setCaption(String caption) {
-        dialog.setDialogDescription(caption);
+        dialog.setCaption(caption);
     }
 
     @Override
