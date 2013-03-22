@@ -150,7 +150,7 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
         try {
             log.debug("Executing command [{}] from catalog [{}] with the following parameters [{}]...", new Object[] {  getDefinition().getCommand(),  getDefinition().getCatalog(), getParams() });
             commandsManager.executeCommand(command, getParams());
-            postExecute();
+            onPostExecute();
             log.debug("Command executed successfully in {} ms ", System.currentTimeMillis() - start);
         } catch (Exception e) {
             log.debug("Command execution failed after {} ms ", System.currentTimeMillis() - start);
@@ -162,7 +162,7 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
      * Post Command Execution. Class that implement CommansActionBase should use
      * this in order to perform post Command Tasks.
      */
-    protected void postExecute() throws Exception {
+    protected void onPostExecute() throws Exception {
         // Sub Class can override this method.
     }
 

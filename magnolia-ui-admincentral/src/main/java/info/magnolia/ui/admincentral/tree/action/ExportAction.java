@@ -68,7 +68,7 @@ public class ExportAction extends CommandActionBase<ExportActionDefinition> {
      * . Now we have to push it to the client side.
      */
     @Override
-    protected void postExecute() throws Exception {
+    protected void onPostExecute() throws Exception {
         ExportCommand exportCommand = (ExportCommand) getCommand();
         ExportStreamer.openFileInBlankWindow(exportCommand.getFileName(), ((ByteArrayOutputStream) exportCommand.getOutputStream()).toByteArray(), exportCommand.getMimeExtension());
         if (outputStream != null) {
