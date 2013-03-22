@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.commands.CommandsManager;
-import info.magnolia.commands.chain.Command;
 import info.magnolia.commands.impl.ExportCommand;
 import info.magnolia.ui.admincentral.tree.action.export.ExportStreamer;
 import info.magnolia.ui.model.action.CommandActionBase;
@@ -69,8 +68,8 @@ public class ExportAction extends CommandActionBase<ExportActionDefinition> {
      * . Now we have to push it to the client side.
      */
     @Override
-    protected void executePostCommand(Command command) throws Exception {
-        ExportCommand exportCommand = (ExportCommand) command;
+    protected void postExecute() throws Exception {
+        ExportCommand exportCommand = (ExportCommand) getCommand();
         ExportStreamer.openFileInBlankWindow(exportCommand.getFileName(), ((ByteArrayOutputStream) exportCommand.getOutputStream()).toByteArray(), exportCommand.getMimeExtension());
         if (outputStream != null) {
             outputStream.close();
