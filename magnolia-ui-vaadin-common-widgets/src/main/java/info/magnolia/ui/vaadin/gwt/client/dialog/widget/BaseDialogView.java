@@ -69,7 +69,7 @@ public interface BaseDialogView extends IsWidget, HasWidgets {
 
         void closeDialog();
 
-        void toggleDescription();
+        void setDescriptionVisibility(boolean isVisible);
     }
 
 }

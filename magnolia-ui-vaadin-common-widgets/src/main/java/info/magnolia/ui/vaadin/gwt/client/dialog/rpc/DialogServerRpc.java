@@ -44,5 +44,5 @@ public interface DialogServerRpc extends ServerRpc {
 
     void closeSelf();
 
-    void toggleDescription();
+    void setDescriptionVisibility(boolean isVisible);
 }

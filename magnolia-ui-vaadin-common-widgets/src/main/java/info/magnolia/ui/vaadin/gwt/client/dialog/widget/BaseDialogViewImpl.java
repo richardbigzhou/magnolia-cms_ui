@@ -109,7 +109,7 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
             @Override
             public void onDescriptionVisibilityChanged(boolean isVisible) {
                 if (presenter != null) {
-                    presenter.toggleDescription();
+                    presenter.setDescriptionVisibility(isVisible);
                 }
             }
 

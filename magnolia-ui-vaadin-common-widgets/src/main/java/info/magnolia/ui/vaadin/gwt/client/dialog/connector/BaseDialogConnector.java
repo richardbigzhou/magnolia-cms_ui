@@ -111,7 +111,7 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
     protected void updateActionsFromState() {
         view.setActions(getState().actions);
     }
-    
+
     @Override
     public boolean delegateCaptionHandling() {
         return false;
@@ -156,7 +156,7 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
         this.view.setPresenter(this);
         return view.asWidget();
     }
-    
+
     @Override
     public void fireAction(String action) {
         rpc.fireAction(action);
@@ -168,7 +168,7 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
     }
 
     @Override
-    public void toggleDescription() {
-        rpc.toggleDescription();
+    public void setDescriptionVisibility(boolean isVisible) {
+        rpc.setDescriptionVisibility(isVisible);
     }
 }
