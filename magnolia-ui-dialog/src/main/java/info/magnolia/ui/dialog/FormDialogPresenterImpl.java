@@ -39,8 +39,9 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.dialog.action.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.form.FormBuilder;
-import info.magnolia.ui.form.FormPresenter;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
@@ -60,13 +61,12 @@ import com.vaadin.data.Item;
 
 /**
  * Presenter for forms opened inside dialogs.
- * Combines functionality of {@link DialogPresenter} and {@link FormPresenter}.
  */
-public class FormDialogPresenterImpl extends BaseDialogPresenter implements FormDialogPresenter, FormPresenter.Validator {
+public class FormDialogPresenterImpl extends BaseDialogPresenter implements FormDialogPresenter, EditorValidator {
 
     private final FormDialogView view;
 
-    private Callback callback;
+    private EditorCallback callback;
 
     private DialogDefinitionRegistry dialogDefinitionRegistry;
     private DialogActionExecutor actionExecutor;
@@ -86,7 +86,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
 
     @Override
-    public DialogView start(final Item item, String dialogName, final ModalLayer modalLayer, Callback callback) {
+    public DialogView start(final Item item, String dialogName, final ModalLayer modalLayer, EditorCallback callback) {
         try {
             DialogDefinition dialogDefinition = dialogDefinitionRegistry.get(dialogName);
 
@@ -106,7 +106,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      * @param dialogDefinition
      */
     @Override
-    public DialogView start(final Item item, DialogDefinition dialogDefinition, final ModalLayer modalLayer, Callback callback) {
+    public DialogView start(final Item item, DialogDefinition dialogDefinition, final ModalLayer modalLayer, EditorCallback callback) {
         this.callback = callback;
         this.item = item;
 
@@ -168,11 +168,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     @Override
     public FormDialogView getView() {
         return view;
-    }
-
-    @Override
-    public Callback getCallback() {
-        return this.callback;
     }
 
     @Override

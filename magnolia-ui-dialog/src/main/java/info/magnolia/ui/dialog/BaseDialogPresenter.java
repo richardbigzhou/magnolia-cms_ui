@@ -57,11 +57,6 @@ public class BaseDialogPresenter implements DialogPresenter {
     }
 
     @Override
-    public Callback getCallback() {
-        return null;
-    }
-
-    @Override
     public DialogView getView() {
         return view;
     }

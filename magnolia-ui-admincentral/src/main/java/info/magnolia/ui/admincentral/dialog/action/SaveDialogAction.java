@@ -35,8 +35,8 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.form.FormPresenter;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -60,10 +60,10 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
 
     protected final Item item;
 
-    protected final FormPresenter.Validator validator;
-    protected final FormDialogPresenter.Callback callback;
+    protected final EditorValidator validator;
+    protected final EditorCallback callback;
 
-    public SaveDialogAction(SaveDialogActionDefinition definition, Item item, FormPresenter.Validator validator, FormDialogPresenter.Callback callback) {
+    public SaveDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback) {
         super(definition);
         this.item = item;
         this.validator = validator;

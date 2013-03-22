@@ -34,7 +34,6 @@
 package info.magnolia.ui.form;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.DefaultI18nContentSupport;
@@ -58,8 +57,8 @@ import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.form.field.builder.TextFieldBuilder;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.vaadin.form.Form;
 import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.form.ItemFormView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Locale;
@@ -104,7 +103,7 @@ public class FormBuilderTest {
     public void testBuildingWithoutTabsAndActions() {
         // GIVEN
         final FormDefinition def = new ConfiguredFormDefinition();
-        final FormView form = (FormView) new Form();
+        final FormView form = new ItemFormView();
         final FormBuilder builder = new FormBuilder(null, form);
 
         // WHEN
@@ -127,7 +126,7 @@ public class FormBuilderTest {
         underlyingNode.setProperty(propertyName, propertyValue);
         final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
-        final Form form = new Form();
+        final FormView form = new ItemFormView();
 
 
         final ConfiguredTabDefinition tabDef = new ConfiguredTabDefinition();
@@ -143,7 +142,7 @@ public class FormBuilderTest {
         editField.setI18nContentSupport(i18nContentSupport);
         when(fieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
 
-        final FormBuilder builder = new FormBuilder(fieldFactory, (FormView) form);
+        final FormBuilder builder = new FormBuilder(fieldFactory, form);
         // WHEN
         final FormView result = builder.buildForm(formDef, item, null);
 

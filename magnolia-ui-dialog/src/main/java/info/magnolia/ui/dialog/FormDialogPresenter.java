@@ -34,6 +34,7 @@
 package info.magnolia.ui.dialog;
 
 import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
 import info.magnolia.ui.vaadin.view.ModalLayer;
@@ -54,8 +55,8 @@ public interface FormDialogPresenter extends DialogPresenter {
      * @param item The item on which the form will operate.
      * @param modalLayer The layer over which the opened dialog should be modal. See {@link Shell}, {@link SubAppContext}, {@link AppContext}.
      */
-    DialogView start(Item item, DialogDefinition dialogDefinition, ModalLayer modalLayer, Callback callback);
+    DialogView start(Item item, DialogDefinition dialogDefinition, ModalLayer modalLayer, EditorCallback callback);
 
-    DialogView start(Item item, String dialogName, ModalLayer modalLayer, Callback callback);
+    DialogView start(Item item, String dialogName, ModalLayer modalLayer, EditorCallback callback);
 
 }

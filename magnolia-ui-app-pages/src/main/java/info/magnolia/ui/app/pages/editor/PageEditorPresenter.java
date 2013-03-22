@@ -43,11 +43,13 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition;
+import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.app.pages.field.TemplateSelectorField;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.config.DialogBuilder;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
+import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.config.FieldsConfig;
 import info.magnolia.ui.form.config.FormBuilder;
 import info.magnolia.ui.form.config.FormConfig;
@@ -58,7 +60,6 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.ModelConstants;
-import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
@@ -130,7 +131,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             }
             final Node node = session.getNode(path);
             final JcrNodeAdapter item = new JcrNodeAdapter(node);
-
             openDialog(item, dialogName, formDialogPresenter);
         } catch (RepositoryException e) {
             log.error("Exception caught: {}", e.getMessage(), e);
@@ -167,7 +167,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             item.addItemProperty(ModelConstants.JCR_NAME, property);
 
             // perform custom chaining of dialogs
-            formDialogPresenter.start(item, dialogDefinition, subAppContext, new FormDialogPresenter.Callback() {
+            formDialogPresenter.start(item, dialogDefinition, subAppContext, new EditorCallback() {
 
                 @Override
                 public void onSuccess(String actionName) {
@@ -206,7 +206,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
         try {
             DialogDefinition  dialogDefinition = dialogDefinitionRegistry.get(dialogName);
 
-            formDialogPresenter.start(item, dialogDefinition, subAppContext, new FormDialogPresenter.Callback() {
+            formDialogPresenter.start(item, dialogDefinition, subAppContext, new EditorCallback() {
 
                 @Override
                 public void onSuccess(String actionName) {
@@ -242,9 +242,9 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
         dialogBuilder.addAction(callbackAction);
 
-        ConfiguredActionDefinition cancelAction = new ConfiguredActionDefinition();
-        cancelAction.setName("commit");
-        cancelAction.setLabel("choose");
+        CancelDialogActionDefinition cancelAction = new CancelDialogActionDefinition();
+        cancelAction.setName("cancel");
+        cancelAction.setLabel("cancel");
         dialogBuilder.addAction(cancelAction);
 
         FormBuilder formBuilder = formConfig.form().description("Select the Component to add to the page.");

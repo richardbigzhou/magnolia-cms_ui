@@ -34,7 +34,8 @@
 package info.magnolia.ui.form.action;
 
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.form.FormPresenter;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -56,11 +57,11 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(SaveFormAction.class);
 
-    protected FormPresenter.Callback callback;
-    protected final FormPresenter.Validator validator;
+    protected EditorCallback callback;
+    protected final EditorValidator validator;
     protected final Item item;
 
-    public SaveFormAction(SaveFormActionDefinition definition, Item item, FormPresenter.Callback callback, FormPresenter.Validator validator) {
+    public SaveFormAction(SaveFormActionDefinition definition, Item item, EditorCallback callback, EditorValidator validator) {
         super(definition);
         this.callback = callback;
         this.validator = validator;
@@ -86,7 +87,7 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
         }
     }
 
-    protected FormPresenter.Validator getValidator() {
+    protected EditorValidator getValidator() {
         return validator;
     }
 

@@ -35,8 +35,9 @@ package info.magnolia.ui.contentapp.item;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.contentapp.definition.FormActionItemDefinition;
-import info.magnolia.ui.form.FormPresenter;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.form.FormBuilder;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
@@ -56,7 +57,7 @@ import javax.inject.Named;
  * Presenter for the item displayed in the {@link info.magnolia.ui.contentapp.workbench.ItemWorkbenchPresenter}. Takes
  * care of building and switching between the right {@link ItemView.ViewType}.
  */
-public class ItemPresenter implements DialogActionListener, FormPresenter.Callback, FormPresenter.Validator {
+public class ItemPresenter implements DialogActionListener, EditorCallback, EditorValidator {
 
     private SubAppContext subAppContext;
     private ActionExecutor actionExecutor;
@@ -64,25 +65,25 @@ public class ItemPresenter implements DialogActionListener, FormPresenter.Callba
 
     private final ItemView view;
 
-    private FormPresenter formPresenter;
+    private FormBuilder formBuilder;
 
     private EditorDefinition editorDefinition;
 
     private JcrNodeAdapter item;
+    private FormView formView;
 
     @Inject
-    public ItemPresenter(SubAppContext subAppContext, final ActionExecutor actionExecutor, final @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, ItemView view, FormPresenter formPresenter) {
+    public ItemPresenter(SubAppContext subAppContext, final ActionExecutor actionExecutor, final @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, ItemView view, FormBuilder formBuilder) {
         this.subAppContext = subAppContext;
         this.actionExecutor = actionExecutor;
         this.eventBus = eventBus;
         this.view = view;
-        this.formPresenter = formPresenter;
+        this.formBuilder = formBuilder;
     }
 
     public ItemView start(EditorDefinition editorDefinition, final JcrNodeAdapter item, ItemView.ViewType viewType) {
         this.editorDefinition = editorDefinition;
         this.item = item;
-
         setItemView(viewType);
         return view;
     }
@@ -93,27 +94,29 @@ public class ItemPresenter implements DialogActionListener, FormPresenter.Callba
         case VIEW:
         case EDIT:
         default:
-            final FormView formView = formPresenter.start(item, editorDefinition.getForm(), this, null);
+            this.formView = formBuilder.buildForm(editorDefinition.getForm(), item, null);;
 
             initActions();
             view.setItemView(formView.asVaadinComponent(), viewType);
-
-            // final String description = formDefinition.getDescription();
-            // final String label = formDefinition.getLabel();
-            // final String basename = formDefinition.getI18nBasename();
-            //
-            // FormComposer formComposer = formView.asVaadinComponent();
-            // formComposer.setDialogValues(description, label, basename);
             break;
-
         }
     }
 
     private void initActions() {
-        for (final FormActionItemDefinition action : this.editorDefinition.getActions()) {
-            formPresenter.addAction(action.getName(), getLabel(action.getName()), this);
+        for (final ActionDefinition action : subAppContext.getSubAppDescriptor().getActions().values()) {
+            formView.addAction(action.getName(), action.getLabel(), new DialogActionListener() {
+                @Override
+                public void onActionExecuted(final String actionName) {
+                    try {
+                        actionExecutor.execute(action.getName(), item, ItemPresenter.this);
+                    } catch (ActionExecutionException e) {
+                        throw new RuntimeException("Could not execute action: ", e);
+                    }
+                }
+            });
         }
     }
+
     @Override
     public void onActionExecuted(String actionName) {
         try {
@@ -122,11 +125,6 @@ public class ItemPresenter implements DialogActionListener, FormPresenter.Callba
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
             subAppContext.getAppContext().broadcastMessage(error);
         }
-    }
-
-    public String getLabel(String actionName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return actionDefinition != null ? actionDefinition.getLabel() : null;
     }
 
     @Override
@@ -144,11 +142,11 @@ public class ItemPresenter implements DialogActionListener, FormPresenter.Callba
 
     @Override
     public void showValidation(boolean visible) {
-        formPresenter.showValidation(visible);
+        formView.showValidation(visible);
     }
 
     @Override
     public boolean isValid() {
-        return formPresenter.isValid();
+        return formView.isValid();
     }
 }

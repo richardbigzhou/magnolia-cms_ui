@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,54 +33,11 @@
  */
 package info.magnolia.ui.form;
 
-import info.magnolia.event.EventBus;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-import info.magnolia.ui.vaadin.form.FormView;
-
-import com.vaadin.data.Item;
-
 /**
- * FormPresenter.
+ * EditorValidator.
  */
-public interface FormPresenter {
-
-    Callback getCallback();
-
-    EventBus getEventBus();
-
-    FormView start(Item item, FormDefinition formDefinition, Callback callback, FormItem formItem);
-
-    void addAction(String actionName, String actionLabel, DialogActionListener callback);
+public interface EditorValidator {
+    void showValidation(boolean visible);
 
     boolean isValid();
-
-    /**
-     * Callback interface for FormView.Presenter.
-     */
-    interface Callback {
-
-        void onCancel();
-
-        void onSuccess(String actionName);
-
-    }
-
-    /**
-     * Validator interface.
-     */
-    interface Validator {
-
-        void showValidation(boolean visible);
-
-        boolean isValid();
-
-    }
-
-    void showValidation(boolean isVisible);
-
-    Item getItemDataSource();
-
-    FormView getView();
-
 }

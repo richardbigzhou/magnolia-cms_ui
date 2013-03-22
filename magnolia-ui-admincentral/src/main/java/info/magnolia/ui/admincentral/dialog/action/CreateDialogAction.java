@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.dialog.DialogPresenter;
 import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.action.ActionBase;
@@ -73,7 +73,7 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
 
         final JcrNodeAdapter item = new JcrNewNodeAdapter(parent, getDefinition().getNodeType());
 
-        formDialogPresenter.start(item, getDefinition().getDialogName(), modalLayer, new DialogPresenter.Callback() {
+        formDialogPresenter.start(item, getDefinition().getDialogName(), modalLayer, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {

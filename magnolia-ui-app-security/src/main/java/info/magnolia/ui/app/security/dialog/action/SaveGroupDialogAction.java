@@ -38,8 +38,8 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
-import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.form.FormPresenter;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -60,7 +60,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
 
     private static final Logger log = LoggerFactory.getLogger(SaveGroupDialogAction.class);
 
-    public SaveGroupDialogAction(SaveDialogActionDefinition definition, Item item, FormPresenter.Validator validator, FormDialogPresenter.Callback callback) {
+    public SaveGroupDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback) {
         super(definition, item, validator, callback);
     }
 

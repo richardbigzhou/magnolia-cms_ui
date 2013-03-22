@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.action;
-
-import info.magnolia.ui.form.FormPresenter;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
+package info.magnolia.ui.form;
 
 /**
- * FormActionFactory.
+ * EditorCallback.
  */
-public interface FormActionFactory {
-    Action createAction(ActionDefinition actionDefinition, FormPresenter dialogPresenter);
+public interface EditorCallback {
+    void onCancel();
 
+    void onSuccess(String actionName);
 }

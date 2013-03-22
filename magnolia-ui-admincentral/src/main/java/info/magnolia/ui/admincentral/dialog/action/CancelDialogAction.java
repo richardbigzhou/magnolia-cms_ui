@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
@@ -44,16 +44,16 @@ import info.magnolia.ui.model.action.ActionExecutionException;
  */
 public class CancelDialogAction extends ActionBase<CancelDialogActionDefinition> {
 
-    private final FormDialogPresenter presenter;
+    private EditorCallback callback;
 
-    public CancelDialogAction(CancelDialogActionDefinition definition, FormDialogPresenter presenter) {
+    public CancelDialogAction(CancelDialogActionDefinition definition, EditorCallback callback) {
         super(definition);
-        this.presenter = presenter;
+        this.callback = callback;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        presenter.getCallback().onCancel();
+        callback.onCancel();
     }
 
 }

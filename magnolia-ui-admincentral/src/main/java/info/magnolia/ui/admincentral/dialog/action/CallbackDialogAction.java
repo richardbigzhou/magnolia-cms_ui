@@ -33,33 +33,32 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
 /**
- * Implements an action for Callback handling on dialog {@link info.magnolia.ui.vaadin.form.NewFormDialogPresenter.Presenter.Callback}.
+ * Implements an action for Callback handling on dialog {@link info.magnolia.ui.vaadin.dialog.FormDialog}.
  * This Action can be configured to perform a cancel or a success Action.
  *
  * @see CallbackDialogActionDefinition
  */
 public class CallbackDialogAction extends ActionBase<CallbackDialogActionDefinition> {
 
-    private final FormDialogPresenter presenter;
+    private EditorCallback callback;
 
-    public CallbackDialogAction(CallbackDialogActionDefinition definition, FormDialogPresenter presenter) {
+    public CallbackDialogAction(CallbackDialogActionDefinition definition, EditorCallback callback) {
         super(definition);
-        this.presenter = presenter;
+        this.callback = callback;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         if (getDefinition().isCallSuccess()) {
-            presenter.getCallback().onSuccess(getDefinition().getSuccessActionName());
+            callback.onSuccess(getDefinition().getSuccessActionName());
         } else {
-            presenter.getCallback().onCancel();
+            callback.onCancel();
         }
-        presenter.closeDialog();
     }
 
 }
