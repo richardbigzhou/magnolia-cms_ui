@@ -437,6 +437,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
     @Test
     public void testmoveItem() throws RepositoryException {
+        // GIVEN
         Node source = AbstractJcrContainerTest.createNode(rootNode, "source", NodeTypes.Content.NAME, PROPERTY_1, "name1");
         Node target = AbstractJcrContainerTest.createNode(rootNode, "target", NodeTypes.Content.NAME, PROPERTY_1, "name2");
         target.getSession().save();
@@ -451,6 +452,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
     @Test
     public void testmoveItemFalseChildCanNotBeSetAsParent() throws RepositoryException {
+        // GIVEN
         Node source = AbstractJcrContainerTest.createNode(rootNode, "source", NodeTypes.Content.NAME, PROPERTY_1, "name1");
         Node target = AbstractJcrContainerTest.createNode(source, "target", NodeTypes.Content.NAME, PROPERTY_1, "name2");
         target.getSession().save();
@@ -464,6 +466,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
     @Test
     public void testmoveItemFalseNoOperationOnProperty() throws RepositoryException {
+        // GIVEN
         Node source = AbstractJcrContainerTest.createNode(rootNode, "source", NodeTypes.Content.NAME, PROPERTY_1, "name1");
         Property sourceProperty = source.setProperty("property","property");
         source.getSession().save();
@@ -477,6 +480,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
     @Test
     public void tesmoveItemBefore() throws RepositoryException {
+        // GIVEN
         Node first = AbstractJcrContainerTest.createNode(rootNode, "first", NodeTypes.Content.NAME, PROPERTY_1, "name1");
         Node second = AbstractJcrContainerTest.createNode(rootNode, "second", NodeTypes.Content.NAME, PROPERTY_1, "name2");
         second.getSession().save();
@@ -496,6 +500,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
     @Test
     public void tesmoveItemAfter() throws RepositoryException {
+        // GIVEN
         Node first = AbstractJcrContainerTest.createNode(rootNode, "first", NodeTypes.Content.NAME, PROPERTY_1, "name1");
         Node second = AbstractJcrContainerTest.createNode(rootNode, "second", NodeTypes.Content.NAME, PROPERTY_1, "name2");
         second.getSession().save();
