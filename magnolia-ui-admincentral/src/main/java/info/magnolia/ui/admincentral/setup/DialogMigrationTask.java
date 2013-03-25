@@ -137,8 +137,8 @@ public class DialogMigrationTask extends AbstractTask {
 
         node.addNode("commit", NodeTypes.ContentNode.NAME).setProperty("label", "save changes");
         node.addNode("cancel", NodeTypes.ContentNode.NAME).setProperty("label", "cancel");
-        node.getNode("commit").addNode("actionDefinition", NodeTypes.ContentNode.NAME).setProperty("class", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition");
-        node.getNode("cancel").addNode("actionDefinition", NodeTypes.ContentNode.NAME).setProperty("class", "info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition");
+        node.getNode("commit").setProperty("class", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition");
+        node.getNode("cancel").setProperty("class", "info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition");
 
     }
 
