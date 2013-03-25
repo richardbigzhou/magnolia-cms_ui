@@ -119,7 +119,6 @@ public class SaveImportDialogAction extends ActionBase<SaveImportDialogActionDef
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void setParams(JcrNodeAdapter itemChanged) throws RepositoryException {
         params = new HashMap<String, Object>();
         JcrNodeAdapter importXml = (JcrNodeAdapter) itemChanged.getChild("import");
