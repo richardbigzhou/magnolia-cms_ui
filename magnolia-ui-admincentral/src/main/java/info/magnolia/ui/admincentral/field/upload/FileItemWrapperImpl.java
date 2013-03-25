@@ -122,7 +122,7 @@ public class FileItemWrapperImpl implements FileItemWrapper {
                 return;
             }
         }
-        jcrItem.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(StringUtils.substringBefore(fileName, "."));
+        jcrItem.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(StringUtils.substringBeforeLast(fileName, "."));
         jcrItem.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).setValue(mimeType);
         jcrItem.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED).setValue(new Date());
         jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(fileSize);
