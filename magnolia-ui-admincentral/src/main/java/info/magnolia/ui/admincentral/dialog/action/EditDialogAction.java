@@ -103,7 +103,7 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
             @Override
             public void onCancel() {
-                //formDialogPresenter.closeDialog();
+                formDialogPresenter.closeDialog();
             }
         });
     }
