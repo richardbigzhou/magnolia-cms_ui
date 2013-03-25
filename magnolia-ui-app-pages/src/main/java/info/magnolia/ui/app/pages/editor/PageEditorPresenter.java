@@ -48,7 +48,6 @@ import info.magnolia.ui.app.pages.field.TemplateSelectorField;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.config.DialogBuilder;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
-import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.config.FieldsConfig;
 import info.magnolia.ui.form.config.FormBuilder;
@@ -95,17 +94,15 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private SubAppContext subAppContext;
     private ComponentProvider componentProvider;
-    private DialogDefinitionRegistry dialogDefinitionRegistry;
 
     @Inject
     public PageEditorPresenter(PageEditorView view, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, TemplateDefinitionRegistry templateDefinitionRegistry,
-            SubAppContext subAppContext, ComponentProvider componentProvider, DialogDefinitionRegistry dialogDefinitionRegistry) {
+            SubAppContext subAppContext, ComponentProvider componentProvider) {
         this.view = view;
         this.eventBus = eventBus;
         this.templateDefinitionRegistry = templateDefinitionRegistry;
         this.subAppContext = subAppContext;
         this.componentProvider = componentProvider;
-        this.dialogDefinitionRegistry = dialogDefinitionRegistry;
 
         registerHandlers();
     }
@@ -203,25 +200,20 @@ public class PageEditorPresenter implements PageEditorView.Listener {
      */
     private void openDialog(final JcrNodeAdapter item, final String dialogName, final FormDialogPresenter formDialogPresenter) {
 
-        try {
-            DialogDefinition  dialogDefinition = dialogDefinitionRegistry.get(dialogName);
+        formDialogPresenter.start(item, dialogName, subAppContext, new EditorCallback() {
 
-            formDialogPresenter.start(item, dialogDefinition, subAppContext, new EditorCallback() {
+            @Override
+            public void onSuccess(String actionName) {
+                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
+                formDialogPresenter.closeDialog();
+            }
 
-                @Override
-                public void onSuccess(String actionName) {
-                    eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
-                    formDialogPresenter.closeDialog();
-                }
+            @Override
+            public void onCancel() {
+                formDialogPresenter.closeDialog();
+            }
+        });
 
-                @Override
-                public void onCancel() {
-                    formDialogPresenter.closeDialog();
-                }
-            });
-        } catch (RegistrationException e) {
-            throw new RuntimeException("Could not get dialog definition for " + dialogName, e);
-        }
 
     }
 
