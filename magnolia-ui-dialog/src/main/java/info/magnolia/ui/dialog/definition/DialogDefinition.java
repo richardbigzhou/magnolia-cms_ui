@@ -57,7 +57,7 @@ public interface DialogDefinition {
 
     String getDescription();
 
-    FormDefinition getFormDefinition();
+    FormDefinition getForm();
 
     Map<String, ActionDefinition> getActions();
 

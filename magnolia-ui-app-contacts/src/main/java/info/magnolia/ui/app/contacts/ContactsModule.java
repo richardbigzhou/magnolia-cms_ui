@@ -264,7 +264,7 @@ public class ContactsModule implements ModuleLifecycle {
         dialog.setDescription("Rename folder");
 
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
-        dialog.setFormDefinition(form);
+        dialog.setForm(form);
 
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("folder");

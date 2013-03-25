@@ -70,7 +70,7 @@ public class DialogBuilder {
     }
 
     public DialogBuilder form(FormBuilder builder) {
-        this.definition.setFormDefinition(builder.exec());
+        this.definition.setForm(builder.exec());
         return this;
     }
 

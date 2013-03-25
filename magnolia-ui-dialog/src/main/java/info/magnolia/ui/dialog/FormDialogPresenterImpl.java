@@ -145,7 +145,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
         // This is needed to access properties from the parent. Currently only the i18basename.
         Dialog dialog = new Dialog(dialogDefinition);
-        formView = formBuilder.buildForm(dialogDefinition.getFormDefinition(), item, dialog);
+        formView = formBuilder.buildForm(dialogDefinition.getForm(), item, dialog);
 
         view.setFormView(formView);
     }

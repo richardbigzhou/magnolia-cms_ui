@@ -46,7 +46,7 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
 
     public static final String ACTIONS_NODE_NAME = "actions";
     public static final String EXTEND_PROPERTY_NAME = "extends";
-    public static final String FORM_NODE_NAME = "formDefinition";
+    public static final String FORM_NODE_NAME = "form";
 
     private String id;
 
@@ -56,7 +56,7 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
 
     private String description;
 
-    private FormDefinition formDefinition;
+    private FormDefinition form;
 
     private Map<String, ActionDefinition> actions = new LinkedHashMap<String, ActionDefinition>();
 
@@ -96,13 +96,13 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
         this.description = description;
     }
 
-    public void setFormDefinition(FormDefinition formDefinition) {
-        this.formDefinition = formDefinition;
+    public void setForm(FormDefinition form) {
+        this.form = form;
     }
 
     @Override
-    public FormDefinition getFormDefinition() {
-        return formDefinition;
+    public FormDefinition getForm() {
+        return form;
     }
 
     @Override
