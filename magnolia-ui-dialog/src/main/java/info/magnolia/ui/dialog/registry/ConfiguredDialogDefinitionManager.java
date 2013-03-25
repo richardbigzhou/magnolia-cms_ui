@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObservingManager {
 
-    public static final String DIALOG_CONFIG_NODE_NAME = "dialogs50";
+    public static final String DIALOG_CONFIG_NODE_NAME = "dialogs";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 

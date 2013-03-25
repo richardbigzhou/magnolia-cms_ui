@@ -83,9 +83,14 @@ public class DialogMigrationTask extends AbstractTask {
     @Override
     public void execute(InstallContext installContext) throws TaskExecutionException {
         try {
-            Node dialog = installContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/" + moduleName + "/dialogs");
+            String dialogNodeName = "dialogs";
+            String dialogPath = "/modules/" + moduleName + "/" + dialogNodeName;
+
+            Session session = installContext.getJCRSession(RepositoryConstants.CONFIG);
+            Node dialog = session.getNode(dialogPath);
             // Copy to Dialog50
-            copyInSession(dialog, dialog.getPath() + "50");
+            String newDialogPath = dialog.getPath() + "50";
+            copyInSession(dialog, newDialogPath);
             NodeUtil.visit(dialog, new NodeVisitor() {
                 @Override
                 public void visit(Node current) throws RepositoryException {
@@ -96,6 +101,9 @@ public class DialogMigrationTask extends AbstractTask {
             }, new NodeTypePredicate(NodeTypes.Content.NAME));
             // Try to resolve references for extends.
             postProcessForExtendsAndReference();
+            session.removeItem(dialogPath);
+            session.move(newDialogPath, dialogPath);
+
         } catch (Exception e) {
             log.error("", e);
             installContext.warn("Could not Migrate Dialog for the following module " + moduleName);
@@ -277,16 +285,11 @@ public class DialogMigrationTask extends AbstractTask {
     private void handleExtendsAndReference(Node node) throws RepositoryException {
         if (node.hasProperty("extends")) {
             // Handle Field Extends
-            node.setProperty("extends", renameExtendsPath(node, "extends"));
+            extendsAndReferenceProperty.add(node.getProperty("extends"));
         } else if (node.hasProperty("reference")) {
             // Handle Field Extends
-            node.setProperty("reference", renameExtendsPath(node, "reference"));
+            extendsAndReferenceProperty.add(node.getProperty("reference"));
         }
-    }
-
-    private String renameExtendsPath(Node fieldNode, String property) throws RepositoryException {
-        extendsAndReferenceProperty.add(fieldNode.getProperty(property));
-        return StringUtils.replace(fieldNode.getProperty(property).getString(), "/dialogs/", "/dialogs50/");
     }
 
     /**
