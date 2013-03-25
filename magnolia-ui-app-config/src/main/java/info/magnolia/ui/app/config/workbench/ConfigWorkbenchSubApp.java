@@ -36,7 +36,6 @@ package info.magnolia.ui.app.config.workbench;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.ContentSubApp;
 import info.magnolia.ui.contentapp.WorkbenchSubAppView;
@@ -46,6 +45,7 @@ import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -68,28 +68,36 @@ public class ConfigWorkbenchSubApp extends ContentSubApp {
     @Override
     public void updateActionbar(final ActionbarPresenter actionbar) {
         final String selectedItemId = getWorkbench().getSelectedItemId();
+        try {
+            // disable All
+            actionbar.disableGroup("addingActions");
+            actionbar.disableGroup("duplicateActions");
+            actionbar.disableGroup("activationActions");
+            actionbar.disableGroup("importExportActions");
 
-        if (selectedItemId == null || "/".equals(selectedItemId)) {
-            actionbar.disable("delete");
-        } else {
-            actionbar.enable("addFolder", "addNode", "addProperty", "delete");
-
-            try {
+            if (selectedItemId == null || "/".equals(selectedItemId)) {
+                actionbar.enable("addFolder");
+            } else {
                 final Session session = MgnlContext.getJCRSession("config");
-                final boolean isProperty = session.propertyExists(selectedItemId);
-
-                if (isProperty) {
-                    actionbar.disable("addFolder", "addNode", "addProperty");
-                    return;
+                Item jcrItem = session.getItem(selectedItemId);
+                if (jcrItem.isNode()) {
+                    // Handle Selected Node
+                    actionbar.enableGroup("addingActions");
+                    actionbar.enableGroup("duplicateActions");
+                    actionbar.enableGroup("activationActions");
+                    actionbar.enableGroup("importExportActions");
+                    // Check if the selected Node is a folder
+                    if (NodeTypes.ContentNode.NAME.equals(((Node) jcrItem).getPrimaryNodeType().getName())) {
+                        actionbar.disable("addFolder");
+                    }
+                } else {
+                    // Handle Selected Property
+                    actionbar.enable("delete");
                 }
-                final Node node = session.getNode(selectedItemId);
-                if (NodeUtil.isNodeType(node, NodeTypes.ContentNode.NAME)) {
-                    actionbar.disable("addFolder");
-                }
-
-            } catch (RepositoryException e) {
-                log.warn("An error occurred while trying to determine the node type for item [{}]", selectedItemId, e);
             }
+
+        } catch (RepositoryException e) {
+            log.warn("An error occurred while trying to determine the node type for item [{}]", selectedItemId, e);
         }
     }
 }

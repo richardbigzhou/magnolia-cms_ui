@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,59 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.definition;
+package info.magnolia.ui.app.config.workbench.tree;
 
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
-import java.io.Serializable;
-import java.util.List;
+import com.vaadin.data.Item;
 
 /**
- * Defines a workbench. Contains all elements which define a workbench configuration.
+ * Jcr configuration implementation of {@link DropConstraint} used by the
+ * Config-App in order to handle the Drag & Drop events. <br>
+ * <b>Constraints</b><br>
+ * Properties are not allowed to Move (allowedToMove). A Node can not be set as
+ * child as a Property (allowedAsChild).
  */
-public interface WorkbenchDefinition extends Serializable {
+public class NodeTypeDropConstraint implements DropConstraint {
 
-    String getName();
+    @Override
+    public boolean allowedAsChild(Item sourceItem, Item targetItem) {
+        return ((JcrItemAdapter) targetItem).isNode();
+    }
 
-    String getWorkspace();
+    @Override
+    public boolean allowedBefore(Item sourceItem, Item targetItem) {
+        return true;
+    }
 
-    String getPath();
+    @Override
+    public boolean allowedAfter(Item sourceItem, Item targetItem) {
+        return true;
+    }
 
-    /**
-     * @return all configured NodeTypes.
-     */
-    List<NodeTypeDefinition> getNodeTypes();
-
-    /**
-     * @return whether properties should be displayed as well (or just nodes)
-     */
-    boolean includeProperties();
-
-    List<ColumnDefinition> getColumns();
-
-    /**
-     * Define if this workbench is used for Dialog. This is set during the cloning of the workbench in
-     * ChooseDialogContentPresenter.
-     */
-    boolean isDialogWorkbench();
-
-    /**
-     * @return the property (or comma separated list of properties) to be applied when no other order is requested.
-     */
-    String getDefaultOrder();
-
-    /**
-     * Checks if workbench can edit tree view inplace.
-     *
-     * @return true, if workbench is editable
-     */
-    boolean isEditable();
-
-    /**
-     * 
-     * @return the DropConstraint class used to handle drag&drop.
-     */
-    Class<? extends DropConstraint> getDropConstraintClass();
+    @Override
+    public boolean allowedToMove(Item sourceItem) {
+        JcrItemAdapter jcrSourceItem = (JcrItemAdapter) sourceItem;
+        return jcrSourceItem.isNode();
+    }
 
 }

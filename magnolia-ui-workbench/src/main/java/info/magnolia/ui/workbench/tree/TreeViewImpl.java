@@ -34,13 +34,15 @@
 package info.magnolia.ui.workbench.tree;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.workbench.ContentView;
+import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
+import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
-import info.magnolia.ui.workbench.container.AbstractJcrContainer;
+import info.magnolia.ui.workbench.tree.drop.DropConstraint;
+import info.magnolia.ui.workbench.tree.drop.TreeViewDropHandler;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -54,10 +56,12 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.dd.DropHandler;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TreeTable;
 
 /**
@@ -88,6 +92,17 @@ public class TreeViewImpl implements TreeView {
         this.container = container;
 
         treeTable = buildTreeTable(container, workbench, componentProvider);
+
+        // Set Drop Handler
+        Class<? extends DropConstraint> dropContainerClass = workbench.getDropConstraintClass();
+        if (dropContainerClass != null) {
+            DropConstraint constraint = componentProvider.newInstance(dropContainerClass);
+            DropHandler dropHandler = new TreeViewDropHandler(treeTable, constraint);
+            treeTable.setDropHandler(dropHandler);
+            treeTable.setDragMode(TableDragMode.ROW);
+            log.debug("Set following drop container {} to the treeTable", dropContainerClass.getName());
+        }
+
         layout = buildLayout();
         layout.addComponent(treeTable);
 
@@ -294,5 +309,4 @@ public class TreeViewImpl implements TreeView {
 
         return null;
     }
-
 }
