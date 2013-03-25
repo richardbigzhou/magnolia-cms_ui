@@ -112,11 +112,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
         actionExecutor.setDialogDefinition(dialogDefinition);
         buildView(dialogDefinition);
-        // This is needed to access properties from the parent. Currently only the i18basename.
-        Dialog dialog = new Dialog(dialogDefinition);
-        formView = formBuilder.buildForm(dialogDefinition.getFormDefinition(), item, dialog);
-
-        view.setFormView(formView);
 
         final ModalCloser modalCloser = modalLayer.openModal(view);
 
@@ -147,6 +142,12 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
             String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
             view.setCaption(i18nLabel);
         }
+
+        // This is needed to access properties from the parent. Currently only the i18basename.
+        Dialog dialog = new Dialog(dialogDefinition);
+        formView = formBuilder.buildForm(dialogDefinition.getFormDefinition(), item, dialog);
+
+        view.setFormView(formView);
     }
 
     private void initActions(final DialogDefinition dialogDefinition) {
