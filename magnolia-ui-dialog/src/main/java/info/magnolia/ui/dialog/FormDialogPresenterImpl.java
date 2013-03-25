@@ -131,6 +131,10 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     }
 
     private void buildView(DialogDefinition dialogDefinition) {
+        Dialog dialog = new Dialog(dialogDefinition);
+        formView = formBuilder.buildForm(dialogDefinition.getForm(), item, dialog);
+        view.setFormView(formView);
+
         final String description = dialogDefinition.getDescription();
         final String label = dialogDefinition.getLabel();
         final String basename = dialogDefinition.getI18nBasename();
@@ -146,10 +150,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         }
 
         // This is needed to access properties from the parent. Currently only the i18basename.
-        Dialog dialog = new Dialog(dialogDefinition);
-        formView = formBuilder.buildForm(dialogDefinition.getForm(), item, dialog);
-
-        view.setFormView(formView);
     }
 
     private void initActions(final DialogDefinition dialogDefinition) {
