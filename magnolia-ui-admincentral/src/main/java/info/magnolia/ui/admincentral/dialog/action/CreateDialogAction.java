@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.dialog.FormDialogPresenterFactory;
+import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.action.ActionBase;
@@ -54,17 +54,16 @@ import javax.jcr.Node;
  */
 public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition> {
 
-    private final FormDialogPresenterFactory formDialogPresenterFactory;
-
     private final Node parent;
+    private FormDialogPresenter formDialogPresenter;
 
     private final ModalLayer modalLayer;
     private EventBus eventBus;
 
-    public CreateDialogAction(CreateDialogActionDefinition definition, Node parent, FormDialogPresenterFactory formDialogPresenterFactory, final SubAppContext subAppContext, @Named("admincentral") final EventBus eventBus) {
+    public CreateDialogAction(CreateDialogActionDefinition definition, Node parent, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named("admincentral") final EventBus eventBus) {
         super(definition);
         this.parent = parent;
-        this.formDialogPresenterFactory = formDialogPresenterFactory;
+        this.formDialogPresenter = formDialogPresenter;
         this.modalLayer = subAppContext;
         this.eventBus = eventBus;
     }
@@ -74,9 +73,7 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
 
         final JcrNodeAdapter item = new JcrNewNodeAdapter(parent, getDefinition().getNodeType());
 
-        final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.openDialog(getDefinition().getDialogName(), item, modalLayer);
-
-        formDialogPresenter.setCallback(new FormDialogPresenter.Callback() {
+        formDialogPresenter.start(item, getDefinition().getDialogName(), modalLayer, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {

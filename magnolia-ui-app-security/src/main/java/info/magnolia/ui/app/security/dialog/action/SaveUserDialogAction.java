@@ -41,9 +41,10 @@ import info.magnolia.cms.security.User;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
-import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -56,6 +57,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
+
 /**
  * Save user dialog action.
  */
@@ -63,19 +66,19 @@ public class SaveUserDialogAction extends SaveDialogAction {
 
     private static final Logger log = LoggerFactory.getLogger(SaveUserDialogAction.class);
 
-    public SaveUserDialogAction(SaveDialogActionDefinition definition, FormDialogPresenter presenter) {
-        super(definition, presenter);
+    public SaveUserDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback) {
+        super(definition, item, validator, callback);
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
-        getPresenter().getForm().showValidation(true);
-        if (getPresenter().getForm().isValid()) {
+        validator.showValidation(true);
+        if (validator.isValid()) {
 
-            final JcrNodeAdapter item = (JcrNodeAdapter) getItem();
-            createOrUpdateUser(item);
-            getPresenter().getCallback().onSuccess(getDefinition().getName());
+            final JcrNodeAdapter nodeAdapter = (JcrNodeAdapter) item;
+            createOrUpdateUser(nodeAdapter);
+            callback.onSuccess(getDefinition().getName());
 
         } else {
             // validation errors are displayed in the UI.

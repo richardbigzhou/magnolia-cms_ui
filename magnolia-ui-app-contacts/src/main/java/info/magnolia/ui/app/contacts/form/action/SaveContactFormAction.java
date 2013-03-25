@@ -36,7 +36,8 @@ package info.magnolia.ui.app.contacts.form.action;
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.form.FormPresenter;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.form.action.SaveFormAction;
 import info.magnolia.ui.form.action.SaveFormActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -60,7 +61,7 @@ import com.vaadin.data.Item;
 public class SaveContactFormAction extends SaveFormAction {
 
 
-    public SaveContactFormAction(SaveFormActionDefinition definition, Item item, FormPresenter.Callback callback, FormPresenter.Validator validator) {
+    public SaveContactFormAction(SaveFormActionDefinition definition, Item item, EditorCallback callback, EditorValidator validator) {
         super(definition, item, callback, validator);
     }
 
