@@ -285,7 +285,7 @@ public class SecurityModule implements ModuleLifecycle {
         cancel.setLabel("cancel");
         dialog.addAction(cancel);
 
-        dialog.form(cfg.forms.form().description("Define the user information")
+        dialog.form(cfg.forms.form().description("Define the user information").label("User")
                 .tabs(
                         cfg.forms.tab("User").label("User info")
                                 .fields(
@@ -357,7 +357,7 @@ public class SecurityModule implements ModuleLifecycle {
         cancel.setLabel("cancel");
         dialog.addAction(cancel);
 
-        dialog.form(cfg.forms.form().description("Define the group information")
+        dialog.form(cfg.forms.form().description("Define the group information").label("Group")
                 .tabs(
                         cfg.forms.tab("Group").label("Group info")
                                 .fields(
@@ -409,7 +409,7 @@ public class SecurityModule implements ModuleLifecycle {
         cancel.setLabel("cancel");
         dialog.addAction(cancel);
 
-        dialog.form(cfg.forms.form().description("Define the role information")
+        dialog.form(cfg.forms.form().description("Define the role information").label("Role")
                 .tabs(
                         cfg.forms.tab("Role").label("Role info")
                                 .fields(

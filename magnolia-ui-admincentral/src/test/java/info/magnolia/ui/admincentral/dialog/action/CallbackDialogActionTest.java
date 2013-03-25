@@ -155,6 +155,10 @@ public class CallbackDialogActionTest {
         }
 
         @Override
+        public void showCloseButton() {
+        }
+
+        @Override
         public DialogView start(Item item, String dialogName, ModalLayer modalLayer, EditorCallback callback) {
             return null;
         }

@@ -60,7 +60,7 @@ import com.vaadin.ui.VerticalLayout;
 public class BaseDialog extends AbstractComponent implements HasComponents, DialogView {
 
     protected final ListMultimap<String, DialogActionListener> actionCallbackMap = ArrayListMultimap.<String, DialogActionListener> create();
-    
+
     public BaseDialog() {
         super();
         setImmediate(true);
@@ -80,8 +80,8 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
             }
 
             @Override
-            public void toggleDescription() {
-                BaseDialog.this.toggleDescription();
+            public void setDescriptionVisibility(boolean isVisible) {
+                BaseDialog.this.setDescriptionVisibility(isVisible);
             }
         });
     }
@@ -100,15 +100,15 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         fireEvent(new DialogCloseEvent(this, this));
     }
 
-    public void toggleDescription() {
-        fireEvent(new DescriptionVisibilityEvent(this, true));
+    public void setDescriptionVisibility(boolean isVisible) {
+        fireEvent(new DescriptionVisibilityEvent(this, isVisible));
     }
 
     @Override
     public void setDialogDescription(String description) {
         getState().componentDescription = description;
     }
-    
+
     /* Basic component features ------------------------------------------ */
 
     @Override
@@ -228,7 +228,11 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
     public void clearCallbacks() {
         actionCallbackMap.clear();
     }
-    
+
+    public void showCloseButton() {
+        getState().hasCloseButton = true;
+    }
+
     public void addDialogCloseHandler(Handler handler) {
         addListener("dialogCloseEvent", DialogCloseEvent.class, handler, DialogCloseEvent.ON_DIALOG_CLOSE);
     }
@@ -304,6 +308,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
 
         public DescriptionVisibilityEvent(Component source, boolean isVisible) {
             super(source);
+            this.isVisible = isVisible;
         }
 
         public boolean isVisible() {

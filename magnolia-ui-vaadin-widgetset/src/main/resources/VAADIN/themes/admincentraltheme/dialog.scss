@@ -3,8 +3,12 @@
 @mixin dialog {
 
 .dialog-panel {
-  width:720px;
+  width:900px;
   padding:0;
+}
+
+.modal .dialog-panel {
+  width:720px;
 }
 
 .v-dialog-layout {
@@ -169,18 +173,18 @@ button.btn-dialog-help {
 }
 
 /*
-* Forms in Dialog.
+* Forms in a Modal.
 */
-.dialog-panel .form-panel {
+.modal .form-panel {
     width: 720px;
 }
 
-.dialog-panel .v-form-layout {
+.modal .v-form-layout {
     background-color: #E6E6E6;
 }
 
-.dialog-panel .form-panel .v-shell-tabsheet,
-.dialog-panel .form-panel .v-shell-tabsheet .nav li.active {
+.modal .form-panel .v-shell-tabsheet,
+.modal .form-panel .v-shell-tabsheet .nav li.active {
     background-color: #E6E6E6;
 }
 
