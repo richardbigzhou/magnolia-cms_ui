@@ -57,11 +57,6 @@ public class BaseDialogPresenter implements DialogPresenter {
     }
 
     @Override
-    public Callback getCallback() {
-        return null;
-    }
-
-    @Override
     public DialogView getView() {
         return view;
     }
@@ -72,9 +67,15 @@ public class BaseDialogPresenter implements DialogPresenter {
     }
 
     @Override
+    public void showCloseButton() {
+        view.asVaadinComponent().showCloseButton();
+    }
+
+    @Override
     public void addDialogCloseHandler(DialogCloseEvent.Handler handler) {
         view.asVaadinComponent().addDialogCloseHandler(handler);
     }
+
 
     @Override
     public void addAction(String actionName, String actionLabel, DialogActionListener callback) {

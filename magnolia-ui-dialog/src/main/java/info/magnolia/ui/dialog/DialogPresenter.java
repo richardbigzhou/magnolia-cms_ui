@@ -44,13 +44,13 @@ import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
  */
 public interface DialogPresenter {
 
-    Callback getCallback();
-
     DialogView getView();
 
     EventBus getEventBus();
 
     void closeDialog();
+
+    void showCloseButton();
 
     void addDialogCloseHandler(final DialogCloseEvent.Handler listener);
 
@@ -58,30 +58,4 @@ public interface DialogPresenter {
 
     void addActionCallback(String actionName, DialogActionListener callback);
 
-    /**
-     * Callback interface for DialogView.Presenter.
-     */
-    interface Callback {
-
-        void onCancel();
-
-        void onSuccess(String actionName);
-
-        /**
-         * Dummy adapter class that allows to skip overriding e.g. onCancel method in actual
-         * implementors.
-         */
-        public static class Adapter implements Callback {
-
-            @Override
-            public void onSuccess(String actionName) {
-            }
-
-            @Override
-            public void onCancel() {
-            }
-
-        }
-
-    }
 }

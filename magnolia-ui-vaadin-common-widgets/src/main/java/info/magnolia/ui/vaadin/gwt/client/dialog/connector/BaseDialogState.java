@@ -45,6 +45,8 @@ import com.vaadin.shared.ui.AbstractLayoutState;
 public class BaseDialogState extends AbstractLayoutState {
     public String componentDescription = "";
 
+    public boolean hasCloseButton = false;
+
     public Map<String, String> actions = new HashMap<String, String>();
 
     public Connector content;

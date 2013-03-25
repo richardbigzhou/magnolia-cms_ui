@@ -35,8 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
 import java.util.Map;
 
-import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView;
-
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -52,6 +50,8 @@ public interface BaseDialogView extends IsWidget, HasWidgets {
 
     void setCaption(String caption);
 
+    void showCloseButton();
+
     void setContent(Widget contentWidget);
 
     void setHeaderToolbar(Widget headerToolbarWidget);
@@ -59,19 +59,19 @@ public interface BaseDialogView extends IsWidget, HasWidgets {
     void setFooterToolbar(Widget footerToolbarWidget);
 
     void setPresenter(Presenter presenter);
-    
+
     Presenter getPresenter();
-    
+
     /**
      * Presenter.
      */
     public interface Presenter {
 
         void fireAction(String action);
-        
+
         void closeDialog();
 
-        void toggleDescription();
+        void setDescriptionVisibility(boolean isVisible);
     }
 
 }

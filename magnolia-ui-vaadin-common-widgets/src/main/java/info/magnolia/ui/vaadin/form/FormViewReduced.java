@@ -53,19 +53,11 @@ public interface FormViewReduced extends View, Item.Editor {
     @Override
     public Form asVaadinComponent();
 
-    // void addAction(String actionName, String actionLabel, EditorLikeActionListener callback);
-
-    // void setFormDescription(String description);
-
-    // void setCaption(String caption);
-
     void addFormSection(String tabName, FormSection inputFields);
 
     void showValidation(boolean isVisible);
 
     void setShowAllEnabled(boolean enabled);
-
-    // void suppressOwnActions();
 
     boolean isValid();
 

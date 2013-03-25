@@ -98,7 +98,7 @@ public class DialogMigrationTask extends AbstractTask {
             postProcessForExtendsAndReference();
         } catch (Exception e) {
             log.error("", e);
-            installContext.warn("Could not Migrate Dialod for the following module " + moduleName);
+            installContext.warn("Could not Migrate Dialog for the following module " + moduleName);
         }
     }
 
@@ -137,8 +137,8 @@ public class DialogMigrationTask extends AbstractTask {
 
         node.addNode("commit", NodeTypes.ContentNode.NAME).setProperty("label", "save changes");
         node.addNode("cancel", NodeTypes.ContentNode.NAME).setProperty("label", "cancel");
-        node.getNode("commit").addNode("actionDefinition", NodeTypes.ContentNode.NAME).setProperty("class", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition");
-        node.getNode("cancel").addNode("actionDefinition", NodeTypes.ContentNode.NAME).setProperty("class", "info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition");
+        node.getNode("commit").setProperty("class", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition");
+        node.getNode("cancel").setProperty("class", "info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition");
 
     }
 
@@ -146,8 +146,8 @@ public class DialogMigrationTask extends AbstractTask {
      * Handle Tabs.
      */
     private void handleTabs(Node dialog, Iterator<Node> tabNodes) throws RepositoryException {
-        Node formDefinition = dialog.addNode("formDefinition", NodeTypes.ContentNode.NAME);
-        Node dialogTabs = formDefinition.addNode("tabs", NodeTypes.ContentNode.NAME);
+        Node form = dialog.addNode("form", NodeTypes.ContentNode.NAME);
+        Node dialogTabs = form.addNode("tabs", NodeTypes.ContentNode.NAME);
         while (tabNodes.hasNext()) {
             Node tab = tabNodes.next();
             // Handle Fields Tab
@@ -341,7 +341,7 @@ public class DialogMigrationTask extends AbstractTask {
                 String beging = path.substring(0, path.lastIndexOf("/"));
                 String end = path.substring(beging.lastIndexOf("/"));
                 beging = beging.substring(0, beging.lastIndexOf("/"));
-                newPath = beging + "/formDefinition/tabs" + end;
+                newPath = beging + "/form/tabs" + end;
                 if (p.getSession().nodeExists(newPath)) {
                     p.setValue(newPath);
                     continue;

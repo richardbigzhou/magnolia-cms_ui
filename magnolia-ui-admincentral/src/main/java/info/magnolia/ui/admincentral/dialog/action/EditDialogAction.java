@@ -37,14 +37,14 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.dialog.FormDialogPresenterFactory;
+import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
-import info.magnolia.ui.vaadin.view.ModalLayer;
 import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.view.ModalLayer;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -61,18 +61,17 @@ import javax.jcr.RepositoryException;
  */
 public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
-    private final FormDialogPresenterFactory formDialogPresenterFactory;
-
     private final Node nodeToEdit;
+    private FormDialogPresenter formDialogPresenter;
 
     private final ModalLayer modalLayer;
     private EventBus eventBus;
 
     @Inject
-    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, FormDialogPresenterFactory formDialogPresenterFactory, final SubAppContext subAppContext, @Named("admincentral") final EventBus eventBus) {
+    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named("admincentral") final EventBus eventBus) {
         super(definition);
         this.nodeToEdit = nodeToEdit;
-        this.formDialogPresenterFactory = formDialogPresenterFactory;
+        this.formDialogPresenter = formDialogPresenter;
         this.modalLayer = subAppContext;
         this.eventBus = eventBus;
     }
@@ -90,9 +89,8 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
         final String parentNodePath = tempParentNodePath;
 
         final JcrNodeAdapter item = new JcrNodeAdapter(nodeToEdit);
-        final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.openDialog(getDefinition().getDialogName(), item, modalLayer);
 
-        formDialogPresenter.setCallback(new FormDialogPresenter.Callback() {
+        formDialogPresenter.start(item, getDefinition().getDialogName(), modalLayer, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {
@@ -105,7 +103,7 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
             @Override
             public void onCancel() {
-                formDialogPresenter.closeDialog();
+                //formDialogPresenter.closeDialog();
             }
         });
     }

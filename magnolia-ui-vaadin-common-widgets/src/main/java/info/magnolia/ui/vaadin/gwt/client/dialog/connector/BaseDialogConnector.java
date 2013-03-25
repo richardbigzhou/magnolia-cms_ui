@@ -71,6 +71,15 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
             }
         });
 
+        addStateChangeHandler("hasCloseButton", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                if (getState().hasCloseButton) {
+                    view.showCloseButton();
+                }
+            }
+        });
+
         addStateChangeHandler("componentDescription", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
@@ -111,7 +120,7 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
     protected void updateActionsFromState() {
         view.setActions(getState().actions);
     }
-    
+
     @Override
     public boolean delegateCaptionHandling() {
         return false;
@@ -156,7 +165,7 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
         this.view.setPresenter(this);
         return view.asWidget();
     }
-    
+
     @Override
     public void fireAction(String action) {
         rpc.fireAction(action);
@@ -168,7 +177,7 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
     }
 
     @Override
-    public void toggleDescription() {
-        rpc.toggleDescription();
+    public void setDescriptionVisibility(boolean isVisible) {
+        rpc.setDescriptionVisibility(isVisible);
     }
 }
