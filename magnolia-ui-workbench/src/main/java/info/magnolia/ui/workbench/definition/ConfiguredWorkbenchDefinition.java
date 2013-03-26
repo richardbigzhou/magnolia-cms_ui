@@ -34,7 +34,6 @@
 package info.magnolia.ui.workbench.definition;
 
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-import info.magnolia.ui.workbench.tree.drop.AlwaysTrueDropConstraint;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import java.util.ArrayList;
