@@ -50,9 +50,9 @@ public class ExportStreamer {
     /**
      * Opens a new download window with provided content.
      *
-     * @param the filename linked with the content
-     * @param the content
-     * @param the exact mime type of the content
+     * @param fileName The filename linked with the content
+     * @param fileContent The content
+     * @param mimeType The exact mime type of the content
      */
     public static void openFileInNewWindow(String fileName, final byte[] fileContent, String mimeType) {
         openFile(fileName, fileContent, mimeType, "_blank");
@@ -61,9 +61,9 @@ public class ExportStreamer {
     /**
      * Opens a download window (only the select target) with provided content.
      *
-     * @param The filename linked with the content
-     * @param The content
-     * @param The exact mime type of the content
+     * @param fileName The filename linked with the content
+     * @param fileContent The content
+     * @param mimeType The exact mime type of the content
      */
     public static void openFileInBlankWindow(String fileName, final byte[] fileContent, String mimeType) {
         openFile(fileName, fileContent, mimeType, "");
@@ -72,9 +72,9 @@ public class ExportStreamer {
     /**
      * Opens a new window with provided content.
      *
-     * @param The name of the report
-     * @param The report content
-     * @param The format of the report (i.e. PDF)
+     * @param reportName The name of the report
+     * @param report The report content
+     * @param format The format of the report (i.e. PDF)
      */
     public static void showFile(String reportName, final byte[] report, String format) {
         try {
@@ -88,9 +88,9 @@ public class ExportStreamer {
     /**
      * Starts download in current window with provided content.
      *
-     * @param The name of the report
-     * @param The report content
-     * @param The format of the report (i.e. PDF)
+     * @param reportName The name of the report
+     * @param report The report content
+     * @param format The format of the report (i.e. PDF)
      */
     public static void openFileInCurrentWindow(String filename, byte[] reportContent, String mimeType) {
         openFile(filename, reportContent, mimeType, "_self");
