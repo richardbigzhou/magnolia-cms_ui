@@ -34,7 +34,6 @@
 package info.magnolia.ui.workbench.definition;
 
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-import info.magnolia.ui.workbench.tree.drop.AlwaysTrueDropConstraint;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import java.util.ArrayList;
@@ -152,9 +151,9 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     @Override
     public Class<? extends DropConstraint> getDropConstraintClass() {
-        return (this.dropConstraintClass != null) ? this.dropConstraintClass : AlwaysTrueDropConstraint.class;
+        return this.dropConstraintClass;
     }
-    
+
     public void setDropConstraintClass(Class<? extends DropConstraint> dropConstraintClass) {
         this.dropConstraintClass = dropConstraintClass;
     }
