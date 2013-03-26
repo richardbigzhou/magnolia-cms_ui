@@ -1,6 +1,6 @@
 --- k1/src/main/java/com/vaadin/client/ui/treetable/TreeTableConnector.java	2013-03-22 16:23:56.000000000 +0100
 +++ k2/src/main/java/com/vaadin/client/ui/treetable/TreeTableConnector.java	2013-03-26 15:29:14.000000000 +0100
-@@ -21,18 +21,16 @@
+@@ -21,27 +21,27 @@
  import com.vaadin.client.UIDL;
  import com.vaadin.client.Util;
  import com.vaadin.client.ui.FocusableScrollPanel;
@@ -26,6 +26,39 @@
 
      @Override
      public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
+         FocusableScrollPanel widget = null;
+         int scrollPosition = 0;
+-        if (getWidget().collapseRequest) {
++
++        // MGNLUI-961 Without lazy loading, we need to restore scrollTop not only for collapseRequests (part. 1)
++        // if (getWidget().collapseRequest) {
+             widget = (FocusableScrollPanel) getWidget().getWidget(1);
+             scrollPosition = widget.getScrollPosition();
+-        }
++        // }
+         getWidget().animationsEnabled = uidl.getBooleanAttribute("animate");
+         getWidget().colIndexOfHierarchy = uidl
+                 .hasAttribute(TreeTableConstants.ATTRIBUTE_HIERARCHY_COLUMN_INDEX) ? uidl
+@@ -60,6 +60,8 @@
+                 }
+             }
+
++            // MGNLUI-961 Without lazy loading, we need to restore scrollTop not only for collapseRequests (part. 2)
++        }
+             int scrollPosition2 = widget.getScrollPosition();
+             if (scrollPosition != scrollPosition2) {
+                 widget.setScrollPosition(scrollPosition);
+@@ -67,8 +69,8 @@
+
+             // check which rows are needed from the server and initiate a
+             // deferred fetch
+-            getWidget().onScroll(null);
+-        }
++            // getWidget().onScroll(null);
++            // }
+         // Recalculate table size if collapse request, or if page length is zero
+         // (not sent by server) and row count changes (#7908).
+         if (getWidget().collapseRequest
 @@ -80,7 +82,7 @@
               * cleans up state. Be careful if touching this, you will break
               * pageLength=0 if you remove this.
@@ -35,7 +68,7 @@
 
              getWidget().collapseRequest = false;
          }
-@@ -108,8 +107,8 @@
+@@ -108,8 +110,8 @@
      }
 
      @Override

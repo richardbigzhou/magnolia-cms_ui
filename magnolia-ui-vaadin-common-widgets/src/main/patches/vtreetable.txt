@@ -135,3 +135,16 @@
          collapsedRowKey = rowKey;
          collapseRequest = true;
          client.updateVariable(paintableId, "toggleCollapsed", rowKey, true);
+@@ -903,4 +905,12 @@
+         setTotalRows(newTotalRows);
+     }
++
++    /**
++     * MGNLUI-961 Disables ScrollTable's lazy-loading for trees, by preventing the client from updating pagelength
++     * variable (should be kept to 0 on the server).
++     */
++    @Override
++    public void updatePageLength() {
++    }
+
+ }
