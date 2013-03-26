@@ -1,5 +1,5 @@
---- k1/src/main/java/com/vaadin/client/ui/VTreeTable.java	2013-02-22 10:34:48.000000000 +0200
-+++ k2/src/main/java/com/vaadin/client/ui/VTreeTable.java	2013-02-22 12:26:00.000000000 +0200
+--- k1/src/main/java/com/vaadin/client/ui/VTreeTable.java	2013-03-25 18:03:58.000000000 +0100
++++ k2/src/main/java/com/vaadin/client/ui/VTreeTable.java	2013-03-26 15:46:24.000000000 +0100
 @@ -16,6 +16,8 @@
 
  package com.vaadin.client.ui;
@@ -9,7 +9,15 @@
  import java.util.ArrayList;
  import java.util.Iterator;
  import java.util.LinkedList;
-@@ -39,9 +41,9 @@
+@@ -26,7 +28,6 @@
+ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+ import com.google.gwt.dom.client.Document;
+ import com.google.gwt.dom.client.ImageElement;
+-import com.google.gwt.dom.client.SpanElement;
+ import com.google.gwt.dom.client.Style.Display;
+ import com.google.gwt.dom.client.Style.Unit;
+ import com.google.gwt.dom.client.Style.Visibility;
+@@ -39,9 +40,9 @@
  import com.vaadin.client.ComputedStyle;
  import com.vaadin.client.UIDL;
  import com.vaadin.client.Util;
@@ -21,7 +29,7 @@
 
      /** For internal use only. May be removed or replaced in the future. */
      public static class PendingNavigationEvent {
-@@ -86,7 +88,7 @@
+@@ -86,7 +87,7 @@
      public boolean animationsEnabled;
 
      /** For internal use only. May be removed or replaced in the future. */
@@ -30,7 +38,8 @@
 
      /** For internal use only. May be removed or replaced in the future. */
      public boolean focusParentResponsePending;
-@@ -128,10 +130,10 @@
+@@ -127,11 +128,11 @@
+         return colIndexOfHierarchy + (showRowHeaders ? 1 : 0);
      }
 
 -    public class VTreeTableScrollBody extends VScrollTable.VScrollTableBody {
@@ -43,7 +52,7 @@
              super();
          }
 
-@@ -145,13 +147,13 @@
+@@ -145,13 +146,13 @@
          }
 
          public class VTreeTableRow extends
@@ -63,7 +72,7 @@
              protected Widget widgetInHierarchyColumn;
 
              public VTreeTableRow(UIDL uidl, char[] aligns2) {
-@@ -204,7 +206,7 @@
+@@ -204,7 +205,7 @@
                  return false;
              }
 
@@ -72,7 +81,7 @@
                  if (isTreeCellAdded) {
                      return false;
                  }
-@@ -233,7 +235,7 @@
+@@ -233,14 +234,14 @@
 
              }
 
@@ -81,7 +90,6 @@
                  if (getIndentWidth() > 0) {
                      treeSpacer.getParentElement().getStyle()
                              .setPaddingLeft(getIndent(), Unit.PX);
-@@ -240,7 +242,7 @@
                      treeSpacer.getStyle().setWidth(getIndent(), Unit.PX);
                      int colWidth = getColWidth(getHierarchyColumnIndex());
                      if (colWidth > 0 && getIndent() > colWidth) {
@@ -90,7 +98,7 @@
                                  getIndent(), false);
                      }
                  }
-@@ -294,7 +296,7 @@
+@@ -294,7 +295,7 @@
                  super.setCellWidth(cellIx, width);
              }
 
@@ -99,7 +107,7 @@
                  return (depth + 1) * getIndentWidth();
              }
          }
-@@ -425,7 +427,7 @@
+@@ -425,7 +426,7 @@
              }
          }
 
@@ -108,6 +116,16 @@
              return indentWidth;
          }
 
+@@ -442,7 +443,8 @@
+                 VTreeTableRow next = (VTreeTableRow) iterator.next();
+                 maxIndent = Math.max(maxIndent, next.getIndent());
+             }
+-            this.maxIndent = maxIndent;
++            // MGNLUI-962 We don't want expanding the tree to have impact on column widths.
++            // this.maxIndent = maxIndent;
+         }
+
+         private void detectIndent(VTreeTableRow vTreeTableRow) {
 @@ -862,7 +864,7 @@
          return super.handleNavigation(keycode, ctrl, shift);
      }

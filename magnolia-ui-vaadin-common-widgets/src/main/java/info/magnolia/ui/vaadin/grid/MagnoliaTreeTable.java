@@ -36,12 +36,13 @@ package info.magnolia.ui.vaadin.grid;
 import java.util.Collection;
 import java.util.Map;
 
+import com.vaadin.data.Validator;
+import com.vaadin.shared.ui.treetable.TreeTableState;
 import com.vaadin.ui.TreeTable;
 
 /**
  * VMagnoliaTreeTable.
  */
-// @ClientWidget(VMagnoliaTreeTable.class)
 public class MagnoliaTreeTable extends TreeTable {
 
     public MagnoliaTreeTable() {
@@ -77,5 +78,21 @@ public class MagnoliaTreeTable extends TreeTable {
                 unselect(id);
             }
         }
+    }
+
+    /**
+     * MGNLUI-962 Overridden so that table is not marked as dirty without changes.
+     */
+    @Override
+    protected TreeTableState getState() {
+        return (TreeTableState) getState(false);
+    }
+
+    /**
+     * MGNLUI-962 Overridden to fulfill AbstractField's repaintIsNotNeeded, super impl returns empty collection instead.
+     */
+    @Override
+    public Collection<Validator> getValidators() {
+        return null;
     }
 }
