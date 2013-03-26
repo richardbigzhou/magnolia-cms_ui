@@ -152,9 +152,9 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     @Override
     public Class<? extends DropConstraint> getDropConstraintClass() {
-        return (this.dropConstraintClass != null) ? this.dropConstraintClass : AlwaysTrueDropConstraint.class;
+        return this.dropConstraintClass;
     }
-    
+
     public void setDropConstraintClass(Class<? extends DropConstraint> dropConstraintClass) {
         this.dropConstraintClass = dropConstraintClass;
     }
