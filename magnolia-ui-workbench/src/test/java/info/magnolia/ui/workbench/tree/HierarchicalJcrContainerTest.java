@@ -436,7 +436,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
 
     @Test
-    public void testmoveItem() throws RepositoryException {
+    public void testMoveItem() throws RepositoryException {
         // GIVEN
         Node source = AbstractJcrContainerTest.createNode(rootNode, "source", NodeTypes.Content.NAME, PROPERTY_1, "name1");
         Node target = AbstractJcrContainerTest.createNode(rootNode, "target", NodeTypes.Content.NAME, PROPERTY_1, "name2");
@@ -451,7 +451,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testmoveItemFalseChildCanNotBeSetAsParent() throws RepositoryException {
+    public void testMoveItemFalseChildCanNotBeSetAsParent() throws RepositoryException {
         // GIVEN
         Node source = AbstractJcrContainerTest.createNode(rootNode, "source", NodeTypes.Content.NAME, PROPERTY_1, "name1");
         Node target = AbstractJcrContainerTest.createNode(source, "target", NodeTypes.Content.NAME, PROPERTY_1, "name2");
@@ -465,7 +465,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testmoveItemFalseNoOperationOnProperty() throws RepositoryException {
+    public void testMoveItemFalseNoOperationOnProperty() throws RepositoryException {
         // GIVEN
         Node source = AbstractJcrContainerTest.createNode(rootNode, "source", NodeTypes.Content.NAME, PROPERTY_1, "name1");
         Property sourceProperty = source.setProperty("property","property");
@@ -479,7 +479,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void tesmoveItemBefore() throws RepositoryException {
+    public void testMoveItemBefore() throws RepositoryException {
         // GIVEN
         Node first = AbstractJcrContainerTest.createNode(rootNode, "first", NodeTypes.Content.NAME, PROPERTY_1, "name1");
         Node second = AbstractJcrContainerTest.createNode(rootNode, "second", NodeTypes.Content.NAME, PROPERTY_1, "name2");
@@ -499,7 +499,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void tesmoveItemAfter() throws RepositoryException {
+    public void testMoveItemAfter() throws RepositoryException {
         // GIVEN
         Node first = AbstractJcrContainerTest.createNode(rootNode, "first", NodeTypes.Content.NAME, PROPERTY_1, "name1");
         Node second = AbstractJcrContainerTest.createNode(rootNode, "second", NodeTypes.Content.NAME, PROPERTY_1, "name2");
