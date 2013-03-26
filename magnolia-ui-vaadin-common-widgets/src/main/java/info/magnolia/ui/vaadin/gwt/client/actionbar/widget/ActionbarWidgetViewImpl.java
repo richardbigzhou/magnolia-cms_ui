@@ -334,7 +334,9 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
     @Override
     public void setOpen(boolean isOpen) {
         actualizeToggleState(isToggledOpen);
-        presenter.forceLayout();
+        if (isToggledOpen != isOpen) {
+            presenter.forceLayout();
+        }
     }
 
     @Override
