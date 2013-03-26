@@ -62,7 +62,7 @@ public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDe
 
         Node node = (Node) item;
 
-        node = findAncestorOfType(node, "mgnl:folder");
+        node = NodeUtil.getNearestAncestorOfType(node, "mgnl:folder");
         if (node == null) {
             node = (Node) item.getAncestor(0);
         }
@@ -73,16 +73,6 @@ public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDe
         path = newNode.getPath();
     }
 
-    private Node findAncestorOfType(Node node, String nodeType) throws RepositoryException {
-        while (node.getDepth() > 0) {
-            if (NodeUtil.isNodeType(node, nodeType)) {
-                return node;
-            }
-            node = node.getParent();
-        }
-        return null;
-    }
-    
     @Override
     protected String getItemPath() throws RepositoryException {
         return path;
