@@ -115,8 +115,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
         final ModalCloser modalCloser = modalLayer.openModal(view);
 
-        showCloseButton();
-
          addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
              @Override
              public void onClose(BaseDialog.DialogCloseEvent event) {
@@ -125,6 +123,8 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
                  event.getView().asVaadinComponent().removeDialogCloseHandler(this);
              }
          });
+        showCloseButton();
+
         initActions(dialogDefinition);
 
         return view;

@@ -78,13 +78,14 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
         });
 
         addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
-
             @Override
             public void onClose(BaseDialog.DialogCloseEvent event) {
                 event.getView().asVaadinComponent().removeDialogCloseHandler(this);
                 listener.onClose();
             }
         });
+
+        showCloseButton();
     }
 
     @Override
