@@ -65,7 +65,6 @@ import com.vaadin.client.ui.AbstractLayoutConnector;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.Connector;
-import com.vaadin.shared.communication.SharedState;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -193,11 +192,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         this.view = new MagnoliaShellViewImpl(eventBus);
         this.view.setPresenter(this);
         return view.asWidget();
-    }
-
-    @Override
-    protected SharedState createState() {
-        return super.createState();
     }
 
     @Override

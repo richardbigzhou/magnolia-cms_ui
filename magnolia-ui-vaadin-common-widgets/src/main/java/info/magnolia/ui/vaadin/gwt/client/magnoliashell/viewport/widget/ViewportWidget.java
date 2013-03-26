@@ -80,7 +80,7 @@ public class ViewportWidget extends FlowPanel {
             }
         });
     }
-
+    
     public void showLoadingPane() {
         loadingPane.show();
     }
@@ -143,7 +143,7 @@ public class ViewportWidget extends FlowPanel {
 
     public void setVisibleApp(Widget w) {
         if (w != visibleApp) {
-            if (transitionDelegate != null) {
+            if (transitionDelegate != null && isActive()) {
                 transitionDelegate.setVisibleApp(this, w);
             } else {
                 doSetVisibleApp(w);

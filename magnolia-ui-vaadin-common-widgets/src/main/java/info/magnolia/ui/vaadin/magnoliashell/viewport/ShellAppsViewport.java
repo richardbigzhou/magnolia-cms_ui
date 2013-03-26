@@ -36,6 +36,10 @@ package info.magnolia.ui.vaadin.magnoliashell.viewport;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 
+import java.util.Iterator;
+
+import com.vaadin.ui.Component;
+
 /**
  * Shell apps viewport.
  */
@@ -45,6 +49,16 @@ public class ShellAppsViewport extends ShellViewport {
         super(shell);
         addStyleName("shellapps");
         getState().type = ViewportType.SHELL_APP;
+    }
+    
+    @Override
+    public void display(Component content) {
+        Iterator<Component> iterator = iterator();
+        while (iterator.hasNext()) {
+            Component next = iterator.next();
+            next.setVisible(next == content);
+        }
+        super.display(content);
     }
 
 }

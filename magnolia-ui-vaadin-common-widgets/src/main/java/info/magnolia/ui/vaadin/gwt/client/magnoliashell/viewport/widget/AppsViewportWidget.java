@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.icon.widget.LoadingIconWidget;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.Callbacks;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
@@ -77,7 +76,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
     private static final String CLOSE_CLASSNAME = "v-app-close";
 
-    private final VAppPreloader preloader = new VAppPreloader();
+    private final AppPreloader preloader = new AppPreloader();
 
     private final TouchDelegate delegate = new TouchDelegate(this);
 
@@ -325,6 +324,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     public void insert(Widget w, int beforeIndex) {
         super.insert(w, beforeIndex);
         w.getElement().appendChild(createCloseButton());
+        w.getElement().getStyle().setVisibility(Visibility.HIDDEN);
     }
 
     private Element createCloseButton() {
@@ -359,51 +359,6 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
     public boolean hasPreloader() {
         return RootPanel.get().getWidgetIndex(preloader) >= 0;
-    }
-
-    /**
-     * Preloader of the apps.
-     */
-    class VAppPreloader extends Widget {
-
-        private final Element root = DOM.createDiv();
-
-        private final Element navigator = DOM.createElement("ul");
-
-        private final Element tab = DOM.createElement("li");
-
-        private final Element tabCaption = DOM.createSpan();
-
-        public VAppPreloader() {
-            super();
-            setElement(root);
-            setStyleName("v-app-preloader v-viewport v-shell-tabsheet app");
-
-            navigator.addClassName("nav nav-tabs single-tab");
-            tab.addClassName("clearfix active");
-            tabCaption.setClassName("tab-title");
-
-            tab.appendChild(tabCaption);
-            navigator.appendChild(tab);
-            root.appendChild(navigator);
-
-            Element preloader = DOM.createDiv();
-            preloader.addClassName("v-preloader");
-
-            Element loading = DOM.createSpan();
-            loading.addClassName("v-caption");
-            loading.setInnerText("Loading");
-
-            preloader.appendChild(new LoadingIconWidget().getElement());
-            preloader.appendChild(DOM.createElement("br"));
-            preloader.appendChild(loading);
-
-            root.appendChild(preloader);
-        }
-
-        public void setCaption(String caption) {
-            tabCaption.setInnerHTML(caption);
-        }
     }
 
     public void removePreloader() {
