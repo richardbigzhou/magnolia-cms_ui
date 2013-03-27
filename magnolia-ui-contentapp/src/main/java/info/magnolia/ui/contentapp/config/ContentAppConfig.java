@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.action;
+package info.magnolia.ui.contentapp.config;
 
-import info.magnolia.ui.dialog.DialogPresenter;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.workbench.config.WorkbenchConfig;
 
 /**
- * Creates an action based on an {@link ActionDefinition}.
+ * ContentAppConfig.
  */
-public interface DialogActionFactory {
+public class ContentAppConfig {
 
-    Action createAction(ActionDefinition actionDefinition, DialogPresenter dialogPresenter);
+    public final EditorConfig editor = new EditorConfig();
+    public final WorkbenchConfig workbench = new WorkbenchConfig();
 
 }

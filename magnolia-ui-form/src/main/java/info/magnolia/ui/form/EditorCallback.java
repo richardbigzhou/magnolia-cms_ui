@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,56 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.action;
-
-import info.magnolia.ui.model.action.ActionDefinition;
+package info.magnolia.ui.form;
 
 /**
- * ConfiguredDialogActionDefinition.
+ * EditorCallback.
  */
-public class ConfiguredDialogActionDefinition implements DialogActionDefinition {
+public interface EditorCallback {
+    void onCancel();
 
-    private String name;
-
-    private String label;
-
-    private String i18nBasename;
-
-    private ActionDefinition actionDefinition;
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    @Override
-    public String getI18nBasename() {
-        return i18nBasename;
-    }
-
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
-    }
-
-    @Override
-    public ActionDefinition getActionDefinition() {
-        return actionDefinition;
-    }
-
-    public void setActionDefinition(ActionDefinition actionDefinition) {
-        this.actionDefinition = actionDefinition;
-    }
+    void onSuccess(String actionName);
 }

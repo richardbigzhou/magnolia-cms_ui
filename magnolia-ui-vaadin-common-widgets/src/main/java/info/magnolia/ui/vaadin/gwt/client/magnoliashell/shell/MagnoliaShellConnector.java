@@ -177,8 +177,10 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {
         List<ComponentConnector> children = getChildComponents();
         for (ComponentConnector connector : children) {
-            final ViewportConnector vc = (ViewportConnector) connector;
-            view.updateViewport(vc.getWidget(), vc.getType());
+            if (connector instanceof ViewportConnector) {
+                final ViewportConnector vc = (ViewportConnector) connector;
+                view.updateViewport(vc.getWidget(), vc.getType());   
+            }
         }
 
         if (!historyInitialized) {

@@ -40,4 +40,9 @@ import info.magnolia.ui.workbench.ContentView;
  */
 public interface TreeView extends ContentView {
 
+     /**
+     * Deactivate the drag And Drop functionality.
+     */
+    public void deactivateDragAndDrop();
+
 }

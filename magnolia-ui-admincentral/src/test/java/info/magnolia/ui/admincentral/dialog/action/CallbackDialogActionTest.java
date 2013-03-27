@@ -37,14 +37,15 @@ import static org.junit.Assert.assertEquals;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.form.FormItem;
-import info.magnolia.ui.form.FormPresenter;
-import info.magnolia.ui.vaadin.view.ModalLayer;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
+import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
-import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
+import info.magnolia.ui.vaadin.view.ModalLayer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -70,7 +71,7 @@ public class CallbackDialogActionTest {
     public void executeDefaultOnSuccessTest() throws ActionExecutionException {
         // GIVEN
         initDefinition("name", "label", null, null);
-        dialogAction = new CallbackDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new CallbackDialogAction(dialogActionDefinition, presenter.getCallback());
 
         // WHEN
         dialogAction.execute();
@@ -83,7 +84,7 @@ public class CallbackDialogActionTest {
     public void executeCustomOnSuccessTest() throws ActionExecutionException {
         // GIVEN
         initDefinition("name", "label", null, "reload");
-        dialogAction = new CallbackDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new CallbackDialogAction(dialogActionDefinition, presenter.getCallback());
 
         // WHEN
         dialogAction.execute();
@@ -96,7 +97,7 @@ public class CallbackDialogActionTest {
     public void executeOnCancelTest() throws ActionExecutionException {
         // GIVEN
         initDefinition("name", "label", false, null);
-        dialogAction = new CallbackDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new CallbackDialogAction(dialogActionDefinition, presenter.getCallback());
 
         // WHEN
         dialogAction.execute();
@@ -115,78 +116,21 @@ public class CallbackDialogActionTest {
         this.dialogActionDefinition.setSuccessActionName(successActionName != null ? successActionName : "success");
     }
 
-    /**
-     * Form presenter test.
-     */
-    public static class FormPresenterTest implements FormPresenter {
-        private Item item;
 
-        public void setTestItem(Item item) {
-            this.item = item;
-        }
-
-        @Override
-        public Callback getCallback() {
-            return null;
-        }
-
-        @Override
-        public EventBus getEventBus() {
-            return null;
-        }
-
-        @Override
-        public FormView start(Item item, Callback callback) {
-            return null;
-        }
-
-        @Override
-        public FormView start(Item item, FormItem parent) {
-            return null;
-        }
-
-        @Override
-        public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
-
-        }
-
-        @Override
-        public boolean isValid() {
-            return true;
-        }
-
-        @Override
-        public void showValidation(boolean isVisible) {
-
-        }
-
-        @Override
-        public Item getItemDataSource() {
-            return item;
-        }
-
-        @Override
-        public FormView getView() {
-            return null;
-        }
-    }
 
     /**
      * Form dialog presenter test.
      */
-    public static class FormDialogPresenterTest implements FormDialogPresenter {
+    public static class FormDialogPresenterTest implements FormDialogPresenter, EditorValidator {
 
         private String callbackActionCalled;
-
-        private FormPresenter form = new FormPresenterTest();
 
         public String getCallbackActionCalled() {
             return callbackActionCalled;
         }
 
-        @Override
-        public Callback getCallback() {
-            return new Callback() {
+        public EditorCallback getCallback() {
+            return new EditorCallback() {
 
                 @Override
                 public void onSuccess(String actionName) {
@@ -206,17 +150,21 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public FormPresenter getForm() {
-            return form;
-        }
-
-        @Override
-        public EventBus getEventBus() {
+        public DialogView start(Item item, DialogDefinition dialogDefinition, ModalLayer modalLayer, EditorCallback callback) {
             return null;
         }
 
         @Override
-        public FormDialogView start(Item item, ModalLayer modalLayer, Callback callback) {
+        public void showCloseButton() {
+        }
+
+        @Override
+        public DialogView start(Item item, String dialogName, ModalLayer modalLayer, EditorCallback callback) {
+            return null;
+        }
+
+        @Override
+        public EventBus getEventBus() {
             return null;
         }
 
@@ -229,17 +177,26 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
+        public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
             // TODO Auto-generated method stub
 
         }
 
         @Override
-        public void addActionCallback(String actionName, EditorLikeActionListener callback) {
+        public void addActionCallback(String actionName, DialogActionListener callback) {
             // TODO Auto-generated method stub
 
         }
 
 
+        @Override
+        public void showValidation(boolean visible) {
+
+        }
+
+        @Override
+        public boolean isValid() {
+            return true;
+        }
     }
 }

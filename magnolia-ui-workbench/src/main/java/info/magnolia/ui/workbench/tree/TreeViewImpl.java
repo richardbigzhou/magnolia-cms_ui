@@ -309,4 +309,9 @@ public class TreeViewImpl implements TreeView {
 
         return null;
     }
+
+    @Override
+    public void deactivateDragAndDrop() {
+        treeTable.setDragMode(TableDragMode.NONE);
+    }
 }

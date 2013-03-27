@@ -104,10 +104,13 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
         return presenter;
     }
 
-    protected DialogHeaderWidget.VDialogHeaderCallback createHeaderCallback() {
-        return new DialogHeaderWidget.VDialogHeaderCallback() {
+    protected DialogHeaderWidget.DialogHeaderCallback createHeaderCallback() {
+        return new DialogHeaderWidget.DialogHeaderCallback() {
             @Override
             public void onDescriptionVisibilityChanged(boolean isVisible) {
+                if (presenter != null) {
+                    presenter.setDescriptionVisibility(isVisible);
+                }
             }
 
             @Override
@@ -129,6 +132,11 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
     @Override
     public void setCaption(String caption) {
         header.setCaption(caption);
+    }
+
+    @Override
+    public void showCloseButton() {
+        header.showCloseButton();
     }
 
     @Override

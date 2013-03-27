@@ -31,10 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.action;
+package info.magnolia.ui.dialog.action;
 
 import info.magnolia.cms.beans.config.ConfigurationException;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.model.action.Action;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -43,15 +44,17 @@ import info.magnolia.ui.model.action.ActionExecutor;
 import javax.inject.Inject;
 
 /**
- * A base implementation of {@link ActionExecutor}. Creates the {@link Action} from the implementation class using componentProvider and binds the ActionDefinition to the Action.
- * Subclasses need only to implement {@link #getActionDefinition(String)}.
+ * DialogActionExecutor.
  */
-public abstract class AbstractActionExecutor implements ActionExecutor {
+public class DialogActionExecutor implements ActionExecutor {
 
-    private ComponentProvider componentProvider;
+
+    private final ComponentProvider componentProvider;
+    private DialogDefinition dialogDefinition;
+
 
     @Inject
-    public AbstractActionExecutor(final ComponentProvider componentProvider) {
+    public DialogActionExecutor(final ComponentProvider componentProvider) {
         this.componentProvider = componentProvider;
     }
 
@@ -59,11 +62,16 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
     public final void execute(String actionName, Object... args) throws ActionExecutionException {
         try {
             Action action = createAction(actionName, args);
-                action.execute();
+            action.execute();
         }
         catch (ConfigurationException e) {
             throw new ActionExecutionException(e);
         }
+    }
+
+    @Override
+    public ActionDefinition getActionDefinition(String actionName) {
+        return dialogDefinition.getActions().get(actionName);
     }
 
     /**
@@ -87,4 +95,7 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
         throw new ConfigurationException("Could not create action: " + actionName);
     }
 
+    public void setDialogDefinition(DialogDefinition dialogDefinition) {
+        this.dialogDefinition = dialogDefinition;
+    }
 }

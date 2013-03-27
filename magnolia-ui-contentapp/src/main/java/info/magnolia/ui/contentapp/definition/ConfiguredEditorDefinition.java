@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.definition;
+package info.magnolia.ui.contentapp.definition;
+
+import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Standard form definition implementation.
- *
- * @see FormDefinition
+ * ConfiguredEditorDefinition.
  */
-public class ConfiguredFormDefinition implements FormDefinition {
+public class ConfiguredEditorDefinition implements EditorDefinition {
 
-    public static final String TABS_NODE_NAME = "tabs";
-    public static final String ACTIONS_NODE_NAME = "actions";
-    public static final String EXTEND_PROPERTY_NAME = "extends";
+    private FormDefinition form;
 
-    private String id;
+    private List<FormActionItemDefinition> actions = new ArrayList<FormActionItemDefinition>();
 
     private String label;
 
@@ -55,24 +54,13 @@ public class ConfiguredFormDefinition implements FormDefinition {
 
     private String description;
 
-    private List<TabDefinition> tabs = new ArrayList<TabDefinition>();
+    private String workspace;
 
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+    private NodeTypeDefinition nodeType;
 
     @Override
     public String getLabel() {
         return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     @Override
@@ -80,30 +68,56 @@ public class ConfiguredFormDefinition implements FormDefinition {
         return i18nBasename;
     }
 
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
-    }
-
     @Override
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    @Override
+    public NodeTypeDefinition getNodeType() {
+        return nodeType;
+    }
+
+    @Override
+    public FormDefinition getForm() {
+        return form;
+    }
+
+    @Override
+    public List<FormActionItemDefinition> getActions() {
+        return actions;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    @Override
-    public List<TabDefinition> getTabs() {
-        return tabs;
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
     }
 
-    public void setTabs(List<TabDefinition> tabs) {
-        this.tabs = tabs;
+    public void setForm(FormDefinition form) {
+        this.form = form;
     }
 
-    public boolean addTab(TabDefinition tabDefinition) {
-        return tabs.add(tabDefinition);
+    public void setActions(List<FormActionItemDefinition> actions) {
+        this.actions = actions;
     }
 
+    public void setNodeType(NodeTypeDefinition nodeType) {
+        this.nodeType = nodeType;
+    }
 }

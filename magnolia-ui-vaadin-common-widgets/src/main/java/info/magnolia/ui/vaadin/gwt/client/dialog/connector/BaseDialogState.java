@@ -33,10 +33,25 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
 
-import info.magnolia.ui.vaadin.gwt.client.editorlike.connector.EditorLikeComponentState;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.vaadin.shared.Connector;
+import com.vaadin.shared.ui.AbstractLayoutState;
 
 /**
  * BaseDialogState.
  */
-public class BaseDialogState extends EditorLikeComponentState {
+public class BaseDialogState extends AbstractLayoutState {
+    public String componentDescription = "";
+
+    public boolean hasCloseButton = false;
+
+    public Map<String, String> actions = new HashMap<String, String>();
+
+    public Connector content;
+
+    public Connector headerToolbar;
+
+    public Connector footerToolbar;
 }

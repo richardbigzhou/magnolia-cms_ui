@@ -54,6 +54,14 @@
       <implementation>info.magnolia.ui.contentapp.ConfiguredItemSubAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
+      <type>info.magnolia.ui.contentapp.definition.EditorDefinition</type>
+      <implementation>info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.contentapp.definition.FormActionItemDefinition</type>
+      <implementation>info.magnolia.ui.contentapp.definition.ConfiguredFormActionItemDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
       <type>info.magnolia.ui.workbench.definition.WorkbenchDefinition</type>
       <implementation>info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
     </type-mapping>
@@ -84,10 +92,6 @@
     <type-mapping>
       <type>info.magnolia.ui.form.field.definition.FieldDefinition</type>
       <implementation>info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.dialog.action.DialogActionDefinition</type>
-      <implementation>info.magnolia.ui.dialog.action.ConfiguredDialogActionDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition</type>
@@ -201,11 +205,6 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.dialog.action.DialogActionFactory</type>
-      <implementation>info.magnolia.ui.dialog.action.DialogActionFactoryImpl</implementation>
-    </component>
-
-    <component>
       <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory</type>
       <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenterFactory</implementation>
     </component>
@@ -280,20 +279,12 @@
 
     <!-- Moved into subApp due to use of subApps EventBus -->
     <component>
-      <type>info.magnolia.ui.form.FormPresenterFactory</type>
-      <implementation>info.magnolia.ui.form.FormPresenterFactoryImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.dialog.FormDialogPresenterFactory</type>
-      <implementation>info.magnolia.ui.dialog.FormDialogPresenterFactoryImpl</implementation>
+      <type>info.magnolia.ui.dialog.FormDialogPresenter</type>
+      <implementation>info.magnolia.ui.dialog.FormDialogPresenterImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.form.field.builder.FieldFactory</type>
       <implementation>info.magnolia.ui.form.field.builder.FieldFactory</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.form.action.FormActionFactory</type>
-      <implementation>info.magnolia.ui.form.action.FormActionFactoryImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.form.action.SaveFormActionDefinition</type>
@@ -309,10 +300,16 @@
     </component>
     <component>
       <type>info.magnolia.ui.vaadin.form.FormView</type>
+      <implementation>info.magnolia.ui.vaadin.form.ItemFormView</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.vaadin.form.FormViewReduced</type>
       <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
 
-    <!-- Declaring page view for all apps embedding old adminCentral views 
+
+    <!-- Declaring page view for all apps embedding old adminCentral views
       in iFrame -->
     <component>
       <type>info.magnolia.ui.admincentral.app.tools.PageView</type>

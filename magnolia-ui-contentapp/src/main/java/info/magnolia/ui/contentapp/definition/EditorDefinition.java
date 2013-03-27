@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.rpc;
+package info.magnolia.ui.contentapp.definition;
 
-import com.vaadin.shared.communication.ServerRpc;
+import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+
+import java.util.List;
 
 /**
- * BaseDialogServerRpc.
+ * EditorDefinition.
  */
-public interface ActionFiringServerRpc extends ServerRpc {
+public interface EditorDefinition {
 
-    void fireAction(String actionId);
+    String getLabel();
 
-    void closeSelf();
+    String getI18nBasename();
+
+    String getDescription();
+
+    String getWorkspace();
+
+    NodeTypeDefinition getNodeType();
+
+    FormDefinition getForm();
+
+    List<FormActionItemDefinition> getActions();
 }

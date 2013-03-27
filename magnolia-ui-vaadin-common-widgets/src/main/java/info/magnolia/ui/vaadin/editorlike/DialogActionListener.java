@@ -31,26 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editorlike.connector;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import com.vaadin.shared.Connector;
-import com.vaadin.shared.ui.AbstractLayoutState;
+package info.magnolia.ui.vaadin.editorlike;
 
 /**
- * Common state class for the editor components like forms and dialogs..
+ * Action execution callback.
  */
-public class EditorLikeComponentState extends AbstractLayoutState {
-
-    public String componentDescription = "";
-
-    public Map<String, String> actions = new HashMap<String, String>();
-
-    public Connector content;
-
-    public Connector headerToolbar;
-
-    public Connector footerToolbar;
+public interface DialogActionListener {
+    void onActionExecuted(final String actionName);
 }

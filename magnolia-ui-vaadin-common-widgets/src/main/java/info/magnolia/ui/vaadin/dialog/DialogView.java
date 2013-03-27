@@ -40,14 +40,6 @@ import info.magnolia.ui.vaadin.view.View;
  */
 public interface DialogView extends View {
 
-    /**
-     * Action execution callback.
-     */
-    interface DialogActionListener {
-
-        void onActionExecuted(final String actionName);
-    }
-
     void setDialogDescription(String description);
 
     void setCaption(String caption);

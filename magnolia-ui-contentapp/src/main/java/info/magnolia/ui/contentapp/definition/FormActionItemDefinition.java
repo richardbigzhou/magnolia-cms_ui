@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,34 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.config;
-
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.dialog.action.ConfiguredDialogActionDefinition;
-import info.magnolia.ui.dialog.action.DialogActionDefinition;
+package info.magnolia.ui.contentapp.definition;
 
 /**
- * Builder for building a dialog action.
+ * FormActionItemDefinition.
  */
-public class DialogActionBuilder {
+public interface FormActionItemDefinition {
 
-    private final ConfiguredDialogActionDefinition definition = new ConfiguredDialogActionDefinition();
-
-    public DialogActionBuilder(String name) {
-        this.definition.setName(name);
-    }
-
-    public DialogActionBuilder label(String label) {
-        definition.setLabel(label);
-        return this;
-    }
-
-    public DialogActionBuilder action(ActionDefinition actionDefinition) {
-        definition.setActionDefinition(actionDefinition);
-        return this;
-    }
-
-    public DialogActionDefinition exec() {
-        return definition;
-    }
+    String getName();
 }

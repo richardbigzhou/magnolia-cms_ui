@@ -36,7 +36,7 @@ package info.magnolia.ui.dialog;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -57,11 +57,6 @@ public class BaseDialogPresenter implements DialogPresenter {
     }
 
     @Override
-    public Callback getCallback() {
-        return null;
-    }
-
-    @Override
     public DialogView getView() {
         return view;
     }
@@ -72,18 +67,24 @@ public class BaseDialogPresenter implements DialogPresenter {
     }
 
     @Override
+    public void showCloseButton() {
+        view.asVaadinComponent().showCloseButton();
+    }
+
+    @Override
     public void addDialogCloseHandler(DialogCloseEvent.Handler handler) {
         view.asVaadinComponent().addDialogCloseHandler(handler);
     }
 
+
     @Override
-    public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
+    public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
         view.asVaadinComponent().addAction(actionName, actionLabel, callback);
 
     }
 
     @Override
-    public void addActionCallback(String actionName, EditorLikeActionListener callback) {
+    public void addActionCallback(String actionName, DialogActionListener callback) {
         view.asVaadinComponent().addActionCallback(actionName, callback);
     }
 

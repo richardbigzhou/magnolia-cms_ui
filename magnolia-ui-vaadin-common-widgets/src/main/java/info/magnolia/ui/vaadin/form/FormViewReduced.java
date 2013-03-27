@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog;
+package info.magnolia.ui.vaadin.form;
 
-import info.magnolia.ui.dialog.definition.DialogDefinition;
+
+import info.magnolia.ui.vaadin.view.View;
+
+import java.util.Collection;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
 
 /**
- * Creates {@link FormDialogPresenterImpl} instances that are use to display a dialog.
+ * Interface for {@link Form}.
  */
-public interface FormDialogPresenterFactory {
+public interface FormViewReduced extends View, Item.Editor {
 
-    FormDialogPresenter createDialogPresenterByName(String dialogName);
+    void addField(Field<?> field);
 
-    FormDialogPresenter createDialogPresenterByDefinition(DialogDefinition definition);
+    void setDescriptionVisbility(boolean isVisible);
 
-    DialogDefinition getDialogDefinition(String dialogName) throws RuntimeException;
+    @Override
+    public Form asVaadinComponent();
+
+    void addFormSection(String tabName, FormSection inputFields);
+
+    void showValidation(boolean isVisible);
+
+    void setShowAllEnabled(boolean enabled);
+
+    boolean isValid();
+
+    Collection<Field<?>> getFields();
+
 }

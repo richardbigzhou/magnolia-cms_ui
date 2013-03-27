@@ -31,41 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editorlike.widget;
-
-import java.util.Map;
-
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+package info.magnolia.ui.contentapp.config;
 
 /**
- * View interface for the editor components like forms and dialogs.
- * @param <T> the presenter
+ * EditorConfig.
  */
-public interface EditorLikeView<T extends EditorLikeView.Presenter> extends IsWidget, HasWidgets {
+public class EditorConfig {
 
-    void setActions(Map<String, String> actionMap);
-
-    void setDescription(String description);
-
-    void setCaption(String caption);
-
-    void setContent(Widget contentWidget);
-
-    void setHeaderToolbar(Widget headerToolbarWidget);
-
-    void setFooterToolbar(Widget footerToolbarWidget);
-
-    void setPresenter(T presenter);
-
-    T getPresenter();
-
-    /**
-     * Presenter interface for the editor components like forms and dialogs.
-     */
-    public interface Presenter {
-        void fireAction(String action);
+    public EditorBuilder editor() {
+        return new EditorBuilder();
     }
-
 }

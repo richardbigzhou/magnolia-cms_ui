@@ -36,14 +36,18 @@ package info.magnolia.ui.app.contacts.form.action;
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.form.FormPresenter;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.form.action.SaveFormAction;
+import info.magnolia.ui.form.action.SaveFormActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
+import com.vaadin.data.Item;
 
 /**
  * Action for saving contacts.
@@ -55,15 +59,17 @@ import javax.jcr.RepositoryException;
  * @see SaveContactFormActionDefinition
  */
 public class SaveContactFormAction extends SaveFormAction {
-    public SaveContactFormAction(SaveContactFormActionDefinition definition, FormPresenter presenter) {
-        super(definition, presenter);
+
+
+    public SaveContactFormAction(SaveFormActionDefinition definition, Item item, EditorCallback callback, EditorValidator validator) {
+        super(definition, item, callback, validator);
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
-        getPresenter().showValidation(true);
-        if (getPresenter().isValid()) {
+        validator.showValidation(true);
+        if (validator.isValid()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) getItem();
 
             try {
@@ -78,7 +84,7 @@ public class SaveContactFormAction extends SaveFormAction {
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
             }
-            getPresenter().getCallback().onSuccess(getDefinition().getName());
+            callback.onSuccess(getDefinition().getName());
         }
 
     }

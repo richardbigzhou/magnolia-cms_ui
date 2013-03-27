@@ -38,7 +38,7 @@ package info.magnolia.ui.dialog.config;
  */
 public class DialogConfig {
 
-    public DialogActionBuilder action(String name) {
-        return new DialogActionBuilder(name);
+    public DialogBuilder dialog(String name) {
+        return new DialogBuilder(name);
     }
 }

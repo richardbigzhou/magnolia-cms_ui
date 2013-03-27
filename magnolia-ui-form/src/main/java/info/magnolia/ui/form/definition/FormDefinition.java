@@ -57,5 +57,4 @@ public interface FormDefinition {
 
     List<TabDefinition> getTabs();
 
-    List<FormActionDefinition> getActions();
 }

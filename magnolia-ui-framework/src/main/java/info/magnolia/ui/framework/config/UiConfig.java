@@ -33,13 +33,12 @@
  */
 package info.magnolia.ui.framework.config;
 
-import info.magnolia.ui.model.action.builder.ActionConfig;
 import info.magnolia.ui.actionbar.config.ActionbarConfig;
 import info.magnolia.ui.dialog.config.DialogConfig;
-import info.magnolia.ui.form.config.ValidatorConfig;
 import info.magnolia.ui.form.config.FieldsConfig;
 import info.magnolia.ui.form.config.FormConfig;
-import info.magnolia.ui.workbench.config.WorkbenchConfig;
+import info.magnolia.ui.form.config.ValidatorConfig;
+import info.magnolia.ui.model.action.builder.ActionConfig;
 import info.magnolia.ui.workbench.config.ColumnConfig;
 
 /**
@@ -47,7 +46,6 @@ import info.magnolia.ui.workbench.config.ColumnConfig;
  */
 public class UiConfig {
 
-    public final WorkbenchConfig workbenches = new WorkbenchConfig();
     public final ActionbarConfig actionbars = new ActionbarConfig();
     public final FormConfig forms = new FormConfig();
     public final DialogConfig dialogs = new DialogConfig();

@@ -35,7 +35,8 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -57,21 +58,23 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(SaveDialogAction.class);
 
-    private final Item item;
+    protected final Item item;
 
-    private final FormDialogPresenter presenter;
+    protected final EditorValidator validator;
+    protected final EditorCallback callback;
 
-    public SaveDialogAction(SaveDialogActionDefinition definition, FormDialogPresenter presenter) {
+    public SaveDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback) {
         super(definition);
-        this.presenter = presenter;
-        this.item = presenter.getForm().getItemDataSource();
+        this.item = item;
+        this.validator = validator;
+        this.callback = callback;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
-        presenter.getForm().showValidation(true);
-        if (presenter.getForm().isValid()) {
+        validator.showValidation(true);
+        if (validator.isValid()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
                 final Node node = itemChanged.getNode();
@@ -80,7 +83,7 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
             }
-            presenter.getCallback().onSuccess(getDefinition().getName());
+            callback.onSuccess(getDefinition().getName());
         } else {
             log.info("Validation error(s) occurred. No save performed.");
         }
@@ -102,13 +105,4 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
             }
         }
     }
-
-    protected FormDialogPresenter getPresenter() {
-        return presenter;
-    }
-
-    protected Item getItem() {
-        return item;
-    }
-
 }

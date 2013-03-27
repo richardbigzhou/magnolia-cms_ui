@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.form;
+package info.magnolia.ui.vaadin.gwt.client.dialog.rpc;
 
-import info.magnolia.event.EventBus;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
-import info.magnolia.ui.vaadin.form.FormView;
-
-import com.vaadin.data.Item;
+import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * FormPresenter.
+ * DialogServerRpc.
  */
-public interface FormPresenter {
+public interface DialogServerRpc extends ServerRpc {
 
-    Callback getCallback();
+    void fireAction(String actionId);
 
-    EventBus getEventBus();
+    void closeSelf();
 
-    FormView start(Item item, Callback callback);
-
-    FormView start(Item item, FormItem parent);
-
-    void addAction(String actionName, String actionLabel, EditorLikeActionListener callback);
-
-    boolean isValid();
-
-    /**
-     * Callback interface for FormView.Presenter.
-     */
-    interface Callback {
-
-        void onCancel();
-
-        void onSuccess(String actionName);
-
-    }
-
-    void showValidation(boolean isVisible);
-
-    Item getItemDataSource();
-
-    FormView getView();
+    void setDescriptionVisibility(boolean isVisible);
 }

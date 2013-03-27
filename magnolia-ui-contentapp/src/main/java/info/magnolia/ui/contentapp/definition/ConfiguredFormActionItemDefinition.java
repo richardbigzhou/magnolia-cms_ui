@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.form;
-
-import info.magnolia.ui.form.definition.FormDefinition;
+package info.magnolia.ui.contentapp.definition;
 
 /**
- * FormPresenterFactory.
+ * ConfiguredFormActionItemDefinition.
  */
-public interface FormPresenterFactory {
+public class ConfiguredFormActionItemDefinition implements FormActionItemDefinition {
 
-    FormPresenter createFormPresenterByDefinition(FormDefinition formDefinition);
+    private String name;
+
+    // used for configuration to work
+    public ConfiguredFormActionItemDefinition() {
+    }
+
+    public ConfiguredFormActionItemDefinition(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

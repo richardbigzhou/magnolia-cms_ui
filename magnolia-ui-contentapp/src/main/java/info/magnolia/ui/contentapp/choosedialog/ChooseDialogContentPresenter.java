@@ -42,6 +42,7 @@ import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.ContentViewBuilder;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.workbench.tree.TreeView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -74,5 +75,6 @@ public class ChooseDialogContentPresenter extends ContentPresenter {
     public void initContentView(ContentWorkbenchView parentView) {
         super.initContentView(parentView);
         parentView.setViewType(ContentView.ViewType.TREE);
+        ((TreeView)parentView.getSelectedView()).deactivateDragAndDrop();
     }
 }
