@@ -50,14 +50,14 @@
     left: 75px;
 }
 
-.view-type-arrow.tree {left: 35px;}
+.view-type-arrow.treeview {left: 35px;}
 
-.view-type-arrow.list {left: 90px;}
+.view-type-arrow.listview {left: 90px;}
 
-.view-type-arrow.thumbs {left: 143px;}
+.view-type-arrow.thumbnailview {left: 143px;}
 
  /*FIXME fgrilli: just a temp workaround as moving the arrow beneath the search box (as per design) messes up the toolbar layout*/
-.view-type-arrow.search { display: none}
+.view-type-arrow.searchview { display: none}
 
 .searchbox.v-textfield[type="text"] {
     float:right;
