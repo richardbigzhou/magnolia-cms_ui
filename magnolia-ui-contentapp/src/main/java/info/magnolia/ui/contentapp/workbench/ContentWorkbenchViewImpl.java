@@ -37,9 +37,11 @@ import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.ContentViewDefinition;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -66,13 +68,7 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
 
     private final CssLayout contentViewContainer = new CssLayout();
 
-    private final Button treeButton;
-
-    private final Button listButton;
-
-    private final Button thumbsButton;
-
-    private final TextField searchbox;
+    private TextField searchbox;
 
     private final Property.ValueChangeListener searchboxListener = new Property.ValueChangeListener() {
 
@@ -86,9 +82,13 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
 
     private Map<ViewType, ContentView> contentViews = new EnumMap<ViewType, ContentView>(ViewType.class);
 
+    private Map<ViewType, Button> contentViewsButton = new EnumMap<ViewType, Button>(ViewType.class);
+
     private ActionbarView actionbar;
 
     private ViewType currentViewType = ViewType.TREE;
+
+    private CssLayout viewModes;
 
     /**
      * for going back from search view if search expression is empty.
@@ -106,18 +106,12 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
         setSpacing(true);
         setMargin(true);
 
-        CssLayout viewModes = new CssLayout();
+        viewModes = new CssLayout();
         viewModes.setStyleName("view-modes");
 
-        treeButton = buildButton(ViewType.TREE, "icon-view-tree", true);
-        listButton = buildButton(ViewType.LIST, "icon-view-list", false);
-        thumbsButton = buildButton(ViewType.THUMBNAIL, "icon-view-thumbnails", false);
         viewTypeArrow = buildViewTypeArrow();
         searchbox = buildBasicSearchbox();
-
-        viewModes.addComponent(treeButton);
-        viewModes.addComponent(listButton);
-        viewModes.addComponent(thumbsButton);
+        searchbox.setVisible(false);
 
         contentViewContainer.addStyleName("v-workbench-content");
         contentViewContainer.setSizeFull();
@@ -222,8 +216,25 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
     }
 
     @Override
-    public void addContentView(final ViewType type, final ContentView view) {
-        contentViews.put(type, view);
+    public void addContentView(final ViewType viewType, final ContentView view, final ContentViewDefinition contentViewDefintion) {
+        contentViews.put(viewType, view);
+        if(viewType.equals(ViewType.SEARCH)) {
+            // Do not add a Button for Search
+            return;
+        }
+        // Set Button
+        Button button = buildButton(viewType, contentViewDefintion.getIcon(), contentViewDefintion.isActive());
+        contentViewsButton.put(viewType, button);
+        viewModes.addComponent(button);
+        // Set Active
+        if (contentViewDefintion.isActive()) {
+            currentViewType = previousViewType = viewType;
+        }
+
+        // Only Display Search if List is available.
+        if (viewType.equals(ViewType.LIST)) {
+            searchbox.setVisible(true);
+        }
     }
 
     @Override
@@ -255,37 +266,29 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
     }
 
     private void setViewTypeStyling(final ViewType viewType) {
-        treeButton.removeStyleName("active");
-        listButton.removeStyleName("active");
-        thumbsButton.removeStyleName("active");
 
-        viewTypeArrow.removeStyleName("tree");
-        viewTypeArrow.removeStyleName("list");
-        viewTypeArrow.removeStyleName("thumbs");
-        viewTypeArrow.removeStyleName("search");
-
-        switch (viewType) {
-        case TREE:
-            treeButton.addStyleName("active");
-            viewTypeArrow.addStyleName("tree");
-            break;
-        case LIST:
-            listButton.addStyleName("active");
-            viewTypeArrow.addStyleName("list");
-            break;
-        case THUMBNAIL:
-            thumbsButton.addStyleName("active");
-            viewTypeArrow.addStyleName("thumbs");
-            break;
-        case SEARCH:
-            viewTypeArrow.addStyleName("search");
-            break;
-        default:
+        for (Entry<ViewType, Button> entry : contentViewsButton.entrySet()) {
+            entry.getValue().removeStyleName("active");
+            viewTypeArrow.removeStyleName(viewType.getText());
+            if (entry.getKey().equals(viewType)) {
+                // Set Active
+                entry.getValue().addStyleName("active");
+                viewTypeArrow.addStyleName(viewType.getText());
+            }
         }
+        // Handle Search (Not part of the Button List)
+        viewTypeArrow.removeStyleName("search");
+        if (viewType.equals(ViewType.SEARCH)) {
+            viewTypeArrow.addStyleName("search");
+        }
+
     }
 
     @Override
     public void setSearchQuery(final String query) {
+        if (searchbox == null) {
+            return;
+        }
         // turn off value change listener, so that presenter does not think there was user input and searches again
         searchbox.removeListener(searchboxListener);
         if (StringUtils.isNotBlank(query)) {
