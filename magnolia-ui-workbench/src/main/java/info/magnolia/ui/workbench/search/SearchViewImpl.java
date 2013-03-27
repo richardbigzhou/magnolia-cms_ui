@@ -42,8 +42,8 @@ import info.magnolia.ui.workbench.list.ListViewImpl;
  */
 public class SearchViewImpl extends ListViewImpl implements SearchView {
 
-    public SearchViewImpl(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider, SearchJcrContainer container) {
-        super(workbenchDefinition, componentProvider, container);
+    public SearchViewImpl(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
+        super(workbenchDefinition, componentProvider);
     }
 
     @Override

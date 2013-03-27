@@ -88,8 +88,8 @@ public class TreeViewImpl implements TreeView {
      * @param componentProvider the component provider
      * @param container the container data source
      */
-    public TreeViewImpl(WorkbenchDefinition workbench, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
-        this.container = container;
+    public TreeViewImpl(WorkbenchDefinition workbench, ComponentProvider componentProvider) {
+        this.container = new HierarchicalJcrContainer(workbench);
 
         treeTable = buildTreeTable(container, workbench, componentProvider);
 
