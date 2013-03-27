@@ -85,7 +85,8 @@ public class MagnoliaTreeTable extends TreeTable {
     }
 
     /**
-     * MGNLUI-962 Overridden so that table is not marked as dirty without changes.
+     * MGNLUI-729 Overridden so that table is not marked as dirty without changes. This was made to prevent selection from being sent over again.
+     * Beware, this breaks the normal state update mechanism and might require that you mark it as dirty explicitly.
      */
     @Override
     protected TreeTableState getState() {
