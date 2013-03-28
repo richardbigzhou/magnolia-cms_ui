@@ -1,12 +1,15 @@
 @charset "UTF-8";
 @import "../base/base.scss";
+@import "../commonbase/commonbase.scss";
 @import "fonts.scss";
 @import "colors.scss";
 @import "button.scss";
 @import "util/utils.scss";
 
 @mixin magnolia {
+
   @include base;
+  @include commonbase;
 
   .v-app {
     font-family: Verdana, sans-serif;

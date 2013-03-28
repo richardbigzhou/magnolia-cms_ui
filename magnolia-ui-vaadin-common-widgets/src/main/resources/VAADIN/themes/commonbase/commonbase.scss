@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+@import "dialog/basedialog.scss";
+@import "viewport/appsviewport.scss";
+@import "closebutton.scss";
+
+@mixin commonbase {
+
+  @include basedialog;
+  @include appsviewport;
+  @include closebutton;
+
+}
