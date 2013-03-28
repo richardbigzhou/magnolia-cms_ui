@@ -195,19 +195,12 @@
     <configurer>
       <class>info.magnolia.ui.framework.app.AppEventBusConfigurer</class>
     </configurer>
-    <configurer>
-      <class>info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer</class>
-    </configurer>
 
     <component>
       <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
       <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
     </component>
 
-    <component>
-      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory</type>
-      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenterFactory</implementation>
-    </component>
     <component>
       <type>info.magnolia.ui.workbench.ContentViewBuilder</type>
       <implementation>info.magnolia.ui.workbench.ContentViewBuilderImpl</implementation>
@@ -216,26 +209,12 @@
       <type>info.magnolia.ui.form.field.validation.ValidatorFieldFactory</type>
       <implementation>info.magnolia.ui.form.field.validation.ValidatorFieldFactory</implementation>
     </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter</type>
-      <implementation>info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</type>
-      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogView</type>
-      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</implementation>
-    </component>
+
     <component>
       <type>info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition</type>
       <implementation>info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
     </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.browser.BrowserView</type>
-      <implementation>info.magnolia.ui.contentapp.browser.BrowserViewImpl</implementation>
-    </component>
+
   </components>
 
   <components>
@@ -244,32 +223,8 @@
       <class>info.magnolia.ui.framework.app.SubAppEventBusConfigurer</class>
     </configurer>
     <component>
-      <type>info.magnolia.ui.contentapp.WorkbenchSubAppView</type>
-      <implementation>info.magnolia.ui.contentapp.WorkbenchSubAppViewImpl</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.model.action.ActionExecutor</type>
       <implementation>info.magnolia.ui.framework.app.action.SubAppActionExecutor</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.browser.BrowserPresenter</type>
-      <implementation>info.magnolia.ui.contentapp.browser.BrowserPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.detail.DetailEditorPresenter</type>
-      <implementation>info.magnolia.ui.contentapp.detail.DetailEditorPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.ContentPresenter</type>
-      <implementation>info.magnolia.ui.contentapp.ContentPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.detail.DetailEditorView</type>
-      <implementation>info.magnolia.ui.contentapp.detail.DetailEditorViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.detail.DetailView</type>
-      <implementation>info.magnolia.ui.contentapp.detail.DetailViewImpl</implementation>
     </component>
 
 
