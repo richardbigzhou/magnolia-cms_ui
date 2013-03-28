@@ -35,8 +35,8 @@ package info.magnolia.ui.contentapp;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.location.ContentLocation;
 import info.magnolia.ui.contentapp.event.SearchEvent;
+import info.magnolia.ui.contentapp.location.ContentLocation;
 import info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -140,6 +140,10 @@ public class ContentSubApp extends BaseSubApp {
     protected final void restoreWorkbench(final ContentLocation location) {
         String path = location.getNodePath();
         ViewType viewType = location.getViewType();
+        if (viewType == null) {
+            viewType = getWorkbench().getDefaultViewType();
+            location.updateViewType(viewType);
+        }
         String query = location.getQuery();
         getWorkbench().resync(path, viewType, query);
         updateActionbar(getWorkbench().getActionbarPresenter());
