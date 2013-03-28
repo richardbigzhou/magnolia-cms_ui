@@ -33,43 +33,23 @@
  */
 package info.magnolia.ui.contentapp;
 
+import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 /**
  * ConfiguredItemSubAppDescriptor.
  */
 public class ConfiguredItemSubAppDescriptor extends ConfiguredSubAppDescriptor implements ItemSubAppDescriptor {
 
-    private FormDefinition form;
-    private String workspace;
-    private NodeTypeDefinition nodeType;
+    private EditorDefinition editor;
 
     @Override
-    public String getWorkspace() {
-        return workspace;
+    public EditorDefinition getEditor() {
+        return editor;
     }
 
-    @Override
-    public NodeTypeDefinition getNodeType() {
-        return nodeType;
+    public void setEditor(EditorDefinition editorDefinition) {
+        this.editor = editorDefinition;
     }
 
-    @Override
-    public FormDefinition getFormDefinition() {
-        return form;
-    }
-
-    public void setWorkspace(String workspace) {
-        this.workspace = workspace;
-    }
-
-    public void setNodeType(NodeTypeDefinition nodeType) {
-        this.nodeType = nodeType;
-    }
-
-    public void setFormDefinition(FormDefinition formDefinition) {
-        this.form = formDefinition;
-    }
 }

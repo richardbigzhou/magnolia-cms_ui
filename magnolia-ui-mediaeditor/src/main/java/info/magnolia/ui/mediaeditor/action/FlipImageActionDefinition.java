@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,9 +36,8 @@ package info.magnolia.ui.mediaeditor.action;
 import info.magnolia.ui.mediaeditor.provider.EditModeProviderActionDefinition;
 
 /**
- * Definition paired with
- * {@link info.magnolia.ui.mediaeditor.editmode.provider.FlipImageProvider}
- * .
+ * Definition for
+ * {@link info.magnolia.ui.mediaeditor.editmode.provider.FlipImageProvider}.
  */
 public class FlipImageActionDefinition extends EditModeProviderActionDefinition {
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.gwt.client.form.widget;
 import info.magnolia.ui.vaadin.dialog.FormDialog;
 import info.magnolia.ui.vaadin.gwt.client.dialog.connector.BaseDialogConnector;
 import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
+import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogViewImpl;
 
 import com.vaadin.shared.ui.Connect;
 
@@ -47,6 +48,6 @@ public class FormDialogConnector extends BaseDialogConnector {
 
     @Override
     protected BaseDialogView createView() {
-        return new DialogAdaptingToFormViewImpl();
+        return new BaseDialogViewImpl();
     }
 }

@@ -34,21 +34,29 @@
 package info.magnolia.ui.contentapp.field;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
-import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
-import info.magnolia.ui.form.field.builder.AbstractFieldBuilderTest;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter;
+import info.magnolia.ui.contentapp.workbench.ContentWorkbenchView;
+import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
+import info.magnolia.ui.form.field.builder.AbstractFieldBuilderTest;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.workbench.ContentView;
+import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.tree.TreeContentViewDefinition;
 
 import javax.jcr.RepositoryException;
 
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.vaadin.ui.Field;
 
@@ -59,11 +67,31 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
 
     private LinkFieldSelectionBuilder builder;
 
+    private ChooseDialogContentPresenter presenter;
+
+    private EventBus eventBus;
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        presenter = mock(ChooseDialogContentPresenter.class);
+        // make sure that workbench view registers a content view so that restore selection doesn't fail.
+        doAnswer(new Answer<Void>() {
+
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                ContentWorkbenchView parentView = (ContentWorkbenchView) args[0];
+                parentView.addContentView(ViewType.TREE, mock(ContentView.class), new TreeContentViewDefinition());
+                return null;
+            }
+        }).when(presenter).initContentView(any(ContentWorkbenchView.class));
+        eventBus = new SimpleEventBus();
+    }
+
     @Test
     public void buildFieldSimpleTest() {
         // GIVEN
-        ChooseDialogContentPresenter presenter = mock(ChooseDialogContentPresenter.class);
-        SimpleEventBus eventBus = new SimpleEventBus();
         baseItem.addItemProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, null, null));
         builder = new LinkFieldSelectionBuilder(definition, baseItem, presenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
@@ -79,8 +107,6 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
     @Test
     public void fieldEventTest() throws RepositoryException {
         // GIVEN
-        ChooseDialogContentPresenter presenter = mock(ChooseDialogContentPresenter.class);
-        SimpleEventBus eventBus = new SimpleEventBus();
         baseItem.addItemProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, null, null));
         builder = new LinkFieldSelectionBuilder(definition, baseItem, presenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
@@ -97,8 +123,6 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
     @Test
     public void fieldEventCustomPropertyTest() throws RepositoryException {
         // GIVEN
-        ChooseDialogContentPresenter presenter = mock(ChooseDialogContentPresenter.class);
-        SimpleEventBus eventBus = new SimpleEventBus();
         baseNode.setProperty("newProperty", "initial");
         baseItem = new JcrNodeAdapter(baseNode);
         baseItem.addItemProperty("newProperty", DefaultPropertyUtil.newDefaultProperty("newProperty", null, "initial"));

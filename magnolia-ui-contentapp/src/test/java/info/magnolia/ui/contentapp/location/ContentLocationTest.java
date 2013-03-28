@@ -46,24 +46,24 @@ import org.junit.Test;
 public class ContentLocationTest {
     @Test
     public void testToString() {
-        assertEquals("app:someContentApp:main;/some/node:tree", new ContentLocation("someContentApp", "main", "/some/node:tree").toString());
-        assertEquals("app:someContentApp;/some/node:search:hideandseek", new ContentLocation("someContentApp", "", "/some/node:search:hideandseek").toString());
-        assertEquals("app:someContentApp;/some/node:tree", new ContentLocation("someContentApp", "", "/some/node:tree").toString());
-        assertEquals("app:someContentApp;/some/node:tree", new ContentLocation("someContentApp", "", "/some/node:tree").toString());
-        assertEquals("app;/some/node:tree", new ContentLocation("", "", "/some/node:tree").toString());
-        assertEquals("app:mainSubApp;tree", new ContentLocation("mainSubApp", "", "tree").toString());
-        assertEquals("app:someContentApp;:search:qux*", new ContentLocation("someContentApp", "", ":search:qux*").toString());
-        assertEquals("app;:search:qux*", new ContentLocation("", "", ":search:qux*").toString());
-        assertEquals("app;:search:qux*", new ContentLocation("", "", ":search:qux*").toString());
+        assertEquals("app:someContentApp:main;/some/node:treeview", new ContentLocation("someContentApp", "main", "/some/node:treeview").toString());
+        assertEquals("app:someContentApp;/some/node:searchview:hideandseek", new ContentLocation("someContentApp", "", "/some/node:searchview:hideandseek").toString());
+        assertEquals("app:someContentApp;/some/node:treeview", new ContentLocation("someContentApp", "", "/some/node:treeview").toString());
+        assertEquals("app:someContentApp;/some/node:treeview", new ContentLocation("someContentApp", "", "/some/node:treeview").toString());
+        assertEquals("app;/some/node:treeview", new ContentLocation("", "", "/some/node:treeview").toString());
+        assertEquals("app:mainSubApp;treeview", new ContentLocation("mainSubApp", "", "treeview").toString());
+        assertEquals("app:someContentApp;:searchview:qux*", new ContentLocation("someContentApp", "", ":searchview:qux*").toString());
+        assertEquals("app;:searchview:qux*", new ContentLocation("", "", ":searchview:qux*").toString());
+        assertEquals("app;:searchview:qux*", new ContentLocation("", "", ":searchview:qux*").toString());
     }
 
     @Test
     public void testEqualsWithSameParameters() {
         // GIVEN
-        DefaultLocation defaultLocation = new DefaultLocation("app", "someApp", "someContentApp", "/some/node:search:hideandseek");
+        DefaultLocation defaultLocation = new DefaultLocation("app", "someApp", "someContentApp", "/some/node:searchview:hideandseek");
 
         // WHEN
-        DefaultLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/node:search:hideandseek");
+        DefaultLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/node:searchview:hideandseek");
 
         // TEST
         assertTrue(defaultLocation.equals(contentLocation));
@@ -73,10 +73,10 @@ public class ContentLocationTest {
     @Test
     public void testEqualsWithDifferentParameters() {
         // GIVEN
-        DefaultLocation defaultLocation = new DefaultLocation("app", "someApp", "someContentApp", "/some/node:search:hideandseek");
+        DefaultLocation defaultLocation = new DefaultLocation("app", "someApp", "someContentApp", "/some/node:searchview:hideandseek");
 
         // WHEN
-        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/node:search:found*");
+        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/node:searchview:found*");
 
         // TEST
         assertFalse(defaultLocation.equals(contentLocation));
@@ -86,7 +86,7 @@ public class ContentLocationTest {
     @Test
     public void testGetNodePath() {
         // GIVEN
-        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:search:found*");
+        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:searchview:found*");
 
         // TEST
         assertEquals("/some/other/node/00", contentLocation.getNodePath());
@@ -96,7 +96,7 @@ public class ContentLocationTest {
     @Test
     public void testGetViewType() {
         // GIVEN
-        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:search:found*");
+        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:searchview:found*");
 
         // TEST
         assertEquals(ContentView.ViewType.SEARCH, contentLocation.getViewType());
@@ -109,14 +109,14 @@ public class ContentLocationTest {
         ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00");
 
         // TEST
-        assertEquals(ContentView.ViewType.TREE, contentLocation.getViewType());
+        assertEquals(null, contentLocation.getViewType());
 
     }
 
     @Test
     public void testGetQuery() {
         // GIVEN
-        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:search:found*");
+        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:searchview:found*");
 
         // TEST
         assertEquals("found*", contentLocation.getQuery());
@@ -126,7 +126,7 @@ public class ContentLocationTest {
     @Test
     public void testUpdateNodePath() {
         // GIVEN
-        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:search:found*");
+        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:searchview:found*");
 
         // WHEN
         contentLocation.updateNodePath("/node/has/changes/01");
@@ -139,7 +139,7 @@ public class ContentLocationTest {
     @Test
     public void testUpdateViewType() {
         // GIVEN
-        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:tree");
+        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:treeview");
 
         // WHEN
         contentLocation.updateViewType(ContentView.ViewType.LIST);
@@ -151,36 +151,36 @@ public class ContentLocationTest {
     @Test
     public void testUpdateNodePathParameter() {
         // GIVEN
-        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:tree");
+        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:treeview");
 
         // WHEN
         contentLocation.updateNodePath("/some/other/node/01");
 
         // TEST
-        assertEquals("app:someApp:someContentApp;/some/other/node/01:tree:", contentLocation.toString());
+        assertEquals("app:someApp:someContentApp;/some/other/node/01:treeview:", contentLocation.toString());
     }
 
     @Test
     public void testUpdateViewTypeParameter() {
         // GIVEN
-        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:tree");
+        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:treeview");
 
         // WHEN
         contentLocation.updateViewType(ContentView.ViewType.LIST);
 
         // TEST
-        assertEquals("app:someApp:someContentApp;/some/other/node/00:list:", contentLocation.toString());
+        assertEquals("app:someApp:someContentApp;/some/other/node/00:listview:", contentLocation.toString());
     }
 
     @Test
     public void testUpdateQueryParameter() {
         // GIVEN
-        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:search:*blablu");
+        ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00:searchview:*blablu");
 
         // WHEN
         contentLocation.updateQuery("*blablu");
 
         // TEST
-        assertEquals("app:someApp:someContentApp;/some/other/node/00:search:*blablu", contentLocation.toString());
+        assertEquals("app:someApp:someContentApp;/some/other/node/00:searchview:*blablu", contentLocation.toString());
     }
 }

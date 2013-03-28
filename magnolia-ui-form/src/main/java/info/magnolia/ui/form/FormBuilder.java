@@ -42,6 +42,8 @@ import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
 
+import javax.inject.Inject;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
@@ -53,10 +55,19 @@ import com.vaadin.ui.Field;
  */
 public class FormBuilder {
 
+    private FieldFactory fieldFactory;
+    private FormView view;
+
+    @Inject
+    public FormBuilder(FieldFactory fieldFactory, FormView view) {
+        this.fieldFactory = fieldFactory;
+        this.view = view;
+    }
+
     /**
      * @return FormView populated with values from FormDefinition and Item.
      */
-    public FormView buildForm(FieldFactory fieldFactory, FormDefinition formDefinition, Item item, FormView view, FormItem parent) {
+    public FormView buildForm(FormDefinition formDefinition, Item item, FormItem parent) {
         final Form form = new Form(formDefinition);
         form.setParent(parent);
         view.setItemDataSource(item);

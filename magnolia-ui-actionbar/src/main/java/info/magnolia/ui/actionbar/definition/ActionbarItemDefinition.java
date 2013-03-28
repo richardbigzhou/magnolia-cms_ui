@@ -34,12 +34,13 @@
 package info.magnolia.ui.actionbar.definition;
 
 /**
- * A simple item definition used inside {@link ActionbarGroupDefinition}. The name
+ * A simple item definition used inside {@link ActionbarGroupDefinition}.
  */
 public class ActionbarItemDefinition {
 
     private String name;
 
+    // used for configuration to work
     public ActionbarItemDefinition() {
     }
 

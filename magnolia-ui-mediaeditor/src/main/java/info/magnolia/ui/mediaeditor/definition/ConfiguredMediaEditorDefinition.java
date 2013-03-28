@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ConfiguredMediaEditorDefinition.
+ * Implementation of {@link MediaEditorDefinition}.
  */
 public class ConfiguredMediaEditorDefinition implements MediaEditorDefinition {
 

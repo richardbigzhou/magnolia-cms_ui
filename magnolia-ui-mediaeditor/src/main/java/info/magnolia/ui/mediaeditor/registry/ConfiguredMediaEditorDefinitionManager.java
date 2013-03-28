@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -60,7 +60,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ConfiguredMediaEditorDefinitionManager.
+ * Populates {@link MediaEditorRegistry} by scanning the nodes in the config workspace.
  */
 @Singleton
 public class ConfiguredMediaEditorDefinitionManager  extends ModuleConfigurationObservingManager {

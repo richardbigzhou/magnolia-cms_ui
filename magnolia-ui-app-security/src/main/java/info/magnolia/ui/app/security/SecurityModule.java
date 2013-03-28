@@ -39,13 +39,14 @@ import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.admincentral.image.DefaultImageProvider;
 import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.app.security.column.UserNameColumnDefinition;
 import info.magnolia.ui.app.security.column.UserNameColumnFormatter;
-import info.magnolia.ui.app.security.dialog.action.SaveGroupDialogActionDefinition;
-import info.magnolia.ui.app.security.dialog.action.SaveRoleDialogActionDefinition;
-import info.magnolia.ui.app.security.dialog.action.SaveUserDialogActionDefinition;
+import info.magnolia.ui.app.security.dialog.action.SaveGroupDialogAction;
+import info.magnolia.ui.app.security.dialog.action.SaveRoleDialogAction;
+import info.magnolia.ui.app.security.dialog.action.SaveUserDialogAction;
 import info.magnolia.ui.app.security.dialog.field.EnabledFieldBuilder;
 import info.magnolia.ui.app.security.dialog.field.GroupManagementFieldBuilder;
 import info.magnolia.ui.app.security.dialog.field.RoleManagementFieldBuilder;
@@ -54,6 +55,7 @@ import info.magnolia.ui.app.security.dialog.field.validator.UniqueRoleIdValidato
 import info.magnolia.ui.app.security.dialog.field.validator.UniqueUserIdValidatorDefinition;
 import info.magnolia.ui.contentapp.config.CodeConfigurationUtils;
 import info.magnolia.ui.contentapp.config.ContentAppBuilder;
+import info.magnolia.ui.contentapp.config.ContentAppConfig;
 import info.magnolia.ui.contentapp.config.ContentSubAppBuilder;
 import info.magnolia.ui.dialog.config.Dialog;
 import info.magnolia.ui.dialog.config.DialogBuilder;
@@ -87,7 +89,7 @@ public class SecurityModule implements ModuleLifecycle {
     }
 
     @App("security")
-    public void securityApp(ContentAppBuilder app, UiConfig cfg) {
+    public void securityApp(ContentAppBuilder app, UiConfig cfg, ContentAppConfig contentAppConfig) {
 
         // group
         CreateDialogActionDefinition addGroupAction = new CreateDialogActionDefinition();
@@ -136,15 +138,15 @@ public class SecurityModule implements ModuleLifecycle {
 
         app.label("Security").icon("icon-security-app").appClass(SecurityApp.class) // .categoryName("MANAGE")
                 .subApps(
-                        userSubApp(app, cfg, "users", "/admin").label("Users").exec(),
-                        userSubApp(app, cfg, "systemUsers", "/system").label("System users").exec(),
+                        userSubApp(app, cfg, contentAppConfig, "users", "/admin").label("Users").exec(),
+                        userSubApp(app, cfg, contentAppConfig, "systemUsers", "/system").label("System users").exec(),
                         app.workbenchSubApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
                                 .actions(addGroupAction, editGroupAction, deleteGroupActionDefinition)
                                 .imageProvider(cipd)
-                                .workbench(cfg.workbenches.workbench().workspace("usergroups").path("/").defaultOrder(ModelConstants.JCR_NAME)
+                                .workbench(contentAppConfig.workbench.workbench().workspace("usergroups").path("/").defaultOrder(ModelConstants.JCR_NAME)
                                         .nodeTypes(
-                                                cfg.workbenches.nodeType(NodeTypes.Group.NAME).icon("icon-user-group"),
-                                                cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
+                                                contentAppConfig.workbench.nodeType(NodeTypes.Group.NAME).icon("icon-user-group"),
+                                                contentAppConfig.workbench.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                         .columns(
                                                 cfg.columns.property(ModelConstants.JCR_NAME, "Group name").sortable(true).expandRatio(2),
                                                 cfg.columns.property("title", "Full group name").sortable(true).displayInDialog(false).expandRatio(2),
@@ -164,10 +166,10 @@ public class SecurityModule implements ModuleLifecycle {
                         app.workbenchSubApp("roles").subAppClass(SecurityRolesSubApp.class).label("Roles")
                                 .actions(addRoleAction, editRoleAction, deleteRoleActionDefinition)
                                 .imageProvider(cipd)
-                                .workbench(cfg.workbenches.workbench().workspace("userroles").path("/").defaultOrder(ModelConstants.JCR_NAME)
+                                .workbench(contentAppConfig.workbench.workbench().workspace("userroles").path("/").defaultOrder(ModelConstants.JCR_NAME)
                                         .nodeTypes(
-                                                cfg.workbenches.nodeType(NodeTypes.Role.NAME).icon("icon-user-role"),
-                                                cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
+                                                contentAppConfig.workbench.nodeType(NodeTypes.Role.NAME).icon("icon-user-role"),
+                                                contentAppConfig.workbench.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                         .columns(
                                                 cfg.columns.property(ModelConstants.JCR_NAME, "Role name").sortable(true).expandRatio(2),
                                                 cfg.columns.property("title", "Full role name").sortable(true).displayInDialog(false).expandRatio(2),
@@ -189,7 +191,7 @@ public class SecurityModule implements ModuleLifecycle {
                 );
     }
 
-    protected ContentSubAppBuilder userSubApp(ContentAppBuilder app, UiConfig cfg, String name, String root) {
+    protected ContentSubAppBuilder userSubApp(ContentAppBuilder app, UiConfig cfg, ContentAppConfig contentAppConfig,String name, String root) {
         // user
         CreateDialogActionDefinition addUserAction = new CreateDialogActionDefinition();
         addUserAction.setName("addUser");
@@ -217,10 +219,10 @@ public class SecurityModule implements ModuleLifecycle {
         return app.workbenchSubApp(name).subAppClass(SecurityUsersSubApp.class)
                 .actions(addUserAction, editUserAction, deleteUserActionDefinition)
                 .imageProvider(cipd)
-                .workbench(cfg.workbenches.workbench().workspace("users").path(root).defaultOrder(ModelConstants.JCR_NAME)
+                .workbench(contentAppConfig.workbench.workbench().workspace("users").path(root).defaultOrder(ModelConstants.JCR_NAME)
                         .nodeTypes(
-                                cfg.workbenches.nodeType(NodeTypes.User.NAME).icon("icon-user-magnolia"),
-                                cfg.workbenches.nodeType(NodeTypes.Folder.NAME).icon("icon-folder")) // see MGNLPUR-77
+                                contentAppConfig.workbench.nodeType(NodeTypes.User.NAME).icon("icon-user-magnolia"),
+                                contentAppConfig.workbench.nodeType(NodeTypes.Folder.NAME).icon("icon-folder")) // see MGNLPUR-77
                         .columns(
                                 cfg.columns.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME).formatterClass(UserNameColumnFormatter.class).expandRatio(2),
                                 cfg.columns.property("title", "Full name").sortable(true).expandRatio(2),
@@ -272,7 +274,18 @@ public class SecurityModule implements ModuleLifecycle {
         roles.leftColumnCaption("Other available roles");
         roles.rightColumnCaption("Granted roles");
 
-        dialog.form(cfg.forms.form().description("Define the user information")
+        SaveDialogActionDefinition commit = new SaveDialogActionDefinition();
+        commit.setImplementationClass(SaveUserDialogAction.class);
+        commit.setName("commit");
+        commit.setLabel("save changes");
+        dialog.addAction(commit);
+
+        CancelDialogActionDefinition cancel = new CancelDialogActionDefinition();
+        cancel.setName("cancel");
+        cancel.setLabel("cancel");
+        dialog.addAction(cancel);
+
+        dialog.form(cfg.forms.form().description("Define the user information").label("User")
                 .tabs(
                         cfg.forms.tab("User").label("User info")
                                 .fields(
@@ -298,11 +311,7 @@ public class SecurityModule implements ModuleLifecycle {
                                         roles
                                 )
                 )
-        )
-                .actions(
-                        cfg.dialogs.action("commit").label("save changes").action(new SaveUserDialogActionDefinition()),
-                        cfg.dialogs.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
-                );
+        );
     }
 
     @Dialog("ui-security-app:groupAdd")
@@ -316,6 +325,7 @@ public class SecurityModule implements ModuleLifecycle {
     }
 
     public void groupDialog(DialogBuilder dialog, UiConfig cfg, boolean editMode) {
+
 
         AbstractFieldBuilder groupName = cfg.fields.text(ModelConstants.JCR_NAME)
                 .label("Group name")
@@ -336,7 +346,18 @@ public class SecurityModule implements ModuleLifecycle {
         roles.leftColumnCaption("Other available roles");
         roles.rightColumnCaption("Granted roles");
 
-        dialog.form(cfg.forms.form().description("Define the group information")
+        SaveDialogActionDefinition commit = new SaveDialogActionDefinition();
+        commit.setImplementationClass(SaveGroupDialogAction.class);
+        commit.setName("commit");
+        commit.setLabel("save changes");
+        dialog.addAction(commit);
+
+        CancelDialogActionDefinition cancel = new CancelDialogActionDefinition();
+        cancel.setName("cancel");
+        cancel.setLabel("cancel");
+        dialog.addAction(cancel);
+
+        dialog.form(cfg.forms.form().description("Define the group information").label("Group")
                 .tabs(
                         cfg.forms.tab("Group").label("Group info")
                                 .fields(
@@ -353,11 +374,7 @@ public class SecurityModule implements ModuleLifecycle {
                                         roles
                                 )
                 )
-        )
-                .actions(
-                        cfg.dialogs.action("commit").label("save changes").action(new SaveGroupDialogActionDefinition()),
-                        cfg.dialogs.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
-                );
+        );
     }
 
     @Dialog("ui-security-app:roleEdit")
@@ -381,7 +398,18 @@ public class SecurityModule implements ModuleLifecycle {
             roleName.validator(cfg.validators.custom(new UniqueRoleIdValidatorDefinition()).errorMessage("Role name already exists."));
         }
 
-        dialog.form(cfg.forms.form().description("Define the role information")
+        SaveDialogActionDefinition commit = new SaveDialogActionDefinition();
+        commit.setImplementationClass(SaveRoleDialogAction.class);
+        commit.setName("commit");
+        commit.setLabel("save changes");
+        dialog.addAction(commit);
+
+        CancelDialogActionDefinition cancel = new CancelDialogActionDefinition();
+        cancel.setName("cancel");
+        cancel.setLabel("cancel");
+        dialog.addAction(cancel);
+
+        dialog.form(cfg.forms.form().description("Define the role information").label("Role")
                 .tabs(
                         cfg.forms.tab("Role").label("Role info")
                                 .fields(
@@ -394,11 +422,7 @@ public class SecurityModule implements ModuleLifecycle {
                                         cfg.fields.staticField("placeholder").label("Placeholder for ACL control")
                                 )
                 )
-        )
-                .actions(
-                        cfg.dialogs.action("commit").label("save changes").action(new SaveRoleDialogActionDefinition()),
-                        cfg.dialogs.action("cancel").label("cancel").action(new CancelDialogActionDefinition())
-                );
+        );
     }
 
     @Override

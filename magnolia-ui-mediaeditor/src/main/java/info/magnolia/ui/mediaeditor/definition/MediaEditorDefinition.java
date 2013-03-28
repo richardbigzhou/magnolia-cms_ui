@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,14 +33,17 @@
  */
 package info.magnolia.ui.mediaeditor.definition;
 
-import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 import java.util.Map;
 
 
 /**
- * MediaEditorDefinition.
+ * Definition of the media editor. Used by
+ * {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter} for configuration
+ * of the view. Also used by {@link info.magnolia.ui.mediaeditor.action.MediaEditorActionExecutor} for resolution of
+ * action definitions.
  */
 public interface MediaEditorDefinition {
     

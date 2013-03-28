@@ -47,8 +47,32 @@ public class ActionBuilder {
         this.definition.setName(name);
     }
 
-    public ActionBuilder setImplementationClass(Class<? extends Action> subAppClass) {
+    public ActionBuilder implementation(Class<? extends Action> subAppClass) {
         definition.setImplementationClass(subAppClass);
+        return this;
+    }
+
+    public String getName() {
+        return definition.getName();
+    }
+
+    public ActionBuilder label(String label) {
+        definition.setLabel(label);
+        return this;
+    }
+
+    public ActionBuilder icon(String icon) {
+        definition.setIcon(icon);
+        return this;
+    }
+
+    public ActionBuilder i18n(String i18n) {
+        definition.setI18nBasename(i18n);
+        return this;
+    }
+
+    public ActionBuilder description(String description) {
+        definition.setDescription(description);
         return this;
     }
 
@@ -56,8 +80,5 @@ public class ActionBuilder {
         return definition;
     }
 
-    public String getName() {
-        return definition.getName();
-    }
 
 }

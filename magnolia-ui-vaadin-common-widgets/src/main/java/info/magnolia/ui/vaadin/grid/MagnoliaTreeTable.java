@@ -36,12 +36,13 @@ package info.magnolia.ui.vaadin.grid;
 import java.util.Collection;
 import java.util.Map;
 
+import com.vaadin.data.Validator;
+import com.vaadin.shared.ui.treetable.TreeTableState;
 import com.vaadin.ui.TreeTable;
 
 /**
  * VMagnoliaTreeTable.
  */
-// @ClientWidget(VMagnoliaTreeTable.class)
 public class MagnoliaTreeTable extends TreeTable {
 
     public MagnoliaTreeTable() {
@@ -50,6 +51,10 @@ public class MagnoliaTreeTable extends TreeTable {
         setMultiSelect(true);
         setDragMode(TableDragMode.NONE);
         setImmediate(true);
+
+        // MGNLUI-961 Tree table was patched on client-side to disable lazy-loading according to number of visible rows.
+        // Therefore it should keep page length set to 0.
+        setPageLength(0);
     }
 
     @Override
@@ -77,5 +82,22 @@ public class MagnoliaTreeTable extends TreeTable {
                 unselect(id);
             }
         }
+    }
+
+    /**
+     * MGNLUI-729 Overridden so that table is not marked as dirty without changes. This was made to prevent selection from being sent over again.
+     * Beware, this breaks the normal state update mechanism and might require that you mark it as dirty explicitly.
+     */
+    @Override
+    protected TreeTableState getState() {
+        return (TreeTableState) getState(false);
+    }
+
+    /**
+     * MGNLUI-962 Overridden to fulfill AbstractField's repaintIsNotNeeded, super impl returns empty collection instead.
+     */
+    @Override
+    public Collection<Validator> getValidators() {
+        return null;
     }
 }

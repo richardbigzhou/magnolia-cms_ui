@@ -33,17 +33,17 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
-import info.magnolia.cms.beans.config.ConfigurationException;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.app.action.AbstractActionExecutor;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
+import info.magnolia.ui.model.action.ActionDefinition;
 
 import javax.inject.Inject;
 
 /**
- * MediaEditorActionExecutor.
+ * Executes actions on behalf of
+ * {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter}. Needs the
+ * {@link MediaEditorDefinition} in order to resolve action definitions.
  */
 public class MediaEditorActionExecutor extends AbstractActionExecutor {
 
@@ -54,14 +54,8 @@ public class MediaEditorActionExecutor extends AbstractActionExecutor {
         super(componentProvider);
     }
 
-
     public void setDef(MediaEditorDefinition def) {
         this.def = def;
-    }
-    
-    @Override
-    protected Action createAction(String actionName, Object... args) throws ConfigurationException {
-        return super.createAction(actionName, args);
     }
     
     @Override

@@ -34,12 +34,6 @@
 package info.magnolia.ui.contentapp.config;
 
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.config.App;
-import info.magnolia.ui.framework.app.config.AppBuilder;
-import info.magnolia.ui.framework.app.registry.AppDescriptorProvider;
-import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
-import info.magnolia.ui.framework.config.UiConfig;
 import info.magnolia.ui.actionbar.config.ActionbarConfig;
 import info.magnolia.ui.dialog.config.Dialog;
 import info.magnolia.ui.dialog.config.DialogBuilder;
@@ -48,6 +42,12 @@ import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionProvider;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.config.FormConfig;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.config.App;
+import info.magnolia.ui.framework.app.config.AppBuilder;
+import info.magnolia.ui.framework.app.registry.AppDescriptorProvider;
+import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.framework.config.UiConfig;
 import info.magnolia.ui.workbench.config.WorkbenchConfig;
 
 import java.lang.annotation.Annotation;
@@ -182,7 +182,11 @@ public class CodeConfigurationUtils {
                         parameters[parameterIndex] = new ActionbarConfig();
                     } else if (parameterType.equals(FormConfig.class)) {
                         parameters[parameterIndex] = new FormConfig();
-                    } else {
+                    }
+                    else if (parameterType.equals(ContentAppConfig.class)) {
+                        parameters[parameterIndex] = new ContentAppConfig();
+                    }
+                    else {
                         throw new RegistrationException("Unable to resolve parameter " + parameterIndex + " for method " + method);
                     }
                 }

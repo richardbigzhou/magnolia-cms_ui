@@ -34,18 +34,8 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.list.FlatJcrContainer;
-import info.magnolia.ui.workbench.list.ListViewImpl;
-import info.magnolia.ui.workbench.search.SearchJcrContainer;
-import info.magnolia.ui.workbench.search.SearchViewImpl;
-import info.magnolia.ui.workbench.thumbnail.LazyThumbnailViewImpl;
-import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer;
-import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
-import info.magnolia.ui.workbench.tree.TreeViewImpl;
 
 import java.io.Serializable;
 
@@ -64,27 +54,18 @@ public class ContentViewBuilderImpl implements ContentViewBuilder, Serializable 
     }
 
     @Override
-    public ContentView build(final WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, final ViewType type) {
-        switch (type) {
+    public ContentView build(final WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, final ContentViewDefinition viewDefinition) {
 
-            case TREE:
-                final HierarchicalJcrContainer hierarchicalContainer = new HierarchicalJcrContainer(workbenchDefinition);
-                return componentProvider.newInstance(TreeViewImpl.class, workbenchDefinition, hierarchicalContainer);
-            case LIST:
-                final FlatJcrContainer flatContainer = new FlatJcrContainer(workbenchDefinition);
-                return componentProvider.newInstance(ListViewImpl.class, workbenchDefinition, flatContainer);
-            case SEARCH:
-                final SearchJcrContainer searchContainer = new SearchJcrContainer(workbenchDefinition);
-                return componentProvider.newInstance(SearchViewImpl.class, workbenchDefinition, searchContainer);
-            case THUMBNAIL:
-                ImageProvider imageProvider = null;
-                if (imageProviderDefinition != null) {
-                    imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
-                }
-                final ThumbnailContainer thumbnailContainer = new ThumbnailContainer(workbenchDefinition, imageProvider);
-                return componentProvider.newInstance(LazyThumbnailViewImpl.class, workbenchDefinition, thumbnailContainer);
-            default:
-                throw new RuntimeException("The provided view type [" + type + "] is not valid.");
+        Class<? extends ContentView> contentViewClass = viewDefinition.getImplementationClass();
+        if (contentViewClass != null) {
+            if (imageProviderDefinition != null) {
+                return componentProvider.newInstance(contentViewClass, workbenchDefinition, imageProviderDefinition);
+            } else {
+                return componentProvider.newInstance(contentViewClass, workbenchDefinition);
+            }
+        } else {
+            throw new RuntimeException("The provided view type [" + viewDefinition.getViewType().getText() + "] is not valid.");
         }
     }
+
 }

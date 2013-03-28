@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -46,7 +46,7 @@ import javax.inject.Singleton;
  * Creates an {@link EditModeProvider} corresponding to the {@link EditModeProviderActionDefinition}.
  * Used in media editor to dynamically switch between editing modes.
  * 
- * @see MediaEditorPresenter.
+ * @see info.magnolia.ui.mediaeditor.MediaEditorPresenter.
  */
 @Singleton
 public class EditModeProviderFactory extends MappingFactoryBase<EditModeProviderActionDefinition, EditModeProvider> {

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -39,7 +39,9 @@ import info.magnolia.event.EventHandler;
 import java.io.InputStream;
 
 /**
- * MediaEditorCompletedEvent.
+ * Fired when work with media editor is finished. This event delivers the
+ * resulting media stream and the type of confirmation made after finishing
+ * media editor (submitted, canceled).
  */
 public class MediaEditorCompletedEvent implements Event<MediaEditorCompletedEvent.Handler>{
 

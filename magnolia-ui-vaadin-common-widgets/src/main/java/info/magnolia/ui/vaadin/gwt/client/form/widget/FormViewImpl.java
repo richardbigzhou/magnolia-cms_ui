@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -42,10 +42,8 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.widget.MagnoliaTabSheetView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -53,8 +51,9 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.Util;
 
@@ -68,15 +67,9 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
 
     private static final String CLASSNAME_CONTENT = "form-content";
 
-    private static final String CLASSNAME_FOOTER = "form-footer";
-
-    private static final String CLASSNAME_FOOTER_TOOLBAR = "form-footer-toolbar";
-
-    private static final String CLASSNAME_BUTTON = "btn-form";
-
     private static final String CLASSNAME_CONTENT_SHOW_ALL = "show-all";
 
-    private final Map<String, Button> actionMap = new HashMap<String, Button>();
+    private static final String ClASSNAME_ERROR = "form-error";
 
     private final List<FormTabWidget> formTabs = new ArrayList<FormTabWidget>();
 
@@ -84,46 +77,25 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
 
     private final Element contentEl = DOM.createDiv();
 
-    private final Element footerEl = DOM.createDiv();
-    private final Element footerToolbarEl = DOM.createDiv();
-
     private FormFieldWrapper lastFocused = null;
 
     private MagnoliaTabSheetView tabSheet;
 
     private Presenter presenter;
 
-    private Widget footerToolbar;
-
-
-    private final FormHeaderWidget formHeader = new FormHeaderWidget(new FormHeaderWidget.FormHeaderCallback() {
-
-        @Override
-        public void onDescriptionVisibilityChanged(boolean isVisible) {
-            setDescriptionVisible(isVisible);
-            if (presenter != null) {
-                presenter.runLayout();
-            }
-        }
-
-        @Override
-        public void jumpToNextError() {
-            presenter.jumpToNextError(lastFocused);
-        }
-    });
+    private FlowPanel errorPanel;
 
     public FormViewImpl() {
         super();
         setStylePrimaryName(CLASSNAME);
 
-        contentEl.addClassName(CLASSNAME_CONTENT);
-        add(formHeader);
-        getElement().appendChild(contentEl);
+        errorPanel = new FlowPanel();
+        errorPanel.addStyleName(ClASSNAME_ERROR);
+        add(errorPanel);
+        errorPanel.setVisible(false);
 
-        footerEl.addClassName(CLASSNAME_FOOTER);
-        getElement().appendChild(footerEl);
-        footerEl.appendChild(footerToolbarEl);
-        footerToolbarEl.addClassName(CLASSNAME_FOOTER_TOOLBAR);
+        contentEl.addClassName(CLASSNAME_CONTENT);
+        getElement().appendChild(contentEl);
     }
 
     @Override
@@ -191,39 +163,14 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
         return presenter;
     }
 
-    @Override
-    public void setActions(Map<String, String> actions) {
-        for (final Button actionButton : this.actionMap.values()) {
-            remove(actionButton);
-        }
-        actionMap.clear();
-        final Iterator<Entry<String, String>> it = actions.entrySet().iterator();
-        while (it.hasNext()) {
-            final Entry<String, String> entry = it.next();
-            final Button button = new Button(entry.getValue());
-            button.setStyleName(CLASSNAME_BUTTON);
-            button.addStyleDependentName(entry.getKey());
-            button.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(final ClickEvent event) {
-                    getPresenter().fireAction(entry.getKey());
-                }
-            });
-            actionMap.put(entry.getKey(), button);
-            add(button, footerEl);
-        }
-    }
 
     @Override
-    public void setDescription(final String description) {
-        formHeader.setDescription(description);
-    }
-
-    void setDescriptionVisible(boolean isVisible) {
+    public void setDescriptionVisible(boolean isVisible) {
         for (final FormTabWidget tab : formTabs) {
             tab.setDescriptionVisible(isVisible);
         }
     }
+
 
     @Override
     public void onValidationChanged(ValidationChangedEvent event) {
@@ -232,37 +179,28 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
         for (Integer amount : errorAmounts.values()) {
             res += amount;
         }
-        formHeader.setErrorAmount(res);
+        setErrorAmount(res);
     }
 
-    @Override
-    public void setCaption(String caption) {
-        formHeader.setCaption(caption);
-    }
+    public void setErrorAmount(int totalProblematicFields) {
+        errorPanel.setVisible(totalProblematicFields > 0);
+        if (totalProblematicFields > 0) {
+            errorPanel.getElement().setInnerHTML("<span>Please correct the <b>" + totalProblematicFields + " errors </b> in this form </span>");
 
-    @Override
-    public Element getHeaderElement() {
-        return formHeader.getElement();
-    }
-
-    @Override
-    public Element getContentElement() {
-        return contentEl;
-    }
-
-
-    @Override
-    public void setHeaderToolbar(Widget headerToolbarWidget) {
-        formHeader.setToolbar(headerToolbarWidget);
-    }
-
-
-    @Override
-    public void setFooterToolbar(Widget footerToolbarWidget) {
-        if (footerToolbar != null) {
-            remove(footerToolbar);
+            final HTML errorButton = new HTML("[Jump to next error]");
+            errorButton.setStyleName("action-jump-to-next-error");
+            DOM.sinkEvents(errorButton.getElement(), Event.MOUSEEVENTS);
+            errorButton.addDomHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    jumpToNextError();
+                }
+            }, ClickEvent.getType());
+            errorPanel.add(errorButton);
         }
-        footerToolbar = footerToolbarWidget;
-        add(footerToolbarWidget, footerToolbarEl);
+    }
+
+    public void jumpToNextError() {
+        presenter.jumpToNextError(lastFocused);
     }
 }

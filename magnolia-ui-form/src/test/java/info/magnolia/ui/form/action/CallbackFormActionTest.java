@@ -35,17 +35,12 @@ package info.magnolia.ui.form.action;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.ui.form.FormItem;
-import info.magnolia.ui.form.FormPresenter;
-import info.magnolia.event.EventBus;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
-import info.magnolia.ui.vaadin.form.FormView;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import com.vaadin.data.Item;
 
 /**
  * CallbackFormActionTest.
@@ -54,19 +49,19 @@ public class CallbackFormActionTest {
 
     private CallbackFormAction formAction;
     private CallbackFormActionDefinition formActionDefinition;
-    private FormPresenterTest presenter;
+    private TestEditorCallback presenter;
 
     @Before
     public void setUp() {
         this.formActionDefinition = new CallbackFormActionDefinition();
-        this.presenter = new FormPresenterTest();
+        this.presenter = new TestEditorCallback();
     }
 
     @Test
     public void executeDefaultOnSuccessTest() throws ActionExecutionException {
         // GIVEN
         initDefinition("name", "label", null, null);
-        formAction = new CallbackFormAction(formActionDefinition, presenter);
+        formAction = new CallbackFormAction(formActionDefinition, presenter.getCallback());
 
         // WHEN
         formAction.execute();
@@ -79,7 +74,7 @@ public class CallbackFormActionTest {
     public void executeCustomOnSuccessTest() throws ActionExecutionException {
         // GIVEN
         initDefinition("name", "label", null, "reload");
-        formAction = new CallbackFormAction(formActionDefinition, presenter);
+        formAction = new CallbackFormAction(formActionDefinition, presenter.getCallback());
 
         // WHEN
         formAction.execute();
@@ -92,7 +87,7 @@ public class CallbackFormActionTest {
     public void executeOnCancelTest() throws ActionExecutionException {
         // GIVEN
         initDefinition("name", "label", false, null);
-        formAction = new CallbackFormAction(formActionDefinition, presenter);
+        formAction = new CallbackFormAction(formActionDefinition, presenter.getCallback());
 
         // WHEN
         formAction.execute();
@@ -111,9 +106,7 @@ public class CallbackFormActionTest {
         this.formActionDefinition.setSuccessActionName(successActionName != null ? successActionName : "success");
     }
 
-    public static class FormPresenterTest implements FormPresenter {
-
-        private Item item;
+    public static class TestEditorCallback implements EditorCallback {
 
         private String callbackActionCalled;
 
@@ -121,13 +114,8 @@ public class CallbackFormActionTest {
             return callbackActionCalled;
         }
 
-        public void setTestItem(Item item) {
-            this.item = item;
-        }
-
-        @Override
-        public FormPresenter.Callback getCallback() {
-            return new FormPresenter.Callback() {
+        public EditorCallback getCallback() {
+            return new EditorCallback() {
 
                 @Override
                 public void onSuccess(String actionName) {
@@ -142,22 +130,20 @@ public class CallbackFormActionTest {
         }
 
         @Override
-        public EventBus getEventBus() {
-            return null;
+        public void onSuccess(String actionName) {
+            callbackActionCalled = "onSuccess(" + actionName + ")";
         }
 
         @Override
-        public FormView start(Item item, Callback callback) {
-            return null;
+        public void onCancel() {
+            callbackActionCalled = "onCancel()";
         }
+    }
+
+    public static class TestEditorValidator implements EditorValidator {
 
         @Override
-        public FormView start(Item item, FormItem parent) {
-            return null;
-        }
-
-        @Override
-        public void addAction(String actionName, String actionLabel, EditorLikeActionListener callback) {
+        public void showValidation(boolean visible) {
 
         }
 
@@ -165,20 +151,7 @@ public class CallbackFormActionTest {
         public boolean isValid() {
             return true;
         }
-
-        @Override
-        public void showValidation(boolean isVisible) {
-
-        }
-
-        @Override
-        public Item getItemDataSource() {
-            return item;
-        }
-
-        @Override
-        public FormView getView() {
-            return null;
-        }
     }
+
+
 }

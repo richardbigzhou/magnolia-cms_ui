@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.workbench.config;
 
+import info.magnolia.ui.workbench.ContentViewDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 /**
  * Builder for creating a workbench definition.
@@ -96,5 +98,17 @@ public class WorkbenchBuilder {
 
     public ConfiguredWorkbenchDefinition exec() {
         return definition;
+    }
+
+    public WorkbenchBuilder dropConstraintClass(Class<? extends DropConstraint> dropConstraintClass) {
+        definition.setDropConstraintClass(dropConstraintClass);
+        return this;
+    }
+    
+    public WorkbenchBuilder contentViews(ContentViewDefinition... views) {
+        for (ContentViewDefinition view : views) {
+            definition.addContentView(view);
+        }
+        return this;
     }
 }

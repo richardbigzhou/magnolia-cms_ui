@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,7 +36,8 @@ package info.magnolia.ui.mediaeditor.provider;
 import info.magnolia.ui.model.action.ConfiguredActionDefinition;
 
 /**
- * EditModeAction.
+ * Basic definition for all the acctions that cause the change of edit mode in
+ * {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter}.
  */
 public class EditModeProviderActionDefinition extends ConfiguredActionDefinition {
 }

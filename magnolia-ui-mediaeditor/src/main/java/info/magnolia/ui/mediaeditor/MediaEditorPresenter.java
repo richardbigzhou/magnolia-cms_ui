@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -44,7 +44,9 @@ import info.magnolia.ui.vaadin.view.View;
 import java.io.InputStream;
 
 /**
- * Media editor presenter.
+ * Entry point of the media editor. Capable of creating the view, firing callbacks on media editing completion, 
+ * switching between edit modes etc. Currently requires an {@link ActionExecutor} to be set externally.
+ * Normally instance of this class are created by {@link MediaEditorPresenterFactory}.
  */
 public interface MediaEditorPresenter {
 

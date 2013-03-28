@@ -99,8 +99,7 @@ public class SaveDialogActionTest {
         node = session.getRootNode().addNode("underlying");
         node.getSession().save();
         item = new JcrNodeAdapter(node);
-        ((CallbackDialogActionTest.FormPresenterTest) presenter.getForm()).setTestItem(item);
-        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
 
         // WHEN
         dialogAction.execute();
@@ -116,8 +115,7 @@ public class SaveDialogActionTest {
         node.setProperty("property", "initial");
         item = new JcrNodeAdapter(node);
         item.getItemProperty("property").setValue("changed");
-        ((CallbackDialogActionTest.FormPresenterTest) presenter.getForm()).setTestItem(item);
-        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
 
         // WHEN
         dialogAction.execute();
@@ -135,8 +133,7 @@ public class SaveDialogActionTest {
 
         item = new JcrNodeAdapter(node);
         item.addItemProperty("property", DefaultPropertyUtil.newDefaultProperty("property", null, "changed"));
-        ((CallbackDialogActionTest.FormPresenterTest) presenter.getForm()).setTestItem(item);
-        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
 
         // WHEN
         dialogAction.execute();
@@ -154,9 +151,8 @@ public class SaveDialogActionTest {
         node.setProperty("property", "initial");
         item = new JcrNodeAdapter(node);
         item.removeItemProperty("property");
-        ((CallbackDialogActionTest.FormPresenterTest) presenter.getForm()).setTestItem(item);
         assertEquals(true, node.hasProperty("property"));
-        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
 
         // WHEN
         dialogAction.execute();
@@ -171,7 +167,7 @@ public class SaveDialogActionTest {
         // GIVEN
         node = session.getRootNode().addNode("content", NodeTypes.Content.NAME);
 
-        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
         Calendar past = Calendar.getInstance();
         past.set(1970, 3, 3);
         node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
@@ -188,7 +184,7 @@ public class SaveDialogActionTest {
     public void testUpdateLastModifiedDoesNothingForFolder() throws RepositoryException {
         // GIVEN
         node = session.getRootNode().addNode("folder", NodeTypes.Folder.NAME);
-        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
         Calendar past = Calendar.getInstance();
         past.set(1970, 3, 3);
 
@@ -213,7 +209,7 @@ public class SaveDialogActionTest {
 
         node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
         parent.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
-        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
 
         // WHEN
         dialogAction.updateLastModified(node);
@@ -238,7 +234,7 @@ public class SaveDialogActionTest {
 
         node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
         parent.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
-        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
 
         // WHEN
         dialogAction.updateLastModified(node);
@@ -261,7 +257,7 @@ public class SaveDialogActionTest {
 
         node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
         parent.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
-        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
 
         // WHEN
         dialogAction.updateLastModified(node);
@@ -286,7 +282,7 @@ public class SaveDialogActionTest {
 
         node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
         parent.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
-        dialogAction = new SaveDialogAction(dialogActionDefinition, presenter);
+        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
 
         // WHEN
         dialogAction.updateLastModified(node);

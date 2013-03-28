@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -40,7 +40,7 @@ import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.mediaeditor.editmode.field.image.ViewImageField;
 import info.magnolia.ui.mediaeditor.editmode.field.image.ViewImageField.ImageResizeEvent;
 import info.magnolia.ui.mediaeditor.editmode.field.image.ViewImageField.ImageSizeChangeListener;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,14 +81,14 @@ public class ViewImageProvider implements EditModeProvider {
     @Override
     public List<ActionContext> getActionContextList() {
         List<ActionContext> result = new ArrayList<EditModeProvider.ActionContext>();
-        result.add(new ActionContext("cancel", "Cancel", new EditorLikeActionListener() {
+        result.add(new ActionContext("cancel", "Cancel", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.CANCEL_ALL));
             }
         }));
         
-        result.add(new ActionContext("save", "Save", new EditorLikeActionListener() {
+        result.add(new ActionContext("save", "Save", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.SUBMIT));

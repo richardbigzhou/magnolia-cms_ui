@@ -60,7 +60,8 @@ import com.vaadin.data.Item;
  */
 public class SaveFormActionTest extends RepositoryTestCase {
     private SaveFormActionDefinition formActionDefinition;
-    private CallbackFormActionTest.FormPresenterTest presenter;
+    private CallbackFormActionTest.TestEditorCallback callback;
+    private CallbackFormActionTest.TestEditorValidator validator;
     private MockSession session;
     private Node node;
     private Item item;
@@ -71,7 +72,8 @@ public class SaveFormActionTest extends RepositoryTestCase {
     public void setUp() throws Exception {
         super.setUp();
         this.formActionDefinition = new SaveFormActionDefinition();
-        this.presenter = new CallbackFormActionTest.FormPresenterTest();
+        this.callback = new CallbackFormActionTest.TestEditorCallback();
+        this.validator = new CallbackFormActionTest.TestEditorValidator();
         // Init Node
         session = new MockSession("config");
         MockContext ctx = new MockContext();
@@ -86,15 +88,14 @@ public class SaveFormActionTest extends RepositoryTestCase {
         node = session.getRootNode().addNode("underlying");
         node.getSession().save();
         item = new JcrNodeAdapter(node);
-        this.presenter.setTestItem(item);
         initDefinition("name", "label");
-        formAction = new SaveFormAction(formActionDefinition, presenter);
+        formAction = new SaveFormAction(formActionDefinition, item, callback, validator);
 
         // WHEN
         formAction.execute();
 
         // THEN
-        assertEquals("onSuccess(name)", this.presenter.getCallbackActionCalled());
+        assertEquals("onSuccess(name)", this.callback.getCallbackActionCalled());
     }
 
     @Test
@@ -104,9 +105,8 @@ public class SaveFormActionTest extends RepositoryTestCase {
         node.setProperty("property", "initial");
         item = new JcrNodeAdapter(node);
         item.getItemProperty("property").setValue("changed");
-        this.presenter.setTestItem(item);
         initDefinition("name", "label");
-        formAction = new SaveFormAction(formActionDefinition, presenter);
+        formAction = new SaveFormAction(formActionDefinition,item, callback, validator);
 
         // WHEN
         formAction.execute();
@@ -124,9 +124,8 @@ public class SaveFormActionTest extends RepositoryTestCase {
 
         item = new JcrNodeAdapter(node);
         item.addItemProperty("property", DefaultPropertyUtil.newDefaultProperty("property", null, "changed"));
-        this.presenter.setTestItem(item);
         initDefinition("name", "label");
-        formAction = new SaveFormAction(formActionDefinition, presenter);
+        formAction = new SaveFormAction(formActionDefinition, item, callback, validator);
 
         // WHEN
         formAction.execute();
@@ -144,9 +143,8 @@ public class SaveFormActionTest extends RepositoryTestCase {
         node.setProperty("property", "initial");
         item = new JcrNodeAdapter(node);
         item.removeItemProperty("property");
-        this.presenter.setTestItem(item);
         initDefinition("name", "label");
-        formAction = new SaveFormAction(formActionDefinition, presenter);
+        formAction = new SaveFormAction(formActionDefinition, item, callback, validator);
         assertEquals(true, node.hasProperty("property"));
         // WHEN
         formAction.execute();

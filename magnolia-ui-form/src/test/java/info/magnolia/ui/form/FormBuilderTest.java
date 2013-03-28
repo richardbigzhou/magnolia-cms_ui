@@ -34,7 +34,6 @@
 package info.magnolia.ui.form;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.DefaultI18nContentSupport;
@@ -51,15 +50,15 @@ import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
+import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.form.field.builder.TextFieldBuilder;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
-import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.vaadin.form.Form;
 import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.form.ItemFormView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Locale;
@@ -103,12 +102,12 @@ public class FormBuilderTest {
     @Test
     public void testBuildingWithoutTabsAndActions() {
         // GIVEN
-        final FormBuilder builder = new FormBuilder();
         final FormDefinition def = new ConfiguredFormDefinition();
-        final FormView form = new Form();
+        final FormView form = new ItemFormView();
+        final FormBuilder builder = new FormBuilder(null, form);
 
         // WHEN
-        final FormView result = builder.buildForm(null, def, null, form, null);
+        final FormView result = builder.buildForm(def, null, null);
 
         // THEN
         assertEquals(result, form);
@@ -118,7 +117,6 @@ public class FormBuilderTest {
     public void testBuildingWithTabsAndActions() throws Exception {
         // GIVEN
         final String propertyName = "test";
-        final FormBuilder builder = new FormBuilder();
         final ConfiguredFormDefinition formDef = new ConfiguredFormDefinition();
         final TextFieldDefinition fieldTypeDef = new TextFieldDefinition();
         fieldTypeDef.setName(propertyName);
@@ -128,7 +126,9 @@ public class FormBuilderTest {
         underlyingNode.setProperty(propertyName, propertyValue);
         final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
-        final Form form = new Form();
+        final FormView form = new ItemFormView();
+
+
         final ConfiguredTabDefinition tabDef = new ConfiguredTabDefinition();
         final ConfiguredFieldDefinition fieldDef = new ConfiguredFieldDefinition();
         fieldDef.setName(propertyName);
@@ -142,8 +142,9 @@ public class FormBuilderTest {
         editField.setI18nContentSupport(i18nContentSupport);
         when(fieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
 
+        final FormBuilder builder = new FormBuilder(fieldFactory, form);
         // WHEN
-        final FormView result = builder.buildForm(fieldFactory, formDef, item, form, null);
+        final FormView result = builder.buildForm(formDef, item, null);
 
         // THEN
         assertEquals(result, form);

@@ -38,9 +38,9 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.event.SearchEvent;
 import info.magnolia.ui.contentapp.ContentPresenter;
 import info.magnolia.ui.contentapp.ContentSubAppDescriptor;
+import info.magnolia.ui.contentapp.event.SearchEvent;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
@@ -58,6 +58,7 @@ import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.ContentViewDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
@@ -195,6 +196,20 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
      */
     public String getSelectedItemId() {
         return contentPresenter.getSelectedItemPath();
+    }
+
+    /**
+     * @return The configured default view Type.<br>
+     *         If non define, return the first Content Definition as default.
+     * 
+     */
+    public ViewType getDefaultViewType() {
+        for (ContentViewDefinition definition : this.workbenchDefinition.getContentViews()) {
+            if (definition.isActive()) {
+                return definition.getViewType();
+            }
+        }
+        return this.workbenchDefinition.getContentViews().get(0).getViewType();
     }
 
     public ContentWorkbenchView getView() {

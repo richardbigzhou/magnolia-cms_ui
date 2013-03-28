@@ -3,8 +3,12 @@
 @mixin dialog {
 
 .dialog-panel {
-  width:720px;
+  width:900px;
   padding:0;
+}
+
+.modal .dialog-panel {
+  width:720px;
 }
 
 .v-dialog-layout {
@@ -14,11 +18,21 @@
 }
 
 .dialog-content {
-	top: 40px;
 	width:100%;
-	bottom: 43px;
-	position: absolute;
 }
+
+
+.dialog-content .v-shell-tabsheet-scroller {
+    position:static !important;
+    max-height:450px;
+}
+.tablet .dialog-content .v-shell-tabsheet-scroller {max-height:385px;} /* Ensure form footer is visible on the iPad */
+
+.choose-dialog .mgnl-content-view{
+    height:300px;
+    position:static;
+}
+
 
 .dialog-header {
   background-color: #666;
@@ -101,10 +115,8 @@
 .dialog-footer {
   background-color: #ccc;
   text-align: right;
-  position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
 }
 
 .dialog-description,
@@ -174,18 +186,18 @@ button.btn-dialog-help {
 }
 
 /*
-* Forms in Dialog.
+* Forms in a Modal.
 */
-.dialog-panel .form-panel {
+.modal .form-panel {
     width: 720px;
 }
 
-.dialog-panel .v-form-layout {
+.modal .v-form-layout {
     background-color: #E6E6E6;
 }
 
-.dialog-panel .form-panel .v-shell-tabsheet,
-.dialog-panel .form-panel .v-shell-tabsheet .nav li.active {
+.modal .form-panel .v-shell-tabsheet,
+.modal .form-panel .v-shell-tabsheet .nav li.active {
     background-color: #E6E6E6;
 }
 

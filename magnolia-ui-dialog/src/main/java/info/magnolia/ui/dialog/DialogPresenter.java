@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,7 +36,7 @@ package info.magnolia.ui.dialog;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 /**
  * {@link DialogPresenter} takes care of {@link DialogView} presentation, the main responsibility
@@ -44,44 +44,18 @@ import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
  */
 public interface DialogPresenter {
 
-    Callback getCallback();
-
     DialogView getView();
 
     EventBus getEventBus();
 
     void closeDialog();
 
+    void showCloseButton();
+
     void addDialogCloseHandler(final DialogCloseEvent.Handler listener);
 
-    void addAction(String actionName, String actionLabel, EditorLikeActionListener callback);
+    void addAction(String actionName, String actionLabel, DialogActionListener callback);
 
-    void addActionCallback(String actionName, EditorLikeActionListener callback);
+    void addActionCallback(String actionName, DialogActionListener callback);
 
-    /**
-     * Callback interface for DialogView.Presenter.
-     */
-    interface Callback {
-
-        void onCancel();
-
-        void onSuccess(String actionName);
-
-        /**
-         * Dummy adapter class that allows to skip overriding e.g. onCancel method in actual
-         * implementors.
-         */
-        public static class Adapter implements Callback {
-
-            @Override
-            public void onSuccess(String actionName) {
-            }
-
-            @Override
-            public void onCancel() {
-            }
-
-        }
-
-    }
 }

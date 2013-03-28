@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.connector;
 
-import info.magnolia.ui.vaadin.gwt.client.editorlike.connector.EditorLikeComponentState;
+import com.vaadin.shared.ui.AbstractLayoutState;
 
 /**
  * FormState.
  */
-public class FormState extends EditorLikeComponentState {
+public class FormState extends AbstractLayoutState {
 
-    public boolean actionsSuppressed = false;
+    public boolean descriptionsVisible = false;
 }

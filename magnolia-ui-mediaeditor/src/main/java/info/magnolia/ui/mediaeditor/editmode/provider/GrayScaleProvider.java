@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,7 +38,7 @@ import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent.EventType;
 import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.mediaeditor.editmode.field.image.GrayScaleField;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,7 @@ public class GrayScaleProvider implements EditModeProvider {
     @Override
     public List<ActionContext> getActionContextList() {
         List<ActionContext> result = new ArrayList<EditModeProvider.ActionContext>();
-        result.add(new ActionContext("cancel", "Cancel", new EditorLikeActionListener() {
+        result.add(new ActionContext("cancel", "Cancel", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
                 field.revertChanges();
@@ -81,7 +81,7 @@ public class GrayScaleProvider implements EditModeProvider {
             }
         }));
         
-        result.add(new ActionContext("save", "Apply", new EditorLikeActionListener() {
+        result.add(new ActionContext("save", "Apply", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
                 field.applyChanges();

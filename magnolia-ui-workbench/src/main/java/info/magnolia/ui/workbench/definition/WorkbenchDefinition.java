@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.workbench.definition;
 
+import info.magnolia.ui.workbench.ContentViewDefinition;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import java.io.Serializable;
 import java.util.List;
@@ -78,5 +80,16 @@ public interface WorkbenchDefinition extends Serializable {
      * @return true, if workbench is editable
      */
     boolean isEditable();
+
+    /**
+     * 
+     * @return the DropConstraint class used to handle drag&drop.
+     */
+    Class<? extends DropConstraint> getDropConstraintClass();
+
+    /**
+     * @return the list of configured views.<br>
+     */
+    List<ContentViewDefinition> getContentViews();
 
 }

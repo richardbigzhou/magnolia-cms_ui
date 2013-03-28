@@ -10,8 +10,18 @@
     background-color: #000000;
 }
 
+.v-media-editor .dialog-content{
+    position:absolute;
+    left:0px;
+    right:0px;
+    top:40px;
+    bottom:40px;
+}
+
 .v-media-editor .dialog-footer {
-   background-color: #999999;
+    position:absolute;
+    bottom:0px;
+    background-color: #999999;
 }
 
 .v-media-editor {
