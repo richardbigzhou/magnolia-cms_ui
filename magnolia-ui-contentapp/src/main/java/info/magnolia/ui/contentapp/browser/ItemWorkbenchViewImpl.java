@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.workbench;
+package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.ui.contentapp.item.ItemView;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;

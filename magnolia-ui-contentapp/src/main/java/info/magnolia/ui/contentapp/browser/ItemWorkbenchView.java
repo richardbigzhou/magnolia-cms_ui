@@ -31,38 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.workbench;
+package info.magnolia.ui.contentapp.browser;
 
+import info.magnolia.ui.contentapp.item.ItemView;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.view.View;
-import info.magnolia.ui.workbench.ContentView;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 
 import com.vaadin.ui.ComponentContainer;
 
 /**
- * Implementations of this interface are responsible for building a workbench and handling the UI
- * actions associated with it.
+ * ItemWorkbenchView.
+ *
+ * @see ItemWorkbenchViewImpl
  */
-public interface ContentWorkbenchView extends ComponentContainer, View {
+public interface ItemWorkbenchView extends ComponentContainer, View {
+
+    void setItemView(View itemView);
+
     /**
      * Listener interface for events concerning the workbench.
      */
     interface Listener {
 
-        void onSearch(String searchExpression);
+        void onViewTypeChanged(ItemView.ViewType viewType);
 
-        void onViewTypeChanged(ViewType viewType);
     }
 
     void setListener(Listener listener);
 
-    void setViewType(ContentView.ViewType type);
-
-    /**
-     * Updates the search box with given search query.
-     */
-    void setSearchQuery(String query);
+    void setViewType(ItemView.ViewType type);
 
     /**
      * Refreshes the current view.
@@ -72,14 +69,10 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
     /**
      * Use this method to add sub views hosted by this view.
      */
-    void addContentView(ViewType type, ContentView view);
+    void addItemView(ItemView.ViewType type, ItemView view);
 
     /**
      * Use this method to add an action bar to this sub app view.
      */
     void setActionbarView(ActionbarView actionbar);
-
-    void selectPath(String path);
-
-    ContentView getSelectedView();
 }

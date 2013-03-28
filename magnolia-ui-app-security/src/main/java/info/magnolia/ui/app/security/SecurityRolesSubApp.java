@@ -35,9 +35,9 @@ package info.magnolia.ui.app.security;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.ContentSubApp;
 import info.magnolia.ui.contentapp.WorkbenchSubAppView;
-import info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter;
+import info.magnolia.ui.contentapp.browser.BrowserPresenter;
+import info.magnolia.ui.contentapp.browser.BrowserSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 
@@ -50,17 +50,17 @@ import org.slf4j.LoggerFactory;
 /**
  * Roles subapp for the Security App.
  */
-public class SecurityRolesSubApp extends ContentSubApp {
+public class SecurityRolesSubApp extends BrowserSubApp {
     private static final Logger log = LoggerFactory.getLogger(SecurityRolesSubApp.class);
 
     @Inject
-    public SecurityRolesSubApp(final SubAppContext subAppContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
+    public SecurityRolesSubApp(final SubAppContext subAppContext, WorkbenchSubAppView view, BrowserPresenter workbench, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
         super(subAppContext, view, workbench, subAppEventBus);
     }
 
     @Override
     public void updateActionbar(ActionbarPresenter actionbar) {
-        String selectedItemId = getWorkbench().getSelectedItemId();
+        String selectedItemId = getBrowser().getSelectedItemId();
         if (selectedItemId == null) {
             selectedItemId = "/";
         }

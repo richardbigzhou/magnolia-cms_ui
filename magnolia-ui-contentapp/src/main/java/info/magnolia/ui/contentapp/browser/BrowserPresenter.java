@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.workbench;
+package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
@@ -40,7 +40,6 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.event.SearchEvent;
 import info.magnolia.ui.contentapp.ContentPresenter;
-import info.magnolia.ui.contentapp.ContentSubAppDescriptor;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
@@ -90,17 +89,17 @@ import com.vaadin.server.Resource;
  * <p>
  * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR workspace to connect to, the columns/properties to display, the available actions and so on.
  */
-public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener, ActionbarPresenter.Listener {
+public class BrowserPresenter implements BrowserView.Listener, ActionbarPresenter.Listener {
 
-    private static final Logger log = LoggerFactory.getLogger(ContentWorkbenchPresenter.class);
+    private static final Logger log = LoggerFactory.getLogger(BrowserPresenter.class);
 
     private final WorkbenchDefinition workbenchDefinition;
 
     private final ActionExecutor actionExecutor;
 
-    private ContentSubAppDescriptor subAppDescriptor;
+    private BrowserSubAppDescriptor subAppDescriptor;
 
-    private final ContentWorkbenchView view;
+    private final BrowserView view;
 
     private final EventBus admincentralEventBus;
 
@@ -114,7 +113,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
     private final AppContext appContext;
 
     @Inject
-    public ContentWorkbenchPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentWorkbenchView view, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus admincentralEventBus,
+    public BrowserPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus admincentralEventBus,
             final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final ContentPresenter contentPresenter,
             final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
         this.actionExecutor = actionExecutor;
@@ -124,7 +123,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
         this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
-        this.subAppDescriptor = (ContentSubAppDescriptor) subAppContext.getSubAppDescriptor();
+        this.subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
         this.workbenchDefinition = subAppDescriptor.getWorkbench();
 
         ImageProviderDefinition imageProviderDefinition = subAppDescriptor.getImageProvider();
@@ -135,7 +134,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
         }
     }
 
-    public ContentWorkbenchView start() {
+    public BrowserView start() {
         view.setListener(this);
         contentPresenter.initContentView(view);
         actionbarPresenter.setListener(this);
@@ -197,7 +196,7 @@ public class ContentWorkbenchPresenter implements ContentWorkbenchView.Listener,
         return contentPresenter.getSelectedItemPath();
     }
 
-    public ContentWorkbenchView getView() {
+    public BrowserView getView() {
         return view;
     }
 

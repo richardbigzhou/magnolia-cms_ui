@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp;
+package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -39,7 +39,7 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 /**
  * ContentSubAppDescriptor.
  */
-public interface ContentSubAppDescriptor extends SubAppDescriptor {
+public interface BrowserSubAppDescriptor extends SubAppDescriptor {
 
     WorkbenchDefinition getWorkbench();
 }

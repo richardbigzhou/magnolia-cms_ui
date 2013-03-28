@@ -37,8 +37,8 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.form.field.builder.AbstractFieldBuilder;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
+import info.magnolia.ui.contentapp.browser.BrowserViewImpl;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter;
-import info.magnolia.ui.contentapp.workbench.ContentWorkbenchViewImpl;
 import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
@@ -89,7 +89,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
 
     @Override
     protected Field<String> buildField() {
-        final ContentWorkbenchViewImpl parentView = new ContentWorkbenchViewImpl();
+        final BrowserViewImpl parentView = new BrowserViewImpl();
         textContent = new TextAndContentViewField(definition.isDisplayTextField(), definition.isDisplayTextFieldOnTop());
         contentPresenter.initContentView(parentView);
         textContent.setContentView(parentView);

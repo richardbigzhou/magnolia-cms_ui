@@ -45,6 +45,8 @@ import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.ContentPresenter;
+import info.magnolia.ui.contentapp.browser.BrowserPresenter;
+import info.magnolia.ui.contentapp.browser.BrowserView;
 import info.magnolia.ui.contentapp.config.ContentAppBuilder;
 import info.magnolia.ui.contentapp.config.ContentSubAppBuilder;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -67,7 +69,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests covering business logic in {@link ContentWorkbenchPresenter}.
+ * Tests covering business logic in {@link BrowserPresenter}.
  */
 public class ContentWorkbenchPresenterTest {
 
@@ -89,7 +91,7 @@ public class ContentWorkbenchPresenterTest {
 
     private MockSession session;
 
-    private ContentWorkbenchPresenter presenter;
+    private BrowserPresenter presenter;
 
     @Before
     public void setUp() {
@@ -110,7 +112,7 @@ public class ContentWorkbenchPresenterTest {
         Shell mockShell = mock(Shell.class);
         SubAppContext subAppContext = new SubAppContextImpl(subAppBuilder.exec(), mockShell);
 
-        ContentWorkbenchView mockView = mock(ContentWorkbenchView.class);
+        BrowserView mockView = mock(BrowserView.class);
         subAppEventBus = new SimpleEventBus();
 
         EventBus adminCentralEventBus = mock(EventBus.class);
@@ -118,7 +120,7 @@ public class ContentWorkbenchPresenterTest {
         ActionbarPresenter mockActionbarPresenter = mock(ActionbarPresenter.class);
         ActionExecutor actionExecutor = mock(ActionExecutor.class);
 
-        presenter = new ContentWorkbenchPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockContentPresenter, mockActionbarPresenter, null);
+        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockContentPresenter, mockActionbarPresenter, null);
 
         // start presenter (binds event handlers)
         presenter.start();

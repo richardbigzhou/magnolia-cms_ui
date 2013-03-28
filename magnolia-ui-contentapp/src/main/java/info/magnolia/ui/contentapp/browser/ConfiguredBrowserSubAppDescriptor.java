@@ -31,48 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.workbench;
+package info.magnolia.ui.contentapp.browser;
 
-import info.magnolia.ui.contentapp.item.ItemView;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.view.View;
-
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 /**
- * ItemWorkbenchView.
- *
- * @see ItemWorkbenchViewImpl
+ * ConfiguredContentSubAppDescriptor.
  */
-public interface ItemWorkbenchView extends ComponentContainer, View {
+public class ConfiguredBrowserSubAppDescriptor extends ConfiguredSubAppDescriptor implements BrowserSubAppDescriptor {
 
-    void setItemView(View itemView);
+    private WorkbenchDefinition workbench;
 
-    /**
-     * Listener interface for events concerning the workbench.
-     */
-    interface Listener {
-
-        void onViewTypeChanged(ItemView.ViewType viewType);
-
+    @Override
+    public WorkbenchDefinition getWorkbench() {
+        return workbench;
     }
 
-    void setListener(Listener listener);
-
-    void setViewType(ItemView.ViewType type);
-
-    /**
-     * Refreshes the current view.
-     */
-    void refresh();
-
-    /**
-     * Use this method to add sub views hosted by this view.
-     */
-    void addItemView(ItemView.ViewType type, ItemView view);
-
-    /**
-     * Use this method to add an action bar to this sub app view.
-     */
-    void setActionbarView(ActionbarView actionbar);
+    public void setWorkbench(WorkbenchDefinition workBench) {
+        this.workbench = workBench;
+    }
 }

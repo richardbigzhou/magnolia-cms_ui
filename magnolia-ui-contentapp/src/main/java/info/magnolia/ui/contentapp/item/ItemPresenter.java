@@ -54,7 +54,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Presenter for the item displayed in the {@link info.magnolia.ui.contentapp.workbench.ItemWorkbenchPresenter}. Takes
+ * Presenter for the item displayed in the {@link info.magnolia.ui.contentapp.browser.ItemWorkbenchPresenter}. Takes
  * care of building and switching between the right {@link ItemView.ViewType}.
  */
 public class ItemPresenter implements DialogActionListener, EditorCallback, EditorValidator {

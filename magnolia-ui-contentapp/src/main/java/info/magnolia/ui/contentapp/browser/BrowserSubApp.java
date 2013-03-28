@@ -31,13 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp;
+package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.location.ContentLocation;
+import info.magnolia.ui.contentapp.WorkbenchSubAppView;
 import info.magnolia.ui.contentapp.event.SearchEvent;
-import info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
@@ -60,7 +59,7 @@ import javax.inject.Named;
  *
  *  <ul>
  *      <li>location updates when switching views, selecting items or performing searches: see {@link #locationChanged(Location)}
- *      <li>restoring the workbench app status when i.e. coming from a bookmark: see {@link #start(Location)}
+ *      <li>restoring the browser app status when i.e. coming from a bookmark: see {@link #start(Location)}
  *  </ul>
  * In order to perform those tasks this class registers non-overridable handlers for the following events:
  *  <ul>
@@ -76,23 +75,23 @@ import javax.inject.Named;
  *  </ul>
  * </pre>
  *
- * @see ContentWorkbenchPresenter
+ * @see BrowserPresenter
  * @see WorkbenchSubAppView
- * @see ContentApp
- * @see ContentLocation
+ * @see info.magnolia.ui.contentapp.ContentApp
+ * @see BrowserLocation
  */
-public class ContentSubApp extends BaseSubApp {
+public class BrowserSubApp extends BaseSubApp {
 
-    private final ContentWorkbenchPresenter workbench;
+    private final BrowserPresenter browser;
     private final EventBus subAppEventBus;
 
-    public ContentSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, final ContentWorkbenchPresenter workbench, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
+    public BrowserSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
 
         super(subAppContext, view);
-        if (subAppContext == null || view == null || workbench == null || subAppEventBus == null) {
-            throw new IllegalArgumentException("Constructor does not allow for null args. Found AppContext = " + subAppContext + ", WorkbenchSubAppView = " + view + ", ContentWorkbenchPresenter = " + workbench + ", EventBus = " + subAppEventBus);
+        if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {
+            throw new IllegalArgumentException("Constructor does not allow for null args. Found AppContext = " + subAppContext + ", WorkbenchSubAppView = " + view + ", ContentWorkbenchPresenter = " + browser + ", EventBus = " + subAppEventBus);
         }
-        this.workbench = workbench;
+        this.browser = browser;
         this.subAppEventBus = subAppEventBus;
     }
 
@@ -101,24 +100,24 @@ public class ContentSubApp extends BaseSubApp {
      * The tasks are:
      * <ul>
      * <li>setting the current location
-     * <li>setting the workbench view
-     * <li>restoring the workbench status: see {@link #restoreWorkbench(ContentLocation)}
+     * <li>setting the browser view
+     * <li>restoring the browser status: see {@link #restoreBrowser(BrowserLocation)}
      * <li>calling {@link #onSubAppStart()} a hook-up method subclasses can override to perform additional work.
      * </ul>
      */
     @Override
     public final View start(final Location location) {
-        ContentLocation l = ContentLocation.wrap(location);
+        BrowserLocation l = BrowserLocation.wrap(location);
         super.start(l);
-        getView().setWorkbenchView(workbench.start());
-        restoreWorkbench(l);
+        getView().setWorkbenchView(browser.start());
+        restoreBrowser(l);
         registerSubAppEventsHandlers(subAppEventBus, this);
 
         return getView();
     }
 
     /**
-     * Restores the workbench status based on the information available in the location object. This is used e.g. when starting a subapp based on a
+     * Restores the browser status based on the information available in the location object. This is used e.g. when starting a subapp based on a
      * bookmark. I.e. given a bookmark containing the following URI fragment
      * <p>
      * {@code
@@ -133,25 +132,25 @@ public class ContentSubApp extends BaseSubApp {
      * <p>
      * then this method will select the root path, set the view type as <code>search</code>, perform a search for "qux" in the workspace used by the app and finally update the available actions.
      *
-     * @see ContentSubApp#updateActionbar(ActionbarPresenter)
-     * @see ContentSubApp#start(Location)
+     * @see BrowserSubApp#updateActionbar(ActionbarPresenter)
+     * @see BrowserSubApp#start(Location)
      * @see Location
      */
-    protected final void restoreWorkbench(final ContentLocation location) {
+    protected final void restoreBrowser(final BrowserLocation location) {
         String path = location.getNodePath();
         ViewType viewType = location.getViewType();
         String query = location.getQuery();
-        getWorkbench().resync(path, viewType, query);
-        updateActionbar(getWorkbench().getActionbarPresenter());
+        getBrowser().resync(path, viewType, query);
+        updateActionbar(getBrowser().getActionbarPresenter());
     }
 
     /**
-     * Updates the actions available in the workbench's actionbar.
+     * Updates the actions available in the browser's actionbar.
      * Depending on the selected item or on other conditions specific to a concrete app, certain actions will be enabled or disabled.
-     * By default if no path is selected in the workbench, namely root is selected, "delete" and "edit" actions are not available.
+     * By default if no path is selected in the browser, namely root is selected, "delete" and "edit" actions are not available.
      * If some path other than root is selected, "edit" and "delete" actions become available.
      *
-     * @see #restoreWorkbench(ContentLocation)
+     * @see #restoreBrowser(BrowserLocation)
      * @see #locationChanged(Location)
      * @see ActionbarPresenter
      */
@@ -159,8 +158,8 @@ public class ContentSubApp extends BaseSubApp {
 
     }
 
-    protected final ContentWorkbenchPresenter getWorkbench() {
-        return workbench;
+    protected final BrowserPresenter getBrowser() {
+        return browser;
     }
 
     @Override
@@ -174,15 +173,15 @@ public class ContentSubApp extends BaseSubApp {
     @Override
     public void locationChanged(final Location location) {
         super.locationChanged(location);
-        restoreWorkbench(getCurrentLocation());
+        restoreBrowser(getCurrentLocation());
     }
 
     /**
-     * Wraps the current DefaultLocation in a {@link ContentLocation}. Providing getter and setters for used parameters.
+     * Wraps the current DefaultLocation in a {@link BrowserLocation}. Providing getter and setters for used parameters.
      */
     @Override
-    public ContentLocation getCurrentLocation() {
-        return ContentLocation.wrap(super.getCurrentLocation());
+    public BrowserLocation getCurrentLocation() {
+        return BrowserLocation.wrap(super.getCurrentLocation());
     }
 
     /*
@@ -193,13 +192,13 @@ public class ContentSubApp extends BaseSubApp {
      * <li> {@link SearchEvent}
      * </ul>
      */
-    private void registerSubAppEventsHandlers(final EventBus subAppEventBus, final ContentSubApp subApp) {
-        final ActionbarPresenter actionbar = subApp.getWorkbench().getActionbarPresenter();
+    private void registerSubAppEventsHandlers(final EventBus subAppEventBus, final BrowserSubApp subApp) {
+        final ActionbarPresenter actionbar = subApp.getBrowser().getActionbarPresenter();
         subAppEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
 
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
-                ContentLocation location = getCurrentLocation();
+                BrowserLocation location = getCurrentLocation();
                 location.updateNodePath(event.getPath());
                 getAppContext().setSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);
@@ -210,7 +209,7 @@ public class ContentSubApp extends BaseSubApp {
 
             @Override
             public void onViewChanged(ViewTypeChangedEvent event) {
-                ContentLocation location = getCurrentLocation();
+                BrowserLocation location = getCurrentLocation();
                 // remove search term from fragment when switching back
                 if (location.getViewType() == ViewType.SEARCH && event.getViewType() != ViewType.SEARCH) {
                     location.updateQuery("");
@@ -225,7 +224,7 @@ public class ContentSubApp extends BaseSubApp {
 
             @Override
             public void onSearch(SearchEvent event) {
-                ContentLocation location = getCurrentLocation();
+                BrowserLocation location = getCurrentLocation();
                 location.updateQuery(event.getSearchExpression());
                 getAppContext().setSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);

@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.contentapp;
 
+import info.magnolia.ui.contentapp.browser.ItemWorkbenchPresenter;
 import info.magnolia.ui.contentapp.location.ItemLocation;
-import info.magnolia.ui.contentapp.workbench.ItemWorkbenchPresenter;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.location.Location;
@@ -43,17 +43,21 @@ import info.magnolia.ui.vaadin.view.View;
 import javax.inject.Inject;
 
 /**
- * Base implementation of an item subApp. Provides sensible implementation for services shared by all item subApps.
- * Implementers of this class represent a tab for viewing and editing items typically opened from an {@link ContentSubApp}.
- * Subclasses can augment the default behavior and perform additional tasks by overriding the following methods:
+ * Base implementation of an item subApp. Provides sensible implementation for
+ * services shared by all item subApps. Implementers of this class represent a
+ * tab for viewing and editing items typically opened from an
+ * {@link info.magnolia.ui.contentapp.browser.BrowserSubApp}. Subclasses can
+ * augment the default behavior and perform additional tasks by overriding the
+ * following methods:
  * <ul>
  * <li>{@link #onSubAppStart()}
  * <li>{@link #locationChanged(Location)}
  * </ul>
- *
- * Currently lacking listeners for {@link info.magnolia.ui.framework.event.ContentChangedEvent}.
- * Currently lacking handling of locationChanged. Related to MGNLUI-154
- *
+ * 
+ * Currently lacking listeners for
+ * {@link info.magnolia.ui.framework.event.ContentChangedEvent}. Currently
+ * lacking handling of locationChanged. Related to MGNLUI-154
+ * 
  * @see ItemWorkbenchPresenter
  * @see WorkbenchSubAppView
  * @see ItemLocation

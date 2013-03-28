@@ -38,7 +38,9 @@ import info.magnolia.ui.vaadin.view.View;
 import com.vaadin.ui.Component;
 
 /**
- * View for Workbench subApps. Used for implementers of {@link ContentSubApp} and {@link ItemSubApp}.
+ * View for Workbench subApps. Used for implementers of
+ * {@link info.magnolia.ui.contentapp.browser.BrowserSubApp} and
+ * {@link ItemSubApp}.
  */
 public class WorkbenchSubAppViewImpl implements WorkbenchSubAppView {
 

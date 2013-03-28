@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.workbench;
+package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
@@ -60,9 +60,9 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
- * Implementation of {@link ContentWorkbenchView}.
+ * Implementation of {@link BrowserView}.
  */
-public class ContentWorkbenchViewImpl extends HorizontalLayout implements ContentWorkbenchView {
+public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
 
     private final CssLayout contentViewContainer = new CssLayout();
 
@@ -78,7 +78,7 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
 
         @Override
         public void valueChange(ValueChangeEvent event) {
-            contentWorkbenchViewListener.onSearch(searchbox.getValue().toString());
+            listener.onSearch(searchbox.getValue().toString());
         }
     };
 
@@ -95,9 +95,9 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
      */
     private ViewType previousViewType = currentViewType;
 
-    private ContentWorkbenchView.Listener contentWorkbenchViewListener;
+    private BrowserView.Listener listener;
 
-    public ContentWorkbenchViewImpl() {
+    public BrowserViewImpl() {
         super();
         setSizeFull();
         setStyleName("workbench");
@@ -183,13 +183,13 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
         return button;
     }
 
-    public ContentWorkbenchView.Listener getListener() {
-        return contentWorkbenchViewListener;
+    public BrowserView.Listener getListener() {
+        return listener;
     }
 
     @Override
-    public void setListener(final ContentWorkbenchView.Listener listener) {
-        this.contentWorkbenchViewListener = listener;
+    public void setListener(final BrowserView.Listener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -209,7 +209,7 @@ public class ContentWorkbenchViewImpl extends HorizontalLayout implements Conten
         setViewTypeStyling(currentViewType);
         refresh();
 
-        this.contentWorkbenchViewListener.onViewTypeChanged(currentViewType);
+        this.listener.onViewTypeChanged(currentViewType);
     }
 
     @Override

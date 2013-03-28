@@ -40,8 +40,8 @@ import static org.mockito.Mockito.*;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
+import info.magnolia.ui.contentapp.browser.BrowserView;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter;
-import info.magnolia.ui.contentapp.workbench.ContentWorkbenchView;
 import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
 import info.magnolia.ui.form.field.builder.AbstractFieldBuilderTest;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
@@ -80,11 +80,11 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
-                ContentWorkbenchView parentView = (ContentWorkbenchView) args[0];
+                BrowserView parentView = (BrowserView) args[0];
                 parentView.addContentView(ViewType.TREE, mock(ContentView.class));
                 return null;
             }
-        }).when(presenter).initContentView(any(ContentWorkbenchView.class));
+        }).when(presenter).initContentView(any(BrowserView.class));
         eventBus = new SimpleEventBus();
     }
 

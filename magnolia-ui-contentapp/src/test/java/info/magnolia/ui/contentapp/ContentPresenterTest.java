@@ -37,6 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -73,7 +74,7 @@ public class ContentPresenterTest {
     public void setUp() {
         contentViewBuilder = mock(ContentViewBuilder.class);
         context = mock(AppContext.class);
-        final ContentSubAppDescriptor descr = mock(ContentSubAppDescriptor.class);
+        final BrowserSubAppDescriptor descr = mock(BrowserSubAppDescriptor.class);
         when(context.getDefaultSubAppDescriptor()).thenReturn(descr);
         final WorkbenchDefinition workbench = mock(WorkbenchDefinition.class);
         when(descr.getWorkbench()).thenReturn(workbench);

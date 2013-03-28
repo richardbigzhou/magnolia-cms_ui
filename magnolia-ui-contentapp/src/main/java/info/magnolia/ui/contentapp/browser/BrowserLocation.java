@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.location;
+package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
@@ -40,13 +40,13 @@ import info.magnolia.ui.workbench.ContentView;
 /**
  * ContentLocation used in ContentSubApps. Extends the Default Location by adding fields for the nodePath, viewType and query.
  */
-public class ContentLocation extends DefaultLocation {
+public class BrowserLocation extends DefaultLocation {
 
     private String nodePath;
     private ContentView.ViewType viewType;
     private String query;
 
-    public ContentLocation(String appId, String subAppId, String parameter) {
+    public BrowserLocation(String appId, String subAppId, String parameter) {
         super(LOCATION_TYPE_APP, appId, subAppId, parameter);
 
         setNodePath(extractNodePath(parameter));
@@ -123,8 +123,8 @@ public class ContentLocation extends DefaultLocation {
         super.setParameter(sb.toString());
     }
 
-    public static ContentLocation wrap(Location location) {
-        return new ContentLocation(location.getAppId(), location.getSubAppId(), location.getParameter());
+    public static BrowserLocation wrap(Location location) {
+        return new BrowserLocation(location.getAppId(), location.getSubAppId(), location.getParameter());
     }
 
     public void updateNodePath(String newNodePath) {

@@ -46,8 +46,8 @@
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.contentapp.ContentSubAppDescriptor</type>
-      <implementation>info.magnolia.ui.contentapp.ConfiguredContentSubAppDescriptor</implementation>
+      <type>info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor</type>
+      <implementation>info.magnolia.ui.contentapp.browser.ConfiguredBrowserSubAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.contentapp.ItemSubAppDescriptor</type>
@@ -233,8 +233,8 @@
       <implementation>info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.contentapp.workbench.ContentWorkbenchView</type>
-      <implementation>info.magnolia.ui.contentapp.workbench.ContentWorkbenchViewImpl</implementation>
+      <type>info.magnolia.ui.contentapp.browser.BrowserView</type>
+      <implementation>info.magnolia.ui.contentapp.browser.BrowserViewImpl</implementation>
     </component>
   </components>
 
@@ -252,20 +252,20 @@
       <implementation>info.magnolia.ui.framework.app.action.SubAppActionExecutor</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter</implementation>
+      <type>info.magnolia.ui.contentapp.browser.BrowserPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.browser.BrowserPresenter</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.contentapp.ContentPresenter</type>
       <implementation>info.magnolia.ui.contentapp.ContentPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.contentapp.workbench.ItemWorkbenchView</type>
-      <implementation>info.magnolia.ui.contentapp.workbench.ItemWorkbenchViewImpl</implementation>
+      <type>info.magnolia.ui.contentapp.browser.ItemWorkbenchView</type>
+      <implementation>info.magnolia.ui.contentapp.browser.ItemWorkbenchViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.contentapp.workbench.ItemWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.contentapp.workbench.ItemWorkbenchPresenter</implementation>
+      <type>info.magnolia.ui.contentapp.browser.ItemWorkbenchPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.browser.ItemWorkbenchPresenter</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.contentapp.item.ItemPresenter</type>

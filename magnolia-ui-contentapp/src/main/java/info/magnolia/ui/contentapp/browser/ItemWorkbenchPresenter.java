@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.workbench;
+package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;

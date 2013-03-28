@@ -34,7 +34,8 @@
 package info.magnolia.ui.contentapp;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.contentapp.workbench.ContentWorkbenchView;
+import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
+import info.magnolia.ui.contentapp.browser.BrowserView;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
@@ -77,14 +78,14 @@ public class ContentPresenter implements ContentView.Listener {
 
     private final String workspaceName;
 
-    private final ContentSubAppDescriptor contentSubAppDescriptor;
+    private final BrowserSubAppDescriptor contentSubAppDescriptor;
 
     private final ContentViewBuilder contentViewBuilder;
 
     protected WorkbenchDefinition workbenchDefinition;
     private String selectedItemPath;
 
-    protected ContentPresenter(final ContentSubAppDescriptor contentSubAppDescriptor, final ContentViewBuilder contentViewBuilder, final EventBus subAppEventBus, final Shell shell) {
+    protected ContentPresenter(final BrowserSubAppDescriptor contentSubAppDescriptor, final ContentViewBuilder contentViewBuilder, final EventBus subAppEventBus, final Shell shell) {
         this.contentViewBuilder = contentViewBuilder;
         this.subAppEventBus = subAppEventBus;
         this.shell = shell;
@@ -94,15 +95,15 @@ public class ContentPresenter implements ContentView.Listener {
     }
 
     public ContentPresenter(final AppContext appContext, final ContentViewBuilder contentViewBuilder, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) final EventBus subAppEventBus, final Shell shell) {
-        this((ContentSubAppDescriptor) appContext.getDefaultSubAppDescriptor(), contentViewBuilder, subAppEventBus, shell);
+        this((BrowserSubAppDescriptor) appContext.getDefaultSubAppDescriptor(), contentViewBuilder, subAppEventBus, shell);
     }
 
     @Inject
     public ContentPresenter(final SubAppContext subAppContext, final ContentViewBuilder contentViewBuilder, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) final EventBus subAppEventBus, final Shell shell) {
-        this((ContentSubAppDescriptor) subAppContext.getSubAppDescriptor(), contentViewBuilder, subAppEventBus, shell);
+        this((BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor(), contentViewBuilder, subAppEventBus, shell);
     }
 
-    public void initContentView(ContentWorkbenchView parentView) {
+    public void initContentView(BrowserView parentView) {
         if (workbenchDefinition == null) {
             throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
         }
