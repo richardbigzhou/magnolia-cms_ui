@@ -109,7 +109,7 @@ public class ContentLocationTest {
         ContentLocation contentLocation = new ContentLocation("someApp", "someContentApp", "/some/other/node/00");
 
         // TEST
-        assertEquals(ContentView.ViewType.TREE, contentLocation.getViewType());
+        assertEquals(null, contentLocation.getViewType());
 
     }
 
