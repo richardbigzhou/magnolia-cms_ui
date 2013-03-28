@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
-  <name>ui-mediaeditor</name>
+  <name>ui-contentapp</name>
   <displayName>Magnolia Content App</displayName>
   <description>Framework API and utilities for content management</description>
   <class>info.magnolia.ui.contentapp.ContentAppModule</class>
