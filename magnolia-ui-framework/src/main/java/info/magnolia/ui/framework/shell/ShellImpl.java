@@ -201,6 +201,7 @@ public class ShellImpl implements Shell, MessageEventHandler {
         f.setSubAppId(DefaultLocation.extractSubAppId(fragment));
         f.setParameter(DefaultLocation.extractParameter(fragment));
 
+        getMagnoliaShell().getUI().getPage().setUriFragment(fragment, false);
         magnoliaShell.getActiveViewport().setCurrentShellFragment(f.toFragment());
         magnoliaShell.propagateFragmentToClient(f);
     }

@@ -165,14 +165,18 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
     }
 
     public void setActiveTab(final MagnoliaTab tab) {
-            Iterator<Component> it = iterator();
-            while (it.hasNext()) {
-                MagnoliaTab tabIt = (MagnoliaTab) it.next();
-                if (tabIt.getContent() != null) {
-                    tabIt.getContent().setVisible(tabIt == tab);
-                }
+        getState().activeTab = tab;
+        updateTabContentVisibility();
+    }
+
+    private void updateTabContentVisibility() {
+        Iterator<Component> it = iterator();
+        while (it.hasNext()) {
+            MagnoliaTab tabIt = (MagnoliaTab) it.next();
+            if (tabIt.getContent() != null) {
+                tabIt.getContent().setVisible(tabIt == getState().activeTab);
             }
-            getState().activeTab = tab;
+        }
     }
 
     @Override
@@ -196,5 +200,11 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
      */
     public void closeTabFromServer(MagnoliaTab tab) {
         getRpcProxy(MagnoliaTabSheetClientRpc.class).closeTab(tab);
+    }
+    
+    @Override
+    public void beforeClientResponse(boolean initial) {
+        super.beforeClientResponse(initial);
+        updateTabContentVisibility();
     }
 }

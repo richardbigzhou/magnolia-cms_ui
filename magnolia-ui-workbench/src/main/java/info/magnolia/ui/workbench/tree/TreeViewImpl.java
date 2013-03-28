@@ -106,7 +106,7 @@ public class TreeViewImpl implements TreeView {
         layout = buildLayout();
         layout.addComponent(treeTable);
 
-        treeTable.addListener(new ItemClickEvent.ItemClickListener() {
+        treeTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
 
             private Object previousSelection;
 
@@ -126,7 +126,7 @@ public class TreeViewImpl implements TreeView {
             }
         });
 
-        treeTable.addListener(new TreeTable.ValueChangeListener() {
+        treeTable.addValueChangeListener(new TreeTable.ValueChangeListener() {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
@@ -215,7 +215,7 @@ public class TreeViewImpl implements TreeView {
             treeTable.setColumnHeader(columnProperty, column.getLabel());
             if (column.getWidth() > 0) {
                 treeTable.setColumnWidth(columnProperty, column.getWidth());
-            } else {
+            } else if (column.getExpandRatio() > 0) {
                 treeTable.setColumnExpandRatio(columnProperty, column.getExpandRatio());
             }
 

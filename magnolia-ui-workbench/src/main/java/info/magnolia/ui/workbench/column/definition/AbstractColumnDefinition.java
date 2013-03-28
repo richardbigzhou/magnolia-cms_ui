@@ -46,7 +46,7 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     private int width = -1;
 
-    private float expandRatio = 1.0f;
+    private float expandRatio = 0;
 
     private boolean sortable = false;
 
