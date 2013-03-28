@@ -31,29 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.location;
+package info.magnolia.ui.contentapp.detail;
 
-import info.magnolia.ui.contentapp.item.ItemView;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
 /**
- * ItemLocation used in implementers of {@link info.magnolia.ui.contentapp.ItemSubApp}.
- * Extends the Default Location by adding fields for the nodePath and {@link ItemView.ViewType}.
+ * ItemLocation used in implementers of {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
+ * Extends the Default Location by adding fields for the nodePath and {@link DetailView.ViewType}.
  */
-public class ItemLocation extends DefaultLocation {
+public class DetailLocation extends DefaultLocation {
 
-    private ItemView.ViewType viewType;
+    private DetailView.ViewType viewType;
     private String nodePath;
 
-    public ItemLocation(String appId, String subAppId, String parameter) {
+    public DetailLocation(String appId, String subAppId, String parameter) {
         super(LOCATION_TYPE_APP, appId, subAppId, parameter);
 
         setNodePath(extractNodePath(parameter));
         setViewType(extractViewType(parameter));
     }
 
-    public ItemLocation(String appId, String subAppId, ItemView.ViewType viewType, String nodePath) {
+    public DetailLocation(String appId, String subAppId, DetailView.ViewType viewType, String nodePath) {
         super(LOCATION_TYPE_APP, appId, subAppId);
 
         setNodePath(nodePath);
@@ -72,11 +71,11 @@ public class ItemLocation extends DefaultLocation {
         this.nodePath = (nodePath == null || nodePath.isEmpty()) ? "/" : nodePath;
     }
 
-    public ItemView.ViewType getViewType() {
+    public DetailView.ViewType getViewType() {
         return viewType;
     }
 
-    public void setViewType(ItemView.ViewType viewType) {
+    public void setViewType(DetailView.ViewType viewType) {
         this.viewType = viewType;
     }
 
@@ -85,7 +84,7 @@ public class ItemLocation extends DefaultLocation {
         return i != -1 ? parameter.substring(0, i) : parameter;
     }
 
-    private ItemView.ViewType extractViewType(String parameter) {
+    private DetailView.ViewType extractViewType(String parameter) {
         String action = "";
         // nodePath
         int i = parameter.indexOf(':');
@@ -94,7 +93,7 @@ public class ItemLocation extends DefaultLocation {
             int j = parameter.indexOf(':', i + 1);
             action = (j != -1) ? parameter.substring(i + 1, j) : parameter.substring(i + 1);
         }
-        return ItemView.ViewType.fromString(action);
+        return DetailView.ViewType.fromString(action);
     }
 
     protected void updateParameter() {
@@ -105,8 +104,8 @@ public class ItemLocation extends DefaultLocation {
         super.setParameter(sb.toString());
     }
 
-    public static ItemLocation wrap(Location location) {
-        return new ItemLocation(location.getAppId(), location.getSubAppId(), location.getParameter());
+    public static DetailLocation wrap(Location location) {
+        return new DetailLocation(location.getAppId(), location.getSubAppId(), location.getParameter());
     }
 
     public void updateNodePath(String newNodePath) {
@@ -114,7 +113,7 @@ public class ItemLocation extends DefaultLocation {
         updateParameter();
     }
 
-    public void updateViewtype(ItemView.ViewType newViewType) {
+    public void updateViewtype(DetailView.ViewType newViewType) {
         setViewType(newViewType);
         updateParameter();
     }

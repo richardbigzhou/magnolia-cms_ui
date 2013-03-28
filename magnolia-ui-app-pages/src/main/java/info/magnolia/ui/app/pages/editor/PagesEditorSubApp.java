@@ -38,10 +38,10 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.ItemSubAppDescriptor;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.contentapp.item.ItemView;
-import info.magnolia.ui.contentapp.location.ItemLocation;
+import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
+import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -100,7 +100,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.eventBus = eventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
-        this.editorDefinition = ((ItemSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
+        this.editorDefinition = ((DetailSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
         this.workspace = editorDefinition.getWorkspace();
         this.appContext = subAppContext.getAppContext();
 
@@ -114,7 +114,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     @Override
     public View start(Location location) {
-        ItemLocation itemLocation = ItemLocation.wrap(location);
+        DetailLocation itemLocation = DetailLocation.wrap(location);
         super.start(itemLocation);
 
         actionbarPresenter.setListener(this);
@@ -135,26 +135,26 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     @Override
     public boolean supportsLocation(Location location) {
-        return getCurrentLocation().getNodePath().equals(ItemLocation.wrap(location).getNodePath());
+        return getCurrentLocation().getNodePath().equals(DetailLocation.wrap(location).getNodePath());
     }
 
     /**
      * Wraps the current DefaultLocation in a ContentLocation. Providing getter and setters for used parameters.
      */
     @Override
-    public ItemLocation getCurrentLocation() {
-        return ItemLocation.wrap(super.getCurrentLocation());
+    public DetailLocation getCurrentLocation() {
+        return DetailLocation.wrap(super.getCurrentLocation());
     }
 
     @Override
     public void locationChanged(Location location) {
-        ItemLocation itemLocation = ItemLocation.wrap(location);
+        DetailLocation itemLocation = DetailLocation.wrap(location);
         super.locationChanged(itemLocation);
         goToLocation(itemLocation);
         updateActions();
     }
 
-    private void goToLocation(ItemLocation location) {
+    private void goToLocation(DetailLocation location) {
 
         if (isLocationChanged(location)) {
             setPageEditorParameters(location);
@@ -170,19 +170,19 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         }
     }
 
-    private void setPageEditorParameters(ItemLocation location) {
-        ItemView.ViewType action = location.getViewType();
+    private void setPageEditorParameters(DetailLocation location) {
+        DetailView.ViewType action = location.getViewType();
         String path = location.getNodePath();
 
-        this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, ItemView.ViewType.VIEW.getText().equals(action.getText()));
+        this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, DetailView.ViewType.VIEW.getText().equals(action.getText()));
         this.caption = getPageTitle(path);
     }
 
-    private boolean isLocationChanged(ItemLocation location) {
-        ItemView.ViewType action = location.getViewType();
+    private boolean isLocationChanged(DetailLocation location) {
+        DetailView.ViewType action = location.getViewType();
         String path = location.getNodePath();
 
-        if (parameters != null && (parameters.getNodePath().equals(path) && parameters.isPreview() == ItemView.ViewType.VIEW.getText().equals(action.getText()))) {
+        if (parameters != null && (parameters.getNodePath().equals(path) && parameters.isPreview() == DetailView.ViewType.VIEW.getText().equals(action.getText()))) {
             return false;
         }
         return true;

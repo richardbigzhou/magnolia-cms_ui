@@ -48,12 +48,12 @@ import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
 import info.magnolia.ui.app.contacts.form.action.SaveContactFormAction;
 import info.magnolia.ui.app.contacts.main.ContactsMainSubApp;
 import info.magnolia.ui.contentapp.ContentApp;
-import info.magnolia.ui.contentapp.ItemSubApp;
 import info.magnolia.ui.contentapp.config.CodeConfigurationUtils;
 import info.magnolia.ui.contentapp.config.ContentAppBuilder;
 import info.magnolia.ui.contentapp.config.ContentAppConfig;
-import info.magnolia.ui.contentapp.item.action.CreateItemActionDefinition;
-import info.magnolia.ui.contentapp.item.action.EditItemActionDefinition;
+import info.magnolia.ui.contentapp.detail.DetailSubApp;
+import info.magnolia.ui.contentapp.detail.action.CreateItemActionDefinition;
+import info.magnolia.ui.contentapp.detail.action.EditItemActionDefinition;
 import info.magnolia.ui.dialog.config.Dialog;
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
@@ -197,7 +197,7 @@ public class ContactsModule implements ModuleLifecycle {
                                 ).exec(),
 
                         app.itemSubApp("item")
-                                .subAppClass(ItemSubApp.class)
+                                .subAppClass(DetailSubApp.class)
                                 .actions(saveFormAction, cancelFormAction)
                                 .editor(contentAppConfig.editor.editor()
                                         .nodeType(contentAppConfig.workbench.nodeType(Contact.NAME).icon("icon-node-content"))

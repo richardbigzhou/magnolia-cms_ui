@@ -31,63 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.item.action;
+package info.magnolia.ui.contentapp.detail;
 
-import info.magnolia.ui.model.action.ConfiguredActionDefinition;
-
-import org.apache.commons.lang.StringUtils;
+import info.magnolia.ui.contentapp.definition.EditorDefinition;
+import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
 
 /**
- * Base ContentApp ItemActionDefinition.
+ * ConfiguredItemSubAppDescriptor.
  */
-public abstract class AbstractItemActionDefinition extends ConfiguredActionDefinition {
-    private String nodeType = StringUtils.EMPTY;
-    private String appId;
-    private String subAppId;
+public class ConfiguredDetailSubAppDescriptor extends ConfiguredSubAppDescriptor implements DetailSubAppDescriptor {
 
+    private EditorDefinition editor;
 
-    /**
-     * @return the nodeType.
-     */
-    public String getNodeType() {
-        return nodeType;
+    @Override
+    public EditorDefinition getEditor() {
+        return editor;
     }
 
-    /**
-     * @param nodeType
-     *            the nodeType to set.
-     */
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
+    public void setEditor(EditorDefinition editorDefinition) {
+        this.editor = editorDefinition;
     }
 
-    /**
-     * @return the appId.
-     */
-    public String getAppId() {
-        return appId;
-    }
-
-    /**
-     * @param appId
-     *            the appId to set.
-     */
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
-    /**
-     * @return the subAppId.
-     */
-    public String getSubAppId() {
-        return subAppId;
-    }
-
-    /**
-     * @param subAppId
-     *            the subAppId to set.
-     */
-    public void setSubAppId(String subAppId) {
-        this.subAppId = subAppId;
-    }
 }

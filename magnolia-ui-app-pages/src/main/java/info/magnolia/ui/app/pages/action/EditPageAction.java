@@ -35,8 +35,8 @@ package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.contentapp.location.ItemLocation;
-import info.magnolia.ui.contentapp.item.ItemView;
+import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -68,7 +68,7 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
             if (!NodeUtil.isNodeType(nodeToEdit, NodeTypes.Content.NAME)) {
                 return;
             }
-            ItemLocation location = new ItemLocation("pages", "item", ItemView.ViewType.EDIT, nodeToEdit.getPath());
+            DetailLocation location = new DetailLocation("pages", "item", DetailView.ViewType.EDIT, nodeToEdit.getPath());
             locationController.goTo(location);
 
         } catch (RepositoryException e) {

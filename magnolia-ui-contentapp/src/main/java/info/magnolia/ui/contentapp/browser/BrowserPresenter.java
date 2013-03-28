@@ -79,7 +79,7 @@ import com.vaadin.data.Item;
 import com.vaadin.server.Resource;
 
 /**
- * The workbench is a core component of AdminCentral. It represents the main hub through which users can interact with
+ * The browser is a core component of AdminCentral. It represents the main hub through which users can interact with
  * JCR data. It is compounded by three main sub-components:
  * <ul>
  * <li>a configurable data grid.

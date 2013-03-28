@@ -50,8 +50,8 @@
       <implementation>info.magnolia.ui.contentapp.browser.ConfiguredBrowserSubAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.contentapp.ItemSubAppDescriptor</type>
-      <implementation>info.magnolia.ui.contentapp.ConfiguredItemSubAppDescriptor</implementation>
+      <type>info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor</type>
+      <implementation>info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.contentapp.definition.EditorDefinition</type>
@@ -256,24 +256,20 @@
       <implementation>info.magnolia.ui.contentapp.browser.BrowserPresenter</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.contentapp.detail.DetailEditorPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.detail.DetailEditorPresenter</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.contentapp.ContentPresenter</type>
       <implementation>info.magnolia.ui.contentapp.ContentPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.contentapp.browser.ItemWorkbenchView</type>
-      <implementation>info.magnolia.ui.contentapp.browser.ItemWorkbenchViewImpl</implementation>
+      <type>info.magnolia.ui.contentapp.detail.DetailEditorView</type>
+      <implementation>info.magnolia.ui.contentapp.detail.DetailEditorViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.contentapp.browser.ItemWorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.contentapp.browser.ItemWorkbenchPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.item.ItemPresenter</type>
-      <implementation>info.magnolia.ui.contentapp.item.ItemPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.item.ItemView</type>
-      <implementation>info.magnolia.ui.contentapp.item.ItemViewImpl</implementation>
+      <type>info.magnolia.ui.contentapp.detail.DetailView</type>
+      <implementation>info.magnolia.ui.contentapp.detail.DetailViewImpl</implementation>
     </component>
 
 
@@ -309,7 +305,7 @@
     </component>
 
 
-    <!-- Declaring page view for all apps embedding old adminCentral views
+    <!-- Declaring page view for all apps embedding old adminCentral views 
       in iFrame -->
     <component>
       <type>info.magnolia.ui.admincentral.app.tools.PageView</type>

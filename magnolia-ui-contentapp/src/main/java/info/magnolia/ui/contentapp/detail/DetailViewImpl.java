@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp;
+package info.magnolia.ui.contentapp.detail;
 
-import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.framework.app.SubAppDescriptor;
+import com.vaadin.ui.Component;
 
 /**
- * Descriptor for Item subApps.
- * Holds the form definition to build a form and needed fields to create a new node.
+ * Implementation of {@link DetailView}. This is a wrapper for the Form respectively detailed view of Items.
+ * Currently lacking most functionality planned. See MGNLUI-154.
  */
-public interface ItemSubAppDescriptor extends SubAppDescriptor {
+public class DetailViewImpl implements DetailView {
 
-    EditorDefinition getEditor();
+    private Component itemView;
 
+    private ViewType viewType;
+
+    @Override
+    public void setItemView(Component newView, ViewType viewType) {
+        this.itemView = newView;
+        this.viewType = viewType;
+    }
+
+    @Override
+    public void setListener(Listener listener) {
+    }
+
+    @Override
+    public void refresh() {
+    }
+
+    @Override
+    public ViewType getViewType() {
+        return viewType;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return itemView;
+    }
 }

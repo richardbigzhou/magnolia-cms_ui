@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.item;
+package info.magnolia.ui.contentapp.detail;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
@@ -54,16 +54,17 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Presenter for the item displayed in the {@link info.magnolia.ui.contentapp.browser.ItemWorkbenchPresenter}. Takes
- * care of building and switching between the right {@link ItemView.ViewType}.
+ * Presenter for the item displayed in the
+ * {@link info.magnolia.ui.contentapp.detail.DetailEditorPresenter}. Takes care
+ * of building and switching between the right {@link DetailView.ViewType}.
  */
-public class ItemPresenter implements DialogActionListener, EditorCallback, EditorValidator {
+public class DetailPresenter implements DialogActionListener, EditorCallback, EditorValidator {
 
     private SubAppContext subAppContext;
     private ActionExecutor actionExecutor;
     private final EventBus eventBus;
 
-    private final ItemView view;
+    private final DetailView view;
 
     private FormBuilder formBuilder;
 
@@ -73,7 +74,9 @@ public class ItemPresenter implements DialogActionListener, EditorCallback, Edit
     private FormView formView;
 
     @Inject
-    public ItemPresenter(SubAppContext subAppContext, final ActionExecutor actionExecutor, final @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, ItemView view, FormBuilder formBuilder) {
+    public DetailPresenter(SubAppContext subAppContext, final ActionExecutor actionExecutor,
+            final @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, DetailView view,
+            FormBuilder formBuilder) {
         this.subAppContext = subAppContext;
         this.actionExecutor = actionExecutor;
         this.eventBus = eventBus;
@@ -81,20 +84,21 @@ public class ItemPresenter implements DialogActionListener, EditorCallback, Edit
         this.formBuilder = formBuilder;
     }
 
-    public ItemView start(EditorDefinition editorDefinition, final JcrNodeAdapter item, ItemView.ViewType viewType) {
+    public DetailView start(EditorDefinition editorDefinition, final JcrNodeAdapter item, DetailView.ViewType viewType) {
         this.editorDefinition = editorDefinition;
         this.item = item;
         setItemView(viewType);
         return view;
     }
 
-    private void setItemView(ItemView.ViewType viewType) {
+    private void setItemView(DetailView.ViewType viewType) {
 
         switch (viewType) {
         case VIEW:
         case EDIT:
         default:
-            this.formView = formBuilder.buildForm(editorDefinition.getForm(), item, null);;
+            this.formView = formBuilder.buildForm(editorDefinition.getForm(), item, null);
+            ;
 
             initActions();
             view.setItemView(formView.asVaadinComponent(), viewType);
@@ -108,7 +112,7 @@ public class ItemPresenter implements DialogActionListener, EditorCallback, Edit
                 @Override
                 public void onActionExecuted(final String actionName) {
                     try {
-                        actionExecutor.execute(action.getName(), item, ItemPresenter.this);
+                        actionExecutor.execute(action.getName(), item, DetailPresenter.this);
                     } catch (ActionExecutionException e) {
                         throw new RuntimeException("Could not execute action: ", e);
                     }
@@ -122,21 +126,22 @@ public class ItemPresenter implements DialogActionListener, EditorCallback, Edit
         try {
             actionExecutor.execute(actionName, item, this, this);
         } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.",
+                    e.getMessage());
             subAppContext.getAppContext().broadcastMessage(error);
         }
     }
 
     @Override
     public void onCancel() {
-        //setItemView(ItemView.ViewType.VIEW);
+        // setItemView(ItemView.ViewType.VIEW);
         subAppContext.close();
     }
 
     @Override
     public void onSuccess(String actionName) {
         eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
-        //setItemView(ItemView.ViewType.VIEW);
+        // setItemView(ItemView.ViewType.VIEW);
         subAppContext.close();
     }
 

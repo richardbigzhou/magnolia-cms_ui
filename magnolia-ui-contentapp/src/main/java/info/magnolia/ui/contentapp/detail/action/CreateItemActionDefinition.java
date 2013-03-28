@@ -31,25 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp;
+package info.magnolia.ui.contentapp.detail.action;
 
-import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+
 
 /**
- * ConfiguredItemSubAppDescriptor.
+ * Action Definition for creating new items.
+ * Configuration of all needed parameters to create the correct nodeType and
+ * defining the correct app and subApp to handle the action
  */
-public class ConfiguredItemSubAppDescriptor extends ConfiguredSubAppDescriptor implements ItemSubAppDescriptor {
+public class CreateItemActionDefinition extends AbstractItemActionDefinition {
 
-    private EditorDefinition editor;
-
-    @Override
-    public EditorDefinition getEditor() {
-        return editor;
+    public CreateItemActionDefinition() {
+        setImplementationClass(CreateItemAction.class);
     }
-
-    public void setEditor(EditorDefinition editorDefinition) {
-        this.editor = editorDefinition;
-    }
-
 }

@@ -31,17 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.item.action;
+package info.magnolia.ui.contentapp.detail;
 
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.view.View;
+
+import com.vaadin.ui.ComponentContainer;
 
 /**
- * ActionDefinition used for editing Items.
- * Provides appId and subAppId to determine the correct app and subApp to edit item.
- * see MGNLUI-229.
+ * ItemWorkbenchView.
+ *
+ * @see DetailEditorViewImpl
  */
-public class EditItemActionDefinition extends AbstractItemActionDefinition {
+public interface DetailEditorView extends ComponentContainer, View {
 
-    public EditItemActionDefinition() {
-        setImplementationClass(EditItemAction.class);
+    void setItemView(View itemView);
+
+    /**
+     * Listener interface for events concerning the workbench.
+     */
+    interface Listener {
+
+        void onViewTypeChanged(DetailView.ViewType viewType);
+
     }
+
+    void setListener(Listener listener);
+
+    void setViewType(DetailView.ViewType type);
+
+    /**
+     * Refreshes the current view.
+     */
+    void refresh();
+
+    /**
+     * Use this method to add sub views hosted by this view.
+     */
+    void addItemView(DetailView.ViewType type, DetailView view);
+
+    /**
+     * Use this method to add an action bar to this sub app view.
+     */
+    void setActionbarView(ActionbarView actionbar);
 }

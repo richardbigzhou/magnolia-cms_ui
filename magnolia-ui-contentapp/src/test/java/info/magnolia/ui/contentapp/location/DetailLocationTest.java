@@ -35,7 +35,8 @@ package info.magnolia.ui.contentapp.location;
 
 import static org.junit.Assert.*;
 
-import info.magnolia.ui.contentapp.item.ItemView;
+import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.location.DefaultLocation;
 
 import org.junit.Test;
@@ -43,13 +44,13 @@ import org.junit.Test;
 /**
  * ItemLocationTest.
  */
-public class ItemLocationTest {
+public class DetailLocationTest {
 
     @Test
     public void testToString() {
-        assertEquals("app:someContentApp:main;/some/node:edit", new ItemLocation("someContentApp", "main", "/some/node:edit").toString());
-        assertEquals("app:someContentApp;/some/node:view", new ItemLocation("someContentApp", "", "/some/node:view").toString());
-        assertEquals("app:someContentApp", new ItemLocation("someContentApp", "", "").toString());
+        assertEquals("app:someContentApp:main;/some/node:edit", new DetailLocation("someContentApp", "main", "/some/node:edit").toString());
+        assertEquals("app:someContentApp;/some/node:view", new DetailLocation("someContentApp", "", "/some/node:view").toString());
+        assertEquals("app:someContentApp", new DetailLocation("someContentApp", "", "").toString());
 
     }
 
@@ -59,7 +60,7 @@ public class ItemLocationTest {
         DefaultLocation defaultLocation = new DefaultLocation("app", "someApp", "someContentApp", "/some/node:edit");
 
         // WHEN
-        DefaultLocation itemLocation = new ItemLocation("someApp", "someContentApp", "/some/node:edit");
+        DefaultLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/node:edit");
 
         // TEST
         assertTrue(defaultLocation.equals(itemLocation));
@@ -72,7 +73,7 @@ public class ItemLocationTest {
         DefaultLocation defaultLocation = new DefaultLocation("app", "someApp", "someContentApp", "/some/node:view");
 
         // WHEN
-        ItemLocation itemLocation = new ItemLocation("someApp", "someContentApp", "/some/node:edit");
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/node:edit");
 
         // TEST
         assertFalse(defaultLocation.equals(itemLocation));
@@ -82,7 +83,7 @@ public class ItemLocationTest {
     @Test
     public void testGetNodePath() {
         // GIVEN
-        ItemLocation itemLocation = new ItemLocation("someApp", "someContentApp", "/some/other/node/00:view");
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:view");
 
         // TEST
         assertEquals("/some/other/node/00", itemLocation.getNodePath());
@@ -92,27 +93,27 @@ public class ItemLocationTest {
     @Test
     public void testGetAction() {
         // GIVEN
-        ItemLocation itemLocation = new ItemLocation("someApp", "someContentApp", "/some/other/node/00:edit");
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:edit");
 
         // TEST
-        assertEquals(ItemView.ViewType.EDIT, itemLocation.getViewType());
+        assertEquals(DetailView.ViewType.EDIT, itemLocation.getViewType());
 
     }
 
     @Test
     public void testGetDefaultAction() {
         // GIVEN
-        ItemLocation itemLocation = new ItemLocation("someApp", "someContentApp", "/some/other/node/00");
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00");
 
         // TEST
-        assertEquals(ItemView.ViewType.VIEW, itemLocation.getViewType());
+        assertEquals(DetailView.ViewType.VIEW, itemLocation.getViewType());
 
     }
 
     @Test
     public void testUpdateNodePath() {
         // GIVEN
-        ItemLocation itemLocation = new ItemLocation("someApp", "someContentApp", "/some/other/node/00:edit");
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:edit");
 
         // WHEN
         itemLocation.updateNodePath("/node/has/changes/01");
@@ -125,19 +126,19 @@ public class ItemLocationTest {
     @Test
     public void testUpdateAction() {
         // GIVEN
-        ItemLocation itemLocation = new ItemLocation("someApp", "someContentApp", "/some/other/node/00:edit");
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:edit");
 
         // WHEN
-        itemLocation.updateViewtype(ItemView.ViewType.VIEW);
+        itemLocation.updateViewtype(DetailView.ViewType.VIEW);
 
         // TEST
-        assertEquals(ItemView.ViewType.VIEW, itemLocation.getViewType());
+        assertEquals(DetailView.ViewType.VIEW, itemLocation.getViewType());
     }
 
     @Test
     public void testUpdateNodePathParameter() {
         // GIVEN
-        ItemLocation itemLocation = new ItemLocation("someApp", "someContentApp", "/some/other/node/00:view");
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:view");
 
         // WHEN
         itemLocation.updateNodePath("/some/other/node/01");
@@ -149,10 +150,10 @@ public class ItemLocationTest {
     @Test
     public void testUpdateViewTypeParameter() {
         // GIVEN
-        ItemLocation itemLocation = new ItemLocation("someApp", "someContentApp", "/some/other/node/00:view");
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:view");
 
         // WHEN
-        itemLocation.updateViewtype(ItemView.ViewType.EDIT);
+        itemLocation.updateViewtype(DetailView.ViewType.EDIT);
 
         // TEST
         assertEquals("app:someApp:someContentApp;/some/other/node/00:edit", itemLocation.toString());

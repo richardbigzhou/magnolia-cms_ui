@@ -31,11 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.item.action;
+package info.magnolia.ui.contentapp.detail.action;
 
-import info.magnolia.cms.core.Path;
-import info.magnolia.ui.contentapp.item.ItemView;
-import info.magnolia.ui.contentapp.location.ItemLocation;
+import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -43,37 +42,40 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * Action for creating a new item.
- * The {@link info.magnolia.ui.contentapp.ItemSubApp} only gets a location containing nodePath and {@link ItemView.ViewType}.
- * When creating a new node, we either create it here and pass the new path to the subapp or
- * we pass all needed parameters to the location. This is less messy, but not optimal.. at all.
- * See MGNLUI-222.
+ * Action for editing items in {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
  *
- * @see CreateItemActionDefinition
+ * @see EditItemActionDefinition
  */
-public class CreateItemAction extends ActionBase<CreateItemActionDefinition> {
+public class EditItemAction extends ActionBase<EditItemActionDefinition> {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Node nodeToEdit;
+    private final LocationController locationController;
 
-    private static final String NEW_NODE_NAME = "untitled";
-
-    private LocationController locationController;
-    private final Node parent;
-
-    public CreateItemAction(CreateItemActionDefinition definition, LocationController locationController, Node parent) {
+    public EditItemAction(EditItemActionDefinition definition, Node nodeToEdit, LocationController locationController) {
         super(definition);
+        this.nodeToEdit = nodeToEdit;
         this.locationController = locationController;
-        this.parent = parent;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-
         try {
-            String path = Path.getAbsolutePath(parent.getPath(), NEW_NODE_NAME);
-            ItemLocation location = new ItemLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), ItemView.ViewType.EDIT, path);
+            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeToEdit.getPrimaryNodeType().getName())) {
+                log.warn("EditItemAction requested for a node type definition {}. Current node type is {}. No action will be performed.", getDefinition().getNodeType(), nodeToEdit
+                        .getPrimaryNodeType().getName());
+                return;
+            }
+            final String path = nodeToEdit.getPath();
+            DetailLocation location = new DetailLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path);
             locationController.goTo(location);
+
         } catch (RepositoryException e) {
-            throw new ActionExecutionException(e);
+            throw new ActionExecutionException("Could not execute EditItemAction: ", e);
         }
     }
 }

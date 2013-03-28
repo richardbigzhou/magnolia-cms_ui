@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,63 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.item;
+package info.magnolia.ui.contentapp.detail.action;
 
-import com.vaadin.ui.Component;
+import info.magnolia.ui.model.action.ConfiguredActionDefinition;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
- * Implementation of {@link ItemView}. This is a wrapper for the Form respectively detailed view of Items.
- * Currently lacking most functionality planned. See MGNLUI-154.
+ * Base ContentApp ItemActionDefinition.
  */
-public class ItemViewImpl implements ItemView {
+public abstract class AbstractItemActionDefinition extends ConfiguredActionDefinition {
+    private String nodeType = StringUtils.EMPTY;
+    private String appId;
+    private String subAppId;
 
-    private Component itemView;
 
-    private ViewType viewType;
-
-    @Override
-    public void setItemView(Component newView, ViewType viewType) {
-        this.itemView = newView;
-        this.viewType = viewType;
+    /**
+     * @return the nodeType.
+     */
+    public String getNodeType() {
+        return nodeType;
     }
 
-    @Override
-    public void setListener(Listener listener) {
+    /**
+     * @param nodeType
+     *            the nodeType to set.
+     */
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
     }
 
-    @Override
-    public void refresh() {
+    /**
+     * @return the appId.
+     */
+    public String getAppId() {
+        return appId;
     }
 
-    @Override
-    public ViewType getViewType() {
-        return viewType;
+    /**
+     * @param appId
+     *            the appId to set.
+     */
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return itemView;
+    /**
+     * @return the subAppId.
+     */
+    public String getSubAppId() {
+        return subAppId;
+    }
+
+    /**
+     * @param subAppId
+     *            the subAppId to set.
+     */
+    public void setSubAppId(String subAppId) {
+        this.subAppId = subAppId;
     }
 }

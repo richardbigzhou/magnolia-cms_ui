@@ -31,9 +31,8 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.browser;
+package info.magnolia.ui.contentapp.detail;
 
-import info.magnolia.ui.contentapp.item.ItemView;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.view.View;
 
@@ -45,21 +44,21 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 
 /**
- * Implementation of {@link ItemWorkbenchView}.
- * Holds the {@link ActionbarView} and {@link ItemView} Currently lacking some functionality planned. See MGNLUI-154.
+ * Implementation of {@link DetailEditorView}.
+ * Holds the {@link ActionbarView} and {@link DetailView} Currently lacking some functionality planned. See MGNLUI-154.
  */
-public class ItemWorkbenchViewImpl extends HorizontalLayout implements ItemWorkbenchView {
+public class DetailEditorViewImpl extends HorizontalLayout implements DetailEditorView {
 
     private final CssLayout itemViewContainer = new CssLayout();
-    private final Map<ItemView.ViewType, ItemView> itemViews = new EnumMap<ItemView.ViewType, ItemView>(ItemView.ViewType.class);
+    private final Map<DetailView.ViewType, DetailView> itemViews = new EnumMap<DetailView.ViewType, DetailView>(DetailView.ViewType.class);
 
     private ActionbarView actionbar;
 
-    private ItemView.ViewType currentViewType = ItemView.ViewType.VIEW;
+    private DetailView.ViewType currentViewType = DetailView.ViewType.VIEW;
 
-    private ItemWorkbenchView.Listener contentWorkbenchViewListener;
+    private DetailEditorView.Listener contentWorkbenchViewListener;
 
-    public ItemWorkbenchViewImpl() {
+    public DetailEditorViewImpl() {
         super();
         setSizeFull();
         setStyleName("workbench");
@@ -76,12 +75,12 @@ public class ItemWorkbenchViewImpl extends HorizontalLayout implements ItemWorkb
     }
 
     @Override
-    public void setListener(ItemWorkbenchView.Listener listener) {
+    public void setListener(DetailEditorView.Listener listener) {
         this.contentWorkbenchViewListener = listener;
     }
 
     @Override
-    public void setViewType(final ItemView.ViewType type) {
+    public void setViewType(final DetailView.ViewType type) {
 
         itemViewContainer.removeComponent(itemViews.get(currentViewType).asVaadinComponent());
         final Component c = itemViews.get(type).asVaadinComponent();
@@ -100,7 +99,7 @@ public class ItemWorkbenchViewImpl extends HorizontalLayout implements ItemWorkb
     }
 
     @Override
-    public void addItemView(ItemView.ViewType type, ItemView view) {
+    public void addItemView(DetailView.ViewType type, DetailView view) {
 
     }
 

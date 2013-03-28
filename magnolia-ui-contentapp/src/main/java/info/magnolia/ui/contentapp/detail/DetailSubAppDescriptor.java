@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,48 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.browser;
+package info.magnolia.ui.contentapp.detail;
 
-import info.magnolia.ui.contentapp.item.ItemView;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.view.View;
-
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.ui.contentapp.definition.EditorDefinition;
+import info.magnolia.ui.framework.app.SubAppDescriptor;
 
 /**
- * ItemWorkbenchView.
- *
- * @see ItemWorkbenchViewImpl
+ * Descriptor for Item subApps.
+ * Holds the form definition to build a form and needed fields to create a new node.
  */
-public interface ItemWorkbenchView extends ComponentContainer, View {
+public interface DetailSubAppDescriptor extends SubAppDescriptor {
 
-    void setItemView(View itemView);
+    EditorDefinition getEditor();
 
-    /**
-     * Listener interface for events concerning the workbench.
-     */
-    interface Listener {
-
-        void onViewTypeChanged(ItemView.ViewType viewType);
-
-    }
-
-    void setListener(Listener listener);
-
-    void setViewType(ItemView.ViewType type);
-
-    /**
-     * Refreshes the current view.
-     */
-    void refresh();
-
-    /**
-     * Use this method to add sub views hosted by this view.
-     */
-    void addItemView(ItemView.ViewType type, ItemView view);
-
-    /**
-     * Use this method to add an action bar to this sub app view.
-     */
-    void setActionbarView(ActionbarView actionbar);
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.item.action;
-
+package info.magnolia.ui.contentapp.detail.action;
 
 
 /**
- * Action Definition for creating new items.
- * Configuration of all needed parameters to create the correct nodeType and
- * defining the correct app and subApp to handle the action
+ * ActionDefinition used for editing Items.
+ * Provides appId and subAppId to determine the correct app and subApp to edit item.
+ * see MGNLUI-229.
  */
-public class CreateItemActionDefinition extends AbstractItemActionDefinition {
+public class EditItemActionDefinition extends AbstractItemActionDefinition {
 
-    public CreateItemActionDefinition() {
-        setImplementationClass(CreateItemAction.class);
+    public EditItemActionDefinition() {
+        setImplementationClass(EditItemAction.class);
     }
 }

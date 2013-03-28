@@ -31,10 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp;
+package info.magnolia.ui.contentapp.detail;
 
-import info.magnolia.ui.contentapp.browser.ItemWorkbenchPresenter;
-import info.magnolia.ui.contentapp.location.ItemLocation;
+import info.magnolia.ui.contentapp.WorkbenchSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.location.Location;
@@ -58,18 +57,18 @@ import javax.inject.Inject;
  * {@link info.magnolia.ui.framework.event.ContentChangedEvent}. Currently
  * lacking handling of locationChanged. Related to MGNLUI-154
  * 
- * @see ItemWorkbenchPresenter
+ * @see DetailEditorPresenter
  * @see WorkbenchSubAppView
- * @see ItemLocation
+ * @see DetailLocation
  */
-public class ItemSubApp extends BaseSubApp {
+public class DetailSubApp extends BaseSubApp {
 
-    private final ItemWorkbenchPresenter workbench;
+    private final DetailEditorPresenter workbench;
 
     private String caption;
 
     @Inject
-    protected ItemSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, ItemWorkbenchPresenter workbench) {
+    protected DetailSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, DetailEditorPresenter workbench) {
         super(subAppContext, view);
         this.workbench = workbench;
     }
@@ -85,7 +84,7 @@ public class ItemSubApp extends BaseSubApp {
      */
     @Override
     public View start(final Location location) {
-        ItemLocation l = ItemLocation.wrap(location);
+        DetailLocation l = DetailLocation.wrap(location);
         super.start(l);
         this.caption = l.getNodePath();
         getView().setWorkbenchView(workbench.start(l.getNodePath(), l.getViewType()));
@@ -96,8 +95,8 @@ public class ItemSubApp extends BaseSubApp {
      * Wraps the current DefaultLocation in a ItemLocation. Providing getter and setters for used parameters.
      */
     @Override
-    public ItemLocation getCurrentLocation() {
-        return ItemLocation.wrap(super.getCurrentLocation());
+    public DetailLocation getCurrentLocation() {
+        return DetailLocation.wrap(super.getCurrentLocation());
     }
 
     @Override
@@ -107,19 +106,19 @@ public class ItemSubApp extends BaseSubApp {
 
     @Override
     public boolean supportsLocation(Location location) {
-        ItemLocation itemLocation = ItemLocation.wrap(location);
+        DetailLocation itemLocation = DetailLocation.wrap(location);
         String currentPath = getCurrentLocation().getNodePath();
         return currentPath.equals(itemLocation.getNodePath());
     }
 
     @Override
     public void locationChanged(Location location) {
-        ItemLocation itemLocation = ItemLocation.wrap(location);
+        DetailLocation itemLocation = DetailLocation.wrap(location);
         // getView().setWorkbenchView(workbench.start(itemLocation.getNodePath()));
         super.locationChanged(location);
     }
 
-    private boolean hasLocationChanged(ItemLocation location) {
+    private boolean hasLocationChanged(DetailLocation location) {
         return getCurrentLocation().getViewType() != location.getViewType();
     }
 

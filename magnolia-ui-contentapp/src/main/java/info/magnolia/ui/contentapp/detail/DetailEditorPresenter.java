@@ -31,15 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.browser;
+package info.magnolia.ui.contentapp.detail;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.ItemSubAppDescriptor;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.contentapp.item.ItemPresenter;
-import info.magnolia.ui.contentapp.item.ItemView;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.message.Message;
@@ -62,34 +59,34 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Presenter for the workbench displayed in the {@link info.magnolia.ui.contentapp.ItemSubApp}.
- * Contains the {@link ActionbarPresenter} for handling action events and the {@link ItemPresenter} for displaying the actual item.
+ * Presenter for the workbench displayed in the {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
+ * Contains the {@link ActionbarPresenter} for handling action events and the {@link DetailPresenter} for displaying the actual item.
  */
-public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, ActionbarPresenter.Listener {
+public class DetailEditorPresenter implements DetailEditorView.Listener, ActionbarPresenter.Listener {
 
-    private static final Logger log = LoggerFactory.getLogger(ItemWorkbenchPresenter.class);
+    private static final Logger log = LoggerFactory.getLogger(DetailEditorPresenter.class);
 
     private final ActionExecutor actionExecutor;
     private final AppContext appContext;
-    private final ItemWorkbenchView view;
-    private final ItemPresenter itemPresenter;
+    private final DetailEditorView view;
+    private final DetailPresenter detailPresenter;
     private final ActionbarPresenter actionbarPresenter;
-    private final ItemSubAppDescriptor subAppDescriptor;
+    private final DetailSubAppDescriptor subAppDescriptor;
     private final EditorDefinition editorDefinition;
     private String nodePath;
 
     @Inject
-    public ItemWorkbenchPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final ItemWorkbenchView view,final ItemPresenter itemPresenter, final ActionbarPresenter actionbarPresenter) {
+    public DetailEditorPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final DetailEditorView view,final DetailPresenter detailPresenter, final ActionbarPresenter actionbarPresenter) {
         this.actionExecutor = actionExecutor;
         this.view = view;
-        this.itemPresenter = itemPresenter;
+        this.detailPresenter = detailPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
-        this.subAppDescriptor = (ItemSubAppDescriptor) subAppContext.getSubAppDescriptor();
+        this.subAppDescriptor = (DetailSubAppDescriptor) subAppContext.getSubAppDescriptor();
         this.editorDefinition = subAppDescriptor.getEditor();
     }
 
-    public View start(String nodePath, ItemView.ViewType viewType) {
+    public View start(String nodePath, DetailView.ViewType viewType) {
         view.setListener(this);
         this.nodePath = nodePath;
         JcrNodeAdapter item;
@@ -108,7 +105,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
             throw new RuntimeException(e);
         }
 
-        ItemView itemView = itemPresenter.start(editorDefinition, item, viewType);
+        DetailView itemView = detailPresenter.start(editorDefinition, item, viewType);
 
         view.setItemView(itemView);
         actionbarPresenter.setListener(this);
@@ -128,7 +125,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
     }
 
     @Override
-    public void onViewTypeChanged(final ItemView.ViewType viewType) {
+    public void onViewTypeChanged(final DetailView.ViewType viewType) {
         // eventBus.fireEvent(new ViewTypeChangedEvent(viewType));
     }
 

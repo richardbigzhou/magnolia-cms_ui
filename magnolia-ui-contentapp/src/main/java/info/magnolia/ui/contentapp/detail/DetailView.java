@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.item;
+package info.magnolia.ui.contentapp.detail;
 
 import info.magnolia.ui.vaadin.view.View;
 
@@ -40,9 +40,9 @@ import com.vaadin.ui.Component;
 /**
  * ItemView.
  *
- * @see ItemViewImpl
+ * @see DetailViewImpl
  */
-public interface ItemView extends View {
+public interface DetailView extends View {
 
     void setItemView(Component formView, ViewType viewType);
 
