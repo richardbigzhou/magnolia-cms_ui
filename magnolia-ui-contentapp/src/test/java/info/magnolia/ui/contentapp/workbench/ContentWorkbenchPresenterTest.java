@@ -56,8 +56,11 @@ import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.config.WorkbenchBuilder;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
+import info.magnolia.ui.workbench.list.ListContentViewDefinition;
+import info.magnolia.ui.workbench.tree.TreeContentViewDefinition;
 
 import java.util.Calendar;
 
@@ -108,7 +111,7 @@ public class ContentWorkbenchPresenterTest {
     private void initContentWorkbenchPresenter() {
         // initialize test instance
         ContentSubAppBuilder subAppBuilder = new ContentAppBuilder(APP_NAME).workbenchSubApp(SUB_APP_NAME);
-        subAppBuilder.workbench(new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH));
+        subAppBuilder.workbench(new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreeContentViewDefinition(), new ListContentViewDefinition()));
         Shell mockShell = mock(Shell.class);
         SubAppContext subAppContext = new SubAppContextImpl(subAppBuilder.exec(), mockShell);
 
@@ -222,5 +225,15 @@ public class ContentWorkbenchPresenterTest {
         assertNotNull(LastModified.getLastModifiedBy(node));
         assertEquals(firstModified, LastModified.getLastModified(node));
         assertEquals(firstModifiedBy, LastModified.getLastModifiedBy(node));
+    }
+
+    @Test
+    public void testGetDefaultViewType() {
+        // GIVEN
+
+        // WHEN
+        ViewType viewType = presenter.getDefaultViewType();
+        // THEN
+        assertEquals(ViewType.TREE, viewType);
     }
 }

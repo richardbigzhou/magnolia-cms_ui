@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,56 +31,73 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.browser;
+package info.magnolia.ui.workbench;
 
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.view.View;
-import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.ContentView.ViewType;
-import info.magnolia.ui.workbench.ContentViewDefinition;
-
-import com.vaadin.ui.ComponentContainer;
 
 /**
- * Implementations of this interface are responsible for building a workbench and handling the UI
- * actions associated with it.
+ * Definition of a {@link ContentView}.
  */
-public interface BrowserView extends ComponentContainer, View {
+public class ContentViewDefinition {
+
+    private ViewType viewType;
+
+    private Class<? extends ContentView> implementationClass;
+
+    private String icon;
+    
+    private boolean active;
+
     /**
-     * Listener interface for events concerning the workbench.
+     * @return the name.
      */
-    interface Listener {
-
-        void onSearch(String searchExpression);
-
-        void onViewTypeChanged(ViewType viewType);
+    public ViewType getViewType() {
+        return viewType;
     }
 
-    void setListener(Listener listener);
-
-    void setViewType(ContentView.ViewType type);
-
-    /**
-     * Updates the search box with given search query.
-     */
-    void setSearchQuery(String query);
+    public void setViewType(ViewType viewType) {
+        this.viewType = viewType;
+    }
 
     /**
-     * Refreshes the current view.
+     * @return the implementationClass.
      */
-    void refresh();
+    public Class<? extends ContentView> getImplementationClass() {
+        return implementationClass;
+    }
+
+    public void setImplementationClass(Class<? extends ContentView> implementationClass) {
+        this.implementationClass = implementationClass;
+    }
 
     /**
-     * Use this method to add sub views hosted by this view.
+     * @return the icon
      */
-    void addContentView(ViewType type, ContentView view, ContentViewDefinition contentViewDefintion);
-
+    public String getIcon() {
+        return icon;
+    }
+    
     /**
-     * Use this method to add an action bar to this sub app view.
+     * @param icon
+     *            the icon to set
      */
-    void setActionbarView(ActionbarView actionbar);
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+    
+    /**
+     * @return the active
+     */
+    public boolean isActive() {
+        return active;
+    }
+    
+    /**
+     * @param active
+     *            the active to set
+     */
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
-    void selectPath(String path);
-
-    ContentView getSelectedView();
 }

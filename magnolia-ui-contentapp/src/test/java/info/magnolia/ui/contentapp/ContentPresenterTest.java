@@ -89,7 +89,7 @@ public class ContentPresenterTest {
     @Test
     public void testOnItemSelectionFiresOnEventBus() {
         // GIVEN
-        final ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
+        final ContentPresenter presenter = new ContentPresenter((ContentSubAppDescriptor) context.getDefaultSubAppDescriptor(), contentViewBuilder, eventBus, shell);
 
         // WHEN
         presenter.onItemSelection(item);
@@ -104,7 +104,7 @@ public class ContentPresenterTest {
     @Test
     public void testOnDoubleClickFiresOnEventBus() {
         // GIVEN
-        final ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
+        final ContentPresenter presenter = new ContentPresenter((ContentSubAppDescriptor) context.getDefaultSubAppDescriptor(), contentViewBuilder, eventBus, shell);
 
         // WHEN
         presenter.onDoubleClick(item);
@@ -119,7 +119,7 @@ public class ContentPresenterTest {
     @Test
     public void testOnItemSelectionWithNullItemSetSelectedPath() {
         // GIVEN
-        ContentPresenter presenter = new ContentPresenter(context, contentViewBuilder, eventBus, shell);
+        ContentPresenter presenter = new ContentPresenter((ContentSubAppDescriptor) context.getDefaultSubAppDescriptor(), contentViewBuilder, eventBus, shell);
 
         // WHEN
         presenter.onItemSelection(null);

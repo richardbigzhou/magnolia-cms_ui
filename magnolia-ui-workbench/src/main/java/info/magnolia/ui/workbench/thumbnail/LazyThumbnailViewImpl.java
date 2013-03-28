@@ -34,13 +34,15 @@
 package info.magnolia.ui.workbench.thumbnail;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
+import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailDblClickListener;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailSelectionListener;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -71,11 +73,14 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private final ImageProvider imageProvider;
 
-    public LazyThumbnailViewImpl(final WorkbenchDefinition definition, final ThumbnailContainer container) {
+    public LazyThumbnailViewImpl(final WorkbenchDefinition definition, ComponentProvider componentProvider, ImageProviderDefinition imageProviderDefinition) {
         this.workbenchDefinition = definition;
-        this.imageProvider = container.getImageProvider();
+        
+        this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
+        this.container = new ThumbnailContainer(workbenchDefinition, imageProvider);
+        
         this.layout = new LazyThumbnailLayout();
-        this.container = container;
+        
         layout.setSizeFull();
         layout.addStyleName("mgnl-workbench-thumbnail-view");
 

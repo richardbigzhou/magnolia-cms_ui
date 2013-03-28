@@ -47,6 +47,7 @@ import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
 import info.magnolia.ui.app.contacts.form.action.SaveContactFormAction;
 import info.magnolia.ui.app.contacts.main.ContactsMainSubApp;
+import info.magnolia.ui.app.contacts.main.tree.ContactDropConstraint;
 import info.magnolia.ui.contentapp.ContentApp;
 import info.magnolia.ui.contentapp.config.CodeConfigurationUtils;
 import info.magnolia.ui.contentapp.config.ContentAppBuilder;
@@ -72,6 +73,10 @@ import info.magnolia.ui.workbench.column.DateColumnFormatter;
 import info.magnolia.ui.workbench.column.StatusColumnFormatter;
 import info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition;
 import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
+import info.magnolia.ui.workbench.list.ListContentViewDefinition;
+import info.magnolia.ui.workbench.search.SearchContentViewDefinition;
+import info.magnolia.ui.workbench.thumbnail.ThumbnailContentViewDefinition;
+import info.magnolia.ui.workbench.tree.TreeContentViewDefinition;
 
 import javax.inject.Inject;
 import javax.jcr.PropertyType;
@@ -160,6 +165,9 @@ public class ContactsModule implements ModuleLifecycle {
                                                 .workbench()
                                                 .workspace("contacts")
                                                 .path("/")
+
+                                                .dropConstraintClass(ContactDropConstraint.class)
+                                                .contentViews(new TreeContentViewDefinition(), new ListContentViewDefinition(), new ThumbnailContentViewDefinition(), new SearchContentViewDefinition())
                                                 .defaultOrder(ModelConstants.JCR_NAME)
                                                 .nodeTypes(
                                                         contentAppConfig.workbench.nodeType(Contact.NAME).icon("icon-node-content"),
@@ -171,8 +179,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                         cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false)
                                                                 .formatterClass(StatusColumnFormatter.class).width(46),
                                                         cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification Date").sortable(true)
-                                                                .propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
-                                                )
+                                                                .propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160))
 
                                 )
                                 .actionbar(
