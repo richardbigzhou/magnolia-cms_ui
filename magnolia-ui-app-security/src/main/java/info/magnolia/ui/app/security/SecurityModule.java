@@ -53,10 +53,10 @@ import info.magnolia.ui.app.security.dialog.field.RoleManagementFieldBuilder;
 import info.magnolia.ui.app.security.dialog.field.validator.UniqueGroupIdValidatorDefinition;
 import info.magnolia.ui.app.security.dialog.field.validator.UniqueRoleIdValidatorDefinition;
 import info.magnolia.ui.app.security.dialog.field.validator.UniqueUserIdValidatorDefinition;
+import info.magnolia.ui.contentapp.config.BrowserSubAppBuilder;
 import info.magnolia.ui.contentapp.config.CodeConfigurationUtils;
 import info.magnolia.ui.contentapp.config.ContentAppBuilder;
 import info.magnolia.ui.contentapp.config.ContentAppConfig;
-import info.magnolia.ui.contentapp.config.ContentSubAppBuilder;
 import info.magnolia.ui.dialog.config.Dialog;
 import info.magnolia.ui.dialog.config.DialogBuilder;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
@@ -140,7 +140,7 @@ public class SecurityModule implements ModuleLifecycle {
                 .subApps(
                         userSubApp(app, cfg, contentAppConfig, "users", "/admin").label("Users").exec(),
                         userSubApp(app, cfg, contentAppConfig, "systemUsers", "/system").label("System users").exec(),
-                        app.workbenchSubApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
+                        app.browserSubApp("groups").subAppClass(SecurityGroupsSubApp.class).label("Groups")
                                 .actions(addGroupAction, editGroupAction, deleteGroupActionDefinition)
                                 .imageProvider(cipd)
                                 .workbench(contentAppConfig.workbench.workbench().workspace("usergroups").path("/").defaultOrder(ModelConstants.JCR_NAME)
@@ -163,7 +163,7 @@ public class SecurityModule implements ModuleLifecycle {
                                                         )
                                         )
                                 ).exec(),
-                        app.workbenchSubApp("roles").subAppClass(SecurityRolesSubApp.class).label("Roles")
+                        app.browserSubApp("roles").subAppClass(SecurityRolesSubApp.class).label("Roles")
                                 .actions(addRoleAction, editRoleAction, deleteRoleActionDefinition)
                                 .imageProvider(cipd)
                                 .workbench(contentAppConfig.workbench.workbench().workspace("userroles").path("/").defaultOrder(ModelConstants.JCR_NAME)
@@ -191,7 +191,7 @@ public class SecurityModule implements ModuleLifecycle {
                 );
     }
 
-    protected ContentSubAppBuilder userSubApp(ContentAppBuilder app, UiConfig cfg, ContentAppConfig contentAppConfig,String name, String root) {
+    protected BrowserSubAppBuilder userSubApp(ContentAppBuilder app, UiConfig cfg, ContentAppConfig contentAppConfig,String name, String root) {
         // user
         CreateDialogActionDefinition addUserAction = new CreateDialogActionDefinition();
         addUserAction.setName("addUser");
@@ -216,7 +216,7 @@ public class SecurityModule implements ModuleLifecycle {
         cipd.setOriginalImageNodeName("photo");
         cipd.setImageProviderClass(DefaultImageProvider.class);
 
-        return app.workbenchSubApp(name).subAppClass(SecurityUsersSubApp.class)
+        return app.browserSubApp(name).subAppClass(SecurityUsersSubApp.class)
                 .actions(addUserAction, editUserAction, deleteUserActionDefinition)
                 .imageProvider(cipd)
                 .workbench(contentAppConfig.workbench.workbench().workspace("users").path(root).defaultOrder(ModelConstants.JCR_NAME)
