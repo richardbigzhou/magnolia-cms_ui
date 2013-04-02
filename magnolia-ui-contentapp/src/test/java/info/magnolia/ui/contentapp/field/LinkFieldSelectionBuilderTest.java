@@ -50,6 +50,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.tree.TreeContentViewDefinition;
 
 import javax.jcr.RepositoryException;
 
@@ -81,7 +82,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
                 BrowserView parentView = (BrowserView) args[0];
-                parentView.addContentView(ViewType.TREE, mock(ContentView.class));
+                parentView.addContentView(ViewType.TREE, mock(ContentView.class), new TreeContentViewDefinition());
                 return null;
             }
         }).when(presenter).initContentView(any(BrowserView.class));

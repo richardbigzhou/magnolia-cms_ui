@@ -93,6 +93,7 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
             public void focusNextProblematicField(Connector currentFocused) {
 
                 int tabCount = tabSheet.getComponentCount();
+                tabCount++; // Add a tab so that search will wrap back to the current tab. Necessary if errors are only on 1 tab.
                 MagnoliaTab tab = tabSheet.getActiveTab();
                 FormSection section = null;
                 Component nextProblematic = null;
@@ -103,7 +104,10 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
                     if (nextProblematic == null) {
                         tab = tabSheet.getNextTab(tab);
                         tabCount--;
+                         // After testing the first section - we want to check ALL fields per section.
+                        currentFocused = null;
                     }
+
                 } while (nextProblematic == null && tabCount > 0);
 
                 // focus next tab and field

@@ -139,6 +139,10 @@ public class BrowserSubApp extends BaseSubApp {
     protected final void restoreBrowser(final BrowserLocation location) {
         String path = location.getNodePath();
         ViewType viewType = location.getViewType();
+        if (viewType == null) {
+            viewType = getBrowser().getDefaultViewType();
+            location.updateViewType(viewType);
+        }
         String query = location.getQuery();
         getBrowser().resync(path, viewType, query);
         updateActionbar(getBrowser().getActionbarPresenter());

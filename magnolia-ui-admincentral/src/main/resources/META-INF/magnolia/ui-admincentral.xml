@@ -200,7 +200,6 @@
       <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
       <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
     </component>
-
     <component>
       <type>info.magnolia.ui.workbench.ContentViewBuilder</type>
       <implementation>info.magnolia.ui.workbench.ContentViewBuilderImpl</implementation>
@@ -209,12 +208,10 @@
       <type>info.magnolia.ui.form.field.validation.ValidatorFieldFactory</type>
       <implementation>info.magnolia.ui.form.field.validation.ValidatorFieldFactory</implementation>
     </component>
-
     <component>
       <type>info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition</type>
       <implementation>info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
     </component>
-
   </components>
 
   <components>
@@ -259,8 +256,7 @@
       <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
 
-
-    <!-- Declaring page view for all apps embedding old adminCentral views 
+    <!-- Declaring page view for all apps embedding old adminCentral views
       in iFrame -->
     <component>
       <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
@@ -275,23 +271,13 @@
     </dependency>
     <!-- the dependency is just to ensure order of loading of modules -->
     <dependency>
-      <name>adminInterface</name>
-      <version>4.5/*</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
       <name>cache</name>
       <version>5.0/*</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <name>groovy</name>
-      <version>1.2.3/*</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <name>dms</name>
-      <version>1.6.2/*</version>
+      <version>2.0/*</version>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -301,7 +287,7 @@
     </dependency>
     <dependency>
       <name>demo-project</name>
-      <version>1.6/*</version>
+      <version>2.5/*</version>
       <optional>true</optional>
     </dependency>
   </dependencies>

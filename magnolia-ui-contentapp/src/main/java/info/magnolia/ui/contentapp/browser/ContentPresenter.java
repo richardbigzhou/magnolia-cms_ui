@@ -42,8 +42,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.ContentViewBuilder;
+import info.magnolia.ui.workbench.ContentViewDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
@@ -107,11 +107,11 @@ public class ContentPresenter implements ContentView.Listener {
         }
         log.debug("Initializing workbench {}...", workbenchDefinition.getName());
 
-        for (final ViewType type : ViewType.values()) {
-            final ContentView contentView = contentViewBuilder.build(workbenchDefinition, subAppDescriptor.getImageProvider(), type);
+        for (final ContentViewDefinition contentViewDefinition : workbenchDefinition.getContentViews()) {
+            final ContentView contentView = contentViewBuilder.build(workbenchDefinition, subAppDescriptor.getImageProvider(), contentViewDefinition);
             contentView.setListener(this);
             contentView.select("/");
-            parentView.addContentView(type, contentView);
+            parentView.addContentView(contentViewDefinition.getViewType(), contentView, contentViewDefinition);
         }
 
         if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {

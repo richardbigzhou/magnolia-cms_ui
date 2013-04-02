@@ -29,11 +29,6 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>info.magnolia</groupId>
-      <artifactId>magnolia-module-admininterface</artifactId>
-      <version>4.5.7</version>
-    </dependency>
-    <dependency>
       <groupId>info.magnolia.activation</groupId>
       <artifactId>magnolia-module-activation</artifactId>
     </dependency>
