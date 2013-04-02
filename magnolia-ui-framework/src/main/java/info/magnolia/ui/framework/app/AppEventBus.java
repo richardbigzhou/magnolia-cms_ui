@@ -31,18 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.framework.app;
 
 /**
- * Defines constants for names of event buses used within the UI.
+ * Defines the name of the app event bus.
  */
-public interface EventBusNames {
+public interface AppEventBus {
 
-    public static final String ADMINCENTRAL = "admincentral";
-
-    public static final String APP = "app";
-
-    public static final String SUB_APP = "subapp";
-
-    public static final String CHOOSE_DIALOG = "choosedialog";
+    public static final String NAME = "app";
 }

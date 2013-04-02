@@ -45,7 +45,7 @@ import com.google.inject.util.Providers;
  */
 public class SubAppEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
-    public static final String EVENT_BUS_NAME = "subapp";
+    public static final String EVENT_BUS_NAME = SubAppEventBus.NAME;
 
     @Override
     protected void configure() {

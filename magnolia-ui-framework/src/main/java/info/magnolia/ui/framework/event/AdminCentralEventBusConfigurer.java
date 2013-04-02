@@ -45,7 +45,7 @@ import com.google.inject.util.Providers;
  */
 public class AdminCentralEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
-    public static final String EVENT_BUS_NAME = "admincentral";
+    public static final String EVENT_BUS_NAME = AdmincentralEventBus.NAME;
 
     @Override
     protected void configure() {
