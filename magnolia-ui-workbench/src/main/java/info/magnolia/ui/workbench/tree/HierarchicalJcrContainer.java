@@ -290,7 +290,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
                 return false;
             }
             // Source can not be a child of target.
-            return !target.getPath().startsWith(source.getPath());
+            return !NodeUtil.isSame((Node)target, source.getParent());
         } catch (RepositoryException re) {
             log.warn("Got exception in drag and drop action", re);
             return false;
