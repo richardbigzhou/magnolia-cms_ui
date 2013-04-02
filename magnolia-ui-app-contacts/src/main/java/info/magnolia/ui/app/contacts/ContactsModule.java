@@ -110,7 +110,7 @@ public class ContactsModule implements ModuleLifecycle {
         addContactAction.setIcon("icon-add-item");
         addContactAction.setNodeType(Contact.NAME);
         addContactAction.setAppId("contacts");
-        addContactAction.setSubAppId("item");
+        addContactAction.setSubAppId("detail");
 
         EditItemActionDefinition editContactAction = new EditItemActionDefinition();
         editContactAction.setName("editContact");
@@ -118,7 +118,7 @@ public class ContactsModule implements ModuleLifecycle {
         editContactAction.setIcon("icon-edit");
         editContactAction.setNodeType(Contact.NAME);
         editContactAction.setAppId("contacts");
-        editContactAction.setSubAppId("item");
+        editContactAction.setSubAppId("detail");
 
         DeleteItemActionDefinition deleteItemAction = new DeleteItemActionDefinition();
         deleteItemAction.setName("deleteContact");
@@ -156,7 +156,7 @@ public class ContactsModule implements ModuleLifecycle {
                 .icon("icon-people")
                 .appClass(ContentApp.class)
                 .subApps(
-                        app.workbenchSubApp("main")
+                        app.workbenchSubApp("browser")
                                 .subAppClass(ContactsMainSubApp.class)
                                 .actions(addContactAction, editContactAction, deleteItemAction, addFolderAction, editFolderAction, deleteFolderAction)
                                 .imageProvider(cipd)
@@ -203,7 +203,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                 )
                                 ).exec(),
 
-                        app.itemSubApp("item")
+                        app.itemSubApp("detail")
                                 .subAppClass(DetailSubApp.class)
                                 .actions(saveFormAction, cancelFormAction)
                                 .editor(contentAppConfig.editor.editor()

@@ -15,11 +15,11 @@
   </components>
 
   <components>
-    <id>app-pages-main</id>
+    <id>app-pages-browser</id>
   </components>
 
   <components>
-    <id>app-pages-item</id>
+    <id>app-pages-detail</id>
     <component>
       <type>info.magnolia.ui.app.pages.editor.PagesEditorSubAppView</type>
       <implementation>info.magnolia.ui.app.pages.editor.PagesEditorSubAppViewImpl</implementation>

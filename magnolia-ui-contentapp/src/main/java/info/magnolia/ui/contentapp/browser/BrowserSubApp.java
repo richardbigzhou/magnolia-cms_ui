@@ -121,13 +121,13 @@ public class BrowserSubApp extends BaseSubApp {
      * bookmark. I.e. given a bookmark containing the following URI fragment
      * <p>
      * {@code
-     * #app:myapp:main;/foo/bar:list
+     * #app:myapp:browser;/foo/bar:list
      * }
      * <p>
      * this method will select the path <code>/foo/bar</code> in the workspace used by the app, set the view type as <code>list</code> and finally update the available actions.
      * <p>
      * In case of a search view the URI fragment will look similar to the following one {@code
-     * #app:myapp:main;/:search:qux
+     * #app:myapp:browser;/:search:qux
      * }
      * <p>
      * then this method will select the root path, set the view type as <code>search</code>, perform a search for "qux" in the workspace used by the app and finally update the available actions.

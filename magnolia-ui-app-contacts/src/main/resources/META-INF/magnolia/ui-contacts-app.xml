@@ -16,7 +16,7 @@
   </components>
 
   <components>
-    <id>app-contacts-main</id>
+    <id>app-contacts-browser</id>
     <component>
       <type>info.magnolia.ui.app.contacts.main.ContactsMainSubApp</type>
       <implementation>info.magnolia.ui.app.contacts.main.ContactsMainSubApp</implementation>
@@ -24,7 +24,7 @@
   </components>
 
   <components>
-    <id>app-contacts-item</id>
+    <id>app-contacts-detail</id>
   </components>
 
   <dependencies>

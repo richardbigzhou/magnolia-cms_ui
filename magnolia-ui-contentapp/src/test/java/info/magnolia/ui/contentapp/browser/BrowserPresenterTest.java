@@ -75,7 +75,7 @@ public class BrowserPresenterTest {
 
     private final static String APP_NAME = "workbenchPresenterTestApp";
 
-    private final static String SUB_APP_NAME = "main";
+    private final static String SUB_APP_NAME = "browser";
 
     private final static String WORKSPACE = "workspace";
 

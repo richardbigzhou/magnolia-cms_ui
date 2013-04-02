@@ -48,7 +48,7 @@ public class DetailLocationTest {
 
     @Test
     public void testToString() {
-        assertEquals("app:someContentApp:main;/some/node:edit", new DetailLocation("someContentApp", "main", "/some/node:edit").toString());
+        assertEquals("app:someContentApp:browser;/some/node:edit", new DetailLocation("someContentApp", "browser", "/some/node:edit").toString());
         assertEquals("app:someContentApp;/some/node:view", new DetailLocation("someContentApp", "", "/some/node:view").toString());
         assertEquals("app:someContentApp", new DetailLocation("someContentApp", "", "").toString());
 

@@ -47,7 +47,7 @@ import org.junit.Test;
 public class BrowserLocationTest {
     @Test
     public void testToString() {
-        assertEquals("app:someContentApp:main;/some/node:treeview", new BrowserLocation("someContentApp", "main", "/some/node:treeview").toString());
+        assertEquals("app:someContentApp:browser;/some/node:treeview", new BrowserLocation("someContentApp", "browser", "/some/node:treeview").toString());
         assertEquals("app:someContentApp;/some/node:searchview:hideandseek", new BrowserLocation("someContentApp", "", "/some/node:searchview:hideandseek").toString());
         assertEquals("app:someContentApp;/some/node:treeview", new BrowserLocation("someContentApp", "", "/some/node:treeview").toString());
         assertEquals("app:someContentApp;/some/node:treeview", new BrowserLocation("someContentApp", "", "/some/node:treeview").toString());
