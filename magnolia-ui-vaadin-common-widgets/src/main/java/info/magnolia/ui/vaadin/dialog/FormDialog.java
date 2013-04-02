@@ -33,19 +33,31 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
+import com.vaadin.ui.CustomComponent;
+
 import info.magnolia.ui.vaadin.form.FormView;
 
 /**
  * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that
  * adapts to the content ({@link FormView}) and delegates the view logic to it.
  */
-public class FormDialog extends BaseDialog implements FormDialogView {
+public class FormDialog extends CustomComponent implements FormDialogView {
 
+    private FormView view;
+    
     @Override
     public void setFormView(FormView formView) {
-        super.setContent(formView.asVaadinComponent());
-        formView.suppressOwnActions();
+        this.view = formView;
+    }
 
+    @Override
+    public void setDialogDescription(String description) {
+        view.asVaadinComponent().setDescription(description);
+    }
+
+    @Override
+    public BaseDialog asVaadinComponent() {
+        return view.asVaadinComponent();
     }
 
 }

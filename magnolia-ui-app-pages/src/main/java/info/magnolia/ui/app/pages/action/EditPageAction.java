@@ -68,7 +68,7 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
             if (!NodeUtil.isNodeType(nodeToEdit, NodeTypes.Content.NAME)) {
                 return;
             }
-            ItemLocation location = new ItemLocation("pages", "editor", ItemView.ViewType.EDIT, nodeToEdit.getPath());
+            ItemLocation location = new ItemLocation("pages", "item", ItemView.ViewType.EDIT, nodeToEdit.getPath());
             locationController.goTo(location);
 
         } catch (RepositoryException e) {

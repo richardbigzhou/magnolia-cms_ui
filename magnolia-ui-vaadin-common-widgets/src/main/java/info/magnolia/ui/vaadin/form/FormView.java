@@ -34,7 +34,8 @@
 package info.magnolia.ui.vaadin.form;
 
 
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.view.View;
 
 import java.util.Collection;
@@ -49,10 +50,12 @@ public interface FormView extends View, Item.Editor {
 
     void addField(Field<?> field);
 
-    @Override
-    public Form asVaadinComponent();
+    void setDescriptionVisbility(boolean isVisible);
 
-    void addAction(String actionName, String actionLabel, EditorLikeActionListener callback);
+    @Override
+    public BaseDialog asVaadinComponent();
+
+    void addAction(String actionName, String actionLabel, DialogActionListener callback);
 
     void setFormDescription(String description);
 
@@ -64,7 +67,7 @@ public interface FormView extends View, Item.Editor {
 
     void setShowAllEnabled(boolean enabled);
 
-    void suppressOwnActions();
+    // void suppressOwnActions();
 
     boolean isValid();
 

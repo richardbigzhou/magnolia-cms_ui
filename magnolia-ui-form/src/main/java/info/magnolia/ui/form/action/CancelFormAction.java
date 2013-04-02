@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.action;
 
-import info.magnolia.ui.form.FormPresenter;
+import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 
@@ -41,15 +41,16 @@ import info.magnolia.ui.model.action.ActionExecutionException;
  * CancelFormAction.
  */
 public class CancelFormAction extends ActionBase<CancelFormActionDefinition> {
-    private final FormPresenter presenter;
 
-    public CancelFormAction(CancelFormActionDefinition definition, FormPresenter presenter) {
+    private EditorCallback callback;
+
+    public CancelFormAction(CancelFormActionDefinition definition, EditorCallback callback) {
         super(definition);
-        this.presenter = presenter;
+        this.callback = callback;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        presenter.getCallback().onCancel();
+        callback.onCancel();
     }
 }

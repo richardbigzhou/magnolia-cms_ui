@@ -37,6 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.ItemSubAppDescriptor;
+import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.contentapp.item.ItemPresenter;
 import info.magnolia.ui.contentapp.item.ItemView;
 import info.magnolia.ui.framework.app.AppContext;
@@ -74,6 +75,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
     private final ItemPresenter itemPresenter;
     private final ActionbarPresenter actionbarPresenter;
     private final ItemSubAppDescriptor subAppDescriptor;
+    private final EditorDefinition editorDefinition;
     private String nodePath;
 
     @Inject
@@ -84,6 +86,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
         this.subAppDescriptor = (ItemSubAppDescriptor) subAppContext.getSubAppDescriptor();
+        this.editorDefinition = subAppDescriptor.getEditor();
     }
 
     public View start(String nodePath, ItemView.ViewType viewType) {
@@ -91,21 +94,21 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
         this.nodePath = nodePath;
         JcrNodeAdapter item;
         try {
-            Session session = MgnlContext.getJCRSession(subAppDescriptor.getWorkspace());
-            if (session.nodeExists(nodePath) && session.getNode(nodePath).getPrimaryNodeType().getName().equals(subAppDescriptor.getNodeType().getName())) {
-                item = new JcrNodeAdapter(SessionUtil.getNode(subAppDescriptor.getWorkspace(), nodePath));
+            Session session = MgnlContext.getJCRSession(editorDefinition.getWorkspace());
+            if (session.nodeExists(nodePath) && session.getNode(nodePath).getPrimaryNodeType().getName().equals(editorDefinition.getNodeType().getName())) {
+                item = new JcrNodeAdapter(SessionUtil.getNode(editorDefinition.getWorkspace(), nodePath));
             } else {
                 String parentPath = StringUtils.substringBeforeLast(nodePath, "/");
                 parentPath = parentPath.isEmpty() ? "/" : parentPath;
                 Node parent = session.getNode(parentPath);
-                item = new JcrNewNodeAdapter(parent, subAppDescriptor.getNodeType().getName());
+                item = new JcrNewNodeAdapter(parent, editorDefinition.getNodeType().getName());
             }
         } catch (RepositoryException e) {
             log.warn("Not able to create an Item based on the following path {} ", nodePath, e);
             throw new RuntimeException(e);
         }
 
-        ItemView itemView = itemPresenter.start(subAppDescriptor.getFormDefinition(), item, viewType);
+        ItemView itemView = itemPresenter.start(editorDefinition, item, viewType);
 
         view.setItemView(itemView);
         actionbarPresenter.setListener(this);
@@ -132,7 +135,7 @@ public class ItemWorkbenchPresenter implements ItemWorkbenchView.Listener, Actio
     @Override
     public void onExecute(String actionName) {
         try {
-            Session session = MgnlContext.getJCRSession(subAppDescriptor.getWorkspace());
+            Session session = MgnlContext.getJCRSession(editorDefinition.getWorkspace());
             final javax.jcr.Item item = session.getItem(nodePath);
 
             actionExecutor.execute(actionName, item);

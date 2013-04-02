@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.contentapp;
 
+import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 /**
  * Descriptor for Item subApps.
@@ -43,9 +42,6 @@ import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
  */
 public interface ItemSubAppDescriptor extends SubAppDescriptor {
 
-    FormDefinition getFormDefinition();
+    EditorDefinition getEditor();
 
-    String getWorkspace();
-
-    NodeTypeDefinition getNodeType();
 }

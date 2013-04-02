@@ -35,15 +35,16 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.dialog.FormDialogPresenterFactory;
+import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
-import info.magnolia.ui.vaadin.view.ModalLayer;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.view.ModalLayer;
 
+import javax.inject.Named;
 import javax.jcr.Node;
 
 /**
@@ -53,38 +54,39 @@ import javax.jcr.Node;
  */
 public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition> {
 
-    private final FormDialogPresenterFactory dialogPresenterFactory;
-
     private final Node parent;
+    private FormDialogPresenter formDialogPresenter;
 
     private final ModalLayer modalLayer;
+    private EventBus eventBus;
 
-    public CreateDialogAction(CreateDialogActionDefinition definition, Node parent, FormDialogPresenterFactory dialogPresenterFactory, final SubAppContext subAppContext) {
+    public CreateDialogAction(CreateDialogActionDefinition definition, Node parent, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named("admincentral") final EventBus eventBus) {
         super(definition);
         this.parent = parent;
-        this.dialogPresenterFactory = dialogPresenterFactory;
+        this.formDialogPresenter = formDialogPresenter;
         this.modalLayer = subAppContext;
+        this.eventBus = eventBus;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        final FormDialogPresenter dialogPresenter = dialogPresenterFactory.createDialogPresenterByName(getDefinition().getDialogName());
 
-        final EventBus eventBus = dialogPresenter.getEventBus();
         final JcrNodeAdapter item = new JcrNewNodeAdapter(parent, getDefinition().getNodeType());
-        dialogPresenter.start(new JcrNewNodeAdapter(parent, getDefinition().getNodeType()), modalLayer, new FormDialogPresenter.Callback() {
+
+        formDialogPresenter.start(item, getDefinition().getDialogName(), modalLayer, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {
                 eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
-                dialogPresenter.closeDialog();
+                formDialogPresenter.closeDialog();
             }
 
             @Override
             public void onCancel() {
-                dialogPresenter.closeDialog();
+                formDialogPresenter.closeDialog();
             }
         });
+
     }
 
 }

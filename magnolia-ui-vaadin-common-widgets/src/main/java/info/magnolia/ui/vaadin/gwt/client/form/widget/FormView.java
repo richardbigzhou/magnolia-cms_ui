@@ -33,23 +33,26 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.editorlike.widget.EditorLikeView;
-
-import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Interface of {@link FormViewImpl}.
  */
-public interface FormView extends EditorLikeView<FormView.Presenter> {
+public interface FormView extends IsWidget {
+    
+    void setPresenter(Presenter presenter);
 
-    Element getHeaderElement();
-
-    Element getContentElement();
+    Presenter getPresenter();
+    
+    void setDescriptionVisible(boolean isVisible);
+    
+    void setContent(Widget widget);
 
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
      */
-    public interface Presenter extends EditorLikeView.Presenter {
+    public interface Presenter {
 
         @Deprecated
         void runLayout();
@@ -57,5 +60,6 @@ public interface FormView extends EditorLikeView<FormView.Presenter> {
         void jumpToNextError(FormFieldWrapper lastFocused);
 
     }
+
 
 }

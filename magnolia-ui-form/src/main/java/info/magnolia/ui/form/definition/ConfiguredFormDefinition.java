@@ -57,8 +57,6 @@ public class ConfiguredFormDefinition implements FormDefinition {
 
     private List<TabDefinition> tabs = new ArrayList<TabDefinition>();
 
-    private List<FormActionDefinition> actions = new ArrayList<FormActionDefinition>();
-
     @Override
     public String getId() {
         return id;
@@ -106,19 +104,6 @@ public class ConfiguredFormDefinition implements FormDefinition {
 
     public boolean addTab(TabDefinition tabDefinition) {
         return tabs.add(tabDefinition);
-    }
-
-    @Override
-    public List<FormActionDefinition> getActions() {
-        return actions;
-    }
-
-    public void setActions(List<FormActionDefinition> actions) {
-        this.actions = actions;
-    }
-
-    public boolean addAction(FormActionDefinition actionDefinition) {
-        return actions.add(actionDefinition);
     }
 
 }

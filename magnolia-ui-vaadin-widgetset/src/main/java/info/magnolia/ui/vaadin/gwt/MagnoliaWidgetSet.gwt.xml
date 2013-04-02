@@ -10,8 +10,8 @@
 
     <!-- end custom modules -->
     <set-configuration-property name="devModeRedirectEnabled" value="true" />
-    <set-property name="user.agent" value="gecko1_8,safari" />
+    <set-property name="user.agent" value="gecko1_8,safari,ie9" />
     <!--  for debugging - this will produce less permutations. -->
-    <set-property name="mgwt.os" value="ipad,ipad_retina,desktop" />
+    <set-property name="mgwt.os" value="desktop" />
     <!--<set-property name="mgwt.os" value="iphone,retina,ipad,ipad_retina,android,android_tablet,desktop" /> -->
 </module>

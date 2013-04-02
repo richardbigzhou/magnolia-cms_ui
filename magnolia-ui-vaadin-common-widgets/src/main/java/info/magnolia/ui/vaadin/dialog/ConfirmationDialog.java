@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -51,7 +51,7 @@ public class ConfirmationDialog extends BaseDialog {
 
     public ConfirmationDialog(final String message) {
         setMessage(message);
-        addAction(CONFIRM_ACTION, "OK", new EditorLikeActionListener() {
+        addAction(CONFIRM_ACTION, "OK", new DialogActionListener() {
 
             @Override
             public void onActionExecuted(String actionName) {
@@ -60,7 +60,7 @@ public class ConfirmationDialog extends BaseDialog {
 
         });
 
-        addAction(REJECT_ACTION, "Cancel", new EditorLikeActionListener() {
+        addAction(REJECT_ACTION, "Cancel", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
                 fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));

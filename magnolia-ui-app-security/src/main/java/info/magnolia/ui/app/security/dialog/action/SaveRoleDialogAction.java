@@ -34,29 +34,33 @@
 package info.magnolia.ui.app.security.dialog.action;
 
 import info.magnolia.jcr.util.MetaDataUtil;
-import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import com.vaadin.data.Item;
+
 /**
  * Save role dialog action.
  */
 public class SaveRoleDialogAction extends SaveDialogAction {
 
-    public SaveRoleDialogAction(SaveRoleDialogActionDefinition definition, FormDialogPresenter presenter) {
-        super(definition, presenter);
+    public SaveRoleDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback) {
+        super(definition, item, validator, callback);
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
-        getPresenter().getForm().showValidation(true);
-        if (getPresenter().getForm().isValid()) {
-            final JcrNodeAdapter itemChanged = (JcrNodeAdapter) getItem();
+        validator.showValidation(true);
+        if (validator.isValid()) {
+            final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
 
             try {
                 final Node node = itemChanged.getNode();
@@ -66,7 +70,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
             }
-            getPresenter().getCallback().onSuccess(getDefinition().getName());
+            callback.onSuccess(getDefinition().getName());
 
         } else {
             // validation errors are displayed in the UI.

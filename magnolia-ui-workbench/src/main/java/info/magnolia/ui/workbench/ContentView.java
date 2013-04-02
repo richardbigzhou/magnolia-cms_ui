@@ -53,10 +53,7 @@ public interface ContentView extends View {
      * </ul>
      */
     public enum ViewType {
-        LIST("list"),
-        TREE("tree"),
-        THUMBNAIL("thumbnail"),
-        SEARCH("search");
+        LIST("listview"), TREE("treeview"), THUMBNAIL("thumbnailview"), SEARCH("searchview");
 
         private final String text;
 
@@ -76,13 +73,9 @@ public interface ContentView extends View {
                     }
                 }
             } else {
-                return defaultViewType();
+                return null;
             }
             throw new IllegalArgumentException("No view type could be found for [" + text + "]");
-        }
-
-        private static ViewType defaultViewType() {
-            return TREE;
         }
     }
 

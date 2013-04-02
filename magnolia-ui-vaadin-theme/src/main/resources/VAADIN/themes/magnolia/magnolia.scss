@@ -52,6 +52,10 @@
     }
   }
 
+  input.v-textfield-prompt, textarea.v-textarea-prompt {
+		font-style: normal;
+  }
+
   .v-filterselect-input {
     &:focus, &.focus {
       & + .v-filterselect-button {

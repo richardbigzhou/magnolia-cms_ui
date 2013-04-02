@@ -37,6 +37,7 @@ import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.ContentViewDefinition;
 
 import com.vaadin.ui.ComponentContainer;
 
@@ -72,7 +73,7 @@ public interface ContentWorkbenchView extends ComponentContainer, View {
     /**
      * Use this method to add sub views hosted by this view.
      */
-    void addContentView(ViewType type, ContentView view);
+    void addContentView(ViewType type, ContentView view, ContentViewDefinition contentViewDefintion);
 
     /**
      * Use this method to add an action bar to this sub app view.

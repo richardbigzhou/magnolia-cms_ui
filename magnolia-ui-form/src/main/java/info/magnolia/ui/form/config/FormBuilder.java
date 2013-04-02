@@ -73,10 +73,4 @@ public class FormBuilder {
         return this;
     }
 
-    public FormBuilder actions(FormActionBuilder... builders) {
-        for (FormActionBuilder builder : builders) {
-            definition.addAction(builder.exec());
-        }
-        return this;
-    }
 }

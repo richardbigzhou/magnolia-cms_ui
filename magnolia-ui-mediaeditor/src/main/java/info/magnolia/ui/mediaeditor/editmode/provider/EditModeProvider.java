@@ -34,7 +34,7 @@
 package info.magnolia.ui.mediaeditor.editmode.provider;
 
 import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
-import info.magnolia.ui.vaadin.editorlike.EditorLikeActionListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import java.util.List;
 
@@ -60,9 +60,9 @@ public interface EditModeProvider {
 
         private String label;
         
-        private EditorLikeActionListener listener;
+        private DialogActionListener listener;
 
-        public ActionContext(String id, String label, EditorLikeActionListener listener) {
+        public ActionContext(String id, String label, DialogActionListener listener) {
             this.actionId = id;
             this.label = label;
             this.listener = listener;
@@ -85,7 +85,7 @@ public interface EditModeProvider {
         /**
          * @return the listener
          */
-        public EditorLikeActionListener getListener() {
+        public DialogActionListener getListener() {
             return listener;
         }
     }

@@ -37,7 +37,8 @@ import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.chain.Command;
 import info.magnolia.commands.impl.ImportCommand;
-import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
@@ -65,31 +66,31 @@ public class SaveImportDialogAction extends ActionBase<SaveImportDialogActionDef
     private static final Logger log = LoggerFactory.getLogger(SaveImportDialogAction.class);
 
     private final Item item;
-
-    private final FormDialogPresenter presenter;
-
     private CommandsManager commandsManager;
+    private EditorValidator validator;
+    private EditorCallback callback;
 
     private Map<String, Object> params;
 
-    public SaveImportDialogAction(SaveImportDialogActionDefinition definition, FormDialogPresenter presenter,  final CommandsManager commandsManager) {
+    public SaveImportDialogAction(SaveImportDialogActionDefinition definition, final Item item, final CommandsManager commandsManager, final EditorValidator validator, final EditorCallback callback) {
         super(definition);
-        this.presenter = presenter;
-        this.item = presenter.getForm().getItemDataSource();
+        this.item = item;
         this.commandsManager = commandsManager;
+        this.validator = validator;
+        this.callback = callback;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         // First Validate
-        presenter.getForm().showValidation(true);
-        if (presenter.getForm().isValid()) {
+        validator.showValidation(true);
+        if (validator.isValid()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             JcrNodeAdapter importXml = (JcrNodeAdapter) itemChanged.getChild("import");
             if (importXml != null) {
                 executeCommand(itemChanged);
             }
-            presenter.getCallback().onSuccess(getDefinition().getName());
+            callback.onSuccess(getDefinition().getName());
         } else {
             log.info("Validation error(s) occurred. No Import performed.");
         }

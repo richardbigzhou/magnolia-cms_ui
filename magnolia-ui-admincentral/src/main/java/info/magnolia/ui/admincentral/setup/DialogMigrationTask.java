@@ -83,9 +83,14 @@ public class DialogMigrationTask extends AbstractTask {
     @Override
     public void execute(InstallContext installContext) throws TaskExecutionException {
         try {
-            Node dialog = installContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/" + moduleName + "/dialogs");
+            String dialogNodeName = "dialogs";
+            String dialogPath = "/modules/" + moduleName + "/" + dialogNodeName;
+
+            Session session = installContext.getJCRSession(RepositoryConstants.CONFIG);
+            Node dialog = session.getNode(dialogPath);
             // Copy to Dialog50
-            copyInSession(dialog, dialog.getPath() + "50");
+            String newDialogPath = dialog.getPath() + "50";
+            copyInSession(dialog, newDialogPath);
             NodeUtil.visit(dialog, new NodeVisitor() {
                 @Override
                 public void visit(Node current) throws RepositoryException {
@@ -96,9 +101,12 @@ public class DialogMigrationTask extends AbstractTask {
             }, new NodeTypePredicate(NodeTypes.Content.NAME));
             // Try to resolve references for extends.
             postProcessForExtendsAndReference();
+            session.removeItem(dialogPath);
+            session.move(newDialogPath, dialogPath);
+
         } catch (Exception e) {
             log.error("", e);
-            installContext.warn("Could not Migrate Dialod for the following module " + moduleName);
+            installContext.warn("Could not Migrate Dialog for the following module " + moduleName);
         }
     }
 
@@ -137,8 +145,8 @@ public class DialogMigrationTask extends AbstractTask {
 
         node.addNode("commit", NodeTypes.ContentNode.NAME).setProperty("label", "save changes");
         node.addNode("cancel", NodeTypes.ContentNode.NAME).setProperty("label", "cancel");
-        node.getNode("commit").addNode("actionDefinition", NodeTypes.ContentNode.NAME).setProperty("class", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition");
-        node.getNode("cancel").addNode("actionDefinition", NodeTypes.ContentNode.NAME).setProperty("class", "info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition");
+        node.getNode("commit").setProperty("class", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition");
+        node.getNode("cancel").setProperty("class", "info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition");
 
     }
 
@@ -146,8 +154,8 @@ public class DialogMigrationTask extends AbstractTask {
      * Handle Tabs.
      */
     private void handleTabs(Node dialog, Iterator<Node> tabNodes) throws RepositoryException {
-        Node formDefinition = dialog.addNode("formDefinition", NodeTypes.ContentNode.NAME);
-        Node dialogTabs = formDefinition.addNode("tabs", NodeTypes.ContentNode.NAME);
+        Node form = dialog.addNode("form", NodeTypes.ContentNode.NAME);
+        Node dialogTabs = form.addNode("tabs", NodeTypes.ContentNode.NAME);
         while (tabNodes.hasNext()) {
             Node tab = tabNodes.next();
             // Handle Fields Tab
@@ -277,16 +285,11 @@ public class DialogMigrationTask extends AbstractTask {
     private void handleExtendsAndReference(Node node) throws RepositoryException {
         if (node.hasProperty("extends")) {
             // Handle Field Extends
-            node.setProperty("extends", renameExtendsPath(node, "extends"));
+            extendsAndReferenceProperty.add(node.getProperty("extends"));
         } else if (node.hasProperty("reference")) {
             // Handle Field Extends
-            node.setProperty("reference", renameExtendsPath(node, "reference"));
+            extendsAndReferenceProperty.add(node.getProperty("reference"));
         }
-    }
-
-    private String renameExtendsPath(Node fieldNode, String property) throws RepositoryException {
-        extendsAndReferenceProperty.add(fieldNode.getProperty(property));
-        return StringUtils.replace(fieldNode.getProperty(property).getString(), "/dialogs/", "/dialogs50/");
     }
 
     /**
@@ -341,7 +344,7 @@ public class DialogMigrationTask extends AbstractTask {
                 String beging = path.substring(0, path.lastIndexOf("/"));
                 String end = path.substring(beging.lastIndexOf("/"));
                 beging = beging.substring(0, beging.lastIndexOf("/"));
-                newPath = beging + "/formDefinition/tabs" + end;
+                newPath = beging + "/form/tabs" + end;
                 if (p.getSession().nodeExists(newPath)) {
                     p.setValue(newPath);
                     continue;
