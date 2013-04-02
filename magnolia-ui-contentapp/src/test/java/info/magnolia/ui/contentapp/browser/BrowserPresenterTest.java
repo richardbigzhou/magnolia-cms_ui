@@ -44,7 +44,6 @@ import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.ContentPresenter;
 import info.magnolia.ui.contentapp.config.ContentAppBuilder;
 import info.magnolia.ui.contentapp.config.ContentSubAppBuilder;
 import info.magnolia.ui.framework.app.SubAppContext;

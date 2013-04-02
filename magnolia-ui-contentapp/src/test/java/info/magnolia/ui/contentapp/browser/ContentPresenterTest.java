@@ -31,13 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp;
+package info.magnolia.ui.contentapp.browser;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
+import info.magnolia.ui.contentapp.browser.ContentPresenter;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;

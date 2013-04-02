@@ -55,8 +55,8 @@
       <implementation>info.magnolia.ui.contentapp.detail.DetailEditorPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.contentapp.ContentPresenter</type>
-      <implementation>info.magnolia.ui.contentapp.ContentPresenter</implementation>
+      <type>info.magnolia.ui.contentapp.browser.ContentPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.browser.ContentPresenter</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.contentapp.detail.DetailEditorView</type>
