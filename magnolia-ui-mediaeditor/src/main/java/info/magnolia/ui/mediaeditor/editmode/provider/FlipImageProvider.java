@@ -34,6 +34,7 @@
 package info.magnolia.ui.mediaeditor.editmode.provider;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.action.FlipImageActionDefinition;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent.EventType;
@@ -61,7 +62,7 @@ public class FlipImageProvider implements EditModeProvider {
     private FlipImageActionDefinition definition;
     
     @Inject
-    public FlipImageProvider(final @Named("mediaeditor") EventBus eventBus, FlipImageActionDefinition def) {
+    public FlipImageProvider(final @Named(MediaEditorEventBus.NAME) EventBus eventBus, FlipImageActionDefinition def) {
         this.definition = def;
         flipField = new FlipField(definition.getFlipHorizontal());
         flipField.addValueChangeListener(new ValueChangeListener() {
