@@ -143,6 +143,7 @@ public class ContentSubApp extends BaseSubApp {
         if (viewType == null) {
             viewType = getWorkbench().getDefaultViewType();
             location.updateViewType(viewType);
+            getAppContext().setSubAppLocation(getSubAppContext(), location);
         }
         String query = location.getQuery();
         getWorkbench().resync(path, viewType, query);
