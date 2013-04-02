@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
-import info.magnolia.ui.contentapp.WorkbenchSubAppView;
+import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.location.Location;
@@ -58,7 +58,7 @@ import javax.inject.Inject;
  * lacking handling of locationChanged. Related to MGNLUI-154
  * 
  * @see DetailEditorPresenter
- * @see WorkbenchSubAppView
+ * @see info.magnolia.ui.contentapp.ContentSubAppView
  * @see DetailLocation
  */
 public class DetailSubApp extends BaseSubApp {
@@ -68,7 +68,7 @@ public class DetailSubApp extends BaseSubApp {
     private String caption;
 
     @Inject
-    protected DetailSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, DetailEditorPresenter workbench) {
+    protected DetailSubApp(final SubAppContext subAppContext, final ContentSubAppView view, DetailEditorPresenter workbench) {
         super(subAppContext, view);
         this.workbench = workbench;
     }
@@ -87,7 +87,7 @@ public class DetailSubApp extends BaseSubApp {
         DetailLocation l = DetailLocation.wrap(location);
         super.start(l);
         this.caption = l.getNodePath();
-        getView().setWorkbenchView(workbench.start(l.getNodePath(), l.getViewType()));
+        getView().setContentView(workbench.start(l.getNodePath(), l.getViewType()));
         return getView();
     }
 
@@ -100,8 +100,8 @@ public class DetailSubApp extends BaseSubApp {
     }
 
     @Override
-    public WorkbenchSubAppView getView() {
-        return (WorkbenchSubAppView) super.getView();
+    public ContentSubAppView getView() {
+        return (ContentSubAppView) super.getView();
     }
 
     @Override
@@ -114,7 +114,7 @@ public class DetailSubApp extends BaseSubApp {
     @Override
     public void locationChanged(Location location) {
         DetailLocation itemLocation = DetailLocation.wrap(location);
-        // getView().setWorkbenchView(workbench.start(itemLocation.getNodePath()));
+        // getView().setContentView(workbench.start(itemLocation.getNodePath()));
         super.locationChanged(location);
     }
 

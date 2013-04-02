@@ -38,7 +38,6 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.ContentPresenter;
 import info.magnolia.ui.contentapp.event.SearchEvent;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -197,10 +196,6 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
         return contentPresenter.getSelectedItemPath();
     }
 
-    public BrowserView getView() {
-        return view;
-    }
-
     /**
      * @return The configured default view Type.<br>
      *         If non define, return the first Content Definition as default.
@@ -214,7 +209,11 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
         }
         return this.workbenchDefinition.getContentViews().get(0).getViewType();
     }
-    
+
+    public BrowserView getView() {
+        return view;
+    }
+
     public ActionbarPresenter getActionbarPresenter() {
         return actionbarPresenter;
     }

@@ -31,11 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp;
+package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
-import info.magnolia.ui.contentapp.browser.BrowserView;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
@@ -78,20 +76,20 @@ public class ContentPresenter implements ContentView.Listener {
 
     private final String workspaceName;
 
-    private final BrowserSubAppDescriptor contentSubAppDescriptor;
+    private final BrowserSubAppDescriptor subAppDescriptor;
 
     private final ContentViewBuilder contentViewBuilder;
 
     protected WorkbenchDefinition workbenchDefinition;
     private String selectedItemPath;
 
-    protected ContentPresenter(final BrowserSubAppDescriptor contentSubAppDescriptor, final ContentViewBuilder contentViewBuilder, final EventBus subAppEventBus, final Shell shell) {
+    protected ContentPresenter(final BrowserSubAppDescriptor subAppDescriptor, final ContentViewBuilder contentViewBuilder, final EventBus subAppEventBus, final Shell shell) {
         this.contentViewBuilder = contentViewBuilder;
         this.subAppEventBus = subAppEventBus;
         this.shell = shell;
-        this.contentSubAppDescriptor = contentSubAppDescriptor;
-        this.workbenchDefinition = contentSubAppDescriptor.getWorkbench();
-        this.workspaceName = contentSubAppDescriptor.getWorkbench().getWorkspace();
+        this.subAppDescriptor = subAppDescriptor;
+        this.workbenchDefinition = subAppDescriptor.getWorkbench();
+        this.workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
     }
 
     public ContentPresenter(final AppContext appContext, final ContentViewBuilder contentViewBuilder, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) final EventBus subAppEventBus, final Shell shell) {
@@ -109,11 +107,11 @@ public class ContentPresenter implements ContentView.Listener {
         }
         log.debug("Initializing workbench {}...", workbenchDefinition.getName());
 
-        for (final ContentViewDefinition contentViewDefintion : workbenchDefinition.getContentViews()) {
-            final ContentView contentView = contentViewBuilder.build(workbenchDefinition, contentSubAppDescriptor.getImageProvider(), contentViewDefintion);
+        for (final ContentViewDefinition contentViewDefinition : workbenchDefinition.getContentViews()) {
+            final ContentView contentView = contentViewBuilder.build(workbenchDefinition, subAppDescriptor.getImageProvider(), contentViewDefinition);
             contentView.setListener(this);
             contentView.select("/");
-            parentView.addContentView(contentViewDefintion.getViewType(), contentView, contentViewDefintion);
+            parentView.addContentView(contentViewDefinition.getViewType(), contentView, contentViewDefinition);
         }
 
         if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {

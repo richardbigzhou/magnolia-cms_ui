@@ -36,9 +36,9 @@ package info.magnolia.ui.contentapp;
 import info.magnolia.ui.vaadin.view.View;
 
 /**
- * Interface for {@link WorkbenchSubAppViewImpl}.
+ * Interface for {@link ContentSubAppViewImpl}.
  */
-public interface WorkbenchSubAppView extends View {
+public interface ContentSubAppView extends View {
 
-    void setWorkbenchView(View workbenchView);
+    void setContentView(View view);
 }

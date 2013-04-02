@@ -35,7 +35,7 @@ package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.WorkbenchSubAppView;
+import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.contentapp.event.SearchEvent;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -76,7 +76,7 @@ import javax.inject.Named;
  * </pre>
  *
  * @see BrowserPresenter
- * @see WorkbenchSubAppView
+ * @see info.magnolia.ui.contentapp.ContentSubAppView
  * @see info.magnolia.ui.contentapp.ContentApp
  * @see BrowserLocation
  */
@@ -85,11 +85,11 @@ public class BrowserSubApp extends BaseSubApp {
     private final BrowserPresenter browser;
     private final EventBus subAppEventBus;
 
-    public BrowserSubApp(final SubAppContext subAppContext, final WorkbenchSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
+    public BrowserSubApp(final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
 
         super(subAppContext, view);
         if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {
-            throw new IllegalArgumentException("Constructor does not allow for null args. Found AppContext = " + subAppContext + ", WorkbenchSubAppView = " + view + ", ContentWorkbenchPresenter = " + browser + ", EventBus = " + subAppEventBus);
+            throw new IllegalArgumentException("Constructor does not allow for null args. Found AppContext = " + subAppContext + ", ContentSubAppView = " + view + ", ContentWorkbenchPresenter = " + browser + ", EventBus = " + subAppEventBus);
         }
         this.browser = browser;
         this.subAppEventBus = subAppEventBus;
@@ -109,7 +109,7 @@ public class BrowserSubApp extends BaseSubApp {
     public final View start(final Location location) {
         BrowserLocation l = BrowserLocation.wrap(location);
         super.start(l);
-        getView().setWorkbenchView(browser.start());
+        getView().setContentView(browser.start());
         restoreBrowser(l);
         registerSubAppEventsHandlers(subAppEventBus, this);
 
@@ -121,13 +121,13 @@ public class BrowserSubApp extends BaseSubApp {
      * bookmark. I.e. given a bookmark containing the following URI fragment
      * <p>
      * {@code
-     * #app:myapp:main;/foo/bar:list
+     * #app:myapp:browser;/foo/bar:list
      * }
      * <p>
      * this method will select the path <code>/foo/bar</code> in the workspace used by the app, set the view type as <code>list</code> and finally update the available actions.
      * <p>
      * In case of a search view the URI fragment will look similar to the following one {@code
-     * #app:myapp:main;/:search:qux
+     * #app:myapp:browser;/:search:qux
      * }
      * <p>
      * then this method will select the root path, set the view type as <code>search</code>, perform a search for "qux" in the workspace used by the app and finally update the available actions.
@@ -167,8 +167,8 @@ public class BrowserSubApp extends BaseSubApp {
     }
 
     @Override
-    public final WorkbenchSubAppView getView() {
-        return (WorkbenchSubAppView) super.getView();
+    public final ContentSubAppView getView() {
+        return (ContentSubAppView) super.getView();
     }
 
     /**

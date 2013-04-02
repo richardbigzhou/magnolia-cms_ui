@@ -42,13 +42,13 @@ import com.vaadin.ui.Component;
  * {@link info.magnolia.ui.contentapp.browser.BrowserSubApp} and
  * {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
  */
-public class WorkbenchSubAppViewImpl implements WorkbenchSubAppView {
+public class ContentSubAppViewImpl implements ContentSubAppView {
 
     private View workbenchView;
 
     @Override
-    public void setWorkbenchView(View workbenchView) {
-        this.workbenchView = workbenchView;
+    public void setContentView(View view) {
+        this.workbenchView = view;
     }
 
     @Override

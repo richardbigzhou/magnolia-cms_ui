@@ -31,13 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp;
+package info.magnolia.ui.contentapp.browser;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -89,7 +88,7 @@ public class ContentPresenterTest {
     @Test
     public void testOnItemSelectionFiresOnEventBus() {
         // GIVEN
-        final ContentPresenter presenter = new ContentPresenter((ContentSubAppDescriptor) context.getDefaultSubAppDescriptor(), contentViewBuilder, eventBus, shell);
+        final ContentPresenter presenter = new ContentPresenter((BrowserSubAppDescriptor) context.getDefaultSubAppDescriptor(), contentViewBuilder, eventBus, shell);
 
         // WHEN
         presenter.onItemSelection(item);
@@ -104,7 +103,7 @@ public class ContentPresenterTest {
     @Test
     public void testOnDoubleClickFiresOnEventBus() {
         // GIVEN
-        final ContentPresenter presenter = new ContentPresenter((ContentSubAppDescriptor) context.getDefaultSubAppDescriptor(), contentViewBuilder, eventBus, shell);
+        final ContentPresenter presenter = new ContentPresenter((BrowserSubAppDescriptor) context.getDefaultSubAppDescriptor(), contentViewBuilder, eventBus, shell);
 
         // WHEN
         presenter.onDoubleClick(item);
@@ -119,7 +118,7 @@ public class ContentPresenterTest {
     @Test
     public void testOnItemSelectionWithNullItemSetSelectedPath() {
         // GIVEN
-        ContentPresenter presenter = new ContentPresenter((ContentSubAppDescriptor) context.getDefaultSubAppDescriptor(), contentViewBuilder, eventBus, shell);
+        ContentPresenter presenter = new ContentPresenter((BrowserSubAppDescriptor) context.getDefaultSubAppDescriptor(), contentViewBuilder, eventBus, shell);
 
         // WHEN
         presenter.onItemSelection(null);

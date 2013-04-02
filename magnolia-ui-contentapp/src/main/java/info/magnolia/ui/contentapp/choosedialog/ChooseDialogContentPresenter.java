@@ -34,7 +34,7 @@
 package info.magnolia.ui.contentapp.choosedialog;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.contentapp.ContentPresenter;
+import info.magnolia.ui.contentapp.browser.ContentPresenter;
 import info.magnolia.ui.contentapp.browser.BrowserView;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
