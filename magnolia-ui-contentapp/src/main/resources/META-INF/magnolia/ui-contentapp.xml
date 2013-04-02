@@ -42,8 +42,8 @@
   <components>
     <id>subapp</id>
     <component>
-      <type>info.magnolia.ui.contentapp.WorkbenchSubAppView</type>
-      <implementation>info.magnolia.ui.contentapp.WorkbenchSubAppViewImpl</implementation>
+      <type>info.magnolia.ui.contentapp.ContentSubAppView</type>
+      <implementation>info.magnolia.ui.contentapp.ContentSubAppViewImpl</implementation>
     </component>
 
     <component>

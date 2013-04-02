@@ -101,7 +101,7 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
     }
 
     @Override
-    public void setWorkbenchView(View workbenchView) {
+    public void setContentView(View view) {
 
     }
 }
