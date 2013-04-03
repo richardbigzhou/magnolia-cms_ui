@@ -36,8 +36,6 @@ package info.magnolia.ui.vaadin.gwt.client.grid.connector;
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
 import info.magnolia.ui.vaadin.gwt.client.grid.VMagnoliaTable;
 
-import com.vaadin.client.ApplicationConnection;
-import com.vaadin.client.UIDL;
 import com.vaadin.client.ui.table.TableConnectorPatched;
 import com.vaadin.shared.ui.Connect;
 
@@ -49,12 +47,6 @@ public class MagnoliaTableConnector extends TableConnectorPatched {
     @Override
     public VMagnoliaTable getWidget() {
         return (VMagnoliaTable) super.getWidget();
-    }
-
-    @Override
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        super.updateFromUIDL(uidl, client);
-        getWidget().addStyleForMobile();
     }
 
     @Override
