@@ -171,7 +171,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                 .defaultOrder(ModelConstants.JCR_NAME)
                                                 .nodeTypes(
                                                         contentAppConfig.workbench.nodeType(Contact.NAME).icon("icon-node-content"),
-                                                        contentAppConfig.workbench.nodeType("mgnl:folder").icon("icon-folder"))
+                                                        contentAppConfig.workbench.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                                 .columns(
                                                         cfg.columns.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME)
                                                                 .formatterClass(ContactNameColumnFormatter.class).expandRatio(2),
