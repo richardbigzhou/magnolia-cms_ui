@@ -142,6 +142,7 @@ public class BrowserSubApp extends BaseSubApp {
         if (viewType == null) {
             viewType = getBrowser().getDefaultViewType();
             location.updateViewType(viewType);
+            getAppContext().setSubAppLocation(getSubAppContext(), location);
         }
         String query = location.getQuery();
         getBrowser().resync(path, viewType, query);

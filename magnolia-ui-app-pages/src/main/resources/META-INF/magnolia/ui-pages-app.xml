@@ -4,6 +4,7 @@
   <name>ui-pages-app</name>
   <displayName>UI Pages app</displayName>
   <description>UI Pages app</description>
+  <versionHandler>info.magnolia.ui.app.pages.setup.PagesAppModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
   <!-- App components definition. -->
