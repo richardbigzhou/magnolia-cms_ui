@@ -1,0 +1,140 @@
+@charset "UTF-8";
+
+@import ""button.scss";
+
+@mixin datefield {
+
+  .v-datefield-button {
+    @include basebutton;
+    @include box-sizing(content-box);
+    margin-left: 4px;
+    padding: 2px 2px;
+    background-color: transparent;
+    background-image: url(img/icon-datepicker.svg);
+    background-position: 2px 2px;
+    background-repeat: no-repeat;
+    background-size: 1em 1em;
+    font-size: 20px;
+    width: 1em;
+    height: 1em;
+
+    &:active {
+      background-position: 2px 3px;
+    }
+  }
+
+  .v-datefield-calendarpanel,
+  .v-inline-datefield-calendarpanel {
+    border: 1px solid $c02;
+    background-color: $c21;
+    font-size: 14x;
+  }
+
+  .v-datefield-calendarpanel-header,
+  .v-inline-datefield-calendarpanel-header {
+    height: 20px;
+    background-color: $c01;
+
+    td {
+      padding: 0 2px 2px;
+      vertical-align: middle;
+
+      &.v-datefield-calendarpanel-month,
+      &.v-inline-datefield-calendarpanel-month {
+        min-width: 105px;
+        padding: 2px 6px 0;
+        color: $c21;
+        font-family: DINWebPro, sans-serif;
+        font-size: 1em;
+        text-transform: capitalize;
+      }
+    }
+
+    button {
+      @include basebutton;
+      font-size: 22px;
+      line-height: 1;
+      width: 1em;
+      height: 1em;
+      padding: 0;
+    }
+  }
+
+  .v-datefield-calendarpanel-body,
+  .v-inline-datefield-calendarpanel-body {
+    table {
+      border-collapse: collapse;
+    }
+
+    td {
+      min-width: 30px;
+      height: 28px;
+      border: 1px solid $c03;
+      color: $c01;
+      font-family: DINWebPro, sans-serif;
+      font-size: 1em;
+      text-align: center;
+
+      &.v-first, &:nth-child(2) {
+        border-left: none;
+      }
+
+      &.v-last, &:last-child {
+        border-right: none;
+      }
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  .v-datefield-calendarpanel-weekdays,
+  .v-inline-datefield-calendarpanel-weekdays {
+    td {
+      height: 20px;
+      border-top: none;
+      border-right: none;
+      border-left: none;
+      font-size: .7em;
+      text-transform: uppercase;
+    }
+
+    strong {
+      font-weight: normal;
+    }
+  }
+
+  .v-datefield-calendarpanel-day,
+  .v-inline-datefield-calendarpanel-day {
+    display: inline-block;
+    padding: 9px 0 6px;
+    line-height: 1;
+    width: 100%;
+  }
+
+  .v-datefield-calendarpanel-day-today,
+  .v-inline-datefield-calendarpanel-day-today {
+    border: none;
+    background-color: $c08;
+  }
+
+  .v-datefield-calendarpanel-day-focused,
+  .v-inline-datefield-calendarpanel-day-focused {
+    outline: auto;
+  }
+
+  .v-datefield-calendarpanel-day-selected,
+  .v-datefield-calendarpanel-day-focused,
+  .v-inline-datefield-calendarpanel-day-selected,
+  .v-inline-datefield-calendarpanel-day-focused {
+    background: $c06;
+    color: #333;
+  }
+
+  .v-datefield-calendarpanel-day-offmonth,
+  .v-inline-datefield-calendarpanel-day-offmonth {
+    background-color: $c24;
+    color: $c03;
+  }
+}
