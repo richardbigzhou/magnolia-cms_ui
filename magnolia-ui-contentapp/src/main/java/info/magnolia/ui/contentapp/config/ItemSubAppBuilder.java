@@ -34,7 +34,7 @@
 package info.magnolia.ui.contentapp.config;
 
 import info.magnolia.ui.actionbar.config.ActionbarBuilder;
-import info.magnolia.ui.contentapp.ConfiguredItemSubAppDescriptor;
+import info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.model.action.ActionDefinition;
@@ -45,7 +45,7 @@ import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
  * ItemSubAppBuilder.
  */
 public class ItemSubAppBuilder {
-    private ConfiguredItemSubAppDescriptor descriptor = new ConfiguredItemSubAppDescriptor();
+    private ConfiguredDetailSubAppDescriptor descriptor = new ConfiguredDetailSubAppDescriptor();
 
     public ItemSubAppBuilder(String name) {
         this.descriptor.setName(name);

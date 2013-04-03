@@ -14,7 +14,7 @@
    </components>
 
   <components>
-    <id>app-configuration-main</id>
+    <id>app-configuration-browser</id>
     <component>
       <type>info.magnolia.ui.app.config.workbench.ConfigWorkbenchSubApp</type>
       <implementation>info.magnolia.ui.app.config.workbench.ConfigWorkbenchSubApp</implementation>

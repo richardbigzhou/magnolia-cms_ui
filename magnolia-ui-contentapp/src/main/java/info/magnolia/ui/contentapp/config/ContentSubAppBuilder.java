@@ -34,7 +34,7 @@
 package info.magnolia.ui.contentapp.config;
 
 import info.magnolia.ui.actionbar.config.ActionbarBuilder;
-import info.magnolia.ui.contentapp.ConfiguredContentSubAppDescriptor;
+import info.magnolia.ui.contentapp.browser.ConfiguredBrowserSubAppDescriptor;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.model.action.ActionDefinition;
@@ -47,7 +47,7 @@ import info.magnolia.ui.workbench.config.WorkbenchBuilder;
  */
 public class ContentSubAppBuilder {
 
-    private ConfiguredContentSubAppDescriptor descriptor = new ConfiguredContentSubAppDescriptor();
+    private ConfiguredBrowserSubAppDescriptor descriptor = new ConfiguredBrowserSubAppDescriptor();
 
     public ContentSubAppBuilder(String name) {
         this.descriptor.setName(name);

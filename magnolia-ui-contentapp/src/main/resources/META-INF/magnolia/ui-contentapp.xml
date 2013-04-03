@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd">
+<module>
+  <name>ui-contentapp</name>
+  <displayName>Magnolia Content App</displayName>
+  <description>Framework API and utilities for content management</description>
+  <class>info.magnolia.ui.contentapp.ContentAppModule</class>
+  <versionHandler>info.magnolia.ui.contentapp.setup.ContentAppModuleVersionHandler</versionHandler>
+  <version>${project.version}</version>
+  
+  <components>
+    <id>main</id>
+  </components>
+
+  <components>
+    <id>app</id>
+    <configurer>
+      <class>info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer</class>
+    </configurer>
+    <component>
+      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</type>
+      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogView</type>
+      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.contentapp.browser.BrowserView</type>
+      <implementation>info.magnolia.ui.contentapp.browser.BrowserViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenterFactory</implementation>
+    </component>
+  </components>
+
+  <components>
+    <id>subapp</id>
+    <component>
+      <type>info.magnolia.ui.contentapp.ContentSubAppView</type>
+      <implementation>info.magnolia.ui.contentapp.ContentSubAppViewImpl</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.contentapp.browser.BrowserPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.browser.BrowserPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.contentapp.detail.DetailEditorPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.detail.DetailEditorPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.contentapp.browser.ContentPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.browser.ContentPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.contentapp.detail.DetailEditorView</type>
+      <implementation>info.magnolia.ui.contentapp.detail.DetailEditorViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.contentapp.detail.DetailView</type>
+      <implementation>info.magnolia.ui.contentapp.detail.DetailViewImpl</implementation>
+    </component>
+  </components>
+</module>

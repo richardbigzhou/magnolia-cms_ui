@@ -15,7 +15,7 @@
    </components>
 
   <components>
-    <id>app-security-users</id> <!-- main subapp -->
+    <id>app-security-users</id> <!-- browser subapp -->
     <component>
       <type>info.magnolia.ui.app.security.SecurityUsersSubApp</type>
       <implementation>info.magnolia.ui.app.security.SecurityUsersSubApp</implementation>

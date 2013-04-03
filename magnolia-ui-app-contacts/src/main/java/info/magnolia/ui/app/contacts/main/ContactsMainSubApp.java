@@ -38,9 +38,9 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.ContentSubApp;
-import info.magnolia.ui.contentapp.WorkbenchSubAppView;
-import info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter;
+import info.magnolia.ui.contentapp.ContentSubAppView;
+import info.magnolia.ui.contentapp.browser.BrowserPresenter;
+import info.magnolia.ui.contentapp.browser.BrowserSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 
@@ -56,18 +56,18 @@ import org.slf4j.LoggerFactory;
 /**
  * Sub app for the main tab in the contacts app.
  */
-public class ContactsMainSubApp extends ContentSubApp {
+public class ContactsMainSubApp extends BrowserSubApp {
 
     private static final Logger log = LoggerFactory.getLogger(ContactsMainSubApp.class);
 
     @Inject
-    public ContactsMainSubApp(final SubAppContext subAppContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
+    public ContactsMainSubApp(final SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
         super(subAppContext, view, workbench, subAppEventBus);
     }
 
     @Override
     public void updateActionbar(final ActionbarPresenter actionbar) {
-        String selectedItemId = getWorkbench().getSelectedItemId();
+        String selectedItemId = getBrowser().getSelectedItemId();
 
         // actions disabled based on selection
         if (selectedItemId == null || "/".equals(selectedItemId)) {

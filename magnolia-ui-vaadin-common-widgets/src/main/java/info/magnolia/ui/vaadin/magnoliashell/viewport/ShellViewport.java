@@ -33,13 +33,11 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ViewportState;
+import info.magnolia.ui.vaadin.magnoliashell.DeckLayout;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.view.Viewport;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ViewportState;
-import info.magnolia.ui.vaadin.magnoliashell.DeckLayout;
-
-import java.util.Iterator;
 
 import com.vaadin.ui.Component;
 
@@ -78,11 +76,6 @@ public class ShellViewport extends DeckLayout implements Viewport {
 
     @Override
     public void display(Component content) {
-        Iterator<Component> iterator = iterator();
-        while (iterator.hasNext()) {
-            Component next = iterator.next();
-            next.setVisible(next == content);
-        }
         getState().formerActive = getState().activeComponent;
         getState().activeComponent = content;
         super.display(content);
@@ -96,5 +89,13 @@ public class ShellViewport extends DeckLayout implements Viewport {
     @Override
     protected ViewportState getState() {
         return (ViewportState) super.getState();
+    }
+    
+    @Override
+    public void beforeClientResponse(boolean initial) {
+        super.beforeClientResponse(initial);
+        if (initial && getState().activeComponent != null) {
+            display((Component)getState().activeComponent);
+        }
     }
 }

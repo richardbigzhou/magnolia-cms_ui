@@ -47,13 +47,14 @@ import info.magnolia.ui.app.contacts.column.ContactNameColumnDefinition;
 import info.magnolia.ui.app.contacts.column.ContactNameColumnFormatter;
 import info.magnolia.ui.app.contacts.form.action.SaveContactFormAction;
 import info.magnolia.ui.app.contacts.main.ContactsMainSubApp;
+import info.magnolia.ui.app.contacts.main.tree.ContactDropConstraint;
 import info.magnolia.ui.contentapp.ContentApp;
-import info.magnolia.ui.contentapp.ItemSubApp;
 import info.magnolia.ui.contentapp.config.CodeConfigurationUtils;
 import info.magnolia.ui.contentapp.config.ContentAppBuilder;
 import info.magnolia.ui.contentapp.config.ContentAppConfig;
-import info.magnolia.ui.contentapp.item.action.CreateItemActionDefinition;
-import info.magnolia.ui.contentapp.item.action.EditItemActionDefinition;
+import info.magnolia.ui.contentapp.detail.DetailSubApp;
+import info.magnolia.ui.contentapp.detail.action.CreateItemActionDefinition;
+import info.magnolia.ui.contentapp.detail.action.EditItemActionDefinition;
 import info.magnolia.ui.dialog.config.Dialog;
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
@@ -72,6 +73,10 @@ import info.magnolia.ui.workbench.column.DateColumnFormatter;
 import info.magnolia.ui.workbench.column.StatusColumnFormatter;
 import info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition;
 import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
+import info.magnolia.ui.workbench.list.ListContentViewDefinition;
+import info.magnolia.ui.workbench.search.SearchContentViewDefinition;
+import info.magnolia.ui.workbench.thumbnail.ThumbnailContentViewDefinition;
+import info.magnolia.ui.workbench.tree.TreeContentViewDefinition;
 
 import javax.inject.Inject;
 import javax.jcr.PropertyType;
@@ -105,7 +110,7 @@ public class ContactsModule implements ModuleLifecycle {
         addContactAction.setIcon("icon-add-item");
         addContactAction.setNodeType(Contact.NAME);
         addContactAction.setAppId("contacts");
-        addContactAction.setSubAppId("item");
+        addContactAction.setSubAppId("detail");
 
         EditItemActionDefinition editContactAction = new EditItemActionDefinition();
         editContactAction.setName("editContact");
@@ -113,7 +118,7 @@ public class ContactsModule implements ModuleLifecycle {
         editContactAction.setIcon("icon-edit");
         editContactAction.setNodeType(Contact.NAME);
         editContactAction.setAppId("contacts");
-        editContactAction.setSubAppId("item");
+        editContactAction.setSubAppId("detail");
 
         DeleteItemActionDefinition deleteItemAction = new DeleteItemActionDefinition();
         deleteItemAction.setName("deleteContact");
@@ -151,7 +156,7 @@ public class ContactsModule implements ModuleLifecycle {
                 .icon("icon-people")
                 .appClass(ContentApp.class)
                 .subApps(
-                        app.workbenchSubApp("main")
+                        app.workbenchSubApp("browser")
                                 .subAppClass(ContactsMainSubApp.class)
                                 .actions(addContactAction, editContactAction, deleteItemAction, addFolderAction, editFolderAction, deleteFolderAction)
                                 .imageProvider(cipd)
@@ -160,10 +165,13 @@ public class ContactsModule implements ModuleLifecycle {
                                                 .workbench()
                                                 .workspace("contacts")
                                                 .path("/")
+
+                                                .dropConstraintClass(ContactDropConstraint.class)
+                                                .contentViews(new TreeContentViewDefinition(), new ListContentViewDefinition(), new ThumbnailContentViewDefinition(), new SearchContentViewDefinition())
                                                 .defaultOrder(ModelConstants.JCR_NAME)
                                                 .nodeTypes(
                                                         contentAppConfig.workbench.nodeType(Contact.NAME).icon("icon-node-content"),
-                                                        contentAppConfig.workbench.nodeType("mgnl:folder").icon("icon-folder"))
+                                                        contentAppConfig.workbench.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                                 .columns(
                                                         cfg.columns.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME)
                                                                 .formatterClass(ContactNameColumnFormatter.class).expandRatio(2),
@@ -171,8 +179,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                         cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false)
                                                                 .formatterClass(StatusColumnFormatter.class).width(46),
                                                         cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification Date").sortable(true)
-                                                                .propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
-                                                )
+                                                                .propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160))
 
                                 )
                                 .actionbar(
@@ -196,8 +203,8 @@ public class ContactsModule implements ModuleLifecycle {
                                                 )
                                 ).exec(),
 
-                        app.itemSubApp("item")
-                                .subAppClass(ItemSubApp.class)
+                        app.itemSubApp("detail")
+                                .subAppClass(DetailSubApp.class)
                                 .actions(saveFormAction, cancelFormAction)
                                 .editor(contentAppConfig.editor.editor()
                                         .nodeType(contentAppConfig.workbench.nodeType(Contact.NAME).icon("icon-node-content"))

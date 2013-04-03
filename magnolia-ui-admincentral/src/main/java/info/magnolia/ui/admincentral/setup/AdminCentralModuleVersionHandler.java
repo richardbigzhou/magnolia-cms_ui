@@ -35,10 +35,8 @@ package info.magnolia.ui.admincentral.setup;
 
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
-import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
-import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
 
@@ -63,25 +61,10 @@ public class AdminCentralModuleVersionHandler extends DefaultModuleVersionHandle
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
         List<Task> list = new ArrayList<Task>();
 
-        // TODO fgrilli this is a workaround as long as we have old adminInterface around. See MAGNOLIA-4659
-        list.add(new CheckAndModifyPropertyValueTask(
-                "",
-                "",
-                RepositoryConstants.CONFIG,
-                "/modules/adminInterface/virtualURIMapping/default",
-                "toURI",
-                "redirect:/.magnolia/pages/adminCentral.html",
-                "redirect:/.magnolia/admincentral"));
-
         list.add(new IsModuleInstalledOrRegistered("Replace login security pattern",
                 "Replaces old login security pattern '/.resources/loginForm' (if present) with the new one '/.resources/defaultLoginForm'.",
                 "adminInterface", replaceLoginUriPattern));
-
-        list.add(new IsModuleInstalledOrRegistered("Removes old commands", "Removes old default and website commands now provided by different modules.", "adminInterface", new ArrayDelegateTask("",
-                new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/adminInterface/commands/default/activate"),
-                new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/adminInterface/commands/default/deactivate"),
-                new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/adminInterface/commands/website/activate"),
-                new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/adminInterface/commands/website/delete"))));
+        // TODO if old adminInterface is around delete it
 
         return list;
     }

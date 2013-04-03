@@ -36,7 +36,8 @@ package info.magnolia.ui.contentapp;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter;
+import info.magnolia.ui.contentapp.browser.BrowserPresenter;
+import info.magnolia.ui.contentapp.browser.BrowserSubApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.event.EventBus;
@@ -53,8 +54,8 @@ public class ContentSubAppTest {
     private static final String query = "qux*";
 
     private AppContext appContext;
-    private WorkbenchSubAppView view;
-    private ContentWorkbenchPresenter workbench;
+    private ContentSubAppView view;
+    private BrowserPresenter workbench;
     private EventBus subAppEventBus;
     private DummyContentSubApp subApp;
     private SubAppContext subAppContext;
@@ -64,8 +65,8 @@ public class ContentSubAppTest {
         appContext = mock(AppContext.class);
         subAppContext = mock(SubAppContext.class);
 
-        view = mock(WorkbenchSubAppView.class);
-        workbench = mock(ContentWorkbenchPresenter.class);
+        view = mock(ContentSubAppView.class);
+        workbench = mock(BrowserPresenter.class);
 
         ActionbarPresenter actionbar = new ActionbarPresenter();
         when(workbench.getActionbarPresenter()).thenReturn(actionbar);
@@ -74,10 +75,10 @@ public class ContentSubAppTest {
         this.subApp = new DummyContentSubApp(subAppContext, view, workbench, subAppEventBus);
     }
 
-    private class DummyContentSubApp extends ContentSubApp {
+    private class DummyContentSubApp extends BrowserSubApp {
         public int foo = 0;
 
-        public DummyContentSubApp(SubAppContext subAppContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, EventBus subAppEventBus) {
+        public DummyContentSubApp(SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, EventBus subAppEventBus) {
             super(subAppContext, view, workbench, subAppEventBus);
         }
 

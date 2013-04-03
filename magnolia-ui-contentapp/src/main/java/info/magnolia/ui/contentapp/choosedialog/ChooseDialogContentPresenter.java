@@ -34,8 +34,8 @@
 package info.magnolia.ui.contentapp.choosedialog;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.contentapp.ContentPresenter;
-import info.magnolia.ui.contentapp.workbench.ContentWorkbenchView;
+import info.magnolia.ui.contentapp.browser.ContentPresenter;
+import info.magnolia.ui.contentapp.browser.BrowserView;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
 import info.magnolia.ui.framework.shell.Shell;
@@ -72,7 +72,7 @@ public class ChooseDialogContentPresenter extends ContentPresenter {
     }
 
     @Override
-    public void initContentView(ContentWorkbenchView parentView) {
+    public void initContentView(BrowserView parentView) {
         super.initContentView(parentView);
         parentView.setViewType(ContentView.ViewType.TREE);
         ((TreeView)parentView.getSelectedView()).deactivateDragAndDrop();

@@ -35,9 +35,9 @@ package info.magnolia.ui.app.security;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.ContentSubApp;
-import info.magnolia.ui.contentapp.WorkbenchSubAppView;
-import info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter;
+import info.magnolia.ui.contentapp.ContentSubAppView;
+import info.magnolia.ui.contentapp.browser.BrowserPresenter;
+import info.magnolia.ui.contentapp.browser.BrowserSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 
@@ -50,18 +50,18 @@ import org.slf4j.LoggerFactory;
 /**
  * Users Sub App (the main one) for the Security App.
  */
-public class SecurityUsersSubApp extends ContentSubApp {
+public class SecurityUsersSubApp extends BrowserSubApp {
 
     private static final Logger log = LoggerFactory.getLogger(SecurityUsersSubApp.class);
 
     @Inject
-    public SecurityUsersSubApp(final SubAppContext subAppContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
+    public SecurityUsersSubApp(final SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
         super(subAppContext, view, workbench, subAppEventBus);
     }
 
     @Override
     public void updateActionbar(ActionbarPresenter actionbar) {
-        String selectedItemId = getWorkbench().getSelectedItemId();
+        String selectedItemId = getBrowser().getSelectedItemId();
         // users can be created only under /admin or /system paths in users workspace
         if ("/admin".equals(selectedItemId) || "/system".equals(selectedItemId)) {
             actionbar.enableGroup("addActions");

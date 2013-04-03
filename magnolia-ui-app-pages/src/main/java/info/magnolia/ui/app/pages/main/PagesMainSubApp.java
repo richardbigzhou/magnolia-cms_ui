@@ -39,9 +39,9 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.ContentSubApp;
-import info.magnolia.ui.contentapp.WorkbenchSubAppView;
-import info.magnolia.ui.contentapp.workbench.ContentWorkbenchPresenter;
+import info.magnolia.ui.contentapp.ContentSubAppView;
+import info.magnolia.ui.contentapp.browser.BrowserPresenter;
+import info.magnolia.ui.contentapp.browser.BrowserSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
 
@@ -53,10 +53,10 @@ import javax.jcr.RepositoryException;
 /**
  * PagesMainSubApp.
  */
-public class PagesMainSubApp extends ContentSubApp {
+public class PagesMainSubApp extends BrowserSubApp {
 
     @Inject
-    public PagesMainSubApp(final SubAppContext subappContext, WorkbenchSubAppView view, ContentWorkbenchPresenter workbench, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
+    public PagesMainSubApp(final SubAppContext subappContext, ContentSubAppView view, BrowserPresenter workbench, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
         super(subappContext, view, workbench, subAppEventBus);
     }
 
@@ -69,12 +69,12 @@ public class PagesMainSubApp extends ContentSubApp {
         // actions disabled based on selection
         final String[] defaultActions = new String[] { "delete", "preview", "edit", "export", "activate", "deactivate", "activateRecursive" };
 
-        if (getWorkbench().getSelectedItemId() == null || "/".equals(getWorkbench().getSelectedItemId())) {
+        if (getBrowser().getSelectedItemId() == null || "/".equals(getBrowser().getSelectedItemId())) {
             actionbar.disable(defaultActions);
         } else {
             actionbar.enable(defaultActions);
-            final String path = getWorkbench().getSelectedItemId();
-            final String workspace = getWorkbench().getWorkspace();
+            final String path = getBrowser().getSelectedItemId();
+            final String workspace = getBrowser().getWorkspace();
             final Node page = SessionUtil.getNode(workspace, path);
             // if it's a leaf recursive activation should not be available.
             if (isLeaf(page)) {

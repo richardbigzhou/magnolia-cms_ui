@@ -35,8 +35,8 @@ package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.contentapp.location.ItemLocation;
-import info.magnolia.ui.contentapp.item.ItemView;
+import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -81,7 +81,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
                 return;
             }
 
-            ItemLocation location = new ItemLocation("pages", "editor", ItemView.ViewType.VIEW, nodeToPreview.getPath());
+            DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.VIEW, nodeToPreview.getPath());
 
             log.debug("token is {}", location.getParameter());
 

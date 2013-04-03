@@ -34,11 +34,12 @@
 package info.magnolia.ui.workbench.list;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
 import info.magnolia.ui.workbench.ContentView;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.search.SearchJcrContainer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -70,7 +71,7 @@ public class ListViewImpl implements ListView {
 
     private final AbstractJcrContainer container;
 
-    public ListViewImpl(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider, FlatJcrContainer container) {
+    public ListViewImpl(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
         table = new MagnoliaTable();
         table.setSizeFull();
 
@@ -117,7 +118,11 @@ public class ListViewImpl implements ListView {
         table.setColumnCollapsingAllowed(true);
         table.setColumnReorderingAllowed(false);
 
-        this.container = container;
+        if (getViewType().equals(ViewType.LIST)) {
+            this.container = new FlatJcrContainer(workbenchDefinition);
+        } else {
+            this.container = new SearchJcrContainer(workbenchDefinition);
+        }
         buildColumns(workbenchDefinition, componentProvider);
 
         layout.setStyleName("mgnl-content-view");

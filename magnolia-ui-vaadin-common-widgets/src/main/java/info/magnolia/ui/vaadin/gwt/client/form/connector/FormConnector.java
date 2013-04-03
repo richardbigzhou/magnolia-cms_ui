@@ -62,6 +62,7 @@ public class FormConnector extends AbstractSingleComponentContainerConnector imp
     @Override
     protected void init() {
         super.init();
+        view.setPresenter(this);
         addStateChangeHandler("descriptionsVisible", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
@@ -69,7 +70,7 @@ public class FormConnector extends AbstractSingleComponentContainerConnector imp
             }
         });
     }
-    
+
     @Override
     protected Widget createWidget() {
         view = new FormViewImpl();
@@ -108,17 +109,17 @@ public class FormConnector extends AbstractSingleComponentContainerConnector imp
     public void updateCaption(ComponentConnector connector) {
         //NOP
     }
-    
+
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {
         updateContent();
     }
-    
+
     protected void updateContent() {
         final ComponentConnector content = getContent();
         if (content != null) {
             this.view.setContent(content.getWidget());
         }
     }
-    
+
 }
