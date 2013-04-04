@@ -65,7 +65,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
      * @param nodeItemToPreview the node to preview
      */
     @Inject
-    public PreviewPageAction(PreviewPageActionDefinition definition, LocationController locationController, JcrItemNodeAdapter nodeItemToPreview) {
+    public PreviewPageAction(PreviewPageActionDefinition definition, JcrItemNodeAdapter nodeItemToPreview, LocationController locationController) {
         super(definition);
         this.locationController = locationController;
         this.nodeItemToPreview = nodeItemToPreview;

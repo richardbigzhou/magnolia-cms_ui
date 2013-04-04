@@ -70,7 +70,7 @@ public class CreatePageThumbnailAction extends ActionBase<CreatePageThumbnailAct
 
     private static final String IMAGE_NODE_NAME = ImageProviderDefinition.ORIGINAL_IMAGE_NODE_NAME;
 
-    public CreatePageThumbnailAction(CreatePageThumbnailActionDefinition definition, RendererRegistry registry, JcrItemNodeAdapter nodeItemToExport) {
+    public CreatePageThumbnailAction(CreatePageThumbnailActionDefinition definition, JcrItemNodeAdapter nodeItemToExport, RendererRegistry registry) {
         super(definition);
         this.registry = registry;
         this.nodeItemToExport = nodeItemToExport;
