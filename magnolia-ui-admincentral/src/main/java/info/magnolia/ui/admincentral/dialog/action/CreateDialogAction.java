@@ -40,12 +40,12 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.view.ModalLayer;
 
 import javax.inject.Named;
-import javax.jcr.Node;
 
 /**
  * Opens a dialog for creating a new node in a tree.
@@ -54,15 +54,15 @@ import javax.jcr.Node;
  */
 public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition> {
 
-    private final Node parent;
+    private final JcrItemNodeAdapter parentItem;
     private FormDialogPresenter formDialogPresenter;
 
     private final ModalLayer modalLayer;
     private EventBus eventBus;
 
-    public CreateDialogAction(CreateDialogActionDefinition definition, Node parent, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named("admincentral") final EventBus eventBus) {
+    public CreateDialogAction(CreateDialogActionDefinition definition, JcrItemNodeAdapter parentItem, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named("admincentral") final EventBus eventBus) {
         super(definition);
-        this.parent = parent;
+        this.parentItem = parentItem;
         this.formDialogPresenter = formDialogPresenter;
         this.modalLayer = subAppContext;
         this.eventBus = eventBus;
@@ -71,7 +71,7 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
     @Override
     public void execute() throws ActionExecutionException {
 
-        final JcrNodeAdapter item = new JcrNewNodeAdapter(parent, getDefinition().getNodeType());
+        final JcrNodeAdapter item = new JcrNewNodeAdapter(parentItem.getNode(), getDefinition().getNodeType());
 
         formDialogPresenter.start(item, getDefinition().getDialogName(), modalLayer, new EditorCallback() {
 
