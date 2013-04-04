@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -47,7 +47,7 @@ public class DummyDictionary {
         dictionary.put("buttons.new.js", "New");
         dictionary.put("buttons.component.js", "Component");
         dictionary.put("buttons.add.js", "Add");
-
+        dictionary.put("buttons.component.maximum.js", "Maximum of components reached.");
     }
 
     public String get(String key) {

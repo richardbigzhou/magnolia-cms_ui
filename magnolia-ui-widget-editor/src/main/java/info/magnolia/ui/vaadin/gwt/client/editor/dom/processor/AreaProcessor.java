@@ -131,12 +131,7 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
             editable = Boolean.parseBoolean(attributes.get("editable"));
         }
 
-        String availableComponents = "";
-        if (!AreaDefinition.TYPE_NO_COMPONENT.equals(type)) {
-            availableComponents = attributes.get("availableComponents");
-        }
-
-        boolean showAddButton = Boolean.parseBoolean(attributes.get("showAddButton"));
+        boolean showNewComponentArea = Boolean.parseBoolean(attributes.get("showNewComponentArea"));
         boolean optional = Boolean.parseBoolean(attributes.get("optional"));
 
         // break no matter what follows
@@ -151,8 +146,8 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
             return true;
         }
 
-        // can add components to area
-        else if (showAddButton && !availableComponents.isEmpty()) {
+        // can show add new components area
+        else if (showNewComponentArea) {
             return true;
         }
 
