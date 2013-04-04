@@ -62,11 +62,12 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
     protected final static String ADD_CLASSNAME = "icon-add-item";
 
     private boolean showAddButton = false;
+    private boolean showNewComponentArea = false;
     private String availableComponents = "";
     private String type = "";
     private String areaWorkspace = "";
     private String areaPath = "";
-    private FlowPanel buttonWrapper;
+    private final FlowPanel buttonWrapper;
     private String label;
     private String labelString;
 
@@ -86,10 +87,17 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         buttonWrapper.setStylePrimaryName("mgnlEditorBarButtons");
 
         controlBar.add(buttonWrapper);
-        labelString = getI18nMessage("buttons.component.new.js");
-        if (this.label != null && !this.label.isEmpty()) {
-            labelString = getI18nMessage("buttons.new.js") + " " + label + " " + getI18nMessage("buttons.component.js");
+
+        // if the add new component area should be visible
+        if (this.showNewComponentArea && !this.showAddButton) { // maximum of components is reached - show add new component area with the maximum reached message, but without the ADD button
+            labelString = getI18nMessage("buttons.component.maximum.js");
+        } else { // maximum of components is NOT reached - show add new component area with ADD button
+            labelString = getI18nMessage("buttons.component.new.js");
+            if (this.label != null && !this.label.isEmpty()) {
+                labelString = getI18nMessage("buttons.new.js") + " " + label + " " + getI18nMessage("buttons.component.js");
+            }
         }
+
 
         Label labelName = new Label(labelString);
         labelName.setStyleName("mgnlEditorBarLabel");
@@ -167,6 +175,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
     private void setFields(Map<String, String> attributes) throws IllegalArgumentException {
 
         this.showAddButton = Boolean.parseBoolean(attributes.get("showAddButton"));
+        this.showNewComponentArea = Boolean.parseBoolean(attributes.get("showNewComponentArea"));
         this.type = attributes.get("type");
 
         this.areaWorkspace = attributes.get("workspace");
