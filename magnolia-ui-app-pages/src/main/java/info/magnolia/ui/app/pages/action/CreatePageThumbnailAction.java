@@ -44,20 +44,19 @@ import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import org.apache.jackrabbit.JcrConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import org.apache.jackrabbit.JcrConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  * CreatePageThumbnailAction.
@@ -67,14 +66,14 @@ public class CreatePageThumbnailAction extends ActionBase<CreatePageThumbnailAct
     private static final Logger log = LoggerFactory.getLogger(PreviewPageAction.class);
 
     private RendererRegistry registry;
-    private Node nodeToExport;
+    private JcrItemNodeAdapter nodeItemToExport;
 
     private static final String IMAGE_NODE_NAME = ImageProviderDefinition.ORIGINAL_IMAGE_NODE_NAME;
 
-    public CreatePageThumbnailAction(CreatePageThumbnailActionDefinition definition, RendererRegistry registry, Node nodeToExport) {
+    public CreatePageThumbnailAction(CreatePageThumbnailActionDefinition definition, RendererRegistry registry, JcrItemNodeAdapter nodeItemToExport) {
         super(definition);
         this.registry = registry;
-        this.nodeToExport = nodeToExport;
+        this.nodeItemToExport = nodeItemToExport;
     }
 
     @Override
@@ -86,8 +85,8 @@ public class CreatePageThumbnailAction extends ActionBase<CreatePageThumbnailAct
             RendererDefinition definition = registry.getDefinition(getDefinition().getExportType());
             Renderer renderer = registry.getRenderer(definition);
 
-            InputStream is = renderer.render(nodeToExport.getPath(), user);
-            saveImage(nodeToExport, is, definition.getContentType(), definition.getName());
+            InputStream is = renderer.render(nodeItemToExport.getNode().getPath(), user);
+            saveImage(nodeItemToExport.getNode(), is, definition.getContentType(), definition.getName());
             is.close();
 
         } catch (RepositoryException e) {
