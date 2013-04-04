@@ -62,13 +62,13 @@ public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDe
 
         Node node = (Node) item;
 
-        node = NodeUtil.getNearestAncestorOfType(node, "mgnl:folder");
+        node = NodeUtil.getNearestAncestorOfType(node, NodeTypes.Folder.NAME);
         if (node == null) {
             node = (Node) item.getAncestor(0);
         }
 
         String name = Path.getUniqueLabel(node.getSession(), node.getPath(), "untitled");
-        Node newNode = node.addNode(name, "mgnl:folder");
+        Node newNode = node.addNode(name, NodeTypes.Folder.NAME);
         NodeTypes.Created.set(newNode);
         path = newNode.getPath();
     }

@@ -156,7 +156,7 @@ public class ContactsModule implements ModuleLifecycle {
                 .icon("icon-people")
                 .appClass(ContentApp.class)
                 .subApps(
-                        app.workbenchSubApp("browser")
+                        app.browserSubApp("browser")
                                 .subAppClass(ContactsMainSubApp.class)
                                 .actions(addContactAction, editContactAction, deleteItemAction, addFolderAction, editFolderAction, deleteFolderAction)
                                 .imageProvider(cipd)
@@ -171,7 +171,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                 .defaultOrder(ModelConstants.JCR_NAME)
                                                 .nodeTypes(
                                                         contentAppConfig.workbench.nodeType(Contact.NAME).icon("icon-node-content"),
-                                                        contentAppConfig.workbench.nodeType("mgnl:folder").icon("icon-folder"))
+                                                        contentAppConfig.workbench.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                                 .columns(
                                                         cfg.columns.column(new ContactNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME)
                                                                 .formatterClass(ContactNameColumnFormatter.class).expandRatio(2),
@@ -203,7 +203,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                 )
                                 ).exec(),
 
-                        app.itemSubApp("detail")
+                        app.detailSubApp("detail")
                                 .subAppClass(DetailSubApp.class)
                                 .actions(saveFormAction, cancelFormAction)
                                 .editor(contentAppConfig.editor.editor()
