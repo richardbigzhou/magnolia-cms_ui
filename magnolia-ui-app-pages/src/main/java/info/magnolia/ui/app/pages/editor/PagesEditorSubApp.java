@@ -38,6 +38,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
@@ -52,20 +53,19 @@ import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.view.View;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * PagesEditorSubApp.
@@ -279,9 +279,11 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             try {
                 Session session = MgnlContext.getJCRSession(workspace);
                 final javax.jcr.Item item = session.getItem(parameters.getNodePath());
-
-                actionExecutor.execute(actionName, item);
-
+                if (item.isNode()) {
+                    actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item));
+                } else {
+                    throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
+                }
             } catch (RepositoryException e) {
                 Message error = new Message(MessageType.ERROR, "Could not get item: " + parameters.getNodePath(), e.getMessage());
                 appContext.broadcastMessage(error);

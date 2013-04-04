@@ -48,15 +48,14 @@ import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.view.View;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Presenter for the workbench displayed in the {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
@@ -134,9 +133,11 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
         try {
             Session session = MgnlContext.getJCRSession(editorDefinition.getWorkspace());
             final javax.jcr.Item item = session.getItem(nodePath);
-
-            actionExecutor.execute(actionName, item);
-
+            if (item.isNode()) {
+                actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item));
+            } else {
+                throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
+            }
         } catch (RepositoryException e) {
             Message error = new Message(MessageType.ERROR, "Could not get item: " + nodePath, e.getMessage());
             appContext.broadcastMessage(error);
