@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.CloseButton;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.Callbacks;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
@@ -84,11 +85,8 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
         @Override
         public void onClick(ClickEvent event) {
-            final Element target = event.getNativeEvent().getEventTarget().cast();
-            if (target.getClassName().contains(CLOSE_CLASSNAME)) {
-                setClosing(true);
-                getEventBus().fireEvent(new ViewportCloseEvent(ViewportType.APP));
-            }
+            setClosing(true);
+            getEventBus().fireEvent(new ViewportCloseEvent(ViewportType.APP));
         }
     };
 
@@ -96,7 +94,6 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
     public AppsViewportWidget() {
         super();
-        addDomHandler(closeHandler, ClickEvent.getType());
         bindTouchHandlers();
         setTransitionDelegate(TransitionDelegate.APPS_TRANSITION_DELEGATE);
     }
@@ -320,18 +317,18 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     }
 
     /* APPEND CLOSE BUTTON */
+
     @Override
     public void insert(Widget w, int beforeIndex) {
         super.insert(w, beforeIndex);
-        w.getElement().appendChild(createCloseButton());
-        w.getElement().getStyle().setVisibility(Visibility.HIDDEN);
-    }
+        CloseButton closeButton = new CloseButton(closeHandler);
+        closeButton.addStyleDependentName("app");
 
-    private Element createCloseButton() {
-        final Element closeElement = DOM.createSpan();
-        closeElement.setClassName(CLOSE_CLASSNAME);
-        closeElement.addClassName("icon-close");
-        return closeElement;
+        // close buttons are children of apps viewport but are appended in apps' respective dom elements.
+        closeButton.removeFromParent();
+        getChildren().add(closeButton);
+        DOM.appendChild(w.getElement(), closeButton.getElement());
+        adopt(closeButton);
     }
 
     /* APP PRELOADER */

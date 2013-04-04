@@ -33,11 +33,14 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.CloseButton;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ButtonBase;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -51,9 +54,8 @@ public class DialogHeaderWidget extends FlowPanel {
     private static final String ClASSNAME_DESCRIPTION = "form-description";
     private static final String CLASSNAME_HELPBUTTON = "btn-form-help";
     private static final String CLASSNAME_HEADER_TOOLBAR = "form-header-toolbar";
-    private static final String CLASSNAME_CLOSEBUTTON = "btn-dialog-close";
 
-    protected Button closeButton;
+    protected ButtonBase closeButton;
 
     protected DialogHeaderCallback callback = null;
 
@@ -90,15 +92,13 @@ public class DialogHeaderWidget extends FlowPanel {
 
     public void construct() {
 
-        closeButton = new Button("", new ClickHandler() {
+        closeButton = new CloseButton(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 callback.onCloseFired();
             }
         });
-
-        closeButton.setStyleName(CLASSNAME_CLOSEBUTTON);
-        closeButton.addStyleName("green");
+        closeButton.addStyleDependentName("dialog");
         closeButton.setVisible(false);
         add(closeButton, headerPanel);
 
