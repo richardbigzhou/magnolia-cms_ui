@@ -58,6 +58,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -160,20 +161,10 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         app = componentProvider.newInstance(appDescriptor.getAppClass());
         app.start(location);
 
-        if (isThemedApp(app)) {
-            AppTheme themeAnnotation = app.getClass().getAnnotation(AppTheme.class);
-            app.getView().setTheme(themeAnnotation.value());
+        if (StringUtils.isNotBlank(appDescriptor.getTheme())) {
+            app.getView().setTheme(appDescriptor.getTheme());
         }
     }
-
-    private boolean isThemedApp(App app) {
-        if (app.getClass().isAnnotationPresent(AppTheme.class)) {
-            return true;
-        }
-
-        return false;
-    }
-
 
     /**
      * Called when a location change occurs and the app is already running.
