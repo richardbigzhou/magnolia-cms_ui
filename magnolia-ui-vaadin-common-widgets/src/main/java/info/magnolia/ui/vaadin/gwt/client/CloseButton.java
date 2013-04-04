@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,28 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.grid.connector;
+package info.magnolia.ui.vaadin.gwt.client;
 
-import info.magnolia.ui.vaadin.grid.MagnoliaTable;
-import info.magnolia.ui.vaadin.gwt.client.grid.VMagnoliaTable;
-
-import com.vaadin.client.ui.table.TableConnectorPatched;
-import com.vaadin.shared.ui.Connect;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.ButtonBase;
 
 /**
- * Connector class for magnolia table.
+ * The CloseButton common widget.
  */
-@Connect(MagnoliaTable.class)
-public class MagnoliaTableConnector extends TableConnectorPatched {
-    @Override
-    public VMagnoliaTable getWidget() {
-        return (VMagnoliaTable) super.getWidget();
+public class CloseButton extends ButtonBase {
+
+    private static final String STYLE_NAME = "m-closebutton";
+    private static final String ICON_STYLE_NAME = "icon-close";
+
+    public CloseButton() {
+        this(DOM.createSpan());
     }
 
-    @Override
-    public void postLayout() {
-        getWidget().updateWidth();
-        getWidget().updateHeight();
-        super.postLayout();
+    public CloseButton(ClickHandler handler) {
+        this();
+        addClickHandler(handler);
     }
+
+    protected CloseButton(Element elem) {
+        super(elem);
+        setStylePrimaryName(STYLE_NAME);
+        addStyleName(ICON_STYLE_NAME);
+    }
+
 }

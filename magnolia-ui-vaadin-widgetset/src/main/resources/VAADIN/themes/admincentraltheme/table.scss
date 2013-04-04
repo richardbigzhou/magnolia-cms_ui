@@ -110,47 +110,23 @@
     margin-left:1px;
 }
 
-.v-magnolia-table.mobile .v-table-row, .v-magnolia-table.mobile .v-table-row-odd {
-	height: 40px;
-}
-
-.v-magnolia-table .v-table-row, .v-table-row-odd {
-	height: 20px;
-}
-
 .v-magnolia-table .v-table-row:hover,
 .v-magnolia-table .v-table-row-odd:hover {background-color:#f2f2f2;}
-
-.v-magnolia-table .v-selected:hover {
-	background-color: #666666;
-}
-
-.v-magnolia-table.mobile .v-treetable-node-open {
-	padding-right: 5px;
-	width: 24px;
-}
-
-.v-magnolia-table.mobile .v-treetable-node-closed {
-	width: 18px;
-	padding-right: 5px;
-}
+.tablet .v-magnolia-table .v-table-row:hover {background-color:transparent;}
+.v-magnolia-table .v-selected:hover {background-color: #666666;}
 
 .v-magnolia-table .v-treetable-treespacer {
-	font-size: 20px;
-	padding: 0;
-	margin-left: 0px;
-    background: none repeat scroll 0 0 transparent;
-    display: inline-block;
-    height: 16px;
-    vertical-align: text-bottom;
-    text-align: right;
-    color: #999999;
-    position: static;
+  position: static;
+  display: inline-block;
+  height: 16px;
+  vertical-align: text-bottom;
+  background: none;
+  color: #999999;
+  font-size: 20px;
+  text-align: right;
 }
-
-.v-magnolia-table.mobile .v-treetable-treespacer {
-	font-size: 30px;
-	padding-right: 10px;
+.tablet .v-magnolia-table .v-treetable-treespacer {
+  font-size: 28px;
 }
 
 .v-table-icon-element {

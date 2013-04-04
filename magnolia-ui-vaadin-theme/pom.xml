@@ -10,4 +10,11 @@
   <artifactId>magnolia-ui-vaadin-theme</artifactId>
   <name>magnolia-ui-vaadin-theme</name>
 
+  <dependencies>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
 </project>
