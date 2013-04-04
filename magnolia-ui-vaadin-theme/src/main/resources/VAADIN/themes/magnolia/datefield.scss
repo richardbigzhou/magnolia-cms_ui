@@ -26,6 +26,7 @@
   .v-datefield-calendarpanel,
   .v-inline-datefield-calendarpanel {
     border: 1px solid $c02;
+    border-collapse: collapse;
     background-color: $c21;
     font-size: 14x;
   }
