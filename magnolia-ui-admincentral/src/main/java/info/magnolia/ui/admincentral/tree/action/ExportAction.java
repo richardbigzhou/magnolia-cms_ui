@@ -36,15 +36,14 @@ package info.magnolia.ui.admincentral.tree.action;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.impl.ExportCommand;
 import info.magnolia.ui.admincentral.tree.action.export.ExportStreamer;
-import info.magnolia.ui.model.action.CommandActionBase;
-
-import java.io.OutputStream;
-import java.util.Map;
+import info.magnolia.ui.framework.app.action.CommandActionBase;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
-
-import org.apache.commons.io.output.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.util.Map;
 
 /**
  * UI action that allows to export a Node in a XML format.<br>
@@ -58,8 +57,8 @@ public class ExportAction extends CommandActionBase<ExportActionDefinition> {
     private OutputStream outputStream;
 
     @Inject
-    public ExportAction(ExportActionDefinition definition, Node node, CommandsManager commandsManager) {
-        super(definition, node, commandsManager);
+    public ExportAction(ExportActionDefinition definition, JcrItemNodeAdapter item, CommandsManager commandsManager) {
+        super(definition, item, commandsManager);
     }
 
     /**

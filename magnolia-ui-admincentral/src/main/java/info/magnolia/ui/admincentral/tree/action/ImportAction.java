@@ -37,19 +37,18 @@ import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.impl.ImportCommand;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.model.action.CommandActionBase;
-
-import java.util.Map;
+import info.magnolia.ui.framework.app.action.CommandActionBase;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import org.apache.jackrabbit.JcrConstants;
+import org.apache.jackrabbit.value.BinaryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import org.apache.jackrabbit.JcrConstants;
-import org.apache.jackrabbit.value.BinaryImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Map;
 
 /**
  * UI action that allows to import a Node in a XML format.
@@ -60,8 +59,8 @@ public class ImportAction extends CommandActionBase<ImportActionDefinition> {
     private static final Logger log = LoggerFactory.getLogger(ImportAction.class);
 
     @Inject
-    public ImportAction(ImportActionDefinition definition, Node node, CommandsManager commandsManager) {
-        super(definition, node, commandsManager);
+    public ImportAction(ImportActionDefinition definition, JcrItemNodeAdapter item, CommandsManager commandsManager) {
+        super(definition, item, commandsManager);
     }
 
     @Override

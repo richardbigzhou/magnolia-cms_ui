@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
-import info.magnolia.ui.model.action.CommandActionBase;
+import info.magnolia.ui.framework.app.action.CommandActionBase;
 import info.magnolia.ui.model.action.CommandActionDefinition;
 
 
 /**
- * A marker interface. Actual action is {@link info.magnolia.ui.model.action.CommandActionBase}
+ * A marker interface. Actual action is {@link info.magnolia.ui.framework.app.action.CommandActionBase}
  */
 public class DeactivationActionDefinition extends CommandActionDefinition {
 
