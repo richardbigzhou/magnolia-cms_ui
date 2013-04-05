@@ -44,11 +44,6 @@ import java.util.List;
  */
 public interface FormDefinition {
 
-    /**
-     * Unique identifier for this form.
-     */
-    String getId();
-
     String getLabel();
 
     String getI18nBasename();

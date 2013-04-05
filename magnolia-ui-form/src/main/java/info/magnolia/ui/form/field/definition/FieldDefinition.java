@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.form.field.validation.FieldValidatorDefinition;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ import java.util.List;
  * Defines a field within a dialog.
  *
  * @see FieldDefinition
- * @see ConfiguredFieldValidatorDefinition
+ * @see FieldValidatorDefinition
  */
 public interface FieldDefinition {
 
@@ -106,6 +106,6 @@ public interface FieldDefinition {
      */
     String getStyleName();
 
-    List<ConfiguredFieldValidatorDefinition> getValidators();
+    List<FieldValidatorDefinition> getValidators();
 
 }

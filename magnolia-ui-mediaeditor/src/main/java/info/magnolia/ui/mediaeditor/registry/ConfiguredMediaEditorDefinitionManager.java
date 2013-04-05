@@ -115,7 +115,7 @@ public class ConfiguredMediaEditorDefinitionManager  extends ModuleConfiguration
         } catch (Node2BeanException e) {
             log.error("Unable to create a definition for editor [" + id + "]: " + e);
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            log.error("Unable to create a definition for editor [" + id + "]: " + e);
         }
         return null;
     }

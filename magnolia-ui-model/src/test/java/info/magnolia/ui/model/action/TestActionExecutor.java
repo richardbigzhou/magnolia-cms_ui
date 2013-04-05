@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,64 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.definition;
+package info.magnolia.ui.model.action;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.inject.Inject;
 
-/**
- * Standard form definition implementation.
- *
- * @see FormDefinition
- */
-public class ConfiguredFormDefinition implements FormDefinition {
+import info.magnolia.objectfactory.ComponentProvider;
 
-    private String label;
+public class TestActionExecutor extends AbstractActionExecutor {
 
-    private String i18nBasename;
-
-    private String description;
-
-    private List<TabDefinition> tabs = new ArrayList<TabDefinition>();
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
+    @Inject
+    public TestActionExecutor(ComponentProvider componentProvider) {
+        super(componentProvider);
     }
 
     @Override
-    public String getI18nBasename() {
-        return i18nBasename;
+    public ActionDefinition getActionDefinition(String actionName) {
+        if (!AbstractActionExecutorTest.ACTION_NAME.equals(actionName)) {
+            return null;
+        }
+        return new AbstractActionExecutorTest().new TestActionDefinition();
     }
-
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public List<TabDefinition> getTabs() {
-        return tabs;
-    }
-
-    public void setTabs(List<TabDefinition> tabs) {
-        this.tabs = tabs;
-    }
-
-    public boolean addTab(TabDefinition tabDefinition) {
-        return tabs.add(tabDefinition);
-    }
-
 }

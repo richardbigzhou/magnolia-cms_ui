@@ -85,8 +85,6 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
 
     private Listener listener;
 
-    // private final ICEPush pusher = new ICEPush();
-
     public MagnoliaShell() {
         setImmediate(true);
         setSizeFull();
@@ -142,28 +140,24 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     public void showInfo(String id, String subject, String message) {
         synchronized (UI.getCurrent()) {
             getRpcProxy(ShellClientRpc.class).showMessage(MessageType.INFO.name(), subject, message, id);
-            // pusher.push();
         }
     }
 
     public void showError(String id, String subject, String message) {
         synchronized (UI.getCurrent()) {
             getRpcProxy(ShellClientRpc.class).showMessage(MessageType.ERROR.name(), subject, message, id);
-            // pusher.push();
         }
     }
 
     public void showWarning(String id, String subject, String message) {
         synchronized (UI.getCurrent()) {
             getRpcProxy(ShellClientRpc.class).showMessage(MessageType.WARNING.name(), subject, message, id);
-            // pusher.push();
         }
     }
 
     public void hideAllMessages() {
         synchronized (UI.getCurrent()) {
             getRpcProxy(ShellClientRpc.class).hideAllMessages();
-            // pusher.push();
         }
     }
 
@@ -176,14 +170,12 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
 
         getState().indications.put(type, incrementOrDecrement + value);
         synchronized (UI.getCurrent()) {
-            // pusher.push();
         }
     }
 
     public void setIndication(ShellAppType type, int indication) {
         getState().indications.put(type, indication);
         synchronized (UI.getCurrent()) {
-            // pusher.push();
         }
     }
 
@@ -191,7 +183,7 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     /**
      * Open a Modal on top of a specific View.
      *
-     * @param view
+     * @param child
      *            View to be displayed modally.
      * @param parent
      *            The View to open the Modal on top of.
@@ -254,12 +246,6 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     public void setListener(Listener listener) {
         this.listener = listener;
     }
-
-    /*
-     * protected ICEPush getPusher() {
-     * return pusher;
-     * }
-     */
 
     public void doRegisterApps(List<String> appNames) {
         getState().registeredAppNames = appNames;
