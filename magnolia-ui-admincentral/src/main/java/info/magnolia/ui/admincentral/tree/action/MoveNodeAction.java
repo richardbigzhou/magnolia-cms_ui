@@ -35,25 +35,24 @@ package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-
-import javax.jcr.Node;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
 /**
  * The Class MoveNodeAction.
  */
 public class MoveNodeAction extends ActionBase<MoveNodeActionDefinition> {
 
-    private final Node nodeToEdit;
+    private final JcrItemNodeAdapter nodeItemToEdit;
 
     /**
      * Instantiates a new move node action.
      *
      * @param definition the definition
-     * @param nodeToEdit the node to edit
+     * @param nodeItemToEdit the node to edit
      */
-    public MoveNodeAction(MoveNodeActionDefinition definition, Node nodeToEdit) {
+    public MoveNodeAction(MoveNodeActionDefinition definition, JcrItemNodeAdapter nodeItemToEdit) {
         super(definition);
-        this.nodeToEdit = nodeToEdit;
+        this.nodeItemToEdit = nodeItemToEdit;
     }
 
     @Override

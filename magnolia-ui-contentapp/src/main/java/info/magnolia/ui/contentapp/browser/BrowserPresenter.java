@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
+import com.vaadin.data.Item;
+import com.vaadin.server.Resource;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
@@ -54,6 +56,7 @@ import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.ContentViewDefinition;
@@ -63,6 +66,9 @@ import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.search.SearchView;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -70,13 +76,6 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.Item;
-import com.vaadin.server.Resource;
 
 /**
  * The browser is a core component of AdminCentral. It represents the main hub through which users can interact with
@@ -332,10 +331,12 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
     public void onExecute(String actionName) {
         try {
             Session session = MgnlContext.getJCRSession(getWorkspace());
-            final javax.jcr.Item item = session.getItem(getSelectedItemId());
-
-            actionExecutor.execute(actionName, item);
-
+            javax.jcr.Item item = session.getItem(getSelectedItemId());
+            if (item.isNode()) {
+                actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item));
+            } else {
+                throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
+            }
         } catch (RepositoryException e) {
             Message error = new Message(MessageType.ERROR, "Could not get item: " + getSelectedItemId(), e.getMessage());
             appContext.broadcastMessage(error);

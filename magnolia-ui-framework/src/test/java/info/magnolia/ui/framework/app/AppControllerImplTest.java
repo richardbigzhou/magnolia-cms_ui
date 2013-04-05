@@ -46,6 +46,7 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
@@ -447,7 +448,8 @@ public class AppControllerImplTest {
 
         AppDescriptor app1 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_1, AppTestImpl.class, subApps);
         AppDescriptor app2 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_2, AppTestImpl.class, subApps);
-        AppDescriptor appThemed = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_THEMED, ThemedAppTestImpl.class, subApps);
+        ConfiguredAppDescriptor appThemed = (ConfiguredAppDescriptor) AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_THEMED, AppTestImpl.class, subApps);
+        appThemed.setTheme("testtheme");
 
         try {
             when(appRegistry.getAppDescriptor(APP_NAME_1 + "_name")).thenReturn(app1);

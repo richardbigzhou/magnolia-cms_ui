@@ -60,7 +60,10 @@ import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.view.View;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
@@ -69,9 +72,6 @@ import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * PagesEditorSubApp.
@@ -350,9 +350,11 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             try {
                 Session session = MgnlContext.getJCRSession(workspace);
                 final javax.jcr.Item item = session.getItem(parameters.getNodePath());
-
-                actionExecutor.execute(actionName, item);
-
+                if (item.isNode()) {
+                    actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item));
+                } else {
+                    throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
+                }
             } catch (RepositoryException e) {
                 Message error = new Message(MessageType.ERROR, "Could not get item: " + parameters.getNodePath(), e.getMessage());
                 appContext.broadcastMessage(error);
