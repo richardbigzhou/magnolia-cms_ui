@@ -36,7 +36,7 @@ package info.magnolia.ui.mediaeditor;
 /**
  * Defines the name of the media editor event bus.
  */
-public class MediaEditorEventBus {
+public interface MediaEditorEventBus {
 
     public static final String NAME = "mediaeditor";
 }
