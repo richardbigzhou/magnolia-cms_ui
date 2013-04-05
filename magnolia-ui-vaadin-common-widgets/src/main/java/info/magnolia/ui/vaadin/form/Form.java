@@ -33,6 +33,13 @@
  */
 package info.magnolia.ui.vaadin.form;
 
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.shared.Connector;
+import com.vaadin.ui.AbstractSingleComponentContainer;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.vaadin.form.tab.MagnoliaFormTab;
 import info.magnolia.ui.vaadin.gwt.client.form.connector.FormState;
@@ -44,12 +51,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.vaadin.data.Item;
-import com.vaadin.shared.Connector;
-import com.vaadin.ui.AbstractSingleComponentContainer;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
 
 /**
  * {@link Form}. The server side implementation of the form view. Displays the
@@ -63,7 +64,11 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
 
     private Item itemDataSource;
 
+    private FieldGroup fieldGroup = new FieldGroup();
+
     private List<Field<?>> fields = new LinkedList<Field<?>>();
+
+    private boolean isValidationVisible = false;
 
     private final MagnoliaTabSheet tabSheet = new MagnoliaTabSheet() {
         @Override
@@ -83,7 +88,6 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     public Form() {
         super();
         setStyleName("v-magnolia-form");
-        // setImmediate(true);
         tabSheet.setSizeFull();
         tabSheet.showAllTab(true, SHOW_ALL);
         setContent(tabSheet);;
@@ -91,24 +95,25 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
         registerRpc(new FormServerRpc() {
             @Override
             public void focusNextProblematicField(Connector currentFocused) {
-
-                int tabCount = tabSheet.getComponentCount();
-                tabCount++; // Add a tab so that search will wrap back to the current tab. Necessary if errors are only on 1 tab.
+                /**
+                 * In case the remaining issues are in the current tab above current focus -
+                 * we need to wrap the search to check the current tab once we've investigated all th eothers
+                 */
+                int tabsToIterate = tabSheet.getComponentCount() + 1;
                 MagnoliaTab tab = tabSheet.getActiveTab();
-                FormSection section = null;
-                Component nextProblematic = null;
-
+                FormSection section;
+                Component nextProblematic;
                 do {
                     section = (FormSection) tab.getContent();
                     nextProblematic = section.getNextProblematicField(currentFocused);
                     if (nextProblematic == null) {
                         tab = tabSheet.getNextTab(tab);
-                        tabCount--;
+                        tabsToIterate--;
                          // After testing the first section - we want to check ALL fields per section.
                         currentFocused = null;
                     }
 
-                } while (nextProblematic == null && tabCount > 0);
+                } while (nextProblematic == null && tabsToIterate > 0);
 
                 // focus next tab and field
                 if (nextProblematic != null) {
@@ -117,6 +122,8 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
                 }
             }
         });
+
+
     }
 
     @Override
@@ -142,6 +149,16 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     @Override
     public void addField(Field<?> field) {
         fields.add(field);
+        field.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                invalidateErrorAmount();
+            }
+        });
+    }
+
+    private void invalidateErrorAmount() {
+        getState().errorAmount = -1;
     }
 
     @Override
@@ -160,6 +177,12 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
 
     @Override
     public void showValidation(boolean isVisible) {
+        isValidationVisible = isVisible;
+
+        if (isVisible) {
+            invalidateErrorAmount();
+        }
+
         final Iterator<Component> it = tabSheet.getComponentIterator();
         while (it.hasNext()) {
             final Component c = it.next();
@@ -187,5 +210,18 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     @Override
     public Form asVaadinComponent() {
         return this;
+    }
+
+    @Override
+    public void beforeClientResponse(boolean initial) {
+        super.beforeClientResponse(initial);
+        getState().errorAmount = 0;
+        if (isValidationVisible) {
+            for (Field<?> field : fields) {
+                if (!field.isValid()) {
+                    ++getState().errorAmount;
+                }
+            }
+        }
     }
 }
