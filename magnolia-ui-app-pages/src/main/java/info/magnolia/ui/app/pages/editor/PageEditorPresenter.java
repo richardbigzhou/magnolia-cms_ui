@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -92,8 +92,8 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private AbstractElement selectedElement;
 
-    private SubAppContext subAppContext;
-    private ComponentProvider componentProvider;
+    private final SubAppContext subAppContext;
+    private final ComponentProvider componentProvider;
 
     @Inject
     public PageEditorPresenter(PageEditorView view, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, TemplateDefinitionRegistry templateDefinitionRegistry,
@@ -357,5 +357,9 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     public void loadPageEditor(PageEditorParameters parameters) {
         view.load(parameters);
+    }
+
+    public TemplateDefinitionRegistry getTemplateDefinitionRegistry() {
+        return templateDefinitionRegistry;
     }
 }
