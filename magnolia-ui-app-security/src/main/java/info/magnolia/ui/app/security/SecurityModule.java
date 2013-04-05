@@ -54,7 +54,7 @@ import info.magnolia.ui.app.security.dialog.field.validator.UniqueGroupIdValidat
 import info.magnolia.ui.app.security.dialog.field.validator.UniqueRoleIdValidatorDefinition;
 import info.magnolia.ui.app.security.dialog.field.validator.UniqueUserIdValidatorDefinition;
 import info.magnolia.ui.contentapp.config.BrowserSubAppBuilder;
-import info.magnolia.ui.contentapp.config.CodeConfigurationUtils;
+import info.magnolia.ui.contentapp.config.CodeConfigurationUtil;
 import info.magnolia.ui.contentapp.config.ContentAppBuilder;
 import info.magnolia.ui.contentapp.config.ContentAppConfig;
 import info.magnolia.ui.dialog.config.Dialog;
@@ -427,8 +427,8 @@ public class SecurityModule implements ModuleLifecycle {
 
     @Override
     public void start(ModuleLifecycleContext moduleLifecycleContext) {
-        CodeConfigurationUtils.registerAnnotatedAppProviders(appDescriptorRegistry, this);
-        CodeConfigurationUtils.registerAnnotatedDialogProviders(dialogDefinitionRegistry, this);
+        CodeConfigurationUtil.registerAnnotatedAppProviders(appDescriptorRegistry, this);
+        CodeConfigurationUtil.registerAnnotatedDialogProviders(dialogDefinitionRegistry, this);
     }
 
     @Override

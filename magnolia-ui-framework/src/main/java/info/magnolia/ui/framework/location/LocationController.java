@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.framework.location;
 
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.Shell;
 
@@ -55,7 +55,7 @@ public class LocationController {
     private Location where = Location.NOWHERE;
 
     @Inject
-    public LocationController(@Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus eventBus, Shell shell) {
+    public LocationController(@Named(AdmincentralEventBus.NAME) final EventBus eventBus, Shell shell) {
         this.eventBus = eventBus;
         this.shell = shell;
     }
