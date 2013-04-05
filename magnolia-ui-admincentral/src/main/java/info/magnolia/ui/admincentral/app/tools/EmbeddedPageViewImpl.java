@@ -33,11 +33,49 @@
  */
 package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.framework.app.AppContext;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.ui.BrowserFrame;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 
 /**
- * Marker interface for the page App's view.
+ * View implementation for an embedded page app.
  */
-public interface PageView extends View {
+public class EmbeddedPageViewImpl implements EmbeddedPageView {
+
+    private static final Logger log = LoggerFactory.getLogger(EmbeddedPageViewImpl.class);
+
+    private final CssLayout layout = new CssLayout();
+
+    @Inject
+    public EmbeddedPageViewImpl(AppContext appContext) {
+        layout.setSizeFull();
+
+        EmbeddedPageSubAppDescriptor subAppDescriptor = ((EmbeddedPageSubAppDescriptor) appContext.getDefaultSubAppDescriptor());
+        boolean isInternalPage = !subAppDescriptor.getUrl().startsWith("http");
+        String url = subAppDescriptor.getUrl();
+
+        if(isInternalPage) {
+            url = url.startsWith("/") ? MgnlContext.getContextPath() + url : MgnlContext.getContextPath() + "/" + url;
+        }
+
+        log.debug("Opening page in an iframe with url [{}]...", url);
+        final BrowserFrame page = new BrowserFrame("", new ExternalResource(url));
+        page.setSizeFull();
+
+        layout.addComponent(page);
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return layout;
+    }
 
 }

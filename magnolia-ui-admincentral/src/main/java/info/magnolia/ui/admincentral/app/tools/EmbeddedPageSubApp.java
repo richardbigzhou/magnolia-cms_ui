@@ -33,39 +33,19 @@
  */
 package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.framework.app.BaseSubApp;
+import info.magnolia.ui.framework.app.SubAppContext;
 
 import javax.inject.Inject;
 
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.BrowserFrame;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-
 /**
- * View implementation for a page app.
+ * Sub app for the main tab in an embedded page app.
  */
-public class PageViewImpl implements PageView {
-
-    private final CssLayout layout = new CssLayout();
+public class EmbeddedPageSubApp extends BaseSubApp {
 
     @Inject
-    public PageViewImpl(final Shell shell, final AppContext appContext) {
-        layout.setSizeFull();
 
-        final String sourceURL = ((PageSubAppDescriptor) appContext.getDefaultSubAppDescriptor()).getUrl();
-        final String path = String.format("%s/.magnolia/pages/%s", MgnlContext.getContextPath(), sourceURL);
-        final BrowserFrame page = new BrowserFrame("", new ExternalResource(path));
-        page.setSizeFull();
-
-        layout.addComponent(page);
+    public EmbeddedPageSubApp(SubAppContext subAppContext, EmbeddedPageView pageView) {
+        super(subAppContext, pageView);
     }
-
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
-    }
-
 }

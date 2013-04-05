@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,12 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.admincentral.app.tools;
+
+import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
 
 /**
- * Defines the name of the choose dialog event bus.
+ * Allows to specify the url to an html page to be embedded in an iframe.
+ * <p>
+ * If the supplied url doesn't start with <code>http</code> it will be assumed to be an internal one and thus prepended with the current webapp's context path. E.g. given the url <code>/some-static-pages/some-page</code> an url will be built in the following form <code>&lt;magnolia-webapp-context&gt;/some-static-pages/some-page</code>
  */
-public interface ChooseDialogEventBus {
+public class EmbeddedPageSubAppDescriptor extends ConfiguredSubAppDescriptor {
 
-    public static final String NAME = "choosedialog";
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * @param url if not starting with <code>http</code> the url will be assumed to be an internal one and thus prepended with the current webapp's context path.
+     * E.g. given the url <code>some-static-pages/some-page</code> an url will be built in the following form <code>&lt;magnolia-webapp-context&gt;/some-static-pages/some-page</code>
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }

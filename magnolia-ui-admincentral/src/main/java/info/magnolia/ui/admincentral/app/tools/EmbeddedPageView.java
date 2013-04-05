@@ -33,20 +33,11 @@
  */
 package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+import info.magnolia.ui.vaadin.view.View;
 
 /**
- * Allows to specify the url to an html page to be embedded in an iframe. The iframe url is built like the following {@code <webapp-context-path>/.magnolia/pages/<page-name>.html }
+ * Marker interface for the embedded page App's view.
  */
-public class PageSubAppDescriptor extends ConfiguredSubAppDescriptor {
+public interface EmbeddedPageView extends View {
 
-    private String url;
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 }
