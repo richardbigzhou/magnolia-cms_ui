@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,28 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.grid.connector;
+package info.magnolia.ui.app.config.browser.tree;
 
-import info.magnolia.ui.vaadin.grid.MagnoliaTable;
-import info.magnolia.ui.vaadin.gwt.client.grid.VMagnoliaTable;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
-import com.vaadin.client.ui.table.TableConnectorPatched;
-import com.vaadin.shared.ui.Connect;
+import com.vaadin.data.Item;
 
 /**
- * Connector class for magnolia table.
+ * Jcr configuration implementation of {@link DropConstraint} used by the
+ * Config-App in order to handle the Drag & Drop events. <br>
+ * <b>Constraints</b><br>
+ * Properties are not allowed to Move (allowedToMove). A Node can not be set as
+ * child as a Property (allowedAsChild).
  */
-@Connect(MagnoliaTable.class)
-public class MagnoliaTableConnector extends TableConnectorPatched {
+public class NodeTypeDropConstraint implements DropConstraint {
+
     @Override
-    public VMagnoliaTable getWidget() {
-        return (VMagnoliaTable) super.getWidget();
+    public boolean allowedAsChild(Item sourceItem, Item targetItem) {
+        return ((JcrItemAdapter) targetItem).isNode();
     }
 
     @Override
-    public void postLayout() {
-        getWidget().updateWidth();
-        getWidget().updateHeight();
-        super.postLayout();
+    public boolean allowedBefore(Item sourceItem, Item targetItem) {
+        return true;
     }
+
+    @Override
+    public boolean allowedAfter(Item sourceItem, Item targetItem) {
+        return true;
+    }
+
+    @Override
+    public boolean allowedToMove(Item sourceItem) {
+        JcrItemAdapter jcrSourceItem = (JcrItemAdapter) sourceItem;
+        return jcrSourceItem.isNode();
+    }
+
 }
