@@ -95,7 +95,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private final EventBus eventBus;
     private final Map<String, AppInstanceController> runningApps = new HashMap<String, AppInstanceController>();
     private final LinkedList<AppInstanceController> appHistory = new LinkedList<AppInstanceController>();
-    private MessagesManager messagesManager;
+    private final MessagesManager messagesManager;
     private Viewport viewport;
     private AppInstanceController currentAppInstanceController;
 
