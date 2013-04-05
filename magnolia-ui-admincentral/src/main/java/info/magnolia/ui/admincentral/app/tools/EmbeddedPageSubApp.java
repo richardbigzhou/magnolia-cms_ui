@@ -44,6 +44,7 @@ import javax.inject.Inject;
 public class EmbeddedPageSubApp extends BaseSubApp {
 
     @Inject
+
     public EmbeddedPageSubApp(SubAppContext subAppContext, EmbeddedPageView pageView) {
         super(subAppContext, pageView);
     }
