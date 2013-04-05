@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
-
-import info.magnolia.event.EventBus;
-import info.magnolia.event.SimpleEventBus;
-import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
-
-import com.google.inject.name.Names;
-import com.google.inject.util.Providers;
+package info.magnolia.ui.framework.app;
 
 /**
- * Configures an {@link EventBus} bound to the name <code>admincentral</code>.
+ * Defines the name of the app event bus.
  */
-public class AdminCentralEventBusConfigurer extends AbstractGuiceComponentConfigurer {
+public interface AppEventBus {
 
-    @Override
-    protected void configure() {
-        bind(EventBus.class).annotatedWith(Names.named(AdmincentralEventBus.NAME)).toProvider(Providers.of(new SimpleEventBus()));
-    }
+    public static final String NAME = "app";
 }

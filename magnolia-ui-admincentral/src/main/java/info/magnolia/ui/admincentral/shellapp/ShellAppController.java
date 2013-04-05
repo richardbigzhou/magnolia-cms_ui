@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.shellapp;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
@@ -68,7 +68,7 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
     private Viewport viewport;
 
     @Inject
-    public ShellAppController(ComponentProvider componentProvider, Shell shell, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus admincentralEventBus) {
+    public ShellAppController(ComponentProvider componentProvider, Shell shell, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus) {
         this.componentProvider = componentProvider;
         this.shell = (ShellImpl) shell;
         this.shell.setShellAppLocationProvider(new ShellImpl.ShellAppLocationProvider() {

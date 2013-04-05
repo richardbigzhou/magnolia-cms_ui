@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.sample.main;
 
-import info.magnolia.ui.framework.app.AppEventBusConfigurer;
+import info.magnolia.ui.framework.app.AppEventBus;
 import info.magnolia.event.EventBus;
 
 import javax.inject.Inject;
@@ -48,7 +48,7 @@ public class NavigationPresenter implements NavigationView.Listener {
     private NavigationView view;
 
     @Inject
-    public NavigationPresenter(@Named(AppEventBusConfigurer.EVENT_BUS_NAME) EventBus appEventBus, NavigationView view) {
+    public NavigationPresenter(@Named(AppEventBus.NAME) EventBus appEventBus, NavigationView view) {
         this.appEventBus = appEventBus;
         this.view = view;
     }
