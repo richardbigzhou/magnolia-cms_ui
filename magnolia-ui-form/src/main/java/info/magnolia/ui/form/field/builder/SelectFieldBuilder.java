@@ -92,6 +92,7 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
         select.setNewItemsAllowed(false);
         if (select instanceof ComboBox) {
             ((ComboBox) select).setFilteringMode(definition.getFilteringMode());
+            ((ComboBox) select).setTextInputAllowed(false);
         }
         select.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         select.setItemCaptionPropertyId(optionLabelName);
