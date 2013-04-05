@@ -59,10 +59,15 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Utility class for detecting annotated methods and registering providers with respective registries.
  */
-public class CodeConfigurationUtils {
+public class CodeConfigurationUtil {
+
+    private static final Logger log = LoggerFactory.getLogger(CodeConfigurationUtil.class);
 
     public static void registerAnnotatedDialogProviders(DialogDefinitionRegistry dialogDefinitionRegistry, Object instance) {
         for (Method method : findAnnotatedMethods(instance.getClass(), Dialog.class)) {
@@ -80,7 +85,7 @@ public class CodeConfigurationUtils {
             try {
                 appDescriptorRegistry.register(new JustInTimeAppProvider(app.value(), instance, method));
             } catch (RegistrationException e) {
-                e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
+                log.error("Failed to register app [{}] provided by method [{}]", app.value(), method);
             }
         }
     }

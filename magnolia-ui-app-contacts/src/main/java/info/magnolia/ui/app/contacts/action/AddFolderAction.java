@@ -38,7 +38,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.tree.action.RepositoryOperationAction;
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
 
 import javax.inject.Named;
 import javax.jcr.Item;
@@ -53,7 +53,7 @@ public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDe
 
     private String path;
 
-    public AddFolderAction(AddFolderActionDefinition definition, Item item, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus) {
+    public AddFolderAction(AddFolderActionDefinition definition, Item item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
         super(definition, item, eventBus);
     }
 

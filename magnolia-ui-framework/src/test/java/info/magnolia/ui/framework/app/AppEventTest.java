@@ -52,6 +52,7 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.framework.app.AppControllerImplTest.AppEventCollector;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
@@ -236,7 +237,7 @@ public class AppEventTest {
 
         @Override
         protected void configure() {
-            bind(EventBus.class).annotatedWith(Names.named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME)).toProvider(Providers.of(eventBus));
+            bind(EventBus.class).annotatedWith(Names.named(AdmincentralEventBus.NAME)).toProvider(Providers.of(eventBus));
             bind(EventBus.class).annotatedWith(Names.named(SystemEventBus.NAME)).toProvider(Providers.of(new SimpleEventBus()));
         }
     }

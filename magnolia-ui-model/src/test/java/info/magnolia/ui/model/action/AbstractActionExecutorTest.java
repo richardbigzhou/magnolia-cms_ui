@@ -31,18 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.action;
+package info.magnolia.ui.model.action;
 
 import info.magnolia.cms.beans.config.ConfigurationException;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.action.ActionExecutor;
 
 import javax.inject.Inject;
 
@@ -156,20 +151,3 @@ public class AbstractActionExecutorTest {
     }
 }
 
-// Can't be defined as an inner class of AbstractActionExecutorTest else I get instantiation exception
-class TestActionExecutor extends AbstractActionExecutor {
-
-    @Inject
-    public TestActionExecutor(ComponentProvider componentProvider) {
-        super(componentProvider);
-    }
-
-    @Override
-    public ActionDefinition getActionDefinition(String actionName) {
-        if (!AbstractActionExecutorTest.ACTION_NAME.equals(actionName)) {
-            return null;
-        }
-        return new AbstractActionExecutorTest().new TestActionDefinition();
-    }
-
-}

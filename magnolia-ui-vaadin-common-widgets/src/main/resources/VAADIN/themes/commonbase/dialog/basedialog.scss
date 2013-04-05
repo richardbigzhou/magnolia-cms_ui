@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+@import "dialogheader.scss";
+
+@mixin basedialog {
+
+  @include dialogheader;
+
+}

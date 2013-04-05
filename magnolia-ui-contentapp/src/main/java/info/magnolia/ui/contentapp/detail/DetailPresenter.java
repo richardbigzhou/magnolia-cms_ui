@@ -39,7 +39,7 @@ import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.form.FormBuilder;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
@@ -75,7 +75,7 @@ public class DetailPresenter implements DialogActionListener, EditorCallback, Ed
 
     @Inject
     public DetailPresenter(SubAppContext subAppContext, final ActionExecutor actionExecutor,
-            final @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, DetailView view,
+            final @Named(AdmincentralEventBus.NAME) EventBus eventBus, DetailView view,
             FormBuilder formBuilder) {
         this.subAppContext = subAppContext;
         this.actionExecutor = actionExecutor;

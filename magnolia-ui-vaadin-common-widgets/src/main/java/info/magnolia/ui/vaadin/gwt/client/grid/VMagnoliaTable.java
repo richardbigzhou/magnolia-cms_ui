@@ -82,12 +82,6 @@ public class VMagnoliaTable extends VScrollTablePatched {
         return new MagnoliaHeaderCell(colId, headerText);
     }
 
-    public void addStyleForMobile() {
-        if (BrowserInfo.get().isTouchDevice()) {
-            addStyleName("mobile");
-        }
-    }
-
     @Override
     protected void setMultiSelectMode(int multiselectmode) {
         this.multiselectmode = multiselectmode;

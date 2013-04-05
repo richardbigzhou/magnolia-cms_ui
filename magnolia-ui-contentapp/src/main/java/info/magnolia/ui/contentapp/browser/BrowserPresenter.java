@@ -43,8 +43,8 @@ import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.event.SearchEvent;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.ui.framework.app.SubAppEventBus;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
@@ -112,8 +112,8 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
     private final AppContext appContext;
 
     @Inject
-    public BrowserPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus admincentralEventBus,
-            final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus, final ContentPresenter contentPresenter,
+    public BrowserPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
+            final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final ContentPresenter contentPresenter,
             final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
         this.actionExecutor = actionExecutor;
         this.view = view;

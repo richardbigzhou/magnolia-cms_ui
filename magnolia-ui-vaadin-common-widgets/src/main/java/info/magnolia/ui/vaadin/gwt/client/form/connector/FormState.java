@@ -41,4 +41,6 @@ import com.vaadin.shared.ui.AbstractLayoutState;
 public class FormState extends AbstractLayoutState {
 
     public boolean descriptionsVisible = false;
+
+    public int errorAmount = 0;
 }

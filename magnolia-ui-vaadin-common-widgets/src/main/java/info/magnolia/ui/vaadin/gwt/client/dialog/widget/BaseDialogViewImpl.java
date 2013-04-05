@@ -73,7 +73,6 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
 
     private Widget content;
     private Widget footerToolbar;
-    private Widget headerToolbar;
 
     public BaseDialogViewImpl() {
         final Element root = DOM.createDiv();

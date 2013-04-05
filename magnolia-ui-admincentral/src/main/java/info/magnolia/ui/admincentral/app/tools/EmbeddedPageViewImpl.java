@@ -33,22 +33,49 @@
  */
 package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.framework.app.AppContext;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.ui.BrowserFrame;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 
 /**
- * Sub app for the main tab in a page app.
+ * View implementation for an embedded page app.
  */
-public class PageMainSubApp extends BaseSubApp {
+public class EmbeddedPageViewImpl implements EmbeddedPageView {
+
+    private static final Logger log = LoggerFactory.getLogger(EmbeddedPageViewImpl.class);
+
+    private final CssLayout layout = new CssLayout();
 
     @Inject
-    public PageMainSubApp(SubAppContext subAppContext, PageView pageView, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
-        super(subAppContext, pageView);
+    public EmbeddedPageViewImpl(AppContext appContext) {
+        layout.setSizeFull();
+
+        EmbeddedPageSubAppDescriptor subAppDescriptor = ((EmbeddedPageSubAppDescriptor) appContext.getDefaultSubAppDescriptor());
+        boolean isInternalPage = !subAppDescriptor.getUrl().startsWith("http");
+        String url = subAppDescriptor.getUrl();
+
+        if(isInternalPage) {
+            url = url.startsWith("/") ? MgnlContext.getContextPath() + url : MgnlContext.getContextPath() + "/" + url;
+        }
+
+        log.debug("Opening page in an iframe with url [{}]...", url);
+        final BrowserFrame page = new BrowserFrame("", new ExternalResource(url));
+        page.setSizeFull();
+
+        layout.addComponent(page);
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return layout;
     }
 
 }

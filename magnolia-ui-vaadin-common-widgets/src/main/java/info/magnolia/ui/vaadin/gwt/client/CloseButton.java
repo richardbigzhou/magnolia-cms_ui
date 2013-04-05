@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.tools;
+package info.magnolia.ui.vaadin.gwt.client;
 
-import info.magnolia.ui.vaadin.view.View;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.ButtonBase;
 
 /**
- * Marker interface for the page App's view.
+ * The CloseButton common widget.
  */
-public interface PageView extends View {
+public class CloseButton extends ButtonBase {
+
+    private static final String STYLE_NAME = "m-closebutton";
+    private static final String ICON_STYLE_NAME = "icon-close";
+
+    public CloseButton() {
+        this(DOM.createSpan());
+    }
+
+    public CloseButton(ClickHandler handler) {
+        this();
+        addClickHandler(handler);
+    }
+
+    protected CloseButton(Element elem) {
+        super(elem);
+        setStylePrimaryName(STYLE_NAME);
+        addStyleName(ICON_STYLE_NAME);
+    }
 
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.admincentral.app.tools;
+
+import info.magnolia.ui.vaadin.view.View;
 
 /**
- * Defines constants for names of event buses used within the UI.
+ * Marker interface for the embedded page App's view.
  */
-public interface EventBusNames {
+public interface EmbeddedPageView extends View {
 
-    public static final String ADMINCENTRAL = "admincentral";
-
-    public static final String APP = "app";
-
-    public static final String SUB_APP = "subapp";
-
-    public static final String CHOOSE_DIALOG = "choosedialog";
 }

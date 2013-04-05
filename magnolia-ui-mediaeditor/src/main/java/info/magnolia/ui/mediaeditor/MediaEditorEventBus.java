@@ -31,41 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.config.workbench.tree;
-
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.workbench.tree.drop.DropConstraint;
-
-import com.vaadin.data.Item;
+package info.magnolia.ui.mediaeditor;
 
 /**
- * Jcr configuration implementation of {@link DropConstraint} used by the
- * Config-App in order to handle the Drag & Drop events. <br>
- * <b>Constraints</b><br>
- * Properties are not allowed to Move (allowedToMove). A Node can not be set as
- * child as a Property (allowedAsChild).
+ * Defines the name of the media editor event bus.
  */
-public class NodeTypeDropConstraint implements DropConstraint {
+public interface MediaEditorEventBus {
 
-    @Override
-    public boolean allowedAsChild(Item sourceItem, Item targetItem) {
-        return ((JcrItemAdapter) targetItem).isNode();
-    }
-
-    @Override
-    public boolean allowedBefore(Item sourceItem, Item targetItem) {
-        return true;
-    }
-
-    @Override
-    public boolean allowedAfter(Item sourceItem, Item targetItem) {
-        return true;
-    }
-
-    @Override
-    public boolean allowedToMove(Item sourceItem) {
-        JcrItemAdapter jcrSourceItem = (JcrItemAdapter) sourceItem;
-        return jcrSourceItem.isNode();
-    }
-
+    public static final String NAME = "mediaeditor";
 }

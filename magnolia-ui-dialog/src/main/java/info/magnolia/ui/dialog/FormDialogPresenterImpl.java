@@ -34,7 +34,6 @@
 package info.magnolia.ui.dialog;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.event.EventBus;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.dialog.action.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
@@ -53,7 +52,6 @@ import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.ModalLayer;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -76,8 +74,8 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
 
     @Inject
-    public FormDialogPresenterImpl(final FormDialogView view, @Named("admincentral") EventBus eventBus, final DialogDefinitionRegistry dialogDefinitionRegistry, final DialogActionExecutor actionExecutor, FormBuilder formBuilder) {
-        super(view, eventBus);
+    public FormDialogPresenterImpl(final FormDialogView view, final DialogDefinitionRegistry dialogDefinitionRegistry, final DialogActionExecutor actionExecutor, FormBuilder formBuilder) {
+        super(view);
         this.view = view;
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.actionExecutor = actionExecutor;
@@ -148,8 +146,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
             String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
             view.setCaption(i18nLabel);
         }
-
-        // This is needed to access properties from the parent. Currently only the i18basename.
     }
 
     private void initActions(final DialogDefinition dialogDefinition) {

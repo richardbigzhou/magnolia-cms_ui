@@ -34,6 +34,7 @@
 package info.magnolia.ui.mediaeditor.editmode.provider;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent.EventType;
 import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
@@ -59,7 +60,7 @@ public class CropImageProvider implements EditModeProvider {
     private EventBus eventBus;
     
     @Inject
-    public CropImageProvider(@Named("mediaeditor") EventBus eventBus) {
+    public CropImageProvider(@Named(MediaEditorEventBus.NAME) EventBus eventBus) {
         this.eventBus = eventBus;
     }
     

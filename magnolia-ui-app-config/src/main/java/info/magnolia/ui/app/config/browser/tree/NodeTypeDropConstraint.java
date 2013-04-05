@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.tools;
+package info.magnolia.ui.app.config.browser.tree;
 
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.workbench.tree.drop.DropConstraint;
+
+import com.vaadin.data.Item;
 
 /**
- * Allows to specify the url to an html page to be embedded in an iframe. The iframe url is built like the following {@code <webapp-context-path>/.magnolia/pages/<page-name>.html }
+ * Jcr configuration implementation of {@link DropConstraint} used by the
+ * Config-App in order to handle the Drag & Drop events. <br>
+ * <b>Constraints</b><br>
+ * Properties are not allowed to Move (allowedToMove). A Node can not be set as
+ * child as a Property (allowedAsChild).
  */
-public class PageSubAppDescriptor extends ConfiguredSubAppDescriptor {
+public class NodeTypeDropConstraint implements DropConstraint {
 
-    private String url;
-
-    public String getUrl() {
-        return url;
+    @Override
+    public boolean allowedAsChild(Item sourceItem, Item targetItem) {
+        return ((JcrItemAdapter) targetItem).isNode();
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    @Override
+    public boolean allowedBefore(Item sourceItem, Item targetItem) {
+        return true;
     }
+
+    @Override
+    public boolean allowedAfter(Item sourceItem, Item targetItem) {
+        return true;
+    }
+
+    @Override
+    public boolean allowedToMove(Item sourceItem) {
+        JcrItemAdapter jcrSourceItem = (JcrItemAdapter) sourceItem;
+        return jcrSourceItem.isNode();
+    }
+
 }
