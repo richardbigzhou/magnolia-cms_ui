@@ -179,7 +179,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Override
     public void stopApp(String appId) {
-        AppInstanceController appInstanceController = runningApps.get(appId);
+        final AppInstanceController appInstanceController = runningApps.get(appId);
         if (appInstanceController != null) {
             doStop(appInstanceController);
         }
@@ -188,7 +188,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     @Override
     public void stopCurrentApp() {
         final AppInstanceController appInstanceController = appHistory.peekFirst();
-        doStop(appInstanceController);
+        if (appInstanceController != null) {
+            doStop(appInstanceController);
+        }
     }
 
     @Override
