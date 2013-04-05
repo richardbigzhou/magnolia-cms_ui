@@ -49,7 +49,7 @@ import info.magnolia.ui.app.contacts.form.action.SaveContactFormAction;
 import info.magnolia.ui.app.contacts.main.ContactsMainSubApp;
 import info.magnolia.ui.app.contacts.main.tree.ContactDropConstraint;
 import info.magnolia.ui.contentapp.ContentApp;
-import info.magnolia.ui.contentapp.config.CodeConfigurationUtils;
+import info.magnolia.ui.contentapp.config.CodeConfigurationUtil;
 import info.magnolia.ui.contentapp.config.ContentAppBuilder;
 import info.magnolia.ui.contentapp.config.ContentAppConfig;
 import info.magnolia.ui.contentapp.detail.DetailSubApp;
@@ -299,8 +299,8 @@ public class ContactsModule implements ModuleLifecycle {
 
     @Override
     public void start(ModuleLifecycleContext moduleLifecycleContext) {
-        CodeConfigurationUtils.registerAnnotatedAppProviders(appDescriptorRegistry, this);
-        CodeConfigurationUtils.registerAnnotatedDialogProviders(dialogDefinitionRegistry, this);
+        CodeConfigurationUtil.registerAnnotatedAppProviders(appDescriptorRegistry, this);
+        CodeConfigurationUtil.registerAnnotatedDialogProviders(dialogDefinitionRegistry, this);
     }
 
     @Override
