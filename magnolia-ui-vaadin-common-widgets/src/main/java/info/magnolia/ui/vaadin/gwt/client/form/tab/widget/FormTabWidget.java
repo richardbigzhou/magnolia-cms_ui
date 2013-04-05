@@ -33,9 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.tab.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent;
-import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent.Handler;
-import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent.HasValidationChangeHanlders;
+import com.google.gwt.user.client.ui.Widget;
 import info.magnolia.ui.vaadin.gwt.client.form.formsection.widget.FormSectionWidget;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormFieldWrapper;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.connector.MagnoliaTabConnector;
@@ -44,14 +42,11 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Widget;
-
 /**
  * An extension of {@link MagnoliaTabWidget}. Its content type is restricted to 
  * {@link FormSectionWidget} and the FielWrappers are exposed.
  */
-public class FormTabWidget extends MagnoliaTabWidget implements HasValidationChangeHanlders {
+public class FormTabWidget extends MagnoliaTabWidget {
 
     public FormTabWidget(MagnoliaTabConnector connector) {
         super(connector);
@@ -79,11 +74,6 @@ public class FormTabWidget extends MagnoliaTabWidget implements HasValidationCha
         if (content != null) {
             content.setDescriptionVisible(visible);
         }
-    }
-
-    @Override
-    public HandlerRegistration addValidationChangeHandler(Handler handler) {
-        return addHandler(handler, ValidationChangedEvent.TYPE);
     }
 
 }

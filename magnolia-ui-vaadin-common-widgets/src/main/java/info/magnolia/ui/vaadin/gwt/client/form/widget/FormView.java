@@ -42,20 +42,17 @@ import com.google.gwt.user.client.ui.Widget;
 public interface FormView extends IsWidget {
     
     void setPresenter(Presenter presenter);
-
-    Presenter getPresenter();
     
     void setDescriptionVisible(boolean isVisible);
     
     void setContent(Widget widget);
 
+    void setErrorAmount(int errorAmount);
+
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
      */
     public interface Presenter {
-
-        @Deprecated
-        void runLayout();
 
         void jumpToNextError(FormFieldWrapper lastFocused);
 
