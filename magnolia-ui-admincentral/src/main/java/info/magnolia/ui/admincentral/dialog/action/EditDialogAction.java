@@ -39,7 +39,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.action.ActionBase;
@@ -69,7 +69,7 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
     private EventBus eventBus;
 
     @Inject
-    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus eventBus) {
+    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
         super(definition);
         this.nodeToEdit = nodeToEdit;
         this.formDialogPresenter = formDialogPresenter;

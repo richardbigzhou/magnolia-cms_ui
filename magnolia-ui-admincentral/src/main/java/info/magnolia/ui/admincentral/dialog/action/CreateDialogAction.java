@@ -37,7 +37,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -61,7 +61,7 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
     private final ModalLayer modalLayer;
     private EventBus eventBus;
 
-    public CreateDialogAction(CreateDialogActionDefinition definition, Node parent, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus eventBus) {
+    public CreateDialogAction(CreateDialogActionDefinition definition, Node parent, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
         super(definition);
         this.parent = parent;
         this.formDialogPresenter = formDialogPresenter;

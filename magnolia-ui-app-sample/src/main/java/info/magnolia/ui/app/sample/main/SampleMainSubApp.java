@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.app.sample.main;
 
+import info.magnolia.ui.framework.app.AppEventBus;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.AppEventBusConfigurer;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.vaadin.view.View;
@@ -53,7 +53,7 @@ public class SampleMainSubApp extends BaseSubApp implements SampleMainView.Liste
     private ContentDisplayPresenter contentDisplayPresenter;
 
     @Inject
-    public SampleMainSubApp(final SubAppContext subAppContext, @Named(AppEventBusConfigurer.EVENT_BUS_NAME) EventBus appEventBus, SampleMainView sampleMainView, NavigationPresenter navigationPresenter, final ContentDisplayPresenter contentDisplayPresenter) {
+    public SampleMainSubApp(final SubAppContext subAppContext, @Named(AppEventBus.NAME) EventBus appEventBus, SampleMainView sampleMainView, NavigationPresenter navigationPresenter, final ContentDisplayPresenter contentDisplayPresenter) {
         super(subAppContext, sampleMainView);
         this.sampleMainView = sampleMainView;
         this.contentDisplayPresenter = contentDisplayPresenter;

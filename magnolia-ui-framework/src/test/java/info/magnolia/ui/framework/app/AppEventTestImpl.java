@@ -51,7 +51,7 @@ public class AppEventTestImpl extends AppTestImpl {
     public InvocationCountingTestEventHandler handler;
 
     @Inject
-    public AppEventTestImpl(AppContext ctx, AppView view, @Named(AppEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus) {
+    public AppEventTestImpl(AppContext ctx, AppView view, @Named(AppEventBus.NAME) EventBus eventBus) {
         super(ctx, view);
         this.eventBus = eventBus;
 
