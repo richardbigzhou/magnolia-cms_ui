@@ -31,41 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.config.workbench.tree;
+package info.magnolia.ui.vaadin.gwt.client;
 
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.workbench.tree.drop.DropConstraint;
-
-import com.vaadin.data.Item;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.ButtonBase;
 
 /**
- * Jcr configuration implementation of {@link DropConstraint} used by the
- * Config-App in order to handle the Drag & Drop events. <br>
- * <b>Constraints</b><br>
- * Properties are not allowed to Move (allowedToMove). A Node can not be set as
- * child as a Property (allowedAsChild).
+ * The CloseButton common widget.
  */
-public class NodeTypeDropConstraint implements DropConstraint {
+public class CloseButton extends ButtonBase {
 
-    @Override
-    public boolean allowedAsChild(Item sourceItem, Item targetItem) {
-        return ((JcrItemAdapter) targetItem).isNode();
+    private static final String STYLE_NAME = "m-closebutton";
+    private static final String ICON_STYLE_NAME = "icon-close";
+
+    public CloseButton() {
+        this(DOM.createSpan());
     }
 
-    @Override
-    public boolean allowedBefore(Item sourceItem, Item targetItem) {
-        return true;
+    public CloseButton(ClickHandler handler) {
+        this();
+        addClickHandler(handler);
     }
 
-    @Override
-    public boolean allowedAfter(Item sourceItem, Item targetItem) {
-        return true;
-    }
-
-    @Override
-    public boolean allowedToMove(Item sourceItem) {
-        JcrItemAdapter jcrSourceItem = (JcrItemAdapter) sourceItem;
-        return jcrSourceItem.isNode();
+    protected CloseButton(Element elem) {
+        super(elem);
+        setStylePrimaryName(STYLE_NAME);
+        addStyleName(ICON_STYLE_NAME);
     }
 
 }

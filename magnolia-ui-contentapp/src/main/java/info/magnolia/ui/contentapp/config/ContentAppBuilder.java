@@ -68,12 +68,12 @@ public class ContentAppBuilder {
         return this;
     }
 
-    public ContentSubAppBuilder workbenchSubApp(String name) {
-        return new ContentSubAppBuilder(name);
+    public BrowserSubAppBuilder browserSubApp(String name) {
+        return new BrowserSubAppBuilder(name);
     }
 
-    public ItemSubAppBuilder itemSubApp(String name) {
-        return new ItemSubAppBuilder(name);
+    public DetailSubAppBuilder detailSubApp(String name) {
+        return new DetailSubAppBuilder(name);
     }
 
     public ContentAppBuilder subApps(SubAppDescriptor... descriptors) {

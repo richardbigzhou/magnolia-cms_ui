@@ -156,7 +156,7 @@ public class ContactsModule implements ModuleLifecycle {
                 .icon("icon-people")
                 .appClass(ContentApp.class)
                 .subApps(
-                        app.workbenchSubApp("browser")
+                        app.browserSubApp("browser")
                                 .subAppClass(ContactsMainSubApp.class)
                                 .actions(addContactAction, editContactAction, deleteItemAction, addFolderAction, editFolderAction, deleteFolderAction)
                                 .imageProvider(cipd)
@@ -203,7 +203,7 @@ public class ContactsModule implements ModuleLifecycle {
                                                 )
                                 ).exec(),
 
-                        app.itemSubApp("detail")
+                        app.detailSubApp("detail")
                                 .subAppClass(DetailSubApp.class)
                                 .actions(saveFormAction, cancelFormAction)
                                 .editor(contentAppConfig.editor.editor()

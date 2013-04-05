@@ -44,8 +44,8 @@ import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.contentapp.config.BrowserSubAppBuilder;
 import info.magnolia.ui.contentapp.config.ContentAppBuilder;
-import info.magnolia.ui.contentapp.config.ContentSubAppBuilder;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.framework.shell.Shell;
@@ -107,7 +107,7 @@ public class BrowserPresenterTest {
 
     private void initContentWorkbenchPresenter() {
         // initialize test instance
-        ContentSubAppBuilder subAppBuilder = new ContentAppBuilder(APP_NAME).workbenchSubApp(SUB_APP_NAME);
+        BrowserSubAppBuilder subAppBuilder = new ContentAppBuilder(APP_NAME).browserSubApp(SUB_APP_NAME);
         subAppBuilder.workbench(new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreeContentViewDefinition(), new ListContentViewDefinition()));
         Shell mockShell = mock(Shell.class);
         SubAppContext subAppContext = new SubAppContextImpl(subAppBuilder.exec(), mockShell);

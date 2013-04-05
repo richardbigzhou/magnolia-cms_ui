@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+@mixin appsviewport {
+
+  .m-closebutton-app {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 4px 6px 5px;
+    color: #666;
+
+    &:hover, &:focus, &:active {
+	    opacity: 0.6;
+    }
+  }
+
+}

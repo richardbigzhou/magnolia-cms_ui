@@ -34,7 +34,10 @@
 
 package info.magnolia.ui.vaadin.theme.sampler;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
@@ -43,10 +46,12 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.InlineDateField;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -73,6 +78,8 @@ public class ThemeSamplerUI extends UI {
             "Shark attack", "Trivial", "Unicorn", "Volkswagen", "Warsau", "Xiaoyu", "Yeast", "Zero"));
     private NativeSelect nativeSelect = new NativeSelect("NativeSelect", paginatedComboBox.getContainerDataSource());
     private DateField dateField = new DateField("DateField");
+    private InlineDateField inlineDateField = new InlineDateField("InlineDateField");
+    private PopupDateField popupDateField = new PopupDateField("PopupDateField");
 
     private CssLayout buttonLayout = new CssLayout();
     private Button button = new Button("Button");
@@ -97,7 +104,14 @@ public class ThemeSamplerUI extends UI {
         comboBox.setNullSelectionAllowed(false);
         comboBox.setTextInputAllowed(false);
         paginatedComboBox.setWidth(400, Unit.PIXELS);
-        // paginatedComboBox.setPageLength(0);
+        inlineDateField.setTimeZone(TimeZone.getTimeZone("UTC"));
+        inlineDateField.setLocale(Locale.US);
+        popupDateField.setTextFieldEnabled(false);
+        try {
+            popupDateField.setValue(new SimpleDateFormat("dd/MM/yyyy").parse("20/06/2013"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         buttonLayout.addStyleName("buttons");
         commitButton.addStyleName("commit");
@@ -122,6 +136,8 @@ public class ThemeSamplerUI extends UI {
         formLayout.addComponent(paginatedComboBox);
         formLayout.addComponent(nativeSelect);
         formLayout.addComponent(dateField);
+        formLayout.addComponent(inlineDateField);
+        formLayout.addComponent(popupDateField);
         formLayout.addComponent(buttonLayout);
 
         titleLabel.addStyleName("title");

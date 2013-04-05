@@ -16,8 +16,8 @@
   <components>
     <id>app-configuration-browser</id>
     <component>
-      <type>info.magnolia.ui.app.config.workbench.ConfigWorkbenchSubApp</type>
-      <implementation>info.magnolia.ui.app.config.workbench.ConfigWorkbenchSubApp</implementation>
+      <type>info.magnolia.ui.app.config.browser.ConfigBrowserSubApp</type>
+      <implementation>info.magnolia.ui.app.config.browser.ConfigBrowserSubApp</implementation>
     </component>
   </components>
 

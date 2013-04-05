@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.i18n;
+package info.magnolia.ui.app.config.browser.tree;
 
-import java.util.HashMap;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.workbench.tree.drop.DropConstraint;
+
+import com.vaadin.data.Item;
 
 /**
- * DummyDictionary.
+ * Jcr configuration implementation of {@link DropConstraint} used by the
+ * Config-App in order to handle the Drag & Drop events. <br>
+ * <b>Constraints</b><br>
+ * Properties are not allowed to Move (allowedToMove). A Node can not be set as
+ * child as a Property (allowedAsChild).
  */
-public class DummyDictionary {
+public class NodeTypeDropConstraint implements DropConstraint {
 
-    private static final HashMap<String, String> dictionary = new HashMap<String, String>();
-
-    public DummyDictionary() {
-        dictionary.put("buttons.component.new.js", "New Component");
-        dictionary.put("buttons.new.js", "New");
-        dictionary.put("buttons.component.js", "Component");
-        dictionary.put("buttons.add.js", "Add");
-        dictionary.put("buttons.component.maximum.js", "Maximum of components reached.");
+    @Override
+    public boolean allowedAsChild(Item sourceItem, Item targetItem) {
+        return ((JcrItemAdapter) targetItem).isNode();
     }
 
-    public String get(String key) {
-        if (dictionary.containsKey(key)) {
-            return dictionary.get(key);
-        } else {
-            return "Dummy";
-        }
+    @Override
+    public boolean allowedBefore(Item sourceItem, Item targetItem) {
+        return true;
     }
+
+    @Override
+    public boolean allowedAfter(Item sourceItem, Item targetItem) {
+        return true;
+    }
+
+    @Override
+    public boolean allowedToMove(Item sourceItem) {
+        JcrItemAdapter jcrSourceItem = (JcrItemAdapter) sourceItem;
+        return jcrSourceItem.isNode();
+    }
+
 }

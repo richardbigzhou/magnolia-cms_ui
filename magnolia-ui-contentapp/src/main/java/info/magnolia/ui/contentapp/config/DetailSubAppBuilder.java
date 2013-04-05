@@ -42,51 +42,51 @@ import info.magnolia.ui.model.action.builder.ActionBuilder;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 
 /**
- * ItemSubAppBuilder.
+ * Builds a {@link info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor} used for configuring a {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
  */
-public class ItemSubAppBuilder {
+public class DetailSubAppBuilder {
     private ConfiguredDetailSubAppDescriptor descriptor = new ConfiguredDetailSubAppDescriptor();
 
-    public ItemSubAppBuilder(String name) {
+    public DetailSubAppBuilder(String name) {
         this.descriptor.setName(name);
     }
 
-    public ItemSubAppBuilder subAppClass(Class<? extends SubApp> subAppClass) {
+    public DetailSubAppBuilder subAppClass(Class<? extends SubApp> subAppClass) {
         descriptor.setSubAppClass(subAppClass);
         return this;
     }
 
-    public ItemSubAppBuilder label(String label) {
+    public DetailSubAppBuilder label(String label) {
         descriptor.setLabel(label);
         return this;
     }
 
-    public ItemSubAppBuilder editor(EditorBuilder builder) {
+    public DetailSubAppBuilder editor(EditorBuilder builder) {
         descriptor.setEditor(builder.exec());
         return this;
     }
 
 
-    public ItemSubAppBuilder actions(ActionBuilder... builders) {
+    public DetailSubAppBuilder actions(ActionBuilder... builders) {
         for (ActionBuilder builder : builders) {
             descriptor.getActions().put(builder.getName(), builder.exec());
         }
         return this;
     }
 
-    public ItemSubAppBuilder actions(ActionDefinition... definitions) {
+    public DetailSubAppBuilder actions(ActionDefinition... definitions) {
         for (ActionDefinition definition : definitions) {
             descriptor.getActions().put(definition.getName(), definition);
         }
         return this;
     }
 
-    public ItemSubAppBuilder actionbar(ActionbarBuilder builder) {
+    public DetailSubAppBuilder actionbar(ActionbarBuilder builder) {
         descriptor.setActionbar(builder.exec());
         return this;
     }
 
-    public ItemSubAppBuilder imageProvider(ImageProviderDefinition imageProvider) {
+    public DetailSubAppBuilder imageProvider(ImageProviderDefinition imageProvider) {
         descriptor.setImageProvider(imageProvider);
         return this;
     }

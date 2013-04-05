@@ -43,51 +43,51 @@ import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.workbench.config.WorkbenchBuilder;
 
 /**
- * Builder used to build a sub app descriptor.
+ * Builds a {@link info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor} used for configuring a {@link info.magnolia.ui.contentapp.browser.BrowserSubApp}.
  */
-public class ContentSubAppBuilder {
+public class BrowserSubAppBuilder {
 
     private ConfiguredBrowserSubAppDescriptor descriptor = new ConfiguredBrowserSubAppDescriptor();
 
-    public ContentSubAppBuilder(String name) {
+    public BrowserSubAppBuilder(String name) {
         this.descriptor.setName(name);
     }
 
-    public ContentSubAppBuilder subAppClass(Class<? extends SubApp> subAppClass) {
+    public BrowserSubAppBuilder subAppClass(Class<? extends SubApp> subAppClass) {
         descriptor.setSubAppClass(subAppClass);
         return this;
     }
 
-    public ContentSubAppBuilder workbench(WorkbenchBuilder builder) {
+    public BrowserSubAppBuilder workbench(WorkbenchBuilder builder) {
         descriptor.setWorkbench(builder.exec());
         return this;
     }
 
-    public ContentSubAppBuilder label(String label) {
+    public BrowserSubAppBuilder label(String label) {
         descriptor.setLabel(label);
         return this;
     }
 
-    public ContentSubAppBuilder actions(ActionBuilder... builders) {
+    public BrowserSubAppBuilder actions(ActionBuilder... builders) {
         for (ActionBuilder builder : builders) {
             descriptor.getActions().put(builder.getName(), builder.exec());
         }
         return this;
     }
 
-    public ContentSubAppBuilder actions(ActionDefinition... definitions) {
+    public BrowserSubAppBuilder actions(ActionDefinition... definitions) {
         for (ActionDefinition definition : definitions) {
             descriptor.getActions().put(definition.getName(), definition);
         }
         return this;
     }
 
-    public ContentSubAppBuilder actionbar(ActionbarBuilder builder) {
+    public BrowserSubAppBuilder actionbar(ActionbarBuilder builder) {
         descriptor.setActionbar(builder.exec());
         return this;
     }
 
-    public ContentSubAppBuilder imageProvider(ImageProviderDefinition imageProvider) {
+    public BrowserSubAppBuilder imageProvider(ImageProviderDefinition imageProvider) {
         descriptor.setImageProvider(imageProvider);
         return this;
     }

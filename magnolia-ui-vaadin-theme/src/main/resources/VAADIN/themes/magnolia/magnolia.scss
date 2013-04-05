@@ -1,12 +1,17 @@
 @charset "UTF-8";
 @import "../base/base.scss";
+@import "../commonbase/commonbase.scss";
 @import "fonts.scss";
 @import "colors.scss";
 @import "button.scss";
+@import "inputfield.scss";
+@import "datefield.scss";
 @import "util/utils.scss";
 
 @mixin magnolia {
+
   @include base;
+  @include commonbase;
 
   .v-app {
     font-family: Verdana, sans-serif;
@@ -22,91 +27,16 @@
     font-size: 12px;
   }
 
-  .v-sa input:focus,
-  .v-sa textarea:focus {
-    outline-width: 0;
-  }
-
-  @include button;
-
   .v-formlayout-captioncell .v-caption {
     color: $c02;
   }
 
-  .v-textfield, .v-textarea, .v-filterselect-input {
-    @include box-sizing(content-box);
-    margin: 0;
-    padding: 3px 3px 4px 6px !important;
-    border: 1px solid $c02;
-    background-color: $c21;
-    color: $c22;
-    font-family: Verdana, sans-serif;
-    font-size: 12px;
-    -webkit-appearance: none;
-    -webkit-border-radius: 0;
-
-    &:focus, &.focus {
-      margin: -1px;
-      border-width: 2px;
-      border-color: $c06;
-    }
+  .v-shadow {
+    display: none;
   }
 
-  input.v-textfield-prompt, textarea.v-textarea-prompt {
-		font-style: normal;
-  }
-
-  .v-filterselect-input {
-    &:focus, &.focus {
-      & + .v-filterselect-button {
-       background-color: $c06;
-     }
-    }
-  }
-
-  .v-filterselect {
-    &.v-filterselect-focus, &.focus {
-      .v-filterselect-input {
-        margin: -1px;
-        border-width: 2px;
-        border-color: $c06;
-      }
-      .v-filterselect-button {
-        background-color: $c06;
-      }
-    }
-  }
-
-  .v-app .v-filterselect-input,
-  .v-window .v-filterselect-input,
-  .v-popupview-popup .v-filterselect-input {
-    @include box-sizing(content-box);
-    min-width: 136px;
-  }
-
-  .v-filterselect-button {
-    width: 16px;
-    height: 16px;
-    padding: 5px 5px 4px;
-    margin-left: -26px;
-    margin-right: 0;
-    background-position: 0 -6px;
-  }
-
-  .v-filterselect-suggestpopup {
-    padding: 0 0 3px;
-    border: 1px solid $c02;
-    font-size: 12px;
-  }
-
-  .v-filterselect-suggestmenu .gwt-MenuItem {
-    padding-left: 7px;
-  }
-
-  .v-filterselect-suggestmenu .gwt-MenuItem-selected {
-    background-color: $c06;
-    color: $c22;
-  }
-
+  @include button;
+  @include inputfield;
+  @include datefield;
 
 }
