@@ -134,25 +134,9 @@
   float:left;
 }
 
-.dialog-close,.dialog-help {
+.dialog-help {
   float: right;
   margin-right: 0px;
-}
-
-button.btn-dialog-close {
-  background: url("img/icon-close-16.png") no-repeat scroll 0px 0px transparent;
-  border: none;
-  display: inline-block;
-  float: right;
-  height: 16px;
-  margin-left: 13px;
-  margin-top: 2px;
-  padding: 0;
-  width: 16px;
-}
-
-button.btn-dialog-close.green {
-  background: url("img/icon-close-green-16.png") no-repeat scroll 0px 0px transparent;
 }
 
 button.btn-dialog-help {

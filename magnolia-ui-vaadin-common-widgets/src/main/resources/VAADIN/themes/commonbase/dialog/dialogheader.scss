@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+@mixin dialogheader {
+
+  .m-closebutton-dialog {
+    float: right;
+    margin: -5px -6px 0 7px;
+    padding: 6px;
+    color: #aabf2f;
+
+    &:hover, &:focus, &:active {
+      color: #dbdf7c;
+    }
+  }
+
+}

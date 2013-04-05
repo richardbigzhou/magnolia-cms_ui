@@ -148,8 +148,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
             String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
             view.setCaption(i18nLabel);
         }
-
-        // This is needed to access properties from the parent. Currently only the i18basename.
     }
 
     private void initActions(final DialogDefinition dialogDefinition) {
