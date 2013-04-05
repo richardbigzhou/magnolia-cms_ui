@@ -234,7 +234,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             }
 
         } catch (ActionExecutionException e) {
-            e.printStackTrace();
+            log.warn("Unable to execute action [" + actionName + "]");
         }
     }
 }
