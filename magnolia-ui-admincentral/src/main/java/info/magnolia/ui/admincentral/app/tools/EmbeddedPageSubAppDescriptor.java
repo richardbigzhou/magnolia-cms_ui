@@ -33,39 +33,26 @@
  */
 package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.shell.Shell;
-
-import javax.inject.Inject;
-
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.BrowserFrame;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
+import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
 
 /**
- * View implementation for a page app.
+ * Allows to specify the url to an html page to be embedded in an iframe.
+ * <p>
+ * If the supplied url doesn't start with <code>http</code> it will be assumed to be an internal one and thus prepended with the current webapp's context path. E.g. given the url <code>/some-static-pages/some-page</code> an url will be built in the following form <code>&lt;magnolia-webapp-context&gt;/some-static-pages/some-page</code>
  */
-public class PageViewImpl implements PageView {
+public class EmbeddedPageSubAppDescriptor extends ConfiguredSubAppDescriptor {
 
-    private final CssLayout layout = new CssLayout();
+    private String url;
 
-    @Inject
-    public PageViewImpl(final Shell shell, final AppContext appContext) {
-        layout.setSizeFull();
-
-        final String sourceURL = ((PageSubAppDescriptor) appContext.getDefaultSubAppDescriptor()).getUrl();
-        final String path = String.format("%s/.magnolia/pages/%s", MgnlContext.getContextPath(), sourceURL);
-        final BrowserFrame page = new BrowserFrame("", new ExternalResource(path));
-        page.setSizeFull();
-
-        layout.addComponent(page);
+    public String getUrl() {
+        return url;
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
+    /**
+     * @param url if not starting with <code>http</code> the url will be assumed to be an internal one and thus prepended with the current webapp's context path.
+     * E.g. given the url <code>some-static-pages/some-page</code> an url will be built in the following form <code>&lt;magnolia-webapp-context&gt;/some-static-pages/some-page</code>
+     */
+    public void setUrl(String url) {
+        this.url = url;
     }
-
 }
