@@ -34,6 +34,7 @@
 package info.magnolia.ui.mediaeditor.editmode.provider;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent.EventType;
 import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
@@ -56,7 +57,7 @@ public class GrayScaleProvider implements EditModeProvider {
     
     private GrayScaleField  field =  new GrayScaleField();
     
-    public GrayScaleProvider(@Named("mediaeditor") EventBus eventBus) {
+    public GrayScaleProvider(@Named(MediaEditorEventBus.NAME) EventBus eventBus) {
         this.eventBus = eventBus;
     }
     

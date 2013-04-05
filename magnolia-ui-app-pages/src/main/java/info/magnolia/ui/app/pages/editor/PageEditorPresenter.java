@@ -56,7 +56,7 @@ import info.magnolia.ui.form.config.OptionBuilder;
 import info.magnolia.ui.form.config.SelectFieldBuilder;
 import info.magnolia.ui.form.config.TabBuilder;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
+import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
@@ -96,7 +96,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     private ComponentProvider componentProvider;
 
     @Inject
-    public PageEditorPresenter(PageEditorView view, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, TemplateDefinitionRegistry templateDefinitionRegistry,
+    public PageEditorPresenter(PageEditorView view, @Named(SubAppEventBus.NAME) EventBus eventBus, TemplateDefinitionRegistry templateDefinitionRegistry,
             SubAppContext subAppContext, ComponentProvider componentProvider) {
         this.view = view;
         this.eventBus = eventBus;

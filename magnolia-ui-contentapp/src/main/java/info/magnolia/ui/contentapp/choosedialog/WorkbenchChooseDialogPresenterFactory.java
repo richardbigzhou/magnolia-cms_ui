@@ -38,7 +38,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.contentapp.browser.BrowserView;
 import info.magnolia.ui.contentapp.browser.BrowserView.Listener;
 import info.magnolia.ui.framework.app.ItemChosenListener;
-import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
+import info.magnolia.ui.framework.event.ChooseDialogEventBus;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.workbench.ContentView.ViewType;
@@ -58,7 +58,7 @@ public class WorkbenchChooseDialogPresenterFactory implements ChooseDialogPresen
     private final EventBus chooseDialogEventBus;
 
     @Inject
-    public WorkbenchChooseDialogPresenterFactory(final ComponentProvider componentProvider, final @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) EventBus chooseDialogEventBus) {
+    public WorkbenchChooseDialogPresenterFactory(final ComponentProvider componentProvider, final @Named(ChooseDialogEventBus.NAME) EventBus chooseDialogEventBus) {
         this.componentProvider = componentProvider;
         this.chooseDialogEventBus = chooseDialogEventBus;
     }
