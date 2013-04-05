@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.framework.message;
 
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.message.MessagesManager.MessageListener;
 
 import java.util.concurrent.BlockingQueue;
@@ -70,7 +70,7 @@ public class LocalMessageDispatcher implements MessageListener {
     };
 
     @Inject
-    public LocalMessageDispatcher(@Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) final EventBus eventBus) {
+    public LocalMessageDispatcher(@Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
         this.eventBus = eventBus;
         messageQueueThread.setName("LocalMessageDispatcher");
         messageQueueThread.setDaemon(true);

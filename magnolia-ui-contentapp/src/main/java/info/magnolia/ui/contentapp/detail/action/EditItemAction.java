@@ -38,13 +38,12 @@ import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
 
 /**
  * Action for editing items in {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
@@ -53,24 +52,25 @@ import org.slf4j.LoggerFactory;
  */
 public class EditItemAction extends ActionBase<EditItemActionDefinition> {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final Node nodeToEdit;
+    private final JcrItemNodeAdapter nodeItemToEdit;
     private final LocationController locationController;
 
-    public EditItemAction(EditItemActionDefinition definition, Node nodeToEdit, LocationController locationController) {
+    public EditItemAction(EditItemActionDefinition definition, JcrItemNodeAdapter nodeItemToEdit, LocationController locationController) {
         super(definition);
-        this.nodeToEdit = nodeToEdit;
+        this.nodeItemToEdit = nodeItemToEdit;
         this.locationController = locationController;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeToEdit.getPrimaryNodeType().getName())) {
-                log.warn("EditItemAction requested for a node type definition {}. Current node type is {}. No action will be performed.", getDefinition().getNodeType(), nodeToEdit
-                        .getPrimaryNodeType().getName());
+            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.getNode().getPrimaryNodeType().getName())) {
+                log.warn("EditItemAction requested for a node type definition {}. Current node type is {}. No action will be performed.",
+                        getDefinition().getNodeType(), nodeItemToEdit.getNode().
+                        getPrimaryNodeType().getName());
                 return;
             }
-            final String path = nodeToEdit.getPath();
+            final String path = nodeItemToEdit.getNode().getPath();
             DetailLocation location = new DetailLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path);
             locationController.goTo(location);
 

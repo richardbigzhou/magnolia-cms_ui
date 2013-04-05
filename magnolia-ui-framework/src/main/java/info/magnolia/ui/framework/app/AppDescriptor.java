@@ -49,6 +49,8 @@ public interface AppDescriptor extends Serializable {
 
     String getIcon();
 
+    String getTheme();
+
     Class<? extends App> getAppClass();
 
     Map<String, SubAppDescriptor> getSubApps();

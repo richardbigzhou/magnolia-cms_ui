@@ -39,8 +39,8 @@ import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
@@ -57,19 +57,20 @@ public class CreateItemAction extends ActionBase<CreateItemActionDefinition> {
     private static final String NEW_NODE_NAME = "untitled";
 
     private LocationController locationController;
-    private final Node parent;
 
-    public CreateItemAction(CreateItemActionDefinition definition, LocationController locationController, Node parent) {
+    private final JcrItemNodeAdapter parentItem;
+
+    public CreateItemAction(CreateItemActionDefinition definition, LocationController locationController, JcrItemNodeAdapter parentItem) {
         super(definition);
         this.locationController = locationController;
-        this.parent = parent;
+        this.parentItem = parentItem;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
 
         try {
-            String path = Path.getAbsolutePath(parent.getPath(), NEW_NODE_NAME);
+            String path = Path.getAbsolutePath(parentItem.getNode().getPath(), NEW_NODE_NAME);
             DetailLocation location = new DetailLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path);
             locationController.goTo(location);
         } catch (RepositoryException e) {

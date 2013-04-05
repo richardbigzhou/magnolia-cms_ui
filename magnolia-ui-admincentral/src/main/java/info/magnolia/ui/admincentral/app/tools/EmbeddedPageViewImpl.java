@@ -33,20 +33,49 @@
  */
 package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.framework.app.AppContext;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.ui.BrowserFrame;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 
 /**
- * Allows to specify the url to an html page to be embedded in an iframe. The iframe url is built like the following {@code <webapp-context-path>/.magnolia/pages/<page-name>.html }
+ * View implementation for an embedded page app.
  */
-public class PageSubAppDescriptor extends ConfiguredSubAppDescriptor {
+public class EmbeddedPageViewImpl implements EmbeddedPageView {
 
-    private String url;
+    private static final Logger log = LoggerFactory.getLogger(EmbeddedPageViewImpl.class);
 
-    public String getUrl() {
-        return url;
+    private final CssLayout layout = new CssLayout();
+
+    @Inject
+    public EmbeddedPageViewImpl(AppContext appContext) {
+        layout.setSizeFull();
+
+        EmbeddedPageSubAppDescriptor subAppDescriptor = ((EmbeddedPageSubAppDescriptor) appContext.getDefaultSubAppDescriptor());
+        boolean isInternalPage = !subAppDescriptor.getUrl().startsWith("http");
+        String url = subAppDescriptor.getUrl();
+
+        if(isInternalPage) {
+            url = url.startsWith("/") ? MgnlContext.getContextPath() + url : MgnlContext.getContextPath() + "/" + url;
+        }
+
+        log.debug("Opening page in an iframe with url [{}]...", url);
+        final BrowserFrame page = new BrowserFrame("", new ExternalResource(url));
+        page.setSizeFull();
+
+        layout.addComponent(page);
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    @Override
+    public Component asVaadinComponent() {
+        return layout;
     }
+
 }

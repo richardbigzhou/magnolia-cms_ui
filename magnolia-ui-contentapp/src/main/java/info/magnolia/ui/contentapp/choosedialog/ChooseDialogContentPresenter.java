@@ -37,7 +37,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.contentapp.browser.ContentPresenter;
 import info.magnolia.ui.contentapp.browser.BrowserView;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
+import info.magnolia.ui.framework.event.ChooseDialogEventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.ContentViewBuilder;
@@ -58,7 +58,7 @@ import com.rits.cloning.Cloner;
 public class ChooseDialogContentPresenter extends ContentPresenter {
 
     @Inject
-    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) EventBus chooseDialogEventBus, Shell shell) {
+    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named(ChooseDialogEventBus.NAME) EventBus chooseDialogEventBus, Shell shell) {
         super(context, contentViewBuilder, chooseDialogEventBus, shell);
         workbenchDefinition = new Cloner().deepClone(workbenchDefinition);
         ((ConfiguredWorkbenchDefinition) workbenchDefinition).setDialogWorkbench(true);

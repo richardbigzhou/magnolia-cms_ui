@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.action;
+package info.magnolia.ui.framework.app.action;
 
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.chain.Command;
@@ -39,22 +39,24 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.SessionUtil;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.action.CommandActionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Base action supporting execution of commands.
  *
- * @param <D> {@link CommandActionDefinition}.
+ * @param <D> {@link info.magnolia.ui.model.action.CommandActionDefinition}.
  */
 public class CommandActionBase<D extends CommandActionDefinition> extends ActionBase<D> {
 
@@ -67,10 +69,10 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
     private Map<String, Object> params;
 
     @Inject
-    public CommandActionBase(final D definition, final Node node, final CommandsManager commandsManager) {
+    public CommandActionBase(final D definition, final JcrItemNodeAdapter node, final CommandsManager commandsManager) {
         super(definition);
         this.commandsManager = commandsManager;
-        this.params = buildParams(node);
+        this.params = buildParams(node.getNode());
         // Init Command.
         String commandName = getDefinition().getCommand();
         String catalog = getDefinition().getCatalog();
@@ -137,7 +139,7 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
      * Handles the retrieval of the {@link Command} instance defined in the {@link CommandActionDefinition} associated with this action and then
      * performs the actual command execution.
      *
-     * @throws ActionExecutionException if no command is found or if command execution throws an exception.
+     * @throws info.magnolia.ui.model.action.ActionExecutionException if no command is found or if command execution throws an exception.
      */
     @Override
     public final void execute() throws ActionExecutionException {

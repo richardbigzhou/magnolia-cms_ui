@@ -62,12 +62,6 @@ public class AdmincentralUI extends UI {
 
     private static final Logger log = LoggerFactory.getLogger(AdmincentralUI.class);
 
-    private static final Boolean isDeviceOverrideTablet = true;
-
-    public boolean getIsDeviceOverrideTablet() {
-        return isDeviceOverrideTablet;
-    }
-
     @Override
     protected void init(VaadinRequest request) {
         log.debug("Init AdminCentralApplication...");

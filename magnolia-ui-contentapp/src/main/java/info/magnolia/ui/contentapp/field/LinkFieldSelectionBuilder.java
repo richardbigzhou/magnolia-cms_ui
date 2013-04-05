@@ -39,7 +39,7 @@ import info.magnolia.ui.form.field.builder.AbstractFieldBuilder;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
 import info.magnolia.ui.contentapp.browser.BrowserViewImpl;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter;
-import info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer;
+import info.magnolia.ui.framework.event.ChooseDialogEventBus;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 
@@ -75,7 +75,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
     private TextAndContentViewField textContent;
 
     @Inject
-    public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem, ChooseDialogContentPresenter contentPresenter, @Named(ChooseDialogEventBusConfigurer.EVENT_BUS_NAME) final EventBus chooseDialogEventBus) {
+    public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem, ChooseDialogContentPresenter contentPresenter, @Named(ChooseDialogEventBus.NAME) final EventBus chooseDialogEventBus) {
         super(definition, relatedFieldItem);
         this.contentPresenter = contentPresenter;
         this.chooseDialogEventBus = chooseDialogEventBus;

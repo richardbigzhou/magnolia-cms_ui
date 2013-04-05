@@ -35,12 +35,12 @@ package info.magnolia.ui.admincentral.activation.action;
 
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
-import info.magnolia.ui.model.action.CommandActionBase;
-
-import java.util.Map;
+import info.magnolia.ui.framework.app.action.CommandActionBase;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
+import java.util.Map;
 
 /**
  * UI action that allows to activate a single page (node) or recursively with all its sub-nodes depending on the value of {@link ActivationActionDefinition#isRecursive()}.
@@ -48,8 +48,8 @@ import javax.jcr.Node;
 public class ActivationAction extends CommandActionBase<ActivationActionDefinition> {
 
     @Inject
-    public ActivationAction(final ActivationActionDefinition definition, final Node node, final CommandsManager commandsManager) {
-        super(definition, node, commandsManager);
+    public ActivationAction(final ActivationActionDefinition definition, final JcrItemNodeAdapter item, final CommandsManager commandsManager) {
+        super(definition, item, commandsManager);
     }
 
     @Override
