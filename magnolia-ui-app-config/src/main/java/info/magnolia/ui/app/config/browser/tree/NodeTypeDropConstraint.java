@@ -31,18 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.app.config.browser.tree;
+
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.workbench.tree.drop.DropConstraint;
+
+import com.vaadin.data.Item;
 
 /**
- * Defines constants for names of event buses used within the UI.
+ * Jcr configuration implementation of {@link DropConstraint} used by the
+ * Config-App in order to handle the Drag & Drop events. <br>
+ * <b>Constraints</b><br>
+ * Properties are not allowed to Move (allowedToMove). A Node can not be set as
+ * child as a Property (allowedAsChild).
  */
-public interface EventBusNames {
+public class NodeTypeDropConstraint implements DropConstraint {
 
-    public static final String ADMINCENTRAL = "admincentral";
+    @Override
+    public boolean allowedAsChild(Item sourceItem, Item targetItem) {
+        return ((JcrItemAdapter) targetItem).isNode();
+    }
 
-    public static final String APP = "app";
+    @Override
+    public boolean allowedBefore(Item sourceItem, Item targetItem) {
+        return true;
+    }
 
-    public static final String SUB_APP = "subapp";
+    @Override
+    public boolean allowedAfter(Item sourceItem, Item targetItem) {
+        return true;
+    }
 
-    public static final String CHOOSE_DIALOG = "choosedialog";
+    @Override
+    public boolean allowedToMove(Item sourceItem) {
+        JcrItemAdapter jcrSourceItem = (JcrItemAdapter) sourceItem;
+        return jcrSourceItem.isNode();
+    }
+
 }

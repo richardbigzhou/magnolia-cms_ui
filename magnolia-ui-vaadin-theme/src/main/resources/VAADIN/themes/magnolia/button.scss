@@ -2,28 +2,20 @@
 
 @mixin button {
 
+  .v-button {
+    @include vaadinbutton;
+  }
+
+  .v-nativebutton-magnoliabutton,
+  button.btn-dialog,
+  button.btn-form {
+    @include nativebutton;
+  }
+
   .v-button,
   .v-nativebutton-magnoliabutton,
   button.btn-dialog,
   button.btn-form {
-    padding: 3px 10px 0;
-    border: none;
-    background-color: $c01;
-    color: $c21;
-    font-family: DINWebPro;
-    font-size: 12px;
-    text-transform: uppercase;
-    cursor: pointer;
-    outline: none !important;
-
-    &:active:not(.v-button-link) .v-button-wrap {
-      position: relative;
-      top: 1px;
-    }
-
-    &:-moz-focusring {
-      outline: none;
-    }
 
     &.commit,
     &.btn-dialog-commit,
@@ -32,34 +24,64 @@
     }
   }
 
-  .v-nativebutton-magnoliabutton,
-  button.btn-dialog,
-  button.btn-form {
-    line-height: 1;
-    padding: 6px 10px 3px;
-
-    &:active {
-      padding-top: 7px;
-      padding-bottom: 2px;
-    }
-  }
-
   .v-button-link {
-    background: none;
-    color: inherit;
-    padding-left: 0;
-    padding-right: 0;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-
-    &:hover,
-    &:focus {
-      color: $c05;
-    }
-
-    &:active {
-      color: inherit;
-    }
+    @include linkbutton;
   }
 
+}
+
+@mixin basebutton {
+  border: none;
+  background-color: $c01;
+  color: $c21;
+  font-family: DINWebPro;
+  font-size: 12px;
+  text-transform: uppercase;
+  cursor: pointer;
+  outline: none !important;
+
+  &:-moz-focusring {
+    outline: none;
+  }
+}
+
+@mixin nativebutton {
+  @include basebutton;
+
+  padding: 6px 10px 3px;
+  line-height: 1;
+
+  &:active {
+    padding-top: 7px;
+    padding-bottom: 2px;
+  }
+}
+
+@mixin vaadinbutton {
+  @include basebutton;
+
+  padding: 3px 10px 0;
+
+  &:active:not(.v-button-link) .v-button-wrap {
+    position: relative;
+    top: 1px;
+  }
+}
+
+@mixin linkbutton {
+  background: none;
+  color: inherit;
+  padding-left: 0;
+  padding-right: 0;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+
+  &:hover,
+  &:focus {
+    color: $c05;
+  }
+
+  &:active {
+    color: inherit;
+  }
 }

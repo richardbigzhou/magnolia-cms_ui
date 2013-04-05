@@ -91,7 +91,7 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
 
     /**
      * Recursively update LastModified for the node until the parent node is of type
-     * mgnl:content or deph=1. If it's not the 'website' workspace, do not perform recursivity.
+     * mgnl:content or depth=1. If it's not the 'website' workspace, do not perform recursion.
      */
     protected void updateLastModified(Node currentNode) throws RepositoryException {
         if (!currentNode.isNodeType(NodeTypes.Folder.NAME)) {

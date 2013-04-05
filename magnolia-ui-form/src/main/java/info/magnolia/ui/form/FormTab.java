@@ -46,15 +46,12 @@ import com.vaadin.ui.Field;
  */
 public class FormTab extends AbstractFormItem {
 
-    // private static final String FIELD_CONTAINER_STYLE_NAME = "field-container";
-
     private TabDefinition definition;
 
     private final FormSection container = new FormSection();
 
     public FormTab(TabDefinition definition) {
         this.definition = definition;
-        // container.setStyleName(FIELD_CONTAINER_STYLE_NAME);
     }
 
     public void addField(Component component) {

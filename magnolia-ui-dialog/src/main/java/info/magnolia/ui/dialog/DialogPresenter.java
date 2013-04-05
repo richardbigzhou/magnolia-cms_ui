@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.dialog;
 
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
@@ -45,8 +44,6 @@ import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 public interface DialogPresenter {
 
     DialogView getView();
-
-    EventBus getEventBus();
 
     void closeDialog();
 

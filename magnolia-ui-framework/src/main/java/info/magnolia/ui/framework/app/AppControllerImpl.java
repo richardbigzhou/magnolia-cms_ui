@@ -44,7 +44,7 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
@@ -88,29 +88,19 @@ import org.slf4j.LoggerFactory;
 public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
 
     private static final Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
-
     private final ModuleRegistry moduleRegistry;
-
     private final ComponentProvider componentProvider;
-
     private final AppDescriptorRegistry appDescriptorRegistry;
-
     private final LocationController locationController;
-
     private final EventBus eventBus;
-    private MessagesManager messagesManager;
-
-    private Viewport viewport;
-
     private final Map<String, AppInstanceController> runningApps = new HashMap<String, AppInstanceController>();
-
     private final LinkedList<AppInstanceController> appHistory = new LinkedList<AppInstanceController>();
-
+    private MessagesManager messagesManager;
+    private Viewport viewport;
     private AppInstanceController currentAppInstanceController;
 
     @Inject
-    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider,
-                             AppDescriptorRegistry appDescriptorRegistry, LocationController locationController, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus admincentralEventBus, MessagesManager messagesManager) {
+    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppDescriptorRegistry appDescriptorRegistry, LocationController locationController, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, MessagesManager messagesManager) {
         this.moduleRegistry = moduleRegistry;
         this.componentProvider = componentProvider;
         this.appDescriptorRegistry = appDescriptorRegistry;
@@ -179,7 +169,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     @Override
     public void stopApp(String appId) {
-        AppInstanceController appInstanceController = runningApps.get(appId);
+        final AppInstanceController appInstanceController = runningApps.get(appId);
         if (appInstanceController != null) {
             doStop(appInstanceController);
         }
@@ -188,7 +178,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     @Override
     public void stopCurrentApp() {
         final AppInstanceController appInstanceController = appHistory.peekFirst();
-        doStop(appInstanceController);
+        if (appInstanceController != null) {
+            doStop(appInstanceController);
+        }
     }
 
     @Override
@@ -210,6 +202,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     /**
      * Returns the current location of the focused app. This can differ from the actual location of the admin central, e.g. when a shell app is open.
+     *
      * @see info.magnolia.ui.framework.location.LocationController#getWhere()
      */
     @Override
@@ -292,7 +285,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             return;
         }
 
-        if(newLocation.equals(getCurrentAppLocation())) {
+        if (newLocation.equals(getCurrentAppLocation())) {
             return;
         }
 
@@ -352,7 +345,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         return new DefaultLocation(appType, appId, subAppId, params);
     }
-
 
     private AppInstanceController getAppInstance(String appId) {
         if (isAppStarted(appId)) {

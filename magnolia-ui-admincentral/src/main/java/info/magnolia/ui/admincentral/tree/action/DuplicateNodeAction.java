@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.tree.action;
 import info.magnolia.cms.core.Path;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
 
 import javax.inject.Named;
 import javax.jcr.Item;
@@ -57,7 +57,7 @@ public class DuplicateNodeAction extends RepositoryOperationAction<DuplicateNode
     /**
      * Instantiates a new duplicate node action.
      */
-    public DuplicateNodeAction(DuplicateNodeActionDefinition definition, Item item, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus) {
+    public DuplicateNodeAction(DuplicateNodeActionDefinition definition, Item item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
         super(definition, item, eventBus);
     }
 

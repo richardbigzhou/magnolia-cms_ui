@@ -33,13 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.formsection.connector;
 
-import info.magnolia.ui.vaadin.form.FormSection;
-import info.magnolia.ui.vaadin.gwt.client.form.formsection.widget.FormSectionWidget;
-import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormSectionClientRpc;
-import info.magnolia.ui.vaadin.gwt.client.form.tab.connector.FormTabConnector;
-
-import java.util.List;
-
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent;
@@ -47,6 +40,12 @@ import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractLayoutConnector;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.Connect;
+import info.magnolia.ui.vaadin.form.FormSection;
+import info.magnolia.ui.vaadin.gwt.client.form.formsection.widget.FormSectionWidget;
+import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormSectionClientRpc;
+import info.magnolia.ui.vaadin.gwt.client.form.tab.connector.FormTabConnector;
+
+import java.util.List;
 
 /**
  * FormSectionConnector.
@@ -65,7 +64,7 @@ public class FormSectionConnector extends AbstractLayoutConnector {
         });
     }
 
-    private final StateChangeHandler errorHandler = new StateChangeHandler() {
+    private final StateChangeHandler childErrorMessageHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent event) {
             updateChildError((ComponentConnector) event.getConnector());
@@ -89,7 +88,6 @@ public class FormSectionConnector extends AbstractLayoutConnector {
         getWidget().setDescriptionVisible(getState().isDescriptionVisible);
         for (final ComponentConnector cc : getChildComponents()) {
             updateChildError(cc);
-            getWidget().setFieldDescription(cc.getWidget(), getState().helpDescriptions.get(cc));
         }
     }
 
@@ -121,7 +119,7 @@ public class FormSectionConnector extends AbstractLayoutConnector {
         int index = 0;
         for (final ComponentConnector cc : newChildren) {
             getWidget().insert(cc.getWidget(), index++);
-            cc.addStateChangeHandler("errorMessage", errorHandler);
+            cc.addStateChangeHandler("errorMessage", childErrorMessageHandler);
         }
     }
 

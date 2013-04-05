@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.config.workbench;
+package info.magnolia.ui.app.config.browser;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
@@ -41,7 +41,7 @@ import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.contentapp.browser.BrowserPresenter;
 import info.magnolia.ui.contentapp.browser.BrowserSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
+import info.magnolia.ui.framework.app.SubAppEventBus;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -54,15 +54,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Configuration Workbench SubApp.
+ * The Configuration Browser SubApp.
  */
-public class ConfigWorkbenchSubApp extends BrowserSubApp {
+public class ConfigBrowserSubApp extends BrowserSubApp {
 
-    private static final Logger log = LoggerFactory.getLogger(ConfigWorkbenchSubApp.class);
+    private static final Logger log = LoggerFactory.getLogger(ConfigBrowserSubApp.class);
 
     @Inject
-    public ConfigWorkbenchSubApp(final SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
-        super(subAppContext, view, workbench, subAppEventBus);
+    public ConfigBrowserSubApp(final SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter browser, @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
+        super(subAppContext, view, browser, subAppEventBus);
     }
 
     @Override

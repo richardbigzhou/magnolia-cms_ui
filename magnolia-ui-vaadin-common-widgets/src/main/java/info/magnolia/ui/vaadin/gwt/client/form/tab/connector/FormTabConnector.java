@@ -33,14 +33,10 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.tab.connector;
 
+import com.vaadin.shared.ui.Connect;
 import info.magnolia.ui.vaadin.form.tab.MagnoliaFormTab;
-import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.form.tab.widget.FormTabWidget;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.connector.MagnoliaTabConnector;
-
-import com.vaadin.client.communication.StateChangeEvent;
-import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
-import com.vaadin.shared.ui.Connect;
 
 /**
  * Client-side connector, counter-part for {@link MagnoliaFormTab}.
@@ -51,12 +47,6 @@ public class FormTabConnector extends MagnoliaTabConnector {
     @Override
     protected void init() {
         super.init();
-        addStateChangeHandler(new StateChangeHandler() {
-            @Override
-            public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                getWidget().fireEvent(new ValidationChangedEvent(getWidget(), getState().errorAmount));
-            }
-        });
     }
 
     @Override
