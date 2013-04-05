@@ -69,6 +69,13 @@ public class FormConnector extends AbstractSingleComponentContainerConnector imp
                 getView().setDescriptionVisible(getState().descriptionsVisible);
             }
         });
+
+        addStateChangeHandler("errorAmount", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                getView().setErrorAmount(getState().errorAmount);
+            }
+        });
     }
 
     @Override
@@ -92,11 +99,6 @@ public class FormConnector extends AbstractSingleComponentContainerConnector imp
     @Override
     protected FormState createState() {
         return new FormState();
-    }
-
-    @Override
-    public void runLayout() {
-        getLayoutManager().setNeedsMeasure(FormConnector.this);
     }
 
     @Override

@@ -71,6 +71,10 @@ public class ComponentBar extends AbstractBar {
 
     private boolean editable = true;
 
+    private boolean canDelete = true;
+    private boolean canMove = true;
+    private boolean canEdit = true;
+
     public ComponentBar(EventBus eventBus, MgnlElement mgnlElement) {
 
         super(eventBus, mgnlElement);
@@ -81,7 +85,7 @@ public class ComponentBar extends AbstractBar {
         /*
          * if (DragDropEventBase.isSupported()) {
          * createDragAndDropHandlers();
-         * 
+         *
          * }
          */
         if (!this.isInherited) {
@@ -122,6 +126,12 @@ public class ComponentBar extends AbstractBar {
             this.editable = Boolean.parseBoolean(attributes.get("editable"));
         }
 
+        if (attributes.containsKey("rights")) {
+            final String rights = attributes.get("rights");
+            this.canDelete = rights.contains("canDelete");
+            this.canMove = rights.contains("canMove");
+            this.canEdit = rights.contains("canEdit");
+        }
     }
 
     public String getNodeName() {
@@ -217,8 +227,10 @@ public class ComponentBar extends AbstractBar {
                 getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getPath()));
             }
         });
+        if (!canDelete) {
+            remove.setVisible(false);
+        }
         addSecondaryButton(remove);
-
         /*
          * final Label move = new Label();
          * move.setStyleName("icon icon-trash");
@@ -229,6 +241,9 @@ public class ComponentBar extends AbstractBar {
          * getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getImagePathByNodePath()));
          * }
          * });
+         * if (!canMove) {
+         * move.setVisible(false);
+         * }
          * addSecondaryButton(move);
          */
 
@@ -242,6 +257,9 @@ public class ComponentBar extends AbstractBar {
                 getEventBus().fireEvent(new EditComponentEvent(getWorkspace(), getPath(), dialog));
             }
         });
+        if (!canEdit) {
+            edit.setVisible(false);
+        }
         addPrimaryButton(edit);
 
     }
