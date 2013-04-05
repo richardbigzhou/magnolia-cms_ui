@@ -31,36 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action;
-
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.model.action.AbstractActionExecutor;
-import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
-import info.magnolia.ui.model.action.ActionDefinition;
+package info.magnolia.ui.model.action;
 
 import javax.inject.Inject;
 
-/**
- * Executes actions on behalf of
- * {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter}. Needs the
- * {@link MediaEditorDefinition} in order to resolve action definitions.
- */
-public class MediaEditorActionExecutor extends AbstractActionExecutor {
+import info.magnolia.objectfactory.ComponentProvider;
 
-    private MediaEditorDefinition def;
-    
+public class TestActionExecutor extends AbstractActionExecutor {
+
     @Inject
-    public MediaEditorActionExecutor(ComponentProvider componentProvider) {
+    public TestActionExecutor(ComponentProvider componentProvider) {
         super(componentProvider);
     }
 
-    public void setDef(MediaEditorDefinition def) {
-        this.def = def;
-    }
-    
     @Override
     public ActionDefinition getActionDefinition(String actionName) {
-        return def.getActions().get(actionName);
+        if (!AbstractActionExecutorTest.ACTION_NAME.equals(actionName)) {
+            return null;
+        }
+        return new AbstractActionExecutorTest().new TestActionDefinition();
     }
-
 }
