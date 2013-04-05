@@ -43,10 +43,6 @@ import info.magnolia.ui.form.definition.FormDefinition;
 public class FormBuilder {
     private final ConfiguredFormDefinition definition = new ConfiguredFormDefinition();
 
-    public FormBuilder(String id) {
-        definition.setId(id);
-    }
-
     public FormBuilder label(String label) {
         definition.setLabel(label);
         return this;
