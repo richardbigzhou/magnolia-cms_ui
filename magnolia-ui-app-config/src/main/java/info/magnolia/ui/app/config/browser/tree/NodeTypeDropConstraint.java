@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.config.workbench.tree;
+package info.magnolia.ui.app.config.browser.tree;
 
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
