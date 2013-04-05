@@ -164,7 +164,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             }
             currentMediaField.setPropertyDataSource(dataSource);
         } else {
-            log.warn("Provider did not provide any content UI ");
+            log.warn("Provider did not provide any content UI");
         }
     }
 
@@ -191,7 +191,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             }
             
         } catch (ActionExecutionException e) {
-            e.printStackTrace();
+            log.warn("Unable to execute action [" + actionName + "]");
         }
     }
 
