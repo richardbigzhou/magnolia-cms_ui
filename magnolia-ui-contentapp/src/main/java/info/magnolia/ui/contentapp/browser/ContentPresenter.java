@@ -36,7 +36,7 @@ package info.magnolia.ui.contentapp.browser;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
+import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -92,12 +92,12 @@ public class ContentPresenter implements ContentView.Listener {
         this.workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
     }
 
-    public ContentPresenter(final AppContext appContext, final ContentViewBuilder contentViewBuilder, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) final EventBus subAppEventBus, final Shell shell) {
+    public ContentPresenter(final AppContext appContext, final ContentViewBuilder contentViewBuilder, @Named(SubAppEventBus.NAME) final EventBus subAppEventBus, final Shell shell) {
         this((BrowserSubAppDescriptor) appContext.getDefaultSubAppDescriptor(), contentViewBuilder, subAppEventBus, shell);
     }
 
     @Inject
-    public ContentPresenter(final SubAppContext subAppContext, final ContentViewBuilder contentViewBuilder, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) final EventBus subAppEventBus, final Shell shell) {
+    public ContentPresenter(final SubAppContext subAppContext, final ContentViewBuilder contentViewBuilder, @Named(SubAppEventBus.NAME) final EventBus subAppEventBus, final Shell shell) {
         this((BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor(), contentViewBuilder, subAppEventBus, shell);
     }
 

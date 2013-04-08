@@ -31,18 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.model.action;
 
-/**
- * Defines constants for names of event buses used within the UI.
- */
-public interface EventBusNames {
+import javax.inject.Inject;
 
-    public static final String ADMINCENTRAL = "admincentral";
+import info.magnolia.objectfactory.ComponentProvider;
 
-    public static final String APP = "app";
+public class TestActionExecutor extends AbstractActionExecutor {
 
-    public static final String SUB_APP = "subapp";
+    @Inject
+    public TestActionExecutor(ComponentProvider componentProvider) {
+        super(componentProvider);
+    }
 
-    public static final String CHOOSE_DIALOG = "choosedialog";
+    @Override
+    public ActionDefinition getActionDefinition(String actionName) {
+        if (!AbstractActionExecutorTest.ACTION_NAME.equals(actionName)) {
+            return null;
+        }
+        return new AbstractActionExecutorTest().new TestActionDefinition();
+    }
 }

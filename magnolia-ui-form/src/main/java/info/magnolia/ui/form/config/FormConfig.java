@@ -39,7 +39,7 @@ package info.magnolia.ui.form.config;
 public class FormConfig {
 
     public FormBuilder form() {
-        return new FormBuilder("form");
+        return new FormBuilder();
     }
 
     public TabBuilder tab(String name) {

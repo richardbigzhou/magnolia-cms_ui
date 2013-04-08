@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.tools;
+package info.magnolia.ui.app.config.browser.tree;
 
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.workbench.tree.drop.DropConstraint;
+
+import com.vaadin.data.Item;
 
 /**
- * Marker interface for the page App's view.
+ * Jcr configuration implementation of {@link DropConstraint} used by the
+ * Config-App in order to handle the Drag & Drop events. <br>
+ * <b>Constraints</b><br>
+ * Properties are not allowed to Move (allowedToMove). A Node can not be set as
+ * child as a Property (allowedAsChild).
  */
-public interface PageView extends View {
+public class NodeTypeDropConstraint implements DropConstraint {
+
+    @Override
+    public boolean allowedAsChild(Item sourceItem, Item targetItem) {
+        return ((JcrItemAdapter) targetItem).isNode();
+    }
+
+    @Override
+    public boolean allowedBefore(Item sourceItem, Item targetItem) {
+        return true;
+    }
+
+    @Override
+    public boolean allowedAfter(Item sourceItem, Item targetItem) {
+        return true;
+    }
+
+    @Override
+    public boolean allowedToMove(Item sourceItem) {
+        JcrItemAdapter jcrSourceItem = (JcrItemAdapter) sourceItem;
+        return jcrSourceItem.isNode();
+    }
 
 }

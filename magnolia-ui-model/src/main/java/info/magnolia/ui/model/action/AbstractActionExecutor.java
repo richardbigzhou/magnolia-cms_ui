@@ -31,14 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.action;
+package info.magnolia.ui.model.action;
 
 import info.magnolia.cms.beans.config.ConfigurationException;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.action.ActionExecutor;
 
 import javax.inject.Inject;
 
@@ -59,7 +55,7 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
     public final void execute(String actionName, Object... args) throws ActionExecutionException {
         try {
             Action action = createAction(actionName, args);
-                action.execute();
+            action.execute();
         }
         catch (ConfigurationException e) {
             throw new ActionExecutionException(e);

@@ -33,18 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.form.formsection.event.ValidationChangedEvent;
-import info.magnolia.ui.vaadin.gwt.client.form.tab.widget.FormTabWidget;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.widget.MagnoliaTabSheetView;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -56,12 +44,20 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.Util;
+import info.magnolia.ui.vaadin.gwt.client.form.tab.widget.FormTabWidget;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.widget.MagnoliaTabSheetView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Actual client side implementation of the form view. Provides the methods for
  * the client side presenter {@link com.vaadin.client.ui.form.FormConnector}.
  */
-public class FormViewImpl extends FlowPanel implements FormView, ValidationChangedEvent.Handler {
+public class FormViewImpl extends FlowPanel implements FormView {
 
     private static final String CLASSNAME = "form-panel";
 
@@ -73,8 +69,6 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
 
     private final List<FormTabWidget> formTabs = new ArrayList<FormTabWidget>();
 
-    private final Map<FormTabWidget, Integer> errorAmounts = new HashMap<FormTabWidget, Integer>();
-
     private final Element contentEl = DOM.createDiv();
 
     private FormFieldWrapper lastFocused = null;
@@ -83,16 +77,15 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
 
     private Presenter presenter;
 
-    private FlowPanel errorPanel;
+    private FlowPanel errorPanel = new FlowPanel();
 
     public FormViewImpl() {
         super();
         setStylePrimaryName(CLASSNAME);
 
-        errorPanel = new FlowPanel();
         errorPanel.addStyleName(ClASSNAME_ERROR);
-        add(errorPanel);
         errorPanel.setVisible(false);
+        add(errorPanel);
 
         contentEl.addClassName(CLASSNAME_CONTENT);
         getElement().appendChild(contentEl);
@@ -114,7 +107,6 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
                     for (final MagnoliaTabWidget tab : tabs) {
                         if (tab instanceof FormTabWidget) {
                             formTabs.add((FormTabWidget) tab);
-                            ((FormTabWidget) tab).addValidationChangeHandler(FormViewImpl.this);
                         }
                     }
                 }
@@ -154,39 +146,10 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
     }
 
     @Override
-    public void setPresenter(final Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public Presenter getPresenter() {
-        return presenter;
-    }
-
-
-    @Override
-    public void setDescriptionVisible(boolean isVisible) {
-        for (final FormTabWidget tab : formTabs) {
-            tab.setDescriptionVisible(isVisible);
-        }
-    }
-
-
-    @Override
-    public void onValidationChanged(ValidationChangedEvent event) {
-        errorAmounts.put(event.getSender(), event.getErrorAmount());
-        Integer res = 0;
-        for (Integer amount : errorAmounts.values()) {
-            res += amount;
-        }
-        setErrorAmount(res);
-    }
-
     public void setErrorAmount(int totalProblematicFields) {
         errorPanel.setVisible(totalProblematicFields > 0);
         if (totalProblematicFields > 0) {
             errorPanel.getElement().setInnerHTML("<span>Please correct the <b>" + totalProblematicFields + " errors </b> in this form </span>");
-
             final HTML errorButton = new HTML("[Jump to next error]");
             errorButton.setStyleName("action-jump-to-next-error");
             DOM.sinkEvents(errorButton.getElement(), Event.MOUSEEVENTS);
@@ -197,6 +160,18 @@ public class FormViewImpl extends FlowPanel implements FormView, ValidationChang
                 }
             }, ClickEvent.getType());
             errorPanel.add(errorButton);
+        }
+    }
+
+    @Override
+    public void setPresenter(final Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void setDescriptionVisible(boolean isVisible) {
+        for (final FormTabWidget tab : formTabs) {
+            tab.setDescriptionVisible(isVisible);
         }
     }
 

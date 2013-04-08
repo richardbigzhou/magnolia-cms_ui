@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.tools;
-
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+package info.magnolia.ui.mediaeditor;
 
 /**
- * Allows to specify the url to an html page to be embedded in an iframe. The iframe url is built like the following {@code <webapp-context-path>/.magnolia/pages/<page-name>.html }
+ * Defines the name of the media editor event bus.
  */
-public class PageSubAppDescriptor extends ConfiguredSubAppDescriptor {
+public interface MediaEditorEventBus {
 
-    private String url;
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
+    public static final String NAME = "mediaeditor";
 }

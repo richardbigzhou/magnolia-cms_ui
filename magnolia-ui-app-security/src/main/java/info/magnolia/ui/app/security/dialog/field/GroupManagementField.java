@@ -55,7 +55,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.TwinColSelect;
 
@@ -96,9 +95,18 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
     @Override
     protected AbstractSelect createSelectionField() {
         return new TwinColSelect() {
+
             @Override
-            public void setConverter(Converter<Object, ?> converter) {
-                super.setConverter(converter);
+            public String getConnectorId() {
+                return super.getConnectorId();
+            }
+            
+            /* (non-Javadoc)
+             * @see com.vaadin.ui.AbstractComponent#isVisible()
+             */
+            @Override
+            public boolean isVisible() {
+                return super.isVisible();
             }
         };
     }

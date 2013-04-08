@@ -86,12 +86,12 @@
       <implementation>info.magnolia.ui.form.definition.ConfiguredTabDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.form.definition.FormDefinition</type>
-      <implementation>info.magnolia.ui.form.definition.ConfiguredFormDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
       <type>info.magnolia.ui.form.field.definition.FieldDefinition</type>
       <implementation>info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.form.field.validation.FieldValidatorDefinition</type>
+      <implementation>info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition</type>
@@ -256,11 +256,9 @@
       <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
 
-    <!-- Declaring page view for all apps embedding old adminCentral views
-      in iFrame -->
     <component>
-      <type>info.magnolia.ui.admincentral.app.tools.PageView</type>
-      <implementation>info.magnolia.ui.admincentral.app.tools.PageViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.app.tools.EmbeddedPageView</type>
+      <implementation>info.magnolia.ui.admincentral.app.tools.EmbeddedPageViewImpl</implementation>
     </component>
   </components>
 
@@ -269,33 +267,12 @@
       <name>core</name>
       <version>5.0/*</version>
     </dependency>
-    <!-- the dependency is just to ensure order of loading of modules -->
-    <dependency>
-      <name>cache</name>
-      <version>5.0/*</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <name>groovy</name>
-      <version>2.0/*</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <name>workflow</name>
-      <version>5.0/*</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <name>demo-project</name>
-      <version>2.5/*</version>
-      <optional>true</optional>
-    </dependency>
   </dependencies>
 
   <servlets>
     <servlet>
       <name>AdminCentral</name>
-      <class>com.vaadin.server.VaadinServlet</class>
+      <class>info.magnolia.ui.admincentral.AdmincentralVaadinServlet</class>
       <mappings>
         <mapping>/.magnolia/admincentral</mapping>
         <mapping>/.magnolia/admincentral/*</mapping>

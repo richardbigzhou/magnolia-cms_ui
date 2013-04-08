@@ -39,7 +39,7 @@ import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.contentapp.event.SearchEvent;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
+import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.workbench.ContentView.ViewType;
@@ -85,7 +85,7 @@ public class BrowserSubApp extends BaseSubApp {
     private final BrowserPresenter browser;
     private final EventBus subAppEventBus;
 
-    public BrowserSubApp(final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
+    public BrowserSubApp(final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
 
         super(subAppContext, view);
         if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {

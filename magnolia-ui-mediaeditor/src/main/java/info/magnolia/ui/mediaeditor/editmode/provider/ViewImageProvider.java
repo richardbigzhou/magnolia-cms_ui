@@ -34,6 +34,7 @@
 package info.magnolia.ui.mediaeditor.editmode.provider;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent.EventType;
 import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
@@ -63,7 +64,7 @@ public class ViewImageProvider implements EditModeProvider {
     private EventBus eventBus;
     
     @Inject
-    public ViewImageProvider(@Named("mediaeditor") EventBus eventBus) {
+    public ViewImageProvider(@Named(MediaEditorEventBus.NAME) EventBus eventBus) {
         this.eventBus = eventBus;
         viewField.addImageResizeListener(imageSizeLabel);
     }

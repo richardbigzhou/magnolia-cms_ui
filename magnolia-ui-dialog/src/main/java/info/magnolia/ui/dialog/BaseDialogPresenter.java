@@ -33,13 +33,11 @@
  */
 package info.magnolia.ui.dialog;
 
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Base implementation of {@link DialogPresenter}.
@@ -48,22 +46,14 @@ public class BaseDialogPresenter implements DialogPresenter {
 
     private final DialogView view;
 
-    private final EventBus adminCentralEventBus;
-
     @Inject
-    public BaseDialogPresenter(DialogView view, @Named("admincentral") EventBus eventBus) {
+    public BaseDialogPresenter(DialogView view) {
         this.view = view;
-        this.adminCentralEventBus = eventBus;
     }
 
     @Override
     public DialogView getView() {
         return view;
-    }
-
-    @Override
-    public EventBus getEventBus() {
-        return adminCentralEventBus;
     }
 
     @Override

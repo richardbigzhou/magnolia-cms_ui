@@ -13,7 +13,7 @@
     <sv:value>jcrName</sv:value>
   </sv:property>
   <sv:property sv:name="dropConstraintClass" sv:type="String">
-    <sv:value>info.magnolia.ui.app.config.workbench.tree.NodeTypeDropConstraint</sv:value>
+    <sv:value>info.magnolia.ui.app.config.browser.tree.NodeTypeDropConstraint</sv:value>
   </sv:property>
   <sv:property sv:name="editable" sv:type="String">
     <sv:value>true</sv:value>

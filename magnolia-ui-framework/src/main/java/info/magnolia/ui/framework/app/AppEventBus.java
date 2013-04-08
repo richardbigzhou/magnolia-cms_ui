@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,13 +34,9 @@
 package info.magnolia.ui.framework.app;
 
 /**
- * Expand dummy test app by adding custom theme to it.
+ * Defines the name of the app event bus.
  */
-@AppTheme("testtheme")
-public class ThemedAppTestImpl extends AppTestImpl {
+public interface AppEventBus {
 
-    public ThemedAppTestImpl(AppContext ctx, AppView view) {
-        super(ctx, view);
-    }
-
+    public static final String NAME = "app";
 }

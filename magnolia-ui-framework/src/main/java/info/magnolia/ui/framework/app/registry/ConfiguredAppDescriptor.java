@@ -56,6 +56,8 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
 
     private String icon;
 
+    private String theme;
+
     private Class<? extends App> appClass;
 
     private Map<String, SubAppDescriptor> subApps = new LinkedHashMap<String, SubAppDescriptor>();
@@ -94,6 +96,15 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    @Override
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
     }
 
     @Override
