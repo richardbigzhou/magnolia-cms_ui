@@ -16,8 +16,9 @@
 
 .form-header {
     background-color:#666;
-    font-size:16px;
-    height:20px;
+    font-size:15px;
+    line-height:15px;
+    height:15px;
 }
 
 .form-header-toolbar{
@@ -45,7 +46,7 @@
 .form-header,
 .form-description,
 .form-error,
-.form-footer {padding:10px 16px 10px 20px;}
+.form-footer {padding:10px 16px 10px 16px;}
 .form-footer {padding-top:9px; padding-bottom:9px;}
 
 .form-description,
@@ -109,16 +110,18 @@ button.btn-form-select {
     margin-left: 2px;
 }
 
-.form-footer button.btn-form-commit { float: right; margin-left: 10px; }
+.form-footer button.btn-form-commit { float: right; margin-left: 10px; margin-right: 0px; }
 
 button.btn-form-help {
     background: url("img/icon-help.png") no-repeat scroll center center transparent;
     border: none;
     float: right;
-    height: 20px;
+    height: 18px;
     margin: 0;
     padding: 0;
-    width: 20px;
+    width: 18px;
+    position: relative;
+    top: -1px;
 }
 
 .form-panel .field-container {
@@ -141,7 +144,8 @@ button.btn-form-help {
     color: #666;
     text-overflow: ellipsis;
     overflow: hidden;
-    vertical-align: middle; /*needed by FF*/
+    vertical-align: top; /*needed by FF*/
+    line-height:25px;
 }
 
 .v-form-field-container {
