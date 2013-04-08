@@ -2,8 +2,12 @@
 
 @mixin dialog {
 
+.detail-view {
+	overflow-x: auto;
+}
+
 .dialog-panel {
-  width:900px;
+  width:720px;
   padding:0;
 }
 
@@ -121,15 +125,15 @@
 
 .dialog-description,
 .dialog-error,
-.dialog-footer {padding:10px 16px 10px 20px;}
-.dialog-footer {padding-top:9px; padding-bottom:9px;}
+.dialog-footer {padding:10px 16px 10px 16px;}
+.dialog-footer {padding-top:5px; padding-bottom:5px;}
 
 .dialog-description,
 .dialog-error,
 .dialog-content,
 .dialog-footer {margin-top:2px;}
 
-.dialog-footer button.btn-dialog-commit { float: right; margin-left: 10px; }
+.dialog-footer button.btn-dialog-commit { float: right; margin-left: 10px; margin-right:0px; }
 .dialog-footer-toolbar {
   float:left;
 }
@@ -143,10 +147,10 @@ button.btn-dialog-help {
   background: url("img/icon-help.png") no-repeat scroll 1px 1px transparent;
   border: none;
   float: right;
-  height: 20px;
+  height: 18px;
   margin: 0;
   padding: 0;
-  width: 20px;
+  width: 18px;
 }
 
 .help-message-inline span, .dialog-description {
