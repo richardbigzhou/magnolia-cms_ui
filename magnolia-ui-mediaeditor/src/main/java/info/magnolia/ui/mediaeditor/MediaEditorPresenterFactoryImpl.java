@@ -119,7 +119,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         ComponentConfigurer c = new AbstractGuiceComponentConfigurer() {
             @Override
             protected void configure() {
-                bind(EventBus.class).annotatedWith(Names.named("mediaeditor")).toProvider(Providers.of(eventBus));
+                bind(EventBus.class).annotatedWith(Names.named(MediaEditorEventBus.NAME)).toProvider(Providers.of(eventBus));
             }
         };
         return builder.build(c);

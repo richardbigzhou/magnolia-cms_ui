@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
 
 import javax.inject.Named;
 import javax.jcr.Item;
@@ -47,7 +47,7 @@ public class DeleteItemAction extends RepositoryOperationAction<DeleteItemAction
 
     private String path;
 
-    public DeleteItemAction(DeleteItemActionDefinition definition, Item item, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus) {
+    public DeleteItemAction(DeleteItemActionDefinition definition, Item item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
         super(definition, item, eventBus);
     }
 

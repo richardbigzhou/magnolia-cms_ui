@@ -43,6 +43,7 @@ import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+import info.magnolia.ui.model.action.AbstractActionExecutorTest;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
@@ -96,7 +97,7 @@ public class SubAppActionExecutorTest extends AbstractActionExecutorTest {
 
     private SubAppDescriptor createSubAppDescriptor() {
         ConfiguredSubAppDescriptor descriptor = new ConfiguredSubAppDescriptor();
-        ActionDefinition testActionDefinition = new TestActionDefinition();
+        ActionDefinition testActionDefinition = new AbstractActionExecutorTest.TestActionDefinition();
 
         Map<String, ActionDefinition> actions =  new HashMap<String, ActionDefinition>();
         actions.put(testActionDefinition.getName(), testActionDefinition);

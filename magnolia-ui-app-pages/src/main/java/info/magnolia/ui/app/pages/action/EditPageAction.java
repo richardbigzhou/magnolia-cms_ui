@@ -40,9 +40,9 @@ import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
@@ -50,14 +50,14 @@ import javax.jcr.RepositoryException;
  */
 public class EditPageAction extends ActionBase<EditPageActionDefinition> {
 
-    private final Node nodeToEdit;
+    private final JcrItemNodeAdapter nodeItemToEdit;
 
     private final LocationController locationController;
 
     @Inject
-    public EditPageAction(final EditPageActionDefinition definition, Node nodeToEdit, LocationController locationController) {
+    public EditPageAction(final EditPageActionDefinition definition, JcrItemNodeAdapter nodeItemToEdit, LocationController locationController) {
         super(definition);
-        this.nodeToEdit = nodeToEdit;
+        this.nodeItemToEdit = nodeItemToEdit;
         this.locationController = locationController;
     }
 
@@ -65,10 +65,10 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
     public void execute() throws ActionExecutionException {
         try {
 
-            if (!NodeUtil.isNodeType(nodeToEdit, NodeTypes.Content.NAME)) {
+            if (!NodeUtil.isNodeType(nodeItemToEdit.getNode(), NodeTypes.Content.NAME)) {
                 return;
             }
-            DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, nodeToEdit.getPath());
+            DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, nodeItemToEdit.getNode().getPath());
             locationController.goTo(location);
 
         } catch (RepositoryException e) {

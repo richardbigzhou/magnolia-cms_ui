@@ -10,9 +10,23 @@
   <artifactId>magnolia-ui-model</artifactId>
   <name>magnolia-ui-model</name>
   <properties>
-    <cloverCoverageThreshold>44</cloverCoverageThreshold>
+    <cloverCoverageThreshold>24</cloverCoverageThreshold>
   </properties>
-
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
   <dependencies>
     <dependency>
       <groupId>info.magnolia</groupId>

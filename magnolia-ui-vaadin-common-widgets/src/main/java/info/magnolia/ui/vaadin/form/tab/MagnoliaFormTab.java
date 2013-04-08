@@ -63,13 +63,5 @@ public class MagnoliaFormTab extends MagnoliaTab {
 
     public void setValidationVisible(boolean isVisible) {
         content.setValidationVisible(isVisible);
-        markAsDirty();
     }
-
-    @Override
-    public void beforeClientResponse(boolean initial) {
-        super.beforeClientResponse(initial);
-        getState().errorAmount = content.getErrorAmount();
-    }
-
 }

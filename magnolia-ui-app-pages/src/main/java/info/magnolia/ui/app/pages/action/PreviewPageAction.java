@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.pages.action;
 
+import com.google.inject.Inject;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
@@ -40,14 +41,11 @@ import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
+import javax.jcr.RepositoryException;
 
 /**
  * Opens a preview of the selected page.
@@ -56,7 +54,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(PreviewPageAction.class);
 
-    private final Node nodeToPreview;
+    private final JcrItemNodeAdapter nodeItemToPreview;
 
     private LocationController locationController;
 
@@ -64,24 +62,24 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
      * Instantiates a new preview page action.
      *
      * @param definition the definition
-     * @param nodeToPreview the node to preview
+     * @param nodeItemToPreview the node to preview
      */
     @Inject
-    public PreviewPageAction(PreviewPageActionDefinition definition, LocationController locationController, Node nodeToPreview) {
+    public PreviewPageAction(PreviewPageActionDefinition definition, JcrItemNodeAdapter nodeItemToPreview, LocationController locationController) {
         super(definition);
         this.locationController = locationController;
-        this.nodeToPreview = nodeToPreview;
+        this.nodeItemToPreview = nodeItemToPreview;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         try {
 
-            if (!NodeUtil.isNodeType(nodeToPreview, NodeTypes.Content.NAME)) {
+            if (!NodeUtil.isNodeType(nodeItemToPreview.getNode(), NodeTypes.Content.NAME)) {
                 return;
             }
 
-            DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.VIEW, nodeToPreview.getPath());
+            DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.VIEW, nodeItemToPreview.getNode().getPath());
 
             log.debug("token is {}", location.getParameter());
 

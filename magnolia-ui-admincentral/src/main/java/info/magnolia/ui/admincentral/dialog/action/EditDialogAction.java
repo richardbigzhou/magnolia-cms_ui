@@ -39,6 +39,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.action.ActionBase;
@@ -48,7 +49,6 @@ import info.magnolia.ui.vaadin.view.ModalLayer;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
@@ -61,16 +61,16 @@ import javax.jcr.RepositoryException;
  */
 public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
-    private final Node nodeToEdit;
+    private final JcrNodeAdapter itemToEdit;
     private FormDialogPresenter formDialogPresenter;
 
     private final ModalLayer modalLayer;
     private EventBus eventBus;
 
     @Inject
-    public EditDialogAction(EditDialogActionDefinition definition, Node nodeToEdit, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named("admincentral") final EventBus eventBus) {
+    public EditDialogAction(EditDialogActionDefinition definition, JcrNodeAdapter itemToEdit, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
         super(definition);
-        this.nodeToEdit = nodeToEdit;
+        this.itemToEdit = itemToEdit;
         this.formDialogPresenter = formDialogPresenter;
         this.modalLayer = subAppContext;
         this.eventBus = eventBus;
@@ -78,26 +78,21 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
     @Override
     public void execute() throws ActionExecutionException {
-
         String tempParentNodePath;
         try {
-            tempParentNodePath = nodeToEdit.getParent().getPath();
+            tempParentNodePath = itemToEdit.getNode().getParent().getPath();
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
 
         final String parentNodePath = tempParentNodePath;
-
-        final JcrNodeAdapter item = new JcrNodeAdapter(nodeToEdit);
-
-        formDialogPresenter.start(item, getDefinition().getDialogName(), modalLayer, new EditorCallback() {
-
+        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), modalLayer, new EditorCallback() {
             @Override
             public void onSuccess(String actionName) {
-                final String newItemId = (String) item.getItemProperty(ModelConstants.JCR_NAME).getValue();
-                final String itemId = newItemId == null ? item.getPath() : NodeUtil.combinePathAndName(parentNodePath, newItemId);
+                final String newItemId = (String) itemToEdit.getItemProperty(ModelConstants.JCR_NAME).getValue();
+                final String itemId = newItemId == null ? itemToEdit.getPath() : NodeUtil.combinePathAndName(parentNodePath, newItemId);
 
-                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), itemId));
+                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getWorkspace(), itemId));
                 formDialogPresenter.closeDialog();
             }
 

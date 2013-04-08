@@ -34,6 +34,7 @@
 package info.magnolia.ui.mediaeditor.editmode.provider;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent.EventType;
 import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
@@ -57,7 +58,7 @@ public class RotateImageProvider implements EditModeProvider {
     private RotationField rotationField = new RotationField();
     
     @Inject
-    public RotateImageProvider(final @Named("mediaeditor") EventBus eventBus) {
+    public RotateImageProvider(final @Named(MediaEditorEventBus.NAME) EventBus eventBus) {
         rotationField.addValueChangeListener(new ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {

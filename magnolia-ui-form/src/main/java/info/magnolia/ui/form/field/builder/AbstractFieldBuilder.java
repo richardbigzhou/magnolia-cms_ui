@@ -35,10 +35,10 @@ package info.magnolia.ui.form.field.builder;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.ui.form.field.validation.FieldValidatorBuilder;
+import info.magnolia.ui.form.field.validation.FieldValidatorDefinition;
 import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
 import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -187,7 +187,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
      */
     private void setConstraints() {
         // Set Validation
-        for (ConfiguredFieldValidatorDefinition validatorDefinition : definition.getValidators()) {
+        for (FieldValidatorDefinition validatorDefinition : definition.getValidators()) {
             FieldValidatorBuilder validatorBuilder = this.validatorFieldFactory.create(validatorDefinition);
             if (validatorBuilder != null) {
                 this.field.addValidator(validatorBuilder.buildValidator());

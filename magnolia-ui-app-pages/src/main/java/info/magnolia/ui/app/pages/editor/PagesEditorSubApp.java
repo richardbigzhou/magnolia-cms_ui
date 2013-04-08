@@ -37,7 +37,10 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.rendering.engine.RenderException;
+import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
@@ -45,27 +48,30 @@ import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
+import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.view.View;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * PagesEditorSubApp.
@@ -74,7 +80,11 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
-    private ActionExecutor actionExecutor;
+    public static final String ACTION_DELETE_COMPONENT = "deleteComponent";
+    public static final String ACTION_EDIT_COMPONENT = "editComponent";
+    public static final String ACTION_MOVE_COMPONENT = "moveComponent";
+
+    private final ActionExecutor actionExecutor;
     private final PagesEditorSubAppView view;
 
     private final EventBus eventBus;
@@ -88,11 +98,11 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private final String workspace;
     private String caption;
 
-    private AppContext appContext;
+    private final AppContext appContext;
     private final EditorDefinition editorDefinition;
 
     @Inject
-    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter) {
+    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBus.NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -129,8 +139,69 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     }
 
     private void updateActions() {
+        updateActionsByTemplateRights();
         // actions currently always disabled
         actionbarPresenter.disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
+    }
+
+    /**
+     * Show/Hide actions buttons according to the canEdit, canDelete, canMove properties of template.
+     */
+    private void updateActionsByTemplateRights() {
+
+        try {
+            AbstractElement element = pageEditorPresenter.getSelectedElement();
+            if (element == null || !(element instanceof ComponentElement)) { // currently only for components
+                return;
+            }
+            final String path = element.getPath();
+            Session session = MgnlContext.getJCRSession(workspace);
+            Node node = session.getNode(path);
+            if (!node.hasProperty("mgnl:template")) {
+                return;
+            }
+            String templateId = node.getProperty("mgnl:template").getString();
+            TemplateDefinition componentDefinition = pageEditorPresenter.getTemplateDefinitionRegistry().getTemplateDefinition(templateId);
+
+            final String canDelete = componentDefinition.getCanDelete();
+            final String canEdit = componentDefinition.getCanEdit();
+            final String canMove = componentDefinition.getCanMove();
+
+            Collection<String> groups = MgnlContext.getUser().getAllGroups();
+
+            if (hasRight(canDelete, "canDelete", groups)) {
+                actionbarPresenter.enable(ACTION_DELETE_COMPONENT);
+            } else {
+                actionbarPresenter.disable(ACTION_DELETE_COMPONENT);
+            }
+
+            if (hasRight(canEdit, "canEdit", groups)) {
+                actionbarPresenter.enable(ACTION_EDIT_COMPONENT);
+            } else {
+                actionbarPresenter.disable(ACTION_EDIT_COMPONENT);
+            }
+
+            if (hasRight(canMove, "canMove", groups)) {
+                actionbarPresenter.enable(ACTION_MOVE_COMPONENT);
+            } else {
+                actionbarPresenter.disable(ACTION_MOVE_COMPONENT);
+            }
+        } catch (Exception e) {
+            log.error("Exception caught: {}", e.getMessage(), e);
+        }
+    }
+
+    private boolean hasRight(String rightTemplateProperty, String right, Collection<String> groups) throws RepositoryException, RenderException {
+        if (rightTemplateProperty == null) {
+            return true; // default is true
+        }
+        String groupsWithThisRight = "," + rightTemplateProperty + ",";
+        for (String group : groups) {
+            if (groupsWithThisRight.contains("," + group + ",")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -279,9 +350,11 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             try {
                 Session session = MgnlContext.getJCRSession(workspace);
                 final javax.jcr.Item item = session.getItem(parameters.getNodePath());
-
-                actionExecutor.execute(actionName, item);
-
+                if (item.isNode()) {
+                    actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item));
+                } else {
+                    throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
+                }
             } catch (RepositoryException e) {
                 Message error = new Message(MessageType.ERROR, "Could not get item: " + parameters.getNodePath(), e.getMessage());
                 appContext.broadcastMessage(error);

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.tools;
-
-import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.shell.Shell;
-
-import javax.inject.Inject;
-
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.BrowserFrame;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
+package info.magnolia.ui.framework.event;
 
 /**
- * View implementation for a page app.
+ * Defines the name of the choose dialog event bus.
  */
-public class PageViewImpl implements PageView {
+public interface ChooseDialogEventBus {
 
-    private final CssLayout layout = new CssLayout();
-
-    @Inject
-    public PageViewImpl(final Shell shell, final AppContext appContext) {
-        layout.setSizeFull();
-
-        final String sourceURL = ((PageSubAppDescriptor) appContext.getDefaultSubAppDescriptor()).getUrl();
-        final String path = String.format("%s/.magnolia/pages/%s", MgnlContext.getContextPath(), sourceURL);
-        final BrowserFrame page = new BrowserFrame("", new ExternalResource(path));
-        page.setSizeFull();
-
-        layout.addComponent(page);
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
-    }
-
+    public static final String NAME = "choosedialog";
 }

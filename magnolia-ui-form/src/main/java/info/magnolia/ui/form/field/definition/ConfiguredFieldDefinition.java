@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.form.field.validation.FieldValidatorDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +65,7 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
 
     private String styleName;
 
-    private List<ConfiguredFieldValidatorDefinition> validators = new ArrayList<ConfiguredFieldValidatorDefinition>();
+    private List<FieldValidatorDefinition> validators = new ArrayList<FieldValidatorDefinition>();
 
     @Override
     public String getName() {
@@ -103,7 +103,7 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
     }
 
     @Override
-    public List<ConfiguredFieldValidatorDefinition> getValidators() {
+    public List<FieldValidatorDefinition> getValidators() {
         return validators;
     }
 
@@ -167,11 +167,11 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
         this.required = required;
     }
 
-    public void setValidators(List<ConfiguredFieldValidatorDefinition> validators) {
+    public void setValidators(List<FieldValidatorDefinition> validators) {
         this.validators = validators;
     }
 
-    public void addValidator(ConfiguredFieldValidatorDefinition validator) {
+    public void addValidator(FieldValidatorDefinition validator) {
         validators.add(validator);
     }
 
