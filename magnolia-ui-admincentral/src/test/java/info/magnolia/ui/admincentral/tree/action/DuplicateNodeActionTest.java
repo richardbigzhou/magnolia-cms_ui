@@ -41,6 +41,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Calendar;
 
@@ -79,7 +80,7 @@ public class DuplicateNodeActionTest extends RepositoryTestCase {
     @Test
     public void testExecute() throws Exception {
         // GIVEN
-        DuplicateNodeAction action = new DuplicateNodeAction(DEFINITION, nodeToCopy, eventBus);
+        DuplicateNodeAction action = new DuplicateNodeAction(DEFINITION, new JcrNodeAdapter(nodeToCopy), eventBus);
 
         // WHEN
         action.execute();
@@ -99,7 +100,7 @@ public class DuplicateNodeActionTest extends RepositoryTestCase {
     @Test
     public void testExecuteUpdateDate() throws Exception {
         // GIVEN
-        DuplicateNodeAction action = new DuplicateNodeAction(DEFINITION, nodeToCopy, eventBus);
+        DuplicateNodeAction action = new DuplicateNodeAction(DEFINITION, new JcrNodeAdapter(nodeToCopy), eventBus);
 
         // WHEN
         action.execute();
@@ -114,7 +115,7 @@ public class DuplicateNodeActionTest extends RepositoryTestCase {
     @Test
     public void testExecuteUpdateMultipleCall() throws Exception {
         // GIVEN
-        DuplicateNodeAction action = new DuplicateNodeAction(DEFINITION, nodeToCopy, eventBus);
+        DuplicateNodeAction action = new DuplicateNodeAction(DEFINITION, new JcrNodeAdapter(nodeToCopy), eventBus);
         
         // WHEN
         action.execute();
