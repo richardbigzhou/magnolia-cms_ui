@@ -142,7 +142,8 @@ button.btn-form-help {
     color: #666;
     text-overflow: ellipsis;
     overflow: hidden;
-    vertical-align: middle; /*needed by FF*/
+    vertical-align: top; /*needed by FF*/
+    line-height:25px;
 }
 
 .v-form-field-container {
