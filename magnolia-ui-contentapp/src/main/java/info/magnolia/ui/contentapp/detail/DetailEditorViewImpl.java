@@ -65,6 +65,7 @@ public class DetailEditorViewImpl extends HorizontalLayout implements DetailEdit
         setMargin(true);
         setSpacing(true);
         itemViewContainer.setSizeFull();
+        itemViewContainer.setStyleName("detail-view");
         addComponent(itemViewContainer);
         setExpandRatio(itemViewContainer, 1);
     }

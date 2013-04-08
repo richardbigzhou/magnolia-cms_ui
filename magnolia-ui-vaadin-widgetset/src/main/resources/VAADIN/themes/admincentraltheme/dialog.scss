@@ -2,8 +2,12 @@
 
 @mixin dialog {
 
+.detail-view {
+	overflow-x: auto;
+}
+
 .dialog-panel {
-  width:900px;
+  width:720px;
   padding:0;
 }
 
