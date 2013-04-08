@@ -117,7 +117,7 @@ public class AddPropertyActionTest {
         Node root = session.getRootNode();
         Node node = root.addNode(NODE_NAME);
         long propertiesCount = node.getProperties().getSize();
-        AddPropertyAction action = new AddPropertyAction(DEFINITION, new JcrNodeAdapter(root), eventBus);
+        AddPropertyAction action = new AddPropertyAction(DEFINITION, new JcrNodeAdapter(node), eventBus);
 
         // WHEN
         action.execute();
@@ -132,7 +132,7 @@ public class AddPropertyActionTest {
         Node root = session.getRootNode();
         Node node = root.addNode(NODE_NAME);
         long propertiesCount = node.getProperties().getSize();
-        AddPropertyAction action = new AddPropertyAction(DEFINITION, new JcrNodeAdapter(root), eventBus);
+        AddPropertyAction action = new AddPropertyAction(DEFINITION, new JcrNodeAdapter(node), eventBus);
 
         // WHEN
         action.execute();
@@ -149,7 +149,7 @@ public class AddPropertyActionTest {
         Node node = root.addNode(NODE_NAME);
         node.setProperty(UNTITLED_PROPERTY_NAME, UNTITLED_PROPERTY_VALUE);
         long propertiesCount = node.getProperties().getSize();
-        AddPropertyAction action = new AddPropertyAction(DEFINITION, new JcrNodeAdapter(root), eventBus);
+        AddPropertyAction action = new AddPropertyAction(DEFINITION, new JcrNodeAdapter(node), eventBus);
 
         // WHEN
         action.execute();
