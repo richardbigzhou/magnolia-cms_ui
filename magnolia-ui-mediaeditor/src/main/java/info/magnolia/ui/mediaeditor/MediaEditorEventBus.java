@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.tools;
-
-import info.magnolia.ui.vaadin.view.View;
+package info.magnolia.ui.mediaeditor;
 
 /**
- * Marker interface for the page App's view.
+ * Defines the name of the media editor event bus.
  */
-public interface PageView extends View {
+public interface MediaEditorEventBus {
 
+    public static final String NAME = "mediaeditor";
 }

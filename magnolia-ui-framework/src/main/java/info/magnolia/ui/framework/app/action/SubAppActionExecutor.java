@@ -36,6 +36,7 @@ package info.magnolia.ui.framework.app.action;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.model.action.AbstractActionExecutor;
 import info.magnolia.ui.model.action.ActionDefinition;
 
 import javax.inject.Inject;

@@ -43,12 +43,6 @@ import java.util.List;
  */
 public class ConfiguredFormDefinition implements FormDefinition {
 
-    public static final String TABS_NODE_NAME = "tabs";
-    public static final String ACTIONS_NODE_NAME = "actions";
-    public static final String EXTEND_PROPERTY_NAME = "extends";
-
-    private String id;
-
     private String label;
 
     private String i18nBasename;
@@ -56,15 +50,6 @@ public class ConfiguredFormDefinition implements FormDefinition {
     private String description;
 
     private List<TabDefinition> tabs = new ArrayList<TabDefinition>();
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     @Override
     public String getLabel() {

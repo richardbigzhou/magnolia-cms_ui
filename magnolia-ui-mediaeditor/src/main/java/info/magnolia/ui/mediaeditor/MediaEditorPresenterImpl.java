@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.mediaeditor;
 
+import com.vaadin.data.Property.Transactional;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.TransactionalPropertyWrapper;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
@@ -50,17 +53,14 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.view.View;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
-
-import com.vaadin.data.Property.Transactional;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.TransactionalPropertyWrapper;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Implementation of {@link MediaEditorPresenter}.
@@ -87,6 +87,10 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
 
     private EditModeProviderFactory providerFactory;
 
+    private HandlerRegistration internalMediaEditorEventHandlerRegistration;
+
+    private Set<HandlerRegistration> completionHandlers = new HashSet<HandlerRegistration>();
+
     public MediaEditorPresenterImpl(
             MediaEditorDefinition definition,
             EventBus eventBus,
@@ -99,7 +103,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
         this.definition = definition;
         this.actionbarPresenter.setListener(this);
         this.providerFactory = providerFactory;
-        eventBus.addHandler(MediaEditorInternalEvent.class, this);
+        this.internalMediaEditorEventHandlerRegistration = eventBus.addHandler(MediaEditorInternalEvent.class, this);
     }
 
     @Override
@@ -129,6 +133,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
         transactionHandler.commit();
         InputStream is = new ByteArrayInputStream(transactionHandler.getValue());
         eventBus.fireEvent(new MediaEditorCompletedEvent(CompletionType.SUBMIT, is));
+        clearEventHandlers();
     }
 
     @Override
@@ -137,6 +142,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
         transactionHandler.startTransaction();
         InputStream is = new ByteArrayInputStream(transactionHandler.getValue());
         eventBus.fireEvent(new MediaEditorCompletedEvent(CompletionType.CANCEL, is));
+        clearEventHandlers();
     }
 
     @Override
@@ -174,25 +180,14 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
 
     @Override
     public HandlerRegistration addCompletionHandler(Handler handler) {
-        return eventBus.addHandler(MediaEditorCompletedEvent.class, handler);
+        HandlerRegistration hr = eventBus.addHandler(MediaEditorCompletedEvent.class, handler);
+        completionHandlers.add(hr);
+        return hr;
     }
 
     @Override
     public void onExecute(String actionName) {
         doExecuteMediaEditorAction(actionName);
-    }
-
-    private void doExecuteMediaEditorAction(String actionName) {
-        try {
-            if (currentMediaField != null) {
-                actionExecutor.execute(actionName, this, providerFactory, currentMediaField);
-            } else {
-                actionExecutor.execute(actionName, this, providerFactory);
-            }
-            
-        } catch (ActionExecutionException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -221,5 +216,25 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     @Override
     public MediaField getCurrentMediaField() {
         return currentMediaField;
+    }
+
+    private void clearEventHandlers() {
+        internalMediaEditorEventHandlerRegistration.removeHandler();
+        for (HandlerRegistration hr : completionHandlers) {
+            hr.removeHandler();
+        }
+    }
+
+    private void doExecuteMediaEditorAction(String actionName) {
+        try {
+            if (currentMediaField != null) {
+                actionExecutor.execute(actionName, this, providerFactory, currentMediaField);
+            } else {
+                actionExecutor.execute(actionName, this, providerFactory);
+            }
+
+        } catch (ActionExecutionException e) {
+            log.warn("Unable to execute action [" + actionName + "]");
+        }
     }
 }

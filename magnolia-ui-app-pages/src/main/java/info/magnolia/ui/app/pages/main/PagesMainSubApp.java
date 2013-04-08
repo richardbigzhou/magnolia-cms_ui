@@ -43,7 +43,7 @@ import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.contentapp.browser.BrowserPresenter;
 import info.magnolia.ui.contentapp.browser.BrowserSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.SubAppEventBusConfigurer;
+import info.magnolia.ui.framework.app.SubAppEventBus;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -56,7 +56,7 @@ import javax.jcr.RepositoryException;
 public class PagesMainSubApp extends BrowserSubApp {
 
     @Inject
-    public PagesMainSubApp(final SubAppContext subappContext, ContentSubAppView view, BrowserPresenter workbench, @Named(SubAppEventBusConfigurer.EVENT_BUS_NAME) EventBus subAppEventBus) {
+    public PagesMainSubApp(final SubAppContext subappContext, ContentSubAppView view, BrowserPresenter workbench, @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
         super(subappContext, view, workbench, subAppEventBus);
     }
 

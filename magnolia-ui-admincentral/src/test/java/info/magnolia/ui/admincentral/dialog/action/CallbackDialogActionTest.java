@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.dialog.action;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.EditorCallback;
@@ -160,11 +159,6 @@ public class CallbackDialogActionTest {
 
         @Override
         public DialogView start(Item item, String dialogName, ModalLayer modalLayer, EditorCallback callback) {
-            return null;
-        }
-
-        @Override
-        public EventBus getEventBus() {
             return null;
         }
 

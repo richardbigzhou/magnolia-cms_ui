@@ -44,7 +44,7 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
@@ -95,12 +95,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private final EventBus eventBus;
     private final Map<String, AppInstanceController> runningApps = new HashMap<String, AppInstanceController>();
     private final LinkedList<AppInstanceController> appHistory = new LinkedList<AppInstanceController>();
-    private MessagesManager messagesManager;
+    private final MessagesManager messagesManager;
     private Viewport viewport;
     private AppInstanceController currentAppInstanceController;
 
     @Inject
-    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppDescriptorRegistry appDescriptorRegistry, LocationController locationController, @Named(AdminCentralEventBusConfigurer.EVENT_BUS_NAME) EventBus admincentralEventBus, MessagesManager messagesManager) {
+    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppDescriptorRegistry appDescriptorRegistry, LocationController locationController, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, MessagesManager messagesManager) {
         this.moduleRegistry = moduleRegistry;
         this.componentProvider = componentProvider;
         this.appDescriptorRegistry = appDescriptorRegistry;

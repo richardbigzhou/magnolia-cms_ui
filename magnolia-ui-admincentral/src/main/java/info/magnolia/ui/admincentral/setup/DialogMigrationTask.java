@@ -99,10 +99,11 @@ public class DialogMigrationTask extends AbstractTask {
                     }
                 }
             }, new NodeTypePredicate(NodeTypes.Content.NAME));
-            // Try to resolve references for extends.
-            postProcessForExtendsAndReference();
             session.removeItem(dialogPath);
             session.move(newDialogPath, dialogPath);
+
+            // Try to resolve references for extends.
+            postProcessForExtendsAndReference();
 
         } catch (Exception e) {
             log.error("", e);
@@ -131,6 +132,9 @@ public class DialogMigrationTask extends AbstractTask {
         } else {
             // Handle as a field.
             handleField(dialog);
+        }
+        if (dialog.hasProperty("class")) {
+            dialog.getProperty("class").remove();
         }
         handleExtendsAndReference(dialog);
     }
@@ -319,27 +323,13 @@ public class DialogMigrationTask extends AbstractTask {
                 continue;
             }
             if (!p.getSession().nodeExists(path)) {
-                // Referred path do not exist.
-                // add /tabs before the last /
-                String newPath = insertBeforeLastSlash(path, "/tabs");
-                if (p.getSession().nodeExists(newPath)) {
-                    p.setValue(newPath);
-                    continue;
-                }
-                // add /fields before the last /
-                newPath = insertBeforeLastSlash(path, "/fields");
-                if (p.getSession().nodeExists(newPath)) {
+
+                String newPath = insertBeforeLastSlashAndTest(p.getSession(), path, "/tabs", "/fields", "/tabs/fields", "/form/tabs");
+                if (newPath != null) {
                     p.setValue(newPath);
                     continue;
                 }
 
-                // try with a fields before the last / with a tabs before the last /
-                newPath = insertBeforeLastSlash(path, "/tabs");
-                newPath = insertBeforeLastSlash(newPath, "/fields");
-                if (p.getSession().nodeExists(newPath)) {
-                    p.setValue(newPath);
-                    continue;
-                }
                 // try to add a tabs before the 2nd last /
                 String beging = path.substring(0, path.lastIndexOf("/"));
                 String end = path.substring(beging.lastIndexOf("/"));
@@ -358,6 +348,21 @@ public class DialogMigrationTask extends AbstractTask {
                 }
             }
         }
+    }
+
+    /**
+     * Test insertBeforeLastSlash() for all toInserts.
+     * If newPath exist as a node return it.
+     */
+    private String insertBeforeLastSlashAndTest(Session session, String reference, String... toInserts) throws RepositoryException {
+        String res = null;
+        for (String toInsert : toInserts) {
+            String newPath = insertBeforeLastSlash(reference, toInsert);
+            if (session.nodeExists(newPath)) {
+                return newPath;
+            }
+        }
+        return res;
     }
 
     /**

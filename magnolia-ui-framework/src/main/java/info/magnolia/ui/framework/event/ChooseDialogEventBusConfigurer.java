@@ -45,10 +45,8 @@ import com.google.inject.util.Providers;
  */
 public class ChooseDialogEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
-    public static final String EVENT_BUS_NAME = "choosedialog";
-
     @Override
     protected void configure() {
-        bind(EventBus.class).annotatedWith(Names.named(EVENT_BUS_NAME)).toProvider(Providers.of(new SimpleEventBus()));
+        bind(EventBus.class).annotatedWith(Names.named(ChooseDialogEventBus.NAME)).toProvider(Providers.of(new SimpleEventBus()));
     }
 }

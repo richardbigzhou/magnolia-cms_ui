@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,20 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.admincentral.app.tools;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
 
 /**
- * Annotate an App to be themed.
+ * Allows to specify the url to an html page to be embedded in an iframe.
+ * <p>
+ * If the supplied url doesn't start with <code>http</code> it will be assumed to be an internal one and thus prepended with the current webapp's context path. E.g. given the url <code>/some-static-pages/some-page</code> an url will be built in the following form <code>&lt;magnolia-webapp-context&gt;/some-static-pages/some-page</code>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Inherited
-public @interface AppTheme {
-    public String value();
+public class EmbeddedPageSubAppDescriptor extends ConfiguredSubAppDescriptor {
+
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * @param url if not starting with <code>http</code> the url will be assumed to be an internal one and thus prepended with the current webapp's context path.
+     * E.g. given the url <code>some-static-pages/some-page</code> an url will be built in the following form <code>&lt;magnolia-webapp-context&gt;/some-static-pages/some-page</code>
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }

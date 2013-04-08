@@ -31,10 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.action;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+package info.magnolia.ui.framework.app.action;
 
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.MgnlCommand;
@@ -45,12 +42,17 @@ import info.magnolia.context.WebContext;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
-
-import java.util.Map;
-
+import info.magnolia.ui.model.action.CommandActionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 /**
  * Test case for CommandActionBaseTest.
@@ -90,8 +92,13 @@ public class CommandActionBaseTest {
     @Test
     public void testGetParamsReturnsBasicContextParamsFromNode() throws Exception {
 
+
         // GIVEN
-        CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(new CommandActionDefinition(), MgnlContext.getJCRSession("website").getNode("/parent/sub"), commandsManager);
+        CommandActionBase<CommandActionDefinition> action =
+                new CommandActionBase<CommandActionDefinition>(
+                        new CommandActionDefinition(),
+                        new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub")),
+                        commandsManager);
 
         // WHEN
         Map<String, Object> params = action.getParams();
@@ -115,7 +122,11 @@ public class CommandActionBaseTest {
         definition.getParams().put("def", "baz");
         definition.getParams().put("ghi", "456");
 
-        CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(definition, MgnlContext.getJCRSession("website").getNode("/parent/sub"), commandsManager);
+        CommandActionBase<CommandActionDefinition> action =
+                new CommandActionBase<CommandActionDefinition>(
+                        definition,
+                        new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub")),
+                        commandsManager);
 
         // WHEN
         Map<String, Object> params = action.getParams();
@@ -141,7 +152,10 @@ public class CommandActionBaseTest {
         when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "qux")).thenReturn(quxCommand);
         when(commandsManager.getCommand("qux")).thenReturn(quxCommand);
 
-        CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(definition, MgnlContext.getJCRSession("website").getNode("/parent"), commandsManager);
+        CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(
+                definition,
+                new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
+                commandsManager);
 
         // WHEN
         action.execute();
@@ -153,7 +167,10 @@ public class CommandActionBaseTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testGetParamsReturnsImmutableMap() throws Exception {
         // GIVEN
-        CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(new CommandActionDefinition(), MgnlContext.getJCRSession("website").getNode("/parent/sub"), commandsManager);
+        CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(
+                new CommandActionDefinition(),
+                new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub")),
+                commandsManager);
         Map<String, Object> params = action.getParams();
 
         // WHEN
