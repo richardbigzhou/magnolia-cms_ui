@@ -35,9 +35,9 @@ package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.inject.Named;
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -48,13 +48,13 @@ import javax.jcr.RepositoryException;
  */
 public class AddPropertyAction extends RepositoryOperationAction<AddPropertyActionDefinition>  {
 
-    public AddPropertyAction(AddPropertyActionDefinition definition, Item item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
+    public AddPropertyAction(AddPropertyActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
         super(definition, item, eventBus);
     }
 
     @Override
-    protected void onExecute(Item item) throws RepositoryException {
-        Node node = (Node) item;
+    protected void onExecute(JcrItemAdapter item) throws RepositoryException {
+        Node node = (Node) item.getJcrItem();
         String name = getUniqueNewItemName(item);
         node.setProperty(name, "");
     }
