@@ -110,16 +110,18 @@ button.btn-form-select {
     margin-left: 2px;
 }
 
-.form-footer button.btn-form-commit { float: right; margin-left: 10px; }
+.form-footer button.btn-form-commit { float: right; margin-left: 10px; margin-right: 0px; }
 
 button.btn-form-help {
     background: url("img/icon-help.png") no-repeat scroll center center transparent;
     border: none;
     float: right;
-    height: 20px;
+    height: 18px;
     margin: 0;
     padding: 0;
-    width: 20px;
+    width: 18px;
+    position: relative;
+    top: -1px;
 }
 
 .form-panel .field-container {

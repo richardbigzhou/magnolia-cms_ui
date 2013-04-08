@@ -129,7 +129,7 @@
 .dialog-content,
 .dialog-footer {margin-top:2px;}
 
-.dialog-footer button.btn-dialog-commit { float: right; margin-left: 10px; }
+.dialog-footer button.btn-dialog-commit { float: right; margin-left: 10px; margin-right:0px; }
 .dialog-footer-toolbar {
   float:left;
 }
@@ -143,10 +143,10 @@ button.btn-dialog-help {
   background: url("img/icon-help.png") no-repeat scroll 1px 1px transparent;
   border: none;
   float: right;
-  height: 20px;
+  height: 18px;
   margin: 0;
   padding: 0;
-  width: 20px;
+  width: 18px;
 }
 
 .help-message-inline span, .dialog-description {
