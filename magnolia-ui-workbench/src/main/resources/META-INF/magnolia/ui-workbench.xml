@@ -7,7 +7,7 @@
   <class>info.magnolia.ui.workbench.WorkbenchModule</class>
   <version>${project.version}</version>
   <components>
-    <id>subapp</id>
+    <id>app</id>
     <component>
       <type>info.magnolia.ui.workbench.WorkbenchPresenter</type>
       <implementation>info.magnolia.ui.workbench.WorkbenchPresenter</implementation>

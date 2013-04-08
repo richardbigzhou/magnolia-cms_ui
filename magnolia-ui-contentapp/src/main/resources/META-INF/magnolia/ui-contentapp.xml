@@ -14,9 +14,15 @@
 
   <components>
     <id>app</id>
+
     <configurer>
       <class>info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer</class>
     </configurer>
+
+    <component>
+      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenterFactory</implementation>
+    </component>
     <component>
       <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter</type>
       <implementation>info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter</implementation>
@@ -29,18 +35,17 @@
       <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogView</type>
       <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</implementation>
     </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.browser.BrowserView</type>
-      <implementation>info.magnolia.ui.contentapp.browser.BrowserViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory</type>
-      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenterFactory</implementation>
-    </component>
+
   </components>
 
   <components>
     <id>subapp</id>
+
+    <component>
+      <type>info.magnolia.ui.contentapp.browser.BrowserView</type>
+      <implementation>info.magnolia.ui.contentapp.browser.BrowserViewImpl</implementation>
+    </component>
+
     <component>
       <type>info.magnolia.ui.contentapp.ContentSubAppView</type>
       <implementation>info.magnolia.ui.contentapp.ContentSubAppViewImpl</implementation>
