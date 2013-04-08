@@ -33,14 +33,11 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
-import com.vaadin.data.Item;
-import com.vaadin.server.Resource;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.contentapp.event.SearchEvent;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
@@ -59,16 +56,12 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView.ViewType;
-import info.magnolia.ui.workbench.ContentViewDefinition;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.WorkbenchPresenter;
+import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
-import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
-import info.magnolia.ui.workbench.search.SearchView;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import info.magnolia.ui.workbench.event.SearchEvent;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -76,6 +69,13 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
+import com.vaadin.server.Resource;
 
 /**
  * The browser is a core component of AdminCentral. It represents the main hub through which users can interact with
@@ -86,13 +86,13 @@ import javax.jcr.Session;
  * <li>a configurable action bar on the right hand side, showing the available operations for the given workspace and the selected item.
  * </ul>
  * <p>
- * Its main configuration point is the {@link WorkbenchDefinition} through which one defines the JCR workspace to connect to, the columns/properties to display, the available actions and so on.
+ * Its main configuration point is the {@link info.magnolia.ui.workbench.definition.WorkbenchDefinition} through which one defines the JCR workspace to connect to, the columns/properties to display, the available actions and so on.
  */
-public class BrowserPresenter implements BrowserView.Listener, ActionbarPresenter.Listener {
+public class BrowserPresenter implements ActionbarPresenter.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(BrowserPresenter.class);
 
-    private final WorkbenchDefinition workbenchDefinition;
+    private WorkbenchPresenter workbenchPresenter;
 
     private final ActionExecutor actionExecutor;
 
@@ -104,26 +104,24 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
 
     private final EventBus subAppEventBus;
 
-    private final ContentPresenter contentPresenter;
-
     private final ActionbarPresenter actionbarPresenter;
 
     private final ImageProvider imageProvider;
+
     private final AppContext appContext;
 
     @Inject
     public BrowserPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
-            final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final ContentPresenter contentPresenter,
-            final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
+            final @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
+            final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider, WorkbenchPresenter workbenchPresenter) {
+        this.workbenchPresenter = workbenchPresenter;
         this.actionExecutor = actionExecutor;
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
-        this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
         this.subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
-        this.workbenchDefinition = subAppDescriptor.getWorkbench();
 
         ImageProviderDefinition imageProviderDefinition = subAppDescriptor.getImageProvider();
         if (imageProviderDefinition == null) {
@@ -134,12 +132,14 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
     }
 
     public BrowserView start() {
-        view.setListener(this);
-        contentPresenter.initContentView(view);
         actionbarPresenter.setListener(this);
 
+        WorkbenchView workbenchView = workbenchPresenter.start(subAppDescriptor.getWorkbench(), subAppDescriptor.getImageProvider(), subAppEventBus);
         ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar());
+
+        view.setWorkbenchView(workbenchView);
         view.setActionbarView(actionbar);
+
         bindHandlers();
         return view;
     }
@@ -150,8 +150,8 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
             @Override
             public void onContentChanged(ContentChangedEvent event) {
                 refreshActionbarPreviewImage(event.getPath(), event.getWorkspace());
-                view.selectPath(event.getPath());
-                view.refresh();
+                workbenchPresenter.selectPath(event.getPath());
+                workbenchPresenter.refresh();
             }
         });
 
@@ -175,7 +175,7 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
 
             @Override
             public void onSearch(SearchEvent event) {
-                doSearch(event.getSearchExpression());
+                workbenchPresenter.doSearch(event.getSearchExpression());
             }
         });
 
@@ -189,10 +189,10 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
     }
 
     /**
-     * @see ContentPresenter#getSelectedItemPath()
+     * @see info.magnolia.ui.workbench.ContentPresenter#getSelectedItemPath()
      */
     public String getSelectedItemId() {
-        return contentPresenter.getSelectedItemPath();
+        return workbenchPresenter.getSelectedId();
     }
 
     /**
@@ -201,12 +201,7 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
      * 
      */
     public ViewType getDefaultViewType() {
-        for (ContentViewDefinition definition : this.workbenchDefinition.getContentViews()) {
-            if (definition.isActive()) {
-                return definition.getViewType();
-            }
-        }
-        return this.workbenchDefinition.getContentViews().get(0).getViewType();
+        return workbenchPresenter.getDefaultView();
     }
 
     public BrowserView getView() {
@@ -218,21 +213,7 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
     }
 
     public String getWorkspace() {
-        return workbenchDefinition.getWorkspace();
-    }
-
-    @Override
-    public void onSearch(final String searchExpression) {
-        subAppEventBus.fireEvent(new SearchEvent(searchExpression));
-    }
-
-    @Override
-    public void onViewTypeChanged(final ViewType viewType) {
-        subAppEventBus.fireEvent(new ViewTypeChangedEvent(viewType));
-    }
-
-    public void selectPath(final String path) {
-        this.view.selectPath(path);
+        return workbenchPresenter.getWorkspace();
     }
 
     /**
@@ -240,22 +221,7 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
      * view type and optional query (in case of a search view).
      */
     public void resync(final String path, final ViewType viewType, final String query) {
-        view.setViewType(viewType);
-
-        if (viewType == ViewType.SEARCH) {
-            doSearch(query);
-            // update search field and focus it
-            view.setSearchQuery(query);
-        }
-
-        // restore selection
-        boolean itemExists = itemExists(path);
-        if (!itemExists) {
-            log.warn(
-                    "Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.",
-                    path, workbenchDefinition.getWorkspace());
-        }
-        view.selectPath(itemExists ? path : "/");
+        workbenchPresenter.resynch(path, viewType, query);
     }
 
     private void refreshActionbarPreviewImage(final String path, final String workspace) {
@@ -271,28 +237,6 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
                 }
             }
         }
-    }
-
-    private void doSearch(String searchExpression) {
-        // firing new search forces search view as new view type
-        if (view.getSelectedView().getViewType() != ViewType.SEARCH) {
-            view.setViewType(ViewType.SEARCH);
-        }
-        final SearchView searchView = (SearchView) view.getSelectedView();
-        if (StringUtils.isBlank(searchExpression)) {
-            searchView.clear();
-        } else {
-            searchView.search(searchExpression);
-        }
-    }
-
-    private boolean itemExists(String path) {
-        try {
-            return StringUtils.isNotBlank(path) && MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).itemExists(path);
-        } catch (RepositoryException e) {
-            log.warn("", e);
-        }
-        return false;
     }
 
     private void editItem(ItemEditedEvent event) {

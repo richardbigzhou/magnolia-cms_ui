@@ -31,31 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.browser;
+package info.magnolia.ui.workbench.event;
 
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.view.View;
-import info.magnolia.ui.workbench.WorkbenchView;
-
-import com.vaadin.ui.ComponentContainer;
+import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
 
 /**
- * Implementations of this interface are responsible for building a workbench and handling the UI
- * actions associated with it.
+ * This event is fired when a search is launched, i.e. by hitting the ENTER key in the search box in the UI.
  */
-public interface BrowserView extends ComponentContainer, View {
+public class SearchEvent implements Event<SearchEvent.Handler> {
 
     /**
-     * Use this method to add an action bar to this sub app view.
+     * Handles {@link SearchEvent} events.
      */
-    void setActionbarView(ActionbarView actionbar);
+    public interface Handler extends EventHandler {
 
-    void setWorkbenchView(WorkbenchView workbenchView);
+        void onSearch(SearchEvent event);
+    }
 
-    /**
-     * TODO: refactor callers, so that they aren't trying to fetch workbench out out browser.
-     * @return workbench view.
-     */
-    WorkbenchView getWorkbenchView();
+    private String searchExpression;
+
+    public SearchEvent(String searchExpression) {
+        this.searchExpression = searchExpression;
+    }
+
+    public String getSearchExpression() {
+        return searchExpression;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onSearch(this);
+    }
 
 }

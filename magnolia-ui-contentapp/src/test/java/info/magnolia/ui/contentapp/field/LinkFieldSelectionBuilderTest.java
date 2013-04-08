@@ -41,6 +41,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
 import info.magnolia.ui.contentapp.browser.BrowserView;
+import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter;
 import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
 import info.magnolia.ui.form.field.builder.AbstractFieldBuilderTest;
@@ -75,6 +76,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
     public void setUp() throws Exception {
         super.setUp();
         presenter = mock(ChooseDialogContentPresenter.class);
+        eventBus = new SimpleEventBus();
         // make sure that workbench view registers a content view so that restore selection doesn't fail.
         doAnswer(new Answer<Void>() {
 
@@ -82,11 +84,11 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
                 BrowserView parentView = (BrowserView) args[0];
-                parentView.addContentView(ViewType.TREE, mock(ContentView.class), new TreeContentViewDefinition());
+                parentView.getWorkbenchView().addContentView(ViewType.TREE, mock(ContentView.class), new TreeContentViewDefinition());
                 return null;
             }
-        }).when(presenter).initContentView(any(BrowserView.class));
-        eventBus = new SimpleEventBus();
+        }).when(presenter).startChooseDialog(any(WorkbenchView.class));
+
     }
 
     @Test

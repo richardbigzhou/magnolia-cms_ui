@@ -36,12 +36,10 @@ package info.magnolia.ui.contentapp.choosedialog;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.contentapp.browser.BrowserView;
-import info.magnolia.ui.contentapp.browser.BrowserView.Listener;
 import info.magnolia.ui.framework.app.ItemChosenListener;
 import info.magnolia.ui.framework.event.ChooseDialogEventBus;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -70,24 +68,11 @@ public class WorkbenchChooseDialogPresenterFactory implements ChooseDialogPresen
 
         final ChooseDialogContentPresenter presenter = componentProvider.getComponent(ChooseDialogContentPresenter.class);
         final BaseDialog dialog = (BaseDialog) workbenchChooseDialogPresenter.getView();
-
-        ((BrowserView) dialog.getContent()).setListener(new Listener() {
-
-            @Override
-            public void onViewTypeChanged(ViewType viewType) {
-
-            }
-
-            @Override
-            public void onSearch(String searchExpression) {
-
-            }
-        });
-        presenter.initContentView((BrowserView) dialog.getContent());
+        presenter.startChooseDialog(((BrowserView) dialog.getContent()).getWorkbenchView());
         dialog.setHeight("500px");
 
         if (path != null && !path.isEmpty()) {
-            ((BrowserView) dialog.getContent()).selectPath(path);
+            ((BrowserView) dialog.getContent()).getWorkbenchView().selectPath(path);
         }
 
         workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.CHOOSE_ACTION_NAME, new DialogActionListener() {

@@ -40,7 +40,9 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.workbench.ContentPresenter;
 import info.magnolia.ui.workbench.ContentViewBuilder;
+import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
@@ -88,8 +90,9 @@ public class ContentPresenterTest {
     @Test
     public void testOnItemSelectionFiresOnEventBus() {
         // GIVEN
-        final ContentPresenter presenter = new ContentPresenter((BrowserSubAppDescriptor) context.getDefaultSubAppDescriptor(), contentViewBuilder, eventBus, shell);
-
+        final ContentPresenter presenter = new ContentPresenter(contentViewBuilder);
+        WorkbenchDefinition wbDef = ((BrowserSubAppDescriptor) context.getDefaultSubAppDescriptor()).getWorkbench();
+        presenter.start(mock(WorkbenchView.class), wbDef, null, null);
         // WHEN
         presenter.onItemSelection(item);
 
@@ -103,7 +106,9 @@ public class ContentPresenterTest {
     @Test
     public void testOnDoubleClickFiresOnEventBus() {
         // GIVEN
-        final ContentPresenter presenter = new ContentPresenter((BrowserSubAppDescriptor) context.getDefaultSubAppDescriptor(), contentViewBuilder, eventBus, shell);
+        final ContentPresenter presenter = new ContentPresenter(contentViewBuilder);
+        WorkbenchDefinition wbDef = ((BrowserSubAppDescriptor) context.getDefaultSubAppDescriptor()).getWorkbench();
+        presenter.start(mock(WorkbenchView.class), wbDef, null, null);
 
         // WHEN
         presenter.onDoubleClick(item);
@@ -118,8 +123,9 @@ public class ContentPresenterTest {
     @Test
     public void testOnItemSelectionWithNullItemSetSelectedPath() {
         // GIVEN
-        ContentPresenter presenter = new ContentPresenter((BrowserSubAppDescriptor) context.getDefaultSubAppDescriptor(), contentViewBuilder, eventBus, shell);
-
+        ContentPresenter presenter = new ContentPresenter(contentViewBuilder);
+        WorkbenchDefinition wbDef = ((BrowserSubAppDescriptor) context.getDefaultSubAppDescriptor()).getWorkbench();
+        presenter.start(mock(WorkbenchView.class), wbDef, null, null);
         // WHEN
         presenter.onItemSelection(null);
 
