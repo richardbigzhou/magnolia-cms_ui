@@ -35,7 +35,6 @@ package info.magnolia.ui.app.pages.editor;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.rendering.engine.RenderException;
 import info.magnolia.rendering.template.TemplateDefinition;
@@ -60,10 +59,9 @@ import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.view.View;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
@@ -72,6 +70,10 @@ import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * PagesEditorSubApp.
@@ -86,27 +88,21 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     private final ActionExecutor actionExecutor;
     private final PagesEditorSubAppView view;
-
     private final EventBus eventBus;
-
     private final PageEditorPresenter pageEditorPresenter;
+    private final ActionbarPresenter actionbarPresenter;
+    private final EditorDefinition editorDefinition;
+    private final String workspace;
+    private final AppContext appContext;
 
     private PageEditorParameters parameters;
-
-    private final ActionbarPresenter actionbarPresenter;
-
-    private final String workspace;
     private String caption;
-
-    private final AppContext appContext;
-    private final EditorDefinition editorDefinition;
 
     @Inject
     public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBus.NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
-        this.view.setListener(this);
         this.eventBus = eventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
@@ -114,6 +110,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.workspace = editorDefinition.getWorkspace();
         this.appContext = subAppContext.getAppContext();
 
+        view.setListener(this);
         bindHandlers();
     }
 
@@ -124,8 +121,8 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     @Override
     public View start(Location location) {
-        DetailLocation itemLocation = DetailLocation.wrap(location);
-        super.start(itemLocation);
+        DetailLocation detailLocation = DetailLocation.wrap(location);
+        super.start(detailLocation);
 
         actionbarPresenter.setListener(this);
         ActionbarDefinition actionbarDefinition = getSubAppContext().getSubAppDescriptor().getActionbar();
@@ -133,8 +130,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         view.setActionbarView(actionbar);
         view.setPageEditorView(pageEditorPresenter.start());
 
-        goToLocation(itemLocation);
-        updateActions();
+        goToLocation(detailLocation);
         return view;
     }
 
@@ -142,6 +138,19 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         updateActionsByTemplateRights();
         // actions currently always disabled
         actionbarPresenter.disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
+    }
+
+    /**
+     * Informs the app framework when navigating pages inside the page editor.
+     * Updates the shell fragment, caption and current location.
+     */
+    private void updateNodePath(String path) {
+        DetailLocation detailLocation = getCurrentLocation();
+        detailLocation.updateNodePath(path);
+        setPageEditorParameters(detailLocation);
+        getAppContext().updateSubAppLocation(getSubAppContext(), detailLocation);
+        pageEditorPresenter.updateParameters(parameters);
+
     }
 
     /**
@@ -210,7 +219,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     }
 
     /**
-     * Wraps the current DefaultLocation in a ContentLocation. Providing getter and setters for used parameters.
+     * Wraps the current DefaultLocation in a DetailLocation. Providing getter and setters for used parameters.
      */
     @Override
     public DetailLocation getCurrentLocation() {
@@ -222,22 +231,13 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         DetailLocation itemLocation = DetailLocation.wrap(location);
         super.locationChanged(itemLocation);
         goToLocation(itemLocation);
-        updateActions();
     }
 
     private void goToLocation(DetailLocation location) {
-
         if (isLocationChanged(location)) {
             setPageEditorParameters(location);
-            switch (location.getViewType()) {
-            case VIEW:
-                showPreview();
-                break;
-            case EDIT:
-            default:
-                showEditor();
-                break;
-            }
+            hideAllSections();
+            pageEditorPresenter.loadPageEditor(parameters);
         }
     }
 
@@ -275,52 +275,41 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         actionbarPresenter.hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions");
     }
 
-    private void showEditor() {
-        hideAllSections();
-        actionbarPresenter.showSection("pageActions");
-        pageEditorPresenter.loadPageEditor(parameters);
-    }
-
-    private void showPreview() {
-        hideAllSections();
-        actionbarPresenter.showSection("pagePreviewActions");
-        pageEditorPresenter.loadPageEditor(parameters);
-    }
-
     private void bindHandlers() {
 
         eventBus.addHandler(NodeSelectedEvent.class, new NodeSelectedEvent.Handler() {
 
             @Override
             public void onItemSelected(NodeSelectedEvent event) {
-                String workspace = event.getWorkspace();
-                String path = event.getPath();
-                String dialog = pageEditorPresenter.getSelectedElement().getDialog();
+                AbstractElement element = event.getElement();
+                String path = element.getPath();
+                String dialog = element.getDialog();
 
-                try {
-                    Session session = MgnlContext.getJCRSession(workspace);
-
-                    if (path == null || !session.itemExists(path)) {
+                if (StringUtils.isEmpty(path)) {
                         path = "/";
-                    }
-                    Node node = session.getNode(path);
-
-                    hideAllSections();
-                    if (node.isNodeType(NodeTypes.Page.NAME)) {
-                        actionbarPresenter.showSection("pageActions");
-                    } else if (node.isNodeType(NodeTypes.Area.NAME)) {
-                        if (dialog == null) {
-                            actionbarPresenter.showSection("areaActions");
-                        } else {
-                            actionbarPresenter.showSection("editableAreaActions");
-                        }
-                    } else if (node.isNodeType(NodeTypes.Component.NAME)) {
-                        actionbarPresenter.showSection("componentActions");
-                    }
-                } catch (RepositoryException e) {
-                    log.error("Exception caught: {}", e.getMessage(), e);
                 }
 
+                hideAllSections();
+                if (element instanceof PageElement) {
+                    if (!path.equals(parameters.getNodePath())) {
+                        updateNodePath(path);
+                    }
+                    if (parameters.isPreview()) {
+                        actionbarPresenter.showSection("pagePreviewActions");
+                    } else {
+                    actionbarPresenter.showSection("pageActions");
+                    }
+                }
+                else if (element instanceof AreaElement) {
+                    if (dialog == null) {
+                        actionbarPresenter.showSection("areaActions");
+                    } else {
+                        actionbarPresenter.showSection("editableAreaActions");
+                    }
+                }
+                else if (element instanceof ComponentElement) {
+                    actionbarPresenter.showSection("componentActions");
+                }
                 updateActions();
             }
         });

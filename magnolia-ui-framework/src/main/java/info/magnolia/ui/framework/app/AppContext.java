@@ -64,7 +64,7 @@ public interface AppContext extends AppView.Listener, ModalLayer {
 
     void closeSubApp(String instanceId);
 
-    void setSubAppLocation(SubAppContext subAppContext, Location location);
+    void updateSubAppLocation(SubAppContext subAppContext, Location location);
 
     SubAppDescriptor getDefaultSubAppDescriptor();
 

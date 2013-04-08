@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.model.focus;
 
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
+
 import com.google.gwt.dom.client.Element;
 
 /**
@@ -47,4 +49,6 @@ public interface FocusModel {
     void setPageSelection(boolean select);
 
     void init();
+
+    void select(MgnlElement mgnlElement);
 }

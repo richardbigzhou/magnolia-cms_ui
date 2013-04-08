@@ -50,6 +50,8 @@ public interface PageEditorView extends View {
 
     void init();
 
+    void update(PageEditorParameters parameters);
+
     /**
      * Listener.
      */
