@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
+import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.view.View;
 
@@ -65,6 +66,7 @@ public class DetailEditorViewImpl extends HorizontalLayout implements DetailEdit
         setMargin(true);
         setSpacing(true);
         itemViewContainer.setSizeFull();
+        itemViewContainer.setStyleName("detail-view");
         addComponent(itemViewContainer);
         setExpandRatio(itemViewContainer, 1);
     }
@@ -112,11 +114,16 @@ public class DetailEditorViewImpl extends HorizontalLayout implements DetailEdit
 
     @Override
     public void setActionbarView(final ActionbarView actionbar) {
-        actionbar.asVaadinComponent().setWidth(null);
+        Actionbar actionbarComponent = (Actionbar) actionbar.asVaadinComponent();
+
+        actionbarComponent.setWidth(null);
+        actionbarComponent.addStyleName("stub");
+        actionbarComponent.setOpen(false);
+
         if (this.actionbar == null) {
-            addComponent(actionbar.asVaadinComponent());
+            addComponent(actionbarComponent);
         } else {
-            replaceComponent(this.actionbar.asVaadinComponent(), actionbar.asVaadinComponent());
+            replaceComponent(this.actionbar.asVaadinComponent(), actionbarComponent);
         }
         this.actionbar = actionbar;
     }

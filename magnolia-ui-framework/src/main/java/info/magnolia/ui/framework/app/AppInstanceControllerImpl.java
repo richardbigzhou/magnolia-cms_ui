@@ -246,7 +246,10 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
                 subAppContext.setLocation(location);
                 subAppContext.getSubApp().locationChanged(location);
             }
+            // update the caption
+            getView().updateCaption(subAppContext.getInstanceId(), subAppContext.getSubApp().getCaption());
 
+            // set active subApp view if it isn't already active
             if (!subAppContext.getInstanceId().equals(app.getView().getActiveSubAppView())) {
                 app.getView().setActiveSubAppView(subAppContext.getInstanceId());
             }
@@ -291,9 +294,29 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         return subAppContext;
     }
 
+    /**
+     * Used to update the framework about changes to locations inside the app and circumventing the {@link info.magnolia.ui.framework.location.LocationController} mechanism.
+     * Example Usages:
+     * <pre>
+     *     <ul>
+     *         <li>Inside ContentApp framework to update {@link info.magnolia.ui.framework.app.SubAppContext#getLocation()} and the {@link Shell} fragment</li>
+     *         <li>In the Pages App when navigating pages inside the PageEditor</li>
+     *     </ul>
+     * </pre>
+     * When ever possible use the {@link info.magnolia.ui.framework.location.LocationController} to not have to do this.
+     *
+     * @param subAppContext The subAppContext to be updated.
+     * @param location The new {@link Location}.
+     */
     @Override
-    public void setSubAppLocation(SubAppContext subAppContext, Location location) {
+    public void updateSubAppLocation(SubAppContext subAppContext, Location location) {
         subAppContext.setLocation(location);
+
+        // the restoreBrowser() method in the BrowserSubApp is not initialized at this point
+        if (subAppContext.getInstanceId() != null) {
+            getView().updateCaption(subAppContext.getInstanceId(), subAppContext.getSubApp().getCaption());
+        }
+
         if (appController.getCurrentApp() == getApp() && getActiveSubAppContext() == subAppContext) {
             shell.setFragment(location.toString());
         }

@@ -41,6 +41,8 @@ import info.magnolia.ui.vaadin.view.View;
  */
 public interface AppView extends View {
 
+    void updateCaption(String instanceId, String caption);
+
     /**
      * Listens to events coming from the TabSheet.
      */

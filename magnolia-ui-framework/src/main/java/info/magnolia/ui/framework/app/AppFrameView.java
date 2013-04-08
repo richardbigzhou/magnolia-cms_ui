@@ -100,6 +100,11 @@ public class AppFrameView implements AppView {
     }
 
     @Override
+    public void updateCaption(String instanceId, String caption) {
+        mapper.get(instanceId).setCaption(caption);
+    }
+
+    @Override
     public void setFullscreen(boolean fullscreen) {
         tabsheet.setFullscreen(fullscreen);
     }
