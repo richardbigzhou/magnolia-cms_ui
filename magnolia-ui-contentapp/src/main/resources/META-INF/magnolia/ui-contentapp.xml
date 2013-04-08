@@ -52,22 +52,8 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.workbench.WorkbenchPresenter</type>
-      <implementation>info.magnolia.ui.workbench.WorkbenchPresenter</implementation>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.workbench.WorkbenchView</type>
-      <implementation>info.magnolia.ui.workbench.WorkbenchViewImpl</implementation>
-    </component>
-
-    <component>
       <type>info.magnolia.ui.contentapp.detail.DetailEditorPresenter</type>
       <implementation>info.magnolia.ui.contentapp.detail.DetailEditorPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.workbench.ContentPresenter</type>
-      <implementation>info.magnolia.ui.workbench.ContentPresenter</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.contentapp.detail.DetailEditorView</type>
