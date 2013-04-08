@@ -268,7 +268,8 @@ public class FocusModelImpl implements FocusModel {
         }
     }
 
-    private void select(MgnlElement mgnlElement) {
+    @Override
+    public void select(MgnlElement mgnlElement) {
         String type = mgnlElement.getType();
         eventBus.fireEvent(new SelectElementEvent(type, mgnlElement.getAttributes()));
     }

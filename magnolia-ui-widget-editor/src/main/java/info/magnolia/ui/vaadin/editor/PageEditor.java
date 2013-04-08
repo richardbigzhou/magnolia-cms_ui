@@ -71,9 +71,20 @@ public class PageEditor extends AbstractComponent implements PageEditorView {
         this.listener = listener;
     }
 
+    /**
+     * Load the page editor with the parameters sent to client by state.
+     */
     @Override
     public void load(PageEditorParameters parameters) {
         getState().parameters = parameters;
+    }
+
+    /**
+     * Silently update the parameters in the state.
+     */
+    @Override
+    public void update(PageEditorParameters parameters) {
+        getState(false).parameters = parameters;
     }
 
     @Override
@@ -118,6 +129,11 @@ public class PageEditor extends AbstractComponent implements PageEditorView {
     @Override
     protected PageEditorState getState() {
         return (PageEditorState) super.getState();
+    }
+
+    @Override
+    protected PageEditorState getState(boolean markAsDirty) {
+        return (PageEditorState) super.getState(markAsDirty);
     }
 
     private AbstractElement resolveElement(String type, Map<String, String> attributes) {

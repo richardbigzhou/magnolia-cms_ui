@@ -35,7 +35,6 @@ package info.magnolia.ui.app.pages.editor;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.jcr.util.MetaDataUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -277,7 +276,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
             Node parentNode = session.getNode(parent);
             session.removeItem(path);
-            MetaDataUtil.updateMetaData(parentNode);
+            NodeTypes.LastModified.update(parentNode);
             session.save();
             view.refresh();
 
@@ -293,14 +292,13 @@ public class PageEditorPresenter implements PageEditorView.Listener {
         String parent = path.substring(0, index);
         String relPath = path.substring(index + 1);
 
-        Session session = null;
         try {
-            session = MgnlContext.getJCRSession(workspace);
+            Session session = MgnlContext.getJCRSession(workspace);
 
             Node parentNode = session.getNode(parent);
 
             Node newNode = NodeUtil.createPath(parentNode, relPath, nodeType);
-            MetaDataUtil.updateMetaData(newNode);
+            NodeTypes.LastModified.update(newNode);
             session.save();
             view.refresh();
         } catch (RepositoryException e) {
@@ -331,7 +329,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                 NodeUtil.orderAfter(component, target);
             }
 
-            MetaDataUtil.updateMetaData(parent);
+            NodeTypes.LastModified.update(parent);
             session.save();
             view.refresh();
         } catch (RepositoryException e) {
@@ -342,7 +340,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     @Override
     public void selectElement(AbstractElement selectedElement) {
         this.selectedElement = selectedElement;
-        eventBus.fireEvent(new NodeSelectedEvent(selectedElement.getPath(), selectedElement.getWorkspace()));
+        eventBus.fireEvent(new NodeSelectedEvent(selectedElement));
     }
 
     public PageEditorView start() {
@@ -357,5 +355,9 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     public void loadPageEditor(PageEditorParameters parameters) {
         view.load(parameters);
+    }
+
+    public void updateParameters(PageEditorParameters parameters) {
+        view.update(parameters);
     }
 }

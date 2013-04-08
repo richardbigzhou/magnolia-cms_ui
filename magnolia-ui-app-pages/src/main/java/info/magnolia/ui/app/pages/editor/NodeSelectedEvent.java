@@ -35,39 +35,35 @@ package info.magnolia.ui.app.pages.editor;
 
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 
 /**
- * This event is fired when a component is selected in page editor.
+ * This event is fired when an element is selected in page editor.
+ * @see info.magnolia.ui.vaadin.gwt.client.shared.PageElement
+ * @see info.magnolia.ui.vaadin.gwt.client.shared.AreaElement
+ * @see info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement
  */
 public class NodeSelectedEvent implements Event<NodeSelectedEvent.Handler> {
 
-    /**
-     * Handles {@link NodeSelectedEvent} events.
-     */
-    public static interface Handler extends EventHandler {
+    private final AbstractElement element;
 
-        void onItemSelected(NodeSelectedEvent event);
+    public NodeSelectedEvent(AbstractElement element) {
+        this.element = element;
     }
-
-    private final String path;
-
-    private final String workspace;
 
     @Override
     public void dispatch(Handler handler) {
         handler.onItemSelected(this);
     }
 
-    public NodeSelectedEvent(String path, String workspace) {
-        this.path = path;
-        this.workspace = workspace;
+    public AbstractElement getElement() {
+        return element;
     }
 
-    public String getPath() {
-        return path;
-    }
-
-    public String getWorkspace() {
-        return workspace;
+    /**
+     * Handles {@link NodeSelectedEvent} events.
+     */
+    public static interface Handler extends EventHandler {
+        void onItemSelected(NodeSelectedEvent event);
     }
 }
