@@ -203,7 +203,7 @@
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.ui.workbench.column.definition.StatusColumnDefinition</sv:value>
       </sv:property>
-      <sv:property sv:name="displayInDialog" sv:type="Boolean">
+      <sv:property sv:name="displayInChooseDialog" sv:type="Boolean">
         <sv:value>false</sv:value>
       </sv:property>
       <sv:property sv:name="formatterClass" sv:type="String">
@@ -244,7 +244,7 @@
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition</sv:value>
       </sv:property>
-      <sv:property sv:name="displayInDialog" sv:type="Boolean">
+      <sv:property sv:name="displayInChooseDialog" sv:type="Boolean">
         <sv:value>false</sv:value>
       </sv:property>
       <sv:property sv:name="formatterClass" sv:type="String">
