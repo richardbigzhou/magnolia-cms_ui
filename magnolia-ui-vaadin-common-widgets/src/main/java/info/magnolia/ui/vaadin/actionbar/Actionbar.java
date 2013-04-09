@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -76,14 +76,20 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
 
             @Override
             public void setOpen(boolean isOpen) {
-                getState().isOpen = isOpen;
-                if (isOpen && !getStyleName().contains("open")) {
-                    addStyleName("open");
-                } else if (!isOpen && getStyleName().contains("open")) {
-                    removeStyleName("open");
-                }
+                Actionbar.this.setOpen(isOpen);
             }
         });
+    }
+
+    @Override
+    public void setOpen(boolean isOpen) {
+        getState().isOpen = isOpen;
+        if (isOpen && !getStyleName().contains("open")) {
+            addStyleName("open");
+        } else if (!isOpen && getStyleName().contains("open")) {
+            removeStyleName("open");
+        }
+
     }
 
     @Override

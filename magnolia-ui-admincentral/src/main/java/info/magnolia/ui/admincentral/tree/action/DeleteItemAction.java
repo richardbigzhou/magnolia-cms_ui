@@ -35,9 +35,9 @@ package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.inject.Named;
-import javax.jcr.Item;
 import javax.jcr.RepositoryException;
 
 /**
@@ -47,19 +47,19 @@ public class DeleteItemAction extends RepositoryOperationAction<DeleteItemAction
 
     private String path;
 
-    public DeleteItemAction(DeleteItemActionDefinition definition, Item item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
+    public DeleteItemAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
         super(definition, item, eventBus);
     }
 
     @Override
-    protected void onExecute(Item item) throws RepositoryException {
+    protected void onExecute(JcrItemAdapter item) throws RepositoryException {
         // avoid JCR logging long stacktraces about root not being removable.
         if ("/".equals(item.getPath())) {
             path = item.getPath();
             return;
         }
-        path = item.getParent().getPath();
-        item.remove();
+        path = item.getJcrItem().getParent().getPath();
+        item.getJcrItem().remove();
     }
 
     @Override

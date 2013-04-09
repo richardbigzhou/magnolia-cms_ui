@@ -131,14 +131,17 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             @Override
             public void handle(FrameLoadedEvent event) {
                 model.reset();
+                Document document = event.getFrameDocument();
+                process(document);
                 if (!getState().parameters.isPreview()) {
                     view.initSelectionListener();
-                    Document document = event.getFrameDocument();
-                    process(event.getFrameDocument());
                     if (model.getRootPage().getControlBar() != null) {
                         ((PageBar) model.getRootPage().getControlBar()).setPageTitle(document.getTitle());
                     }
                     focusModel.init();
+                }
+                else {
+                    focusModel.select(model.getRootPage());
                 }
             }
         });

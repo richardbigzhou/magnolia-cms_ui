@@ -36,6 +36,8 @@ package info.magnolia.ui.admincentral.field.upload;
 import java.io.File;
 import java.io.IOException;
 
+import org.vaadin.easyuploads.FileFactory;
+
 /**
  * Default {@link FileFactory} used if no directory defined.
  * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on

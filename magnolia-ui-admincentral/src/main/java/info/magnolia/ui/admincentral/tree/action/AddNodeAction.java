@@ -34,12 +34,12 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.cms.core.Path;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.event.EventBus;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.inject.Named;
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -52,15 +52,17 @@ public class AddNodeAction extends RepositoryOperationAction<AddNodeActionDefini
 
     private static final String DEFAULT_NODE_NAME = "untitled";
 
-    public AddNodeAction(AddNodeActionDefinition definition, Item item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
+    public AddNodeAction(AddNodeActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
         super(definition, item, eventBus);
     }
 
     @Override
-    protected void onExecute(Item item) throws RepositoryException {
-        Node node = (Node) item;
-        String name = Path.getUniqueLabel(item.getSession(), item.getPath(), DEFAULT_NODE_NAME);
-        Node newNode = node.addNode(name, getDefinition().getNodeType());
-        NodeTypes.Created.set(newNode);
+    protected void onExecute(JcrItemAdapter item) throws RepositoryException {
+        if (item.getJcrItem().isNode()) {
+            Node node = (Node) item.getJcrItem();
+            String name = Path.getUniqueLabel(item.getJcrItem().getSession(), item.getPath(), DEFAULT_NODE_NAME);
+            Node newNode = node.addNode(name, getDefinition().getNodeType());
+            NodeTypes.Created.set(newNode);
+        }
     }
 }

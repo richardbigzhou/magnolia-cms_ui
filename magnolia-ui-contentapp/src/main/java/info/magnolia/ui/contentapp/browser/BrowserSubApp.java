@@ -142,7 +142,7 @@ public class BrowserSubApp extends BaseSubApp {
         if (viewType == null) {
             viewType = getBrowser().getDefaultViewType();
             location.updateViewType(viewType);
-            getAppContext().setSubAppLocation(getSubAppContext(), location);
+            getAppContext().updateSubAppLocation(getSubAppContext(), location);
         }
         String query = location.getQuery();
         getBrowser().resync(path, viewType, query);
@@ -205,7 +205,7 @@ public class BrowserSubApp extends BaseSubApp {
             public void onItemSelected(ItemSelectedEvent event) {
                 BrowserLocation location = getCurrentLocation();
                 location.updateNodePath(event.getPath());
-                getAppContext().setSubAppLocation(getSubAppContext(), location);
+                getAppContext().updateSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);
             }
         });
@@ -220,7 +220,7 @@ public class BrowserSubApp extends BaseSubApp {
                     location.updateQuery("");
                 }
                 location.updateViewType(event.getViewType());
-                getAppContext().setSubAppLocation(getSubAppContext(), location);
+                getAppContext().updateSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);
             }
         });
@@ -231,7 +231,7 @@ public class BrowserSubApp extends BaseSubApp {
             public void onSearch(SearchEvent event) {
                 BrowserLocation location = getCurrentLocation();
                 location.updateQuery(event.getSearchExpression());
-                getAppContext().setSubAppLocation(getSubAppContext(), location);
+                getAppContext().updateSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);
             }
         });

@@ -267,6 +267,10 @@
       <name>core</name>
       <version>5.0/*</version>
     </dependency>
+    <dependency>
+      <name>imaging</name>
+      <version>3.0/*</version>
+    </dependency>
   </dependencies>
 
   <servlets>

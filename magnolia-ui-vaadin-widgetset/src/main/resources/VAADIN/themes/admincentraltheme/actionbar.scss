@@ -11,6 +11,10 @@
 .v-actionbar {width:50px; padding-top:24px;}
 .v-actionbar-open {width:270px; padding-top:0;}
 
+.v-actionbar.stub{
+	background: #ccc;
+}
+
 .v-actionbar-section {
 	padding:11px 0 10px 10px;
 }
@@ -85,6 +89,9 @@
 
 .v-actionbar-toggle-icon.open {
 	background-image: url("img/actionbar-toggle-close.png");
+}
+.stub .v-actionbar-toggle-icon{
+	display:none;
 }
 
 .v-actionbar-fullscreen {
