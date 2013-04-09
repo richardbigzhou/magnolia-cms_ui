@@ -76,7 +76,6 @@ public class ShellViewport extends DeckLayout implements Viewport {
 
     @Override
     public void display(Component content) {
-        getState().formerActive = getState().activeComponent;
         getState().activeComponent = content;
         super.display(content);
     }
