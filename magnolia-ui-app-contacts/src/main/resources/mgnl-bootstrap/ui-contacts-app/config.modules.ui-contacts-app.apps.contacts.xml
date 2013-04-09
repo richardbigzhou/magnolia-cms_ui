@@ -1434,7 +1434,7 @@
           <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
             <sv:value>superuser</sv:value>
           </sv:property>
-          <sv:property sv:name="nodeType" sv:type="String">
+          <sv:property sv:name="name" sv:type="String">
             <sv:value>mgnl:contact</sv:value>
           </sv:property>
         </sv:node>
