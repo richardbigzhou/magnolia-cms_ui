@@ -48,6 +48,7 @@ import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.dialog.Modal;
+import info.magnolia.ui.vaadin.view.ConfirmationCallback;
 import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
 
@@ -149,6 +150,12 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     public ModalCloser openModal(View view) {
         View modalityParent = getView();
         return shell.openModalOnView(view, modalityParent, Modal.ModalityLevel.APP);
+    }
+
+    @Override
+    public ModalCloser openConfirmation(View v, String confirmButtonText, String cancelButtonText, ConfirmationCallback callback) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /**
@@ -404,4 +411,6 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
         return builder.build();
     }
+
+
 }

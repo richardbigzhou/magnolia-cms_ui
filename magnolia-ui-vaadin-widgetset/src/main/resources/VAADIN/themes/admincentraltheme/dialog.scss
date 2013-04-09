@@ -133,7 +133,9 @@
 .dialog-content,
 .dialog-footer {margin-top:2px;}
 
-.dialog-footer button.btn-dialog-commit { float: right; margin-left: 10px; margin-right:0px; }
+.dialog-footer button.btn-dialog { margin-left: 10px; margin-right:0px; }
+.dialog-footer button.btn-dialog-commit { float: right; }
+
 .dialog-footer-toolbar {
   float:left;
 }

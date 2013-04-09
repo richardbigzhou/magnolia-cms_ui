@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,19 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.view;
+package info.magnolia.ui.vaadin.dialog;
+
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 
 /**
- * Implementers can open modal views over their display area.
+ * ConfirmationDialog.
  */
-public interface ModalLayer {
+public class Confirm extends ConfirmationDialog {
 
-    /**
-     * Open a Modal on top of the ModalLayer implementer.
-     * 
-     * @param view View of the component to be displayed modally.
-     */
-    ModalCloser openModal(View view);
+    public static final String CONFIRM_ACTION = "DIALOG_ACTION_CONFIRM";
 
-    ModalCloser openConfirmation(View v, String confirmButtonText, String cancelButtonText, ConfirmationCallback callback);
+    public static final String REJECT_ACTION = "DIALOG_ACTION_REJECT";
+
+    private String message;
+
+    public Confirm(final String message) {
+        super(message);
+
+    }
+
 }

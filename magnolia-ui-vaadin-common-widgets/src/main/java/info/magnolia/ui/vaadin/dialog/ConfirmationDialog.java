@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.dialog;
 
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
+import info.magnolia.ui.vaadin.view.View;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -51,6 +52,16 @@ public class ConfirmationDialog extends BaseDialog {
 
     public ConfirmationDialog(final String message) {
         setMessage(message);
+        init();
+    }
+
+    public ConfirmationDialog(final View contents) {
+        message = "";
+        setContent(contents.asVaadinComponent());
+        init();
+    }
+
+    public void init() {
         addAction(CONFIRM_ACTION, "OK", new DialogActionListener() {
 
             @Override

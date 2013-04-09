@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,7 +35,12 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
 import info.magnolia.ui.vaadin.dialog.Modal;
+import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
+import info.magnolia.ui.vaadin.view.BaseModalLayer;
+import info.magnolia.ui.vaadin.view.ConfirmationCallback;
 import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
 
@@ -43,7 +48,7 @@ import info.magnolia.ui.vaadin.view.View;
  * Implementation of {@link SubAppContext}.
  * See MGNLUI-379.
  */
-public class SubAppContextImpl implements SubAppContext {
+public class SubAppContextImpl extends BaseModalLayer implements SubAppContext {
 
     private SubApp subApp;
 
@@ -120,8 +125,43 @@ public class SubAppContextImpl implements SubAppContext {
         return shell.openModalOnView(view, modalityParent, Modal.ModalityLevel.SUB_APP);
     }
 
+    // @Override
+    // public ModalCloser openConfirmation(View contentView, String confirmButtonText, String cancelButtonText, final ConfirmationCallback callback) {
+    //
+    // // Show confirmation dialog
+    //
+    // // ConfirmationDialog dialog = new ConfirmationDialog("UPDATE THIS. Really edit an item?");
+    // ConfirmationDialog dialog = new ConfirmationDialog(contentView);
+    // dialog.setConfirmActionLabel(confirmButtonText);
+    // dialog.setRejectActionLabel(cancelButtonText);
+    //
+    // dialog.showCloseButton();
+    //
+    // final ModalCloser modalCloser = openModal(dialog);
+    //
+    // dialog.addConfirmationHandler(new ConfirmationDialog.ConfirmationEvent.Handler() {
+    //
+    // @Override
+    // public void onConfirmation(ConfirmationEvent event) {
+    //
+    // if (event.isConfirmed()) {
+    // callback.onSuccess("");
+    // } else {
+    // callback.onCancel();
+    // }
+    //
+    // modalCloser.close();
+    //
+    // }
+    // });
+    //
+    // return modalCloser;
+    // }
+
     @Override
     public void close() {
         appContext.closeSubApp(instanceId);
     }
+
+
 }

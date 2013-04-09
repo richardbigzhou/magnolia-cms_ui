@@ -33,15 +33,28 @@
  */
 package info.magnolia.ui.contentapp.detail.action;
 
+import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
+import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.view.ConfirmationCallback;
+import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.view.View;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
+
+import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
 
 import javax.jcr.RepositoryException;
 
@@ -54,15 +67,47 @@ public class EditItemAction extends ActionBase<EditItemActionDefinition> {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final JcrItemNodeAdapter nodeItemToEdit;
     private final LocationController locationController;
+    private final SubAppContext subAppContext;
 
-    public EditItemAction(EditItemActionDefinition definition, JcrItemNodeAdapter nodeItemToEdit, LocationController locationController) {
+    public EditItemAction(EditItemActionDefinition definition, JcrItemNodeAdapter nodeItemToEdit, LocationController locationController, SubAppContext subAppContext) {
         super(definition);
         this.nodeItemToEdit = nodeItemToEdit;
         this.locationController = locationController;
+        this.subAppContext = subAppContext;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
+
+        View confirmationView = new View(){
+            @Override
+            public Component asVaadinComponent() {
+                return new Label("2.So - you really want to edit an item?");
+            }
+        };
+
+        final ModalCloser modalCloser = subAppContext.openConfirmation(confirmationView, "Do it", "Dont!", new ConfirmationCallback() {
+            @Override
+            public void onSuccess(String actionName) {
+                try {
+                    EditItemAction.this.executeAfterConfirmation();
+                } catch (ActionExecutionException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancel() {
+                //nothing
+            }
+        });
+
+
+
+    }
+
+    public void executeAfterConfirmation() throws ActionExecutionException {
         try {
             if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.getNode().getPrimaryNodeType().getName())) {
                 log.warn("EditItemAction requested for a node type definition {}. Current node type is {}. No action will be performed.",
@@ -78,4 +123,5 @@ public class EditItemAction extends ActionBase<EditItemActionDefinition> {
             throw new ActionExecutionException("Could not execute EditItemAction: ", e);
         }
     }
+
 }
