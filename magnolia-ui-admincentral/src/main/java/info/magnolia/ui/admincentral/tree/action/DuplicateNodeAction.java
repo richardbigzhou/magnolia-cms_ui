@@ -37,9 +37,9 @@ import info.magnolia.cms.core.Path;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.inject.Named;
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -57,22 +57,24 @@ public class DuplicateNodeAction extends RepositoryOperationAction<DuplicateNode
     /**
      * Instantiates a new duplicate node action.
      */
-    public DuplicateNodeAction(DuplicateNodeActionDefinition definition, Item item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
+    public DuplicateNodeAction(DuplicateNodeActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
         super(definition, item, eventBus);
     }
 
 
     @Override
-    protected void onExecute(Item item) throws RepositoryException {
-        Node node = (Node) item;
-        String newName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), node.getName());
-        String newPath = Path.getAbsolutePath(node.getParent().getPath(), newName);
-        // Duplicate Node
-        node.getSession().getWorkspace().copy(node.getPath(), newPath);
-        log.debug("Create a copy of {} with new Path {}", node.getPath(), newPath);
-        // Update dates.
-        Node duplicateNode = node.getSession().getNode(newPath);
-        NodeTypes.LastModified.update(duplicateNode);
+    protected void onExecute(JcrItemAdapter item) throws RepositoryException {
+        if (item.getJcrItem().isNode()) {
+            Node node = (Node) item.getJcrItem();
+            String newName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), node.getName());
+            String newPath = Path.getAbsolutePath(node.getParent().getPath(), newName);
+            // Duplicate Node
+            node.getSession().getWorkspace().copy(node.getPath(), newPath);
+            log.debug("Create a copy of {} with new Path {}", node.getPath(), newPath);
+            // Update dates.
+            Node duplicateNode = node.getSession().getNode(newPath);
+            NodeTypes.LastModified.update(duplicateNode);
+        }
     }
 
 }
