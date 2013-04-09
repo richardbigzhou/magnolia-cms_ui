@@ -71,6 +71,9 @@ public class ShellViewport extends DeckLayout implements Viewport {
             this.view = view;
             display(this.view.asVaadinComponent());
             parentShell.setActiveViewport(this);
+        } else {
+            super.pop();
+            getState().activeComponent = null;
         }
     }
 
