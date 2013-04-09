@@ -976,7 +976,7 @@
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition</sv:value>
             </sv:property>
-            <sv:property sv:name="displayInDialog" sv:type="String">
+            <sv:property sv:name="displayInChooseDialog" sv:type="String">
               <sv:value>false</sv:value>
             </sv:property>
             <sv:property sv:name="editable" sv:type="String">
@@ -1020,7 +1020,7 @@
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.workbench.column.definition.StatusColumnDefinition</sv:value>
             </sv:property>
-            <sv:property sv:name="displayInDialog" sv:type="Boolean">
+            <sv:property sv:name="displayInChooseDialog" sv:type="Boolean">
               <sv:value>false</sv:value>
             </sv:property>
             <sv:property sv:name="formatterClass" sv:type="String">
@@ -1061,7 +1061,7 @@
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition</sv:value>
             </sv:property>
-            <sv:property sv:name="displayInDialog" sv:type="Boolean">
+            <sv:property sv:name="displayInChooseDialog" sv:type="Boolean">
               <sv:value>false</sv:value>
             </sv:property>
             <sv:property sv:name="formatterClass" sv:type="String">
@@ -1434,7 +1434,7 @@
           <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
             <sv:value>superuser</sv:value>
           </sv:property>
-          <sv:property sv:name="nodeType" sv:type="String">
+          <sv:property sv:name="name" sv:type="String">
             <sv:value>mgnl:contact</sv:value>
           </sv:property>
         </sv:node>
