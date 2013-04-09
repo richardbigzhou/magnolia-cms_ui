@@ -36,7 +36,19 @@
       <type>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</type>
       <implementation>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.ConfiguredMessageViewDefinitionManager</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.ConfiguredMessageViewDefinitionManager</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageViewDefinitionRegistry</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageViewDefinitionRegistry</implementation>
+    </component>
 
+    <type-mapping>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.definition.ConfiguredMessageViewDefinition</implementation>
+    </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppDescriptor</type>
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
