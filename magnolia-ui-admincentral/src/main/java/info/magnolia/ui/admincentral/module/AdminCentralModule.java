@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.module;
 
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.ConfiguredMessageViewDefinitionManager;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionManager;
 import info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;

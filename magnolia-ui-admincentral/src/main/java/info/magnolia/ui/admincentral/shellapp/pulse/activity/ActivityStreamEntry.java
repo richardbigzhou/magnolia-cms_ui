@@ -31,15 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.activity;
 
-import com.vaadin.ui.HasComponents;
+import info.magnolia.ui.framework.message.MessageType;
 
 /**
- * Dashboard Pulse tab UI.
+ * An entry in the activity stream for a user.
  */
-public interface PulseDashboardView extends PulseSubView {
+public class ActivityStreamEntry {
 
-    @Override
-    public HasComponents asVaadinComponent();
+    private String id;
+    private long timestamp;
+    private MessageType type;
+    private String label;
+    private String message;
 }

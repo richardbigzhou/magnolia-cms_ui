@@ -42,7 +42,7 @@ import java.util.Set;
 
 /**
  * Maintains a registry of message view providers registered by id.
- * @see info.magnolia.ui.admincentral.shellapp.pulse.message.ConfiguredMessageViewDefinitionManager
+ * @see ConfiguredMessageViewDefinitionManager
  */
 public class MessageViewDefinitionRegistry {
 

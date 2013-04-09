@@ -37,8 +37,8 @@
       <implementation>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.ConfiguredMessageViewDefinitionManager</type>
-      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.ConfiguredMessageViewDefinitionManager</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionManager</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionManager</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageViewDefinitionRegistry</type>
@@ -184,16 +184,16 @@
       <implementation>info.magnolia.ui.admincentral.AdmincentralPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesView</type>
-      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesView</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesPresenter</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseDashboardView</type>
-      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseDashboardViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.dashboard.PulseDashboardView</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.dashboard.PulseDashboardViewImpl</implementation>
     </component>
 
     <type-mapping>

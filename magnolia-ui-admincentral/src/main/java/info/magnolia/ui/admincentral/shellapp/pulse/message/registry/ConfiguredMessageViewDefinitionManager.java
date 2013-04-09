@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.registry;
 
 import info.magnolia.cms.util.ModuleConfigurationObservingManager;
 import info.magnolia.jcr.predicate.NodeTypePredicate;

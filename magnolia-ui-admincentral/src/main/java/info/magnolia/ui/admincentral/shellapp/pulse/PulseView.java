@@ -43,15 +43,6 @@ import java.util.List;
  */
 public interface PulseView extends View {
 
-    /**
-     * PulseView presenter.
-     */
-    public interface Presenter {
-        void onPulseTabChanged(final String tabId);
-    }
-
-    String setCurrentPulseTab(final String tabId, List<String> pathParams);
-
-    void setPresenter(final Presenter presenter);
+    void setPulseView(View view);
 
 }

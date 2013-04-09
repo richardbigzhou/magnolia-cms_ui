@@ -33,93 +33,41 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
-import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
-
-import java.util.List;
+import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
 
-import org.apache.commons.collections.BidiMap;
-import org.apache.commons.collections.bidimap.DualHashBidiMap;
-
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 
 /**
  * Default view implementation for Pulse.
  */
 public class PulseViewImpl implements PulseView {
 
-    private final MagnoliaTabSheet tabsheet = new MagnoliaTabSheet() {
-        @Override
-        public void setActiveTab(MagnoliaTab tab) {
-            super.setActiveTab(tab);
-            if (presenter != null) {
-                presenter.onPulseTabChanged(m.getKey(tab).toString().toLowerCase());
-            }
-        }
-    };
+    private final CssLayout layout = new CssLayout();
 
-    private enum PulseTabType {
-        DASHBOARD, STATISTIC, MESSAGES;
-
-        public static PulseTabType getDefault() {
-            return MESSAGES;
-        }
-    }
-
-    private Presenter presenter;
-
-    private final BidiMap m = new DualHashBidiMap();
-
-    private final PulseMessagesView messagesView;
+    private View pulseView;
 
     @Inject
-    public PulseViewImpl(final PulseMessagesView messagesView, final PulseDashboardView dashboardView) {
+    public PulseViewImpl() {
+        layout.addStyleName("v-pulse");
+        layout.setSizeFull();
+        layout.setWidth("900px");
+    }
 
-        this.messagesView = messagesView;
-        tabsheet.addStyleName("v-shell-tabsheet-light");
-        final MagnoliaTab messages = tabsheet.addTab("Messages", messagesView.asVaadinComponent());
-
-        tabsheet.addStyleName("v-pulse");
-        tabsheet.setSizeFull();
-        tabsheet.setWidth("900px");
-
-        m.put(PulseTabType.MESSAGES, messages);
+    @Override
+    public void setPulseView(View view) {
+        if (pulseView != null) {
+            layout.removeComponent(pulseView.asVaadinComponent());
+        }
+        this.pulseView = view;
+        layout.addComponent(view.asVaadinComponent());
     }
 
     @Override
     public Component asVaadinComponent() {
-        return tabsheet;
+        return layout;
     }
 
-    @Override
-    public String setCurrentPulseTab(final String tabId, final List<String> params) {
-        PulseTabType type;
-        String finalDisplayedTabId = tabId;
-        try {
-            type = PulseTabType.valueOf(String.valueOf(tabId).toUpperCase());
-        } catch (IllegalArgumentException e) {
-            type = PulseTabType.getDefault();
-            finalDisplayedTabId = type.name().toLowerCase();
-        }
-        final MagnoliaTab tab = (MagnoliaTab) m.get(type);
-        if (tab != null) {
-            tabsheet.setActiveTab(tab);
-        }
-
-        switch (type) {
-        case MESSAGES:
-            messagesView.update(params);
-            break;
-        default:
-            break;
-        }
-        return finalDisplayedTabId;
-    }
-
-    @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-    }
 }

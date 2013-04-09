@@ -31,18 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.activity;
 
-import info.magnolia.ui.framework.message.MessageType;
+import java.util.List;
 
 /**
- * An entry in the activity stream for a user.
+ * Manager for the users activity streams.
+ *
+ * need persistence
+ *
+ * need to clean up old entries
+ *
+ * can you post to more than one user? all? by group?
  */
-public class ActivityStreamEntry {
+public interface ActivityStreamManager {
 
-    private String id;
-    private long timestamp;
-    private MessageType type;
-    private String label;
-    private String message;
+    /**
+     * Returns the activity stream for a user, entries sorted most recent first.
+     */
+    List<ActivityStreamEntry> getActivityStreamForUser(String userId);
+
+    /**
+     * Adds the entry to the users activity stream, assigns an id and records the timestamp, any values for these fields
+     * already in the instance is ignored.
+     */
+    void postEntry(String userId, ActivityStreamEntry entry);
 }

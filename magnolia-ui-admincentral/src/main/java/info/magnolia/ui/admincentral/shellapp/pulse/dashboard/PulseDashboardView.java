@@ -31,14 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.dashboard;
+
+import info.magnolia.ui.admincentral.shellapp.pulse.PulseSubView;
 
 import com.vaadin.ui.HasComponents;
 
 /**
- * Messages Pulse tab UI.
+ * Dashboard Pulse tab UI.
  */
-public interface PulseMessagesView extends PulseSubView {
+public interface PulseDashboardView extends PulseSubView {
 
     @Override
     public HasComponents asVaadinComponent();

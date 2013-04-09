@@ -31,12 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.message;
+
+import info.magnolia.ui.admincentral.shellapp.pulse.PulseSubView;
+
+import java.util.Collection;
+
+import com.vaadin.data.Container;
+import com.vaadin.ui.HasComponents;
 
 /**
- * The type of entries in the activity stream.
+ * Messages Pulse tab UI.
  */
-public enum ActivityStreamEntryType {
+public interface PulseMessagesView extends PulseSubView {
 
-    ACCEPTED, REJECTED, URGENT
+    @Override
+    public HasComponents asVaadinComponent();
+
+    void setDataSource(Container dataSource);
+
+    void setListener(Listener listener);
+
+    public interface Listener{
+
+        void filterByMessageCategory(PulseMessageCategoryNavigator.MessageCategory category);
+
+        void onMessageClicked(String itemId);
+
+        Object getParent(Object child);
+
+        Collection<?> getGroup(Object parent);
+
+        void setGrouping(boolean checked);
+    }
 }

@@ -33,59 +33,43 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.admincentral.shellapp.ShellApp;
 import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
-import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter;
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.view.View;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.inject.Inject;
 
 /**
  * Pulse shell app.
  */
-public class PulseShellApp implements ShellApp, PulseView.Presenter {
+public class PulseShellApp implements ShellApp {
 
     private PulseView pulseView;
 
     private ShellAppContext context;
+    private PulseMessagesPresenter messages;
     private ShellImpl shell;
 
     @Inject
-    public PulseShellApp(PulseView pulseView, ShellImpl shell) {
+    public PulseShellApp(PulseView pulseView, PulseMessagesPresenter messages, ShellImpl shell) {
         this.pulseView = pulseView;
+        this.messages = messages;
         this.shell = shell;
     }
 
     @Override
     public View start(ShellAppContext context) {
         this.context = context;
-        pulseView.setPresenter(this);
-
+        pulseView.setPulseView(messages.start());
         return pulseView;
     }
 
     @Override
     public void locationChanged(Location location) {
-        List<String> pathParams = parsePathParamsFromToken(location.getParameter());
-        if (pathParams.size() > 0) {
-            final String tabName = pathParams.remove(0);
-            pulseView.setCurrentPulseTab(tabName, pathParams);
-        }
         shell.hideAllMessages();
     }
 
-    private List<String> parsePathParamsFromToken(String token) {
-        return new ArrayList<String>(Arrays.asList(token.split("/")));
-    }
-
-    @Override
-    public void onPulseTabChanged(String tabId) {
-        context.setAppLocation(new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, "pulse", "", tabId));
-    }
 }
