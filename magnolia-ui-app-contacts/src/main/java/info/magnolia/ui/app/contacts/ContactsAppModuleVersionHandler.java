@@ -33,10 +33,40 @@
  */
 package info.magnolia.ui.app.contacts;
 
+import info.magnolia.cms.security.Permission;
+import info.magnolia.cms.security.Role;
+import info.magnolia.cms.security.RoleManager;
+import info.magnolia.cms.security.Security;
 import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.module.InstallContext;
+import info.magnolia.module.delta.Task;
+import info.magnolia.module.delta.AbstractTask;
+import info.magnolia.module.delta.TaskExecutionException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Version handler for Contacts app module.
  */
 public class ContactsAppModuleVersionHandler extends DefaultModuleVersionHandler {
+
+    final Task grantReadPermissionToAnonymousUser = new AbstractTask("Anonymous permissions for contact App", "Grants the anonymous user the read permission to the contact App workspace.") {
+        @Override
+        public void execute(InstallContext installContext) throws TaskExecutionException {
+
+            RoleManager roleManager = Security.getRoleManager();
+            Role anonymous = roleManager.getRole("anonymous");
+
+            roleManager.addPermission(anonymous, "contacts", "/", Permission.READ);
+            roleManager.addPermission(anonymous, "contacts", "/*", Permission.READ);
+        }
+    };
+
+    @Override
+    protected List<Task> getExtraInstallTasks(InstallContext installContext) {
+        List<Task> tasks = new ArrayList<Task>();
+        tasks.add(grantReadPermissionToAnonymousUser);
+        return tasks;
+    }
 }

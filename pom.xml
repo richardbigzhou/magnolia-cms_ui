@@ -58,11 +58,11 @@
         <artifactId>icepush</artifactId>
         <version>0.5.3</version>
       </dependency>
-    <dependency>
+      <dependency>
         <groupId>org.vaadin.addons</groupId>
         <artifactId>cssinject</artifactId>
         <version>2.0.3</version>
-    </dependency>
+      </dependency>
       <dependency>
         <groupId>org.icefaces</groupId>
         <artifactId>icepush</artifactId>
@@ -78,6 +78,13 @@
         <artifactId>imagefilter</artifactId>
         <version>0.5.3</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.vaadin.addon</groupId>
+        <artifactId>easyuploads</artifactId>
+        <version>7.0.0</version>
+      </dependency>
+
       <dependency>
         <groupId>com.jhlabs</groupId>
         <artifactId>filters</artifactId>
@@ -126,7 +133,7 @@
         </exclusions>
       </dependency>
 
-	   <dependency>
+      <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
         <version>2.5</version>
