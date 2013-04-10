@@ -88,9 +88,6 @@ public class MessageViewImpl  extends HorizontalLayout implements MessageView {
     public void setActionbarView(View view) {
         Actionbar actionbarComponent = (Actionbar) view.asVaadinComponent();
 
-        actionbarComponent.setWidth(null);
-        actionbarComponent.addStyleName("stub");
-        actionbarComponent.setOpen(false);
         if(actionbarContainer.getComponentCount() > 0) {
             actionbarContainer.removeAllComponents();
         }
