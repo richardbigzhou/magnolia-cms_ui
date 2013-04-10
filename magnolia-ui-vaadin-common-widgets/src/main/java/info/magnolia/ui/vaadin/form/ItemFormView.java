@@ -147,7 +147,7 @@ public class ItemFormView implements FormView {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
                 Item item = languageSelector.getContainerDataSource().getItem(event.getProperty().getValue());
-                form.onLocaleChanged((Locale) item.getItemProperty("locale").getValue());
+                form.setLocale((Locale) item.getItemProperty("locale").getValue());
             }
         });
         dialog.setFooterToolbar(languageSelector);

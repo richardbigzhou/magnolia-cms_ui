@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.form;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.vaadin.form.i18n.LocaleChangeListener;
 import info.magnolia.ui.vaadin.form.tab.MagnoliaFormTab;
 import info.magnolia.ui.vaadin.gwt.client.form.connector.FormState;
 import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormServerRpc;
@@ -61,7 +60,7 @@ import com.vaadin.ui.Field;
  *
  * TODO: TAKE CARE OF FIELDGROUP IN THE FORM BUILDER LATER ON!
  */
-public class Form extends AbstractSingleComponentContainer implements FormViewReduced, LocaleChangeListener {
+public class Form extends AbstractSingleComponentContainer implements FormViewReduced {
 
     private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");
 
@@ -211,7 +210,8 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     }
 
     @Override
-    public void onLocaleChanged(Locale newLocale) {
+    public void setLocale(Locale newLocale) {
+        super.setLocale(newLocale);
         Iterator<Component> it = tabSheet.iterator();
         while (it.hasNext()) {
             FormSection fs = ((MagnoliaFormTab)it.next()).getContent();

@@ -44,12 +44,12 @@ import java.util.Locale;
 import com.vaadin.data.util.AbstractProperty;
 
 /**
- * TODO: Add JavaDoc for I18NAwareProperty.
+ * Simple Property that manages one or more localized JCR properties internally. Depending on the Locale set
+ * it delegates the value read/write to the corresponding JCR property.
  */
 public class I18NAwareProperty extends AbstractProperty<String> {
 
     private String basePropertyName;
-    private Locale currentLocale;
     private I18nContentSupport i18nSupport;
     private JcrItemNodeAdapter parentNodeAdapter;
     private DefaultProperty<String> currentProperty;
@@ -78,7 +78,7 @@ public class I18NAwareProperty extends AbstractProperty<String> {
     }
 
     public void setLocale(Locale newLocale) {
-        this.currentLocale = newLocale;
+        i18nSupport.setLocale(newLocale);
         currentProperty = getOrCreateProperty();
         fireValueChange();
     }
@@ -89,9 +89,9 @@ public class I18NAwareProperty extends AbstractProperty<String> {
      * (fr_, de_) if the current language is not the default one.
      */
     protected String getPropertyName() {
-        boolean isFallbackLanguage = currentLocale == null || i18nSupport.getFallbackLocale().equals(currentLocale);
+        boolean isFallbackLanguage = i18nSupport.getFallbackLocale().equals(i18nSupport.getLocale());
         if (!isFallbackLanguage) {
-            return basePropertyName + "_" + currentLocale.toString();
+            return basePropertyName + "_" + i18nSupport.getLocale().toString();
         }
         return basePropertyName;
     }

@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.form;
 
 import info.magnolia.ui.vaadin.form.i18n.I18NAwareProperty;
-import info.magnolia.ui.vaadin.form.i18n.LocaleChangeListener;
 import info.magnolia.ui.vaadin.gwt.client.form.formsection.connector.FormSectionState;
 import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormSectionClientRpc;
 
@@ -55,7 +54,7 @@ import com.vaadin.ui.Field;
 /**
  * Form layout server side implementation.
  */
-public class FormSection extends AbstractLayout implements LocaleChangeListener {
+public class FormSection extends AbstractLayout {
 
     private final List<Component> components = new LinkedList<Component>();
 
@@ -153,11 +152,6 @@ public class FormSection extends AbstractLayout implements LocaleChangeListener 
     @Override
     public int getComponentCount() {
         return components.size();
-    }
-
-    @Override
-    public void onLocaleChanged(Locale newLocale) {
-
     }
 
     public Component getNextProblematicField(Connector currentFocused) {
