@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.view;
 
+import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
+
 /**
  * Implementers can open modal views over their display area.
  */
@@ -44,6 +46,8 @@ public interface ModalLayer {
      * @param view View of the component to be displayed modally.
      */
     ModalCloser openModal(View view);
+
+    ModalCloser openModal(View view, ModalityLevel modalityLevel);
 
     ModalCloser openConfirmation(View v, String confirmButtonText, String cancelButtonText, ConfirmationCallback callback);
 }

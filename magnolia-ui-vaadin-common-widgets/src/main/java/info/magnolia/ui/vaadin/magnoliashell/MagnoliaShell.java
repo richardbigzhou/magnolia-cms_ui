@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -188,8 +188,8 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
      * @param parent
      *            The View to open the Modal on top of.
      */
-    public ModalCloser openModal(final View child, View parent, Modal.ModalityLevel modalityLevel) {
-        Modal modal = new Modal(child.asVaadinComponent(), parent.asVaadinComponent(), modalityLevel);
+    public ModalCloser openModal(final View child, View parent, Modal.ModalityLocation modalityLocation, Modal.ModalityLevel modalityLevel) {
+        Modal modal = new Modal(child.asVaadinComponent(), parent.asVaadinComponent(), modalityLocation, modalityLevel);
         getState().modals.add(modal);
 
         // modal has Vaadin parent of MagnoliaShell

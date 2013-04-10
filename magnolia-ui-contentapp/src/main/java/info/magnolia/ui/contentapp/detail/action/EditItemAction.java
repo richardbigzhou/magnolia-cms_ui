@@ -33,8 +33,10 @@
  */
 package info.magnolia.ui.contentapp.detail.action;
 
+
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -43,16 +45,14 @@ import info.magnolia.ui.vaadin.view.ConfirmationCallback;
 import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
 
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
-
-import info.magnolia.ui.framework.app.SubAppContext;
-
-import javax.jcr.RepositoryException;
 
 /**
  * Action for editing items in {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.

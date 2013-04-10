@@ -48,6 +48,8 @@ import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.dialog.Modal;
+import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
+import info.magnolia.ui.vaadin.view.BaseModalLayer;
 import info.magnolia.ui.vaadin.view.ConfirmationCallback;
 import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
@@ -66,7 +68,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Implements both - the controlling of an app instance as well as the housekeeping of the context for an app.
  */
-public class AppInstanceControllerImpl implements AppContext, AppInstanceController {
+public class AppInstanceControllerImpl extends BaseModalLayer implements AppContext, AppInstanceController {
 
     private static final Logger log = LoggerFactory.getLogger(AppInstanceControllerImpl.class);
 
@@ -147,9 +149,9 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     }
 
     @Override
-    public ModalCloser openModal(View view) {
+    public ModalCloser openModal(View view, ModalityLevel modalityLevel) {
         View modalityParent = getView();
-        return shell.openModalOnView(view, modalityParent, Modal.ModalityLevel.APP);
+        return shell.openModalOnView(view, modalityParent, Modal.ModalityLocation.APP, modalityLevel);
     }
 
     @Override

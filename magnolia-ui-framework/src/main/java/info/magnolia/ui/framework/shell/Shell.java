@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2011-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -73,10 +73,10 @@ public interface Shell extends ModalLayer {
      * Open a Modal on top of a specific View.
      * 
      * @param view
-     *            View to be displayed modally.
+     * View to be displayed modally.
      * @param parent
-     *            The View to open the Modal on top of.
+     * The View to open the Modal on top of.
      */
-    ModalCloser openModalOnView(View view, View parent, Modal.ModalityLevel modalityLevel);
+    ModalCloser openModalOnView(View view, View parent, Modal.ModalityLocation modalityLocation, Modal.ModalityLevel modalityLevel);
 
 }

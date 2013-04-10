@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.view;
 
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
+import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 
 /**
  * Implementers can open modal views over their display area.
@@ -54,12 +55,13 @@ public abstract class BaseModalLayer implements ModalLayer {
 
         // ConfirmationDialog dialog = new ConfirmationDialog("UPDATE THIS. Really edit an item?");
         ConfirmationDialog dialog = new ConfirmationDialog(contentView);
+        dialog.addStyleName("confirmation");
         dialog.setConfirmActionLabel(confirmButtonText);
         dialog.setRejectActionLabel(cancelButtonText);
 
         dialog.showCloseButton();
 
-        final ModalCloser modalCloser = openModal(dialog);
+        final ModalCloser modalCloser = openModal(dialog, ModalityLevel.LIGHT);
 
         dialog.addConfirmationHandler(new ConfirmationDialog.ConfirmationEvent.Handler() {
 
@@ -79,6 +81,14 @@ public abstract class BaseModalLayer implements ModalLayer {
 
         return modalCloser;
 
+    }
+
+    /**
+     * Convenience method to open a modal with the default strong modality level.
+     */
+    @Override
+    public ModalCloser openModal(View view) {
+        return openModal(view, ModalityLevel.STRONG);
     }
 
 }

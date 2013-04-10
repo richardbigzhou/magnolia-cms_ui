@@ -36,8 +36,8 @@ package info.magnolia.ui.framework.app;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.dialog.Modal;
+import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.view.BaseModalLayer;
-import info.magnolia.ui.vaadin.view.ConfirmationCallback;
 import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
 
@@ -116,44 +116,11 @@ public class SubAppContextImpl extends BaseModalLayer implements SubAppContext {
     }
 
     @Override
-    public ModalCloser openModal(View view) {
+    public ModalCloser openModal(View view, ModalityLevel modalityLevel) {
         // Get the MagnoliaTab for the view
         View modalityParent = getAppContext().getView().getSubAppViewContainer(instanceId);
-        return shell.openModalOnView(view, modalityParent, Modal.ModalityLevel.SUB_APP);
+        return shell.openModalOnView(view, modalityParent, Modal.ModalityLocation.SUB_APP, modalityLevel);
     }
-
-    // @Override
-    // public ModalCloser openConfirmation(View contentView, String confirmButtonText, String cancelButtonText, final ConfirmationCallback callback) {
-    //
-    // // Show confirmation dialog
-    //
-    // // ConfirmationDialog dialog = new ConfirmationDialog("UPDATE THIS. Really edit an item?");
-    // ConfirmationDialog dialog = new ConfirmationDialog(contentView);
-    // dialog.setConfirmActionLabel(confirmButtonText);
-    // dialog.setRejectActionLabel(cancelButtonText);
-    //
-    // dialog.showCloseButton();
-    //
-    // final ModalCloser modalCloser = openModal(dialog);
-    //
-    // dialog.addConfirmationHandler(new ConfirmationDialog.ConfirmationEvent.Handler() {
-    //
-    // @Override
-    // public void onConfirmation(ConfirmationEvent event) {
-    //
-    // if (event.isConfirmed()) {
-    // callback.onSuccess("");
-    // } else {
-    // callback.onCancel();
-    // }
-    //
-    // modalCloser.close();
-    //
-    // }
-    // });
-    //
-    // return modalCloser;
-    // }
 
     @Override
     public void close() {

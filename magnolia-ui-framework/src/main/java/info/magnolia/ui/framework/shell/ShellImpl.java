@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -50,10 +50,12 @@ import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.vaadin.dialog.Modal;
 import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
+import info.magnolia.ui.vaadin.dialog.Modal.ModalityLocation;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
+import info.magnolia.ui.vaadin.view.BaseModalLayer;
 import info.magnolia.ui.vaadin.view.ConfirmationCallback;
 import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
@@ -74,7 +76,7 @@ import com.vaadin.ui.Component;
  * Admin shell.
  */
 @Singleton
-public class ShellImpl implements Shell, MessageEventHandler {
+public class ShellImpl extends BaseModalLayer implements Shell, MessageEventHandler {
 
     /**
      * Provides the current location of shell apps.
@@ -213,13 +215,13 @@ public class ShellImpl implements Shell, MessageEventHandler {
     }
 
     @Override
-    public ModalCloser openModal(final View view) {
-        return magnoliaShell.openModal(view, magnoliaShell, Modal.ModalityLevel.SHELL);
+    public ModalCloser openModal(final View view, ModalityLevel modalityLevel) {
+        return magnoliaShell.openModal(view, magnoliaShell, Modal.ModalityLocation.SHELL, modalityLevel);
     }
 
     @Override
-    public ModalCloser openModalOnView(View view, View parent, ModalityLevel modalityLevel) {
-        return magnoliaShell.openModal(view, parent, modalityLevel);
+    public ModalCloser openModalOnView(View view, View parent, ModalityLocation modalityLocation, ModalityLevel modalityLevel) {
+        return magnoliaShell.openModal(view, parent, modalityLocation, modalityLevel);
     }
 
     @Override

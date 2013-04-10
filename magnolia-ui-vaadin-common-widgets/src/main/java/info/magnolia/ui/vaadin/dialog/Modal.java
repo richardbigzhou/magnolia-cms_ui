@@ -47,13 +47,37 @@ import com.vaadin.ui.Component;
 public class Modal extends AbstractSingleComponentContainer {
 
     /**
-     * The available levels of modality for opening a modal.
+     * The available locations of modality for opening a modal.
      * Represents what will be blocked by the opened modal.
      */
-    public static enum ModalityLevel {
+    public static enum ModalityLocation {
         SUB_APP("sub-app"),
         APP("app"),
         SHELL("shell");
+
+        private String cssClass;
+
+        private ModalityLocation(String cssClass) {
+            this.cssClass = cssClass;
+        }
+
+        public String getCssClass() {
+            return cssClass;
+        }
+
+    }
+
+    /**
+     * The available levels of modality.
+     * Determines how "modal" it is -
+     * -STRONG creates a dark background that prevents clicks.
+     * -LIGHT adds a border, creates a transparent background that prevents clicks.
+     * -NON_MODAL does not prevent clicks.
+     */
+    public static enum ModalityLevel {
+        STRONG("modality-strong"),
+        LIGHT("modality-light center-vertical"),
+        NON_MODAL("modality-non-modal");
 
         private String cssClass;
 
@@ -67,34 +91,22 @@ public class Modal extends AbstractSingleComponentContainer {
 
     }
 
-    final Modal.ModalityLevel modalityLevel;
+    final Modal.ModalityLocation modalityLocation;
 
-    public Modal(final Component content, final Component modalityParent, Modal.ModalityLevel modalityLevel) {
+    public Modal(final Component content, final Component modalityParent, final Modal.ModalityLocation modalityLocation, final Modal.ModalityLevel modalityLevel) {
         // setSizeFull();
         setImmediate(true);
 
         content.addStyleName("modal-child");
         setContent(content);
 
-        this.modalityLevel = modalityLevel;
+        this.modalityLocation = modalityLocation;
         getState().modalityParent = modalityParent;
 
-        // Set css class of Modal
-        String cssClass = modalityLevel.getCssClass();
-        /*
-         * switch (modalityLevel) {
-         * case SUB_APP:
-         * cssClass="sub-app";
-         * break;
-         * case APP:
-         * cssClass="app";
-         * break;
-         * case SHELL:
-         * cssClass="shell";
-         * break;
-         * }
-         */
-        this.setStyleName(cssClass);
+        // Set css classes of Modal
+        this.addStyleName(modalityLocation.getCssClass());
+
+        this.addStyleName(modalityLevel.getCssClass());
     }
 
     @Override
