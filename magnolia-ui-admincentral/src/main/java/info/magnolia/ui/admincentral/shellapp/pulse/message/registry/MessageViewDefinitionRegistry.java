@@ -40,10 +40,13 @@ import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageVi
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Singleton;
+
 /**
  * Maintains a registry of message view providers registered by id.
  * @see ConfiguredMessageViewDefinitionManager
  */
+@Singleton
 public class MessageViewDefinitionRegistry {
 
     private final RegistryMap<String, MessageViewDefinitionProvider> registry = new RegistryMap<String, MessageViewDefinitionProvider>() {

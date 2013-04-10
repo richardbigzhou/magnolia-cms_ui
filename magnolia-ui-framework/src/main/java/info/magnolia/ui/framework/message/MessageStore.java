@@ -158,11 +158,30 @@ public class MessageStore {
     }
 
     public Message findMessageById(final String userName, final String messageId) {
+        Message message = null;
 
-        return MgnlContext.doInSystemContext(new MgnlContext.Op<Message, RuntimeException>() {
+        Node messageNode = getMessageNodeById(userName, messageId);
+        if (messageNode != null) {
+            try {
+                message = unmarshallMessage(messageNode);
+            } catch (RepositoryException e) {
+                logger.error("Unable to read message: " + messageId + " for user: " + userName, e);
+                return null;
+            } catch (Node2BeanException e) {
+                logger.error("Unable to read message: " + messageId + " for user: " + userName, e);
+                return null;
+            }
+
+        }
+        return message;
+
+    }
+
+    public Node getMessageNodeById(final String userName, final String messageId) {
+        return MgnlContext.doInSystemContext(new MgnlContext.Op<Node, RuntimeException>() {
 
             @Override
-            public Message exec() {
+            public Node exec() {
                 try {
                     Session session = MgnlContext.getJCRSession(WORKSPACE_NAME);
 
@@ -172,12 +191,9 @@ public class MessageStore {
                         return null;
                     }
 
-                    return unmarshallMessage(messageNode);
+                    return messageNode;
 
                 } catch (RepositoryException e) {
-                    logger.error("Unable to read message: " + messageId + " for user: " + userName, e);
-                    return null;
-                } catch (Node2BeanException e) {
                     logger.error("Unable to read message: " + messageId + " for user: " + userName, e);
                     return null;
                 }
@@ -185,8 +201,8 @@ public class MessageStore {
         });
     }
 
-    void marshallMessage(Message message, Node node) throws RepositoryException {
-        Node2MapUtil.map2node(node, message);
+    Node marshallMessage(Message message, Node node) throws RepositoryException {
+        return Node2MapUtil.map2node(node, message);
     }
 
     Message unmarshallMessage(Node node) throws RepositoryException, Node2BeanException {

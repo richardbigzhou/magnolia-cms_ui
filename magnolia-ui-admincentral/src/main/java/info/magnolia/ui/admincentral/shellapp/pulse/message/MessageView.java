@@ -31,39 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message.registry;
+package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import info.magnolia.jcr.node2bean.Node2BeanException;
-import info.magnolia.jcr.node2bean.Node2BeanProcessor;
-import info.magnolia.objectfactory.Components;
-import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
-
-import javax.inject.Singleton;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
+import info.magnolia.ui.vaadin.view.View;
 
 /**
- * ConfiguredMessageViewDefinitionProvider.
+ * View interface for displaying a message.
  */
-@Singleton
-public class ConfiguredMessageViewDefinitionProvider implements MessageViewDefinitionProvider {
-    private final String id;
+public interface MessageView extends View {
 
-    private final MessageViewDefinition messageViewDefinition;
+    void setMessageView(View formView);
+    void setActionbarView(View actionbarView);
+    void setListener(Listener listener);
 
-    public ConfiguredMessageViewDefinitionProvider(String id, Node configNode) throws RepositoryException, Node2BeanException {
-        this.id = id;
-        this.messageViewDefinition = (MessageViewDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, MessageViewDefinition.class);
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public MessageViewDefinition getMessageViewDefinition() throws RegistrationException {
-        return messageViewDefinition;
+    /**
+     * Listener interface used for communicating with the presenter.
+     */
+    public interface Listener {
+        void onNavigateToList();
     }
 }

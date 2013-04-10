@@ -184,18 +184,34 @@
       <implementation>info.magnolia.ui.admincentral.AdmincentralPresenter</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesView</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.MessageView</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.MessageViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.dashboard.PulseDashboardView</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.dashboard.PulseDashboardViewImpl</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.form.field.builder.FieldFactory</type>
+      <implementation>info.magnolia.ui.form.field.builder.FieldFactory</implementation>
+    </component>
 
+    <type-mapping>
+      <type>info.magnolia.ui.vaadin.form.FormView</type>
+      <implementation>info.magnolia.ui.vaadin.form.ItemFormView</implementation>
+    </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppInstanceController</type>
       <implementation>info.magnolia.ui.framework.app.AppInstanceControllerImpl</implementation>
@@ -242,10 +258,7 @@
       <type>info.magnolia.ui.dialog.FormDialogPresenter</type>
       <implementation>info.magnolia.ui.dialog.FormDialogPresenterImpl</implementation>
     </component>
-    <component>
-      <type>info.magnolia.ui.form.field.builder.FieldFactory</type>
-      <implementation>info.magnolia.ui.form.field.builder.FieldFactory</implementation>
-    </component>
+
     <component>
       <type>info.magnolia.ui.form.action.SaveFormActionDefinition</type>
       <implementation>info.magnolia.ui.form.action.SaveFormActionDefinition</implementation>
@@ -258,19 +271,16 @@
       <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
       <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
     </component>
+
     <component>
       <type>info.magnolia.ui.vaadin.form.FormViewReduced</type>
       <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
+
     <component>
       <type>info.magnolia.ui.admincentral.app.tools.EmbeddedPageView</type>
       <implementation>info.magnolia.ui.admincentral.app.tools.EmbeddedPageViewImpl</implementation>
     </component>
-
-    <type-mapping>
-      <type>info.magnolia.ui.vaadin.form.FormView</type>
-      <implementation>info.magnolia.ui.vaadin.form.ItemFormView</implementation>
-    </type-mapping>
   </components>
 
   <dependencies>

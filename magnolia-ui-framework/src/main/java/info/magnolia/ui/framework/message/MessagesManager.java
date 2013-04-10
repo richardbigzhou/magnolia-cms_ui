@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.framework.message;
 
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+
 import java.util.List;
 
 /**
@@ -69,6 +71,14 @@ public interface MessagesManager {
      * @return list of messages kept for the user
      */
     List<Message> getMessagesForUser(String userName);
+
+    /**
+     * Returns all messages kept for a specific user.
+     *
+     * @param userName name of the user
+     * @return list of messages kept for the user
+     */
+    JcrItemNodeAdapter getMessageItem(String userName, String messageId);
 
     /**
      * Send message to a specific user.

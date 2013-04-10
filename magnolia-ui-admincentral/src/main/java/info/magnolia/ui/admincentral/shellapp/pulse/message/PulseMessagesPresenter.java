@@ -72,6 +72,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
     private final ShellImpl shell;
 
     private boolean grouping = false;
+    private Listener listener;
 
     @Inject
     public PulseMessagesPresenter(final PulseMessagesView view, final ShellImpl shellImpl, final MessagesManager messagesManager) {
@@ -116,6 +117,10 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
         return view;
     }
 
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 
     private HierarchicalContainer createMessageDataSource() {
         container = new HierarchicalContainer();
@@ -292,6 +297,11 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
 
     @Override
     public void onMessageClicked(String messageId) {
-        this.messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
+        listener.openMessage(messageId);
+        messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
+    }
+
+    public interface Listener {
+        public void openMessage(String messageId);
     }
 }
