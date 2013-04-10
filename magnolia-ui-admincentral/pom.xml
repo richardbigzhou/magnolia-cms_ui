@@ -29,10 +29,6 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>info.magnolia.activation</groupId>
-      <artifactId>magnolia-module-activation</artifactId>
-    </dependency>
-    <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-module-imaging</artifactId>
     </dependency>
