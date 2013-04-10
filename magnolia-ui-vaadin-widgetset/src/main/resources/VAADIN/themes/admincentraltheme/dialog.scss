@@ -3,7 +3,7 @@
 @mixin dialog {
 
 .detail-view {
-	overflow-x: auto;
+    overflow-x: auto;
 }
 
 .dialog-panel {
@@ -11,9 +11,11 @@
   padding:0;
 }
 
-.modal .dialog-panel {
-  width:720px;
+.dialog-panel.confirmation{
+	background-color: lightblue; /* TODO: CLZ use real color */
+	width:400px;
 }
+
 
 .v-dialog-layout {
   display: inline-block;
@@ -22,7 +24,11 @@
 }
 
 .dialog-content {
-	width:100%;
+    width:100%;
+}
+
+.dialog-panel.confirmation .dialog-content{
+    padding:0 24px;
 }
 
 
@@ -39,20 +45,24 @@
 
 
 .dialog-header {
-  background-color: #666;
-  display: block;
-  height: 16px;
-  color: #AABF2F;
+    background-color:#666;
+    color: #AABF2F;
+    font-size:15px;
+    line-height:15px;
+    height:15px;
+}
+
+.dialog-panel.confirmation .dialog-header{
+	background-color:transparent;
+}
+.dialog-panel.confirmation .dialog-header button.btn-form-help{
+	display:none;
 }
 
 .dialog-header span {
-  font-family:DINWebPro;
-  font-size:16px;
-}
-
-.dialog-header-toolbar {
-  float:right;
-  padding-right:12px;
+    color:#aabf2f;
+    font-family:DINWebPro;
+    font-size:16px;
 }
 
 .dialog-header-toolbar {
@@ -68,70 +78,17 @@
   margin-right: 35px;
 }
 
-.modal{
-	position: absolute;
-	top: 0px;
-	bottom:0px;
-	left: 0px;
-	right: 0px;
-	text-align: center;
-}
 
-.modal-child {
-  display: inline-block;
-  position: relative;
-  margin-top: 2px;
-}
+
+
+
+
 
 .lightbox-image > img {
     max-width: 720px;
     max-height: 400px;
     cursor: pointer;
 }
-
-.modal-curtain{
-    position:absolute;
-    top:0px;
-    bottom:0px;
-    left:0px;
-    right:0px;
-    background-color:#000;
-    opacity:0.8;
-    filter:alpha(opacity = 80);
-}
-
-/* Set proper stacking for modals */
-.modal.app,
-.modal.sub-app {
-    z-index: 110;
-    overflow: hidden;
-}
-
-.modal.shell{
-	z-index:500;
-}
-
-.modal.shell .modal-child{
-  top:60px;
-}
-
-.dialog-header {
-    background-color:#666;
-    font-size:15px;
-    line-height:15px;
-    height:15px;
-}
-
-.dialog-header span {
-    color:#aabf2f;
-    font-family:DINWebPro;
-}
-
-.dialog-header-toolbar{
-    float:right;
-    padding-right:12px;
-}
-
 
 
 
@@ -140,6 +97,11 @@
   text-align: right;
   left: 0;
   right: 0;
+}
+
+.dialog-panel.confirmation .dialog-footer{
+	background-color: transparent;
+	text-align:center;
 }
 
 .dialog-header,
@@ -153,7 +115,7 @@
 .dialog-content,
 .dialog-footer {margin-top:2px;}
 
-.dialog-footer button.btn-dialog { margin-left: 10px; margin-right:0px; }
+.dialog-footer button.btn-dialog { margin-left: 10px; margin-right:0px; min-width:60px;}
 .dialog-footer button.btn-dialog-commit { float: right; }
 
 .dialog-footer-toolbar {
@@ -195,12 +157,93 @@ button.btn-dialog-help {
   width: 20px;
 }
 
+
+
+
+
+
+
+
+
+.modal{
+    position: absolute;
+    top: 0px;
+    bottom:0px;
+    left: 0px;
+    right: 0px;
+    text-align: center;
+}
+
+.modal-child {
+  display: inline-block;
+  position: relative;
+  margin-top: 2px;
+}
+
+/* transparent border */
+.modal.modality-light .modal-child {
+    border: 10px solid rgb(255, 255, 255);
+    border: 10px solid rgba(255, 255, 255, .5);
+    -webkit-background-clip: padding-box; /* for Safari */
+    background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
+}
+
+
+/* Vertical centering - The ghost, nudged to maintain perfect centering  - http://css-tricks.com/centering-in-the-unknown */
+.modal.center-vertical:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-right: -0.25em; /* Adjusts for spacing */
+}
+
+/* vertical centering */
+.modal.center-vertical .modal-child {
+    vertical-align:middle;
+}
+
+
+
+
+
+
+.modal-curtain{
+    position:absolute;
+    top:0px;
+    bottom:0px;
+    left:0px;
+    right:0px;
+    background-color:#000;
+    opacity:0.8;
+    filter:alpha(opacity = 80);
+}
+
+.modal.modality-light .modal-curtain{
+    background-color:transparent;
+}
+
+/* Set proper stacking for modals */
+.modal.app,
+.modal.sub-app {
+    z-index: 110;
+    overflow: hidden;
+}
+
+.modal.shell{
+	z-index:500;
+}
+
+.modal.shell .modal-child{
+  top:60px;
+}
+
+
+
+
 /*
 * Forms in a Modal.
 */
-.modal .form-panel {
-    width: 720px;
-}
 
 .modal .v-form-layout {
     background-color: #E6E6E6;
