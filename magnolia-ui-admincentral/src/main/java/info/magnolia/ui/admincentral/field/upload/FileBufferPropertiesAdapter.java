@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.field.upload;
 
+import org.vaadin.easyuploads.FileBuffer;
+
 /**
  * Implements {@link FilePropertiesAdapter} for {@link FileBuffer}.
  */

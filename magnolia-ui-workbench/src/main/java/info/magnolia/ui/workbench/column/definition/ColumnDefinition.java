@@ -66,7 +66,7 @@ public interface ColumnDefinition {
 
     Class<?> getType();
 
-    boolean isDisplayInDialog();
+    boolean isDisplayInChooseDialog();
 
     /**
      * Returns whether this column and therefore the underlying JCR property it represents is to be

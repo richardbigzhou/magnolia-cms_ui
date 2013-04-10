@@ -54,7 +54,7 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     private String propertyName;
 
-    private boolean displayInDialog = true;
+    private boolean displayInChooseDialog = true;
 
     private boolean searchable = true;
 
@@ -133,12 +133,12 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
      * By default returns <code>true</code>.
      */
     @Override
-    public boolean isDisplayInDialog() {
-        return displayInDialog;
+    public boolean isDisplayInChooseDialog() {
+        return displayInChooseDialog;
     }
 
-    public void setDisplayInDialog(boolean displayInDialog) {
-        this.displayInDialog = displayInDialog;
+    public void setDisplayInChooseDialog(boolean displayInChooseDialog) {
+        this.displayInChooseDialog = displayInChooseDialog;
     }
 
     /**

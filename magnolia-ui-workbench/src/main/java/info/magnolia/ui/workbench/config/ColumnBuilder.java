@@ -86,8 +86,8 @@ public class ColumnBuilder<T extends AbstractColumnDefinition> {
         return this;
     }
 
-    public ColumnBuilder<T> displayInDialog(boolean displayInDialog) {
-        definition.setDisplayInDialog(displayInDialog);
+    public ColumnBuilder<T> displayInChooseDialog(boolean displayInChooseDialog) {
+        definition.setDisplayInChooseDialog(displayInChooseDialog);
         return this;
     }
 
