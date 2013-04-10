@@ -34,6 +34,7 @@
 package info.magnolia.ui.form;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.builder.FieldBuilder;
 import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
@@ -56,18 +57,21 @@ import com.vaadin.ui.Field;
 public class FormBuilder {
 
     private FieldFactory fieldFactory;
-    private FormView view;
+    private ComponentProvider componentProvider;
 
     @Inject
-    public FormBuilder(FieldFactory fieldFactory, FormView view) {
+    public FormBuilder(FieldFactory fieldFactory, ComponentProvider componentProvider) {
         this.fieldFactory = fieldFactory;
-        this.view = view;
+        this.componentProvider = componentProvider;
     }
 
     /**
      * @return FormView populated with values from FormDefinition and Item.
      */
     public FormView buildForm(FormDefinition formDefinition, Item item, FormItem parent) {
+
+        FormView view = componentProvider.newInstance(FormView.class);
+
         final Form form = new Form(formDefinition);
         form.setParent(parent);
         view.setItemDataSource(item);

@@ -259,19 +259,18 @@
       <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.vaadin.form.FormView</type>
-      <implementation>info.magnolia.ui.vaadin.form.ItemFormView</implementation>
-    </component>
-
-    <component>
       <type>info.magnolia.ui.vaadin.form.FormViewReduced</type>
       <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
-
     <component>
       <type>info.magnolia.ui.admincentral.app.tools.EmbeddedPageView</type>
       <implementation>info.magnolia.ui.admincentral.app.tools.EmbeddedPageViewImpl</implementation>
     </component>
+
+    <type-mapping>
+      <type>info.magnolia.ui.vaadin.form.FormView</type>
+      <implementation>info.magnolia.ui.vaadin.form.ItemFormView</implementation>
+    </type-mapping>
   </components>
 
   <dependencies>
