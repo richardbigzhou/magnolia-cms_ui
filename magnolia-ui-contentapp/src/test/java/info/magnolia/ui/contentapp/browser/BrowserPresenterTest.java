@@ -50,6 +50,7 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.ActionExecutor;
+import info.magnolia.ui.statusbar.StatusBarPresenter;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -118,9 +119,10 @@ public class BrowserPresenterTest {
         EventBus adminCentralEventBus = mock(EventBus.class);
         ContentPresenter mockContentPresenter = mock(ContentPresenter.class);
         ActionbarPresenter mockActionbarPresenter = mock(ActionbarPresenter.class);
+        StatusBarPresenter mockStatusBarPresenter = mock(StatusBarPresenter.class);
         ActionExecutor actionExecutor = mock(ActionExecutor.class);
 
-        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockContentPresenter, mockActionbarPresenter, null);
+        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockContentPresenter, mockActionbarPresenter, mockStatusBarPresenter, null);
 
         // start presenter (binds event handlers)
         presenter.start();

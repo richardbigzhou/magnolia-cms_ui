@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
+import info.magnolia.ui.statusbar.StatusBarView;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.workbench.ContentView;
@@ -79,6 +80,11 @@ public interface BrowserView extends ComponentContainer, View {
      * Use this method to add an action bar to this sub app view.
      */
     void setActionbarView(ActionbarView actionbar);
+
+    /**
+     * Use this method to add a status bar to this sub app view.
+     */
+    void setStatusBarView(StatusBarView statusBar);
 
     void selectPath(String path);
 

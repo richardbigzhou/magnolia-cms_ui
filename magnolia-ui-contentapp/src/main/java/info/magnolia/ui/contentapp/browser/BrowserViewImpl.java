@@ -34,6 +34,7 @@
 package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.statusbar.StatusBarView;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.ContentView.ViewType;
@@ -82,6 +83,8 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
     private Map<ViewType, Button> contentViewsButton = new EnumMap<ViewType, Button>(ViewType.class);
 
     private ActionbarView actionbar;
+
+    private StatusBarView statusBar;
 
     private ViewType currentViewType = ViewType.TREE;
 
@@ -236,6 +239,16 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
             replaceComponent(this.actionbar.asVaadinComponent(), actionbar.asVaadinComponent());
         }
         this.actionbar = actionbar;
+    }
+
+    @Override
+    public void setStatusBarView(StatusBarView statusBar) {
+        if (this.statusBar == null) {
+            contentViewContainer.addComponent(statusBar.asVaadinComponent(), contentViewContainer.getComponentCount());
+        } else {
+            replaceComponent(this.statusBar.asVaadinComponent(), statusBar.asVaadinComponent());
+        }
+        this.statusBar = statusBar;
     }
 
     @Override

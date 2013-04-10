@@ -7,7 +7,7 @@
   <class>info.magnolia.ui.contentapp.ContentAppModule</class>
   <versionHandler>info.magnolia.ui.contentapp.setup.ContentAppModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
-  
+
   <components>
     <id>main</id>
   </components>
@@ -50,6 +50,16 @@
       <type>info.magnolia.ui.contentapp.browser.BrowserPresenter</type>
       <implementation>info.magnolia.ui.contentapp.browser.BrowserPresenter</implementation>
     </component>
+
+    <component>
+      <type>info.magnolia.ui.statusbar.StatusBarPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.browser.BrowserStatusBarPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.statusbar.StatusBarView</type>
+      <implementation>info.magnolia.ui.statusbar.StatusBarViewImpl</implementation>
+    </component>
+
     <component>
       <type>info.magnolia.ui.contentapp.detail.DetailEditorPresenter</type>
       <implementation>info.magnolia.ui.contentapp.detail.DetailEditorPresenter</implementation>

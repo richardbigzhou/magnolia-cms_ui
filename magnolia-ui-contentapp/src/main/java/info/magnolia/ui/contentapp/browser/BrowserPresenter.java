@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
-import com.vaadin.data.Item;
-import com.vaadin.server.Resource;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
@@ -53,6 +51,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.statusbar.StatusBarPresenter;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
@@ -66,9 +65,6 @@ import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.search.SearchView;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -76,6 +72,13 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
+import com.vaadin.server.Resource;
 
 /**
  * The browser is a core component of AdminCentral. It represents the main hub through which users can interact with
@@ -108,19 +111,22 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
 
     private final ActionbarPresenter actionbarPresenter;
 
+    private final StatusBarPresenter statusBarPresenter;
+
     private final ImageProvider imageProvider;
     private final AppContext appContext;
 
     @Inject
     public BrowserPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final ContentPresenter contentPresenter,
-            final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider) {
+            final ActionbarPresenter actionbarPresenter, StatusBarPresenter statusBarPresenter, final ComponentProvider componentProvider) {
         this.actionExecutor = actionExecutor;
         this.view = view;
         this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
         this.contentPresenter = contentPresenter;
         this.actionbarPresenter = actionbarPresenter;
+        this.statusBarPresenter = statusBarPresenter;
         this.appContext = subAppContext.getAppContext();
         this.subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
         this.workbenchDefinition = subAppDescriptor.getWorkbench();
@@ -140,6 +146,7 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
 
         ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar());
         view.setActionbarView(actionbar);
+        view.setStatusBarView(statusBarPresenter.start());
         bindHandlers();
         return view;
     }
@@ -197,8 +204,7 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
 
     /**
      * @return The configured default view Type.<br>
-     *         If non define, return the first Content Definition as default.
-     * 
+     * If non define, return the first Content Definition as default.
      */
     public ViewType getDefaultViewType() {
         for (ContentViewDefinition definition : this.workbenchDefinition.getContentViews()) {
