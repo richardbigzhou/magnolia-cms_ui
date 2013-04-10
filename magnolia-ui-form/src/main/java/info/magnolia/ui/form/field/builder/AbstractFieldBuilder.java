@@ -34,16 +34,16 @@
 package info.magnolia.ui.form.field.builder;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.ui.form.AbstractFormItem;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.vaadin.form.i18n.I18NAwareProperty;
 import info.magnolia.ui.form.field.validation.FieldValidatorBuilder;
 import info.magnolia.ui.form.field.validation.FieldValidatorDefinition;
 import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
-import info.magnolia.ui.form.AbstractFormItem;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-
-import java.util.Locale;
 
 import javax.jcr.Node;
 
@@ -136,13 +136,17 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
      * If the property does not exist, create a new property based on the defined type, default value, and saveInfo.
      */
     protected Property<?> getOrCreateProperty() {
-        String propertyName = getPropertyName();
-        Property<?> property = item.getItemProperty(propertyName);
-        if (property == null) {
-            property = DefaultPropertyUtil.newDefaultProperty(propertyName, getFieldType(definition).getSimpleName(), definition.getDefaultValue());
-            item.addItemProperty(propertyName, property);
+        if (definition.isI18n()) {
+            return new I18NAwareProperty(definition.getName(), (JcrItemNodeAdapter) item, i18nContentSupport );
+        } else {
+            String propertyName = definition.getName();
+            Property<?> property = item.getItemProperty(propertyName);
+            if (property == null) {
+                property = DefaultPropertyUtil.newDefaultProperty(propertyName, getFieldType(definition).getSimpleName(), definition.getDefaultValue());
+                item.addItemProperty(propertyName, property);
+            }
+            return property;
         }
-        return property;
     }
 
     /**
@@ -172,6 +176,10 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
         } else {
             return ((JcrNodeAdapter) fieldRelatedItem).getNode();
         }
+    }
+
+    public String getPropertyName() {
+        return definition.getName();
     }
 
     @Override
@@ -204,25 +212,6 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
         // Set ReadOnly (field property has to be updated)
         if (field.getPropertyDataSource() != null) {
             field.getPropertyDataSource().setReadOnly(definition.isReadOnly());
-        }
-    }
-
-    /**
-     * Handle i18n definition.
-     * If i18n is set to true, prefix the property name by the current language
-     * (fr_, de_) if the current language is not the default one.
-     */
-    protected String getPropertyName() {
-        if (definition.isI18n()) {
-            Locale locale = getMessages().getLocale();
-            boolean isFallbackLanguage = i18nContentSupport.getFallbackLocale().equals(locale);
-            String newName = definition.getName();
-            if (!isFallbackLanguage) {
-                newName = newName + "_" + locale.toString();
-            }
-            return newName;
-        } else {
-            return definition.getName();
         }
     }
 }

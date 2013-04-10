@@ -33,13 +33,14 @@
  */
 package info.magnolia.ui.form;
 
+import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.form.field.builder.FieldBuilder;
 import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
 
 import javax.inject.Inject;
@@ -57,11 +58,13 @@ public class FormBuilder {
 
     private FieldFactory fieldFactory;
     private FormView view;
+    private I18nContentSupport i18nContentSupport;
 
     @Inject
-    public FormBuilder(FieldFactory fieldFactory, FormView view) {
+    public FormBuilder(FieldFactory fieldFactory, FormView view, I18nContentSupport i18nContentSupport) {
         this.fieldFactory = fieldFactory;
         this.view = view;
+        this.i18nContentSupport = i18nContentSupport;
     }
 
     /**
@@ -86,6 +89,7 @@ public class FormBuilder {
             view.setCaption(i18nLabel);
         }
 
+        boolean hasI18NAwareFields = false;
         for (TabDefinition tabDefinition : formDefinition.getTabs()) {
             FormTab tab = new FormTab(tabDefinition);
             tab.setParent(form);
@@ -95,6 +99,7 @@ public class FormBuilder {
                 if (fieldDefinition.getClass().equals(ConfiguredFieldDefinition.class)) {
                     continue;
                 }
+                hasI18NAwareFields |= fieldDefinition.isI18n();
                 final FieldBuilder formField = fieldFactory.create(fieldDefinition, item);
                 formField.setParent(tab);
                 final Field<?> field = formField.getField();
@@ -107,11 +112,14 @@ public class FormBuilder {
                 }
                 view.addField(field);
             }
-
             view.addFormSection(tab.getMessage(tabDefinition.getLabel()), tab.getContainer());
         }
         view.setShowAllEnabled(formDefinition.getTabs().size() > 1);
-
+        if (hasI18NAwareFields) {
+            view.setAvailableLocales(i18nContentSupport.getLocales());
+            view.setCurrentLocale(i18nContentSupport.getFallbackLocale());
+        }
         return view;
     }
+
 }
