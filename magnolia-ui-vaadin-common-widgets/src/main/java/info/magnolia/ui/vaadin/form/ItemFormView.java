@@ -38,8 +38,12 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog.DescriptionVisibilityEvent;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import java.util.Collection;
+import java.util.Locale;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
 
 /**
@@ -47,22 +51,21 @@ import com.vaadin.ui.Field;
  */
 public class ItemFormView implements FormView {
 
+    private ComboBox languageSelector;
+
     private BaseDialog dialog;
 
     private Form form;
 
     public ItemFormView() {
-
         form = new Form();
-
         dialog = new BaseDialog();
         dialog.setContent(form);
-
         dialog.addDescriptionVisibilityHandler(new BaseDialog.DescriptionVisibilityEvent.Handler() {
 
             @Override
             public void onDescriptionVisibilityChanged(DescriptionVisibilityEvent event) {
-                form.setDescriptionVisbility(event.isVisible());
+                form.setDescriptionVisibility(event.isVisible());
             }
         });
     }
@@ -73,14 +76,14 @@ public class ItemFormView implements FormView {
     }
 
     @Override
-    public void setItemDataSource(Item newDataSource) {
-        form.setItemDataSource(newDataSource);
-    }
-
-    @Override
     public Item getItemDataSource() {
 
         return form.getItemDataSource();
+    }
+
+    @Override
+    public void setItemDataSource(Item newDataSource) {
+        form.setItemDataSource(newDataSource);
     }
 
     @Override
@@ -90,8 +93,8 @@ public class ItemFormView implements FormView {
     }
 
     @Override
-    public void setDescriptionVisbility(boolean isVisible) {
-        form.setDescriptionVisbility(isVisible);
+    public void setDescriptionVisibility(boolean isVisible) {
+        form.setDescriptionVisibility(isVisible);
 
     }
 
@@ -129,6 +132,28 @@ public class ItemFormView implements FormView {
     }
 
     @Override
+    public void setAvailableLocales(Collection<Locale> locales) {
+        IndexedContainer c = new IndexedContainer();
+        c.addContainerProperty("locale", Locale.class, null);
+        for (Locale locale : locales) {
+            Item it = c.addItem(locale.getDisplayLanguage(locale));
+            it.getItemProperty("locale").setValue(locale);
+        }
+        this.languageSelector = new ComboBox();
+        languageSelector.setImmediate(true);
+        languageSelector.setContainerDataSource(c);
+        languageSelector.setNullSelectionAllowed(false);
+        languageSelector.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                Item item = languageSelector.getContainerDataSource().getItem(event.getProperty().getValue());
+                form.onLocaleChanged((Locale) item.getItemProperty("locale").getValue());
+            }
+        });
+        dialog.setFooterToolbar(languageSelector);
+    }
+
+    @Override
     public boolean isValid() {
         return form.isValid();
     }
@@ -138,4 +163,8 @@ public class ItemFormView implements FormView {
         return form.getFields();
     }
 
+    @Override
+    public void setCurrentLocale(Locale locale) {
+        this.languageSelector.setValue(locale.getDisplayLanguage());
+    }
 }
