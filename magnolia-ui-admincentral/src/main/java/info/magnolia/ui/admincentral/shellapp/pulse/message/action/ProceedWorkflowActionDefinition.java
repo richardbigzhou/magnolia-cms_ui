@@ -31,22 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message.definition;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.action;
 
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.model.action.ActionDefinition;
-
-import java.util.Map;
+import info.magnolia.ui.model.action.CommandActionDefinition;
 
 /**
- * Definition used for building a view for messages.
+ * ProceedWorkflowActionDefinition.
  */
-public interface MessageViewDefinition {
+public class ProceedWorkflowActionDefinition extends CommandActionDefinition {
 
-    Map<String, ActionDefinition> getActions();
-
-    FormDefinition getForm();
-
-    ActionbarDefinition getActionbar();
+    public ProceedWorkflowActionDefinition() {
+        setImplementationClass(ProceedWorkflowAction.class);
+    }
 }

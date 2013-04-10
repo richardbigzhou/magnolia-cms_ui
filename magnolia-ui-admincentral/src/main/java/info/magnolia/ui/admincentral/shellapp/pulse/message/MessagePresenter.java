@@ -33,17 +33,22 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.admincentral.shellapp.pulse.MessageActionExecutor;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageViewDefinitionRegistry;
 import info.magnolia.ui.form.FormBuilder;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessagesManager;
+import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.form.FormView;
 import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
 
-import com.vaadin.data.Item;
+import com.vaadin.data.util.BeanItem;
 
 /**
  * MessagePresenter.
@@ -51,14 +56,19 @@ import com.vaadin.data.Item;
 public class MessagePresenter implements MessageView.Listener, ActionbarPresenter.Listener {
 
     private final MessageView view;
+    private MessagesManager messagesManager;
+    private MessageActionExecutor messageActionExecutor;
     private MessageViewDefinitionRegistry messageViewDefinitionRegistry;
     private FormBuilder formbuilder;
     private ActionbarPresenter actionbarPresenter;
     private Listener listener;
+    private Message message;
 
     @Inject
-    public MessagePresenter(MessageView view, MessageViewDefinitionRegistry messageViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter) {
+    public MessagePresenter(MessageView view, MessagesManager messagesManager, MessageActionExecutor messageActionExecutor, MessageViewDefinitionRegistry messageViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter) {
         this.view = view;
+        this.messagesManager = messagesManager;
+        this.messageActionExecutor = messageActionExecutor;
         this.messageViewDefinitionRegistry = messageViewDefinitionRegistry;
         this.formbuilder = formbuilder;
         this.actionbarPresenter = actionbarPresenter;
@@ -67,10 +77,15 @@ public class MessagePresenter implements MessageView.Listener, ActionbarPresente
         actionbarPresenter.setListener(this);
     }
 
-    public View start(Item messageItem) {
+    public View start(String messageId) {
+        this.message = messagesManager.getMessageById(MgnlContext.getUser().getName(), messageId);
         String messageView = "ui-admincentral:default";
         try {
             MessageViewDefinition messageViewDefinition = messageViewDefinitionRegistry.get(messageView);
+
+            messageActionExecutor.setMessageViewDefinition(messageViewDefinition);
+
+            BeanItem messageItem = new BeanItem<Message>(message);
             FormView formView = formbuilder.buildForm(messageViewDefinition.getForm(), messageItem, null);
             view.setMessageView(formView);
 
@@ -92,17 +107,22 @@ public class MessagePresenter implements MessageView.Listener, ActionbarPresente
 
     @Override
     public void onExecute(String actionName) {
+        try {
 
+            messageActionExecutor.execute(actionName, message);
+        } catch (ActionExecutionException e) {
+            throw new RuntimeException("Could not execute action " + actionName, e);
+        }
     }
 
     @Override
     public String getLabel(String actionName) {
-        return "Publish";
+        return messageActionExecutor.getActionDefinition(actionName).getLabel();
     }
 
     @Override
     public String getIcon(String actionName) {
-        return "icon-publish";
+        return messageActionExecutor.getActionDefinition(actionName).getIcon();
     }
 
     @Override

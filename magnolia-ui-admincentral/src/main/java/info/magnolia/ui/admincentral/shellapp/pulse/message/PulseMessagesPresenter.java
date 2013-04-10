@@ -62,7 +62,6 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
 
     public static final String GROUP_COLUMN = "type";
 
-
     private final PulseMessagesView view;
 
     private HierarchicalContainer container = null;

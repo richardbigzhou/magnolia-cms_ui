@@ -31,22 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse.message.definition;
+package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
+import info.magnolia.ui.model.action.AbstractActionExecutor;
 import info.magnolia.ui.model.action.ActionDefinition;
 
-import java.util.Map;
+import javax.inject.Inject;
 
 /**
- * Definition used for building a view for messages.
+ * MessageActionExecutor.
  */
-public interface MessageViewDefinition {
+public class MessageActionExecutor extends AbstractActionExecutor {
 
-    Map<String, ActionDefinition> getActions();
+    private MessageViewDefinition messageViewDefinition;
 
-    FormDefinition getForm();
+    @Inject
+    public MessageActionExecutor(ComponentProvider componentProvider) {
+        super(componentProvider);
+    }
 
-    ActionbarDefinition getActionbar();
+    @Override
+    public ActionDefinition getActionDefinition(String actionName) {
+        return messageViewDefinition.getActions().get(actionName);
+    }
+
+    public void setMessageViewDefinition(MessageViewDefinition messageViewDefinition) {
+        this.messageViewDefinition = messageViewDefinition;
+    }
 }

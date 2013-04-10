@@ -37,26 +37,26 @@ import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.model.action.ActionDefinition;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A definition of a configured message view.
  */
 public class ConfiguredMessageViewDefinition implements MessageViewDefinition {
 
-    private List<ActionDefinition> actions = new LinkedList<ActionDefinition>();
+    private Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
 
     private FormDefinition form;
 
     private ActionbarDefinition actionbar;
 
     @Override
-    public List<ActionDefinition> getActions() {
+    public Map<String, ActionDefinition> getActions() {
         return actions;
     }
 
-    public void setActions(List<ActionDefinition> actions) {
+    public void setActions(Map<String, ActionDefinition> actions) {
         this.actions = actions;
     }
     @Override

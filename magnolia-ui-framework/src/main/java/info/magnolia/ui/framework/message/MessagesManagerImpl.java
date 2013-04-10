@@ -36,8 +36,6 @@ package info.magnolia.ui.framework.message;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Collection;
 import java.util.List;
@@ -45,7 +43,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import javax.jcr.Node;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,9 +133,8 @@ public class MessagesManagerImpl implements MessagesManager {
     }
 
     @Override
-    public JcrItemNodeAdapter getMessageItem(String userName, String messageId) {
-        Node node = messageStore.getMessageNodeById(userName, messageId);
-        return new JcrNodeAdapter(node);
+    public Message getMessageById(String userName, String messageId) {
+        return messageStore.findMessageById(userName, messageId);
     }
 
     @Override

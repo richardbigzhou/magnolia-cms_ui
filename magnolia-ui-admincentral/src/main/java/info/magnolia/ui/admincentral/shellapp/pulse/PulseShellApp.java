@@ -33,19 +33,15 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.shellapp.ShellApp;
 import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
-
-import com.vaadin.data.Item;
 
 /**
  * Pulse shell app.
@@ -55,15 +51,13 @@ public class PulseShellApp implements ShellApp, PulseMessagesPresenter.Listener,
     private PulseView pulseView;
 
     private ShellAppContext context;
-    private MessagesManager messagesManager;
     private PulseMessagesPresenter messages;
     private MessagePresenter messagePresenter;
     private ShellImpl shell;
 
     @Inject
-    public PulseShellApp(PulseView pulseView, MessagesManager messagesManager, PulseMessagesPresenter messages, MessagePresenter messagePresenter, ShellImpl shell) {
+    public PulseShellApp(PulseView pulseView, PulseMessagesPresenter messages, MessagePresenter messagePresenter, ShellImpl shell) {
         this.pulseView = pulseView;
-        this.messagesManager = messagesManager;
         this.messages = messages;
         this.messagePresenter = messagePresenter;
         this.shell = shell;
@@ -85,9 +79,7 @@ public class PulseShellApp implements ShellApp, PulseMessagesPresenter.Listener,
 
     @Override
     public void openMessage(String messageId) {
-        Item messageItem = messagesManager.getMessageItem(MgnlContext.getUser().getName(), messageId);
-        pulseView.setPulseView(messagePresenter.start(messageItem));
-
+        pulseView.setPulseView(messagePresenter.start(messageId));
     }
 
     @Override
