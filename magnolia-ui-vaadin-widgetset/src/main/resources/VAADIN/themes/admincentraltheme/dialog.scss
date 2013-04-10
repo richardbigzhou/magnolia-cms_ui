@@ -115,6 +115,25 @@
   top:60px;
 }
 
+.dialog-header {
+    background-color:#666;
+    font-size:15px;
+    line-height:15px;
+    height:15px;
+}
+
+.dialog-header span {
+    color:#aabf2f;
+    font-family:DINWebPro;
+}
+
+.dialog-header-toolbar{
+    float:right;
+    padding-right:12px;
+}
+
+
+
 
 .dialog-footer {
   background-color: #ccc;
@@ -123,6 +142,7 @@
   right: 0;
 }
 
+.dialog-header,
 .dialog-description,
 .dialog-error,
 .dialog-footer {padding:10px 16px 10px 16px;}
