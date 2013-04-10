@@ -33,14 +33,11 @@
  */
 package info.magnolia.ui.contentapp.detail.action;
 
-import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
-import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.view.ConfirmationCallback;
 import info.magnolia.ui.vaadin.view.ModalCloser;
@@ -54,7 +51,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.event.ContentChangedEvent;
 
 import javax.jcr.RepositoryException;
 

@@ -33,11 +33,6 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-
 /**
  * ConfirmationDialog.
  */
