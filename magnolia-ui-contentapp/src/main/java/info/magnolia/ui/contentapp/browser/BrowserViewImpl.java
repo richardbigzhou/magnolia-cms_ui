@@ -162,7 +162,7 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
         button.setStyleName(BaseTheme.BUTTON_LINK);
 
         button.setHtmlContentAllowed(true);
-        button.setCaption("<span class=\"" + icon + "\"></span><span class=\"view-type-arrow icon-arrow2_n\"></span>");
+        button.setCaption("<span class=\"" + icon + "\"></span><span class=\"view-type-arrow icon-arrow1_n\"></span>");
 
         if (active) {
             button.addStyleName("active");
