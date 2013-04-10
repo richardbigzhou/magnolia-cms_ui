@@ -301,6 +301,9 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
 
+    /**
+     * Listener interface used to call back to parent presenter.
+     */
     public interface Listener {
         public void openMessage(String messageId);
     }

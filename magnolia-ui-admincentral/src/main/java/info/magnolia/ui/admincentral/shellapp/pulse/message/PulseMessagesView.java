@@ -52,6 +52,9 @@ public interface PulseMessagesView extends PulseSubView {
 
     void setListener(Listener listener);
 
+    /**
+     * Listener interface to call back to {@link PulseMessagesPresenter}.
+     */
     public interface Listener{
 
         void filterByMessageCategory(PulseMessageCategoryNavigator.MessageCategory category);

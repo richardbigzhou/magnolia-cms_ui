@@ -39,9 +39,6 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.NodeVisitor;
 import info.magnolia.module.ModuleRegistry;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionProvider;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageViewDefinitionProvider;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageViewDefinitionRegistry;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -35,8 +35,6 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.ui.vaadin.view.View;
 
-import java.util.List;
-
 
 /**
  * View for pulse.

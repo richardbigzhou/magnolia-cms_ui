@@ -97,12 +97,12 @@ public class MessagePresenter implements MessageView.Listener, ActionbarPresente
 
     @Override
     public String getLabel(String actionName) {
-        return null;
+        return "Publish";
     }
 
     @Override
     public String getIcon(String actionName) {
-        return null;
+        return "icon-publish";
     }
 
     @Override
@@ -110,6 +110,9 @@ public class MessagePresenter implements MessageView.Listener, ActionbarPresente
 
     }
 
+    /**
+     * Listener interface used to call back to parent presenter.
+     */
     public interface Listener {
         void showList();
     }
