@@ -52,6 +52,10 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.easyuploads.DirectoryFileFactory;
+import org.vaadin.easyuploads.FileBuffer;
+import org.vaadin.easyuploads.FileFactory;
+import org.vaadin.easyuploads.UploadField.FieldType;
 
 import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.event.dd.DragAndDropEvent;

@@ -161,11 +161,7 @@ public class ShellImpl implements Shell, MessageEventHandler {
     }
 
     private void stopCurrentApp() {
-        magnoliaShell.getAppViewport().pop();
         appController.stopCurrentApp();
-        if (magnoliaShell.getAppViewport().isEmpty()) {
-            goToShellApp(Fragment.fromString("shell:applauncher"));
-        }
     }
 
     @Override

@@ -34,14 +34,14 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.cms.core.Path;
-import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.jcr.AccessDeniedException;
-import javax.jcr.Item;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -53,11 +53,11 @@ import javax.jcr.Session;
  */
 public abstract class RepositoryOperationAction<D extends ActionDefinition> extends ActionBase<D> {
 
-    protected final Item item;
+    protected final JcrItemAdapter item;
 
     private final EventBus eventBus;
 
-    public RepositoryOperationAction(D definition, Item item, EventBus eventBus) {
+    public RepositoryOperationAction(D definition, JcrItemAdapter item, EventBus eventBus) {
         super(definition);
         this.item = item;
         this.eventBus = eventBus;
@@ -69,7 +69,7 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            Session session = item.getSession();
+            Session session = item.getJcrItem().getSession();
             onExecute(item);
             session.save();
             eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemPath()));
@@ -86,13 +86,13 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
         return item.getPath();
     }
 
-    protected abstract void onExecute(Item item) throws RepositoryException;
+    protected abstract void onExecute(JcrItemAdapter item) throws RepositoryException;
 
-    protected String getUniqueNewItemName(final Item item) throws RepositoryException, ItemNotFoundException, AccessDeniedException {
+    protected String getUniqueNewItemName(JcrItemAdapter item) throws RepositoryException, ItemNotFoundException, AccessDeniedException {
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null.");
         }
-        return Path.getUniqueLabel(item.getSession(), item.getPath(), "untitled");
+        return Path.getUniqueLabel(item.getJcrItem().getSession(), item.getJcrItem().getPath(), "untitled");
     }
 
 }

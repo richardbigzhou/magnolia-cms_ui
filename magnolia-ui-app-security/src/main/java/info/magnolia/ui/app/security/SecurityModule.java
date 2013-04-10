@@ -149,9 +149,9 @@ public class SecurityModule implements ModuleLifecycle {
                                                 contentAppConfig.workbench.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                         .columns(
                                                 cfg.columns.property(ModelConstants.JCR_NAME, "Group name").sortable(true).expandRatio(2),
-                                                cfg.columns.property("title", "Full group name").sortable(true).displayInDialog(false).expandRatio(2),
-                                                cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
-                                                cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
+                                                cfg.columns.property("title", "Full group name").sortable(true).displayInChooseDialog(false).expandRatio(2),
+                                                cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInChooseDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
+                                                cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInChooseDialog(false).formatterClass(DateColumnFormatter.class).width(160)
                                         )
                                 )
                                 .actionbar(cfg.actionbars.actionbar().defaultAction(editGroupAction.getName())
@@ -172,9 +172,9 @@ public class SecurityModule implements ModuleLifecycle {
                                                 contentAppConfig.workbench.nodeType(NodeTypes.Folder.NAME).icon("icon-folder"))
                                         .columns(
                                                 cfg.columns.property(ModelConstants.JCR_NAME, "Role name").sortable(true).expandRatio(2),
-                                                cfg.columns.property("title", "Full role name").sortable(true).displayInDialog(false).expandRatio(2),
-                                                cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
-                                                cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
+                                                cfg.columns.property("title", "Full role name").sortable(true).displayInChooseDialog(false).expandRatio(2),
+                                                cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInChooseDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
+                                                cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInChooseDialog(false).formatterClass(DateColumnFormatter.class).width(160)
                                         )
 
                                 )
@@ -226,9 +226,9 @@ public class SecurityModule implements ModuleLifecycle {
                         .columns(
                                 cfg.columns.column(new UserNameColumnDefinition()).name("name").label("Name").sortable(true).propertyName(ModelConstants.JCR_NAME).formatterClass(UserNameColumnFormatter.class).expandRatio(2),
                                 cfg.columns.property("title", "Full name").sortable(true).expandRatio(2),
-                                cfg.columns.property("email", "Email").sortable(true).sortable(true).displayInDialog(false).expandRatio(1),
-                                cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
-                                cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInDialog(false).formatterClass(DateColumnFormatter.class).width(160)
+                                cfg.columns.property("email", "Email").sortable(true).sortable(true).displayInChooseDialog(false).expandRatio(1),
+                                cfg.columns.column(new StatusColumnDefinition()).name("status").label("Status").displayInChooseDialog(false).formatterClass(StatusColumnFormatter.class).width(46),
+                                cfg.columns.column(new MetaDataColumnDefinition()).name("moddate").label("Modification date").sortable(true).propertyName(NodeTypes.LastModified.LAST_MODIFIED).displayInChooseDialog(false).formatterClass(DateColumnFormatter.class).width(160)
                         )
                 )
                 .actionbar(cfg.actionbars.actionbar().defaultAction(editUserAction.getName())
