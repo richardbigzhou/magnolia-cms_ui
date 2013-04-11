@@ -104,7 +104,7 @@ public class FormBuilderTest {
         // GIVEN
         final FormDefinition def = new ConfiguredFormDefinition();
         final FormView form = new ItemFormView();
-        final FormBuilder builder = new FormBuilder(null, form);
+        final FormBuilder builder = new FormBuilder(null, form, null);
 
         // WHEN
         final FormView result = builder.buildForm(def, null, null);
@@ -142,7 +142,7 @@ public class FormBuilderTest {
         editField.setI18nContentSupport(i18nContentSupport);
         when(fieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
 
-        final FormBuilder builder = new FormBuilder(fieldFactory, form);
+        final FormBuilder builder = new FormBuilder(fieldFactory, form, null);
         // WHEN
         final FormView result = builder.buildForm(formDef, item, null);
 
