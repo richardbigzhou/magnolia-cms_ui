@@ -34,12 +34,12 @@
 package info.magnolia.ui.admincentral.field.upload;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.mediaeditor.MediaEditorPresenter;
 import info.magnolia.ui.mediaeditor.MediaEditorPresenterFactory;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent.Handler;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
 
@@ -390,7 +390,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     protected void openMediaEditor() {
 
         final NativeButton mediaEditorPlaceholder = new NativeButton("Media Editor Placeholder (Close Dialog)");
-        mediaEditorPlaceholder.addStyleName("btn-form btn-form-commit");
+        mediaEditorPlaceholder.addStyleName("btn-dialog btn-dialog-commit");
 
         ByteArrayInputStream inputStream = this.fileItem.getStream();
 

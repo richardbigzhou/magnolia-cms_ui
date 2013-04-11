@@ -11,9 +11,10 @@
   padding:0;
 }
 
-.dialog-panel.confirmation{
+.dialog-panel.lightdialog{
 	background-color: lightblue; /* TODO: CLZ use real color */
 	width:400px;
+	text-align:center;
 }
 
 
@@ -27,8 +28,9 @@
     width:100%;
 }
 
-.dialog-panel.confirmation .dialog-content{
+.dialog-panel.lightdialog .dialog-content{
     padding:0 24px;
+    width:auto;
 }
 
 
@@ -52,10 +54,10 @@
     height:15px;
 }
 
-.dialog-panel.confirmation .dialog-header{
+.dialog-panel.lightdialog .dialog-header{
 	background-color:transparent;
 }
-.dialog-panel.confirmation .dialog-header button.btn-form-help{
+.dialog-panel.lightdialog .dialog-header button.btn-form-help{
 	display:none;
 }
 
@@ -99,9 +101,9 @@
   right: 0;
 }
 
-.dialog-panel.confirmation .dialog-footer{
+.dialog-panel.lightdialog .dialog-footer{
+    display:inline-block;
 	background-color: transparent;
-	text-align:center;
 }
 
 .dialog-header,
@@ -254,24 +256,41 @@ button.btn-dialog-help {
     background-color: #E6E6E6;
 }
 
-.message{
+
+
+
+.lightdialog .title{
+    font-weight:bold;
+    padding-bottom:5px;
+}
+.lightdialog{
     color:black;
+    padding-bottom:5px;
  }
- .message .btn-default, .message .btn-other{
+.lightdialog button,
+.lightdialog .btn-default,
+.lightdialog .btn-other{
     color:white;
 }
 
-.message-style-info{                background: $c07;}
-.message-style-info .btn-default{   background: $c05;}
-.message-style-info button{     background: #A1ADAF;}
 
-.message-style-warning{                background: $c15;}
-.message-style-warning .btn-default{   background: #F6A51C;}
-.message-style-warning button{     background: #BEB099;}
+.lightdialog .btn-dialog-default { float:right;}
 
-.message-style-alert{                background: $c19;}
-.message-style-alert .btn-default{   background: $c17;}
-.message-style-alert button{     background: #AE9D9D;}
+.lightdialog.msginfo{                  }
+.lightdialog.msginfo .m-closebutton{        color: $c05;
+    &:hover,&:active{                       color: #A1ADAF;}}
+.lightdialog.msginfo .btn-dialog-default{   background: $c05;}
+.lightdialog.msginfo button{                background: #A1ADAF;}
+
+.lightdialog.msgwarn{                       background: $c15;}
+.lightdialog.msgwarn .m-closebutton{        color: #F6A51C;}
+.lightdialog.msgwarn .btn-dialog-default{   background: #F6A51C;}
+.lightdialog.msgwarn button{                background: #BEB099;}
+
+.lightdialog.msgerror{                      background: $c19;}
+.lightdialog.msgerror .m-closebutton{       color: $c17;}
+.lightdialog.msgerror .btn-dialog-default{  background: $c17;}
+.lightdialog.msgerror button{               background: #AE9D9D;}
 
 
 

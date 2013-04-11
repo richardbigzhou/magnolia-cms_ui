@@ -50,15 +50,13 @@ public interface ModalLayer {
 
     ModalCloser openModal(View view, ModalityLevel modalityLevel);
 
-    ModalCloser openConfirmation(View v, String confirmButtonText, String cancelButtonText, ConfirmationCallback callback);
-
     ModalCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb);
 
     ModalCloser openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb);
 
-    ModalCloser openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, ConfirmationCallback cb);
+    ModalCloser openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb);
 
-    ModalCloser openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, ConfirmationCallback cb);
+    ModalCloser openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb);
 
     ModalCloser openNotification(View viewToShow, String confirmButtonText, NotificationCallback cb);
 

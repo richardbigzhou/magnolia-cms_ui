@@ -50,7 +50,6 @@ import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.dialog.Modal;
 import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.view.BaseModalLayer;
-import info.magnolia.ui.vaadin.view.ConfirmationCallback;
 import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
 
@@ -154,11 +153,7 @@ public class AppInstanceControllerImpl extends BaseModalLayer implements AppCont
         return shell.openModalOnView(view, modalityParent, Modal.ModalityLocation.APP, modalityLevel);
     }
 
-    @Override
-    public ModalCloser openConfirmation(View v, String confirmButtonText, String cancelButtonText, ConfirmationCallback callback) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+
 
     /**
      * Called when the app is launched from the app launcher OR a location change event triggers

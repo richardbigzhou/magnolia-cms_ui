@@ -44,9 +44,9 @@ import info.magnolia.ui.vaadin.icon.WarningIcon;
 public enum MessageStyleType {
 
     UNKNOWN("", "", null),
-    ERROR("Error", "error", ErrorIcon.class),
-    WARNING("Warning", "warning", WarningIcon.class),
-    INFO("Info", "info", InfoIcon.class);
+    ERROR("Error", "msgerror", ErrorIcon.class),
+    WARNING("Warning", "msgwarn", WarningIcon.class),
+    INFO("Info", "msginfo", InfoIcon.class);
 
     private String caption;
     private String name;

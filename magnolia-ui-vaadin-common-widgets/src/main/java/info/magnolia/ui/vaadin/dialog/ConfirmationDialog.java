@@ -44,24 +44,31 @@ import com.vaadin.ui.Label;
  */
 public class ConfirmationDialog extends BaseDialog {
 
-    public static final String CONFIRM_ACTION = "DIALOG_ACTION_CONFIRM";
+    public static final String CONFIRM_ACTION = "confirm";
 
-    public static final String REJECT_ACTION = "DIALOG_ACTION_REJECT";
+    public static final String CANCEL_ACTION = "cancel";
 
     private String message;
 
-    public ConfirmationDialog(final String message) {
+    public ConfirmationDialog(final String message, boolean cancelIsDefault) {
         setMessage(message);
-        init();
+        init(cancelIsDefault);
     }
 
-    public ConfirmationDialog(final View contents) {
+    public ConfirmationDialog(final View contents, boolean cancelIsDefault) {
         message = "";
         setContent(contents.asVaadinComponent());
-        init();
+        init(cancelIsDefault);
     }
 
-    public void init() {
+    public void init(boolean cancelIsDefault) {
+        // Add a class to the default button
+        if (cancelIsDefault) {
+            this.getState().defaultButtonName = CANCEL_ACTION;
+        } else {
+            this.getState().defaultButtonName = CONFIRM_ACTION;
+        }
+
         addAction(CONFIRM_ACTION, "OK", new DialogActionListener() {
 
             @Override
@@ -71,7 +78,7 @@ public class ConfirmationDialog extends BaseDialog {
 
         });
 
-        addAction(REJECT_ACTION, "Cancel", new DialogActionListener() {
+        addAction(CANCEL_ACTION, "Cancel", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
                 fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));
@@ -79,12 +86,13 @@ public class ConfirmationDialog extends BaseDialog {
         });
     }
 
+
     public void setConfirmActionLabel(final String label) {
-        setActionLabel(CONFIRM_ACTION, label);
+        addAction(CONFIRM_ACTION, label);
     }
 
     public void setRejectActionLabel(final String label) {
-        setActionLabel(REJECT_ACTION, label);
+        addAction(CANCEL_ACTION, label);
     }
 
     public void setMessage(String message) {

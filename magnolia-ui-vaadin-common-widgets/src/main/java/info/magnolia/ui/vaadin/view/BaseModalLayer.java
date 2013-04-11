@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.view;
 
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
 import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
@@ -58,7 +59,7 @@ public abstract class BaseModalLayer implements ModalLayer {
 
     /**
      * Open a Modal on top of the ModalLayer implementer.
-     * 
+     *
      * @param view View of the component to be displayed modally.
      */
     // public ModalCloser openModal(View view, ModalityLevel modalityLevel);
@@ -112,8 +113,9 @@ public abstract class BaseModalLayer implements ModalLayer {
         };
     }
 
-    private ConfirmationDialog createConfirmationDialog(View contentView, String confirmButtonText, String cancelButtonText, String stylename) {
-        ConfirmationDialog dialog = new ConfirmationDialog(contentView);
+    private ConfirmationDialog createConfirmationDialog(View contentView, String confirmButtonText, String cancelButtonText, String stylename, boolean cancelIsDefault) {
+        ConfirmationDialog dialog = new ConfirmationDialog(contentView, cancelIsDefault);
+        dialog.addStyleName("lightdialog");
         dialog.addStyleName(stylename);
         dialog.setConfirmActionLabel(confirmButtonText);
         dialog.setRejectActionLabel(cancelButtonText);
@@ -126,38 +128,48 @@ public abstract class BaseModalLayer implements ModalLayer {
             @Override
             public Component asVaadinComponent() {
                 Layout layout = new CssLayout();
+
                 Label titleLabel = new Label(title);
-                Label bodyLabel = new Label(body);
-                CompositeIcon icon = type.Icon();
+                titleLabel.addStyleName("title");
                 layout.addComponent(titleLabel);
+
+                Label bodyLabel = new Label(body);
+                bodyLabel.addStyleName("body");
                 layout.addComponent(bodyLabel);
+
+                CompositeIcon icon = type.Icon();
                 layout.addComponent(icon);
 
-                layout.addStyleName(type.Name());
                 return layout;
             }
         };
     }
 
     @Override
-    public ModalCloser openConfirmation(View contentView, String confirmButtonText, String cancelButtonText, final ConfirmationCallback callback) {
-        ConfirmationDialog dialog = createConfirmationDialog(contentView, confirmButtonText, cancelButtonText, "confirmation");
+    public ModalCloser openConfirmation(MessageStyleType type, View contentView, String confirmButtonText, String cancelButtonText,
+            boolean cancelIsDefault, final ConfirmationCallback callback) {
+        ConfirmationDialog dialog = createConfirmationDialog(contentView, confirmButtonText, cancelButtonText, type.Name(), cancelIsDefault);
         dialog.showCloseButton();
 
-        ModalCloser modalCloser = openModal(dialog, ModalityLevel.LIGHT);
+        final ModalCloser modalCloser = openModal(dialog, ModalityLevel.LIGHT);
         dialog.addConfirmationHandler(createHandler(modalCloser, callback));
+
+        dialog.addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
+            @Override
+            public void onClose(BaseDialog.DialogCloseEvent event) {
+                modalCloser.close();
+                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
+            }
+        });
+
         return modalCloser;
     }
 
     @Override
-    public ModalCloser openConfirmation(MessageStyleType type, final String title, final String body, String confirmButtonText, String cancelButtonText, ConfirmationCallback cb) {
-        return openConfirmation(createConfirmationView(type, title, body), confirmButtonText, cancelButtonText, cb);
+    public ModalCloser openConfirmation(MessageStyleType type, final String title, final String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        return openConfirmation(type, createConfirmationView(type, title, body), confirmButtonText, cancelButtonText, cancelIsDefault, cb);
     }
 
-    @Override
-    public ModalCloser openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, ConfirmationCallback cb) {
-        return openConfirmation(viewToShow, confirmButtonText, cancelButtonText, cb);
-    }
 
     @Override
     public ModalCloser openNotification(View viewToShow, String confirmButtonText, NotificationCallback cb) {

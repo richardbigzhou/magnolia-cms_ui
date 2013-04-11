@@ -56,7 +56,6 @@ import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
 import info.magnolia.ui.vaadin.view.BaseModalLayer;
-import info.magnolia.ui.vaadin.view.ConfirmationCallback;
 import info.magnolia.ui.vaadin.view.ModalCloser;
 import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.view.Viewport;
@@ -353,10 +352,5 @@ public class ShellImpl extends BaseModalLayer implements Shell, MessageEventHand
         return magnoliaShell;
     }
 
-    @Override
-    public ModalCloser openConfirmation(View v, String confirmButtonText, String cancelButtonText, ConfirmationCallback callback) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
 }

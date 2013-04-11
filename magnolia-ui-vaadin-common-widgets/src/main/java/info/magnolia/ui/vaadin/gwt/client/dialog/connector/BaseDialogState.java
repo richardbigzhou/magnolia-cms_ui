@@ -49,6 +49,8 @@ public class BaseDialogState extends AbstractLayoutState {
 
     public Map<String, String> actions = new HashMap<String, String>();
 
+    public String defaultButtonName;
+
     public Connector content;
 
     public Connector headerToolbar;
