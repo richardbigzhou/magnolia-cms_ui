@@ -33,26 +33,26 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.cms.exchange.ExchangeException;
 import info.magnolia.commands.CommandsManager;
+import info.magnolia.commands.chain.Command;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
-import info.magnolia.module.activation.commands.ActivationCommand;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 public class ActivationActionTest {
@@ -62,7 +62,7 @@ public class ActivationActionTest {
 
     private MockSession session;
     private CommandsManager commandsManager;
-    private ActivationCommand activationCommand;
+    private Command activationCommand;
     private ActivationActionDefinition definition;
     private Map<String, Object> params = new HashMap<String, Object>();
 
@@ -83,7 +83,7 @@ public class ActivationActionTest {
         definition = new ActivationActionDefinition();
         definition.setCommand("activate");
 
-        activationCommand = new ActivationCommand();
+        activationCommand = mock(Command.class);
 
         when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "activate")).thenReturn(activationCommand);
         when(commandsManager.getCommand("activate")).thenReturn(activationCommand);

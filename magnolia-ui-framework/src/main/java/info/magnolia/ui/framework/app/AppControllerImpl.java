@@ -45,6 +45,7 @@ import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.framework.event.EventBusProtector;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
@@ -98,6 +99,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private final MessagesManager messagesManager;
     private Viewport viewport;
     private AppInstanceController currentAppInstanceController;
+    private EventBusProtector eventBusProtector;
 
     @Inject
     public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppDescriptorRegistry appDescriptorRegistry, LocationController locationController, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, MessagesManager messagesManager) {
@@ -247,6 +249,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     private void doStop(AppInstanceController appInstanceController) {
         appInstanceController.stop();
+        eventBusProtector.resetEventBuses();
         while (appHistory.remove(appInstanceController)) {
             ;
         }
@@ -259,6 +262,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         sendEvent(AppLifecycleEventType.STOPPED, appInstanceController.getAppDescriptor());
         if (!appHistory.isEmpty()) {
             doFocus(appHistory.peekFirst());
+        } else {
+            locationController.goTo(new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, "applauncher"));
         }
     }
 
@@ -424,6 +429,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         // Add the AppContext instance into the component provider.
         configuration.addComponent(InstanceConfiguration.valueOf(AppContext.class, appInstanceController));
+
+        eventBusProtector = new EventBusProtector();
+        configuration.addConfigurer(eventBusProtector);
 
         log.debug("Creating component provider for app " + name);
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();

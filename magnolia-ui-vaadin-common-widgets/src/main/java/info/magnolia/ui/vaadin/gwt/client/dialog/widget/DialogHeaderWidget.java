@@ -50,10 +50,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DialogHeaderWidget extends FlowPanel {
 
-    private static final String CLASSNAME_HEADER = "form-header";
-    private static final String ClASSNAME_DESCRIPTION = "form-description";
+    private static final String CLASSNAME_HEADER = "dialog-header";
+    private static final String ClASSNAME_DESCRIPTION = "dialog-description";
     private static final String CLASSNAME_HELPBUTTON = "btn-form-help";
-    private static final String CLASSNAME_HEADER_TOOLBAR = "form-header-toolbar";
+    private static final String CLASSNAME_HEADER_TOOLBAR = "dialog-header-toolbar";
 
     protected ButtonBase closeButton;
 
