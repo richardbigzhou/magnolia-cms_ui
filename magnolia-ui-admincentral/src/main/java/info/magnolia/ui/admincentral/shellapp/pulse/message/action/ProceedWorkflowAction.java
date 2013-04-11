@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message.action;
 
-import info.magnolia.commands.CommandsManager;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
@@ -47,7 +46,7 @@ import javax.inject.Inject;
 public class ProceedWorkflowAction extends ActionBase {
 
     @Inject
-    public ProceedWorkflowAction(CommandActionDefinition definition, Message message, CommandsManager commandsManager) {
+    public ProceedWorkflowAction(CommandActionDefinition definition, Message message) {
         super(definition);
     }
 
