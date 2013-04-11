@@ -34,28 +34,8 @@
 package info.magnolia.ui.vaadin.view;
 
 /**
- * Implementers can open modal views over their display area.
+ * Callback interface for alert.
  */
-public interface ModalLayer {
+public interface AlertCallback {
 
-    /**
-     * Type of notification.
-     */
-    enum MessageEnum {
-        eQuestion, eWarning
-    };
-
-    ModalCloser openConfirmation(View v, String confirmButtonText, String cancelButtonText, ConfirmationCallback callback);
-
-    ModalCloser openAlert(MessageEnum type, View viewToShow, String confirmButtonText, AlertCallback cb);
-
-    ModalCloser openAlert(MessageEnum type, String title, String body, String confirmButtonText, AlertCallback cb);
-
-    ModalCloser openConfirmation(MessageEnum type, View viewToShow, String confirmButtonText, String cancelButtonText, ConfirmationCallback cb);
-
-    ModalCloser openConfirmation(MessageEnum type, String title, String body, String confirmButtonText, String cancelButtonText, ConfirmationCallback cb);
-
-    ModalCloser openNotification(View viewToShow, String confirmButtonText, IndicationCallback cb);
-
-    ModalCloser openNotification(View parent, View viewToShow, int timeout_msec);
 }

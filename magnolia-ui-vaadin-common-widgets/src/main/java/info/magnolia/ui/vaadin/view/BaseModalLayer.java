@@ -37,16 +37,38 @@ import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
 import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 
+import com.vaadin.ui.Component;
+
 /**
  * Implementers can open modal views over their display area.
  */
 public abstract class BaseModalLayer implements ModalLayer {
 
     /**
+     * Convenience method to open a modal with the default strong modality level.
+     */
+    protected ModalCloser openModal(View view) {
+        return openModal(view, ModalityLevel.STRONG);
+    }
+
+    /**
      * Open a Modal on top of the ModalLayer implementer.
      * 
      * @param view View of the component to be displayed modally.
      */
+    protected ModalCloser openModal(View view, ModalityLevel modalityLevel) {
+        return null;
+    }
+
+    @Override
+    public ModalCloser openAlert(MessageEnum type, View viewToShow, String confirmButtonText, AlertCallback cb) {
+        return null;
+    }
+
+    @Override
+    public ModalCloser openAlert(MessageEnum type, String title, String body, String confirmButtonText, AlertCallback cb) {
+        return null;
+    }
 
     @Override
     public ModalCloser openConfirmation(View contentView, String confirmButtonText, String cancelButtonText, final ConfirmationCallback callback) {
@@ -83,12 +105,49 @@ public abstract class BaseModalLayer implements ModalLayer {
 
     }
 
-    /**
-     * Convenience method to open a modal with the default strong modality level.
-     */
     @Override
-    public ModalCloser openModal(View view) {
-        return openModal(view, ModalityLevel.STRONG);
+    public ModalCloser openConfirmation(MessageEnum type, String title, String body, String confirmButtonText, String cancelButtonText, ConfirmationCallback cb) {
+        View contentView = new View() {
+
+            @Override
+            public Component asVaadinComponent() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+        };
+
+        ConfirmationCallback callback = new ConfirmationCallback() {
+
+            @Override
+            public void onSuccess(String actionName) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onCancel() {
+                // TODO Auto-generated method stub
+
+            }
+        };
+
+        return openConfirmation(contentView, confirmButtonText, cancelButtonText, callback);
+    }
+
+    @Override
+    public ModalCloser openConfirmation(MessageEnum type, View viewToShow, String confirmButtonText, String cancelButtonText, ConfirmationCallback cb) {
+        return null;
+    }
+
+    @Override
+    public ModalCloser openNotification(View viewToShow, String confirmButtonText, IndicationCallback cb) {
+        return null;
+    }
+
+    @Override
+    public ModalCloser openNotification(View parent, View viewToShow, int timeout_msec) {
+        return null;
     }
 
 }
