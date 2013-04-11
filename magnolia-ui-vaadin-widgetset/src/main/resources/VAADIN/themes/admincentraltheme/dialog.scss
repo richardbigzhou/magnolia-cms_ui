@@ -182,8 +182,8 @@ button.btn-dialog-help {
 
 /* transparent border */
 .modal.modality-light .modal-child {
-    border: 10px solid rgb(255, 255, 255);
-    border: 10px solid rgba(255, 255, 255, .5);
+    border: 20px solid rgb(255, 255, 255);
+    border: 20px solid rgba(255, 255, 255, .5);
     -webkit-background-clip: padding-box; /* for Safari */
     background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
 }
@@ -253,5 +253,28 @@ button.btn-dialog-help {
 .modal .form-panel .v-shell-tabsheet .nav li.active {
     background-color: #E6E6E6;
 }
+
+.message{
+    color:black;
+ }
+ .message .btn-default, .message .btn-other{
+    color:white;
+}
+
+.message-style-info{                background: $c07;}
+.message-style-info .btn-default{   background: $c05;}
+.message-style-info button{     background: #A1ADAF;}
+
+.message-style-warning{                background: $c15;}
+.message-style-warning .btn-default{   background: #F6A51C;}
+.message-style-warning button{     background: #BEB099;}
+
+.message-style-alert{                background: $c19;}
+.message-style-alert .btn-default{   background: $c17;}
+.message-style-alert button{     background: #AE9D9D;}
+
+
+
+
 
 }

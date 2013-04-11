@@ -42,17 +42,14 @@ import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.view.ConfirmationCallback;
+import info.magnolia.ui.vaadin.view.MessageStyleType;
 import info.magnolia.ui.vaadin.view.ModalCloser;
-import info.magnolia.ui.vaadin.view.View;
 
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
 
 /**
  * Action for editing items in {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
@@ -75,14 +72,11 @@ public class EditItemAction extends ActionBase<EditItemActionDefinition> {
     @Override
     public void execute() throws ActionExecutionException {
 
-        View confirmationView = new View(){
-            @Override
-            public Component asVaadinComponent() {
-                return new Label("2.So - you really want to edit an item?");
-            }
-        };
 
-        final ModalCloser modalCloser = subAppContext.openConfirmation(confirmationView, "Do it", "Dont!", new ConfirmationCallback() {
+
+        final ModalCloser modalCloser = subAppContext.openConfirmation(
+                MessageStyleType.WARNING, "Do you really want to edit this page?", "Really, are you super sure?", "Do it", "Dont!",
+                new ConfirmationCallback() {
             @Override
             public void onSuccess(String actionName) {
                 try {

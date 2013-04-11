@@ -98,7 +98,10 @@ public class ConfirmationDialog extends BaseDialog {
         return message;
     }
 
-    @Override
+    public void setContent(Component content) {
+        super.setContent(content);
+    }
+
     protected Component createDefaultContent() {
         return new Label();
     }

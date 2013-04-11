@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.view;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
 import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
+import info.magnolia.ui.vaadin.icon.CompositeIcon;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -60,15 +61,15 @@ public abstract class BaseModalLayer implements ModalLayer {
      * 
      * @param view View of the component to be displayed modally.
      */
-    abstract protected ModalCloser openModal(View view, ModalityLevel modalityLevel);
+    // public ModalCloser openModal(View view, ModalityLevel modalityLevel);
 
     @Override
-    public ModalCloser openAlert(MessageEnum type, View viewToShow, String confirmButtonText, AlertCallback cb) {
+    public ModalCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
         return null;
     }
 
     @Override
-    public ModalCloser openAlert(MessageEnum type, String title, String body, String confirmButtonText, AlertCallback cb) {
+    public ModalCloser openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
         return null;
     }
 
@@ -120,16 +121,19 @@ public abstract class BaseModalLayer implements ModalLayer {
         return dialog;
     }
 
-    private View createConfirmationView(final String title, final String body) {
+    private View createConfirmationView(final MessageStyleType type, final String title, final String body) {
         return new View() {
             @Override
             public Component asVaadinComponent() {
                 Layout layout = new CssLayout();
                 Label titleLabel = new Label(title);
                 Label bodyLabel = new Label(body);
+                CompositeIcon icon = type.Icon();
                 layout.addComponent(titleLabel);
                 layout.addComponent(bodyLabel);
+                layout.addComponent(icon);
 
+                layout.addStyleName(type.Name());
                 return layout;
             }
         };
@@ -146,12 +150,12 @@ public abstract class BaseModalLayer implements ModalLayer {
     }
 
     @Override
-    public ModalCloser openConfirmation(MessageEnum type, final String title, final String body, String confirmButtonText, String cancelButtonText, ConfirmationCallback cb) {
-        return openConfirmation(createConfirmationView(title, body), confirmButtonText, cancelButtonText, cb);
+    public ModalCloser openConfirmation(MessageStyleType type, final String title, final String body, String confirmButtonText, String cancelButtonText, ConfirmationCallback cb) {
+        return openConfirmation(createConfirmationView(type, title, body), confirmButtonText, cancelButtonText, cb);
     }
 
     @Override
-    public ModalCloser openConfirmation(MessageEnum type, View viewToShow, String confirmButtonText, String cancelButtonText, ConfirmationCallback cb) {
+    public ModalCloser openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, ConfirmationCallback cb) {
         return openConfirmation(viewToShow, confirmButtonText, cancelButtonText, cb);
     }
 
