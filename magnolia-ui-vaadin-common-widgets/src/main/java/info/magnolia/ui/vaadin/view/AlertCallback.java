@@ -37,5 +37,5 @@ package info.magnolia.ui.vaadin.view;
  * Callback interface for alert.
  */
 public interface AlertCallback {
-
+    void onOk();
 }

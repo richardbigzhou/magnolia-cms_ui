@@ -62,7 +62,7 @@ public interface ModalLayer {
 
     ModalCloser openConfirmation(MessageEnum type, String title, String body, String confirmButtonText, String cancelButtonText, ConfirmationCallback cb);
 
-    ModalCloser openNotification(View viewToShow, String confirmButtonText, IndicationCallback cb);
+    ModalCloser openNotification(View viewToShow, String confirmButtonText, NotificationCallback cb);
 
     ModalCloser openNotification(View parent, View viewToShow, int timeout_msec);
 }

@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.view;
 /**
  * Callback interface for indication.
  */
-public interface IndicationCallback {
+public interface NotificationCallback {
+    void onOk();
 
 }

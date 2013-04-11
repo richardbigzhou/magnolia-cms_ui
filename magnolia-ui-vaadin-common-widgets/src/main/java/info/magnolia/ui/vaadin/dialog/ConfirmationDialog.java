@@ -99,13 +99,6 @@ public class ConfirmationDialog extends BaseDialog {
     }
 
     @Override
-    public void setContent(Component content) {
-        if (content instanceof Label) {
-            super.setContent(content);
-        }
-    }
-
-    @Override
     protected Component createDefaultContent() {
         return new Label();
     }
