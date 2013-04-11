@@ -41,6 +41,7 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationB
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.ui.framework.event.EventBusProtector;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
@@ -71,7 +72,13 @@ public class AppInstanceControllerImpl extends BaseModalLayer implements AppCont
 
     private static final Logger log = LoggerFactory.getLogger(AppInstanceControllerImpl.class);
 
-    private Map<String, SubAppContext> subAppContexts = new ConcurrentHashMap<String, SubAppContext>();
+    private static class SubAppDetails {
+        private SubAppContext context;
+        private EventBusProtector eventBusProtector;
+        private GuiceComponentProvider componentProvider;
+    }
+
+    private Map<String, SubAppDetails> subApps = new ConcurrentHashMap<String, SubAppDetails>();
 
     private ModuleRegistry moduleRegistry;
 
@@ -180,8 +187,8 @@ public class AppInstanceControllerImpl extends BaseModalLayer implements AppCont
 
     @Override
     public void onFocus(String instanceId) {
-        if (subAppContexts.containsKey(instanceId)) {
-            SubAppContext subAppContext = subAppContexts.get(instanceId);
+        if (subApps.containsKey(instanceId)) {
+            SubAppContext subAppContext = subApps.get(instanceId).context;
             locationController.goTo(subAppContext.getLocation());
         }
     }
@@ -199,7 +206,7 @@ public class AppInstanceControllerImpl extends BaseModalLayer implements AppCont
 
     @Override
     public void stop() {
-        for (String instanceId : subAppContexts.keySet()) {
+        for (String instanceId : subApps.keySet()) {
             stopSubAppInstance(instanceId);
         }
         currentSubAppContext = null;
@@ -207,9 +214,11 @@ public class AppInstanceControllerImpl extends BaseModalLayer implements AppCont
     }
 
     private void stopSubAppInstance(String instanceId) {
-        SubAppContext subAppContext = subAppContexts.get(instanceId);
-        subAppContext.getSubApp().stop();
-        subAppContexts.remove(instanceId);
+        SubAppDetails subAppDetails = subApps.get(instanceId);
+        subAppDetails.context.getSubApp().stop();
+        subAppDetails.componentProvider.destroy();
+        subAppDetails.eventBusProtector.resetEventBuses();
+        subApps.remove(instanceId);
     }
 
     @Override
@@ -286,15 +295,17 @@ public class AppInstanceControllerImpl extends BaseModalLayer implements AppCont
         subAppContext.setAppContext(this);
         subAppContext.setLocation(location);
 
-        ComponentProvider subAppComponentProvider = createSubAppComponentProvider(appDescriptor.getName(), subAppContext.getSubAppId(), subAppContext, componentProvider);
-        SubApp subApp = subAppComponentProvider.newInstance(subAppDescriptor.getSubAppClass());
+        SubAppDetails subAppDetails = createSubAppComponentProvider(appDescriptor.getName(), subAppContext.getSubAppId(), subAppContext, componentProvider);
+        subAppDetails.context = subAppContext;
+
+        SubApp subApp = subAppDetails.componentProvider.newInstance(subAppDescriptor.getSubAppClass());
         subAppContext.setSubApp(subApp);
 
         String instanceId = app.getView().addSubAppView(subApp.start(location), subApp.getCaption(), isClosable);
 
         subAppContext.setInstanceId(instanceId);
 
-        subAppContexts.put(instanceId, subAppContext);
+        subApps.put(instanceId, subAppDetails);
         return subAppContext;
     }
 
@@ -370,7 +381,8 @@ public class AppInstanceControllerImpl extends BaseModalLayer implements AppCont
         String subAppId = (location.getSubAppId().isEmpty()) ? getDefaultSubAppDescriptor().getName() : location.getSubAppId();
 
         SubAppContext supportingContext = null;
-        for (SubAppContext context : subAppContexts.values()) {
+        for (SubAppDetails subAppDetails : subApps.values()) {
+            SubAppContext context = subAppDetails.context;
             if (!subAppId.equals(context.getSubAppId())) {
                 continue;
             }
@@ -383,7 +395,9 @@ public class AppInstanceControllerImpl extends BaseModalLayer implements AppCont
     }
 
 
-    private ComponentProvider createSubAppComponentProvider(String appName, String subAppName, SubAppContext subAppContext, ComponentProvider parent) {
+    private SubAppDetails createSubAppComponentProvider(String appName, String subAppName, SubAppContext subAppContext, ComponentProvider parent) {
+
+        SubAppDetails subAppDetails = new SubAppDetails();
 
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
@@ -401,12 +415,18 @@ public class AppInstanceControllerImpl extends BaseModalLayer implements AppCont
         // Add the SubAppContext instance into the component provider.
         configuration.addComponent(InstanceConfiguration.valueOf(SubAppContext.class, subAppContext));
 
+        EventBusProtector eventBusProtector = new EventBusProtector();
+        configuration.addConfigurer(eventBusProtector);
+        subAppDetails.eventBusProtector = eventBusProtector;
+
         log.debug("Creating component provider for sub app " + subAppName);
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(configuration);
         builder.withParent((GuiceComponentProvider) parent);
 
-        return builder.build();
+        subAppDetails.componentProvider = builder.build();
+
+        return subAppDetails;
     }
 
 
