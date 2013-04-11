@@ -60,9 +60,7 @@ public abstract class BaseModalLayer implements ModalLayer {
      * 
      * @param view View of the component to be displayed modally.
      */
-    protected ModalCloser openModal(View view, ModalityLevel modalityLevel) {
-        return null;
-    }
+    abstract protected ModalCloser openModal(View view, ModalityLevel modalityLevel);
 
     @Override
     public ModalCloser openAlert(MessageEnum type, View viewToShow, String confirmButtonText, AlertCallback cb) {
