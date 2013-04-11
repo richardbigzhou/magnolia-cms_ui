@@ -134,20 +134,20 @@ public class ItemFormView implements FormView {
     @Override
     public void setAvailableLocales(Collection<Locale> locales) {
         IndexedContainer c = new IndexedContainer();
-        c.addContainerProperty("locale", Locale.class, null);
+        c.addContainerProperty("displayLanguage", String.class, "");
         for (Locale locale : locales) {
-            Item it = c.addItem(locale.getDisplayLanguage(locale));
-            it.getItemProperty("locale").setValue(locale);
+            Item it = c.addItem(locale);
+            it.getItemProperty("displayLanguage").setValue(locale.getDisplayName(locale));
         }
         this.languageSelector = new ComboBox();
         languageSelector.setImmediate(true);
+        languageSelector.setItemCaptionPropertyId("displayLanguage");
         languageSelector.setContainerDataSource(c);
         languageSelector.setNullSelectionAllowed(false);
         languageSelector.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                Item item = languageSelector.getContainerDataSource().getItem(event.getProperty().getValue());
-                form.setLocale((Locale) item.getItemProperty("locale").getValue());
+                form.setLocale((Locale) event.getProperty().getValue());
             }
         });
         dialog.setFooterToolbar(languageSelector);
@@ -165,6 +165,6 @@ public class ItemFormView implements FormView {
 
     @Override
     public void setCurrentLocale(Locale locale) {
-        this.languageSelector.setValue(locale.getDisplayLanguage());
+        this.languageSelector.setValue(locale);
     }
 }
