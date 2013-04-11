@@ -47,8 +47,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import com.vaadin.data.Item;
-
 /**
  * Action for saving contacts.
  * We currently can't rename the node on change.
@@ -61,7 +59,7 @@ import com.vaadin.data.Item;
 public class SaveContactFormAction extends SaveFormAction {
 
 
-    public SaveContactFormAction(SaveFormActionDefinition definition, Item item, EditorCallback callback, EditorValidator validator) {
+    public SaveContactFormAction(SaveFormActionDefinition definition, JcrNodeAdapter item, EditorCallback callback, EditorValidator validator) {
         super(definition, item, callback, validator);
     }
 
@@ -70,7 +68,7 @@ public class SaveContactFormAction extends SaveFormAction {
         // First Validate
         validator.showValidation(true);
         if (validator.isValid()) {
-            final JcrNodeAdapter itemChanged = (JcrNodeAdapter) getItem();
+            final JcrNodeAdapter itemChanged = item;
 
             try {
                 final Node node = itemChanged.getNode();
