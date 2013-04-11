@@ -101,6 +101,7 @@ public class I18NAwareProperty extends AbstractProperty<String> {
         DefaultProperty<String> property = (DefaultProperty<String>) parentNodeAdapter.getItemProperty(propertyName);
         if (property == null) {
             property = DefaultPropertyUtil.newDefaultProperty(propertyName, "String", "");
+            parentNodeAdapter.addItemProperty(propertyName, property);
         }
         return property;
     }
