@@ -47,7 +47,8 @@ public abstract class BaseModalLayer implements ModalLayer {
     /**
      * Convenience method to open a modal with the default strong modality level.
      */
-    protected ModalCloser openModal(View view) {
+    @Override
+    public ModalCloser openModal(View view) {
         return openModal(view, ModalityLevel.STRONG);
     }
 

@@ -45,6 +45,13 @@ public interface ModalLayer {
         eQuestion, eWarning
     };
 
+    /**
+     * Open a Modal on top of the ModalLayer implementer.
+     * 
+     * @param view View of the component to be displayed modally.
+     */
+    ModalCloser openModal(View view);
+
     ModalCloser openConfirmation(View v, String confirmButtonText, String cancelButtonText, ConfirmationCallback callback);
 
     ModalCloser openAlert(MessageEnum type, View viewToShow, String confirmButtonText, AlertCallback cb);
