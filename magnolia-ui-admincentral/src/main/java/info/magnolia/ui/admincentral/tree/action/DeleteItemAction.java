@@ -48,10 +48,15 @@ import javax.inject.Named;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Deletes a node from the repository.
  */
 public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final SubAppContext subAppContext;
 
@@ -85,7 +90,6 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
                     @Override
                     public void onSuccess(String actionName) {
                         DeleteItemAction.this.executeAfterConfirmation();
-
                     }
 
                     @Override
@@ -105,7 +109,7 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
             session.save();
             eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemPath()));
         } catch (RepositoryException e) {
-            // TODO Log. throw new ActionExecutionException("Can't execute repository operation.\n" + e.getMessage(), e);
+            log.error("Could not execute repository operation.", e);
         }
     }
 }
