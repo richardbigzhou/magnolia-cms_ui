@@ -36,7 +36,7 @@ package info.magnolia.ui.form.field.builder;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.vaadin.form.i18n.I18NAwareProperty;
+import info.magnolia.ui.vaadin.integration.i18n.I18NAwareProperty;
 import info.magnolia.ui.form.field.validation.FieldValidatorBuilder;
 import info.magnolia.ui.form.field.validation.FieldValidatorDefinition;
 import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
@@ -137,7 +137,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
      */
     protected Property<?> getOrCreateProperty() {
         if (definition.isI18n()) {
-            return new I18NAwareProperty(definition.getName(), (JcrItemNodeAdapter) item, i18nContentSupport );
+            return new I18NAwareProperty(definition.getName(), (JcrItemNodeAdapter) item, i18nContentSupport);
         } else {
             String propertyName = definition.getName();
             Property<?> property = item.getItemProperty(propertyName);

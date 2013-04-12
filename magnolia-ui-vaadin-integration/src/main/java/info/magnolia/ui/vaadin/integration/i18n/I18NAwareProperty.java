@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.form.i18n;
+package info.magnolia.ui.vaadin.integration.i18n;
 
 
 import info.magnolia.cms.i18n.I18nContentSupport;

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.form;
 
-import info.magnolia.ui.vaadin.form.i18n.I18NAwareProperty;
+import info.magnolia.ui.vaadin.integration.i18n.I18NAwareProperty;
 import info.magnolia.ui.vaadin.gwt.client.form.formsection.connector.FormSectionState;
 import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormSectionClientRpc;
 
