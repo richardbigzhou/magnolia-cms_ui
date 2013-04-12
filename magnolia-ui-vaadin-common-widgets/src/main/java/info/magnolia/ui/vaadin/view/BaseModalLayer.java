@@ -37,6 +37,7 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
 import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
 
 import com.vaadin.ui.Component;
@@ -48,6 +49,8 @@ import com.vaadin.ui.Layout;
  * Implementers can open modal views over their display area.
  */
 public abstract class BaseModalLayer implements ModalLayer {
+
+    private static final String ACTION_CONFIRM = "confirm";
 
     /**
      * Convenience method to open a modal with the default strong modality level.
@@ -65,13 +68,27 @@ public abstract class BaseModalLayer implements ModalLayer {
     // public ModalCloser openModal(View view, ModalityLevel modalityLevel);
 
     @Override
-    public ModalCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
-        return null;
+    public ModalCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, final AlertCallback cb) {
+        BaseDialog dialog = createAlertDialog(viewToShow, confirmButtonText, "alert");
+        dialog.showCloseButton();
+
+        final ModalCloser modalCloser = openModal(dialog, ModalityLevel.LIGHT);
+        dialog.addDialogCloseHandler(createCloseHandler(modalCloser));
+        dialog.addActionCallback(ACTION_CONFIRM, new DialogActionListener() {
+
+            @Override
+            public void onActionExecuted(String actionName) {
+                modalCloser.close();
+                cb.onOk();
+            }
+        });
+
+        return modalCloser;
     }
 
     @Override
     public ModalCloser openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
-        return null;
+        return openAlert(type, createConfirmationView(type, title, body), confirmButtonText, cb);
     }
 
     private ConfirmationDialog.ConfirmationEvent.Handler createHandler(final ModalCloser modalCloser, final ConfirmationCallback callback) {
@@ -118,8 +135,19 @@ public abstract class BaseModalLayer implements ModalLayer {
         dialog.addStyleName("lightdialog");
         dialog.addStyleName(stylename);
         dialog.setConfirmActionLabel(confirmButtonText);
-        dialog.setRejectActionLabel(cancelButtonText);
+        if (cancelButtonText != null) {
+            dialog.setRejectActionLabel(cancelButtonText);
+        }
 
+        return dialog;
+    }
+
+    private BaseDialog createAlertDialog(View contentView, String confirmButtonText, String stylename) {
+        BaseDialog dialog = new BaseDialog();
+        dialog.addStyleName("lightdialog");
+        dialog.addStyleName(stylename);
+        dialog.setContent(contentView.asVaadinComponent());
+        dialog.addAction(ACTION_CONFIRM, confirmButtonText);
         return dialog;
     }
 
@@ -145,6 +173,16 @@ public abstract class BaseModalLayer implements ModalLayer {
         };
     }
 
+    private BaseDialog.DialogCloseEvent.Handler createCloseHandler(final ModalCloser modalCloser) {
+        return new BaseDialog.DialogCloseEvent.Handler() {
+            @Override
+            public void onClose(BaseDialog.DialogCloseEvent event) {
+                modalCloser.close();
+                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
+            }
+        };
+    }
+
     @Override
     public ModalCloser openConfirmation(MessageStyleType type, View contentView, String confirmButtonText, String cancelButtonText,
             boolean cancelIsDefault, final ConfirmationCallback callback) {
@@ -153,14 +191,7 @@ public abstract class BaseModalLayer implements ModalLayer {
 
         final ModalCloser modalCloser = openModal(dialog, ModalityLevel.LIGHT);
         dialog.addConfirmationHandler(createHandler(modalCloser, callback));
-
-        dialog.addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
-            @Override
-            public void onClose(BaseDialog.DialogCloseEvent event) {
-                modalCloser.close();
-                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
-            }
-        });
+        dialog.addDialogCloseHandler(createCloseHandler(modalCloser));
 
         return modalCloser;
     }
