@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
-import com.vaadin.data.Item;
-import com.vaadin.server.Resource;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
@@ -66,9 +64,6 @@ import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.search.SearchView;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -76,6 +71,13 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
+import com.vaadin.server.Resource;
 
 /**
  * The browser is a core component of AdminCentral. It represents the main hub through which users can interact with
@@ -197,8 +199,7 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
 
     /**
      * @return The configured default view Type.<br>
-     *         If non define, return the first Content Definition as default.
-     * 
+     * If non define, return the first Content Definition as default.
      */
     public ViewType getDefaultViewType() {
         for (ContentViewDefinition definition : this.workbenchDefinition.getContentViews()) {
@@ -333,16 +334,18 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
             Session session = MgnlContext.getJCRSession(getWorkspace());
             javax.jcr.Item item = session.getItem(getSelectedItemId());
             if (item.isNode()) {
-                actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item));
+                actionExecutor.execute(actionName, new JcrNodeAdapter((Node) item));
             } else {
-                throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
+                actionExecutor.execute(actionName, new JcrPropertyAdapter((Property) item));
             }
         } catch (RepositoryException e) {
             Message error = new Message(MessageType.ERROR, "Could not get item: " + getSelectedItemId(), e.getMessage());
-            appContext.broadcastMessage(error);
+            log.error("", e);
+            appContext.sendLocalMessage(error);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
-            appContext.broadcastMessage(error);
+            log.error("An error occurred while executing action[{}]", actionName, e);
+            appContext.sendLocalMessage(error);
         }
     }
 
