@@ -344,7 +344,7 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
             appContext.sendLocalMessage(error);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
-            log.error("An error occurred while executing action[{}]", actionName, e);
+            log.error("An error occurred while executing action [{}]", actionName, e);
             appContext.sendLocalMessage(error);
         }
     }
