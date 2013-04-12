@@ -35,6 +35,8 @@ package info.magnolia.ui.framework.message;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,9 +57,9 @@ public class MessageTest {
         // GIVEN setup
 
         // WHEN THEN
-        assertTrue(message.containsKey(Message.MESSAGE));
-        assertFalse(message.containsKey(Message.SUBJECT));
-        assertEquals(MessageType.INFO.name(), message.get(Message.MESSAGETYPE));
+        assertTrue(message.containsKey(AdmincentralNodeTypes.SystemMessage.MESSAGE));
+        assertFalse(message.containsKey(AdmincentralNodeTypes.SystemMessage.SUBJECT));
+        assertEquals(MessageType.INFO.name(), message.get(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE));
     }
 
     @Test
@@ -77,29 +79,28 @@ public class MessageTest {
         message.clear();
 
         // THEN
-        assertTrue(message.containsKey(Message.TIMESTAMP));
+        assertTrue(message.containsKey(AdmincentralNodeTypes.SystemMessage.TIMESTAMP));
         assertEquals(timestampBeforeClear, message.getTimestamp());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCannotRemoveTimestamp() throws Exception {
         // THEN should throw exception
-        message.remove(Message.TIMESTAMP);
+        message.remove(AdmincentralNodeTypes.SystemMessage.TIMESTAMP);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCannotReplaceTimestamp() throws Exception {
         // THEN should throw exception
-        message.put(Message.TIMESTAMP, 1234565);
+        message.put(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, 1234565);
     }
 
     @Test
     public void testDefaultSender() throws Exception {
         // GIVEN
-        Message message = new Message();
 
         // WHEN
-        String sender = message.getSender();
+        final String sender = message.getSender();
 
         // THEN
         assertEquals(Message.DEFAULT_SENDER, sender);
