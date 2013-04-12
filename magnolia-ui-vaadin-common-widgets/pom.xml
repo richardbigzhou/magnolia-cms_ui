@@ -240,6 +240,35 @@
           <excludes>**/*Patched.java, **/org/vaadin/openesignforms/**/*.java</excludes>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source>
+                import com.vaadin.sass.SassCompiler
+                import java.util.regex.Matcher
+
+                new File("${project.basedir}").eachFileRecurse {
+                if (it.path =~ /\/target\/.*(\/VAADIN\/.*)(\/.*)\.scss$/) {
+                def sassFile = it.path
+                def cssPath = "${project.basedir}/target/classes"+Matcher.lastMatcher[0][1]
+                def cssFile = cssPath + Matcher.lastMatcher[0][2]+".css"
+                println "Compiling Sass file " + sassFile + " -&gt; " + cssFile
+                new File(cssPath).mkdirs();
+                SassCompiler.main([sassFile, cssFile] as String[])
+                }
+                }
+              </source>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
 
     <pluginManagement>

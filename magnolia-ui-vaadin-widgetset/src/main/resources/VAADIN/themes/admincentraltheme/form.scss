@@ -10,21 +10,9 @@
     position:relative;
 }
 
-.form-footer-toolbar{
-	float:left;
-}
 
-.form-header {
-    background-color:#666;
-    font-size:15px;
-    line-height:15px;
-    height:15px;
-}
 
-.form-header-toolbar{
-    float:right;
-    padding-right:12px;
-}
+
 
 .form-content {
   overflow:hidden;
@@ -38,20 +26,9 @@
 }
 .tablet .form-content .v-shell-tabsheet-scroller {max-height:385px;} /* Ensure form footer is visible on the iPad */
 
-.form-footer {
-  background-color:#ccc;
-	text-align:right;
-}
+.form-error {padding:10px 16px 10px 16px;}
 
-.form-header,
-.form-description,
-.form-error,
-.form-footer {padding:10px 16px 10px 16px;}
-.form-footer {padding-top:9px; padding-bottom:9px;}
-
-.form-description,
-.form-error,
-.form-footer {margin-top:2px;}
+.form-error {margin-top:2px;}
 
 /*
 * Tabsheet color
@@ -71,8 +48,7 @@
 }
 
 .v-form-field-section, .v-form-field-label, select,
-.v-form-field, .validation-message-inline span, .help-message-inline span,
-.form-description {
+.v-form-field, .validation-message-inline span, .help-message-inline span{
     font-family: Verdana, Helvetica, sans-serif !important;
     font-size: 12px !important;
 }
@@ -83,22 +59,9 @@
     vertical-align: middle;
 }
 
-.form-header span {
-    color:#aabf2f;
-    font-family:DINWebPro;
-}
-
-.form-description {
-    background-color:#C1D8DF;
-}
-
 .form-error {
     background-color:#9A3333;
     color:#fff;
-}
-
-.form-description span {
-    margin-right:35px;
 }
 
 .form-help {
@@ -109,8 +72,6 @@
 button.btn-form-select {
     margin-left: 2px;
 }
-
-.form-footer button.btn-form-commit { float: right; margin-left: 10px; margin-right: 0px; }
 
 button.btn-form-help {
     background: url("img/icon-help.png") no-repeat scroll center center transparent;
