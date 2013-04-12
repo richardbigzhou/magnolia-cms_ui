@@ -69,7 +69,7 @@ public abstract class BaseModalLayer implements ModalLayer {
 
     @Override
     public ModalCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, final AlertCallback cb) {
-        BaseDialog dialog = createAlertDialog(viewToShow, confirmButtonText, "alert");
+        BaseDialog dialog = createAlertDialog(viewToShow, confirmButtonText, type.Name());
         dialog.showCloseButton();
 
         final ModalCloser modalCloser = openModal(dialog, ModalityLevel.LIGHT);
