@@ -34,9 +34,14 @@
 package info.magnolia.ui.framework.message;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.User;
+import info.magnolia.context.Context;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,11 +51,22 @@ public class MessageTest {
 
     @Before
     public void setUp() {
+        Context ctx = mock(Context.class);
+        User usr = mock(User.class);
+        when(ctx.getUser()).thenReturn(usr);
+        when(usr.getName()).thenReturn(Message.DEFAULT_SENDER);
+        MgnlContext.setInstance(ctx);
+
         message = new Message();
         message.setMessage("bar");
         message.setType(MessageType.INFO);
-
     }
+
+    @After
+    public void tearDown() throws Exception {
+        MgnlContext.setInstance(null);
+    }
+
 
     @Test
     public void testRetrieveMessageValuesFromMap() throws Exception {
@@ -106,4 +122,22 @@ public class MessageTest {
         assertEquals(Message.DEFAULT_SENDER, sender);
     }
 
+    @Test
+    public void testNonDefaultSender() throws Exception {
+        // GIVEN
+        final String nonDefaultUserName = "eric";
+        Context ctx = mock(Context.class);
+        User usr = mock(User.class);
+        when(ctx.getUser()).thenReturn(usr);
+        when(usr.getName()).thenReturn(nonDefaultUserName);
+        MgnlContext.setInstance(ctx);
+
+        final Message messageFromNonDefaultSender = new Message();
+
+        // WHEN
+        final String nonDefaultSenderName = messageFromNonDefaultSender.getSender();
+
+        // THEN
+        assertEquals(nonDefaultUserName, nonDefaultSenderName);
+    }
 }

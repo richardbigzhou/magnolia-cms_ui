@@ -35,6 +35,8 @@ package info.magnolia.ui.framework.message;
 
 import static info.magnolia.ui.framework.AdmincentralNodeTypes.SystemMessage.*;
 
+import info.magnolia.context.MgnlContext;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +58,7 @@ public class Message implements Cloneable, Map<String, Object> {
     public Message(long timestampInMillis) {
         setTimestamp(timestampInMillis);
         setCleared(false);
-        setSender(DEFAULT_SENDER);
+        setSender(MgnlContext.getInstance().getUser().getName());
     }
 
     public Message(final MessageType type, final String subject, final String message) {
