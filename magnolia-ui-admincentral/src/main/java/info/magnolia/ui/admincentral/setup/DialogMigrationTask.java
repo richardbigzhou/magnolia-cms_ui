@@ -129,13 +129,15 @@ public class DialogMigrationTask extends AbstractTask {
                 // Handle tab
                 handleTabs(dialog, tabNodes.iterator());
             }
+            // Remove class property defined on Dialog level
+            if (dialog.hasProperty("class")) {
+                dialog.getProperty("class").remove();
+            }
         } else {
             // Handle as a field.
             handleField(dialog);
         }
-        if (dialog.hasProperty("class")) {
-            dialog.getProperty("class").remove();
-        }
+
         handleExtendsAndReference(dialog);
     }
 
