@@ -148,6 +148,7 @@ public abstract class BaseModalLayer implements ModalLayer {
         dialog.addStyleName(stylename);
         dialog.setContent(contentView.asVaadinComponent());
         dialog.addAction(ACTION_CONFIRM, confirmButtonText);
+        dialog.setDefaultAction(ACTION_CONFIRM);
         return dialog;
     }
 

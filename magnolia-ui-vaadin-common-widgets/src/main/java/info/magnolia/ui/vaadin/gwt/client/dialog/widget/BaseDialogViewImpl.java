@@ -166,7 +166,7 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
     }
 
     @Override
-    public void setActions(Map<String, String> actions, String defaultButtonName) {
+    public void setActions(Map<String, String> actions, String defaultActionName) {
         for (final Button actionButton : this.actionMap.values()) {
             remove(actionButton);
         }
@@ -177,7 +177,7 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
             final Button button = new Button(entry.getValue());
             button.setStyleName(CLASSNAME_BUTTON);
             button.addStyleDependentName(entry.getKey());
-            if (entry.getKey().equalsIgnoreCase(defaultButtonName)) {
+            if (entry.getKey().equalsIgnoreCase(defaultActionName)) {
                 button.addStyleDependentName("default");
             }
             button.addClickHandler(new ClickHandler() {

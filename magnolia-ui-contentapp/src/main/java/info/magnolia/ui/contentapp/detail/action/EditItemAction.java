@@ -75,7 +75,7 @@ public class EditItemAction extends ActionBase<EditItemActionDefinition> {
 
 
         final ModalCloser modalCloser = subAppContext.openConfirmation(
-                MessageStyleType.INFO, "Do you really want to edit this page?", "Really, are you super sure?", "Do it", "Dont!", true,
+                MessageStyleType.INFO, "Do you really want to edit this page?", "Really, are you super sure?", "Do it", "Dont!", false,
                 new ConfirmationCallback() {
             @Override
             public void onSuccess(String actionName) {

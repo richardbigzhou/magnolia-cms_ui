@@ -64,9 +64,9 @@ public class ConfirmationDialog extends BaseDialog {
     public void init(boolean cancelIsDefault) {
         // Add a class to the default button
         if (cancelIsDefault) {
-            this.getState().defaultButtonName = CANCEL_ACTION;
+            this.setDefaultAction(CANCEL_ACTION);
         } else {
-            this.getState().defaultButtonName = CONFIRM_ACTION;
+            this.setDefaultAction(CONFIRM_ACTION);
         }
 
         addAction(CONFIRM_ACTION, "OK", new DialogActionListener() {
