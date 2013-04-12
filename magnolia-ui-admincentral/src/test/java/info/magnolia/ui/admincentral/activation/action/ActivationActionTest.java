@@ -33,26 +33,27 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.cms.exchange.ExchangeException;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
+import info.magnolia.event.EventBus;
 import info.magnolia.module.activation.commands.ActivationCommand;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 public class ActivationActionTest {
@@ -100,7 +101,7 @@ public class ActivationActionTest {
     @Test(expected = ExchangeException.class)
     public void testGetExchangeException() throws Exception {
         // GIVEN
-        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager);
+        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class));
         // for some reason we need to call this twice else no exception is thrown
         when(commandsManager.executeCommand("activate", params)).thenThrow(new ExchangeException());
         when(commandsManager.executeCommand("activate", params)).thenThrow(new ExchangeException());
@@ -117,7 +118,7 @@ public class ActivationActionTest {
         definition.setRecursive(true);
 
         // WHEN
-        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager);
+        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class));
 
         // THEN
         assertTrue((Boolean) action.getParams().get(Context.ATTRIBUTE_RECURSIVE));
