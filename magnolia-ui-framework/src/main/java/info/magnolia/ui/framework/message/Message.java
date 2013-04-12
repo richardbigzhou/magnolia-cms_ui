@@ -53,12 +53,12 @@ public class Message implements Cloneable, Map<String, Object> {
 
     public Message() {
         this(System.currentTimeMillis());
+        setSender(MgnlContext.getInstance().getUser().getName());
     }
 
     public Message(long timestampInMillis) {
         setTimestamp(timestampInMillis);
         setCleared(false);
-        setSender(MgnlContext.getInstance().getUser().getName());
     }
 
     public Message(final MessageType type, final String subject, final String message) {

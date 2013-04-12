@@ -47,7 +47,7 @@ import org.junit.Test;
 
 public class MessageTest {
 
-    public Message message;
+    private Message message;
 
     @Before
     public void setUp() {

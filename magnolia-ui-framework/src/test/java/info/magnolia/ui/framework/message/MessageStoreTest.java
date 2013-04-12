@@ -34,17 +34,32 @@
 package info.magnolia.ui.framework.message;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.User;
 import info.magnolia.test.MgnlTestCase;
+import info.magnolia.test.mock.MockContext;
+import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Tests.
  */
 public class MessageStoreTest extends MgnlTestCase {
+
+    @Override
+    @Before
+    public void setUp() throws Exception{
+        super.setUp();
+        MockContext ctx = MockUtil.getMockContext();
+        User usr = mock(User.class);
+        when(usr.getName()).thenReturn(Message.DEFAULT_SENDER);
+        ctx.setUser(usr);
+    }
 
     @Test
     public void testMarshall() throws Exception {
