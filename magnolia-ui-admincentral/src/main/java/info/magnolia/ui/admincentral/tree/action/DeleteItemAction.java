@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,36 +34,78 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.model.action.ActionBase;
+import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.view.ConfirmationCallback;
+import info.magnolia.ui.vaadin.view.MessageStyleType;
+import info.magnolia.ui.vaadin.view.ModalCloser;
 
 import javax.inject.Named;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 /**
  * Deletes a node from the repository.
  */
-public class DeleteItemAction extends RepositoryOperationAction<DeleteItemActionDefinition> {
+public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
+
+    private final SubAppContext subAppContext;
 
     private String path;
+    private final JcrItemAdapter item;
+    private final EventBus eventBus;
 
-    public DeleteItemAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
-        super(definition, item, eventBus);
+    public DeleteItemAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
+        super(definition);
+        this.item = item;
+        this.subAppContext = subAppContext;
+        this.eventBus = eventBus;
+    }
+
+    protected String getItemPath() throws RepositoryException {
+        return path;
     }
 
     @Override
-    protected void onExecute(JcrItemAdapter item) throws RepositoryException {
+    public void execute() throws ActionExecutionException {
+
         // avoid JCR logging long stacktraces about root not being removable.
         if ("/".equals(item.getPath())) {
             path = item.getPath();
             return;
         }
-        path = item.getJcrItem().getParent().getPath();
-        item.getJcrItem().remove();
+
+        final ModalCloser modalCloser = subAppContext.openConfirmation(
+                MessageStyleType.WARNING, "Do you really want to delete this item?", "Really, are you super sure?", "Delete Item", "Cancel", true,
+                new ConfirmationCallback() {
+                    @Override
+                    public void onSuccess(String actionName) {
+                        DeleteItemAction.this.executeAfterConfirmation();
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // nothing
+                    }
+                });
+
     }
 
-    @Override
-    protected String getItemPath() throws RepositoryException {
-        return path;
+    protected void executeAfterConfirmation() {
+
+        try {
+            path = item.getJcrItem().getParent().getPath();
+            Session session = item.getJcrItem().getSession();
+            item.getJcrItem().remove();
+            session.save();
+            eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemPath()));
+        } catch (RepositoryException e) {
+            // TODO Log. throw new ActionExecutionException("Can't execute repository operation.\n" + e.getMessage(), e);
+        }
     }
 }
