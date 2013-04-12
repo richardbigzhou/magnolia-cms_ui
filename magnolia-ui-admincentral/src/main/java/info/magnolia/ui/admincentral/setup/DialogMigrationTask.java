@@ -235,10 +235,10 @@ public class DialogMigrationTask extends AbstractTask {
             } else if (fieldNode.getProperty("controlType").getString().equals("hidden")) {
                 fieldNode.getProperty("controlType").remove();
                 fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.HiddenFieldDefinition");
-            } else if (fieldNode.getProperty("controlType").getString().equals("uuidLink")) {
+            } else if (fieldNode.getProperty("controlType").getString().equals("uuidLink") || fieldNode.getProperty("controlType").getString().equals("link")) {
+                fieldNode.setProperty("identifier", fieldNode.getProperty("controlType").getString().equals("uuidLink") ? "true" : "false");
+                fieldNode.getProperty("controlType").remove();
                 if (fieldNode.hasProperty("repository")) {
-                    fieldNode.getProperty("controlType").remove();
-                    fieldNode.setProperty("identifier", "true");
                     if (fieldNode.getProperty("repository").getString().equals("website")) {
                         fieldNode.setProperty("appName", "pages");
                         fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.LinkFieldDefinition");
@@ -255,8 +255,11 @@ public class DialogMigrationTask extends AbstractTask {
                         setDamField(fieldNode, null);
                     }
                 } else {
-                    fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.StaticFieldDefinition");
-                    fieldNode.setProperty("value", "Field not yet supported");
+                    // Set repository to website
+                    fieldNode.setProperty("repository", "website");
+                    fieldNode.setProperty("appName", "pages");
+                    fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.LinkFieldDefinition");
+                    fieldNode.setProperty("dialogName", "ui-pages-app:link");
                 }
             } else {
                 fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.StaticFieldDefinition");
