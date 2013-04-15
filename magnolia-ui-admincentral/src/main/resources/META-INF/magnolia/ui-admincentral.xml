@@ -311,5 +311,11 @@
       </workspaces>
       <nodeTypeFile>/mgnl-nodetypes/magnolia-message-nodetypes.xml</nodeTypeFile>
     </repository>
+    <repository>
+      <name>magnolia</name>
+      <workspaces>
+        <workspace>profiles</workspace>
+      </workspaces>
+    </repository>
   </repositories>
 </module>
