@@ -62,7 +62,7 @@ public class MessageStore {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    static final String MESSAGE_NODE_TYPE = "mgnl:systemMessage";
+    static final String MESSAGE_NODE_TYPE = AdmincentralNodeTypes.SystemMessage.NAME;
 
     private static final String WORKSPACE_NAME = "messages";
     private static final String WORKSPACE_PATH = "/";
