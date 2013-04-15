@@ -37,6 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.node2bean.Node2BeanException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,7 +115,7 @@ public class MessageStore {
 
                     int n = 0;
                     for (Node messageNode : NodeUtil.getNodes(getOrCreateUserNode(session, userName), MESSAGE_NODE_TYPE)) {
-                        if (!messageNode.getProperty(Message.CLEARED).getBoolean()) {
+                        if (!messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.CLEARED).getBoolean()) {
                             n++;
                         }
                     }
@@ -191,7 +192,7 @@ public class MessageStore {
 
     Message unmarshallMessage(Node node) throws RepositoryException, Node2BeanException {
         Map<String, Object> map = Node2MapUtil.node2map(node);
-        long timestamp = ((Long) map.get(Message.TIMESTAMP)).longValue();
+        long timestamp = ((Long) map.get(AdmincentralNodeTypes.SystemMessage.TIMESTAMP)).longValue();
 
         final Message message = new Message(timestamp);
         message.putAll(map);

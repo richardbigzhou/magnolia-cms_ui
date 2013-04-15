@@ -34,30 +34,48 @@
 package info.magnolia.ui.framework.message;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.User;
+import info.magnolia.context.Context;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class MessageTest {
 
-    public Message message;
+    private Message message;
 
     @Before
     public void setUp() {
+        Context ctx = mock(Context.class);
+        User usr = mock(User.class);
+        when(ctx.getUser()).thenReturn(usr);
+        when(usr.getName()).thenReturn(Message.DEFAULT_SENDER);
+        MgnlContext.setInstance(ctx);
+
         message = new Message();
         message.setMessage("bar");
         message.setType(MessageType.INFO);
-
     }
+
+    @After
+    public void tearDown() throws Exception {
+        MgnlContext.setInstance(null);
+    }
+
 
     @Test
     public void testRetrieveMessageValuesFromMap() throws Exception {
         // GIVEN setup
 
         // WHEN THEN
-        assertTrue(message.containsKey(Message.MESSAGE));
-        assertFalse(message.containsKey(Message.SUBJECT));
-        assertEquals(MessageType.INFO.name(), message.get(Message.MESSAGETYPE));
+        assertTrue(message.containsKey(AdmincentralNodeTypes.SystemMessage.MESSAGE));
+        assertFalse(message.containsKey(AdmincentralNodeTypes.SystemMessage.SUBJECT));
+        assertEquals(MessageType.INFO.name(), message.get(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE));
     }
 
     @Test
@@ -77,32 +95,49 @@ public class MessageTest {
         message.clear();
 
         // THEN
-        assertTrue(message.containsKey(Message.TIMESTAMP));
+        assertTrue(message.containsKey(AdmincentralNodeTypes.SystemMessage.TIMESTAMP));
         assertEquals(timestampBeforeClear, message.getTimestamp());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCannotRemoveTimestamp() throws Exception {
         // THEN should throw exception
-        message.remove(Message.TIMESTAMP);
+        message.remove(AdmincentralNodeTypes.SystemMessage.TIMESTAMP);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCannotReplaceTimestamp() throws Exception {
         // THEN should throw exception
-        message.put(Message.TIMESTAMP, 1234565);
+        message.put(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, 1234565);
     }
 
     @Test
     public void testDefaultSender() throws Exception {
         // GIVEN
-        Message message = new Message();
 
         // WHEN
-        String sender = message.getSender();
+        final String sender = message.getSender();
 
         // THEN
         assertEquals(Message.DEFAULT_SENDER, sender);
     }
 
+    @Test
+    public void testNonDefaultSender() throws Exception {
+        // GIVEN
+        final String nonDefaultUserName = "eric";
+        Context ctx = mock(Context.class);
+        User usr = mock(User.class);
+        when(ctx.getUser()).thenReturn(usr);
+        when(usr.getName()).thenReturn(nonDefaultUserName);
+        MgnlContext.setInstance(ctx);
+
+        final Message messageFromNonDefaultSender = new Message();
+
+        // WHEN
+        final String nonDefaultSenderName = messageFromNonDefaultSender.getSender();
+
+        // THEN
+        assertEquals(nonDefaultUserName, nonDefaultSenderName);
+    }
 }
