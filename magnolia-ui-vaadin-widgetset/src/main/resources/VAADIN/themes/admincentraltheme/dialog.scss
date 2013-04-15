@@ -174,7 +174,10 @@ button.btn-dialog-help {
     left: 0px;
     right: 0px;
     text-align: center;
+    overflow: hidden;
 }
+
+
 
 .modal-child {
   display: inline-block !important;
@@ -183,7 +186,7 @@ button.btn-dialog-help {
 }
 
 /* transparent border */
-.modal.modality-light .modal-child
+.modal.modality-light .modal-child,
 .modal.modality-non-modal .modal-child
 {
     border: 20px solid rgb(255, 255, 255);
@@ -211,9 +214,14 @@ button.btn-dialog-help {
 
 
 
+/* Be non-modal */
+.modal.modality-non-modal{
+    height:0px;
+    overflow:visible;
+}
 
 .modal.modality-light .modal-curtain,
-.modal.modaility-strong .modal-curtain
+.modal.modality-strong .modal-curtain
 {
     position:absolute;
     top:0px;
@@ -230,11 +238,11 @@ button.btn-dialog-help {
 }
 
 
+
 /* Set proper stacking for modals */
 .modal.app,
 .modal.sub-app {
     z-index: 110;
-    overflow: hidden;
 }
 
 .modal.shell{
@@ -244,6 +252,8 @@ button.btn-dialog-help {
 .modal.shell .modal-child{
   top:60px;
 }
+
+
 
 
 
@@ -303,7 +313,7 @@ button.btn-dialog-help {
 
 .notification-dialog {
     vertical-align: top !important;
-    
+
 }
 
 .notification-dialog .dialog-header {

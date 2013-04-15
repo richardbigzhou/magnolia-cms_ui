@@ -33,11 +33,19 @@
  */
 package info.magnolia.ui.app.sample.main;
 
-import info.magnolia.ui.framework.app.AppEventBus;
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.app.AppEventBus;
+import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.vaadin.view.MessageStyleType;
+import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.view.NotificationCallback;
+import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 
 /**
  * Presenter for the navigation.
@@ -46,11 +54,13 @@ public class NavigationPresenter implements NavigationView.Listener {
 
     private EventBus appEventBus;
     private NavigationView view;
+    private SubAppContext subAppContext;
 
     @Inject
-    public NavigationPresenter(@Named(AppEventBus.NAME) EventBus appEventBus, NavigationView view) {
+    public NavigationPresenter(@Named(AppEventBus.NAME) EventBus appEventBus, NavigationView view, SubAppContext subAppContext) {
         this.appEventBus = appEventBus;
         this.view = view;
+        this.subAppContext = subAppContext;
     }
 
     public NavigationView start() {
@@ -61,5 +71,26 @@ public class NavigationPresenter implements NavigationView.Listener {
     @Override
     public void onItemSelected(String name) {
         appEventBus.fireEvent(new ContentItemSelectedEvent(name));
+
+        View view = new View() {
+            @Override
+            public Component asVaadinComponent() {
+                return new Label("thing to show.");
+            }
+        };
+
+
+        final ModalCloser modalCloser = subAppContext.openNotification(
+                MessageStyleType.WARNING, view, "????? Item",
+                new NotificationCallback() {
+                    @Override
+                    public void onOk() {
+                        // nothing
+                        // Show notification
+                        final ModalCloser modalCloser = subAppContext.openNotification(MessageStyleType.INFO, "Clicked.", 3000);
+
+                    }
+
+                });
     }
 }

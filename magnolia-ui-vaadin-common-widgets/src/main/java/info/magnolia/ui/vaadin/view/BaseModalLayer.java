@@ -34,9 +34,9 @@
 package info.magnolia.ui.vaadin.view;
 
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
-import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
 import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
@@ -302,6 +302,18 @@ public abstract class BaseModalLayer implements ModalLayer {
                 compositeCloser.close();
             }
         };
+    }
+
+    @Override
+    public ModalCloser openNotification(final MessageStyleType type, final String title, final int timeout_msec) {
+        View view = new View() {
+            @Override
+            public Component asVaadinComponent() {
+                return new Label(title);
+            }
+        };
+        return openNotification(type, view, timeout_msec);
+
     }
 
 }

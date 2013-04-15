@@ -108,6 +108,9 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
             item.getJcrItem().remove();
             session.save();
             eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemPath()));
+
+            // Show notification
+            final ModalCloser modalCloser = subAppContext.openNotification(MessageStyleType.INFO, "Item deleted successfully.", 3000);
         } catch (RepositoryException e) {
             log.error("Could not execute repository operation.", e);
         }
