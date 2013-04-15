@@ -177,7 +177,7 @@ button.btn-dialog-help {
 }
 
 .modal-child {
-  display: inline-block;
+  display: inline-block !important;
   position: relative;
   margin-top: 2px;
 }
@@ -292,7 +292,9 @@ button.btn-dialog-help {
 .lightdialog.msgerror .btn-dialog-default{  background: $c17;}
 .lightdialog.msgerror button{               background: #AE9D9D;}
 
-
+.alert-progressbar {
+    display: none;
+}
 
 
 

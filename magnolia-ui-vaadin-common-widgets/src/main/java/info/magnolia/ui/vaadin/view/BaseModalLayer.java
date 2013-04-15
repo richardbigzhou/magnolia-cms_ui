@@ -40,10 +40,16 @@ import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
+import com.vaadin.ui.ProgressIndicator;
 
 /**
  * Implementers can open modal views over their display area.
@@ -202,15 +208,107 @@ public abstract class BaseModalLayer implements ModalLayer {
         return openConfirmation(type, createConfirmationView(type, title, body), confirmButtonText, cancelButtonText, cancelIsDefault, cb);
     }
 
-
-    @Override
-    public ModalCloser openNotification(View viewToShow, String confirmButtonText, NotificationCallback cb) {
-        return null;
+    private CssLayout createAlertComponent(Component content) {
+        CssLayout layout = new CssLayout();
+        layout.addStyleName("modal-child");
+        layout.addStyleName("dialog-panel");
+        layout.addStyleName("lightdialog");
+        layout.addComponent(content);
+        return layout;
     }
 
     @Override
-    public ModalCloser openNotification(View parent, View viewToShow, int timeout_msec) {
-        return null;
+    public ModalCloser openNotification(final View viewToShow, String confirmButtonText, final NotificationCallback cb) {
+        return new ModalCloser() {
+            private View view;
+            private ModalCloser compositeCloser;
+            private CssLayout layout;
+
+            {
+                view = new View() {
+
+                    @Override
+                    public Component asVaadinComponent() {
+                        if (layout == null) {
+                            layout = createAlertComponent(viewToShow.asVaadinComponent());
+                            layout.addLayoutClickListener(new LayoutClickListener() {
+
+                                @Override
+                                public void layoutClick(LayoutClickEvent event) {
+                                    cb.onOk();
+                                    compositeCloser.close();
+                                }
+                            });
+
+                        }
+
+                        return layout;
+                    }
+
+                };
+
+                compositeCloser = openModal(view, ModalityLevel.LIGHT);
+            }
+
+            @Override
+            public void close() {
+                compositeCloser.close();
+            }
+        };
+    }
+
+    @Override
+    public ModalCloser openNotification(View parent, final View viewToShow, final int timeout_msec) {
+        return new ModalCloser() {
+            private View view;
+            private ModalCloser compositeCloser;
+            private CssLayout layout;
+
+            {
+                view = new View() {
+
+                    @Override
+                    public Component asVaadinComponent() {
+                        if (layout == null) {
+                            layout = createAlertComponent(viewToShow.asVaadinComponent());
+                            /*
+                             * Using the progressbar here like this is a hack.
+                             * When Vaadin 7.1 with built-in push is out
+                             * this code can be refactored to use it.
+                             * Second alternative is to use Refresher add-on,
+                             * but as a temp solution the stock progressbar is simpler.
+                             */
+                            ProgressIndicator progress = new ProgressIndicator();
+                            progress.setPollingInterval(timeout_msec);
+                            progress.setIndeterminate(true);
+                            progress.setStyleName("alert-progressbar");
+                            final Timer timer = new Timer();
+                            timer.schedule(new TimerTask() {
+
+                                @Override
+                                public void run() {
+                                    compositeCloser.close();
+                                    timer.cancel();
+                                }
+
+                            }, timeout_msec);
+
+                            layout.addComponent(progress);
+                        }
+
+                        return layout;
+                    }
+
+                };
+
+                compositeCloser = openModal(view, ModalityLevel.LIGHT);
+            }
+
+            @Override
+            public void close() {
+                compositeCloser.close();
+            }
+        };
     }
 
 }
