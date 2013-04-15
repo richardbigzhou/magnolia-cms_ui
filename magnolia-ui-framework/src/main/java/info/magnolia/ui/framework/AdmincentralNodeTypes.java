@@ -31,18 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.activation.action;
+package info.magnolia.ui.framework;
 
-import info.magnolia.ui.model.action.CommandActionDefinition;
-
+import info.magnolia.jcr.util.NodeTypes;
 
 /**
- * The deactivation action, invoking the deactivation command, and updating the UI accordingly.
+ * Constants and convenience methods for node types introduced by Admincentral.
  */
-public class DeactivationActionDefinition extends CommandActionDefinition {
+public class AdmincentralNodeTypes {
 
-    public DeactivationActionDefinition() {
-        setImplementationClass(DeactivationAction.class);
+    /**
+     * Represents the node type mgnl:systemMessage.
+     */
+    public static class SystemMessage {
+
+        public static final String NAME = NodeTypes.MGNL_PREFIX + "systemMessage";
+
+        public static String ID = "id";
+        public static String TIMESTAMP = "timestamp";
+        public static String MESSAGETYPE = "messagetype";
+        public static String SUBJECT = "subject";
+        public static String MESSAGE = "message";
+        public static String CLEARED = "cleared";
+        public static String SENDER = "sender";
     }
-
 }

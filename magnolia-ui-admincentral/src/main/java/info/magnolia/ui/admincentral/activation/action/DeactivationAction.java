@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.activation.action;
 
 import info.magnolia.commands.CommandsManager;
-import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.action.CommandActionBase;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
@@ -48,16 +47,16 @@ import javax.inject.Named;
 import javax.jcr.Node;
 
 /**
- * UI action that allows to activate a single page (node) or recursively with all its sub-nodes depending on the value of {@link ActivationActionDefinition#isRecursive()}.
+ * UI action that allows to deactivate pages (nodes).
  */
-public class ActivationAction extends CommandActionBase<ActivationActionDefinition> {
+public class DeactivationAction extends CommandActionBase<DeactivationActionDefinition> {
 
     private final JcrItemNodeAdapter node;
 
     private final EventBus eventBus;
 
     @Inject
-    public ActivationAction(final ActivationActionDefinition definition, final JcrItemNodeAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
+    public DeactivationAction(final DeactivationActionDefinition definition, final JcrItemNodeAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
         super(definition, item, commandsManager);
         this.node = item;
         this.eventBus = eventBus;
@@ -66,7 +65,6 @@ public class ActivationAction extends CommandActionBase<ActivationActionDefiniti
     @Override
     protected Map<String, Object> buildParams(final Node node) {
         Map<String, Object> params = super.buildParams(node);
-        params.put(Context.ATTRIBUTE_RECURSIVE, getDefinition().isRecursive());
         return params;
     }
 
