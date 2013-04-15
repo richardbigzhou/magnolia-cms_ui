@@ -46,6 +46,8 @@ public class Message implements Cloneable, Map<String, Object> {
     public static String ID = "id";
     public static String TIMESTAMP = "timestamp";
     public static String MESSAGETYPE = "messagetype";
+    public static String MESSAGE_VIEW = "messageView";
+
     public static String SUBJECT = "subject";
     public static String MESSAGE = "message";
     public static String CLEARED = "cleared";

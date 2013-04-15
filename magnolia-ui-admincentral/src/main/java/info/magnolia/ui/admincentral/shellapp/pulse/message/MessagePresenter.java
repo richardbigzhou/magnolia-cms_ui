@@ -81,6 +81,9 @@ public class MessagePresenter implements MessageView.Listener, ActionbarPresente
         this.message = messagesManager.getMessageById(MgnlContext.getUser().getName(), messageId);
         String messageView = "ui-admincentral:default";
         try {
+            if (message.containsKey(Message.MESSAGE_VIEW)) {
+                messageView = (String) message.get(Message.MESSAGE_VIEW);
+            }
             MessageViewDefinition messageViewDefinition = messageViewDefinitionRegistry.get(messageView);
 
             messageActionExecutor.setMessageViewDefinition(messageViewDefinition);
