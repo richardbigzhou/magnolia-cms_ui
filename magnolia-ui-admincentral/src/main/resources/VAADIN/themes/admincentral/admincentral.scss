@@ -2,20 +2,20 @@
 
 @import "../admincentraltheme/admincentraltheme.scss";
 @import "../magnolia/magnolia.scss";
+@import "../contentapp/contentapp.scss";
 
 @import "field/linkfield.scss";
 
 @import "dam-app-assets.scss";
 
-
 @include magnolia;
 @include admincentraltheme;
+@include contentapp;
 @include dam-app-assets;
 
 @mixin admincentral {
   @include linkfield;
 }
-
 
 .v-app:first-child {
   position: absolute;

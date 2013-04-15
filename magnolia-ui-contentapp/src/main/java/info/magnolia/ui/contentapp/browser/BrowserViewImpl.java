@@ -52,6 +52,7 @@ import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -59,14 +60,13 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * Implementation of {@link BrowserView}.
  */
 public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
-
-    private final CssLayout contentViewContainer = new CssLayout();
 
     private TextField searchbox;
 
@@ -82,7 +82,11 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
 
     private Map<ViewType, Button> contentViewsButton = new EnumMap<ViewType, Button>(ViewType.class);
 
-    private ActionbarView actionbar;
+    private final VerticalLayout workbench = new VerticalLayout();
+
+    private final CssLayout toolBar = new CssLayout();
+
+    private final CssLayout actionBar = new CssLayout();
 
     private StatusBarView statusBar;
 
@@ -98,13 +102,25 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
     private BrowserView.Listener listener;
 
     public BrowserViewImpl() {
-        super();
         setSizeFull();
-        setStyleName("workbench");
-        addComponent(contentViewContainer);
-        setExpandRatio(contentViewContainer, 1);
+        setMargin(false);
         setSpacing(true);
-        setMargin(true);
+        addStyleName("browser");
+
+        initWorkbench();
+        addComponent(workbench);
+        setExpandRatio(workbench, 1);
+
+        actionBar.setHeight(100, Unit.PERCENTAGE);
+        actionBar.addStyleName("actionbar");
+        addComponent(actionBar);
+        setExpandRatio(actionBar, 0);
+    }
+
+    private void initWorkbench() {
+        workbench.setSizeFull();
+        workbench.setMargin(new MarginInfo(true, false, false, true));
+        workbench.addStyleName("workbench");
 
         viewModes = new CssLayout();
         viewModes.setStyleName("view-modes");
@@ -112,10 +128,13 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
         searchbox = buildBasicSearchbox();
         searchbox.setVisible(false);
 
-        contentViewContainer.addStyleName("v-workbench-content");
-        contentViewContainer.setSizeFull();
-        contentViewContainer.addComponent(searchbox);
-        contentViewContainer.addComponent(viewModes);
+        toolBar.addStyleName("toolbar");
+        toolBar.setWidth(100, Unit.PERCENTAGE);
+        toolBar.addComponent(viewModes);
+        toolBar.addComponent(searchbox);
+
+        workbench.addComponent(toolBar);
+        workbench.setExpandRatio(toolBar, 0);
     }
 
     private TextField buildBasicSearchbox() {
@@ -181,11 +200,10 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
 
     @Override
     public void setViewType(final ViewType type) {
-        contentViewContainer.removeComponent(getSelectedView().asVaadinComponent());
+        workbench.removeComponent(getSelectedView().asVaadinComponent());
         final Component c = contentViews.get(type).asVaadinComponent();
-        c.setSizeFull();
-        contentViewContainer.addComponent(c);
-        c.setSizeUndefined();
+        workbench.addComponent(c, 1); // between tool bar and status bar
+        workbench.setExpandRatio(c, 1);
 
         if (type != ViewType.SEARCH) {
             previousViewType = type;
@@ -232,22 +250,24 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
 
     @Override
     public void setActionbarView(final ActionbarView actionbar) {
-        actionbar.asVaadinComponent().setWidth(null);
-        if (this.actionbar == null) {
-            addComponent(actionbar.asVaadinComponent());
+        Component c = actionbar.asVaadinComponent();
+        Component old = actionBar.getComponentCount() != 0 ? actionBar.getComponent(0) : null;
+        if (old == null) {
+            actionBar.addComponent(c);
         } else {
-            replaceComponent(this.actionbar.asVaadinComponent(), actionbar.asVaadinComponent());
+            actionBar.replaceComponent(old, c);
         }
-        this.actionbar = actionbar;
     }
 
     @Override
     public void setStatusBarView(StatusBarView statusBar) {
+        Component c = statusBar.asVaadinComponent();
         if (this.statusBar == null) {
-            contentViewContainer.addComponent(statusBar.asVaadinComponent(), contentViewContainer.getComponentCount());
+            workbench.addComponent(c, workbench.getComponentCount()); // add last
         } else {
-            replaceComponent(this.statusBar.asVaadinComponent(), statusBar.asVaadinComponent());
+            workbench.replaceComponent(this.statusBar.asVaadinComponent(), c);
         }
+        workbench.setExpandRatio(c, 0);
         this.statusBar = statusBar;
     }
 

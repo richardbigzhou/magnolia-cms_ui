@@ -1,0 +1,10 @@
+@charset "UTF-8";
+
+@import "browser.scss";
+
+@mixin contentapp {
+
+  .v-horizontallayout-browser {
+    @include browser;
+  }
+}

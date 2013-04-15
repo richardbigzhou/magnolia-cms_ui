@@ -2,16 +2,7 @@
 
 @mixin workbench {
 
-.workbench {background-color:#e6e6e6;}
-.workbench .v-horizontallayout {padding-top:20px; padding-left:40px; padding-bottom:40px;}
-.workbench .v-horizontallayout-spacing-on {padding-left:25px;}
-.workbench .v-spacing {width: 20px;}
-
-.v-workbench-content {
-	position: relative;
-}
-
-.view-modes {padding-left:21px; padding-bottom:20px; display: inline-block;}
+div.v-csslayout-view-modes {padding-left:21px; padding-bottom:20px; display: inline-block;}
 .view-modes .v-nativebutton {font-style:normal; font-size:24px; color:#989898; line-height:1.0; border-left:1px solid #bbb;}
 .view-modes .v-nativebutton:first-child {border-left:none;}
 .view-modes .v-nativebutton:hover,
@@ -24,19 +15,10 @@
 .mgnl-workbench-thumbnail-view { background-color: #FFF;}
 
 .mgnl-content-view {
-	position: absolute;
 	background:#fff;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	top: 47px;
 	padding:4px;
 }
 
-.v-horizontallayout.v-margin-top {padding-top:22px;}
-.v-horizontallayout.v-margin-bottom {padding-bottom: 40px;}
-.v-horizontallayout.v-margin-left {padding-left: 40px;}
-.v-horizontallayout.v-margin-right {padding-right: 0;}
 .dialog-panel .v-horizontallayout.v-margin-right {padding-right: 40px;}
 
 .activation-status {display: block !important; font-size:18px; line-height: 1; text-align: center;}
