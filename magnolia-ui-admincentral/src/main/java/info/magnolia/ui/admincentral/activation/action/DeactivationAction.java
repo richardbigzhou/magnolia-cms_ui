@@ -33,16 +33,44 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
-import info.magnolia.ui.model.action.CommandActionDefinition;
+import info.magnolia.commands.CommandsManager;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.app.action.CommandActionBase;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.jcr.Node;
 
 /**
- * The deactivation action, invoking the deactivation command, and updating the UI accordingly.
+ * UI action that allows to deactivate pages (nodes).
  */
-public class DeactivationActionDefinition extends CommandActionDefinition {
+public class DeactivationAction extends CommandActionBase<DeactivationActionDefinition> {
 
-    public DeactivationActionDefinition() {
-        setImplementationClass(DeactivationAction.class);
+    private final JcrItemNodeAdapter node;
+
+    private final EventBus eventBus;
+
+    @Inject
+    public DeactivationAction(final DeactivationActionDefinition definition, final JcrItemNodeAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
+        super(definition, item, commandsManager);
+        this.node = item;
+        this.eventBus = eventBus;
     }
 
+    @Override
+    protected Map<String, Object> buildParams(final Node node) {
+        Map<String, Object> params = super.buildParams(node);
+        return params;
+    }
+
+    @Override
+    protected void onPostExecute() throws Exception {
+        Node jcrNode = node.getNodeFromRepository();
+        eventBus.fireEvent(new ContentChangedEvent(jcrNode.getSession().getWorkspace().getName(), jcrNode.getPath()));
+    }
 }
