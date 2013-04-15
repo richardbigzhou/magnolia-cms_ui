@@ -114,17 +114,11 @@
                     <goal>execute</goal>
                   </goals>
                   <configuration>
-                    <classpath>
-                      <element>
-                        <groupId>info.magnolia.ui</groupId>
-                        <artifactId>magnolia-ui-vaadin-theme</artifactId>
-                      </element>
-                    </classpath>
                     <source>
                       import com.vaadin.sass.SassCompiler
                       import java.util.regex.Matcher
 
-                      new File("${project.basedir}/..").eachFileRecurse {
+                      new File("${project.basedir}").eachFileRecurse {
                         if (it.path =~ /\/target\/.*(\/VAADIN\/.*)(\/.*)\.scss$/) {
                             def sassFile = it.path
                             def cssPath = "${project.basedir}/target/classes"+Matcher.lastMatcher[0][1]
