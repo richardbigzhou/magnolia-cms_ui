@@ -58,7 +58,7 @@ public interface ModalLayer {
 
     ModalCloser openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb);
 
-    ModalCloser openNotification(View viewToShow, String confirmButtonText, NotificationCallback cb);
+    ModalCloser openNotification(MessageStyleType type, View viewToShow, String confirmButtonText, NotificationCallback cb);
 
-    ModalCloser openNotification(View parent, View viewToShow, int timeout_msec);
+    ModalCloser openNotification(MessageStyleType type, View viewToShow, int timeout_msec);
 }

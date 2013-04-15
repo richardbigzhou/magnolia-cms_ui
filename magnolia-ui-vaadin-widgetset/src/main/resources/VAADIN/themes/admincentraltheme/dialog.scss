@@ -301,6 +301,13 @@ button.btn-dialog-help {
     display: none;
 }
 
+.notification-dialog {
+    vertical-align: top !important;
+    
+}
 
+.notification-dialog .dialog-header {
+    padding: 10px 16px 0px 16px;
+}
 
 }
