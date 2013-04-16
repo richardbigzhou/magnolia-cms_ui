@@ -35,13 +35,12 @@ package info.magnolia.ui.vaadin.view;
 
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
-import info.magnolia.ui.vaadin.dialog.NotificationIndicator;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
 import info.magnolia.ui.vaadin.dialog.LightDialog;
 import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
+import info.magnolia.ui.vaadin.dialog.NotificationIndicator;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
-
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -147,6 +146,7 @@ public abstract class BaseModalLayer implements ModalLayer {
                 layout.addComponent(bodyLabel);
 
                 CompositeIcon icon = type.Icon();
+                icon.addStyleName("dialog-icon");
                 layout.addComponent(icon);
 
                 return layout;

@@ -29,8 +29,9 @@
 }
 
 .light-dialog-panel .dialog-content{
-    padding:0 24px;
+    padding:0 42px;
     width:auto;
+    position:relative;
 }
 
 
@@ -100,6 +101,8 @@
 .light-dialog-panel .dialog-footer {
     display:inline-block;
 	background-color: transparent;
+	margin-top:20px
+	margin-bottom:9px;
 }
 
 .dialog-header,
@@ -278,6 +281,13 @@ button.btn-dialog-help {
     color:black;
     padding-bottom:5px;
  }
+
+ .light-dialog-panel .dialog-icon {
+    position:absolute;
+    top:-4px;
+    left:10px;
+ }
+
 .light-dialog-panel button,
 .light-dialog-panel .btn-default,
 .light-dialog-panel .btn-other {
