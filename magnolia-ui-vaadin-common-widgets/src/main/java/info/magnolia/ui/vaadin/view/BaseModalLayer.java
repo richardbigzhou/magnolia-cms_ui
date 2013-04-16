@@ -136,6 +136,7 @@ public abstract class BaseModalLayer implements ModalLayer {
             @Override
             public Component asVaadinComponent() {
                 Layout layout = new CssLayout();
+                layout.setStyleName("light-dialog-view");
 
                 Label titleLabel = new Label(title);
                 titleLabel.addStyleName("title");
@@ -146,7 +147,7 @@ public abstract class BaseModalLayer implements ModalLayer {
                 layout.addComponent(bodyLabel);
 
                 CompositeIcon icon = type.Icon();
-                icon.addStyleName("dialog-icon");
+                icon.setStyleName("dialog-icon");
                 layout.addComponent(icon);
 
                 return layout;

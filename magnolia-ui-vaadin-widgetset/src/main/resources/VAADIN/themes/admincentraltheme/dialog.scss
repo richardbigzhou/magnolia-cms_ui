@@ -101,7 +101,7 @@
 .light-dialog-panel .dialog-footer {
     display:inline-block;
 	background-color: transparent;
-	margin-top:20px
+	margin-top:20px;
 	margin-bottom:9px;
 }
 
@@ -172,7 +172,7 @@ button.btn-dialog-help {
     bottom:0px;
     left: 0px;
     right: 0px;
-    text-align: center;
+    text-align: center !important;
     overflow: hidden;
 }
 
@@ -282,7 +282,7 @@ button.btn-dialog-help {
     padding-bottom:5px;
  }
 
- .light-dialog-panel .dialog-icon {
+ .light-dialog-view >.icon {
     position:absolute;
     top:-4px;
     left:10px;
@@ -324,7 +324,6 @@ button.btn-dialog-help {
 
 .notification-close-button {
     background-color: transparent;
-    color: #f00;
     float: right;
     padding: 0;
     font-size: 15px;
