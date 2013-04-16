@@ -34,8 +34,6 @@
 package info.magnolia.ui.vaadin.view;
 
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
 import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
@@ -45,11 +43,13 @@ import info.magnolia.ui.vaadin.icon.CompositeIcon;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.ProgressIndicator;
+import com.vaadin.ui.Button.ClickEvent;
 
 /**
  * Implementers can open modal views over their display area.
@@ -109,28 +109,6 @@ public abstract class BaseModalLayer implements ModalLayer {
                     callback.onCancel();
                 }
 
-                modalCloser.close();
-            }
-        };
-    }
-
-    private ConfirmationDialog.ConfirmationEvent.Handler createHandler(final ModalCloser modalCloser, final NotificationCallback callback) {
-        return new ConfirmationDialog.ConfirmationEvent.Handler() {
-
-            @Override
-            public void onConfirmation(ConfirmationEvent event) {
-                callback.onOk();
-                modalCloser.close();
-            }
-        };
-    }
-
-    private ConfirmationDialog.ConfirmationEvent.Handler createHandler(final ModalCloser modalCloser, final AlertCallback callback) {
-        return new ConfirmationDialog.ConfirmationEvent.Handler() {
-
-            @Override
-            public void onConfirmation(ConfirmationEvent event) {
-                callback.onOk();
                 modalCloser.close();
             }
         };
@@ -208,31 +186,98 @@ public abstract class BaseModalLayer implements ModalLayer {
         return openConfirmation(type, createConfirmationView(type, title, body), confirmButtonText, cancelButtonText, cancelIsDefault, cb);
     }
 
+    public static class ConfirmationIndicator implements View {
+
+        interface ConfirmationListener {
+            void onClose();
+        }
+
+        private CssLayout layout;
+        private ConfirmationListener listener;
+
+        public ConfirmationIndicator() {
+            layout = new CssLayout();
+            layout.addStyleName("lightdialog");
+            layout.addStyleName("modal-child");
+            layout.addStyleName("dialog-panel");
+            layout.addStyleName("notification-dialog");
+
+            Button closeButton = new Button();
+            closeButton.addClickListener(new Button.ClickListener() {
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    listener.onClose();
+                }
+            });
+
+            closeButton.addStyleName("notification-close-button");
+            closeButton.addStyleName("icon-close");
+            closeButton.addStyleName("m-closebutton");
+
+            layout.addComponent(closeButton);
+        }
+
+        public void setTimeout(int timeout_msec) {
+            /*
+             * Using the progressbar here like this is a hack.
+             * When Vaadin 7.1 with built-in push is out
+             * this code can be refactored to use it.
+             * Second alternative is to use Refresher add-on,
+             * but as a temp solution the stock progressbar is simpler.
+             */
+            ProgressIndicator progress = new ProgressIndicator();
+            progress.setPollingInterval(timeout_msec);
+            progress.setIndeterminate(true);
+            progress.setStyleName("alert-progressbar");
+            final Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+
+                @Override
+                public void run() {
+                    listener.onClose();
+                    timer.cancel();
+                }
+
+            }, timeout_msec);
+
+            layout.addComponent(progress);
+        }
+
+        public void setContent(Component content) {
+            layout.addComponent(content);
+        }
+
+        public void setMessageType(MessageStyleType type) {
+            layout.addStyleName(type.Name());
+        }
+
+        public void setConfirmationListener(ConfirmationListener listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        public Component asVaadinComponent() {
+            return layout;
+        }
+    }
+
     @Override
     public ModalCloser openNotification(final MessageStyleType type, final View viewToShow, String confirmButtonText, final NotificationCallback cb) {
         return new ModalCloser() {
             private ModalCloser compositeCloser;
-            private CssLayout layout;
 
             {
-                BaseDialog dialog = new BaseDialog();
-                dialog.addStyleName("lightdialog");
-                dialog.addStyleName("modal-child");
-                dialog.addStyleName("dialog-panel");
-                dialog.addStyleName(type.Name());
-                dialog.addStyleName("notification-dialog");
+                ConfirmationIndicator dialog = new ConfirmationIndicator();
                 dialog.setContent(viewToShow.asVaadinComponent());
-
-                dialog.addDialogCloseHandler(new Handler() {
+                dialog.setConfirmationListener(new ConfirmationIndicator.ConfirmationListener() {
 
                     @Override
-                    public void onClose(DialogCloseEvent event) {
+                    public void onClose() {
                         compositeCloser.close();
                         cb.onOk();
                     }
                 });
 
-                dialog.showCloseButton();
                 compositeCloser = openModal(dialog, ModalityLevel.NON_MODAL);
             }
 
@@ -249,52 +294,18 @@ public abstract class BaseModalLayer implements ModalLayer {
             private ModalCloser compositeCloser;
 
             {
-                BaseDialog dialog = new BaseDialog();
-                dialog.addStyleName("lightdialog");
-                dialog.addStyleName("modal-child");
-                dialog.addStyleName("dialog-panel");
-                dialog.addStyleName(type.Name());
-                dialog.addStyleName("notification-dialog");
-
-                /*
-                 * Using the progressbar here like this is a hack.
-                 * When Vaadin 7.1 with built-in push is out
-                 * this code can be refactored to use it.
-                 * Second alternative is to use Refresher add-on,
-                 * but as a temp solution the stock progressbar is simpler.
-                 */
-                ProgressIndicator progress = new ProgressIndicator();
-                progress.setPollingInterval(timeout_msec);
-                progress.setIndeterminate(true);
-                progress.setStyleName("alert-progressbar");
-                final Timer timer = new Timer();
-                timer.schedule(new TimerTask() {
+                ConfirmationIndicator dialog = new ConfirmationIndicator();
+                dialog.setContent(viewToShow.asVaadinComponent());
+                dialog.setTimeout(timeout_msec);
+                dialog.setConfirmationListener(new ConfirmationIndicator.ConfirmationListener() {
 
                     @Override
-                    public void run() {
+                    public void onClose() {
                         compositeCloser.close();
-                        timer.cancel();
-                    }
-
-                }, timeout_msec);
-
-                CssLayout layout = new CssLayout();
-                layout.addComponent(progress);
-                layout.addComponent(viewToShow.asVaadinComponent());
-                dialog.setContent(layout);
-
-                dialog.addDialogCloseHandler(new Handler() {
-
-                    @Override
-                    public void onClose(DialogCloseEvent event) {
-                        compositeCloser.close();
-                        timer.cancel();
                     }
                 });
 
-                dialog.showCloseButton();
-
-                compositeCloser = openModal(dialog, ModalityLevel.LIGHT);
+                compositeCloser = openModal(dialog, ModalityLevel.NON_MODAL);
             }
 
             @Override
