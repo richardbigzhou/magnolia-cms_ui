@@ -34,18 +34,24 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
+import info.magnolia.ui.vaadin.splitfeed.SplitFeed.FeedSection;
 
+import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Default view implementation for favorites.
  */
 
-public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
+public class FavoritesViewImpl extends CustomComponent implements FavoritesView {
 
-    // private final SplitFeed splitPanel = new SplitFeed();
+    private VerticalLayout layout = new VerticalLayout();
+    private FavoritesView.Listener listener;
 
     @Override
     public String getId() {
@@ -54,15 +60,22 @@ public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
 
     public FavoritesViewImpl() {
         super();
-        addStyleName("favorites");
-        setHeight("100%");
-        setWidth("900px");
         construct();
     }
 
+    @Override
+    public void setListener(FavoritesView.Listener listener) {
+        this.listener = listener;
+    }
+
     private void construct() {
-        final FeedSection leftSide = getLeftContainer();
-        final FeedSection rightSide = getRightContainer();
+        layout.addStyleName("favorites");
+        layout.setHeight("100%");
+        layout.setWidth("900px");
+
+        final SplitFeed splitPanel = new SplitFeed();
+        final FeedSection leftSide = splitPanel.getLeftContainer();
+        final FeedSection rightSide = splitPanel.getRightContainer();
 
         FavoritesSection newPages = new FavoritesSection();
         newPages.setCaption("New Pages");
@@ -86,11 +99,17 @@ public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
         leftSide.addComponent(newPages);
         leftSide.addComponent(newCampaigns);
         rightSide.addComponent(assetShortcuts);
+
+        layout.addComponent(splitPanel);
+        layout.setExpandRatio(splitPanel, 2f);
+        Button button = new Button("Add new");
+        layout.addComponent(button);
+        layout.setExpandRatio(button, 0.1f);
     }
 
     @Override
     public Component asVaadinComponent() {
-        return this;
+        return layout;
     }
 
     /**
@@ -107,7 +126,7 @@ public class FavoritesViewImpl extends SplitFeed implements FavoritesView {
             setSizeUndefined();
             setText(text);
             setIcon(icon);
-            iconElement.setContentMode(Label.CONTENT_XHTML);
+            iconElement.setContentMode(ContentMode.HTML);
             iconElement.setWidth(null);
             iconElement.setStyleName("icon");
             textElement.setStyleName("text");

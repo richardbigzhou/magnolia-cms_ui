@@ -51,7 +51,7 @@ import java.util.List;
  *
  * needs ordering so users can rearrange them
  */
-public interface FavoriteManager {
+public interface FavoritesManager {
 
     List<Favorite> getFavoritesForUser(String userId);
 

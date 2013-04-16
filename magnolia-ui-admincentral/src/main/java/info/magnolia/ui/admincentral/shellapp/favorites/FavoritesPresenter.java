@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,19 +33,29 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.framework.shell.ShellImpl;
+
+import javax.inject.Inject;
 
 /**
- * View for favorites.
+ * FavoritesPresenter.
  */
-public interface FavoritesView extends View {
+public class FavoritesPresenter implements FavoritesView.Listener {
 
-    void setListener(Listener listener);
+    private FavoritesView view;
+    private ShellImpl shell;
+    private FavoritesManager favoritesManager;
 
-    /**
-     * Listener.
-     */
-    interface Listener {
-
+    @Inject
+    public FavoritesPresenter(final FavoritesView view, final ShellImpl shellImpl, final FavoritesManager favoritesManager) {
+        this.view = view;
+        this.shell = shellImpl;
+        this.favoritesManager = favoritesManager;
     }
+
+    public FavoritesView start() {
+        view.setListener(this);
+        return view;
+    }
+
 }

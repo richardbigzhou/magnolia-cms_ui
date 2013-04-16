@@ -47,17 +47,21 @@ public class FavoritesShellApp implements ShellApp {
 
     private FavoritesView favoritesView;
 
+    private FavoritesPresenter favoritesPresenter;
+
     @Inject
-    public FavoritesShellApp(FavoritesView favoritesView) {
-        this.favoritesView = favoritesView;
+    public FavoritesShellApp(FavoritesPresenter favoritesPresenter) {
+        this.favoritesPresenter = favoritesPresenter;
     }
 
     @Override
     public View start(ShellAppContext context) {
+        favoritesView = favoritesPresenter.start();
         return favoritesView;
     }
 
     @Override
     public void locationChanged(Location location) {
+        System.out.println(location.toString());
     }
 }

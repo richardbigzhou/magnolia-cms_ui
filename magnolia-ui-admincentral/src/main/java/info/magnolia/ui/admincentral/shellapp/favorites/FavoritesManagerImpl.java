@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,19 +33,29 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.vaadin.view.View;
+import java.util.List;
 
 /**
- * View for favorites.
+ * FavoritesManagerImpl.
  */
-public interface FavoritesView extends View {
+public class FavoritesManagerImpl implements FavoritesManager {
 
-    void setListener(Listener listener);
+    @Override
+    public List<Favorite> getFavoritesForUser(String userId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-    /**
-     * Listener.
-     */
-    interface Listener {
+    @Override
+    public void addFavoriteForUser(String userId, Favorite favorite) {
+        // TODO Auto-generated method stub
 
     }
+
+    @Override
+    public void removeFavorite(String userId, String id) {
+        // TODO Auto-generated method stub
+
+    }
+
 }
