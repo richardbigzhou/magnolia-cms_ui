@@ -35,21 +35,17 @@ package info.magnolia.ui.vaadin.view;
 
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
+import info.magnolia.ui.vaadin.dialog.NotificationIndicator;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
 import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
 
-import java.util.Timer;
-import java.util.TimerTask;
 
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
-import com.vaadin.ui.ProgressIndicator;
-import com.vaadin.ui.Button.ClickEvent;
 
 /**
  * Implementers can open modal views over their display area.
@@ -186,90 +182,15 @@ public abstract class BaseModalLayer implements ModalLayer {
         return openConfirmation(type, createConfirmationView(type, title, body), confirmButtonText, cancelButtonText, cancelIsDefault, cb);
     }
 
-    public static class ConfirmationIndicator implements View {
-
-        interface ConfirmationListener {
-            void onClose();
-        }
-
-        private CssLayout layout;
-        private ConfirmationListener listener;
-
-        public ConfirmationIndicator() {
-            layout = new CssLayout();
-            layout.addStyleName("lightdialog");
-            layout.addStyleName("modal-child");
-            layout.addStyleName("dialog-panel");
-            layout.addStyleName("notification-dialog");
-
-            Button closeButton = new Button();
-            closeButton.addClickListener(new Button.ClickListener() {
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    listener.onClose();
-                }
-            });
-
-            closeButton.addStyleName("notification-close-button");
-            closeButton.addStyleName("icon-close");
-            closeButton.addStyleName("m-closebutton");
-
-            layout.addComponent(closeButton);
-        }
-
-        public void setTimeout(int timeout_msec) {
-            /*
-             * Using the progressbar here like this is a hack.
-             * When Vaadin 7.1 with built-in push is out
-             * this code can be refactored to use it.
-             * Second alternative is to use Refresher add-on,
-             * but as a temp solution the stock progressbar is simpler.
-             */
-            ProgressIndicator progress = new ProgressIndicator();
-            progress.setPollingInterval(timeout_msec);
-            progress.setIndeterminate(true);
-            progress.setStyleName("alert-progressbar");
-            final Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-
-                @Override
-                public void run() {
-                    listener.onClose();
-                    timer.cancel();
-                }
-
-            }, timeout_msec);
-
-            layout.addComponent(progress);
-        }
-
-        public void setContent(Component content) {
-            layout.addComponent(content);
-        }
-
-        public void setMessageType(MessageStyleType type) {
-            layout.addStyleName(type.Name());
-        }
-
-        public void setConfirmationListener(ConfirmationListener listener) {
-            this.listener = listener;
-        }
-
-        @Override
-        public Component asVaadinComponent() {
-            return layout;
-        }
-    }
-
     @Override
     public ModalCloser openNotification(final MessageStyleType type, final View viewToShow, String confirmButtonText, final NotificationCallback cb) {
         return new ModalCloser() {
             private ModalCloser compositeCloser;
 
             {
-                ConfirmationIndicator dialog = new ConfirmationIndicator();
+                NotificationIndicator dialog = new NotificationIndicator();
                 dialog.setContent(viewToShow.asVaadinComponent());
-                dialog.setConfirmationListener(new ConfirmationIndicator.ConfirmationListener() {
+                dialog.setConfirmationListener(new NotificationIndicator.ConfirmationListener() {
 
                     @Override
                     public void onClose() {
@@ -294,10 +215,10 @@ public abstract class BaseModalLayer implements ModalLayer {
             private ModalCloser compositeCloser;
 
             {
-                ConfirmationIndicator dialog = new ConfirmationIndicator();
+                NotificationIndicator dialog = new NotificationIndicator();
                 dialog.setContent(viewToShow.asVaadinComponent());
                 dialog.setTimeout(timeout_msec);
-                dialog.setConfirmationListener(new ConfirmationIndicator.ConfirmationListener() {
+                dialog.setConfirmationListener(new NotificationIndicator.ConfirmationListener() {
 
                     @Override
                     public void onClose() {
