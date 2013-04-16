@@ -48,7 +48,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 
 /**
- * Implementers can open modal views over their display area.
+ * Provide functionality to open modal dialogs and indications.
+ * Implementers are required to implement openModal method.
  */
 public abstract class BaseModalLayer implements ModalLayer {
 
@@ -63,12 +64,8 @@ public abstract class BaseModalLayer implements ModalLayer {
     }
 
     /**
-     * Open a Modal on top of the ModalLayer implementer.
-     *
-     * @param view View of the component to be displayed modally.
+     * Open alert dialog with light modality level. Close dialog on confirm.
      */
-    // public ModalCloser openModal(View view, ModalityLevel modalityLevel);
-
     @Override
     public ModalCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, final AlertCallback cb) {
         BaseDialog dialog = createAlertDialog(viewToShow, confirmButtonText, type.Name());
@@ -88,6 +85,9 @@ public abstract class BaseModalLayer implements ModalLayer {
         return modalCloser;
     }
 
+    /**
+     * Convenience method with string content. for opening an alert.
+     */
     @Override
     public ModalCloser openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
         return openAlert(type, createConfirmationView(type, title, body), confirmButtonText, cb);
@@ -164,6 +164,9 @@ public abstract class BaseModalLayer implements ModalLayer {
         };
     }
 
+    /**
+     * Present modal confirmation dialog with light modality level. Allow any Vaadin content to be presented.
+     */
     @Override
     public ModalCloser openConfirmation(MessageStyleType type, View contentView, String confirmButtonText, String cancelButtonText,
             boolean cancelIsDefault, final ConfirmationCallback callback) {
@@ -177,13 +180,19 @@ public abstract class BaseModalLayer implements ModalLayer {
         return modalCloser;
     }
 
+    /**
+     * Present modal confirmation dialog with light modality level. Allow only string content.
+     */
     @Override
     public ModalCloser openConfirmation(MessageStyleType type, final String title, final String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
         return openConfirmation(type, createConfirmationView(type, title, body), confirmButtonText, cancelButtonText, cancelIsDefault, cb);
     }
 
+    /**
+     * Present notification indicator with no modality.
+     */
     @Override
-    public ModalCloser openNotification(final MessageStyleType type, final View viewToShow, String confirmButtonText, final NotificationCallback cb) {
+    public ModalCloser openNotification(final MessageStyleType type, final View viewToShow, final NotificationCallback cb) {
         return new ModalCloser() {
             private ModalCloser compositeCloser;
 
@@ -209,6 +218,9 @@ public abstract class BaseModalLayer implements ModalLayer {
         };
     }
 
+    /**
+     * Present notification indicator with no modality. Close after timeout expires.
+     */
     @Override
     public ModalCloser openNotification(final MessageStyleType type, final View viewToShow, final int timeout_msec) {
         return new ModalCloser() {
@@ -236,6 +248,9 @@ public abstract class BaseModalLayer implements ModalLayer {
         };
     }
 
+    /**
+     * Convenience method for presenting notification indicator with string content.
+     */
     @Override
     public ModalCloser openNotification(final MessageStyleType type, final String title, final int timeout_msec) {
         View view = new View() {
