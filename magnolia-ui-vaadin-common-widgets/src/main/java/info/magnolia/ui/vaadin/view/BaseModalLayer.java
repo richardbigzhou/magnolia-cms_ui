@@ -199,6 +199,7 @@ public abstract class BaseModalLayer implements ModalLayer {
             {
                 NotificationIndicator dialog = new NotificationIndicator();
                 dialog.setContent(viewToShow.asVaadinComponent());
+                dialog.setMessageType(type);
                 dialog.setConfirmationListener(new NotificationIndicator.ConfirmationListener() {
 
                     @Override
@@ -230,6 +231,7 @@ public abstract class BaseModalLayer implements ModalLayer {
                 NotificationIndicator dialog = new NotificationIndicator();
                 dialog.setContent(viewToShow.asVaadinComponent());
                 dialog.setTimeout(timeout_msec);
+                dialog.setMessageType(type);
                 dialog.setConfirmationListener(new NotificationIndicator.ConfirmationListener() {
 
                     @Override
