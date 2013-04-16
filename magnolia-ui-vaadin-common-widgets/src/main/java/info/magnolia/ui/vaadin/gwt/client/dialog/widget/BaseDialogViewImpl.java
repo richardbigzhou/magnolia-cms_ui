@@ -51,21 +51,21 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
 
-    private static final String CLASSNAME = "dialog-panel";
+    protected static String CLASSNAME = "dialog-panel";
 
-    private static final String CLASSNAME_CONTENT = "dialog-content";
+    protected static final String CLASSNAME_CONTENT = "dialog-content";
 
-    private static final String CLASSNAME_FOOTER = "dialog-footer";
+    protected static final String CLASSNAME_FOOTER = "dialog-footer";
 
-    private static final String CLASSNAME_FOOTER_TOOLBAR = "dialog-footer-toolbar";
+    protected static final String CLASSNAME_FOOTER_TOOLBAR = "dialog-footer-toolbar";
 
     private static final String CLASSNAME_BUTTON = "btn-dialog";
 
-    private final DialogHeaderWidget header = createHeader();
+    protected final DialogHeaderWidget header = createHeader();
 
-    private final Element contentEl = DOM.createDiv();
-    private final Element footerEl = DOM.createDiv();
-    private final Element footerToolbarEl = DOM.createDiv();
+    protected final Element contentEl = DOM.createDiv();
+    protected final Element footerEl = DOM.createDiv();
+    protected final Element footerToolbarEl = DOM.createDiv();
 
     private final Map<String, Button> actionMap = new HashMap<String, Button>();
 
@@ -75,6 +75,10 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
     private Widget footerToolbar;
 
     public BaseDialogViewImpl() {
+        init();
+    }
+
+    protected void init() {
         final Element root = DOM.createDiv();
         root.addClassName("dialog-root");
         setElement(root);

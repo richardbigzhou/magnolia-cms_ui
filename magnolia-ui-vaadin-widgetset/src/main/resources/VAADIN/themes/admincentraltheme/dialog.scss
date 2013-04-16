@@ -11,9 +11,9 @@
   padding:0;
 }
 
-.dialog-panel.lightdialog{
-	background-color: lightblue; /* TODO: CLZ use real color */
+.light-dialog-panel {
 	width:400px;
+	padding:0;
 	text-align:center;
 }
 
@@ -24,11 +24,11 @@
   vertical-align: middle;
 }
 
-.dialog-content {
+.dialog-panel .dialog-content {
     width:100%;
 }
 
-.dialog-panel.lightdialog .dialog-content{
+.light-dialog-panel .dialog-content{
     padding:0 24px;
     width:auto;
 }
@@ -40,7 +40,7 @@
 }
 .tablet .dialog-content .v-shell-tabsheet-scroller {max-height:385px;} /* Ensure form footer is visible on the iPad */
 
-.choose-dialog .mgnl-content-view{
+.choose-dialog .mgnl-content-view {
     height:300px;
     position:static;
 }
@@ -54,10 +54,10 @@
     height:15px;
 }
 
-.dialog-panel.lightdialog .dialog-header{
+.light-dialog-panel .dialog-header {
 	background-color:transparent;
 }
-.dialog-panel.lightdialog .dialog-header button.btn-form-help{
+.light-dialog-panel .dialog-header button.btn-form-help {
 	display:none;
 }
 
@@ -86,11 +86,7 @@
 
 
 
-.lightbox-image > img {
-    max-width: 720px;
-    max-height: 400px;
-    cursor: pointer;
-}
+
 
 
 
@@ -101,7 +97,7 @@
   right: 0;
 }
 
-.dialog-panel.lightdialog .dialog-footer{
+.light-dialog-panel .dialog-footer {
     display:inline-block;
 	background-color: transparent;
 }
@@ -167,7 +163,7 @@ button.btn-dialog-help {
 
 
 
-.modal{
+.modal {
     position: absolute;
     top: 0px;
     bottom:0px;
@@ -274,38 +270,38 @@ button.btn-dialog-help {
 
 
 
-.lightdialog .title{
+.light-dialog-panel .title {
     font-weight:bold;
     padding-bottom:5px;
 }
-.lightdialog{
+.light-dialog-panel {
     color:black;
     padding-bottom:5px;
  }
-.lightdialog button,
-.lightdialog .btn-default,
-.lightdialog .btn-other{
+.light-dialog-panel button,
+.light-dialog-panel .btn-default,
+.light-dialog-panel .btn-other {
     color:white;
 }
 
 
-.lightdialog .btn-dialog-default { float:right;}
+.light-dialog-panel .btn-dialog-default { float:right;}
 
-.lightdialog.msginfo{                  }
-.lightdialog.msginfo .m-closebutton{        color: $c05;
-    &:hover,&:active{                       color: #A1ADAF;}}
-.lightdialog.msginfo .btn-dialog-default{   background: $c05;}
-.lightdialog.msginfo button{                background: #A1ADAF;}
+.light-dialog-panel.msginfo {                  }
+.light-dialog-panel.msginfo .m-closebutton {        color: $c05;
+    &:hover,&:active {                       color: #A1ADAF;}}
+.light-dialog-panel.msginfo .btn-dialog-default {   background: $c05;}
+.light-dialog-panel.msginfo button {                background: #A1ADAF;}
 
-.lightdialog.msgwarn{                       background: $c15;}
-.lightdialog.msgwarn .m-closebutton{        color: #F6A51C;}
-.lightdialog.msgwarn .btn-dialog-default{   background: #F6A51C;}
-.lightdialog.msgwarn button{                background: #BEB099;}
+.light-dialog-panel.msgwarn {                       background: $c15;}
+.light-dialog-panel.msgwarn .m-closebutton {        color: #F6A51C;}
+.light-dialog-panel.msgwarn .btn-dialog-default {   background: #F6A51C;}
+.light-dialog-panel.msgwarn button {                background: #BEB099;}
 
-.lightdialog.msgerror{                      background: $c19;}
-.lightdialog.msgerror .m-closebutton{       color: $c17;}
-.lightdialog.msgerror .btn-dialog-default{  background: $c17;}
-.lightdialog.msgerror button{               background: #AE9D9D;}
+.light-dialog-panel.msgerror {                      background: $c19;}
+.light-dialog-panel.msgerror .m-closebutton {       color: $c17;}
+.light-dialog-panel.msgerror .btn-dialog-default {  background: $c17;}
+.light-dialog-panel.msgerror button {               background: #AE9D9D;}
 
 .alert-progressbar {
     display: none;
@@ -313,11 +309,16 @@ button.btn-dialog-help {
 
 .notification-dialog {
     vertical-align: top !important;
-
 }
 
 .notification-dialog .dialog-header {
     padding: 10px 16px 0px 16px;
+}
+
+.lightbox-image > img {
+    max-width: 720px;
+    max-height: 400px;
+    cursor: pointer;
 }
 
 }

@@ -42,7 +42,7 @@ import com.vaadin.ui.Label;
 /**
  * ConfirmationDialog.
  */
-public class ConfirmationDialog extends BaseDialog {
+public class ConfirmationDialog extends LightDialog {
 
     public static final String CONFIRM_ACTION = "confirm";
 

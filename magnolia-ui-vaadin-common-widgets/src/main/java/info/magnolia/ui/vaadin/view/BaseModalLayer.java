@@ -38,6 +38,7 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
+import info.magnolia.ui.vaadin.dialog.LightDialog;
 import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
@@ -138,7 +139,7 @@ public abstract class BaseModalLayer implements ModalLayer {
 
     private ConfirmationDialog createConfirmationDialog(View contentView, String confirmButtonText, String cancelButtonText, String stylename, boolean cancelIsDefault) {
         ConfirmationDialog dialog = new ConfirmationDialog(contentView, cancelIsDefault);
-        dialog.addStyleName("lightdialog");
+        // dialog.addStyleName("lightdialog");
         dialog.addStyleName(stylename);
         dialog.setConfirmActionLabel(confirmButtonText);
         if (cancelButtonText != null) {
@@ -149,8 +150,7 @@ public abstract class BaseModalLayer implements ModalLayer {
     }
 
     private BaseDialog createAlertDialog(View contentView, String confirmButtonText, String stylename) {
-        BaseDialog dialog = new BaseDialog();
-        dialog.addStyleName("lightdialog");
+        BaseDialog dialog = new LightDialog();
         dialog.addStyleName(stylename);
         dialog.setContent(contentView.asVaadinComponent());
         dialog.addAction(ACTION_CONFIRM, confirmButtonText);
