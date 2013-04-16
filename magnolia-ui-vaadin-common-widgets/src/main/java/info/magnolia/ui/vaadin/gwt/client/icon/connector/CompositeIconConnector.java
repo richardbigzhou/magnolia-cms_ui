@@ -48,6 +48,11 @@ import com.vaadin.shared.ui.Connect;
 public class CompositeIconConnector extends AbstractLayoutConnector {
 
     @Override
+    protected void init() {
+        getWidget().updateBaseStyles();
+    }
+
+    @Override
     public IconWidget getWidget() {
         return (IconWidget) super.getWidget();
     }
@@ -68,10 +73,19 @@ public class CompositeIconConnector extends AbstractLayoutConnector {
 
     @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent event) {
+
+        boolean processedRoot = false;
         for (final ComponentConnector cc : getChildComponents()) {
             if (cc instanceof IconConnector) {
+                if (!processedRoot) {
+                    processedRoot = true;
+                } else {
+                    ((IconConnector) cc).setInnerIcon(true);
+                }
+                ((IconConnector) cc).getWidget().updateInnerStyles();
                 getWidget().getElement().appendChild(cc.getWidget().getElement());
             }
         }
     }
+
 }
