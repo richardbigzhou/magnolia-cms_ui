@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.tabsheet.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.loading.LoadingPane;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent.Handler;
@@ -69,19 +68,11 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     private MagnoliaTabWidget activeTab = null;
 
-    private final Presenter presenter;
-
     private final List<MagnoliaTabWidget> tabs = new LinkedList<MagnoliaTabWidget>();
-
-    private final LoadingPane loadingPane = new LoadingPane();
-
-    private EventBus eventBus;
 
     public MagnoliaTabSheetViewImpl(EventBus eventBus, Presenter presenter) {
         super();
-        this.presenter = presenter;
         this.tabBar = new TabBarWidget(eventBus);
-        this.eventBus = eventBus;
 
         addStyleName("v-shell-tabsheet");
         scroller.addStyleName("v-shell-tabsheet-scroller");
@@ -114,7 +105,6 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     @Override
     public void setActiveTab(final MagnoliaTabWidget tab) {
         this.activeTab = tab;
-        loadingPane.show();
         // Hide all tabs
         showAllTabContents(false);
         tab.getElement().getStyle().setDisplay(Display.BLOCK);
@@ -122,8 +112,6 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         new Timer() {
             @Override
             public void run() {
-                presenter.updateLayoutOfActiveTab();
-                loadingPane.hide();
                 fireEvent(new ActiveTabChangedEvent(tab));
             }
         }.schedule(10);

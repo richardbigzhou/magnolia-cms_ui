@@ -51,7 +51,6 @@ public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetCha
      * Presenter.
      */
     public interface Presenter {
-        void updateLayout();
 
         void updateLayoutOfActiveTab();
     }

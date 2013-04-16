@@ -157,6 +157,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
     }
 
     public void setActiveTab(final MagnoliaTab tab) {
+        //tab.setActive(true);
         getState().activeTab = tab;
         updateTabContentVisibility();
     }
@@ -192,11 +193,5 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
      */
     public void closeTabFromServer(MagnoliaTab tab) {
         getRpcProxy(MagnoliaTabSheetClientRpc.class).closeTab(tab);
-    }
-    
-    @Override
-    public void beforeClientResponse(boolean initial) {
-        super.beforeClientResponse(initial);
-        updateTabContentVisibility();
     }
 }
