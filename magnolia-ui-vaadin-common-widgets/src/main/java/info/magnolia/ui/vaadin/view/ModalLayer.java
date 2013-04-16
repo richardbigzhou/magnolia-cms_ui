@@ -48,19 +48,63 @@ public interface ModalLayer {
      */
     ModalCloser openModal(View view);
 
+    /**
+     * Open a Modal on top of the ModalLayer implementer.
+     * 
+     * @param modalityLevel Modality level
+     */
     ModalCloser openModal(View view, ModalityLevel modalityLevel);
 
+    /**
+     * Alert dialog is a dialog where user is given a message and confirm button no chance to cancel.
+     * AlertCallback is invoked on confirm.
+     * This method takes content of this dialog as a caller defined View.
+     */
     ModalCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb);
 
+    /**
+     * Alert dialog is a dialog where user is given a message and confirm button no chance to cancel.
+     * AlertCallback is invoked on confirm.
+     * This method takes the content as a string.
+     */
     ModalCloser openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb);
 
+    /**
+     * Confirmation dialog is a dialog where user is presented a message and chance to confirm or to cancel.
+     * ConfirmationCallback is invoked on user action.
+     * This method takes content of this dialog as a caller defined View.
+     */
     ModalCloser openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb);
 
+    /**
+     * Confirmation dialog is a dialog where user is presented a message and chance to confirm or to cancel.
+     * ConfirmationCallback is invoked on user action.
+     * This method takes the content as a string.
+     */
     ModalCloser openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb);
 
-    ModalCloser openNotification(MessageStyleType type, View viewToShow, String confirmButtonText, NotificationCallback cb);
+    /**
+     * Notification indicator is a message banner that only shows a message to user.
+     * This method opens indicator that stays visible until user clicks close button. NotificationCallback is invoked
+     * on close.
+     */
+    ModalCloser openNotification(MessageStyleType type, View viewToShow, NotificationCallback cb);
 
+    /**
+     * Notification indicator is a message banner that only shows a message to user.
+     * Message is shown until user clicks close button or timeout expires.
+     * 
+     * @param viewToShow Content to show as View.
+     * @param timeout_msec Timeout in milliseconds how long indicator component stays visible.
+     */
     ModalCloser openNotification(MessageStyleType type, View viewToShow, int timeout_msec);
 
+    /**
+     * Notification indicator is a message banner that only shows a message to user.
+     * Message is shown until user clicks close button or timeout expires.
+     * 
+     * @param title Content to show as string.
+     * @param timeout_msec Timeout in milliseconds how long indicator component stays visible.
+     */
     ModalCloser openNotification(MessageStyleType type, String title, int timeout_msec);
 }

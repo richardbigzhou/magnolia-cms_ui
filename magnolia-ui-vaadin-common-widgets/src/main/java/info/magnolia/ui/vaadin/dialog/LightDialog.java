@@ -33,13 +33,10 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.widget.LightDialogViewImpl;
-
 /**
  * A thin component to create a dialog with a light style.
  * LightDialogs are used for small simple dialogs like Confirmations and Alerts.
  * Currently LightDialog client side implementation just sets the css style name.
- * See {@link LightDialogViewImpl}.
  */
 public class LightDialog extends BaseDialog {
 
