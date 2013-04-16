@@ -77,6 +77,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.server.Resource;
 
+
 /**
  * The browser is a core component of AdminCentral. It represents the main hub through which users can interact with
  * JCR data. It is compounded by three main sub-components:
@@ -277,16 +278,18 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
             Session session = MgnlContext.getJCRSession(getWorkspace());
             javax.jcr.Item item = session.getItem(getSelectedItemId());
             if (item.isNode()) {
-                actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item));
+                actionExecutor.execute(actionName, new JcrNodeAdapter((Node) item));
             } else {
-                throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
+                actionExecutor.execute(actionName, new JcrPropertyAdapter((Property) item));
             }
         } catch (RepositoryException e) {
             Message error = new Message(MessageType.ERROR, "Could not get item: " + getSelectedItemId(), e.getMessage());
-            appContext.broadcastMessage(error);
+            log.error("", e);
+            appContext.sendLocalMessage(error);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
-            appContext.broadcastMessage(error);
+            log.error("An error occurred while executing action [{}]", actionName, e);
+            appContext.sendLocalMessage(error);
         }
     }
 

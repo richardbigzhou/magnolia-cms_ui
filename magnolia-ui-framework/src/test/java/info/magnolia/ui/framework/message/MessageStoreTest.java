@@ -34,16 +34,32 @@
 package info.magnolia.ui.framework.message;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.User;
 import info.magnolia.test.MgnlTestCase;
+import info.magnolia.test.mock.MockContext;
+import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockNode;
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Tests.
  */
 public class MessageStoreTest extends MgnlTestCase {
+
+    @Override
+    @Before
+    public void setUp() throws Exception{
+        super.setUp();
+        MockContext ctx = MockUtil.getMockContext();
+        User usr = mock(User.class);
+        when(usr.getName()).thenReturn(Message.DEFAULT_SENDER);
+        ctx.setUser(usr);
+    }
 
     @Test
     public void testMarshall() throws Exception {
@@ -61,10 +77,10 @@ public class MessageStoreTest extends MgnlTestCase {
         store.marshallMessage(message, messageNode);
 
         // THEN
-        assertEquals(subject, messageNode.getProperty(Message.SUBJECT).getString());
-        assertEquals(Message.DEFAULT_SENDER, messageNode.getProperty(Message.SENDER).getString());
-        assertEquals(messageText, messageNode.getProperty(Message.MESSAGE).getString());
-        assertEquals(type.name(), messageNode.getProperty(Message.MESSAGETYPE).getString());
+        assertEquals(subject, messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.SUBJECT).getString());
+        assertEquals(Message.DEFAULT_SENDER, messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.SENDER).getString());
+        assertEquals(messageText, messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.MESSAGE).getString());
+        assertEquals(type.name(), messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE).getString());
     }
 
     @Test
@@ -79,11 +95,11 @@ public class MessageStoreTest extends MgnlTestCase {
         final MessageType type = MessageType.WARNING;
 
         messageNode.setName(id);
-        messageNode.setProperty(Message.TIMESTAMP, now);
-        messageNode.setProperty(Message.SENDER, sender);
-        messageNode.setProperty(Message.SUBJECT, subject);
-        messageNode.setProperty(Message.MESSAGE, messageText);
-        messageNode.setProperty(Message.MESSAGETYPE, type.name());
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, now);
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.SENDER, sender);
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.SUBJECT, subject);
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGE, messageText);
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, type.name());
 
         MessageStore store = new MessageStore();
 
@@ -107,7 +123,7 @@ public class MessageStoreTest extends MgnlTestCase {
         final String id = "1234";
         messageNode.setName(id);
         // timestamp is mandatory...
-        messageNode.setProperty(Message.TIMESTAMP, now);
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, now);
 
         MessageStore store = new MessageStore();
 
