@@ -89,7 +89,7 @@ public class BrowserSubApp extends BaseSubApp {
 
         super(subAppContext, view);
         if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {
-            throw new IllegalArgumentException("Constructor does not allow for null args. Found AppContext = " + subAppContext + ", ContentSubAppView = " + view + ", ContentWorkbenchPresenter = " + browser + ", EventBus = " + subAppEventBus);
+            throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", ContentSubAppView = " + view + ", BrowserPresenter = " + browser + ", EventBus = " + subAppEventBus);
         }
         this.browser = browser;
         this.subAppEventBus = subAppEventBus;
