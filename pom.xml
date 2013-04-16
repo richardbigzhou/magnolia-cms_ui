@@ -253,7 +253,6 @@
     <module>magnolia-ui-actionbar</module>
     <module>magnolia-ui-app-sample</module>
     <module>magnolia-ui-app-config</module>
-    <module>magnolia-ui-app-contacts</module>
     <module>magnolia-ui-app-messages</module>
     <module>magnolia-ui-app-pages</module>
     <module>magnolia-ui-app-security</module>
