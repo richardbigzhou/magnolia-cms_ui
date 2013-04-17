@@ -240,6 +240,10 @@
       <type>info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition</type>
       <implementation>info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.model.imageprovider.definition.ImageProvider</type>
+      <implementation>info.magnolia.ui.admincentral.image.DefaultImageProvider</implementation>
+    </component>
   </components>
 
   <components>

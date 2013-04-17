@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.imageprovider.definition;
+package info.magnolia.ui.form.field.upload;
+
 
 /**
- * Defines a provider for Thumbnail images.
+ * Minimal set of methods that an Upload Field has to implement.
  */
-public interface ImageProvider {
-
-    static final String PORTRAIT_GENERATOR = "portrait";
-
-    static final String THUMBNAIL_GENERATOR = "thumbnail";
-
-    String getPortraitPath(String workspace, String path);
-
-    String getThumbnailPath(String workspace, String path);
-
-    String getPortraitPathByIdentifier(String workspace, String uuid);
-
-    String getThumbnailPathByIdentifier(String workspace, String uuid);
-
-    String resolveIconClassName(String mimeType);
+public interface UploadField {
 
     /**
-     * Get a Preview Resource.
-     * This preview is an image or an icon representing the Document type.
+     * Set the AllowedMimeType.
      */
-    Object getThumbnailResourceByPath(String workspace, String path, String generator);
+    public void setAllowedMimeTypePattern(String allowedMimeTypePattern);
 
-    Object getThumbnailResourceById(String workspace, String identifier, String generator);
+
+    /**
+     * Define the Maximum Upload File size in bytes.
+     */
+    public void setMaxUploadSize(long maxUploadSize);
+
 }
