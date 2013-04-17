@@ -45,6 +45,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.commons.JcrUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,65 +62,22 @@ public class BookmarkStore {
     public static final String WORKSPACE_NAME = "profiles";
     public static final String FAVORITES_PATH = "favorites";
     public static final String BOOKMARKS_PATH = "bookmarks";
-    public static final String BOOKMARK_NODETYPE = NodeTypes.Resource.NAME;
+    public static final String BOOKMARK_NODETYPE = JcrConstants.NT_BASE;
+
+
+    protected Session getSession() throws RepositoryException{
+        return MgnlContext.getJCRSession(WORKSPACE_NAME);
+    }
 
     /**
-     * Stores a new message or overwrites an existing one depending on whether there's an id set. That is, the id of the
-     * message is respected if present otherwise a new unique one is used. When the method returns the message has been
-     * updated with a new id.
-     *
-     * @param userName user to save the bookmark for
-     * @param title title for the new bookmark
-     * @param url url of the new bookmark
-     * @return true if saving was successful or false if it failed
+     * @return the root node of all bookmarks for the current user
      */
-    public boolean create(final String userName, final String title, final String url) {
-
-        return MgnlContext.doInSystemContext(new MgnlContext.Op<Boolean, RuntimeException>() {
-
-            @Override
-            public Boolean exec() {
-                try {
-                    Session session = MgnlContext.getJCRSession(WORKSPACE_NAME);
-                    final Node userNode = getOrCreateBookmarkNode(session, userName);
-                    final Node bookmarkNode = userNode.addNode(title);
-                    bookmarkNode.setProperty(BOOKMARK_URL_PROPERTY_NAME, url);
-
-                    session.save();
-
-                    return true;
-
-                } catch (RepositoryException e) {
-                    log.error("Saving message failed for user: " + userName, e);
-                    return false;
-                }
-            }
-        });
+    public Node getBookmarkRoot() throws RepositoryException {
+        return getOrCreateBookmarkNode(MgnlContext.getInstance().getUser().getName());
     }
 
-    public List<Node> findAllForUser(final String userName) {
-        return MgnlContext.doInSystemContext(new MgnlContext.Op<List<Node>, RuntimeException>() {
-
-            @Override
-            public List<Node> exec() throws RuntimeException {
-                List<Node> nodes = new ArrayList<Node>();
-                try {
-                    Session session = MgnlContext.getJCRSession(WORKSPACE_NAME);
-
-                    for (Node messageNode : NodeUtil.getNodes(getOrCreateBookmarkNode(session, userName))) {
-                        nodes.add(messageNode);
-                    }
-
-                } catch (RepositoryException e) {
-                    log.error("Retrieving bookmarks failed for user: " + userName, e);
-                }
-                return nodes;
-            }
-        });
-    }
-
-    private Node getOrCreateBookmarkNode(Session session, String userName) throws RepositoryException {
+    protected Node getOrCreateBookmarkNode(String userName) throws RepositoryException {
         final String nodePath = "/" + userName + "/" + FAVORITES_PATH + "/" + BOOKMARKS_PATH;
-        return JcrUtils.getOrCreateByPath(nodePath, false, BOOKMARK_NODETYPE, NodeTypes.Resource.NAME, session, false);
+        return JcrUtils.getOrCreateByPath(nodePath, false, BOOKMARK_NODETYPE, NodeTypes.Resource.NAME, getSession(), false);
     }
 }

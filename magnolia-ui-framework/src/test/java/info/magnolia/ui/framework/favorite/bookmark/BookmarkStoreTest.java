@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.framework.favorite.bookmark;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.User;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
-
-import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
@@ -52,8 +52,6 @@ import org.junit.Test;
  */
 public class BookmarkStoreTest extends MgnlTestCase {
     public static final String TEST_USER = "phantomas";
-    public static final String BOOKMARK_TITLE = "bookmarkTitle";
-    public static final String BOOKMARK_URL = "/myWebapp/something";
 
     private BookmarkStore store;
     Session session;
@@ -63,41 +61,24 @@ public class BookmarkStoreTest extends MgnlTestCase {
     public void setUp() throws Exception {
         super.setUp();
         session = new MockSession(BookmarkStore.WORKSPACE_NAME);
-        MockUtil.getSystemMockContext().addSession(BookmarkStore.WORKSPACE_NAME, session);
+        MockUtil.getMockContext().addSession(BookmarkStore.WORKSPACE_NAME, session);
+        User user = mock(User.class);
+        when(user.getName()).thenReturn(TEST_USER);
+        MockUtil.getMockContext().setUser(user);
 
         store = new BookmarkStore();
     }
 
     @Test
-    public void testFindAllForUser() throws Exception {
+    public void testGetBookmarkRoot() throws Exception {
         // GIVEN
         final Node bookmarkNode = session.getRootNode().addNode(TEST_USER).addNode(BookmarkStore.FAVORITES_PATH).addNode(BookmarkStore.BOOKMARKS_PATH);
 
-        final Node firstBookmarkNode = bookmarkNode.addNode(BOOKMARK_TITLE);
-        firstBookmarkNode.setProperty(BookmarkStore.BOOKMARK_URL_PROPERTY_NAME, BOOKMARK_URL);
-
         // WHEN
-        final List<Node> bookmarks = store.findAllForUser(TEST_USER);
+        final Node bookmarkRoot = store.getBookmarkRoot();
 
         // THEN
-        assertEquals(1, bookmarks.size());
-        assertEquals(BOOKMARK_TITLE, bookmarks.get(0).getName());
-        assertEquals(BOOKMARK_URL, bookmarks.get(0).getProperty(BookmarkStore.BOOKMARK_URL_PROPERTY_NAME).getString());
-    }
-
-    @Test
-    public void testCreate() throws Exception {
-        // GIVEN
-        final String pathToBookmark = "/" + TEST_USER + "/" + BookmarkStore.FAVORITES_PATH + "/" + BookmarkStore.BOOKMARKS_PATH;
-
-        // WHEN
-        final boolean success = store.create(TEST_USER, BOOKMARK_TITLE, BOOKMARK_URL);
-
-        // THEN
-        assertTrue("Creating user should have succeeded", success);
-        assertTrue("Expected item to exist: " + pathToBookmark, session.itemExists(pathToBookmark));
-        assertTrue(session.getNode(pathToBookmark).hasNode(BOOKMARK_TITLE));
-        assertEquals(BOOKMARK_URL, session.getNode(pathToBookmark).getNode(BOOKMARK_TITLE).getProperty(BookmarkStore.BOOKMARK_URL_PROPERTY_NAME).getString());
+        assertEquals("/phantomas/favorites/bookmarks", bookmarkRoot.getPath());
     }
 
 }
