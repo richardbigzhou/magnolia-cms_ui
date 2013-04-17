@@ -67,7 +67,7 @@ public class UploadReceiver extends FileBuffer {
     }
 
     public long getFileSize() {
-        return this.getLastFileSize();
+        return this.getFile() != null ? this.getLastFileSize() : 0l;
     }
 
     public String getMimeType() {
