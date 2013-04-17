@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.integration.i18n;
 
 
-import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
@@ -50,26 +49,43 @@ import com.vaadin.data.util.AbstractProperty;
 public class I18NAwareProperty extends AbstractProperty<String> {
 
     private String basePropertyName;
-    private I18nContentSupport i18nSupport;
-    private JcrItemNodeAdapter parentNodeAdapter;
-    private DefaultProperty<String> currentProperty;
 
-    public I18NAwareProperty(String baseName, JcrItemNodeAdapter parentNodeAdapter, I18nContentSupport i18nSupport) {
+    private String i18NPropertyName;
+
+    private String type;
+
+    private String defaultValue;
+
+    private Locale locale;
+
+    private JcrItemNodeAdapter parentNodeAdapter;
+
+    public I18NAwareProperty(String baseName, String type, String defaultValue, JcrItemNodeAdapter parentNodeAdapter) {
         super();
-        this.i18nSupport = i18nSupport;
-        this.basePropertyName = baseName;
+        this.type = type;
+        this.defaultValue = defaultValue;
         this.parentNodeAdapter = parentNodeAdapter;
-        this.currentProperty = getOrCreateProperty();
+        this.i18NPropertyName = baseName;
+        this.basePropertyName = baseName;
+    }
+
+    public void setI18NPropertyName(String i18NPropertyName) {
+        this.i18NPropertyName = i18NPropertyName;
+        fireValueChange();
     }
 
     @Override
     public String getValue() {
-        return currentProperty.getValue();
+        return getOrCreateProperty().getValue();
     }
 
     @Override
     public void setValue(String newValue) throws ReadOnlyException {
-        currentProperty.setValue(newValue);
+        if (newValue != null && !newValue.isEmpty()) {
+            getOrCreateProperty().setValue(newValue);
+        } else {
+            parentNodeAdapter.removeItemProperty(getLocalizedPropertyName());
+        }
     }
 
     @Override
@@ -77,32 +93,29 @@ public class I18NAwareProperty extends AbstractProperty<String> {
         return String.class;
     }
 
-    public void setLocale(Locale newLocale) {
-        i18nSupport.setLocale(newLocale);
-        currentProperty = getOrCreateProperty();
-        fireValueChange();
-    }
-
-    /**
-     * Handle i18n definition.
-     * If i18n is set to true, prefix the property name by the current language
-     * (fr_, de_) if the current language is not the default one.
-     */
-    protected String getPropertyName() {
-        boolean isFallbackLanguage = i18nSupport.getFallbackLocale().equals(i18nSupport.getLocale());
-        if (!isFallbackLanguage) {
-            return basePropertyName + "_" + i18nSupport.getLocale().toString();
-        }
-        return basePropertyName;
+    protected String getLocalizedPropertyName() {
+        return i18NPropertyName;
     }
 
     protected DefaultProperty<String> getOrCreateProperty() {
-        String propertyName = getPropertyName();
+        String propertyName = getLocalizedPropertyName();
         DefaultProperty<String> property = (DefaultProperty<String>) parentNodeAdapter.getItemProperty(propertyName);
         if (property == null) {
-            property = DefaultPropertyUtil.newDefaultProperty(propertyName, "String", "");
+            property = DefaultPropertyUtil.newDefaultProperty(propertyName, type, defaultValue);
             parentNodeAdapter.addItemProperty(propertyName, property);
         }
         return property;
+    }
+
+    public String getBasePropertyName() {
+        return basePropertyName;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
+    public Locale getLocale() {
+        return locale;
     }
 }
