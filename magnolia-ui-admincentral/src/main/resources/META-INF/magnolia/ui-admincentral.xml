@@ -324,6 +324,7 @@
       <workspaces>
         <workspace>profiles</workspace>
       </workspaces>
+      <nodeTypeFile>/mgnl-nodetypes/magnolia-favorite-nodetypes.xml</nodeTypeFile>
     </repository>
   </repositories>
 </module>

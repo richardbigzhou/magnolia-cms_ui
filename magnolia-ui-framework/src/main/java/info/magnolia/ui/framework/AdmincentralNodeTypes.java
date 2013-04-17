@@ -55,4 +55,22 @@ public class AdmincentralNodeTypes {
         public static String CLEARED = "cleared";
         public static String SENDER = "sender";
     }
+
+    /**
+     * Represents the node type mgnl:favorite.
+     */
+    public static class Favorite {
+
+        public static final String NAME = NodeTypes.MGNL_PREFIX + "favorite";
+
+        public static String URL = "url";
+    }
+
+    /**
+     * Represents the node type mgnl:favoriteGroup.
+     */
+    public static class FavoriteGroup {
+
+        public static final String NAME = Favorite.NAME + "Group";
+    }
 }
