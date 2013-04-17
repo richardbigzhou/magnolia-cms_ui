@@ -48,10 +48,10 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.dialog.Modal;
-import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
-import info.magnolia.ui.vaadin.view.BaseModalLayer;
-import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.overlay.BaseOverlayLayer;
+import info.magnolia.ui.vaadin.overlay.Overlay;
+import info.magnolia.ui.vaadin.overlay.OverlayCloser;
+import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
 import info.magnolia.ui.vaadin.view.View;
 
 import java.util.Collection;
@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Implements both - the controlling of an app instance as well as the housekeeping of the context for an app.
  */
-public class AppInstanceControllerImpl extends BaseModalLayer implements AppContext, AppInstanceController {
+public class AppInstanceControllerImpl extends BaseOverlayLayer implements AppContext, AppInstanceController {
 
     private static final Logger log = LoggerFactory.getLogger(AppInstanceControllerImpl.class);
 
@@ -155,9 +155,9 @@ public class AppInstanceControllerImpl extends BaseModalLayer implements AppCont
     }
 
     @Override
-    public ModalCloser openModal(View view, ModalityLevel modalityLevel) {
-        View modalityParent = getView();
-        return shell.openModalOnView(view, modalityParent, Modal.ModalityLocation.APP, modalityLevel);
+    public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
+        View overlayParent = getView();
+        return shell.openOverlayOnView(view, overlayParent, Overlay.ModalityDomain.APP, modalityLevel);
     }
 
 

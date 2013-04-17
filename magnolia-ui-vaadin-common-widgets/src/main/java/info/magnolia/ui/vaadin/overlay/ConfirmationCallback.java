@@ -31,13 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.view;
+package info.magnolia.ui.vaadin.overlay;
+
 
 /**
- * Callback for closing a dialog.
+ * ConfirmationCallback.
  */
-public interface ModalCloser {
+public interface ConfirmationCallback {
+    void onCancel();
 
-    void close();
-
+    void onSuccess(String actionName);
 }

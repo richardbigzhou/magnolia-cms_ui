@@ -31,12 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.view;
+package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
+
+import com.vaadin.shared.AbstractComponentState;
+import com.vaadin.shared.Connector;
 
 /**
- * Callback interface for indication.
+ * OverlayState.
  */
-public interface NotificationCallback {
-    void onOk();
-
+public class OverlayState extends AbstractComponentState {
+    public Connector overlayParent = null;
 }

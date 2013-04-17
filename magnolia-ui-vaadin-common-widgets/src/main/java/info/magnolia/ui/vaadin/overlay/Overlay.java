@@ -31,9 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.vaadin.overlay;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.connector.ModalState;
+import info.magnolia.ui.vaadin.gwt.client.dialog.connector.OverlayState;
 
 import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
@@ -44,20 +44,20 @@ import com.vaadin.ui.Component;
  * It is only modal within the component that it is added to.
  * Positioning of the glass and component depends on one of the parents having css position set to relative or absolute.
  */
-public class Modal extends AbstractSingleComponentContainer {
+public class Overlay extends AbstractSingleComponentContainer {
 
     /**
      * The available locations of modality for opening a modal.
      * Represents what will be blocked by the opened modal.
      */
-    public static enum ModalityLocation {
+    public static enum ModalityDomain {
         SUB_APP("sub-app"),
         APP("app"),
         SHELL("shell");
 
         private String cssClass;
 
-        private ModalityLocation(String cssClass) {
+        private ModalityDomain(String cssClass) {
             this.cssClass = cssClass;
         }
 
@@ -91,26 +91,26 @@ public class Modal extends AbstractSingleComponentContainer {
 
     }
 
-    final Modal.ModalityLocation modalityLocation;
+    final Overlay.ModalityDomain modalityDomain;
 
-    public Modal(final Component content, final Component modalityParent, final Modal.ModalityLocation modalityLocation, final Modal.ModalityLevel modalityLevel) {
+    public Overlay(final Component content, final Component overlayParent, final Overlay.ModalityDomain modalityDomain, final Overlay.ModalityLevel modalityLevel) {
         // setSizeFull();
         setImmediate(true);
 
-        content.addStyleName("modal-child");
+        content.addStyleName("overlay-child");
         setContent(content);
 
-        this.modalityLocation = modalityLocation;
-        getState().modalityParent = modalityParent;
+        this.modalityDomain = modalityDomain;
+        getState().overlayParent = overlayParent;
 
         // Set css classes of Modal
-        this.addStyleName(modalityLocation.getCssClass());
+        this.addStyleName(modalityDomain.getCssClass());
 
         this.addStyleName(modalityLevel.getCssClass());
     }
 
     @Override
-    protected ModalState getState() {
-        return (ModalState) super.getState();
+    protected OverlayState getState() {
+        return (OverlayState) super.getState();
     }
 }

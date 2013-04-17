@@ -31,64 +31,65 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.view;
+package info.magnolia.ui.vaadin.overlay;
 
-import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
+import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
+import info.magnolia.ui.vaadin.view.View;
 
 /**
- * Implementers can open modal views over their display area.
+ * Implementers can open overlay views (with a degree of modality) over their display area.
  */
-public interface ModalLayer {
+public interface OverlayLayer {
 
 
     /**
-     * Open a Modal on top of the ModalLayer implementer.
+     * Open an Overlay on top of the OverlayLayer implementer.
      * 
      * @param view View of the component to be displayed modally.
      */
-    ModalCloser openModal(View view);
+    OverlayCloser openOverlay(View view);
 
     /**
-     * Open a Modal on top of the ModalLayer implementer.
+     * Open an Overlay on top of the OverlayLayer implementer.
      * 
      * @param modalityLevel Modality level
      */
-    ModalCloser openModal(View view, ModalityLevel modalityLevel);
+    OverlayCloser openOverlay(View view, ModalityLevel modalityLevel);
 
     /**
      * Alert dialog is a dialog where user is given a message and confirm button no chance to cancel.
      * AlertCallback is invoked on confirm.
      * This method takes content of this dialog as a caller defined View.
      */
-    ModalCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb);
+    OverlayCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb);
 
     /**
      * Alert dialog is a dialog where user is given a message and confirm button no chance to cancel.
      * AlertCallback is invoked on confirm.
      * This method takes the content as a string.
      */
-    ModalCloser openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb);
+    OverlayCloser openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb);
 
     /**
      * Confirmation dialog is a dialog where user is presented a message and chance to confirm or to cancel.
      * ConfirmationCallback is invoked on user action.
      * This method takes content of this dialog as a caller defined View.
      */
-    ModalCloser openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb);
+    OverlayCloser openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb);
 
     /**
      * Confirmation dialog is a dialog where user is presented a message and chance to confirm or to cancel.
      * ConfirmationCallback is invoked on user action.
      * This method takes the content as a string.
      */
-    ModalCloser openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb);
+    OverlayCloser openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb);
 
     /**
      * Notification indicator is a message banner that only shows a message to user.
      * This method opens indicator that stays visible until user clicks close button. NotificationCallback is invoked
      * on close.
      */
-    ModalCloser openNotification(MessageStyleType type, View viewToShow, NotificationCallback cb);
+    OverlayCloser openNotification(MessageStyleType type, View viewToShow, NotificationCallback cb);
 
     /**
      * Notification indicator is a message banner that only shows a message to user.
@@ -97,7 +98,7 @@ public interface ModalLayer {
      * @param viewToShow Content to show as View.
      * @param timeout_msec Timeout in milliseconds how long indicator component stays visible.
      */
-    ModalCloser openNotification(MessageStyleType type, View viewToShow, int timeout_msec);
+    OverlayCloser openNotification(MessageStyleType type, View viewToShow, int timeout_msec);
 
     /**
      * Notification indicator is a message banner that only shows a message to user.
@@ -106,5 +107,5 @@ public interface ModalLayer {
      * @param title Content to show as string.
      * @param timeout_msec Timeout in milliseconds how long indicator component stays visible.
      */
-    ModalCloser openNotification(MessageStyleType type, String title, int timeout_msec);
+    OverlayCloser openNotification(MessageStyleType type, String title, int timeout_msec);
 }

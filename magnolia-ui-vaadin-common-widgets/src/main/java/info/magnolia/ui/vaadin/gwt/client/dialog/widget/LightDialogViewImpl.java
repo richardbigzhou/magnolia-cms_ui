@@ -35,13 +35,14 @@ package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
 
 
+
 /**
  * {@link LightDialogViewImpl}.
  */
 public class LightDialogViewImpl extends BaseDialogViewImpl {
 
-    public LightDialogViewImpl() {
-        CLASSNAME = "light-dialog-panel";
-        init();
+    @Override
+    protected String getClassname() {
+        return "light-dialog-panel";
     }
 }

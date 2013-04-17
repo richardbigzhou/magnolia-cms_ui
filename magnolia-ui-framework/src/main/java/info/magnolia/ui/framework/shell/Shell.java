@@ -35,9 +35,9 @@ package info.magnolia.ui.framework.shell;
 
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.vaadin.dialog.Modal;
-import info.magnolia.ui.vaadin.view.ModalCloser;
-import info.magnolia.ui.vaadin.view.ModalLayer;
+import info.magnolia.ui.vaadin.overlay.Overlay;
+import info.magnolia.ui.vaadin.overlay.OverlayCloser;
+import info.magnolia.ui.vaadin.overlay.OverlayLayer;
 import info.magnolia.ui.vaadin.view.View;
 
 import java.util.List;
@@ -45,7 +45,7 @@ import java.util.List;
 /**
  * Decouples the presenters and the Vaadin application. Provides methods to show messages and configuration dialogs.
  */
-public interface Shell extends ModalLayer {
+public interface Shell extends OverlayLayer {
 
     void askForConfirmation(String message, ConfirmationHandler listener);
 
@@ -70,13 +70,13 @@ public interface Shell extends ModalLayer {
     void showWarning(Message message);
 
     /**
-     * Open a Modal on top of a specific View.
+     * Open an Overlay on top of a specific View.
      * 
      * @param view
-     * View to be displayed modally.
+     * View to be displayed over the view.
      * @param parent
-     * The View to open the Modal on top of.
+     * The View to open the Overlay on top of.
      */
-    ModalCloser openModalOnView(View view, View parent, Modal.ModalityLocation modalityLocation, Modal.ModalityLevel modalityLevel);
+    OverlayCloser openOverlayOnView(View view, View parent, Overlay.ModalityDomain modalityLocation, Overlay.ModalityLevel modalityLevel);
 
 }

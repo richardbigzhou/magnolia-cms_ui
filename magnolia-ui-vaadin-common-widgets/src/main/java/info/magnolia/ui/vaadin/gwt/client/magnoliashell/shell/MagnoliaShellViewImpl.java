@@ -268,9 +268,9 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     }
 
     @Override
-    public void openModalOnWidget(Widget modalWidget, Widget modalityParent) {
+    public void openOverlayOnWidget(Widget overlayWidget, Widget overlayParent) {
         // Insert a child widget into a parent element.
-        add(modalWidget, modalityParent.getElement());
+        add(overlayWidget, overlayParent.getElement());
     }
 
     private final ShellAppActivatedEvent.Handler navigationHandler = new ShellAppActivatedEvent.Handler() {

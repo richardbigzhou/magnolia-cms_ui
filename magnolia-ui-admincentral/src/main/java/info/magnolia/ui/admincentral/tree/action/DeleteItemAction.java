@@ -40,9 +40,9 @@ import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.view.ConfirmationCallback;
-import info.magnolia.ui.vaadin.view.MessageStyleType;
-import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.overlay.ConfirmationCallback;
+import info.magnolia.ui.vaadin.overlay.MessageStyleType;
+import info.magnolia.ui.vaadin.overlay.OverlayCloser;
 
 import javax.inject.Named;
 import javax.jcr.RepositoryException;
@@ -84,7 +84,7 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
             return;
         }
 
-        final ModalCloser modalCloser = subAppContext.openConfirmation(
+        final OverlayCloser overlayCloser = subAppContext.openConfirmation(
                 MessageStyleType.WARNING, "Do you really want to delete this item?", "Really, are you super sure?", "Delete Item", "Cancel", true,
                 new ConfirmationCallback() {
                     @Override
@@ -110,7 +110,7 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
             eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemPath()));
 
             // Show notification
-            final ModalCloser modalCloser = subAppContext.openNotification(MessageStyleType.INFO, "Item deleted successfully.", 3000);
+            final OverlayCloser overlayCloser = subAppContext.openNotification(MessageStyleType.INFO, "Item deleted successfully.", 3000);
         } catch (RepositoryException e) {
             log.error("Could not execute repository operation.", e);
         }

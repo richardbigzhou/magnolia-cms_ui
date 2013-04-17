@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,53 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.view;
+package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
-import info.magnolia.ui.vaadin.icon.CompositeIcon;
-import info.magnolia.ui.vaadin.icon.ErrorIcon;
-import info.magnolia.ui.vaadin.icon.InfoIcon;
-import info.magnolia.ui.vaadin.icon.WarningIcon;
+import info.magnolia.ui.vaadin.gwt.client.dialog.connector.OverlayConnector;
+
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * The type of message.
+ * OverlayWidget.
  */
-public enum MessageStyleType {
+public class OverlayWidget extends SimplePanel {
 
-    UNKNOWN("", "", null),
-    ERROR("Error", "msgerror", ErrorIcon.class),
-    WARNING("Warning", "msgwarn", WarningIcon.class),
-    INFO("Info", "msginfo", InfoIcon.class);
+    private final Element modalityCurtain = DOM.createDiv();
 
-    private String caption;
-    private String name;
-    private Class icon;
+    public OverlayWidget(OverlayConnector connector) {
+        super();
 
-    private MessageStyleType(final String caption, final String name, final Class icon) {
-        this.caption = caption;
-        this.name = name;
-        this.icon = icon;
-    }
+        setStyleName("overlay");
 
-    @Override
-    public String toString() {
-        return caption;
-    }
-
-    public String Name() {
-        return name;
-    }
-
-    public CompositeIcon Icon() {
-        try {
-            return (CompositeIcon) icon.newInstance();
-        } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
+        modalityCurtain.setClassName("modal-curtain");
+        this.getElement().appendChild(modalityCurtain);
     }
 
 }

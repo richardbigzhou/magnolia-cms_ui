@@ -166,7 +166,7 @@ button.btn-dialog-help {
 
 
 
-.modal {
+.overlay {
     position: absolute;
     top: 0px;
     bottom:0px;
@@ -178,15 +178,15 @@ button.btn-dialog-help {
 
 
 
-.modal-child {
+.overlay-child {
   display: inline-block !important;
   position: relative;
   margin-top: 2px;
 }
 
 /* transparent border */
-.modal.modality-light .modal-child,
-.modal.modality-non-modal .modal-child
+.overlay.modality-light .overlay-child,
+.overlay.modality-non-modal .overlay-child
 {
     border: 20px solid rgb(255, 255, 255);
     border: 20px solid rgba(255, 255, 255, .5);
@@ -196,7 +196,7 @@ button.btn-dialog-help {
 
 
 /* Vertical centering - The ghost, nudged to maintain perfect centering  - http://css-tricks.com/centering-in-the-unknown */
-.modal.center-vertical:before {
+.overlay.center-vertical:before {
     content: '';
     display: inline-block;
     height: 100%;
@@ -205,7 +205,7 @@ button.btn-dialog-help {
 }
 
 /* vertical centering */
-.modal.center-vertical .modal-child {
+.overlay.center-vertical .overlay-child {
     vertical-align:middle;
 }
 
@@ -214,13 +214,13 @@ button.btn-dialog-help {
 
 
 /* Be non-modal */
-.modal.modality-non-modal{
+.overlay.modality-non-modal{
     height:0px;
     overflow:visible;
 }
 
-.modal.modality-light .modal-curtain,
-.modal.modality-strong .modal-curtain
+.overlay.modality-light .modal-curtain,
+.overlay.modality-strong .modal-curtain
 {
     position:absolute;
     top:0px;
@@ -232,23 +232,23 @@ button.btn-dialog-help {
     filter:alpha(opacity = 80);
 }
 
-.modal.modality-light .modal-curtain{
+.overlay.modality-light .modal-curtain{
     background-color:transparent;
 }
 
 
 
 /* Set proper stacking for modals */
-.modal.app,
-.modal.sub-app {
+.overlay.app,
+.overlay.sub-app {
     z-index: 110;
 }
 
-.modal.shell{
+.overlay.shell{
 	z-index:500;
 }
 
-.modal.shell .modal-child{
+.overlay.shell .overlay-child{
   top:60px;
 }
 
@@ -258,15 +258,15 @@ button.btn-dialog-help {
 
 
 /*
-* Forms in a Modal.
+* Forms in an Overlay.
 */
 
-.modal .v-form-layout {
+.overlay .v-form-layout {
     background-color: #E6E6E6;
 }
 
-.modal .form-panel .v-shell-tabsheet,
-.modal .form-panel .v-shell-tabsheet .nav li.active {
+.overlay .form-panel .v-shell-tabsheet,
+.overlay .form-panel .v-shell-tabsheet .nav li.active {
     background-color: #E6E6E6;
 }
 
@@ -320,6 +320,7 @@ button.btn-dialog-help {
 .notification-dialog {
     vertical-align: top !important;
     padding: 12px;
+    width:400px;
 }
 
 .notification-close-button {

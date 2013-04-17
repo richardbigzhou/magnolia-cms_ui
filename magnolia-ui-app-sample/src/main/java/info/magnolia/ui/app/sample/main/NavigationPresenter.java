@@ -36,9 +36,9 @@ package info.magnolia.ui.app.sample.main;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.AppEventBus;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.vaadin.view.MessageStyleType;
-import info.magnolia.ui.vaadin.view.ModalCloser;
-import info.magnolia.ui.vaadin.view.NotificationCallback;
+import info.magnolia.ui.vaadin.overlay.MessageStyleType;
+import info.magnolia.ui.vaadin.overlay.NotificationCallback;
+import info.magnolia.ui.vaadin.overlay.OverlayCloser;
 import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
@@ -80,14 +80,14 @@ public class NavigationPresenter implements NavigationView.Listener {
         };
 
 
-        final ModalCloser modalCloser = subAppContext.openNotification(
-                MessageStyleType.WARNING, view, "????? Item",
+        final OverlayCloser overlayCloser = subAppContext.openNotification(
+                MessageStyleType.WARNING, view,
                 new NotificationCallback() {
                     @Override
                     public void onOk() {
                         // nothing
                         // Show notification
-                        final ModalCloser modalCloser = subAppContext.openNotification(MessageStyleType.INFO, "Clicked.", 3000);
+                        final OverlayCloser overlayCloser = subAppContext.openNotification(MessageStyleType.INFO, "Clicked.", 3000);
 
                     }
 

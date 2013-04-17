@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.view;
+package info.magnolia.ui.vaadin.overlay;
 
+import info.magnolia.ui.vaadin.icon.CompositeIcon;
+import info.magnolia.ui.vaadin.icon.ErrorIcon;
+import info.magnolia.ui.vaadin.icon.InfoIcon;
+import info.magnolia.ui.vaadin.icon.WarningIcon;
 
 /**
- * ConfirmationCallback.
+ * The type of message.
  */
-public interface ConfirmationCallback {
-    void onCancel();
+public enum MessageStyleType {
 
-    void onSuccess(String actionName);
+    UNKNOWN("", "", null),
+    ERROR("Error", "msgerror", ErrorIcon.class),
+    WARNING("Warning", "msgwarn", WarningIcon.class),
+    INFO("Info", "msginfo", InfoIcon.class);
+
+    private String caption;
+    private String name;
+    private Class icon;
+
+    private MessageStyleType(final String caption, final String name, final Class icon) {
+        this.caption = caption;
+        this.name = name;
+        this.icon = icon;
+    }
+
+    @Override
+    public String toString() {
+        return caption;
+    }
+
+    public String Name() {
+        return name;
+    }
+
+    public CompositeIcon Icon() {
+        try {
+            return (CompositeIcon) icon.newInstance();
+        } catch (InstantiationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

@@ -31,16 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.view;
+package info.magnolia.ui.vaadin.overlay;
 
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
 import info.magnolia.ui.vaadin.dialog.LightDialog;
-import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.dialog.NotificationIndicator;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
+import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
+import info.magnolia.ui.vaadin.view.View;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -48,52 +49,51 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 
 /**
- * Provide functionality to open modal dialogs and indications.
- * Implementers are required to implement openModal method.
+ * Provides default implementations for many OverlayLayer methods.
  */
-public abstract class BaseModalLayer implements ModalLayer {
+public abstract class BaseOverlayLayer implements OverlayLayer {
 
     private static final String ACTION_CONFIRM = "confirm";
 
     /**
-     * Convenience method to open a modal with the default strong modality level.
+     * Convenience method to open an overlay with the default strong modality level.
      */
     @Override
-    public ModalCloser openModal(View view) {
-        return openModal(view, ModalityLevel.STRONG);
+    public OverlayCloser openOverlay(View view) {
+        return openOverlay(view, ModalityLevel.STRONG);
     }
 
     /**
      * Open alert dialog with light modality level. Close dialog on confirm.
      */
     @Override
-    public ModalCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, final AlertCallback cb) {
+    public OverlayCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, final AlertCallback cb) {
         BaseDialog dialog = createAlertDialog(viewToShow, confirmButtonText, type.Name());
         dialog.showCloseButton();
 
-        final ModalCloser modalCloser = openModal(dialog, ModalityLevel.LIGHT);
-        dialog.addDialogCloseHandler(createCloseHandler(modalCloser));
+        final OverlayCloser overlayCloser = openOverlay(dialog, ModalityLevel.LIGHT);
+        dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
         dialog.addActionCallback(ACTION_CONFIRM, new DialogActionListener() {
 
             @Override
             public void onActionExecuted(String actionName) {
-                modalCloser.close();
+                overlayCloser.close();
                 cb.onOk();
             }
         });
 
-        return modalCloser;
+        return overlayCloser;
     }
 
     /**
      * Convenience method with string content. for opening an alert.
      */
     @Override
-    public ModalCloser openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
+    public OverlayCloser openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
         return openAlert(type, createConfirmationView(type, title, body), confirmButtonText, cb);
     }
 
-    private ConfirmationDialog.ConfirmationEvent.Handler createHandler(final ModalCloser modalCloser, final ConfirmationCallback callback) {
+    private ConfirmationDialog.ConfirmationEvent.Handler createHandler(final OverlayCloser overlayCloser, final ConfirmationCallback callback) {
         return new ConfirmationDialog.ConfirmationEvent.Handler() {
 
             @Override
@@ -105,7 +105,7 @@ public abstract class BaseModalLayer implements ModalLayer {
                     callback.onCancel();
                 }
 
-                modalCloser.close();
+                overlayCloser.close();
             }
         };
     }
@@ -155,11 +155,11 @@ public abstract class BaseModalLayer implements ModalLayer {
         };
     }
 
-    private BaseDialog.DialogCloseEvent.Handler createCloseHandler(final ModalCloser modalCloser) {
+    private BaseDialog.DialogCloseEvent.Handler createCloseHandler(final OverlayCloser overlayCloser) {
         return new BaseDialog.DialogCloseEvent.Handler() {
             @Override
             public void onClose(BaseDialog.DialogCloseEvent event) {
-                modalCloser.close();
+                overlayCloser.close();
                 event.getView().asVaadinComponent().removeDialogCloseHandler(this);
             }
         };
@@ -169,23 +169,23 @@ public abstract class BaseModalLayer implements ModalLayer {
      * Present modal confirmation dialog with light modality level. Allow any Vaadin content to be presented.
      */
     @Override
-    public ModalCloser openConfirmation(MessageStyleType type, View contentView, String confirmButtonText, String cancelButtonText,
+    public OverlayCloser openConfirmation(MessageStyleType type, View contentView, String confirmButtonText, String cancelButtonText,
             boolean cancelIsDefault, final ConfirmationCallback callback) {
         ConfirmationDialog dialog = createConfirmationDialog(contentView, confirmButtonText, cancelButtonText, type.Name(), cancelIsDefault);
         dialog.showCloseButton();
 
-        final ModalCloser modalCloser = openModal(dialog, ModalityLevel.LIGHT);
-        dialog.addConfirmationHandler(createHandler(modalCloser, callback));
-        dialog.addDialogCloseHandler(createCloseHandler(modalCloser));
+        final OverlayCloser overlayCloser = openOverlay(dialog, ModalityLevel.LIGHT);
+        dialog.addConfirmationHandler(createHandler(overlayCloser, callback));
+        dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
 
-        return modalCloser;
+        return overlayCloser;
     }
 
     /**
      * Present modal confirmation dialog with light modality level. Allow only string content.
      */
     @Override
-    public ModalCloser openConfirmation(MessageStyleType type, final String title, final String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+    public OverlayCloser openConfirmation(MessageStyleType type, final String title, final String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
         return openConfirmation(type, createConfirmationView(type, title, body), confirmButtonText, cancelButtonText, cancelIsDefault, cb);
     }
 
@@ -193,9 +193,9 @@ public abstract class BaseModalLayer implements ModalLayer {
      * Present notification indicator with no modality.
      */
     @Override
-    public ModalCloser openNotification(final MessageStyleType type, final View viewToShow, final NotificationCallback cb) {
-        return new ModalCloser() {
-            private ModalCloser compositeCloser;
+    public OverlayCloser openNotification(final MessageStyleType type, final View viewToShow, final NotificationCallback cb) {
+        return new OverlayCloser() {
+            private OverlayCloser compositeCloser;
 
             {
                 NotificationIndicator dialog = new NotificationIndicator();
@@ -210,7 +210,7 @@ public abstract class BaseModalLayer implements ModalLayer {
                     }
                 });
 
-                compositeCloser = openModal(dialog, ModalityLevel.NON_MODAL);
+                compositeCloser = openOverlay(dialog, ModalityLevel.NON_MODAL);
             }
 
             @Override
@@ -224,9 +224,9 @@ public abstract class BaseModalLayer implements ModalLayer {
      * Present notification indicator with no modality. Close after timeout expires.
      */
     @Override
-    public ModalCloser openNotification(final MessageStyleType type, final View viewToShow, final int timeout_msec) {
-        return new ModalCloser() {
-            private ModalCloser compositeCloser;
+    public OverlayCloser openNotification(final MessageStyleType type, final View viewToShow, final int timeout_msec) {
+        return new OverlayCloser() {
+            private OverlayCloser compositeCloser;
 
             {
                 NotificationIndicator dialog = new NotificationIndicator();
@@ -241,7 +241,7 @@ public abstract class BaseModalLayer implements ModalLayer {
                     }
                 });
 
-                compositeCloser = openModal(dialog, ModalityLevel.NON_MODAL);
+                compositeCloser = openOverlay(dialog, ModalityLevel.NON_MODAL);
             }
 
             @Override
@@ -255,7 +255,7 @@ public abstract class BaseModalLayer implements ModalLayer {
      * Convenience method for presenting notification indicator with string content.
      */
     @Override
-    public ModalCloser openNotification(final MessageStyleType type, final String title, final int timeout_msec) {
+    public OverlayCloser openNotification(final MessageStyleType type, final String title, final int timeout_msec) {
         View view = new View() {
             @Override
             public Component asVaadinComponent() {

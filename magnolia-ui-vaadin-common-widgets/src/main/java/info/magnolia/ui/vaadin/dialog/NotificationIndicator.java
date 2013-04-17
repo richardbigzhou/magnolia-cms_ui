@@ -33,17 +33,17 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.ui.vaadin.view.MessageStyleType;
+import info.magnolia.ui.vaadin.overlay.MessageStyleType;
 import info.magnolia.ui.vaadin.view.View;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.ProgressIndicator;
-import com.vaadin.ui.Button.ClickEvent;
 
 /**
  * Component for showing indication messages.
@@ -63,7 +63,7 @@ public class NotificationIndicator implements View {
     public NotificationIndicator() {
         layout = new CssLayout();
         layout.addStyleName("lightdialog");
-        layout.addStyleName("modal-child");
+        layout.addStyleName("overlay-child");
         layout.addStyleName("dialog-panel");
         layout.addStyleName("notification-dialog");
 

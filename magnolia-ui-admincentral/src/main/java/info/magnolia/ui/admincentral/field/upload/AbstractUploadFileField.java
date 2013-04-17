@@ -40,7 +40,7 @@ import info.magnolia.ui.mediaeditor.MediaEditorPresenter;
 import info.magnolia.ui.mediaeditor.MediaEditorPresenterFactory;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent.Handler;
-import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.overlay.OverlayCloser;
 import info.magnolia.ui.vaadin.view.View;
 
 import java.io.ByteArrayInputStream;
@@ -165,7 +165,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
     // Used to force the refresh of the Uploading view in case of Drag and Drop.
     private final Shell shell;
 
-    // For opening mediaEditor on a modal on the subApp.
+    // For opening mediaEditor on an overlay on the subApp.
     private final SubAppContext subAppContext;
 
     private MediaEditorPresenterFactory mediaEditorFactory;
@@ -396,7 +396,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
 
         MediaEditorPresenter mediaEditorPresenter = mediaEditorFactory.getPresenterById("ui-mediaeditor:image");
 
-        final ModalCloser modalCloser = subAppContext.openModal(mediaEditorPresenter.start(inputStream));
+        final OverlayCloser overlayCloser = subAppContext.openOverlay(mediaEditorPresenter.start(inputStream));
         mediaEditorPresenter.addCompletionHandler(new Handler() {
             @Override
             public void onSubmit(MediaEditorCompletedEvent event) {
@@ -404,12 +404,12 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
                 updateFileMedia(is);
                 // Update the display to show changes to media.
                 updateDisplay();
-                modalCloser.close();
+                overlayCloser.close();
             }
 
             @Override
             public void onCancel(MediaEditorCompletedEvent event) {
-                modalCloser.close();
+                overlayCloser.close();
             }
         });
     }
@@ -428,7 +428,7 @@ public abstract class AbstractUploadFileField<D extends FileItemWrapper> extends
             }
         };
 
-        final ModalCloser lightbox = subAppContext.openModal(lightboxView);
+        final OverlayCloser lightbox = subAppContext.openOverlay(lightboxView);
         imageComponent.addClickListener(new ClickListener() {
 
             @Override

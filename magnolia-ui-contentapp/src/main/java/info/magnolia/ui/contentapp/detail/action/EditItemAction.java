@@ -41,9 +41,9 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
-import info.magnolia.ui.vaadin.view.ConfirmationCallback;
-import info.magnolia.ui.vaadin.view.MessageStyleType;
-import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.overlay.ConfirmationCallback;
+import info.magnolia.ui.vaadin.overlay.MessageStyleType;
+import info.magnolia.ui.vaadin.overlay.OverlayCloser;
 
 import javax.jcr.RepositoryException;
 
@@ -74,7 +74,7 @@ public class EditItemAction extends ActionBase<EditItemActionDefinition> {
 
 
 
-        final ModalCloser modalCloser = subAppContext.openConfirmation(
+        final OverlayCloser overlayCloser = subAppContext.openConfirmation(
                 MessageStyleType.INFO, "Do you really want to edit this page?", "Really, are you super sure?", "Do it", "Dont!", false,
                 new ConfirmationCallback() {
             @Override

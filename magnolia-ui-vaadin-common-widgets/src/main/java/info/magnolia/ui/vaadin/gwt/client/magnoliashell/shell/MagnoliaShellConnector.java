@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.connector.ModalConnector;
+import info.magnolia.ui.vaadin.gwt.client.dialog.connector.OverlayConnector;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppActivatedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellServerRpc;
@@ -101,25 +101,25 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             }
         });
 
-        addStateChangeHandler("modals", new StateChangeHandler() {
+        addStateChangeHandler("overlays", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
 
                 MagnoliaShellState state = getState();
-                Iterator<Connector> it = state.modals.iterator();
+                Iterator<Connector> it = state.overlays.iterator();
 
-                // Check for modals that have not yet been added.
+                // Check for overlays that have not yet been added.
                 while (it.hasNext()) {
-                    final Connector modal = it.next();
-                    // Test if modal is attached.
-                    Widget modalWidget = ((ComponentConnector) modal).getWidget();
+                    final Connector overlay = it.next();
+                    // Test if overlay is attached.
+                    Widget overlayWidget = ((ComponentConnector) overlay).getWidget();
 
-                    if (modalWidget.getParent() == null) {
+                    if (overlayWidget.getParent() == null) {
                         // Add the widget
-                        ComponentConnector modalityParent = (ComponentConnector) (((ModalConnector) modal).getState().modalityParent);
+                        ComponentConnector overlayParent = (ComponentConnector) (((OverlayConnector) overlay).getState().overlayParent);
 
-                        Widget parentWidget = modalityParent.getWidget();
-                        view.openModalOnWidget(modalWidget, parentWidget);
+                        Widget parentWidget = overlayParent.getWidget();
+                        view.openOverlayOnWidget(overlayWidget, parentWidget);
                     }
                 }
 
@@ -178,7 +178,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         for (ComponentConnector connector : children) {
             if (connector instanceof ViewportConnector) {
                 final ViewportConnector vc = (ViewportConnector) connector;
-                view.updateViewport(vc.getWidget(), vc.getType());   
+                view.updateViewport(vc.getWidget(), vc.getType());
             }
         }
 

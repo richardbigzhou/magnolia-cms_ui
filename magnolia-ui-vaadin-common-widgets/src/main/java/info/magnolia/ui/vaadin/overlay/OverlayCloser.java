@@ -31,28 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
-
-import info.magnolia.ui.vaadin.gwt.client.dialog.connector.ModalConnector;
-
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.SimplePanel;
+package info.magnolia.ui.vaadin.overlay;
 
 /**
- * MagnoliaTabWidget.
+ * Callback for closing an overlay.
  */
-public class ModalWidget extends SimplePanel {
+public interface OverlayCloser {
 
-    private final Element modalityCurtain = DOM.createDiv();
-
-    public ModalWidget(ModalConnector connector) {
-        super();
-
-        setStyleName("modal");
-
-        modalityCurtain.setClassName("modal-curtain");
-        this.getElement().appendChild(modalityCurtain);
-    }
+    void close();
 
 }

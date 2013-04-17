@@ -35,17 +35,17 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.dialog.Modal;
-import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
-import info.magnolia.ui.vaadin.view.BaseModalLayer;
-import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.overlay.BaseOverlayLayer;
+import info.magnolia.ui.vaadin.overlay.Overlay;
+import info.magnolia.ui.vaadin.overlay.OverlayCloser;
+import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
 import info.magnolia.ui.vaadin.view.View;
 
 /**
  * Implementation of {@link SubAppContext}.
  * See MGNLUI-379.
  */
-public class SubAppContextImpl extends BaseModalLayer implements SubAppContext {
+public class SubAppContextImpl extends BaseOverlayLayer implements SubAppContext {
 
     private SubApp subApp;
 
@@ -116,10 +116,10 @@ public class SubAppContextImpl extends BaseModalLayer implements SubAppContext {
     }
 
     @Override
-    public ModalCloser openModal(View view, ModalityLevel modalityLevel) {
+    public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
         // Get the MagnoliaTab for the view
-        View modalityParent = getAppContext().getView().getSubAppViewContainer(instanceId);
-        return shell.openModalOnView(view, modalityParent, Modal.ModalityLocation.SUB_APP, modalityLevel);
+        View overlayParent = getAppContext().getView().getSubAppViewContainer(instanceId);
+        return shell.openOverlayOnView(view, overlayParent, Overlay.ModalityDomain.SUB_APP, modalityLevel);
     }
 
     @Override
