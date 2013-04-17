@@ -35,10 +35,6 @@ package info.magnolia.ui.framework.favorite.bookmark;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Singleton;
 import javax.jcr.Node;
