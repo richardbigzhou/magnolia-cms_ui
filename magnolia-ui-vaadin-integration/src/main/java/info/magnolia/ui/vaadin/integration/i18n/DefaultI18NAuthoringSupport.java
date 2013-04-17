@@ -1,0 +1,125 @@
+/**
+ * This file Copyright (c) 2013 Magnolia International
+ * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
+ *
+ *
+ * This file is dual-licensed under both the Magnolia
+ * Network Agreement and the GNU General Public License.
+ * You may elect to use one or the other of these licenses.
+ *
+ * This file is distributed in the hope that it will be
+ * useful, but AS-IS and WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE, TITLE, or NONINFRINGEMENT.
+ * Redistribution, except as permitted by whichever of the GPL
+ * or MNA you select, is prohibited.
+ *
+ * 1. For the GPL license (GPL), you can redistribute and/or
+ * modify this file under the terms of the GNU General
+ * Public License, Version 3, as published by the Free Software
+ * Foundation.  You should have received a copy of the GNU
+ * General Public License, Version 3 along with this program;
+ * if not, write to the Free Software Foundation, Inc., 51
+ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * 2. For the Magnolia Network Agreement (MNA), this file
+ * and the accompanying materials are made available under the
+ * terms of the MNA which accompanies this distribution, and
+ * is available at http://www.magnolia-cms.com/mna.html
+ *
+ * Any modifications to this file must keep this entire header
+ * intact.
+ *
+ */
+package info.magnolia.ui.vaadin.integration.i18n;
+
+import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.objectfactory.Components;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Locale;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.HasComponents;
+
+/**
+ * Default implementation of {@link I18NAuthoringSupport}.
+ */
+public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
+
+    private I18nContentSupport i18nContentSupport;
+
+    private boolean enabled = true;
+
+    public DefaultI18NAuthoringSupport() {
+        this.i18nContentSupport = Components.getComponent(I18nContentSupport.class);
+    }
+
+    @Override
+    public AbstractSelect getLanguageChooser() {
+        Collection<Locale> locales = i18nContentSupport.getLocales();
+        IndexedContainer c = new IndexedContainer();
+        c.addContainerProperty("displayLanguage", String.class, "");
+        for (Locale locale : locales) {
+            Item it = c.addItem(locale);
+            it.getItemProperty("displayLanguage").setValue(locale.getDisplayName(locale));
+        }
+        ComboBox languageSelector = new ComboBox();
+        languageSelector.setImmediate(true);
+        languageSelector.setItemCaptionPropertyId("displayLanguage");
+        languageSelector.setContainerDataSource(c);
+        languageSelector.setNullSelectionAllowed(false);
+        return languageSelector;
+    }
+
+    @Override
+    public void i18nize(HasComponents fieldContainer, Locale locale) {
+        Iterator<Component> it = fieldContainer.iterator();
+        boolean isFallbackLanguage = i18nContentSupport.getFallbackLocale().equals(locale);
+        if (isEnabled() && i18nContentSupport.isEnabled() && locale != null) {
+            while (it.hasNext()) {
+                Component c = it.next();
+                if (c instanceof  Field) {
+                    Field f = (Field) c;
+                    Property p = f.getPropertyDataSource();
+                    if (p instanceof I18NAwareProperty) {
+                        final I18NAwareProperty i18nAwareProperty = (I18NAwareProperty)p;
+                        final Locale formerLocale = i18nAwareProperty.getLocale();
+                        final String basePropertyName = i18nAwareProperty.getBasePropertyName();
+                        final String localizedPropertyName = isFallbackLanguage ?
+                                basePropertyName :
+                                constructI18NPropertyName(basePropertyName, locale);
+                        i18nAwareProperty.setI18NPropertyName(localizedPropertyName);
+                        i18nAwareProperty.setLocale(locale);
+                        String currentCaption = c.getCaption();
+                        if (formerLocale != null) {
+                            currentCaption = currentCaption.replace(String.format("(%s)", formerLocale.getLanguage()), "");
+                        }
+                        f.setCaption(String.format("%s (%s)", currentCaption, locale.getLanguage()));
+                    }
+                } else if (c instanceof  HasComponents) {
+                    i18nize((HasComponents) c, locale);
+                }
+            }
+        }
+    }
+
+    private String constructI18NPropertyName(CharSequence basePropertyName, Locale locale) {
+        return basePropertyName + "_" + locale.toString();
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+}

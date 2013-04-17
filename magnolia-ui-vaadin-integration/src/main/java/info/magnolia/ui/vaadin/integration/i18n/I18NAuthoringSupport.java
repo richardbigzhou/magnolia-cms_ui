@@ -33,15 +33,18 @@
  */
 package info.magnolia.ui.vaadin.integration.i18n;
 
+import java.util.Locale;
+
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.HasComponents;
 
 /**
- * I18NAuthoringSupport.
+ * Allows authors to create components with locale-dependent controls.
  */
 public interface I18NAuthoringSupport {
 
     AbstractSelect getLanguageChooser();
 
-    void i18nize(HasComponents fieldContainer);
+    void i18nize(HasComponents fieldContainer, Locale locale);
+
 }
