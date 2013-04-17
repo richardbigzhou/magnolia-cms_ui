@@ -40,8 +40,8 @@ import java.io.OutputStream;
 /**
  * Streams.
  * NOTE: verbatim copy of the corresponding class from EasyUploads vaadin add-on
- *
- * @link{http://code.google.com/p/easyuploads-addon/}.
+ * 
+ * @see <a href="http://code.google.com/p/easyuploads-addon/">http://code.google.com/p/easyuploads-addon/</a>.
  */
 public class Streams {
 
