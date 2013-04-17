@@ -73,12 +73,13 @@ public class BookmarkStore {
     }
 
     protected Node getOrCreateBookmarkNode(String userName) throws RepositoryException {
-        String favoritesUserNode = "/" + userName;
+        String favoritesUserNode = "/" + userName + "/";
+        String relPathToBookmarks = FAVORITES_PATH + "/" + BOOKMARKS_PATH;
         Session session = getSession();
         if (session.nodeExists(favoritesUserNode)) {
-            return NodeUtil.createPath(session.getNode(favoritesUserNode), FAVORITES_PATH + "/" + BOOKMARKS_PATH, AdmincentralNodeTypes.Favorite.NAME);
+            return NodeUtil.createPath(session.getNode(favoritesUserNode), relPathToBookmarks, AdmincentralNodeTypes.Favorite.NAME);
         } else {
-            return NodeUtil.createPath(session.getRootNode(), favoritesUserNode + "/" + FAVORITES_PATH + "/" + BOOKMARKS_PATH, AdmincentralNodeTypes.Favorite.NAME);
+            return NodeUtil.createPath(session.getRootNode(), favoritesUserNode + relPathToBookmarks, AdmincentralNodeTypes.Favorite.NAME);
         }
     }
 }
