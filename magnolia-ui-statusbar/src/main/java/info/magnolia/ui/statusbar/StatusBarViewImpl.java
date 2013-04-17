@@ -41,8 +41,8 @@ import com.vaadin.ui.HorizontalLayout;
 
 /**
  * The status bar view interface is implemented purely on the server-side - without custom widgets. In fact, it extends
- * the @link{HorizontalLayout} directly, rather than using a vaadin @link{com.vaadin.ui.CustomComponent}, because this
- * view impl is never exposed explicitly.
+ * the {@link HorizontalLayout} directly, rather than using a vaadin {@link com.vaadin.ui.CustomComponent CustomComponent}, because this
+ * view impl is never exposed explicitly.<br />
  * Color change is ensured by toggling CSS preset styles.
  */
 public class StatusBarViewImpl extends HorizontalLayout implements StatusBarView {
@@ -56,36 +56,33 @@ public class StatusBarViewImpl extends HorizontalLayout implements StatusBarView
         setStyleName(STYLE_NAME);
     }
 
+    /**
+     * Adds component based on its alignment, first added first aligned. Concretely, we have to insert components
+     * at the correct index in this {@link HorizontalLayout}.<br />
+     * <br />
+     * For left alignment: new insertion position is after last left-aligned component (LTR).<br />
+     * For right alignment: new insertion position is before first right-aligned component (RTL).<br />
+     * For center alignment: same as for right alignment, equals to position after last centered component (LTR).
+     */
     @Override
     public void addComponent(Component c, Alignment align) {
-        int index;
+
         // compute index based on requested alignment, first come first aligned
+        int index = 0;
+        Iterator<Component> it = getComponentIterator();
+
         if (align.isLeft()) {
-            index = getFirstAvailableLeftIndex();
+            while (it.hasNext() && getComponentAlignment(it.next()).isLeft()) {
+                index++;
+            }
         } else {
-            index = getFirstAvailableRightIndex();
+            while (it.hasNext() && !getComponentAlignment(it.next()).isRight()) {
+                index++;
+            }
         }
 
         addComponent(c, index);
         setComponentAlignment(c, align);
-    }
-
-    private int getFirstAvailableLeftIndex() {
-        int index = 0;
-        Iterator<Component> it = getComponentIterator();
-        while (it.hasNext() && getComponentAlignment(it.next()).isLeft()) {
-            index++;
-        }
-        return index;
-    }
-
-    private int getFirstAvailableRightIndex() {
-        int index = 0;
-        Iterator<Component> it = getComponentIterator();
-        while (it.hasNext() && !getComponentAlignment(it.next()).isRight()) {
-            index++;
-        }
-        return index;
     }
 
     @Override
