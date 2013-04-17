@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.contacts.action;
+package info.magnolia.ui.framework;
 
-import info.magnolia.ui.model.action.ConfiguredActionDefinition;
+import info.magnolia.jcr.util.NodeTypes;
 
 /**
- * Definition for an action that creates a new folder.
+ * Constants and convenience methods for node types introduced by Admincentral.
  */
-public class AddFolderActionDefinition extends ConfiguredActionDefinition {
+public class AdmincentralNodeTypes {
 
-    public AddFolderActionDefinition() {
-        setImplementationClass(AddFolderAction.class);
+    /**
+     * Represents the node type mgnl:systemMessage.
+     */
+    public static class SystemMessage {
+
+        public static final String NAME = NodeTypes.MGNL_PREFIX + "systemMessage";
+
+        public static String ID = "id";
+        public static String TIMESTAMP = "timestamp";
+        public static String MESSAGETYPE = "messagetype";
+        public static String SUBJECT = "subject";
+        public static String MESSAGE = "message";
+        public static String CLEARED = "cleared";
+        public static String SENDER = "sender";
     }
-
 }

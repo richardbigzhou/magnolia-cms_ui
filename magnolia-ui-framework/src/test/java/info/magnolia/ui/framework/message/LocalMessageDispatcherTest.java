@@ -34,19 +34,39 @@
 package info.magnolia.ui.framework.message;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import info.magnolia.cms.security.User;
+import info.magnolia.context.Context;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Test case for {@link LocalMessageDispatcher}.
  */
 public class LocalMessageDispatcherTest {
+    @Before
+    public void setUp() {
+        Context ctx = mock(Context.class);
+        User usr = mock(User.class);
+        when(ctx.getUser()).thenReturn(usr);
+        when(usr.getName()).thenReturn(Message.DEFAULT_SENDER);
+        MgnlContext.setInstance(ctx);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        MgnlContext.setInstance(null);
+    }
 
     @Test
     public void sendsEvents() throws InterruptedException {
