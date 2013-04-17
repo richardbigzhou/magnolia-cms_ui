@@ -33,12 +33,44 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+
 /**
  * Represents a favorite.
  */
 public class Favorite {
+    /**
+     * FavoriteType.
+     */
+    public enum FavoriteType {
+        BOOKMARK, ACTION
+    }
 
-    private String id;
-    private String label;
-    private String location;
+    private String title;
+    private String url;
+    private String icon;
+    private FavoriteType type;
+
+    public Favorite(String title, String url, String icon, FavoriteType type) {
+        this.title = title;
+        this.url = url;
+        this.icon = icon;
+        this.type = type;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public FavoriteType getType() {
+        return type;
+    }
+
 }

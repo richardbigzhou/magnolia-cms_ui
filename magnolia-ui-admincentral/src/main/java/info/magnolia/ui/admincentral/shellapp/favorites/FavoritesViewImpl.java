@@ -33,15 +33,28 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.ui.admincentral.shellapp.favorites.Favorite.FavoriteType;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed.FeedSection;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -52,6 +65,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
     private VerticalLayout layout = new VerticalLayout();
     private FavoritesView.Listener listener;
+    private List<Item> favoritesForCurrentUser = new ArrayList<Item>();
 
     @Override
     public String getId() {
@@ -77,24 +91,33 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         final FeedSection leftSide = splitPanel.getLeftContainer();
         final FeedSection rightSide = splitPanel.getRightContainer();
 
+
         FavoritesSection newPages = new FavoritesSection();
         newPages.setCaption("New Pages");
-        newPages.addComponent(new FavoriteEntry("Add new product page", "icon-add-item"));
-        newPages.addComponent(new FavoriteEntry("Add new product review", "icon-add-item"));
+        Favorite fav = new Favorite("Foo", "/foo/bar/baz", "icon-pages-app", FavoriteType.BOOKMARK);
+        favoritesForCurrentUser.add(new BeanItem<Favorite>(fav));
+
+        for(Item favorite : favoritesForCurrentUser) {
+            newPages.addComponent(new FavoriteEntry(favorite));
+        }
 
         FavoritesSection newCampaigns = new FavoritesSection();
         newCampaigns.setCaption("New Campaigns");
-        newCampaigns.addComponent(new FavoriteEntry("Add a special offer", "icon-add-item"));
-        newCampaigns.addComponent(new FavoriteEntry("Add a landing page", "icon-add-item"));
-        newCampaigns.addComponent(new FavoriteEntry("Edit main landing page", "icon-edit"));
-        newCampaigns.addComponent(new FavoriteEntry("Create a new micro site", "icon-add-item"));
-        newCampaigns.addComponent(new FavoriteEntry("Add a seasonal campaign", "icon-add-item"));
+        /*
+         * newCampaigns.addComponent(new FavoriteEntry("Add a special offer", "icon-add-item"));
+         * newCampaigns.addComponent(new FavoriteEntry("Add a landing page", "icon-add-item"));
+         * newCampaigns.addComponent(new FavoriteEntry("Edit main landing page", "icon-edit"));
+         * newCampaigns.addComponent(new FavoriteEntry("Create a new micro site", "icon-add-item"));
+         * newCampaigns.addComponent(new FavoriteEntry("Add a seasonal campaign", "icon-add-item"));
+         */
 
         FavoritesSection assetShortcuts = new FavoritesSection();
         assetShortcuts.setCaption("Asset Shortcuts");
-        assetShortcuts.addComponent(new FavoriteEntry("Add a product image", "icon-add-item"));
-        assetShortcuts.addComponent(new FavoriteEntry("Upload image(s) to image pool", "icon-assets-app"));
-        assetShortcuts.addComponent(new FavoriteEntry("Upload review video", "icon-assets-app"));
+        /*
+         * assetShortcuts.addComponent(new FavoriteEntry("Add a product image", "icon-add-item"));
+         * assetShortcuts.addComponent(new FavoriteEntry("Upload image(s) to image pool", "icon-assets-app"));
+         * assetShortcuts.addComponent(new FavoriteEntry("Upload review video", "icon-assets-app"));
+         */
 
         leftSide.addComponent(newPages);
         leftSide.addComponent(newCampaigns);
@@ -103,6 +126,16 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         layout.addComponent(splitPanel);
         layout.setExpandRatio(splitPanel, 2f);
         Button button = new Button("Add new");
+        button.addClickListener(new ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                // TODO magig method here to retrieve the URL, title, app icon we're coming from
+                Favorite fav = new Favorite("Qux", "/baz/bra/qux", "icon-pages-app", FavoriteType.BOOKMARK);
+                BeanItem<Favorite> favoriteItem = new BeanItem<Favorite>(fav);
+                layout.addComponent(new BookmarkForm(favoriteItem));
+            }
+        });
         layout.addComponent(button);
         layout.setExpandRatio(button, 0.1f);
     }
@@ -117,26 +150,36 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
      */
     public static class FavoriteEntry extends CssLayout {
 
-        private final Label textElement = new Label();
+        private final Label titleElement = new Label();
 
         private final Label iconElement = new Label();
 
-        public FavoriteEntry(final String text, final String icon) {
+        private final Label urlElement = new Label();
+
+        public FavoriteEntry(final Item favorite) {
             addStyleName("v-favorites-entry");
             setSizeUndefined();
-            setText(text);
-            setIcon(icon);
+            setTitle(favorite.getItemProperty("title").getValue().toString());
+            setIcon(favorite.getItemProperty("icon").getValue().toString());
+            setUrl(favorite.getItemProperty("url").getValue().toString());
             iconElement.setContentMode(ContentMode.HTML);
             iconElement.setWidth(null);
             iconElement.setStyleName("icon");
-            textElement.setStyleName("text");
-            textElement.setWidth(null);
+            titleElement.setStyleName("text");
+            titleElement.setWidth(null);
+            urlElement.setStyleName("text");
+            urlElement.setWidth(null);
             addComponent(iconElement);
-            addComponent(textElement);
+            addComponent(titleElement);
+            addComponent(urlElement);
         }
 
-        public void setText(String text) {
-            textElement.setValue(text);
+        public void setUrl(String url) {
+            urlElement.setValue(url);
+        }
+
+        public void setTitle(String title) {
+            titleElement.setValue(title);
         }
 
         public void setIcon(String icon) {
@@ -152,5 +195,52 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         public FavoritesSection() {
             addStyleName("favorites-section");
         }
+    }
+
+    @Override
+    public void setFavorites(List<Item> favoritesForCurrentUser) {
+        this.favoritesForCurrentUser = favoritesForCurrentUser;
+
+    }
+
+    // A form component that allows editing an item
+    private class BookmarkForm extends CustomComponent {
+        private TextField title = new TextField("Title");
+        private TextField url = new TextField("Url");
+
+        public BookmarkForm(final Item newFavorite) {
+            FormLayout layout = new FormLayout();
+            layout.addComponent(title);
+            layout.addComponent(url);
+
+            // Now use a binder to bind the members
+            final FieldGroup binder = new FieldGroup(newFavorite);
+            binder.bindMemberFields(this);
+
+            // A button to commit the buffer
+            layout.addComponent(new Button("Add", new ClickListener() {
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    try {
+                        binder.commit();
+                        listener.addFavorite(newFavorite);
+                    } catch (CommitException e) {
+                        Notification.show("Something went wrong!");
+                    }
+                }
+            }));
+
+            // A button to discard the buffer
+            layout.addComponent(new Button("Cancel", new ClickListener() {
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    binder.discard();
+                    // TODO remove form
+                }
+            }));
+
+            setCompositionRoot(layout);
+        }
+
     }
 }

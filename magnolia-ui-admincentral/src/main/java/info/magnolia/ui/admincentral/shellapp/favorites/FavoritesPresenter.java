@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.framework.shell.ShellImpl;
-
 import javax.inject.Inject;
+
+import com.vaadin.data.Item;
 
 /**
  * FavoritesPresenter.
@@ -43,19 +43,23 @@ import javax.inject.Inject;
 public class FavoritesPresenter implements FavoritesView.Listener {
 
     private FavoritesView view;
-    private ShellImpl shell;
     private FavoritesManager favoritesManager;
 
     @Inject
-    public FavoritesPresenter(final FavoritesView view, final ShellImpl shellImpl, final FavoritesManager favoritesManager) {
+    public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager) {
         this.view = view;
-        this.shell = shellImpl;
         this.favoritesManager = favoritesManager;
     }
 
     public FavoritesView start() {
         view.setListener(this);
+        view.setFavorites(favoritesManager.getFavoritesForCurrentUser());
         return view;
+    }
+
+    @Override
+    public void addFavorite(Item favorite) {
+        favoritesManager.addFavoriteForCurrentUser(favorite);
     }
 
 }

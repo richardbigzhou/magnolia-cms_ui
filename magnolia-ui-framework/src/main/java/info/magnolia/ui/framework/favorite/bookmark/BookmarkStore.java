@@ -34,7 +34,8 @@
 package info.magnolia.ui.framework.favorite.bookmark;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
 
 import javax.inject.Singleton;
 import javax.jcr.Node;
@@ -42,7 +43,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.jackrabbit.JcrConstants;
-import org.apache.jackrabbit.commons.JcrUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +73,12 @@ public class BookmarkStore {
     }
 
     protected Node getOrCreateBookmarkNode(String userName) throws RepositoryException {
-        final String nodePath = "/" + userName + "/" + FAVORITES_PATH + "/" + BOOKMARKS_PATH;
-        return JcrUtils.getOrCreateByPath(nodePath, false, BOOKMARK_NODETYPE, NodeTypes.Resource.NAME, getSession(), false);
+        String favoritesUserNode = "/" + userName;
+        Session session = getSession();
+        if (session.nodeExists(favoritesUserNode)) {
+            return NodeUtil.createPath(session.getNode(favoritesUserNode), FAVORITES_PATH + "/" + BOOKMARKS_PATH, AdmincentralNodeTypes.Favorite.NAME);
+        } else {
+            return NodeUtil.createPath(session.getRootNode(), favoritesUserNode + "/" + FAVORITES_PATH + "/" + BOOKMARKS_PATH, AdmincentralNodeTypes.Favorite.NAME);
+        }
     }
 }

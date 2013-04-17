@@ -35,6 +35,8 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import java.util.List;
 
+import com.vaadin.data.Item;
+
 /**
  * Manages the favorites for all users.
  *
@@ -53,9 +55,9 @@ import java.util.List;
  */
 public interface FavoritesManager {
 
-    List<Favorite> getFavoritesForUser(String userId);
+    List<Item> getFavoritesForCurrentUser();
 
-    void addFavoriteForUser(String userId, Favorite favorite);
+    void addFavoriteForCurrentUser(Item favorite);
 
-    void removeFavorite(String userId, String id);
+    void removeFavorite(String id);
 }
