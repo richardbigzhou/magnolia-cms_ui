@@ -41,6 +41,14 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.vaadin.addon</groupId>
+      <artifactId>easyuploads</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>refresher</artifactId>
+    </dependency>
+    <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
       <version>${project.version}</version>

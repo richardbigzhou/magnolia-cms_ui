@@ -73,7 +73,11 @@
         <artifactId>imagefilter</artifactId>
         <version>0.5.3</version>
       </dependency>
-
+      <dependency>
+        <groupId>org.vaadin.addons</groupId>
+        <artifactId>refresher</artifactId>
+        <version>1.2.1.7</version>
+      </dependency>
       <dependency>
         <groupId>org.vaadin.addon</groupId>
         <artifactId>easyuploads</artifactId>
