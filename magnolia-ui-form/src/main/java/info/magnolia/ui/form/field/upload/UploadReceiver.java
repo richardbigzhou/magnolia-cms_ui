@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.imageprovider.definition;
+package info.magnolia.ui.form.field.upload;
+
+import info.magnolia.cms.util.PathUtil;
+
+import java.io.File;
+
+import org.vaadin.easyuploads.FileBuffer;
+import org.vaadin.easyuploads.FileFactory;
+import org.vaadin.easyuploads.UploadField.FieldType;
 
 /**
- * Defines a provider for Thumbnail images.
+ * Implementation of {@link FileBuffer}.<br>
+ * Expose need variables.<br>
+ * Currently only support {@link FieldType.FILE}.
  */
-public interface ImageProvider {
+public class UploadReceiver extends FileBuffer {
 
-    static final String PORTRAIT_GENERATOR = "portrait";
+    private static final long serialVersionUID = 1L;
+    private File directory;
 
-    static final String THUMBNAIL_GENERATOR = "thumbnail";
+    public UploadReceiver(File directory) {
+        this.directory = directory;
+        setFieldType(FieldType.FILE);
+        setDeleteFiles(true);
+    }
 
-    String getPortraitPath(String workspace, String path);
+    @Override
+    public FileFactory getFileFactory() {
+        return new DefaultFileFactory(directory);
+    }
 
-    String getThumbnailPath(String workspace, String path);
+    public String getFileName() {
+        return this.getLastFileName();
+    }
 
-    String getPortraitPathByIdentifier(String workspace, String uuid);
+    public long getFileSize() {
+        return this.getLastFileSize();
+    }
 
-    String getThumbnailPathByIdentifier(String workspace, String uuid);
+    public String getMimeType() {
+        return this.getLastMimeType();
+    }
 
-    String resolveIconClassName(String mimeType);
+    public String getExtension() {
+        return PathUtil.getExtension(getFileName());
+    }
 
-    /**
-     * Get a Preview Resource.
-     * This preview is an image or an icon representing the Document type.
-     */
-    Object getThumbnailResourceByPath(String workspace, String path, String generator);
-
-    Object getThumbnailResourceById(String workspace, String identifier, String generator);
 }
