@@ -33,17 +33,12 @@
  */
 package info.magnolia.ui.contentapp.detail.action;
 
-
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
-import info.magnolia.ui.vaadin.overlay.ConfirmationCallback;
-import info.magnolia.ui.vaadin.overlay.MessageStyleType;
-import info.magnolia.ui.vaadin.overlay.OverlayCloser;
 
 import javax.jcr.RepositoryException;
 
@@ -60,44 +55,15 @@ public class EditItemAction extends ActionBase<EditItemActionDefinition> {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final JcrItemNodeAdapter nodeItemToEdit;
     private final LocationController locationController;
-    private final SubAppContext subAppContext;
 
-    public EditItemAction(EditItemActionDefinition definition, JcrItemNodeAdapter nodeItemToEdit, LocationController locationController, SubAppContext subAppContext) {
+    public EditItemAction(EditItemActionDefinition definition, JcrItemNodeAdapter nodeItemToEdit, LocationController locationController) {
         super(definition);
         this.nodeItemToEdit = nodeItemToEdit;
         this.locationController = locationController;
-        this.subAppContext = subAppContext;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-
-
-
-        final OverlayCloser overlayCloser = subAppContext.openConfirmation(
-                MessageStyleType.INFO, "Do you really want to edit this page?", "Really, are you super sure?", "Do it", "Dont!", false,
-                new ConfirmationCallback() {
-            @Override
-            public void onSuccess(String actionName) {
-                try {
-                    EditItemAction.this.executeAfterConfirmation();
-                } catch (ActionExecutionException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onCancel() {
-                //nothing
-            }
-        });
-
-
-
-    }
-
-    public void executeAfterConfirmation() throws ActionExecutionException {
         try {
             if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.getNode().getPrimaryNodeType().getName())) {
                 log.warn("EditItemAction requested for a node type definition {}. Current node type is {}. No action will be performed.",
@@ -113,5 +79,4 @@ public class EditItemAction extends ActionBase<EditItemActionDefinition> {
             throw new ActionExecutionException("Could not execute EditItemAction: ", e);
         }
     }
-
 }
