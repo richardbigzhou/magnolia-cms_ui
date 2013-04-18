@@ -50,6 +50,8 @@ public interface ImageProvider {
 
     String getThumbnailPathByIdentifier(String workspace, String uuid);
 
+    String resolveIconClassName(String mimeType);
+
     /**
      * Get a Preview Resource.
      * This preview is an image or an icon representing the Document type.

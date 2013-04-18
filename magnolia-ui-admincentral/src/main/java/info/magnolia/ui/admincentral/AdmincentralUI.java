@@ -41,6 +41,7 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationB
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.ui.framework.event.EventBusProtector;
 import info.magnolia.ui.vaadin.view.View;
 
 import java.util.List;
@@ -61,6 +62,8 @@ import com.vaadin.ui.UI;
 public class AdmincentralUI extends UI {
 
     private static final Logger log = LoggerFactory.getLogger(AdmincentralUI.class);
+    private GuiceComponentProvider componentProvider;
+    private EventBusProtector eventBusProtector;
 
     @Override
     protected void init(VaadinRequest request) {
@@ -74,11 +77,15 @@ public class AdmincentralUI extends UI {
         ComponentProviderConfiguration configuration = admincentralConfig.clone();
         configuration.addComponent(InstanceConfiguration.valueOf(UI.class, this));
 
+        eventBusProtector = new EventBusProtector();
+        configuration.addConfigurer(eventBusProtector);
+
         log.debug("Creating the component provider...");
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(configuration);
-        builder.withParent((GuiceComponentProvider) Components.getComponentProvider());
-        GuiceComponentProvider componentProvider = builder.build();
+        GuiceComponentProvider parent = (GuiceComponentProvider) Components.getComponentProvider();
+        builder.withParent(parent);
+        componentProvider = builder.build();
 
         getPage().setTitle("Magnolia 5.0");
 
@@ -86,4 +93,12 @@ public class AdmincentralUI extends UI {
         View view = presenter.start();
         setContent(view.asVaadinComponent());
     }
+
+    @Override
+    public void detach() {
+        super.detach();
+        eventBusProtector.resetEventBuses();
+        componentProvider.destroy();
+    }
+
 }
