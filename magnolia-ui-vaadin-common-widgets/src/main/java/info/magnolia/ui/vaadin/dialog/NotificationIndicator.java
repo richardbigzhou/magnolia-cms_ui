@@ -40,6 +40,8 @@ import info.magnolia.ui.vaadin.view.View;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -60,8 +62,10 @@ public class NotificationIndicator implements View {
 
     private CssLayout layout;
     private ConfirmationListener listener;
+    Timer timer;
 
     public NotificationIndicator(final MessageStyleType type) {
+        timer = new Timer();
         layout = new CssLayout();
         layout.addStyleName("light-dialog-panel");
         layout.addStyleName("notification-dialog");
@@ -81,10 +85,26 @@ public class NotificationIndicator implements View {
             }
         });
 
+        layout.addLayoutClickListener(new LayoutClickListener() {
+
+            @Override
+            public void layoutClick(LayoutClickEvent event) {
+                cancelTimeout();
+                layout.addStyleName("notification-dialog-selected");
+            }
+        });
+
         closeButton.addStyleName("icon-close");
         closeButton.addStyleName("m-closebutton");
 
         layout.addComponent(closeButton);
+    }
+
+    /**
+     * Cancel any pending timeout.
+     */
+    public void cancelTimeout() {
+        timer.cancel();
     }
 
     /**
@@ -108,7 +128,6 @@ public class NotificationIndicator implements View {
         progress.setPollingInterval(timeout_msec);
         progress.setIndeterminate(true);
         progress.setStyleName("alert-progressbar");
-        final Timer timer = new Timer();
         timer.schedule(new TimerTask() {
 
             @Override
