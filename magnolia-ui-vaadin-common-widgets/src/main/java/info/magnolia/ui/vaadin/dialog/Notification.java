@@ -123,6 +123,8 @@ public class Notification implements View {
          * this code can be refactored to use it.
          * Second alternative is to use Refresher add-on,
          * but as a temp solution the stock progressbar is simpler.
+         * 
+         * See ticket MGNLUI-1112
          */
         ProgressIndicator progress = new ProgressIndicator();
         progress.setPollingInterval(timeout_msec);
