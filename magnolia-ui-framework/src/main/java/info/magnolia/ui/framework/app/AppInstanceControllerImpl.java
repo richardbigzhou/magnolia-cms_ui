@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -50,8 +50,8 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.overlay.BaseOverlayLayer;
 import info.magnolia.ui.vaadin.overlay.Overlay;
-import info.magnolia.ui.vaadin.overlay.OverlayCloser;
 import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
+import info.magnolia.ui.vaadin.overlay.OverlayCloser;
 import info.magnolia.ui.vaadin.view.View;
 
 import java.util.Collection;
