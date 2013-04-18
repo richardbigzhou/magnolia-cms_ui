@@ -46,6 +46,7 @@ import java.util.Iterator;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -129,8 +130,8 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
                 JcrNewNodeAdapter newBookmark = new JcrNewNodeAdapter(favoritesForCurrentUser.getNode(), AdmincentralNodeTypes.Favorite.NAME);
                 newBookmark.addItemProperty(ModelConstants.JCR_NAME, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", "Qux"));
-                newBookmark.addItemProperty(AdmincentralNodeTypes.Favorite.URL, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", "/baz/bra/qux"));
-                newBookmark.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", "icon-pages-app"));
+                newBookmark.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", "/baz/bra/qux"));
+                newBookmark.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", "icon-pages-app"));
                 layout.addComponent(new BookmarkForm(newBookmark));
             }
         });
@@ -158,8 +159,8 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
             addStyleName("v-favorites-entry");
             setSizeUndefined();
             setTitle(favorite.getItemProperty(ModelConstants.JCR_NAME).getValue().toString());
-            setIcon(favorite.getItemProperty("icon").getValue().toString());
-            setUrl(favorite.getItemProperty("url").getValue().toString());
+            setIcon(favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue().toString());
+            setUrl(favorite.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue().toString());
             iconElement.setContentMode(ContentMode.HTML);
             iconElement.setWidth(null);
             iconElement.setStyleName("icon");
@@ -207,6 +208,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
     // A form component that allows editing an item
     private class BookmarkForm extends CustomComponent {
+        @PropertyId(ModelConstants.JCR_NAME)
         private TextField title = new TextField("Title");
         private TextField url = new TextField("Url");
 

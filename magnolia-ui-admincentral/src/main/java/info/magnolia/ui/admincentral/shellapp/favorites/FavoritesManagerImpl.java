@@ -35,8 +35,10 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.favorite.bookmark.BookmarkStore;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -61,8 +63,12 @@ public class FavoritesManagerImpl implements FavoritesManager {
             JcrNodeAdapter favorites = new JcrNodeAdapter(bookmarksNode);
 
             Iterable<Node> bookmarks = NodeUtil.getNodes(bookmarksNode, AdmincentralNodeTypes.Favorite.NAME);
+            JcrNodeAdapter currentChild;
             for (Node bookmark : bookmarks) {
-                favorites.addChild(new JcrNodeAdapter(bookmark));
+                currentChild = new JcrNodeAdapter(bookmark);
+                currentChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.URL)));
+                currentChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.ICON)));
+                favorites.addChild(currentChild);
             }
             return favorites;
         } catch (RepositoryException e) {
