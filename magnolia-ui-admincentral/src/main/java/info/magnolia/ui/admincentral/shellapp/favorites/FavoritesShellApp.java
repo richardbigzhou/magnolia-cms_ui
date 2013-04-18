@@ -100,7 +100,7 @@ public class FavoritesShellApp implements ShellApp {
                 throw new RuntimeException(e);
             }
             final String appIcon = appDescriptor.getIcon();
-            final String title = appDescriptor.getLabel() + " " + path;
+            final String title = appDescriptor.getLabel(); // + " " + (path == null ? "/" : path);
             favoriteLocation = new FavoriteLocation(appId, previousLocation.toString(), appIcon, title);
         }
         return favoriteLocation;
