@@ -86,6 +86,7 @@ public class FavoritesShellApp implements ShellApp {
         final String previousLocationFragment = previousLocation.getFragment();
         final String appId = DefaultLocation.extractAppId(previousLocationFragment);
         final String appType = DefaultLocation.extractAppType(previousLocationFragment);
+        // TODO should this be added to DefaultLocation as a convenience static method?
         final String path = StringUtils.substringBetween(previousLocationFragment, ";", ":");
         FavoriteLocation favoriteLocation = null;
         // skip bookmarking shell apps
