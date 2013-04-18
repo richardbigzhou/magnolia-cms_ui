@@ -68,7 +68,7 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
      */
     @Override
     public OverlayCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, final AlertCallback cb) {
-        BaseDialog dialog = createAlertDialog(viewToShow, confirmButtonText, type.Name());
+        BaseDialog dialog = createAlertDialog(viewToShow, confirmButtonText, type.cssClass());
         dialog.showCloseButton();
 
         final OverlayCloser overlayCloser = openOverlay(dialog, ModalityLevel.LIGHT);
@@ -170,7 +170,7 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
     @Override
     public OverlayCloser openConfirmation(MessageStyleType type, View contentView, String confirmButtonText, String cancelButtonText,
             boolean cancelIsDefault, final ConfirmationCallback callback) {
-        ConfirmationDialog dialog = createConfirmationDialog(contentView, confirmButtonText, cancelButtonText, type.Name(), cancelIsDefault);
+        ConfirmationDialog dialog = createConfirmationDialog(contentView, confirmButtonText, cancelButtonText, type.cssClass(), cancelIsDefault);
         dialog.showCloseButton();
 
         final OverlayCloser overlayCloser = openOverlay(dialog, ModalityLevel.LIGHT);

@@ -67,7 +67,7 @@ public class NotificationIndicator implements View {
         layout.addStyleName("notification-dialog");
 
         // Set the type
-        layout.addStyleName(type.Name());
+        layout.addStyleName(type.cssClass());
 
         CompositeIcon icon = type.Icon();
         icon.setStyleName("dialog-icon");
@@ -89,7 +89,7 @@ public class NotificationIndicator implements View {
 
     /**
      * Indicator will go away after defined timeout or if user clicks close button.
-     * 
+     *
      * @param timeout_msec
      */
     public void setTimeout(int timeout_msec) {
@@ -120,7 +120,7 @@ public class NotificationIndicator implements View {
 
     /**
      * Set notification content.
-     * 
+     *
      * @param content
      */
     public void setContent(Component content) {
@@ -131,7 +131,7 @@ public class NotificationIndicator implements View {
 
     /**
      * Set listener for close button clicks.
-     * 
+     *
      * @param listener
      */
     public void setConfirmationListener(ConfirmationListener listener) {

@@ -49,12 +49,12 @@ public enum MessageStyleType {
     INFO("Info", "msginfo", InfoIcon.class);
 
     private String caption;
-    private String name;
+    private String cssClass;
     private Class icon;
 
-    private MessageStyleType(final String caption, final String name, final Class icon) {
+    private MessageStyleType(final String caption, final String cssClass, final Class icon) {
         this.caption = caption;
-        this.name = name;
+        this.cssClass = cssClass;
         this.icon = icon;
     }
 
@@ -63,8 +63,8 @@ public enum MessageStyleType {
         return caption;
     }
 
-    public String Name() {
-        return name;
+    public String cssClass() {
+        return cssClass;
     }
 
     public CompositeIcon Icon() {
