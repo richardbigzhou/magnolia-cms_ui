@@ -36,13 +36,9 @@ package info.magnolia.ui.app.sample.main;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.AppEventBus;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
 
 /**
  * Presenter for the navigation.
@@ -68,13 +64,5 @@ public class NavigationPresenter implements NavigationView.Listener {
     @Override
     public void onItemSelected(String name) {
         appEventBus.fireEvent(new ContentItemSelectedEvent(name));
-
-        View view = new View() {
-            @Override
-            public Component asVaadinComponent() {
-                return new Label("thing to show.");
-            }
-        };
-
     }
 }
