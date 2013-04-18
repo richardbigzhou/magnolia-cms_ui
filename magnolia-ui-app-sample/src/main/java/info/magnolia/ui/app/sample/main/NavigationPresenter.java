@@ -38,7 +38,6 @@ import info.magnolia.ui.framework.app.AppEventBus;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.vaadin.overlay.MessageStyleType;
 import info.magnolia.ui.vaadin.overlay.NotificationCallback;
-import info.magnolia.ui.vaadin.overlay.OverlayCloser;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -68,17 +67,15 @@ public class NavigationPresenter implements NavigationView.Listener {
     public void onItemSelected(String name) {
         appEventBus.fireEvent(new ContentItemSelectedEvent(name));
 
-
-
-        final OverlayCloser overlayCloser = subAppContext.openNotification(
-                MessageStyleType.WARNING, -1, "Hello there", "My button",
+        subAppContext.openNotification(
+                MessageStyleType.WARNING, false, "Hello there", "My button",
                 new NotificationCallback() {
 
                     @Override
                     public void onLinkClicked() {
                         // nothing
                         // Show notification
-                        final OverlayCloser overlayCloser = subAppContext.openNotification(MessageStyleType.INFO, 3000, "Clicked.");
+                        subAppContext.openNotification(MessageStyleType.INFO, true, "Clicked.");
 
                     }
 
