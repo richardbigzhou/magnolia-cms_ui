@@ -42,6 +42,7 @@ import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.integration.i18n.I18NAuthoringSupport;
 
 import javax.inject.Inject;
 
@@ -59,12 +60,15 @@ public class FormBuilder {
     private FieldFactory fieldFactory;
     private FormView view;
     private I18nContentSupport i18nContentSupport;
+    private I18NAuthoringSupport i18NAuthoringSupport;
 
     @Inject
-    public FormBuilder(FieldFactory fieldFactory, FormView view, I18nContentSupport i18nContentSupport) {
+    public FormBuilder(FieldFactory fieldFactory, FormView view, I18nContentSupport i18nContentSupport,
+                       I18NAuthoringSupport i18NAuthoringSupport) {
         this.fieldFactory = fieldFactory;
         this.view = view;
         this.i18nContentSupport = i18nContentSupport;
+        this.i18NAuthoringSupport = i18NAuthoringSupport;
     }
 
     /**
@@ -116,7 +120,7 @@ public class FormBuilder {
         }
         view.setShowAllEnabled(formDefinition.getTabs().size() > 1);
         if (hasI18NAwareFields) {
-            view.setAvailableLocales(i18nContentSupport.getLocales());
+            view.setLocaleSelector(i18NAuthoringSupport.getLanguageChooser());
             view.setCurrentLocale(i18nContentSupport.getFallbackLocale());
         }
         return view;

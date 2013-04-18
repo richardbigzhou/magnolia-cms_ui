@@ -88,17 +88,12 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
     @Override
     public Field<T> getField() {
         if (field == null) {
-
             // Build the Vaadin field
             this.field = buildField();
 
-            // Get and set the DataSource property
-            // Set i18n property name
             Property<?> property = getOrCreateProperty();
             setPropertyDataSource(property);
 
-            // TODO fgrilli review: do we really want to provide users with the possibility
-            // of defining their custom styles risking that they screw up AdminCentral look&feel?
             if (StringUtils.isNotBlank(definition.getStyleName())) {
                 this.field.addStyleName(definition.getStyleName());
             }
@@ -131,18 +126,26 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
 
     /**
      * Get a property from the current Item.
-     * If the property already exists, return this property.
      * <p>
+     *     if the field is i18n-aware - create a special property that would delegate
+     *     the values to the proper localized properties. Otherwise - follow the default pattern.
+     * </p>
+     *
+     * <p>
+     * If the property already exists, return this property.
      * If the property does not exist, create a new property based on the defined type, default value, and saveInfo.
+     * </p>
      */
     protected Property<?> getOrCreateProperty() {
+        String propertyName = definition.getName();
+        String fieldType = getFieldType(definition).getSimpleName();
+        String defaultValue = definition.getDefaultValue();
         if (definition.isI18n()) {
-            return new I18NAwareProperty(definition.getName(), (JcrItemNodeAdapter) item, i18nContentSupport);
+            return new I18NAwareProperty(propertyName, fieldType, defaultValue, (JcrItemNodeAdapter) item);
         } else {
-            String propertyName = definition.getName();
             Property<?> property = item.getItemProperty(propertyName);
             if (property == null) {
-                property = DefaultPropertyUtil.newDefaultProperty(propertyName, getFieldType(definition).getSimpleName(), definition.getDefaultValue());
+                property = DefaultPropertyUtil.newDefaultProperty(propertyName, fieldType, defaultValue);
                 item.addItemProperty(propertyName, property);
             }
             return property;
