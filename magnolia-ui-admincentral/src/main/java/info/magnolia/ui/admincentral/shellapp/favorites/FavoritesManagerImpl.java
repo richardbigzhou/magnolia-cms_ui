@@ -35,19 +35,13 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.admincentral.shellapp.favorites.Favorite.FavoriteType;
 import info.magnolia.ui.framework.favorite.bookmark.BookmarkStore;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import com.vaadin.data.Item;
 
 /**
  * FavoritesManagerImpl.
@@ -60,29 +54,28 @@ public class FavoritesManagerImpl implements FavoritesManager {
         this.bookmarkStore = bookmarkStore;
     }
     @Override
-    public List<Item> getFavoritesForCurrentUser() {
-        List<Item> favorites = new ArrayList<Item>();
+    public JcrItemNodeAdapter getFavoritesForCurrentUser() {
         try {
             Node bookmarksNode = bookmarkStore.getBookmarkRoot();
+            JcrNodeAdapter favorites = new JcrNodeAdapter(bookmarksNode);
+
             Iterable<Node> bookmarks = NodeUtil.getNodes(bookmarksNode, BookmarkStore.BOOKMARK_NODETYPE);
             for (Node bookmark : bookmarks) {
-                favorites.add(new JcrNodeAdapter(bookmark));
+                favorites.addChild(new JcrNodeAdapter(bookmark));
             }
+            return favorites;
         } catch (RepositoryException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new RuntimeRepositoryException(e);
         }
-        return favorites;
-
     }
     @Override
-    public void addFavoriteForCurrentUser(Item favorite) {
-        if (FavoriteType.BOOKMARK == favorite.getItemProperty("type").getValue()) {
-            addBookmark(favorite);
+    public void addFavoriteForCurrentUser(JcrItemNodeAdapter favorite) {
+        try {
+            favorite.getNode().getSession().save();
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
         }
-
     }
-
 
     @Override
     public void removeFavorite(String id) {
@@ -95,16 +88,4 @@ public class FavoritesManagerImpl implements FavoritesManager {
         }
     }
 
-    private void addBookmark(Item favorite) {
-        try {
-            Node bookmarkRoot = bookmarkStore.getBookmarkRoot();
-            JcrNewNodeAdapter newBookmark = new JcrNewNodeAdapter(bookmarkRoot, BookmarkStore.BOOKMARK_NODETYPE);
-            newBookmark.addItemProperty(BookmarkStore.BOOKMARK_URL_PROPERTY_NAME, favorite.getItemProperty(BookmarkStore.BOOKMARK_URL_PROPERTY_NAME));
-            newBookmark.addItemProperty("icon", favorite.getItemProperty("icon"));
-            newBookmark.addItemProperty("title", favorite.getItemProperty("title"));
-            newBookmark.getNode().getSession().save();
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
-    }
 }

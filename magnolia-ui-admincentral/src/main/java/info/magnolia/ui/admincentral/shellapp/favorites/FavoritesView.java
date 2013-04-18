@@ -33,11 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.view.View;
-
-import java.util.List;
-
-import com.vaadin.data.Item;
 
 /**
  * View for favorites.
@@ -46,13 +43,12 @@ public interface FavoritesView extends View {
 
     void setListener(Listener listener);
 
-    void setFavorites(List<Item> favoritesForCurrentUser);
+    void setFavorites(JcrItemNodeAdapter favoritesRoot);
 
     /**
      * Listener.
      */
     interface Listener {
-        void addFavorite(Item favorite);
+        void addFavorite(JcrItemNodeAdapter newFavorite);
     }
-
 }

@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import javax.inject.Inject;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
-import com.vaadin.data.Item;
+import javax.inject.Inject;
 
 /**
  * FavoritesPresenter.
@@ -58,8 +58,7 @@ public class FavoritesPresenter implements FavoritesView.Listener {
     }
 
     @Override
-    public void addFavorite(Item favorite) {
+    public void addFavorite(JcrItemNodeAdapter favorite) {
         favoritesManager.addFavoriteForCurrentUser(favorite);
     }
-
 }

@@ -33,17 +33,18 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.admincentral.shellapp.favorites.Favorite.FavoriteType;
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed.FeedSection;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -60,12 +61,12 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Default view implementation for favorites.
  */
-
 public class FavoritesViewImpl extends CustomComponent implements FavoritesView {
 
     private VerticalLayout layout = new VerticalLayout();
     private FavoritesView.Listener listener;
-    private List<Item> favoritesForCurrentUser = new ArrayList<Item>();
+    private JcrItemNodeAdapter favoritesForCurrentUser;
+    private FavoritesSection newPages;
 
     @Override
     public String getId() {
@@ -91,15 +92,8 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         final FeedSection leftSide = splitPanel.getLeftContainer();
         final FeedSection rightSide = splitPanel.getRightContainer();
 
-
-        FavoritesSection newPages = new FavoritesSection();
+        newPages = new FavoritesSection();
         newPages.setCaption("New Pages");
-        Favorite fav = new Favorite("Foo", "/foo/bar/baz", "icon-pages-app", FavoriteType.BOOKMARK);
-        favoritesForCurrentUser.add(new BeanItem<Favorite>(fav));
-
-        for(Item favorite : favoritesForCurrentUser) {
-            newPages.addComponent(new FavoriteEntry(favorite));
-        }
 
         FavoritesSection newCampaigns = new FavoritesSection();
         newCampaigns.setCaption("New Campaigns");
@@ -130,10 +124,13 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
             @Override
             public void buttonClick(ClickEvent event) {
-                // TODO magig method here to retrieve the URL, title, app icon we're coming from
-                Favorite fav = new Favorite("Qux", "/baz/bra/qux", "icon-pages-app", FavoriteType.BOOKMARK);
-                BeanItem<Favorite> favoriteItem = new BeanItem<Favorite>(fav);
-                layout.addComponent(new BookmarkForm(favoriteItem));
+                // TODO magic method here to retrieve the URL, title, app icon we're coming from
+
+                JcrNewNodeAdapter newBookmark = new JcrNewNodeAdapter(favoritesForCurrentUser.getNode(), AdmincentralNodeTypes.Favorite.NAME);
+                newBookmark.addItemProperty(AdmincentralNodeTypes.Favorite.TITLE, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", "Qux"));
+                newBookmark.addItemProperty(AdmincentralNodeTypes.Favorite.URL, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", "/baz/bra/qux"));
+                newBookmark.addItemProperty(AdmincentralNodeTypes.Favorite.TITLE, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", "icon-pages-app"));
+                layout.addComponent(new BookmarkForm(newBookmark));
             }
         });
         layout.addComponent(button);
@@ -198,9 +195,13 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     }
 
     @Override
-    public void setFavorites(List<Item> favoritesForCurrentUser) {
+    public void setFavorites(JcrItemNodeAdapter favoritesForCurrentUser) {
         this.favoritesForCurrentUser = favoritesForCurrentUser;
-
+        Iterator<JcrItemNodeAdapter> favorites = favoritesForCurrentUser.getChildren().values().iterator();
+        while(favorites.hasNext()) {
+            JcrItemNodeAdapter favorite = favorites.next();
+            newPages.addComponent(new FavoriteEntry(favorite));
+        }
     }
 
     // A form component that allows editing an item
@@ -208,7 +209,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         private TextField title = new TextField("Title");
         private TextField url = new TextField("Url");
 
-        public BookmarkForm(final Item newFavorite) {
+        public BookmarkForm(final JcrItemNodeAdapter newFavorite) {
             FormLayout layout = new FormLayout();
             layout.addComponent(title);
             layout.addComponent(url);
@@ -241,6 +242,5 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
             setCompositionRoot(layout);
         }
-
     }
 }

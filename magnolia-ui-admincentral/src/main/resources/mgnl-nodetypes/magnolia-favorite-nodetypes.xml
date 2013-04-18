@@ -71,10 +71,19 @@
     <supertypes>
       <supertype>nt:base</supertype>
     </supertypes>
+    <propertyDefinition name="*" requiredType="undefined" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false"/>
+    <propertyDefinition name="*" requiredType="undefined" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true"/>
   </nodeType>
   <nodeType name="mgnl:favoriteGroup" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
     <supertypes>
       <supertype>mgnl:folder</supertype>
     </supertypes>
+    <childNodeDefinition name="*" defaultPrimaryType="" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="true">
+      <requiredPrimaryTypes>
+        <requiredPrimaryType>nt:base</requiredPrimaryType>
+      </requiredPrimaryTypes>
+    </childNodeDefinition>
+    <propertyDefinition name="*" requiredType="undefined" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false"/>
+    <propertyDefinition name="*" requiredType="undefined" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true"/>
   </nodeType>
 </nodeTypes>

@@ -34,8 +34,6 @@
 package info.magnolia.ui.framework.favorite.bookmark;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.framework.AdmincentralNodeTypes;
 
 import javax.inject.Singleton;
 import javax.jcr.Node;
@@ -43,6 +41,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.jackrabbit.JcrConstants;
+import org.apache.jackrabbit.commons.JcrUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,17 +68,12 @@ public class BookmarkStore {
      * @return the root node of all bookmarks for the current user
      */
     public Node getBookmarkRoot() throws RepositoryException {
-        return getOrCreateBookmarkNode(MgnlContext.getInstance().getUser().getName());
-    }
+        final String userName = MgnlContext.getInstance().getUser().getName();
+        final Node userNode =  JcrUtils.getOrAddNode(getSession().getRootNode(), userName, JcrConstants.NT_UNSTRUCTURED);
+        final Node favoriteNode = JcrUtils.getOrAddNode(userNode, FAVORITES_PATH, JcrConstants.NT_UNSTRUCTURED);
+        final Node bookmarkNode = JcrUtils.getOrAddNode(favoriteNode, BOOKMARKS_PATH, JcrConstants.NT_UNSTRUCTURED);
+        getSession().save();
 
-    protected Node getOrCreateBookmarkNode(String userName) throws RepositoryException {
-        String favoritesUserNode = "/" + userName + "/";
-        String relPathToBookmarks = FAVORITES_PATH + "/" + BOOKMARKS_PATH;
-        Session session = getSession();
-        if (session.nodeExists(favoritesUserNode)) {
-            return NodeUtil.createPath(session.getNode(favoritesUserNode), relPathToBookmarks, AdmincentralNodeTypes.Favorite.NAME);
-        } else {
-            return NodeUtil.createPath(session.getRootNode(), favoritesUserNode + relPathToBookmarks, AdmincentralNodeTypes.Favorite.NAME);
-        }
+        return bookmarkNode;
     }
 }

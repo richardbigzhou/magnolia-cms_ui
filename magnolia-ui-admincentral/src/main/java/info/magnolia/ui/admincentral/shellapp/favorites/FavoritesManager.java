@@ -33,9 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import java.util.List;
-
-import com.vaadin.data.Item;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
 /**
  * Manages the favorites for all users.
@@ -55,9 +53,9 @@ import com.vaadin.data.Item;
  */
 public interface FavoritesManager {
 
-    List<Item> getFavoritesForCurrentUser();
+    JcrItemNodeAdapter getFavoritesForCurrentUser();
 
-    void addFavoriteForCurrentUser(Item favorite);
+    void addFavoriteForCurrentUser(JcrItemNodeAdapter favorite);
 
     void removeFavorite(String id);
 }
