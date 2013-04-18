@@ -85,7 +85,7 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
         }
 
         final OverlayCloser overlayCloser = subAppContext.openConfirmation(
-                MessageStyleType.WARNING, "Do you really want to delete this item?", "Really, are you super sure?", "Delete Item", "Cancel", true,
+                MessageStyleType.WARNING, "Do you really want to delete this item?", "This action can't be undone.", "Yes, Delete", "No", true,
                 new ConfirmationCallback() {
                     @Override
                     public void onSuccess(String actionName) {
@@ -110,7 +110,7 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
             eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemPath()));
 
             // Show notification
-            final OverlayCloser overlayCloser = subAppContext.openNotification(MessageStyleType.INFO, "Item deleted successfully.", 3000);
+            final OverlayCloser overlayCloser = subAppContext.openNotification(MessageStyleType.INFO, "Item deleted.", 3000);
         } catch (RepositoryException e) {
             log.error("Could not execute repository operation.", e);
         }
