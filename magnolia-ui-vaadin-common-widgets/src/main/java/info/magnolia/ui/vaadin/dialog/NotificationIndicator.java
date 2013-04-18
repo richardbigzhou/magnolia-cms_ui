@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
+import info.magnolia.ui.vaadin.icon.CompositeIcon;
 import info.magnolia.ui.vaadin.overlay.MessageStyleType;
 import info.magnolia.ui.vaadin.view.View;
 
@@ -60,12 +61,17 @@ public class NotificationIndicator implements View {
     private CssLayout layout;
     private ConfirmationListener listener;
 
-    public NotificationIndicator() {
+    public NotificationIndicator(final MessageStyleType type) {
         layout = new CssLayout();
-        layout.addStyleName("lightdialog");
-        layout.addStyleName("overlay-child");
-        layout.addStyleName("dialog-panel");
+        layout.addStyleName("light-dialog-panel");
         layout.addStyleName("notification-dialog");
+
+        // Set the type
+        layout.addStyleName(type.Name());
+
+        CompositeIcon icon = type.Icon();
+        icon.setStyleName("dialog-icon");
+        layout.addComponent(icon);
 
         Button closeButton = new Button();
         closeButton.addClickListener(new Button.ClickListener() {
@@ -75,7 +81,6 @@ public class NotificationIndicator implements View {
             }
         });
 
-        closeButton.addStyleName("notification-close-button");
         closeButton.addStyleName("icon-close");
         closeButton.addStyleName("m-closebutton");
 
@@ -120,16 +125,9 @@ public class NotificationIndicator implements View {
      */
     public void setContent(Component content) {
         layout.addComponent(content);
+        content.addStyleName("dialog-content");
     }
 
-    /**
-     * Set the style of this notification.
-     * 
-     * @param type
-     */
-    public void setMessageType(MessageStyleType type) {
-        layout.addStyleName(type.Name());
-    }
 
     /**
      * Set listener for close button clicks.

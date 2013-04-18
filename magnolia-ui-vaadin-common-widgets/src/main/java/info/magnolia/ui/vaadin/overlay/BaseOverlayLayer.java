@@ -136,7 +136,6 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
             @Override
             public Component asVaadinComponent() {
                 Layout layout = new CssLayout();
-                layout.setStyleName("light-dialog-view");
 
                 Label titleLabel = new Label(title);
                 titleLabel.addStyleName("title");
@@ -198,9 +197,8 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
             private OverlayCloser compositeCloser;
 
             {
-                NotificationIndicator dialog = new NotificationIndicator();
+                NotificationIndicator dialog = new NotificationIndicator(type);
                 dialog.setContent(viewToShow.asVaadinComponent());
-                dialog.setMessageType(type);
                 dialog.setConfirmationListener(new NotificationIndicator.ConfirmationListener() {
 
                     @Override
@@ -229,10 +227,9 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
             private OverlayCloser compositeCloser;
 
             {
-                NotificationIndicator dialog = new NotificationIndicator();
+                NotificationIndicator dialog = new NotificationIndicator(type);
                 dialog.setContent(viewToShow.asVaadinComponent());
                 dialog.setTimeout(timeout_msec);
-                dialog.setMessageType(type);
                 dialog.setConfirmationListener(new NotificationIndicator.ConfirmationListener() {
 
                     @Override

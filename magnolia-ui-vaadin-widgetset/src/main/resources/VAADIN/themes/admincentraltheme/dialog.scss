@@ -11,13 +11,6 @@
   padding:0;
 }
 
-.light-dialog-panel {
-	width:400px;
-	padding:0;
-	text-align:center;
-}
-
-
 .v-dialog-layout {
   display: inline-block;
   width:510px;
@@ -27,13 +20,6 @@
 .dialog-panel .dialog-content {
     width:100%;
 }
-
-.light-dialog-panel .dialog-content{
-    padding:0 42px;
-    width:auto;
-    position:relative;
-}
-
 
 .dialog-content .v-shell-tabsheet-scroller {
     position:static !important;
@@ -55,13 +41,6 @@
     height:15px;
 }
 
-.light-dialog-panel .dialog-header {
-	background-color:transparent;
-}
-.light-dialog-panel .dialog-header button.btn-form-help {
-	display:none;
-}
-
 .dialog-header span {
     color:#aabf2f;
     font-family:DINWebPro;
@@ -81,16 +60,6 @@
   margin-right: 35px;
 }
 
-
-
-
-
-
-
-
-
-
-
 .dialog-footer {
   background-color: #ccc;
   text-align: right;
@@ -98,12 +67,7 @@
   right: 0;
 }
 
-.light-dialog-panel .dialog-footer {
-    display:inline-block;
-	background-color: transparent;
-	margin-top:20px;
-	margin-bottom:9px;
-}
+
 
 .dialog-header,
 .dialog-description,
@@ -165,124 +129,45 @@ button.btn-dialog-help {
 
 
 
-
-.overlay {
-    position: absolute;
-    top: 0px;
-    bottom:0px;
-    left: 0px;
-    right: 0px;
-    text-align: center !important;
-    overflow: hidden;
-}
+/* Light Dialog */
 
 
+.light-dialog-panel {
+    width:400px;
+    padding:0;
+    text-align:center;
+    color:black;
+    padding-bottom:5px;
+    border: solid 1px;
+ }
 
-.overlay-child {
-  display: inline-block !important;
-  position: relative;
-  margin-top: 2px;
-}
-
-/* transparent border */
-.overlay.modality-light .overlay-child,
-.overlay.modality-non-modal .overlay-child
-{
-    border: 20px solid rgb(255, 255, 255);
-    border: 20px solid rgba(255, 255, 255, .5);
-    -webkit-background-clip: padding-box; /* for Safari */
-    background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
-}
-
-
-/* Vertical centering - The ghost, nudged to maintain perfect centering  - http://css-tricks.com/centering-in-the-unknown */
-.overlay.center-vertical:before {
-    content: '';
-    display: inline-block;
-    height: 100%;
-    vertical-align: middle;
-    margin-right: -0.25em; /* Adjusts for spacing */
-}
-
-/* vertical centering */
-.overlay.center-vertical .overlay-child {
-    vertical-align:middle;
-}
-
-
-
-
-
-/* Be non-modal */
-.overlay.modality-non-modal{
-    height:0px;
-    overflow:visible;
-}
-
-.overlay.modality-light .modal-curtain,
-.overlay.modality-strong .modal-curtain
-{
-    position:absolute;
-    top:0px;
-    bottom:0px;
-    left:0px;
-    right:0px;
-    background-color:#000;
-    opacity:0.8;
-    filter:alpha(opacity = 80);
-}
-
-.overlay.modality-light .modal-curtain{
+.light-dialog-panel .dialog-header {
     background-color:transparent;
 }
-
-
-
-/* Set proper stacking for modals */
-.overlay.app,
-.overlay.sub-app {
-    z-index: 110;
+.light-dialog-panel .dialog-header button.btn-form-help {
+    display:none;
 }
 
-.overlay.shell{
-	z-index:500;
+.light-dialog-panel .dialog-content{
+    padding:0 42px;
+    width:auto;
+    position:relative;
 }
 
-.overlay.shell .overlay-child{
-  top:60px;
+.light-dialog-panel .dialog-footer {
+    display:inline-block;
+    background-color: transparent;
+    margin-top:20px;
+    margin-bottom:9px;
 }
-
-
-
-
-
-
-/*
-* Forms in an Overlay.
-*/
-
-.overlay .v-form-layout {
-    background-color: #E6E6E6;
-}
-
-.overlay .form-panel .v-shell-tabsheet,
-.overlay .form-panel .v-shell-tabsheet .nav li.active {
-    background-color: #E6E6E6;
-}
-
-
 
 
 .light-dialog-panel .title {
     font-weight:bold;
     padding-bottom:5px;
 }
-.light-dialog-panel {
-    color:black;
-    padding-bottom:5px;
- }
 
- .light-dialog-view >.icon {
+ .dialog-icon {
     position:absolute;
     top:-4px;
     left:10px;
@@ -294,44 +179,60 @@ button.btn-dialog-help {
     color:white;
 }
 
+/* MessageTypes */
 
 .light-dialog-panel .btn-dialog-default { float:right;}
 
-.light-dialog-panel.msginfo {                  }
-.light-dialog-panel.msginfo .m-closebutton {        color: $c05;
-    &:hover,&:active {                       color: #A1ADAF;}}
-.light-dialog-panel.msginfo .btn-dialog-default {   background: $c05;}
-.light-dialog-panel.msginfo button {                background: #A1ADAF;}
+.light-dialog-panel.msginfo {                       border-color:   #A1ADAF;}
+.light-dialog-panel.msginfo .m-closebutton {        color:          $c05;
+    &:hover,&:active {                              color:          #A1ADAF;}}
+.light-dialog-panel.msginfo .btn-dialog-default {   background:     $c05;}
+.light-dialog-panel.msginfo button {                background:     #A1ADAF;}
 
-.light-dialog-panel.msgwarn {                       background: $c15;}
-.light-dialog-panel.msgwarn .m-closebutton {        color: #F6A51C;}
-.light-dialog-panel.msgwarn .btn-dialog-default {   background: #F6A51C;}
-.light-dialog-panel.msgwarn button {                background: #BEB099;}
+.light-dialog-panel.msgwarn {                       background:     $c15;
+                                                    border-color:   #BEB099;}
+.light-dialog-panel.msgwarn .m-closebutton {        color:          #F6A51C;}
+.light-dialog-panel.msgwarn .btn-dialog-default {   background:     #F6A51C;}
+.light-dialog-panel.msgwarn button {                background:     #BEB099;}
 
-.light-dialog-panel.msgerror {                      background: $c19;}
-.light-dialog-panel.msgerror .m-closebutton {       color: $c17;}
-.light-dialog-panel.msgerror .btn-dialog-default {  background: $c17;}
-.light-dialog-panel.msgerror button {               background: #AE9D9D;}
+.light-dialog-panel.msgerror {                      background:     $c19;
+                                                    border-color:   #AE9D9D;}
+.light-dialog-panel.msgerror .m-closebutton {       color:          $c17;}
+.light-dialog-panel.msgerror .btn-dialog-default {  background:     $c17;}
+.light-dialog-panel.msgerror button {               background:     #AE9D9D;}
+
+
+/* Alerts */
 
 .alert-progressbar {
     display: none;
 }
 
+/* Notifications */
+
 .notification-dialog {
     vertical-align: top !important;
-    padding: 12px;
+    padding: 12px 0;
     width:400px;
 }
 
-.notification-close-button {
+.notification-dialog >.icon {
+    position:absolute;
+    top:10px;
+    left:10px;
+}
+
+.notification-dialog .m-closebutton {
     background-color: transparent;
     float: right;
     padding: 0;
     font-size: 15px;
     position: absolute;
-    top: 0;
-    right: 5px;
+    top: 6px;
+    right: 12px;
 }
+
+/* Lightbox */
 
 .lightbox-image > img {
     max-width: 720px;

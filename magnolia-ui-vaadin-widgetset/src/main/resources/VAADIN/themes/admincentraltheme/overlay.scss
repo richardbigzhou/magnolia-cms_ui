@@ -1,0 +1,103 @@
+@charset "UTF-8";
+
+@mixin overlay {
+
+
+
+.overlay {
+    position: absolute;
+    top: 0px;
+    bottom:0px;
+    left: 0px;
+    right: 0px;
+    text-align: center !important;
+    overflow: hidden;
+}
+
+
+
+.overlay-child {
+  display: inline-block !important;
+  position: relative;
+  margin-top: 2px;
+}
+
+
+/* Vertical centering - The ghost, nudged to maintain perfect centering  - http://css-tricks.com/centering-in-the-unknown */
+.overlay.center-vertical:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-right: -0.25em; /* Adjusts for spacing */
+}
+
+/* vertical centering */
+.overlay.center-vertical .overlay-child {
+    vertical-align:middle;
+}
+
+
+
+
+
+/* Be non-modal */
+.overlay.modality-non-modal{
+    height:0px;
+    overflow:visible;
+}
+
+.overlay.modality-light .modal-curtain,
+.overlay.modality-strong .modal-curtain
+{
+    position:absolute;
+    top:0px;
+    bottom:0px;
+    left:0px;
+    right:0px;
+    background-color:#000;
+    opacity:0.8;
+    filter:alpha(opacity = 80);
+}
+
+.overlay.modality-light .modal-curtain{
+    background-color:transparent;
+}
+
+
+
+/* Set proper stacking for modals */
+.overlay.app,
+.overlay.sub-app {
+    z-index: 110;
+}
+
+.overlay.shell{
+    z-index:500;
+}
+
+.overlay.shell .overlay-child{
+  top:60px;
+}
+
+
+
+
+
+
+/*
+* Forms in an Overlay.
+*/
+
+.overlay .v-form-layout {
+    background-color: #E6E6E6;
+}
+
+.overlay .form-panel .v-shell-tabsheet,
+.overlay .form-panel .v-shell-tabsheet .nav li.active {
+    background-color: #E6E6E6;
+}
+
+
+
+}
