@@ -70,6 +70,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     private JcrItemNodeAdapter favoritesForCurrentUser;
     private FavoritesSection newPages;
     private FavoriteLocation favoriteLocation;
+    private BookmarkForm favoriteForm;
 
     @Override
     public String getId() {
@@ -122,20 +123,12 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
         layout.addComponent(splitPanel);
         layout.setExpandRatio(splitPanel, 2f);
-        Button button = new Button("Add new");
-        button.addClickListener(new ClickListener() {
 
-            @Override
-            public void buttonClick(ClickEvent event) {
-                JcrNewNodeAdapter newBookmark = new JcrNewNodeAdapter(favoritesForCurrentUser.getNode(), AdmincentralNodeTypes.Favorite.NAME);
-                newBookmark.addItemProperty(ModelConstants.JCR_NAME, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", favoriteLocation.getTitle()));
-                newBookmark.addItemProperty(AdmincentralNodeTypes.Favorite.URL, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", favoriteLocation.getUrl()));
-                newBookmark.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", favoriteLocation.getIcon()));
-                layout.addComponent(new BookmarkForm(newBookmark));
-            }
-        });
-        layout.addComponent(button);
-        layout.setExpandRatio(button, 0.1f);
+        // Empty at the beginning as favoritesForCurrentUser is null and trying to getNode() would throw NPE
+        favoriteForm = new BookmarkForm(null);
+
+        layout.addComponent(favoriteForm);
+        layout.setExpandRatio(favoriteForm, 0.5f);
     }
 
     @Override
@@ -146,6 +139,17 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     @Override
     public void setFavoriteLocation(FavoriteLocation favoriteLocation) {
         this.favoriteLocation = favoriteLocation;
+
+        JcrNewNodeAdapter newFavorite = new JcrNewNodeAdapter(favoritesForCurrentUser.getNode(), AdmincentralNodeTypes.Favorite.NAME);
+        newFavorite.addItemProperty(ModelConstants.JCR_NAME, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", favoriteLocation.getTitle()));
+        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.URL, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", favoriteLocation.getUrl()));
+        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", favoriteLocation.getIcon()));
+
+        layout.removeComponent(favoriteForm);
+        favoriteForm = new BookmarkForm(newFavorite);
+
+        layout.addComponent(favoriteForm);
+        layout.setExpandRatio(favoriteForm, 0.5f);
     }
 
     /**
@@ -212,21 +216,28 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
     // A form component that allows editing an item
     private class BookmarkForm extends CustomComponent {
+
+        private TextField url = new TextField("Location");
         @PropertyId(ModelConstants.JCR_NAME)
         private TextField title = new TextField("Title");
-        private TextField url = new TextField("Url");
+
 
         public BookmarkForm(final JcrItemNodeAdapter newFavorite) {
+            addStyleName("favorites-form");
             FormLayout layout = new FormLayout();
-            layout.addComponent(title);
+            title.setWidth(800, Unit.PIXELS);
+            title.setRequired(true);
+            url.setWidth(800, Unit.PIXELS);
+            url.setRequired(true);
             layout.addComponent(url);
+            layout.addComponent(title);
 
             // Now use a binder to bind the members
             final FieldGroup binder = new FieldGroup(newFavorite);
             binder.bindMemberFields(this);
 
-            // A button to commit the buffer
-            layout.addComponent(new Button("Add", new ClickListener() {
+            Button addButton = new Button("Add", new ClickListener() {
+
                 @Override
                 public void buttonClick(ClickEvent event) {
                     try {
@@ -234,10 +245,15 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
                         listener.addFavorite(newFavorite);
                         // refresh the app to display the new favorite.
                     } catch (CommitException e) {
-                        Notification.show("Something went wrong!");
+                        // TODO how do we display validation errors?
+                        Notification.show(e.getMessage());
                     }
                 }
-            }));
+            });
+            addButton.addStyleName("btn-dialog-commit");
+
+            // A button to commit the buffer
+            layout.addComponent(addButton);
 
             // A button to discard the buffer
             layout.addComponent(new Button("Cancel", new ClickListener() {
