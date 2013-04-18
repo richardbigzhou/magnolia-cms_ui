@@ -202,7 +202,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
      * 
      */
     public ViewType getDefaultViewType() {
-        return workbenchPresenter.getDefaultView();
+        return workbenchPresenter.getDefaultViewType();
     }
 
     public BrowserView getView() {

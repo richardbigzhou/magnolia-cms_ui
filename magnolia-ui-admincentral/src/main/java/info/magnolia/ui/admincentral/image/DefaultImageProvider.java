@@ -59,13 +59,16 @@ public class DefaultImageProvider implements ImageProvider {
 
     private ImageProviderDefinition definition;
 
+    public DefaultImageProvider() {
+    }
+
     public DefaultImageProvider(ImageProviderDefinition definition) {
         this.definition = definition;
     }
 
     private static final Logger log = LoggerFactory.getLogger(DefaultImageProvider.class);
 
-    private final String ICON_CLASS_DEFAULT = "file";
+    public final String ICON_CLASS_DEFAULT = "file";
 
     @Override
     public String getPortraitPath(final String workspace, final String path) {
@@ -172,7 +175,8 @@ public class DefaultImageProvider implements ImageProvider {
     /**
      * Simple MimeType to Icon Class Mapping.
      */
-    private String resolveIconClassName(String mimeType) {
+    @Override
+    public String resolveIconClassName(String mimeType) {
 
         String fileType = resolveFileTypeFromMimeType(mimeType);
 

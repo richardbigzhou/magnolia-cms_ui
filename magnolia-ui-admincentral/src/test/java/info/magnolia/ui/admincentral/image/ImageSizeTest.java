@@ -40,7 +40,7 @@ import java.io.File;
 import org.junit.Test;
 
 /**
- * Main test class for {@link ImageSize}
+ * Main test class for {@link ImageSize}.
  */
 public class ImageSizeTest {
 

@@ -11,6 +11,7 @@
 	<inherits name='com.googlecode.mgwt.dom.DOM' />
 	<inherits name='com.googlecode.mgwt.ui.UI' />
 
+    <inherits name='com.github.wolfie.refresher.RefresherWidgetset' />
 
 	<inherits name="com.google.gwt.json.JSON" />
 	<inherits name="com.google.gwt.resources.Resources" />
@@ -19,7 +20,7 @@
 
     <stylesheet src="jcrop/jquery.Jcrop.css"/>
     <stylesheet src="lightbox/lightbox.css"/>
-        
+
 	<replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariTouchWidgetImplProxy">
 		<when-type-is class="com.googlecode.mgwt.ui.client.widget.touch.TouchWidgetImpl" />
 		<all>

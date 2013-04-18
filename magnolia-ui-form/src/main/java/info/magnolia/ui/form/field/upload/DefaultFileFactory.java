@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.imageprovider.definition;
+package info.magnolia.ui.form.field.upload;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.vaadin.easyuploads.FileFactory;
 
 /**
- * Defines a provider for Thumbnail images.
+ * Default implementation of {@link FileFactory}.<br>
  */
-public interface ImageProvider {
+public class DefaultFileFactory implements FileFactory {
 
-    static final String PORTRAIT_GENERATOR = "portrait";
+    private File directory;
 
-    static final String THUMBNAIL_GENERATOR = "thumbnail";
+    public DefaultFileFactory(File directory) {
+        if (directory.isDirectory() && directory.canWrite()) {
+            this.directory = directory;
+        } else {
+            throw new IllegalArgumentException(
+                    "The directory does not exist or is not writeable!");
+        }
+    }
 
-    String getPortraitPath(String workspace, String path);
+    @Override
+    public File createFile(String fileName, String mimeType) {
+        try {
+            File tmpFile = File.createTempFile(fileName, null, directory);
+            tmpFile.deleteOnExit();
+            return tmpFile;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-    String getThumbnailPath(String workspace, String path);
-
-    String getPortraitPathByIdentifier(String workspace, String uuid);
-
-    String getThumbnailPathByIdentifier(String workspace, String uuid);
-
-    String resolveIconClassName(String mimeType);
-
-    /**
-     * Get a Preview Resource.
-     * This preview is an image or an icon representing the Document type.
-     */
-    Object getThumbnailResourceByPath(String workspace, String path, String generator);
-
-    Object getThumbnailResourceById(String workspace, String identifier, String generator);
 }

@@ -85,6 +85,7 @@ public class ContentPresenterTest {
         shell = mock(Shell.class);
         item = mock(JcrItemAdapter.class);
         when(item.getPath()).thenReturn(TEST_ITEM_PATH);
+
     }
 
     @Test
@@ -92,7 +93,7 @@ public class ContentPresenterTest {
         // GIVEN
         final ContentPresenter presenter = new ContentPresenter(contentViewBuilder);
         WorkbenchDefinition wbDef = ((BrowserSubAppDescriptor) context.getDefaultSubAppDescriptor()).getWorkbench();
-        presenter.start(mock(WorkbenchView.class), wbDef, null, null);
+        presenter.start(mock(WorkbenchView.class), wbDef, null, eventBus);
         // WHEN
         presenter.onItemSelection(item);
 
@@ -108,7 +109,7 @@ public class ContentPresenterTest {
         // GIVEN
         final ContentPresenter presenter = new ContentPresenter(contentViewBuilder);
         WorkbenchDefinition wbDef = ((BrowserSubAppDescriptor) context.getDefaultSubAppDescriptor()).getWorkbench();
-        presenter.start(mock(WorkbenchView.class), wbDef, null, null);
+        presenter.start(mock(WorkbenchView.class), wbDef, null, eventBus);
 
         // WHEN
         presenter.onDoubleClick(item);
@@ -125,7 +126,7 @@ public class ContentPresenterTest {
         // GIVEN
         ContentPresenter presenter = new ContentPresenter(contentViewBuilder);
         WorkbenchDefinition wbDef = ((BrowserSubAppDescriptor) context.getDefaultSubAppDescriptor()).getWorkbench();
-        presenter.start(mock(WorkbenchView.class), wbDef, null, null);
+        presenter.start(mock(WorkbenchView.class), wbDef, null, eventBus);
         // WHEN
         presenter.onItemSelection(null);
 

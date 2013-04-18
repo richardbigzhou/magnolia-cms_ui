@@ -31,32 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.imageprovider.definition;
+package info.magnolia.ui.form.field.upload;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ProgressIndicator;
 
 /**
- * Defines a provider for Thumbnail images.
+ * Definition used to create a custom display for {@link com.vaadin.ui.ProgressIndicator}.
  */
-public interface ImageProvider {
-
-    static final String PORTRAIT_GENERATOR = "portrait";
-
-    static final String THUMBNAIL_GENERATOR = "thumbnail";
-
-    String getPortraitPath(String workspace, String path);
-
-    String getThumbnailPath(String workspace, String path);
-
-    String getPortraitPathByIdentifier(String workspace, String uuid);
-
-    String getThumbnailPathByIdentifier(String workspace, String uuid);
-
-    String resolveIconClassName(String mimeType);
+public interface UploadProgressIndicator extends Component {
 
     /**
-     * Get a Preview Resource.
-     * This preview is an image or an icon representing the Document type.
+     * Refresh Upload Layout.
+     * Used to update the ProgressIndicator Components.
      */
-    Object getThumbnailResourceByPath(String workspace, String path, String generator);
+    public void refreshOnProgressUploadLayout(long readBytes, long contentLength, String fileName);
 
-    Object getThumbnailResourceById(String workspace, String identifier, String generator);
+    /**
+     * Return the {@link ProgressIndicator} used internally.
+     * Could be needed for Upload File Field.
+     */
+    public ProgressIndicator getProgressIndicator();
+
+    /**
+     * Convenience setter allowing to directly set the value of the {@link ProgressIndicator} component.
+     */
+    public void setProgressIndicatorValue(float newValue);
+
+    /**
+     * Set the Component Visible or not.
+     */
+    @Override
+    public void setVisible(boolean visible);
+
 }
