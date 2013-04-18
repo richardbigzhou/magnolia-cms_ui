@@ -69,13 +69,14 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
         c.addContainerProperty("displayLanguage", String.class, "");
         for (Locale locale : locales) {
             Item it = c.addItem(locale);
-            it.getItemProperty("displayLanguage").setValue(locale.getDisplayName(locale));
+            it.getItemProperty("displayLanguage").setValue(locale.getDisplayName());
         }
         ComboBox languageSelector = new ComboBox();
         languageSelector.setImmediate(true);
         languageSelector.setItemCaptionPropertyId("displayLanguage");
         languageSelector.setContainerDataSource(c);
         languageSelector.setNullSelectionAllowed(false);
+        languageSelector.setTextInputAllowed(false);
         return languageSelector;
     }
 
