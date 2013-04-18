@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
+import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
@@ -127,9 +128,9 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
                 // TODO magic method here to retrieve the URL, title, app icon we're coming from
 
                 JcrNewNodeAdapter newBookmark = new JcrNewNodeAdapter(favoritesForCurrentUser.getNode(), AdmincentralNodeTypes.Favorite.NAME);
-                newBookmark.addItemProperty(AdmincentralNodeTypes.Favorite.TITLE, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", "Qux"));
+                newBookmark.addItemProperty(ModelConstants.JCR_NAME, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", "Qux"));
                 newBookmark.addItemProperty(AdmincentralNodeTypes.Favorite.URL, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", "/baz/bra/qux"));
-                newBookmark.addItemProperty(AdmincentralNodeTypes.Favorite.TITLE, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", "icon-pages-app"));
+                newBookmark.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", "icon-pages-app"));
                 layout.addComponent(new BookmarkForm(newBookmark));
             }
         });
