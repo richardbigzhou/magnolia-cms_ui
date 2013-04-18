@@ -157,7 +157,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         public FavoriteEntry(final Item favorite) {
             addStyleName("v-favorites-entry");
             setSizeUndefined();
-            setTitle(favorite.getItemProperty("title").getValue().toString());
+            setTitle(favorite.getItemProperty(ModelConstants.JCR_NAME).getValue().toString());
             setIcon(favorite.getItemProperty("icon").getValue().toString());
             setUrl(favorite.getItemProperty("url").getValue().toString());
             iconElement.setContentMode(ContentMode.HTML);
@@ -226,6 +226,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
                     try {
                         binder.commit();
                         listener.addFavorite(newFavorite);
+                        // refresh the app to display the new favorite.
                     } catch (CommitException e) {
                         Notification.show("Something went wrong!");
                     }
