@@ -49,9 +49,9 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.ProgressIndicator;
 
 /**
- * Component for showing indication messages.
+ * Component for showing notification messages.
  */
-public class NotificationIndicator implements View {
+public class Notification implements View {
 
     /**
      * Listener for handling close button clicks.
@@ -64,7 +64,7 @@ public class NotificationIndicator implements View {
     private ConfirmationListener listener;
     Timer timer;
 
-    public NotificationIndicator(final MessageStyleType type) {
+    public Notification(final MessageStyleType type) {
         timer = new Timer();
         layout = new CssLayout();
         layout.addStyleName("light-dialog-panel");

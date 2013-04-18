@@ -37,7 +37,7 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
 import info.magnolia.ui.vaadin.dialog.LightDialog;
-import info.magnolia.ui.vaadin.dialog.NotificationIndicator;
+import info.magnolia.ui.vaadin.dialog.Notification;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
 import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
@@ -203,10 +203,10 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
             private OverlayCloser compositeCloser;
 
             {
-                NotificationIndicator dialog = new NotificationIndicator(type);
+                Notification dialog = new Notification(type);
                 dialog.setContent(viewToShow.asVaadinComponent());
                 dialog.setTimeout(timeout_msec);
-                dialog.setConfirmationListener(new NotificationIndicator.ConfirmationListener() {
+                dialog.setConfirmationListener(new Notification.ConfirmationListener() {
 
                     @Override
                     public void onClose() {
