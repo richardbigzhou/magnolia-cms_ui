@@ -53,7 +53,6 @@ import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.config.WorkbenchBuilder;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
@@ -225,13 +224,5 @@ public class BrowserPresenterTest {
         assertEquals(firstModifiedBy, LastModified.getLastModifiedBy(node));
     }
 
-    @Test
-    public void testGetDefaultViewType() {
-        // GIVEN
 
-        // WHEN
-        ViewType viewType = presenter.getDefaultViewType();
-        // THEN
-        assertEquals(ViewType.TREE, viewType);
-    }
 }

@@ -200,7 +200,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
      * If non define, return the first Content Definition as default.
      */
     public ViewType getDefaultViewType() {
-        return workbenchPresenter.getDefaultView();
+        return workbenchPresenter.getDefaultViewType();
     }
 
     public BrowserView getView() {
