@@ -47,13 +47,13 @@ public class AdmincentralNodeTypes {
 
         public static final String NAME = NodeTypes.MGNL_PREFIX + "systemMessage";
 
-        public static String ID = "id";
-        public static String TIMESTAMP = "timestamp";
-        public static String MESSAGETYPE = "messagetype";
-        public static String SUBJECT = "subject";
-        public static String MESSAGE = "message";
-        public static String CLEARED = "cleared";
-        public static String SENDER = "sender";
+        public static final String ID = "id";
+        public static final String TIMESTAMP = "timestamp";
+        public static final String MESSAGETYPE = "messagetype";
+        public static final String SUBJECT = "subject";
+        public static final String MESSAGE = "message";
+        public static final String CLEARED = "cleared";
+        public static final String SENDER = "sender";
     }
 
     /**
@@ -63,7 +63,9 @@ public class AdmincentralNodeTypes {
 
         public static final String NAME = NodeTypes.MGNL_PREFIX + "favorite";
 
-        public static String URL = "url";
+        public static final String URL = "url";
+        public static final String TITLE = "title";
+        public static final String ICON = "icon";
     }
 
     /**
