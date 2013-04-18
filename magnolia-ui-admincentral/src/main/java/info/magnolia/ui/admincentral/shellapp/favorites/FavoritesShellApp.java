@@ -33,12 +33,20 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.shellapp.ShellApp;
 import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.vaadin.view.View;
 
+import java.net.URI;
+
 import javax.inject.Inject;
+
+import com.vaadin.server.Page;
 
 /**
  * Favorites shell app.
@@ -49,9 +57,12 @@ public class FavoritesShellApp implements ShellApp {
 
     private FavoritesPresenter favoritesPresenter;
 
+    private AppDescriptorRegistry appDescriptorRegistry;
+
     @Inject
-    public FavoritesShellApp(FavoritesPresenter favoritesPresenter) {
+    public FavoritesShellApp(FavoritesPresenter favoritesPresenter, AppDescriptorRegistry appDescriptorRegistry) {
         this.favoritesPresenter = favoritesPresenter;
+        this.appDescriptorRegistry = appDescriptorRegistry;
     }
 
     @Override
@@ -62,6 +73,31 @@ public class FavoritesShellApp implements ShellApp {
 
     @Override
     public void locationChanged(Location location) {
-        System.out.println(location.toString());
+        FavoriteLocation favoriteLocation = determinePreviousLocation();
+        favoritesView.setFavoriteLocation(favoriteLocation);
+    }
+
+    private FavoriteLocation determinePreviousLocation() {
+        // at this point the current location in the browser hasn't yet changed to favorite shellapp,
+        // so it is what we need to pre-populate the form for creating a new favorite
+        final URI previousLocation = Page.getCurrent().getLocation();
+        final String previousLocationFragment = previousLocation.getFragment();
+        final String appId = DefaultLocation.extractAppId(previousLocationFragment);
+        final String appType = DefaultLocation.extractAppType(previousLocationFragment);
+        FavoriteLocation favoriteLocation = null;
+        // skip bookmarking shell apps
+        if ("shell".equals(appType)) {
+            favoriteLocation = new FavoriteLocation();
+        } else {
+            AppDescriptor appDescriptor;
+            try {
+                appDescriptor = appDescriptorRegistry.getAppDescriptor(appId);
+            } catch (RegistrationException e) {
+                throw new RuntimeException(e);
+            }
+            final String appIcon = appDescriptor.getIcon();
+            favoriteLocation = new FavoriteLocation(appId, previousLocation.toString(), appIcon, "Hardcoded now");
+        }
+        return favoriteLocation;
     }
 }

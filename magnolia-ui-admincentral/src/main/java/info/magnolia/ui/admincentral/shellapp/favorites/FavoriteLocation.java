@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,24 +33,39 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
-import info.magnolia.ui.vaadin.view.View;
-
 /**
- * View for favorites.
+ * A bean holding the info we need to pre-populate the UI in order build a favorite, i.e. a bookmark within an app.
  */
-public interface FavoritesView extends View {
+public class FavoriteLocation {
 
-    void setListener(Listener listener);
+    private String appId = "";
+    private String url = "";
+    private String icon = "";
+    private String title = "";
 
-    void setFavorites(JcrItemNodeAdapter favoritesRoot);
+    public FavoriteLocation() {
+    }
+    public FavoriteLocation(String appId, String url, String icon, String title) {
+        this.appId = appId;
+        this.url = url;
+        this.icon = icon;
+        this.title = title;
+    }
 
-    void setFavoriteLocation(FavoriteLocation location);
-    /**
-     * Listener.
-     */
-    interface Listener {
-        void addFavorite(JcrItemNodeAdapter newFavorite);
+    public String getAppId() {
+        return appId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
 }

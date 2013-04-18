@@ -69,6 +69,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     private FavoritesView.Listener listener;
     private JcrItemNodeAdapter favoritesForCurrentUser;
     private FavoritesSection newPages;
+    private FavoriteLocation favoriteLocation;
 
     @Override
     public String getId() {
@@ -126,12 +127,10 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
             @Override
             public void buttonClick(ClickEvent event) {
-                // TODO magic method here to retrieve the URL, title, app icon we're coming from
-
                 JcrNewNodeAdapter newBookmark = new JcrNewNodeAdapter(favoritesForCurrentUser.getNode(), AdmincentralNodeTypes.Favorite.NAME);
-                newBookmark.addItemProperty(ModelConstants.JCR_NAME, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", "Qux"));
-                newBookmark.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", "/baz/bra/qux"));
-                newBookmark.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", "icon-pages-app"));
+                newBookmark.addItemProperty(ModelConstants.JCR_NAME, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", favoriteLocation.getTitle()));
+                newBookmark.addItemProperty(AdmincentralNodeTypes.Favorite.URL, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", favoriteLocation.getUrl()));
+                newBookmark.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", favoriteLocation.getIcon()));
                 layout.addComponent(new BookmarkForm(newBookmark));
             }
         });
@@ -142,6 +141,11 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     @Override
     public Component asVaadinComponent() {
         return layout;
+    }
+
+    @Override
+    public void setFavoriteLocation(FavoriteLocation favoriteLocation) {
+        this.favoriteLocation = favoriteLocation;
     }
 
     /**
