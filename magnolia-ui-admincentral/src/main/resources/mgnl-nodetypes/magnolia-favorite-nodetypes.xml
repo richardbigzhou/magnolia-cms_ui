@@ -62,6 +62,7 @@
 -->
 
 <nodeTypes
+    xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
     xmlns:mgnl="http://www.magnolia.info/jcr/mgnl"
     >
 
