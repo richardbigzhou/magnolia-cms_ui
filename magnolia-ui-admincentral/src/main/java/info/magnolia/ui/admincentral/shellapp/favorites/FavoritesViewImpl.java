@@ -70,7 +70,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     private JcrItemNodeAdapter favoritesForCurrentUser;
     private FavoritesSection newPages;
     private FavoriteLocation favoriteLocation;
-    private BookmarkForm favoriteForm;
+    private FavoriteForm favoriteForm;
 
     @Override
     public String getId() {
@@ -125,7 +125,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         layout.setExpandRatio(splitPanel, 2f);
 
         // Empty at the beginning as favoritesForCurrentUser is null and trying to getNode() would throw NPE
-        favoriteForm = new BookmarkForm(null);
+        favoriteForm = new FavoriteForm(null);
 
         layout.addComponent(favoriteForm);
         layout.setExpandRatio(favoriteForm, 0.5f);
@@ -146,7 +146,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", favoriteLocation.getIcon()));
 
         layout.removeComponent(favoriteForm);
-        favoriteForm = new BookmarkForm(newFavorite);
+        favoriteForm = new FavoriteForm(newFavorite);
 
         layout.addComponent(favoriteForm);
         layout.setExpandRatio(favoriteForm, 0.5f);
@@ -215,14 +215,14 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     }
 
     // A form component that allows editing an item
-    private class BookmarkForm extends CustomComponent {
+    private class FavoriteForm extends CustomComponent {
 
         private TextField url = new TextField("Location");
         @PropertyId(ModelConstants.JCR_NAME)
         private TextField title = new TextField("Title");
 
 
-        public BookmarkForm(final JcrItemNodeAdapter newFavorite) {
+        public FavoriteForm(final JcrItemNodeAdapter newFavorite) {
             addStyleName("favorites-form");
             FormLayout layout = new FormLayout();
             title.setWidth(800, Unit.PIXELS);
