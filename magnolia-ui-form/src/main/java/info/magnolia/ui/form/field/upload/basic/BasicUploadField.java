@@ -436,4 +436,11 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         // Do Nothing
     }
 
+    /**
+     * For test cases.
+     */
+    public CssLayout getCssLayout() {
+        return this.layout;
+    }
+
 }
