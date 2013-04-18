@@ -61,28 +61,28 @@ public interface OverlayLayer {
      * AlertCallback is invoked on confirm.
      * This method takes content of this dialog as a caller defined View.
      */
-    OverlayCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb);
+    void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb);
 
     /**
      * Alert dialog is a dialog where user is given a message and confirm button no chance to cancel.
      * AlertCallback is invoked on confirm.
      * This method takes the content as a string.
      */
-    OverlayCloser openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb);
+    void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb);
 
     /**
      * Confirmation dialog is a dialog where user is presented a message and chance to confirm or to cancel.
      * ConfirmationCallback is invoked on user action.
      * This method takes content of this dialog as a caller defined View.
      */
-    OverlayCloser openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb);
+    void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb);
 
     /**
      * Confirmation dialog is a dialog where user is presented a message and chance to confirm or to cancel.
      * ConfirmationCallback is invoked on user action.
      * This method takes the content as a string.
      */
-    OverlayCloser openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb);
+    void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb);
 
 
         /**
@@ -92,7 +92,7 @@ public interface OverlayLayer {
      * @param timeout_msec Timeout in milliseconds how long indicator component stays visible. -1 to disable the timeout.
      * @param viewToShow Content to show as View.
      */
-    OverlayCloser openNotification(MessageStyleType type, int timeout_msec, View viewToShow);
+    void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow);
 
     /**
      * Notification indicator is a message banner that only shows a message to user.
@@ -101,7 +101,7 @@ public interface OverlayLayer {
      * @param timeout_msec Timeout in milliseconds how long indicator component stays visible. -1 to disable the timeout.
      * @param title Content to show as string.
      */
-    OverlayCloser openNotification(MessageStyleType type, int timeout_msec, String title);
+    void openNotification(MessageStyleType type, boolean doesTimeout, String title);
 
     /**
      * Notification indicator is a message banner that only shows a message to user.
@@ -112,5 +112,5 @@ public interface OverlayLayer {
      * @param linkText Text to show in a link button.
      * @param cb Callback for when user clicks on link.
      */
-    OverlayCloser openNotification(MessageStyleType type, int timeout_msec, String title, String linkText, NotificationCallback cb);
+    void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb);
 }

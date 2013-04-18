@@ -53,6 +53,7 @@ import com.vaadin.ui.ProgressIndicator;
  */
 public class Notification implements View {
 
+    public static final int TIMEOUT_SECONDS_DEFAULT = 3;
     /**
      * Listener for handling close button clicks.
      */
@@ -73,7 +74,7 @@ public class Notification implements View {
         // Set the type
         layout.addStyleName(type.getCssClass());
 
-        CompositeIcon icon = type.Icon();
+        CompositeIcon icon = type.makeIcon();
         icon.setStyleName("dialog-icon");
         layout.addComponent(icon);
 
@@ -110,12 +111,13 @@ public class Notification implements View {
     /**
      * Indicator will go away after defined timeout or if user clicks close button.
      * 
-     * @param timeout_msec if set to -1 then Timeout is not added.
+     * @param timeoutSeconds if set to -1 then Timeout is not added.
      */
-    public void setTimeout(int timeout_msec) {
-        if (timeout_msec < 0) {
+    public void setTimeout(int timeoutSeconds) {
+        if (timeoutSeconds < 0) {
             return;
         }
+        int timeoutMsec = timeoutSeconds * 1000;
 
         /*
          * Using the progressbar here like this is a hack.
@@ -127,7 +129,7 @@ public class Notification implements View {
          * See ticket MGNLUI-1112
          */
         ProgressIndicator progress = new ProgressIndicator();
-        progress.setPollingInterval(timeout_msec);
+        progress.setPollingInterval(timeoutMsec);
         progress.setIndeterminate(true);
         progress.setStyleName("alert-progressbar");
         timer.schedule(new TimerTask() {
@@ -138,7 +140,7 @@ public class Notification implements View {
                 timer.cancel();
             }
 
-        }, timeout_msec);
+        }, timeoutMsec);
 
         layout.addComponent(progress);
     }

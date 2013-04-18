@@ -72,7 +72,7 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
      * Open alert dialog with light modality level. Close dialog on confirm.
      */
     @Override
-    public OverlayCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, final AlertCallback cb) {
+    public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, final AlertCallback cb) {
         BaseDialog dialog = createAlertDialog(viewToShow, confirmButtonText, type.getCssClass());
         dialog.showCloseButton();
 
@@ -87,15 +87,14 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
             }
         });
 
-        return overlayCloser;
     }
 
     /**
      * Convenience method with string content. for opening an alert.
      */
     @Override
-    public OverlayCloser openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
-        return openAlert(type, createConfirmationView(type, title, body), confirmButtonText, cb);
+    public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
+        openAlert(type, createConfirmationView(type, title, body), confirmButtonText, cb);
     }
 
     private ConfirmationDialog.ConfirmationEvent.Handler createHandler(final OverlayCloser overlayCloser, final ConfirmationCallback callback) {
@@ -105,7 +104,7 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
             public void onConfirmation(ConfirmationEvent event) {
 
                 if (event.isConfirmed()) {
-                    callback.onSuccess("");
+                    callback.onSuccess();
                 } else {
                     callback.onCancel();
                 }
@@ -117,7 +116,6 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
 
     private ConfirmationDialog createConfirmationDialog(View contentView, String confirmButtonText, String cancelButtonText, String stylename, boolean cancelIsDefault) {
         ConfirmationDialog dialog = new ConfirmationDialog(contentView, cancelIsDefault);
-        // dialog.addStyleName("lightdialog");
         dialog.addStyleName(stylename);
         dialog.setConfirmActionLabel(confirmButtonText);
         if (cancelButtonText != null) {
@@ -150,7 +148,7 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
                 bodyLabel.addStyleName("body");
                 layout.addComponent(bodyLabel);
 
-                CompositeIcon icon = type.Icon();
+                CompositeIcon icon = type.makeIcon();
                 icon.setStyleName("dialog-icon");
                 layout.addComponent(icon);
 
@@ -173,7 +171,7 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
      * Present modal confirmation dialog with light modality level. Allow any Vaadin content to be presented.
      */
     @Override
-    public OverlayCloser openConfirmation(MessageStyleType type, View contentView, String confirmButtonText, String cancelButtonText,
+    public void openConfirmation(MessageStyleType type, View contentView, String confirmButtonText, String cancelButtonText,
             boolean cancelIsDefault, final ConfirmationCallback callback) {
         ConfirmationDialog dialog = createConfirmationDialog(contentView, confirmButtonText, cancelButtonText, type.getCssClass(), cancelIsDefault);
         dialog.showCloseButton();
@@ -182,15 +180,14 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
         dialog.addConfirmationHandler(createHandler(overlayCloser, callback));
         dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
 
-        return overlayCloser;
     }
 
     /**
      * Present modal confirmation dialog with light modality level. Allow only string content.
      */
     @Override
-    public OverlayCloser openConfirmation(MessageStyleType type, final String title, final String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        return openConfirmation(type, createConfirmationView(type, title, body), confirmButtonText, cancelButtonText, cancelIsDefault, cb);
+    public void openConfirmation(MessageStyleType type, final String title, final String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        openConfirmation(type, createConfirmationView(type, title, body), confirmButtonText, cancelButtonText, cancelIsDefault, cb);
     }
 
 
@@ -198,14 +195,17 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
      * Present notification indicator with no modality. Close after timeout expires.
      */
     @Override
-    public OverlayCloser openNotification(final MessageStyleType type, final int timeout_msec, final View viewToShow) {
-        return new OverlayCloser() {
+    public void openNotification(final MessageStyleType type, final boolean doesTimeout, final View viewToShow) {
+        new OverlayCloser() {
             private OverlayCloser compositeCloser;
 
             {
                 Notification dialog = new Notification(type);
                 dialog.setContent(viewToShow.asVaadinComponent());
-                dialog.setTimeout(timeout_msec);
+                if (doesTimeout) {
+                    dialog.setTimeout(Notification.TIMEOUT_SECONDS_DEFAULT);
+                }
+
                 dialog.setConfirmationListener(new Notification.ConfirmationListener() {
 
                     @Override
@@ -228,14 +228,14 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
      * Convenience method for presenting notification indicator with string content.
      */
     @Override
-    public OverlayCloser openNotification(final MessageStyleType type, final int timeout_msec, final String title) {
+    public void openNotification(final MessageStyleType type, final boolean doesTimeout, final String title) {
         View view = new View() {
             @Override
             public Component asVaadinComponent() {
                 return new Label(title);
             }
         };
-        return openNotification(type, timeout_msec, view);
+        openNotification(type, doesTimeout, view);
 
     }
 
@@ -243,7 +243,7 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
      * Convenience method for presenting notification indicator with string content.
      */
     @Override
-    public OverlayCloser openNotification(final MessageStyleType type, final int timeout_msec, final String title, final String linkText, final NotificationCallback cb ) {
+    public void openNotification(final MessageStyleType type, final boolean doesTimeout, final String title, final String linkText, final NotificationCallback cb) {
         View view = new View() {
             @Override
             public Component asVaadinComponent() {
@@ -264,7 +264,7 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
                 return layout;
             }
         };
-        return openNotification(type, timeout_msec, view);
+        openNotification(type, doesTimeout, view);
 
     }
 

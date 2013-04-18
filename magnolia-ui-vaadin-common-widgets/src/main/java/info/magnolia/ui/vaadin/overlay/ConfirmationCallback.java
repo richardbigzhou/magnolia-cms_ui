@@ -40,5 +40,5 @@ package info.magnolia.ui.vaadin.overlay;
 public interface ConfirmationCallback {
     void onCancel();
 
-    void onSuccess(String actionName);
+    void onSuccess();
 }
