@@ -33,17 +33,18 @@
  */
 package info.magnolia.ui.vaadin.form;
 
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DescriptionVisibilityEvent;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
+import info.magnolia.ui.vaadin.integration.i18n.I18NAuthoringSupport;
 
 import java.util.Collection;
 import java.util.Locale;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Field;
 
 /**
@@ -51,7 +52,7 @@ import com.vaadin.ui.Field;
  */
 public class ItemFormView implements FormView {
 
-    private ComboBox languageSelector;
+    private AbstractSelect languageSelector;
 
     private BaseDialog dialog;
 
@@ -132,28 +133,6 @@ public class ItemFormView implements FormView {
     }
 
     @Override
-    public void setAvailableLocales(Collection<Locale> locales) {
-        IndexedContainer c = new IndexedContainer();
-        c.addContainerProperty("displayLanguage", String.class, "");
-        for (Locale locale : locales) {
-            Item it = c.addItem(locale);
-            it.getItemProperty("displayLanguage").setValue(locale.getDisplayName(locale));
-        }
-        this.languageSelector = new ComboBox();
-        languageSelector.setImmediate(true);
-        languageSelector.setItemCaptionPropertyId("displayLanguage");
-        languageSelector.setContainerDataSource(c);
-        languageSelector.setNullSelectionAllowed(false);
-        languageSelector.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                form.setLocale((Locale) event.getProperty().getValue());
-            }
-        });
-        dialog.setFooterToolbar(languageSelector);
-    }
-
-    @Override
     public boolean isValid() {
         return form.isValid();
     }
@@ -166,5 +145,20 @@ public class ItemFormView implements FormView {
     @Override
     public void setCurrentLocale(Locale locale) {
         this.languageSelector.setValue(locale);
+    }
+
+    @Override
+    public void setLocaleSelector(AbstractSelect languageChooser) {
+        this.languageSelector = languageChooser;
+        languageSelector.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                I18NAuthoringSupport i18NAuthoringSupport = Components.getComponent(I18NAuthoringSupport.class);
+                if (i18NAuthoringSupport != null) {
+                    i18NAuthoringSupport.i18nize(form, (Locale) event.getProperty().getValue());
+                }
+            }
+        });
+        dialog.setFooterToolbar(languageSelector);
     }
 }

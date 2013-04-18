@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.Locale;
 
 import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Field;
 
 /**
@@ -70,9 +71,9 @@ public interface FormView extends View, Item.Editor {
 
     void setShowAllEnabled(boolean enabled);
 
-    void setAvailableLocales(Collection<Locale> locales);
-
     void setCurrentLocale(Locale locale);
+
+    void setLocaleSelector(AbstractSelect languageChooser);
 
     boolean isValid();
 

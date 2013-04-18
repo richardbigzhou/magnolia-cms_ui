@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.form;
 
-import info.magnolia.ui.vaadin.integration.i18n.I18NAwareProperty;
 import info.magnolia.ui.vaadin.gwt.client.form.formsection.connector.FormSectionState;
 import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormSectionClientRpc;
 
@@ -42,14 +41,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-import com.vaadin.data.Property;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.shared.Connector;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
 
 /**
  * Form layout server side implementation.
@@ -57,6 +54,8 @@ import com.vaadin.ui.Field;
 public class FormSection extends AbstractLayout {
 
     private final List<Component> components = new LinkedList<Component>();
+
+    private Locale contentLocale;
 
     public FormSection() {
         addStyleName("v-form-layout");
@@ -70,24 +69,6 @@ public class FormSection extends AbstractLayout {
     @Override
     protected FormSectionState getState(boolean markAsDirty) {
         return (FormSectionState) super.getState(markAsDirty);
-    }
-
-    @Override
-    public void setLocale(Locale locale) {
-        for (Component c : components) {
-            Locale formerLocale = getLocale();
-            Field f = (Field) c;
-            Property p = f.getPropertyDataSource();
-            if (p instanceof I18NAwareProperty) {
-                String currentCaption = c.getCaption();
-                if (formerLocale != null) {
-                    currentCaption = currentCaption.replace(String.format("(%s)", formerLocale.getLanguage()), "");
-                }
-                ((I18NAwareProperty)p).setLocale(locale);
-                f.setCaption(String.format("%s (%s)", currentCaption, locale.getLanguage()));
-            }
-        }
-        super.setLocale(locale);
     }
 
     public void setComponentHelpDescription(Component c, String description) {
@@ -169,5 +150,13 @@ public class FormSection extends AbstractLayout {
 
     public void focusField(Component field) {
         getRpcProxy(FormSectionClientRpc.class).focus(field);
+    }
+
+    public Locale getContentLocale() {
+        return contentLocale;
+    }
+
+    public void setContentLocale(Locale contentLocale) {
+        this.contentLocale = contentLocale;
     }
 }
