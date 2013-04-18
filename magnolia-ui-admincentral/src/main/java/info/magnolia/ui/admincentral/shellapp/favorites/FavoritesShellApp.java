@@ -46,6 +46,8 @@ import java.net.URI;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.vaadin.server.Page;
 
 /**
@@ -84,9 +86,10 @@ public class FavoritesShellApp implements ShellApp {
         final String previousLocationFragment = previousLocation.getFragment();
         final String appId = DefaultLocation.extractAppId(previousLocationFragment);
         final String appType = DefaultLocation.extractAppType(previousLocationFragment);
+        final String path = StringUtils.substringBetween(previousLocationFragment, ";", ":");
         FavoriteLocation favoriteLocation = null;
         // skip bookmarking shell apps
-        if ("shell".equals(appType)) {
+        if (Location.LOCATION_TYPE_SHELL_APP.equals(appType)) {
             favoriteLocation = new FavoriteLocation();
         } else {
             AppDescriptor appDescriptor;
@@ -96,7 +99,8 @@ public class FavoritesShellApp implements ShellApp {
                 throw new RuntimeException(e);
             }
             final String appIcon = appDescriptor.getIcon();
-            favoriteLocation = new FavoriteLocation(appId, previousLocation.toString(), appIcon, "Hardcoded now");
+            final String title = appDescriptor.getLabel() + " " + path;
+            favoriteLocation = new FavoriteLocation(appId, previousLocation.toString(), appIcon, title);
         }
         return favoriteLocation;
     }
