@@ -2,8 +2,6 @@
 
 @mixin overlay {
 
-
-
 .overlay {
     position: absolute;
     top: 0px;
@@ -14,8 +12,6 @@
     overflow: hidden;
 }
 
-
-
 .overlay-child {
   display: inline-block !important;
   position: relative;
@@ -23,25 +19,7 @@
 }
 
 
-/* Vertical centering - The ghost, nudged to maintain perfect centering  - http://css-tricks.com/centering-in-the-unknown */
-.overlay.center-vertical:before {
-    content: '';
-    display: inline-block;
-    height: 100%;
-    vertical-align: middle;
-    margin-right: -0.25em; /* Adjusts for spacing */
-}
-
-/* vertical centering */
-.overlay.center-vertical .overlay-child {
-    vertical-align:middle;
-}
-
-
-
-
-
-/* Be non-modal */
+/* Modality levels modality-non-modal, modality-light, modality-strong */
 .overlay.modality-non-modal{
     height:0px;
     overflow:visible;
@@ -64,9 +42,7 @@
     background-color:transparent;
 }
 
-
-
-/* Set proper stacking for modals */
+/* Set proper stacking for overlays */
 .overlay.app,
 .overlay.sub-app {
     z-index: 110;
@@ -79,10 +55,6 @@
 .overlay.shell .overlay-child{
   top:60px;
 }
-
-
-
-
 
 
 /*
@@ -99,5 +71,18 @@
 }
 
 
+/* Vertical centering - The ghost, nudged to maintain perfect centering  - http://css-tricks.com/centering-in-the-unknown */
+.overlay.center-vertical:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-right: -0.25em; /* Adjusts for spacing */
+}
+
+/* vertical centering */
+.overlay.center-vertical .overlay-child {
+    vertical-align:middle;
+}
 
 }
