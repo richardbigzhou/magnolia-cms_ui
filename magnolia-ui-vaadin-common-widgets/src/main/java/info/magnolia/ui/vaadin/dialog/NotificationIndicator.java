@@ -89,10 +89,14 @@ public class NotificationIndicator implements View {
 
     /**
      * Indicator will go away after defined timeout or if user clicks close button.
-     *
-     * @param timeout_msec
+     * 
+     * @param timeout_msec if set to -1 then Timeout is not added.
      */
     public void setTimeout(int timeout_msec) {
+        if (timeout_msec < 0) {
+            return;
+        }
+
         /*
          * Using the progressbar here like this is a hack.
          * When Vaadin 7.1 with built-in push is out

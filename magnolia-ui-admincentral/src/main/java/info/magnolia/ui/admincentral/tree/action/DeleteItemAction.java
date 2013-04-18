@@ -110,7 +110,7 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
             eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemPath()));
 
             // Show notification
-            final OverlayCloser overlayCloser = subAppContext.openNotification(MessageStyleType.INFO, "Item deleted.", 3000);
+            final OverlayCloser overlayCloser = subAppContext.openNotification(MessageStyleType.INFO, 3000, "Item deleted.");
         } catch (RepositoryException e) {
             log.error("Could not execute repository operation.", e);
         }

@@ -179,6 +179,11 @@ button.btn-dialog-help {
     color:white;
 }
 
+.light-dialog-panel .v-button-link .v-button-caption{
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    text-decoration:none;
+}
+
 /* MessageTypes */
 
 .light-dialog-panel .btn-dialog-default { float:right;}
@@ -213,6 +218,7 @@ button.btn-dialog-help {
 .notification-dialog {
     vertical-align: top !important;
     padding: 12px 0;
+    text-align:left;
     width:400px;
 }
 

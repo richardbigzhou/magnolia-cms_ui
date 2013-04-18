@@ -43,10 +43,15 @@ import info.magnolia.ui.vaadin.icon.CompositeIcon;
 import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
 import info.magnolia.ui.vaadin.view.View;
 
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
+import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * Provides default implementations for many OverlayLayer methods.
@@ -188,41 +193,12 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
         return openConfirmation(type, createConfirmationView(type, title, body), confirmButtonText, cancelButtonText, cancelIsDefault, cb);
     }
 
-    /**
-     * Present notification indicator with no modality.
-     */
-    @Override
-    public OverlayCloser openNotification(final MessageStyleType type, final View viewToShow, final NotificationCallback cb) {
-        return new OverlayCloser() {
-            private OverlayCloser compositeCloser;
-
-            {
-                NotificationIndicator dialog = new NotificationIndicator(type);
-                dialog.setContent(viewToShow.asVaadinComponent());
-                dialog.setConfirmationListener(new NotificationIndicator.ConfirmationListener() {
-
-                    @Override
-                    public void onClose() {
-                        compositeCloser.close();
-                        cb.onOk();
-                    }
-                });
-
-                compositeCloser = openOverlay(dialog, ModalityLevel.NON_MODAL);
-            }
-
-            @Override
-            public void close() {
-                compositeCloser.close();
-            }
-        };
-    }
 
     /**
      * Present notification indicator with no modality. Close after timeout expires.
      */
     @Override
-    public OverlayCloser openNotification(final MessageStyleType type, final View viewToShow, final int timeout_msec) {
+    public OverlayCloser openNotification(final MessageStyleType type, final int timeout_msec, final View viewToShow) {
         return new OverlayCloser() {
             private OverlayCloser compositeCloser;
 
@@ -252,14 +228,43 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
      * Convenience method for presenting notification indicator with string content.
      */
     @Override
-    public OverlayCloser openNotification(final MessageStyleType type, final String title, final int timeout_msec) {
+    public OverlayCloser openNotification(final MessageStyleType type, final int timeout_msec, final String title) {
         View view = new View() {
             @Override
             public Component asVaadinComponent() {
                 return new Label(title);
             }
         };
-        return openNotification(type, view, timeout_msec);
+        return openNotification(type, timeout_msec, view);
+
+    }
+
+    /**
+     * Convenience method for presenting notification indicator with string content.
+     */
+    @Override
+    public OverlayCloser openNotification(final MessageStyleType type, final int timeout_msec, final String title, final String linkText, final NotificationCallback cb ) {
+        View view = new View() {
+            @Override
+            public Component asVaadinComponent() {
+                HorizontalLayout layout = new HorizontalLayout();
+                layout.setSpacing(true);
+                layout.addComponent(new Label(title));
+
+                String linkTextBrackets = "[" + linkText + "]";
+                Button button = new Button(linkTextBrackets, new ClickListener() {
+                    @Override
+                    public void buttonClick(ClickEvent event) {
+                        cb.onLinkClicked();
+                    }
+                });
+                button.setStyleName(BaseTheme.BUTTON_LINK);
+
+                layout.addComponent(button);
+                return layout;
+            }
+        };
+        return openNotification(type, timeout_msec, view);
 
     }
 

@@ -34,9 +34,9 @@
 package info.magnolia.ui.vaadin.overlay;
 
 /**
- * Callback interface for indication.
+ * Callback interface for when a user clicks on the link in a Notfication.
  */
 public interface NotificationCallback {
-    void onOk();
+    void onLinkClicked();
 
 }
