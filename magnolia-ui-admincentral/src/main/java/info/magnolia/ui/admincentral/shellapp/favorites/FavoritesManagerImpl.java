@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.favorite.bookmark.BookmarkStore;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -59,7 +60,7 @@ public class FavoritesManagerImpl implements FavoritesManager {
             Node bookmarksNode = bookmarkStore.getBookmarkRoot();
             JcrNodeAdapter favorites = new JcrNodeAdapter(bookmarksNode);
 
-            Iterable<Node> bookmarks = NodeUtil.getNodes(bookmarksNode, BookmarkStore.BOOKMARK_NODETYPE);
+            Iterable<Node> bookmarks = NodeUtil.getNodes(bookmarksNode, AdmincentralNodeTypes.Favorite.NAME);
             for (Node bookmark : bookmarks) {
                 favorites.addChild(new JcrNodeAdapter(bookmark));
             }
