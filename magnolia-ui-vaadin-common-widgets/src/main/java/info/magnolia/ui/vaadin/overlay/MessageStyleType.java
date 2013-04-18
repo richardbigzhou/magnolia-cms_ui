@@ -63,7 +63,7 @@ public enum MessageStyleType {
         return caption;
     }
 
-    public String cssClass() {
+    public String getCssClass() {
         return cssClass;
     }
 

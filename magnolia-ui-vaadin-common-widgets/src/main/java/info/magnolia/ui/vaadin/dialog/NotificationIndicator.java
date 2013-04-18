@@ -67,7 +67,7 @@ public class NotificationIndicator implements View {
         layout.addStyleName("notification-dialog");
 
         // Set the type
-        layout.addStyleName(type.cssClass());
+        layout.addStyleName(type.getCssClass());
 
         CompositeIcon icon = type.Icon();
         icon.setStyleName("dialog-icon");
