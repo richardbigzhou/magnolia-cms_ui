@@ -79,7 +79,7 @@ import com.vaadin.ui.Upload.StartedListener;
  * <b>Important exposed method</b><br>
  * {@link Upload} getUpload() : Return the Vaadin Upload Component responsible for the Uploading a File based on a folder. <br>
  * createDropZone(Component c) : Give the Drop ability to the passed Component.<br>
- * 
+ *
  * @param <D> {@link FileItemWrapper} implemented class.
  */
 public abstract class AbstractUploadField<D extends FileItemWrapper> extends CustomField<Byte[]> implements StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler, UploadField {
@@ -122,7 +122,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
      * Refresh of the action bar is handled by refreshInProgressLayout(...)<br>
      * Use the fileWrapper to display file information and Status.
      */
-    protected abstract void buildInProgressLayout();
+    protected abstract void buildInProgressLayout(String uploadedFileMimeType);
 
     /**
      * Update the in Progress Layout.<br>
@@ -322,7 +322,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
     @Override
     public void uploadStarted(StartedEvent event) {
         if (isValidFile(event)) {
-            buildInProgressLayout();
+            buildInProgressLayout(event.getMIMEType());
         } else {
             interruptUpload();
         }

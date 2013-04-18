@@ -70,14 +70,22 @@ public class DefaultLocation implements Location {
         this.parameter = parameter;
     }
 
+    /**
+     * @throws IllegalArgumentException if the passed fragment is null or empty.
+     */
     public DefaultLocation(String fragment) {
+        if (StringUtils.isBlank(fragment)) {
+            throw new IllegalArgumentException("Fragment cannot be empty or null");
+        }
         parseLocation(fragment);
     }
 
     private void parseLocation(String fragment) {
-        String[] split = StringUtils.split(";");
+        String[] split = StringUtils.split(fragment, ";");
         setAppParams(split[0]);
-        this.parameter = split[1];
+        if (split.length == 2) {
+            this.parameter = split[1];
+        }
     }
 
     private void setAppParams(String appParams) {
