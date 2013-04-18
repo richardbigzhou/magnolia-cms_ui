@@ -34,10 +34,14 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.overlay.OverlayCloser;
+import info.magnolia.ui.framework.overlay.OverlayLayer;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.overlay.BaseOverlayLayer;
+import info.magnolia.ui.vaadin.overlay.AlertCallback;
+import info.magnolia.ui.vaadin.overlay.ConfirmationCallback;
+import info.magnolia.ui.vaadin.overlay.MessageStyleType;
+import info.magnolia.ui.vaadin.overlay.NotificationCallback;
 import info.magnolia.ui.vaadin.overlay.Overlay;
-import info.magnolia.ui.vaadin.overlay.OverlayCloser;
 import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
 import info.magnolia.ui.vaadin.view.View;
 
@@ -45,7 +49,7 @@ import info.magnolia.ui.vaadin.view.View;
  * Implementation of {@link SubAppContext}.
  * See MGNLUI-379.
  */
-public class SubAppContextImpl extends BaseOverlayLayer implements SubAppContext {
+public class SubAppContextImpl implements SubAppContext {
 
     private SubApp subApp;
 
@@ -59,10 +63,15 @@ public class SubAppContextImpl extends BaseOverlayLayer implements SubAppContext
 
     private Shell shell;
 
+    private OverlayLayer overlayPresenter;
 
     public SubAppContextImpl(SubAppDescriptor subAppDescriptor, Shell shell) {
         this.subAppDescriptor = subAppDescriptor;
         this.shell = shell;
+        overlayPresenter = new OverlayPresenter() {
+
+        };
+
     }
 
     @Override
@@ -127,5 +136,51 @@ public class SubAppContextImpl extends BaseOverlayLayer implements SubAppContext
         appContext.closeSubApp(instanceId);
     }
 
+    @Override
+    public OverlayCloser openOverlay(View view) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public OverlayCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
+        return overlayPresenter.openAlert(type, viewToShow, confirmButtonText, cb)
+    }
+
+    @Override
+    public OverlayCloser openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public OverlayCloser openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public OverlayCloser openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public OverlayCloser openNotification(MessageStyleType type, int timeout_msec, View viewToShow) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public OverlayCloser openNotification(MessageStyleType type, int timeout_msec, String title) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public OverlayCloser openNotification(MessageStyleType type, int timeout_msec, String title, String linkText, NotificationCallback cb) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

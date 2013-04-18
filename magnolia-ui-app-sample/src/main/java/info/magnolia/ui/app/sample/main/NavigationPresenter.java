@@ -36,9 +36,9 @@ package info.magnolia.ui.app.sample.main;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.AppEventBus;
 import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.overlay.OverlayCloser;
 import info.magnolia.ui.vaadin.overlay.MessageStyleType;
 import info.magnolia.ui.vaadin.overlay.NotificationCallback;
-import info.magnolia.ui.vaadin.overlay.OverlayCloser;
 
 import javax.inject.Inject;
 import javax.inject.Named;

@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.vaadin.overlay.OverlayLayer;
+import info.magnolia.ui.framework.overlay.OverlayLayer;
 
 import javax.inject.Inject;
 

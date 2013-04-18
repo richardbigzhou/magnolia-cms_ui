@@ -40,8 +40,8 @@ import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.ItemChosenListener;
-import info.magnolia.ui.vaadin.overlay.OverlayCloser;
-import info.magnolia.ui.vaadin.overlay.OverlayLayer;
+import info.magnolia.ui.framework.overlay.OverlayCloser;
+import info.magnolia.ui.framework.overlay.OverlayLayer;
 
 import javax.inject.Inject;
 

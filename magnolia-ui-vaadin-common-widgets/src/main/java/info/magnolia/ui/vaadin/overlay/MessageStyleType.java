@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.overlay;
 
+import info.magnolia.objectfactory.Classes;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
 import info.magnolia.ui.vaadin.icon.ErrorIcon;
 import info.magnolia.ui.vaadin.icon.InfoIcon;
@@ -50,9 +51,9 @@ public enum MessageStyleType {
 
     private String caption;
     private String cssClass;
-    private Class icon;
+    private Class<? extends CompositeIcon> icon;
 
-    private MessageStyleType(final String caption, final String cssClass, final Class icon) {
+    private MessageStyleType(final String caption, final String cssClass, final Class<? extends CompositeIcon> icon) {
         this.caption = caption;
         this.cssClass = cssClass;
         this.icon = icon;
@@ -68,16 +69,7 @@ public enum MessageStyleType {
     }
 
     public CompositeIcon Icon() {
-        try {
-            return (CompositeIcon) icon.newInstance();
-        } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
+        return Classes.getClassFactory().newInstance(icon);
     }
 
 }

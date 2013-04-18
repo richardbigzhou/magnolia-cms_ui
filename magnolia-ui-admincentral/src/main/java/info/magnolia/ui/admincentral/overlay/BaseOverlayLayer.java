@@ -31,8 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
+package info.magnolia.ui.admincentral.overlay;
 
+import info.magnolia.ui.framework.overlay.OverlayCloser;
+import info.magnolia.ui.framework.overlay.OverlayLayer;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
@@ -40,6 +42,10 @@ import info.magnolia.ui.vaadin.dialog.LightDialog;
 import info.magnolia.ui.vaadin.dialog.Notification;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
+import info.magnolia.ui.vaadin.overlay.AlertCallback;
+import info.magnolia.ui.vaadin.overlay.ConfirmationCallback;
+import info.magnolia.ui.vaadin.overlay.MessageStyleType;
+import info.magnolia.ui.vaadin.overlay.NotificationCallback;
 import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
 import info.magnolia.ui.vaadin.view.View;
 

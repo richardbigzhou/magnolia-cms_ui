@@ -31,8 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
+package info.magnolia.ui.framework.overlay;
 
+import info.magnolia.ui.vaadin.overlay.AlertCallback;
+import info.magnolia.ui.vaadin.overlay.ConfirmationCallback;
+import info.magnolia.ui.vaadin.overlay.MessageStyleType;
+import info.magnolia.ui.vaadin.overlay.NotificationCallback;
+import info.magnolia.ui.vaadin.overlay.Overlay;
 import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
 import info.magnolia.ui.vaadin.view.View;
 
