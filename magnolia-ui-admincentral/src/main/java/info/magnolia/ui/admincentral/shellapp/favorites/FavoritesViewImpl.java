@@ -122,13 +122,12 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         rightSide.addComponent(assetShortcuts);
 
         layout.addComponent(splitPanel);
-        layout.setExpandRatio(splitPanel, 2f);
+        layout.setExpandRatio(splitPanel, 1f);
 
         // Empty at the beginning as favoritesForCurrentUser is null and trying to getNode() would throw NPE
         favoriteForm = new FavoriteForm(null);
 
         layout.addComponent(favoriteForm);
-        layout.setExpandRatio(favoriteForm, 0.5f);
     }
 
     @Override
@@ -149,7 +148,6 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         favoriteForm = new FavoriteForm(newFavorite);
 
         layout.addComponent(favoriteForm);
-        layout.setExpandRatio(favoriteForm, 0.5f);
     }
 
     /**
