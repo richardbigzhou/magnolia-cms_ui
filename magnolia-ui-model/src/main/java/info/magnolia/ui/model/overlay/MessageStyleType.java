@@ -39,10 +39,13 @@ package info.magnolia.ui.model.overlay;
  */
 public interface MessageStyleType {
 
+    /**
+     * @return The css class name to use for the message panel.
+     */
     public String getCssClass();
 
-    /*
-     *
+    /**
+     * @return the java class of the icon.
      */
     public Class getIconClass();
 
