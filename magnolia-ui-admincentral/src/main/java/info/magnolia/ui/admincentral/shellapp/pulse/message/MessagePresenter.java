@@ -43,7 +43,6 @@ import info.magnolia.ui.form.FormBuilder;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.form.FormView;
 import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
@@ -80,6 +79,7 @@ public class MessagePresenter implements MessageView.Listener, ActionbarPresente
     public View start(String messageId) {
         this.message = messagesManager.getMessageById(MgnlContext.getUser().getName(), messageId);
         String messageView = "ui-admincentral:default";
+        view.setTitle(message.getSubject());
         try {
             if (message.containsKey(Message.MESSAGE_VIEW)) {
                 messageView = (String) message.get(Message.MESSAGE_VIEW);
@@ -89,8 +89,8 @@ public class MessagePresenter implements MessageView.Listener, ActionbarPresente
             messageActionExecutor.setMessageViewDefinition(messageViewDefinition);
 
             BeanItem messageItem = new BeanItem<Message>(message);
-            FormView formView = formbuilder.buildForm(messageViewDefinition.getForm(), messageItem, null);
-            view.setMessageView(formView);
+            View mView = formbuilder.buildView(messageViewDefinition.getForm(), messageItem);
+            view.setMessageView(mView);
 
             view.setActionbarView(actionbarPresenter.start(messageViewDefinition.getActionbar()));
         } catch (RegistrationException e) {

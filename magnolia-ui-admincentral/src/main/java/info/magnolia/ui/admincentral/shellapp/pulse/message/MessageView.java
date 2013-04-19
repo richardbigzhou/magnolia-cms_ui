@@ -44,6 +44,8 @@ public interface MessageView extends View {
     void setActionbarView(View actionbarView);
     void setListener(Listener listener);
 
+    void setTitle(String subject);
+
     /**
      * Listener interface used for communicating with the presenter.
      */

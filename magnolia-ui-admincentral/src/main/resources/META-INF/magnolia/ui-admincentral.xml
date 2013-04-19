@@ -262,7 +262,10 @@
       <type>info.magnolia.ui.dialog.FormDialogPresenter</type>
       <implementation>info.magnolia.ui.dialog.FormDialogPresenterImpl</implementation>
     </component>
-
+    <component>
+      <type>info.magnolia.ui.form.field.builder.FieldFactory</type>
+      <implementation>info.magnolia.ui.form.field.builder.FieldFactory</implementation>
+    </component>
     <component>
       <type>info.magnolia.ui.form.action.SaveFormActionDefinition</type>
       <implementation>info.magnolia.ui.form.action.SaveFormActionDefinition</implementation>
@@ -275,12 +278,15 @@
       <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
       <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.vaadin.form.FormView</type>
+      <implementation>info.magnolia.ui.vaadin.form.ItemFormView</implementation>
+    </component>
 
     <component>
       <type>info.magnolia.ui.vaadin.form.FormViewReduced</type>
       <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
-
     <component>
       <type>info.magnolia.ui.admincentral.app.tools.EmbeddedPageView</type>
       <implementation>info.magnolia.ui.admincentral.app.tools.EmbeddedPageViewImpl</implementation>

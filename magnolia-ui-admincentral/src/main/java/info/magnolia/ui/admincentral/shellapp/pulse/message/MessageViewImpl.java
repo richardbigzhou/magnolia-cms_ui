@@ -34,13 +34,14 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
+import info.magnolia.ui.vaadin.icon.Icon;
 import info.magnolia.ui.vaadin.view.View;
 
-import com.vaadin.ui.Button;
+import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.Label;
 
 /**
  * View implementation of {@link MessageView}.
@@ -49,28 +50,35 @@ public class MessageViewImpl  extends HorizontalLayout implements MessageView {
 
     private CssLayout messageContainer = new CssLayout();
     private CssLayout actionbarContainer = new CssLayout();
+    private Label title = new Label();
     private MessageView.Listener listener;
     private View messageView;
+
 
     public MessageViewImpl() {
         setupLayout();
     }
 
     private void setupLayout() {
-        Button back = new NativeButton("Back to messages");
-        back.setStyleName("back-button");
-        back.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                listener.onNavigateToList();
-            }
-        });
-        messageContainer.addComponent(back);
+        setSizeFull();
+        setMargin(true);
+        setSpacing(true);
+
+        messageContainer.setSizeFull();
+        title.setStyleName("message-title");
+
+        messageContainer.addComponent(new SimpleButton());
+        messageContainer.addComponent(title);
 
         addComponent(messageContainer);
         addComponent(actionbarContainer);
+        setExpandRatio(messageContainer, 1);
 
+    }
 
+    @Override
+    public void setTitle(String subject) {
+        title.setValue(subject);
     }
 
     @Override
@@ -80,8 +88,6 @@ public class MessageViewImpl  extends HorizontalLayout implements MessageView {
         }
         else {messageContainer.addComponent(view.asVaadinComponent());}
         this.messageView = view;
-
-
     }
 
     @Override
@@ -101,5 +107,29 @@ public class MessageViewImpl  extends HorizontalLayout implements MessageView {
 
     public void setListener(MessageView.Listener listener) {
         this.listener = listener;
+    }
+
+    private class SimpleButton extends CssLayout{
+
+        private final static String BACK_BUTTON_LABEL ="Back to all messages";
+        private final static String BACK_BUTTON_STYLE ="back-button";
+
+        private SimpleButton() {
+            setStyleName(BACK_BUTTON_STYLE);
+
+            Icon icon = new Icon("arrow2_w", 16);
+            Label label = new Label(BACK_BUTTON_LABEL);
+            label.setSizeUndefined();
+            addComponent(icon);
+            addComponent(label);
+
+            addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
+                @Override
+                public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+                    listener.onNavigateToList();
+                }
+            });
+
+        }
     }
 }
