@@ -55,7 +55,14 @@ public class BrowserStatusBarPresenter implements StatusBarPresenter {
 
     private final EventBus eventBus;
 
+    private int selectionCount;
+    private int itemCount;
+
+    // TODO externalize in properties file, leave door open to specialization as per app content type.
+    private String countPattern = "%d item(s), %d selected";
+
     private final Label selectionLabel = new Label();
+    private final Label countLabel = new Label();
 
     private JcrItemAdapter selectedItem;
 
@@ -63,6 +70,8 @@ public class BrowserStatusBarPresenter implements StatusBarPresenter {
     public BrowserStatusBarPresenter(StatusBarView view, @Named(SubAppEventBus.NAME) EventBus eventBus) {
         this.view = view;
         this.eventBus = eventBus;
+        selectionLabel.setSizeUndefined();
+        countLabel.setSizeUndefined();
     }
 
     private void bindHandlers() {
@@ -73,11 +82,14 @@ public class BrowserStatusBarPresenter implements StatusBarPresenter {
                 setSelectedItem(event.getItem());
             }
         });
+
+        // TODO add subapp event handlers for selection and item count
     }
 
     @Override
     public StatusBarView start() {
         view.addComponent(selectionLabel, Alignment.MIDDLE_LEFT);
+        view.addComponent(countLabel, Alignment.MIDDLE_RIGHT);
         bindHandlers();
 
         return view;
@@ -92,5 +104,15 @@ public class BrowserStatusBarPresenter implements StatusBarPresenter {
             }
             this.selectedItem = item;
         }
+    }
+
+    public void setSelectionCount(int selectionCount) {
+        countLabel.setValue(String.format(countPattern, itemCount, selectionCount));
+        this.selectionCount = selectionCount;
+    }
+
+    public void setItemCount(int itemCount) {
+        countLabel.setValue(String.format(countPattern, itemCount, selectionCount));
+        this.itemCount = itemCount;
     }
 }

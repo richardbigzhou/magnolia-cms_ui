@@ -16,6 +16,17 @@
 
     .v-horizontallayout-statusbar {
       height: 40px !important;
+      padding-left: 24px;
+      padding-right: 24px;
+      color: $c01;
+      font-size: 12px;
+      line-height: 1;
+
+      .v-label {
+        font-size: inherit;
+        line-height: inherit;
+        overflow: visible;
+      }
     }
   }
 
