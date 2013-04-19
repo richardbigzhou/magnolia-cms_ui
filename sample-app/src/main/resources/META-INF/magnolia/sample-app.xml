@@ -54,6 +54,18 @@
     </component>
   </components>
 
+  <components>
+    <id>app-sample-error</id>
+    <component>
+      <type>info.magnolia.sample.app.error.SampleErrorSubApp</type>
+      <implementation>info.magnolia.sample.app.error.SampleErrorSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.sample.app.error.SampleErrorView</type>
+      <implementation>info.magnolia.sample.app.error.SampleErrorViewImpl</implementation>
+    </component>
+  </components>
+
   <dependencies>
     <dependency>
       <name>ui-admincentral</name>
