@@ -99,7 +99,7 @@ public class FavoritesShellApp implements ShellApp {
             } catch (RegistrationException e) {
                 throw new RuntimeException(e);
             }
-            final String appIcon = appDescriptor.getIcon();
+            final String appIcon = StringUtils.defaultIfEmpty(appDescriptor.getIcon(), "icon-app");
             final String title = appDescriptor.getLabel(); // + " " + (path == null ? "/" : path);
             favoriteLocation = new FavoriteLocation(appId, previousLocation.toString(), appIcon, title);
         }

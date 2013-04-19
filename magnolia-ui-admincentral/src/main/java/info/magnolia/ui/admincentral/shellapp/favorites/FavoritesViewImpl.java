@@ -139,10 +139,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     public void setFavoriteLocation(FavoriteLocation favoriteLocation) {
         this.favoriteLocation = favoriteLocation;
 
-        JcrNewNodeAdapter newFavorite = new JcrNewNodeAdapter(favoritesForCurrentUser.getNode(), AdmincentralNodeTypes.Favorite.NAME);
-        newFavorite.addItemProperty(ModelConstants.JCR_NAME, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", favoriteLocation.getTitle()));
-        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.URL, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", favoriteLocation.getUrl()));
-        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", favoriteLocation.getIcon()));
+        JcrNewNodeAdapter newFavorite = createNewFavorite(favoriteLocation);
 
         layout.removeComponent(favoriteForm);
         favoriteForm = new FavoriteForm(newFavorite);
@@ -159,28 +156,19 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
         private final Label iconElement = new Label();
 
-        private final Label urlElement = new Label();
-
         public FavoriteEntry(final Item favorite) {
             addStyleName("v-favorites-entry");
             setSizeUndefined();
             setTitle(favorite.getItemProperty(ModelConstants.JCR_NAME).getValue().toString());
             setIcon(favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue().toString());
-            setUrl(favorite.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue().toString());
             iconElement.setContentMode(ContentMode.HTML);
             iconElement.setWidth(null);
             iconElement.setStyleName("icon");
             titleElement.setStyleName("text");
             titleElement.setWidth(null);
-            urlElement.setStyleName("text");
-            urlElement.setWidth(null);
+
             addComponent(iconElement);
             addComponent(titleElement);
-            addComponent(urlElement);
-        }
-
-        public void setUrl(String url) {
-            urlElement.setValue(url);
         }
 
         public void setTitle(String title) {
@@ -264,5 +252,13 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
             setCompositionRoot(layout);
         }
+    }
+
+    private JcrNewNodeAdapter createNewFavorite(FavoriteLocation favoriteLocation) {
+        JcrNewNodeAdapter newFavorite = new JcrNewNodeAdapter(favoritesForCurrentUser.getNode(), AdmincentralNodeTypes.Favorite.NAME);
+        newFavorite.addItemProperty(ModelConstants.JCR_NAME, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", favoriteLocation.getTitle()));
+        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.URL, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", favoriteLocation.getUrl()));
+        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", favoriteLocation.getIcon()));
+        return newFavorite;
     }
 }
