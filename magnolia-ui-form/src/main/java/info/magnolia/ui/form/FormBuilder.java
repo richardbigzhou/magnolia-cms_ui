@@ -35,13 +35,14 @@ package info.magnolia.ui.form;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.form.field.builder.FieldBuilder;
 import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
 
@@ -49,6 +50,8 @@ import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
 
 /**
@@ -117,5 +120,33 @@ public class FormBuilder {
         view.setShowAllEnabled(formDefinition.getTabs().size() > 1);
 
         return view;
+    }
+
+    public View buildView(FormDefinition formDefinition, Item item) {
+
+        final CssLayout view = new CssLayout();
+        view.setSizeFull();
+
+
+        for (TabDefinition tabDefinition : formDefinition.getTabs()) {
+            for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
+
+                if (fieldDefinition.getClass().equals(ConfiguredFieldDefinition.class)) {
+                    continue;
+                }
+
+                final FieldBuilder formField = fieldFactory.create(fieldDefinition, item);
+                final View fieldView = formField.getView();
+
+                view.addComponent(fieldView.asVaadinComponent());
+
+            }
+        }
+        return new View() {
+            @Override
+            public Component asVaadinComponent() {
+                return view;
+            }
+        };
     }
 }

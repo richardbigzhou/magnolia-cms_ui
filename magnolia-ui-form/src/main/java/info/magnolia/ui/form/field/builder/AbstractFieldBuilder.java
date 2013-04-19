@@ -42,6 +42,7 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.view.View;
 
 import java.util.Locale;
 
@@ -53,7 +54,10 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.Label;
 
 /**
  * Abstract FieldBuilder implementations. This class handle all common attributes defined in {@link FieldDefinition} and binds Vaadin {@link Field} instances created
@@ -128,6 +132,29 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
      * Implemented by subclasses to create and initialize the Vaadin Field instance to use.
      */
     protected abstract Field<T> buildField();
+
+
+    @Override
+    public View getView() {
+        Property<?> property = getOrCreateProperty();
+
+        final CssLayout fieldView = new CssLayout();
+        fieldView.setStyleName("field-view");
+
+        Label label = new Label();
+        label.setSizeUndefined();
+        label.setCaption(getFieldDefinition().getLabel());
+        label.setPropertyDataSource(property);
+
+        fieldView.addComponent(label);
+
+        return new View() {
+            @Override
+            public Component asVaadinComponent() {
+                return fieldView;
+            }
+        };
+    }
 
     /**
      * Get a property from the current Item.
