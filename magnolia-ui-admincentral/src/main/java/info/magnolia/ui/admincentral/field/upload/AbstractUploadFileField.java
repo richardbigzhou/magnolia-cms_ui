@@ -35,13 +35,13 @@ package info.magnolia.ui.admincentral.field.upload;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.overlay.OverlayCloser;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.mediaeditor.MediaEditorPresenter;
 import info.magnolia.ui.mediaeditor.MediaEditorPresenterFactory;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent.Handler;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.OverlayCloser;
+import info.magnolia.ui.model.overlay.View;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.view;
 
+import info.magnolia.ui.model.overlay.View;
+
 /**
  * Implemented by displays that can be given an {@link View} to show.
  *

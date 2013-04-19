@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.overlay.OverlayLayer;
+import info.magnolia.ui.model.overlay.OverlayLayer;
 
 /**
  * Defines an app. Is called by the Magnolia shell as the user interacts with the app.

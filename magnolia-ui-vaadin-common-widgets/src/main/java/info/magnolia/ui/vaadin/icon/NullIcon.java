@@ -31,11 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
+package info.magnolia.ui.vaadin.icon;
 
 /**
- * Callback interface for alert.
+ * The NullIcon.
+ * For when its convenient to have an icon, but which icon is not defined.
  */
-public interface AlertCallback {
-    void onOk();
+public class NullIcon extends CompositeIcon {
+
+    public NullIcon() {
+        super();
+    }
 }

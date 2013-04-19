@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.contentapp.choosedialog;
 
-import info.magnolia.ui.contentapp.browser.BrowserView;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.workbench.WorkbenchView;
 
 import javax.inject.Inject;
 
@@ -47,7 +47,7 @@ public class WorkbenchChooseDialogView extends BaseDialog implements ChooseDialo
     public static final String CANCEL_ACTION_NAME = "cancel";
 
     @Inject
-    public WorkbenchChooseDialogView(BrowserView view) {
+    public WorkbenchChooseDialogView(WorkbenchView view) {
         addStyleName("choose-dialog");
         addStyleName("content-view-field-wrapper");
         setContent(view.asVaadinComponent());

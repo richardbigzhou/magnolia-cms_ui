@@ -37,7 +37,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventHandlerCollection;
 import info.magnolia.event.HandlerRegistration;
-import info.magnolia.ui.admincentral.overlay.BaseOverlayLayer;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
@@ -49,15 +48,18 @@ import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.framework.overlay.OverlayCloser;
+import info.magnolia.ui.model.overlay.AlertCallback;
+import info.magnolia.ui.model.overlay.ConfirmationCallback;
+import info.magnolia.ui.model.overlay.MessageStyleType;
+import info.magnolia.ui.model.overlay.NotificationCallback;
+import info.magnolia.ui.model.overlay.OverlayCloser;
+import info.magnolia.ui.model.overlay.OverlayLayer;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
-import info.magnolia.ui.vaadin.overlay.Overlay;
-import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
-import info.magnolia.ui.vaadin.overlay.Overlay.ModalityDomain;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.vaadin.overlay.OverlayPresenter;
 import info.magnolia.ui.vaadin.view.Viewport;
 
 import java.util.List;
@@ -75,7 +77,7 @@ import com.vaadin.ui.Component;
  * Admin shell.
  */
 @Singleton
-public class ShellImpl extends BaseOverlayLayer implements Shell, MessageEventHandler {
+public class ShellImpl implements Shell, MessageEventHandler {
 
     /**
      * Provides the current location of shell apps.
@@ -96,6 +98,8 @@ public class ShellImpl extends BaseOverlayLayer implements Shell, MessageEventHa
     private final EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
 
     private ShellAppLocationProvider shellAppLocationProvider;
+
+    private OverlayLayer overlayPresenter;
 
     @Inject
     public ShellImpl(@Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, final AppController appController, final MessagesManager messagesManager) {
@@ -156,6 +160,15 @@ public class ShellImpl extends BaseOverlayLayer implements Shell, MessageEventHa
                 ShellImpl.this.goToShellApp(fragment);
             }
         });
+
+        overlayPresenter = new OverlayPresenter() {
+
+            @Override
+            public OverlayCloser openOverlay(final View view, ModalityLevel modalityLevel) {
+                return magnoliaShell.openOverlay(view, magnoliaShell, ModalityDomain.SHELL, modalityLevel);
+            }
+
+        };
     }
 
     public void setShellAppLocationProvider(ShellAppLocationProvider shellAppLocationProvider) {
@@ -213,10 +226,6 @@ public class ShellImpl extends BaseOverlayLayer implements Shell, MessageEventHa
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
 
-    @Override
-    public OverlayCloser openOverlay(final View view, ModalityLevel modalityLevel) {
-        return magnoliaShell.openOverlay(view, magnoliaShell, Overlay.ModalityDomain.SHELL, modalityLevel);
-    }
 
     @Override
     public OverlayCloser openOverlayOnView(View view, View parent, ModalityDomain modalityLocation, ModalityLevel modalityLevel) {
@@ -352,5 +361,49 @@ public class ShellImpl extends BaseOverlayLayer implements Shell, MessageEventHa
         return magnoliaShell;
     }
 
+    @Override
+    public OverlayCloser openOverlay(View view) {
+        return overlayPresenter.openOverlay(view);
+    }
+
+    @Override
+    public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
+        return overlayPresenter.openOverlay(view, modalityLevel);
+    }
+
+    @Override
+    public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
+        overlayPresenter.openAlert(type, viewToShow, confirmButtonText, cb);
+    }
+
+    @Override
+    public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
+        overlayPresenter.openAlert(type, title, body, confirmButtonText, cb);
+    }
+
+    @Override
+    public void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        overlayPresenter.openConfirmation(type, viewToShow, confirmButtonText, cancelButtonText, cancelIsDefault, cb);
+    }
+
+    @Override
+    public void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        overlayPresenter.openConfirmation(type, title, body, confirmButtonText, cancelButtonText, cancelIsDefault, cb);
+    }
+
+    @Override
+    public void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow) {
+        overlayPresenter.openNotification(type, doesTimeout, viewToShow);
+    }
+
+    @Override
+    public void openNotification(MessageStyleType type, boolean doesTimeout, String title) {
+        overlayPresenter.openNotification(type, doesTimeout, title);
+    }
+
+    @Override
+    public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
+        overlayPresenter.openNotification(type, doesTimeout, title, linkText, cb);
+    }
 
 }

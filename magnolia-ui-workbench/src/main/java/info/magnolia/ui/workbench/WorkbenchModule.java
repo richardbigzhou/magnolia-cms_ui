@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.view;
+package info.magnolia.ui.workbench;
 
-import java.io.Serializable;
-
-import com.vaadin.ui.Component;
+import info.magnolia.module.ModuleLifecycle;
+import info.magnolia.module.ModuleLifecycleContext;
 
 /**
- * Marker interface for views. Extends {@link Serializable} because all Vaadin components need to be serializable.
- *
- * @see Viewport
+ * Module class for Workbench component. Does not do anything specific.
  */
-public interface View extends Serializable {
+public class WorkbenchModule implements ModuleLifecycle {
 
-    /**
-     * Returns the Vaadin component representing this view.
-     */
-    Component asVaadinComponent();
+
+    @Override
+    public void start(ModuleLifecycleContext moduleLifecycleContext) {
+
+    }
+
+    @Override
+    public void stop(ModuleLifecycleContext moduleLifecycleContext) {
+
+    }
+
 }

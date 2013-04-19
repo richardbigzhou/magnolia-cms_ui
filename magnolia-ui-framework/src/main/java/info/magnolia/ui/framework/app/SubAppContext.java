@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.overlay.OverlayLayer;
+import info.magnolia.ui.model.overlay.OverlayLayer;
 
 /**
  * Provides functionality used by a sub app to interact with the Magnolia shell.

@@ -34,16 +34,15 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.overlay.OverlayCloser;
-import info.magnolia.ui.framework.overlay.OverlayLayer;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.overlay.AlertCallback;
-import info.magnolia.ui.vaadin.overlay.ConfirmationCallback;
-import info.magnolia.ui.vaadin.overlay.MessageStyleType;
-import info.magnolia.ui.vaadin.overlay.NotificationCallback;
-import info.magnolia.ui.vaadin.overlay.Overlay;
-import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.AlertCallback;
+import info.magnolia.ui.model.overlay.ConfirmationCallback;
+import info.magnolia.ui.model.overlay.MessageStyleType;
+import info.magnolia.ui.model.overlay.NotificationCallback;
+import info.magnolia.ui.model.overlay.OverlayCloser;
+import info.magnolia.ui.model.overlay.OverlayLayer;
+import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.vaadin.overlay.OverlayPresenter;
 
 /**
  * Implementation of {@link SubAppContext}.
@@ -69,6 +68,13 @@ public class SubAppContextImpl implements SubAppContext {
         this.subAppDescriptor = subAppDescriptor;
         this.shell = shell;
         overlayPresenter = new OverlayPresenter() {
+
+            @Override
+            public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
+                // Get the MagnoliaTab for the view
+                View overlayParent = getAppContext().getView().getSubAppViewContainer(instanceId);
+                return SubAppContextImpl.this.shell.openOverlayOnView(view, overlayParent, ModalityDomain.SUB_APP, modalityLevel);
+            }
 
         };
 
@@ -125,62 +131,52 @@ public class SubAppContextImpl implements SubAppContext {
     }
 
     @Override
-    public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
-        // Get the MagnoliaTab for the view
-        View overlayParent = getAppContext().getView().getSubAppViewContainer(instanceId);
-        return shell.openOverlayOnView(view, overlayParent, Overlay.ModalityDomain.SUB_APP, modalityLevel);
-    }
-
-    @Override
     public void close() {
         appContext.closeSubApp(instanceId);
     }
 
     @Override
     public OverlayCloser openOverlay(View view) {
-        // TODO Auto-generated method stub
-        return null;
+        return overlayPresenter.openOverlay(view);
     }
 
     @Override
-    public OverlayCloser openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
-        return overlayPresenter.openAlert(type, viewToShow, confirmButtonText, cb)
+    public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
+        return overlayPresenter.openOverlay(view, modalityLevel);
     }
 
     @Override
-    public OverlayCloser openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
-        // TODO Auto-generated method stub
-        return null;
+    public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
+        overlayPresenter.openAlert(type, viewToShow, confirmButtonText, cb);
     }
 
     @Override
-    public OverlayCloser openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        // TODO Auto-generated method stub
-        return null;
+    public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
+        overlayPresenter.openAlert(type, title, body, confirmButtonText, cb);
     }
 
     @Override
-    public OverlayCloser openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        // TODO Auto-generated method stub
-        return null;
+    public void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        overlayPresenter.openConfirmation(type, viewToShow, confirmButtonText, cancelButtonText, cancelIsDefault, cb);
     }
 
     @Override
-    public OverlayCloser openNotification(MessageStyleType type, int timeout_msec, View viewToShow) {
-        // TODO Auto-generated method stub
-        return null;
+    public void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        overlayPresenter.openConfirmation(type, title, body, confirmButtonText, cancelButtonText, cancelIsDefault, cb);
     }
 
     @Override
-    public OverlayCloser openNotification(MessageStyleType type, int timeout_msec, String title) {
-        // TODO Auto-generated method stub
-        return null;
+    public void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow) {
+        overlayPresenter.openNotification(type, doesTimeout, viewToShow);
     }
 
     @Override
-    public OverlayCloser openNotification(MessageStyleType type, int timeout_msec, String title, String linkText, NotificationCallback cb) {
-        // TODO Auto-generated method stub
-        return null;
+    public void openNotification(MessageStyleType type, boolean doesTimeout, String title) {
+        overlayPresenter.openNotification(type, doesTimeout, title);
     }
 
+    @Override
+    public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
+        overlayPresenter.openNotification(type, doesTimeout, title, linkText, cb);
+    }
 }

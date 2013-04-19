@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
-
-import info.magnolia.objectfactory.Classes;
-import info.magnolia.ui.vaadin.icon.CompositeIcon;
-import info.magnolia.ui.vaadin.icon.ErrorIcon;
-import info.magnolia.ui.vaadin.icon.InfoIcon;
-import info.magnolia.ui.vaadin.icon.WarningIcon;
+package info.magnolia.ui.model.overlay;
 
 /**
- * The type of message.
+ * Callback interface for when a user clicks on the link in a Notfication.
  */
-public enum MessageStyleType {
-
-    UNKNOWN("", "", null),
-    ERROR("Error", "msgerror", ErrorIcon.class),
-    WARNING("Warning", "msgwarn", WarningIcon.class),
-    INFO("Info", "msginfo", InfoIcon.class);
-
-    private String caption;
-    private String cssClass;
-    private Class<? extends CompositeIcon> icon;
-
-    private MessageStyleType(final String caption, final String cssClass, final Class<? extends CompositeIcon> icon) {
-        this.caption = caption;
-        this.cssClass = cssClass;
-        this.icon = icon;
-    }
-
-    @Override
-    public String toString() {
-        return caption;
-    }
-
-    public String getCssClass() {
-        return cssClass;
-    }
-
-    public CompositeIcon Icon() {
-        return Classes.getClassFactory().newInstance(icon);
-    }
+public interface NotificationCallback {
+    void onLinkClicked();
 
 }

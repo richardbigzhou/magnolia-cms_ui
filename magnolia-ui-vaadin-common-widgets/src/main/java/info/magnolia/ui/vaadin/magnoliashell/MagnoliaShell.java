@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell;
 
-import info.magnolia.ui.framework.overlay.OverlayCloser;
+import info.magnolia.ui.model.overlay.OverlayCloser;
+import info.magnolia.ui.model.overlay.OverlayLayer;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.common.ComponentIterator;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellState;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc;
@@ -46,7 +48,6 @@ import info.magnolia.ui.vaadin.magnoliashell.viewport.AppsViewport;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellAppsViewport;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
 import info.magnolia.ui.vaadin.overlay.Overlay;
-import info.magnolia.ui.vaadin.view.View;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -188,7 +189,7 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
      * @param parent
      * The View to open the Overlay on top of.
      */
-    public OverlayCloser openOverlay(final View child, View parent, Overlay.ModalityDomain modalityLocation, Overlay.ModalityLevel modalityLevel) {
+    public OverlayCloser openOverlay(final View child, View parent, OverlayLayer.ModalityDomain modalityLocation, OverlayLayer.ModalityLevel modalityLevel) {
         Overlay overlay = new Overlay(child.asVaadinComponent(), parent.asVaadinComponent(), modalityLocation, modalityLevel);
         getState().overlays.add(overlay);
 

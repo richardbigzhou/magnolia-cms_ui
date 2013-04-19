@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,37 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.event;
+package info.magnolia.ui.workbench;
 
-import info.magnolia.event.Event;
-import info.magnolia.event.EventHandler;
+import info.magnolia.ui.model.overlay.View;
 
 /**
- * This event is fired when a search is launched, i.e. by hitting the ENTER key in the search box in the UI.
+ * WorkbenchView.
  */
-public class SearchEvent implements Event<SearchEvent.Handler> {
+public interface WorkbenchView extends View {
+    /**
+     * Listener interface for events concerning the workbench.
+     */
+    interface Listener {
+
+        void onSearch(String searchExpression);
+
+        void onViewTypeChanged(ContentView.ViewType viewType);
+    }
+
+    void setListener(Listener listener);
 
     /**
-     * Handles {@link SearchEvent} events.
+     * Updates the search box with given search query.
      */
-    public interface Handler extends EventHandler {
+    void setSearchQuery(String query);
 
-        void onSearch(SearchEvent event);
-    }
+    /**
+     * Refreshes the current view.
+     */
+    void refresh();
 
-    private String searchExpression;
+    /**
+     * Use this method to add sub views hosted by this view.
+     */
+    void addContentView(ContentView.ViewType type, ContentView view, ContentViewDefinition contentViewDefintion);
 
-    public SearchEvent(String searchExpression) {
-        this.searchExpression = searchExpression;
-    }
+    void setViewType(ContentView.ViewType type);
 
-    public String getSearchExpression() {
-        return searchExpression;
-    }
+    void selectPath(String path);
 
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onSearch(this);
-    }
+    ContentView getSelectedView();
 
 }

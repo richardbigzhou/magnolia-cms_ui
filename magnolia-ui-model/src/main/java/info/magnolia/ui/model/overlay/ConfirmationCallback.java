@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
+package info.magnolia.ui.model.overlay;
 
 
 /**
@@ -40,5 +40,5 @@ package info.magnolia.ui.vaadin.overlay;
 public interface ConfirmationCallback {
     void onCancel();
 
-    void onSuccess(String actionName);
+    void onSuccess();
 }

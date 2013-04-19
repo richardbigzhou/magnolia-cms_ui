@@ -43,11 +43,12 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Date;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
+import org.apache.jackrabbit.value.BinaryImpl;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +77,10 @@ public class BasicFileItemWrapper implements FileItemWrapper {
     private String fileName;
 
     protected JcrItemNodeAdapter item;
+
+    public BasicFileItemWrapper(File tmpDirectory) {
+        this.tmpDirectory = tmpDirectory;
+    }
 
     public BasicFileItemWrapper(JcrItemNodeAdapter jcrItem, File tmpDirectory) {
         this.tmpDirectory = tmpDirectory;
@@ -117,10 +122,14 @@ public class BasicFileItemWrapper implements FileItemWrapper {
             try {
                 uploadedFile = File.createTempFile(StringUtils.rightPad(fileName, 5, "x"), null, tmpDirectory);
                 FileOutputStream fileOuputStream = new FileOutputStream(uploadedFile);
-                fileOuputStream.write((byte[]) data.getValue());
+                if (data.getValue() instanceof BinaryImpl) {
+                    IOUtils.copy(((BinaryImpl) data.getValue()).getStream(), fileOuputStream);
+                } else {
+                    fileOuputStream.write((byte[]) data.getValue());
+                }
                 fileOuputStream.close();
                 uploadedFile.deleteOnExit();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }

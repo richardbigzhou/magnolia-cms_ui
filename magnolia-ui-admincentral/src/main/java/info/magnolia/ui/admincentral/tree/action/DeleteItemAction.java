@@ -37,12 +37,11 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
-import info.magnolia.ui.framework.overlay.OverlayCloser;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.overlay.ConfirmationCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.overlay.ConfirmationCallback;
-import info.magnolia.ui.vaadin.overlay.MessageStyleType;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Named;
 import javax.jcr.RepositoryException;
@@ -84,11 +83,11 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
             return;
         }
 
-        final OverlayCloser overlayCloser = subAppContext.openConfirmation(
-                MessageStyleType.WARNING, "Do you really want to delete this item?", "This action can't be undone.", "Yes, Delete", "No", true,
+        subAppContext.openConfirmation(
+                MessageStyleTypeEnum.WARNING, "Do you really want to delete this item?", "This action can't be undone.", "Yes, Delete", "No", true,
                 new ConfirmationCallback() {
                     @Override
-                    public void onSuccess(String actionName) {
+                    public void onSuccess() {
                         DeleteItemAction.this.executeAfterConfirmation();
                     }
 
@@ -110,7 +109,7 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
             eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemPath()));
 
             // Show notification
-            final OverlayCloser overlayCloser = subAppContext.openNotification(MessageStyleType.INFO, 3000, "Item deleted.");
+            subAppContext.openNotification(MessageStyleTypeEnum.INFO, true, "Item deleted.");
         } catch (RepositoryException e) {
             log.error("Could not execute repository operation.", e);
         }

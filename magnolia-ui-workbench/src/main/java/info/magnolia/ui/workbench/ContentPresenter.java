@@ -31,19 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.browser;
+package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.SubAppEventBus;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.ContentView;
-import info.magnolia.ui.workbench.ContentViewBuilder;
-import info.magnolia.ui.workbench.ContentViewDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
@@ -53,7 +47,6 @@ import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -70,55 +63,26 @@ public class ContentPresenter implements ContentView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(ContentPresenter.class);
 
-    private final EventBus subAppEventBus;
-
-    private final Shell shell;
-
-    private final String workspaceName;
-
-    private final BrowserSubAppDescriptor subAppDescriptor;
+    private EventBus eventBus;
 
     private final ContentViewBuilder contentViewBuilder;
 
-    protected WorkbenchDefinition workbenchDefinition;
+    private WorkbenchDefinition workbenchDefinition;
+
     private String selectedItemPath;
 
-    protected ContentPresenter(final BrowserSubAppDescriptor subAppDescriptor, final ContentViewBuilder contentViewBuilder, final EventBus subAppEventBus, final Shell shell) {
-        this.contentViewBuilder = contentViewBuilder;
-        this.subAppEventBus = subAppEventBus;
-        this.shell = shell;
-        this.subAppDescriptor = subAppDescriptor;
-        this.workbenchDefinition = subAppDescriptor.getWorkbench();
-        this.workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
-    }
-
-    public ContentPresenter(final AppContext appContext, final ContentViewBuilder contentViewBuilder, @Named(SubAppEventBus.NAME) final EventBus subAppEventBus, final Shell shell) {
-        this((BrowserSubAppDescriptor) appContext.getDefaultSubAppDescriptor(), contentViewBuilder, subAppEventBus, shell);
-    }
+    private ImageProviderDefinition imageProviderDefinition;
 
     @Inject
-    public ContentPresenter(final SubAppContext subAppContext, final ContentViewBuilder contentViewBuilder, @Named(SubAppEventBus.NAME) final EventBus subAppEventBus, final Shell shell) {
-        this((BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor(), contentViewBuilder, subAppEventBus, shell);
+    public ContentPresenter(final ContentViewBuilder contentViewBuilder) {
+        this.contentViewBuilder = contentViewBuilder;
     }
 
-    public void initContentView(BrowserView parentView) {
-        if (workbenchDefinition == null) {
-            throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
-        }
-        log.debug("Initializing workbench {}...", workbenchDefinition.getName());
-
-        for (final ContentViewDefinition contentViewDefinition : workbenchDefinition.getContentViews()) {
-            final ContentView contentView = contentViewBuilder.build(workbenchDefinition, subAppDescriptor.getImageProvider(), contentViewDefinition);
-            contentView.setListener(this);
-            contentView.select("/");
-            parentView.addContentView(contentViewDefinition.getViewType(), contentView, contentViewDefinition);
-        }
-
-        if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
-            throw new IllegalStateException(workbenchDefinition.getName() + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
-        }
-
-        selectedItemPath = StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
+    public void start(WorkbenchView workbenchView, WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, EventBus eventBus) {
+        this.workbenchDefinition = workbenchDefinition;
+        this.imageProviderDefinition = imageProviderDefinition;
+        this.eventBus = eventBus;
+        initContentView(workbenchView);
     }
 
     @Override
@@ -126,15 +90,15 @@ public class ContentPresenter implements ContentView.Listener {
         if (item == null) {
             log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
             selectedItemPath = workbenchDefinition.getPath();
-            subAppEventBus.fireEvent(new ItemSelectedEvent(workspaceName, null));
+            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), null));
             return;
         }
         try {
             selectedItemPath = ((JcrItemAdapter) item).getPath();
             log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemPath);
-            subAppEventBus.fireEvent(new ItemSelectedEvent(workspaceName, (JcrItemAdapter) item));
+            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), (JcrItemAdapter) item));
         } catch (Exception e) {
-            shell.showError("An error occurred while selecting a row in the data grid", e);
+            log.error("An error occurred while selecting a row in the data grid", e);
         }
     }
 
@@ -153,9 +117,9 @@ public class ContentPresenter implements ContentView.Listener {
             try {
                 selectedItemPath = ((JcrItemAdapter) item).getPath();
                 log.debug("com.vaadin.data.Item at {} was double clicked. Firing ItemDoubleClickedEvent...", selectedItemPath);
-                subAppEventBus.fireEvent(new ItemDoubleClickedEvent(workspaceName, selectedItemPath));
+                eventBus.fireEvent(new ItemDoubleClickedEvent(workbenchDefinition.getWorkspace(), selectedItemPath));
             } catch (Exception e) {
-                shell.showError("An error occurred while double clicking on a row in the data grid", e);
+                log.error("An error occurred while double clicking on a row in the data grid", e);
             }
         } else {
             log.warn("Got null com.vaadin.data.Item. No event will be fired.");
@@ -167,12 +131,12 @@ public class ContentPresenter implements ContentView.Listener {
         try {
             if (item != null) {
                 log.debug("com.vaadin.data.Item edited. Firing ItemEditedEvent...");
-                subAppEventBus.fireEvent(new ItemEditedEvent(item));
+                eventBus.fireEvent(new ItemEditedEvent(item));
             } else {
                 log.warn("Null item edited");
             }
         } catch (Exception e) {
-            shell.showError("An error occured while editing an item in data grid", e);
+            log.error("An error occurred while double clicking on a row in the data grid", e);
         }
     }
 
@@ -194,5 +158,29 @@ public class ContentPresenter implements ContentView.Listener {
         }
 
         return null;
+    }
+
+    protected void initContentView(WorkbenchView parentView) {
+        if (workbenchDefinition == null) {
+            throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
+        }
+        log.debug("Initializing workbench {}...", workbenchDefinition.getName());
+
+        for (final ContentViewDefinition contentViewDefinition : workbenchDefinition.getContentViews()) {
+            final ContentView contentView = contentViewBuilder.build(workbenchDefinition, imageProviderDefinition, contentViewDefinition);
+            contentView.setListener(this);
+            contentView.select("/");
+            parentView.addContentView(contentViewDefinition.getViewType(), contentView, contentViewDefinition);
+        }
+
+        if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
+            throw new IllegalStateException(workbenchDefinition.getName() + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
+        }
+
+        selectedItemPath = StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
+    }
+
+    protected WorkbenchDefinition getWorkbenchDefinition() {
+        return workbenchDefinition;
     }
 }
