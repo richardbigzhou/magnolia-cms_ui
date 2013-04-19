@@ -252,11 +252,10 @@ public class BrowserPresenter implements BrowserView.Listener, ActionbarPresente
         // restore selection
         boolean itemExists = itemExists(path);
         if (!itemExists) {
-            log.warn(
-                    "Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.",
-                    path, workbenchDefinition.getWorkspace());
+            log.info("Trying to resync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
+                    new Object[] { path, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
         }
-        view.selectPath(itemExists ? path : "/");
+        view.selectPath(itemExists ? path : workbenchDefinition.getPath());
     }
 
     private void refreshActionbarPreviewImage(final String path, final String workspace) {

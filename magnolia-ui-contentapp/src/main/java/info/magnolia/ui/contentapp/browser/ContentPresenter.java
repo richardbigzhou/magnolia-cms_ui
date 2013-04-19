@@ -105,20 +105,18 @@ public class ContentPresenter implements ContentView.Listener {
         if (workbenchDefinition == null) {
             throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
         }
-        log.debug("Initializing workbench {}...", workbenchDefinition.getName());
-
-        for (final ContentViewDefinition contentViewDefinition : workbenchDefinition.getContentViews()) {
-            final ContentView contentView = contentViewBuilder.build(workbenchDefinition, subAppDescriptor.getImageProvider(), contentViewDefinition);
-            contentView.setListener(this);
-            contentView.select("/");
-            parentView.addContentView(contentViewDefinition.getViewType(), contentView, contentViewDefinition);
-        }
-
         if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
             throw new IllegalStateException(workbenchDefinition.getName() + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
         }
 
-        selectedItemPath = StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
+        for (final ContentViewDefinition contentViewDefinition : workbenchDefinition.getContentViews()) {
+            final ContentView contentView = contentViewBuilder.build(workbenchDefinition, subAppDescriptor.getImageProvider(), contentViewDefinition);
+            contentView.setListener(this);
+            contentView.select(workbenchDefinition.getPath());
+            parentView.addContentView(contentViewDefinition.getViewType(), contentView, contentViewDefinition);
+        }
+
+        selectedItemPath = workbenchDefinition.getPath();
     }
 
     @Override
