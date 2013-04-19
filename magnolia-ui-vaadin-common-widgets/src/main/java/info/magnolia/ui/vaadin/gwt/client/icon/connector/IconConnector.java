@@ -49,7 +49,6 @@ public class IconConnector extends AbstractComponentConnector {
 
     @Override
     protected void init() {
-        getWidget().updateBaseStyles();
         addStateChangeHandler(new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
