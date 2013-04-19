@@ -31,28 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.choosedialog;
+package info.magnolia.ui.workbench.event;
 
-import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.workbench.WorkbenchView;
-
-import javax.inject.Inject;
+import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
 
 /**
- * Chooses an item from a workbench.
+ * This event is fired when a search is launched, i.e. by hitting the ENTER key in the search box in the UI.
  */
-public class WorkbenchChooseDialogView extends BaseDialog implements ChooseDialogView {
+public class SearchEvent implements Event<SearchEvent.Handler> {
 
-    public static final String CHOOSE_ACTION_NAME = "commit";
-    public static final String CANCEL_ACTION_NAME = "cancel";
+    /**
+     * Handles {@link SearchEvent} events.
+     */
+    public interface Handler extends EventHandler {
 
-    @Inject
-    public WorkbenchChooseDialogView(WorkbenchView view) {
-        addStyleName("choose-dialog");
-        addStyleName("content-view-field-wrapper");
-        setContent(view.asVaadinComponent());
-        addAction(CHOOSE_ACTION_NAME, "Choose");
-        addAction(CANCEL_ACTION_NAME, "Cancel");
+        void onSearch(SearchEvent event);
+    }
+
+    private String searchExpression;
+
+    public SearchEvent(String searchExpression) {
+        this.searchExpression = searchExpression;
+    }
+
+    public String getSearchExpression() {
+        return searchExpression;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onSearch(this);
     }
 
 }

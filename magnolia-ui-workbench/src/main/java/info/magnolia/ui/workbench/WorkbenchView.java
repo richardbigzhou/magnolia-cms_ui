@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,28 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.choosedialog;
+package info.magnolia.ui.workbench;
 
-import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.workbench.WorkbenchView;
-
-import javax.inject.Inject;
+import info.magnolia.ui.vaadin.view.View;
 
 /**
- * Chooses an item from a workbench.
+ * WorkbenchView.
  */
-public class WorkbenchChooseDialogView extends BaseDialog implements ChooseDialogView {
+public interface WorkbenchView extends View {
+    /**
+     * Listener interface for events concerning the workbench.
+     */
+    interface Listener {
 
-    public static final String CHOOSE_ACTION_NAME = "commit";
-    public static final String CANCEL_ACTION_NAME = "cancel";
+        void onSearch(String searchExpression);
 
-    @Inject
-    public WorkbenchChooseDialogView(WorkbenchView view) {
-        addStyleName("choose-dialog");
-        addStyleName("content-view-field-wrapper");
-        setContent(view.asVaadinComponent());
-        addAction(CHOOSE_ACTION_NAME, "Choose");
-        addAction(CANCEL_ACTION_NAME, "Cancel");
+        void onViewTypeChanged(ContentView.ViewType viewType);
     }
+
+    void setListener(Listener listener);
+
+    /**
+     * Updates the search box with given search query.
+     */
+    void setSearchQuery(String query);
+
+    /**
+     * Refreshes the current view.
+     */
+    void refresh();
+
+    /**
+     * Use this method to add sub views hosted by this view.
+     */
+    void addContentView(ContentView.ViewType type, ContentView view, ContentViewDefinition contentViewDefintion);
+
+    void setViewType(ContentView.ViewType type);
+
+    void selectPath(String path);
+
+    ContentView getSelectedView();
 
 }

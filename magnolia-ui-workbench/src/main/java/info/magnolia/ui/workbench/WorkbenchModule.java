@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,37 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.event;
+package info.magnolia.ui.workbench;
 
-import info.magnolia.event.Event;
-import info.magnolia.event.EventHandler;
+import info.magnolia.module.ModuleLifecycle;
+import info.magnolia.module.ModuleLifecycleContext;
 
 /**
- * This event is fired when a search is launched, i.e. by hitting the ENTER key in the search box in the UI.
+ * Module class for Workbench component. Does not do anything specific.
  */
-public class SearchEvent implements Event<SearchEvent.Handler> {
+public class WorkbenchModule implements ModuleLifecycle {
 
-    /**
-     * Handles {@link SearchEvent} events.
-     */
-    public interface Handler extends EventHandler {
 
-        void onSearch(SearchEvent event);
-    }
+    @Override
+    public void start(ModuleLifecycleContext moduleLifecycleContext) {
 
-    private String searchExpression;
-
-    public SearchEvent(String searchExpression) {
-        this.searchExpression = searchExpression;
-    }
-
-    public String getSearchExpression() {
-        return searchExpression;
     }
 
     @Override
-    public void dispatch(Handler handler) {
-        handler.onSearch(this);
+    public void stop(ModuleLifecycleContext moduleLifecycleContext) {
+
     }
 
 }

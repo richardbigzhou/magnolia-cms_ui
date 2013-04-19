@@ -21,6 +21,12 @@
     }
   }
 
+  .v-button-inline,
+  .v-nativebutton-inline {
+    background-color: transparent;
+  	color: $c01;
+  }
+
   .v-button-link {
     @include linkbutton;
   }

@@ -35,9 +35,7 @@ package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.view.View;
-import info.magnolia.ui.workbench.ContentView;
-import info.magnolia.ui.workbench.ContentView.ViewType;
-import info.magnolia.ui.workbench.ContentViewDefinition;
+import info.magnolia.ui.workbench.WorkbenchView;
 
 import com.vaadin.ui.ComponentContainer;
 
@@ -46,41 +44,18 @@ import com.vaadin.ui.ComponentContainer;
  * actions associated with it.
  */
 public interface BrowserView extends ComponentContainer, View {
-    /**
-     * Listener interface for events concerning the workbench.
-     */
-    interface Listener {
-
-        void onSearch(String searchExpression);
-
-        void onViewTypeChanged(ViewType viewType);
-    }
-
-    void setListener(Listener listener);
-
-    void setViewType(ContentView.ViewType type);
-
-    /**
-     * Updates the search box with given search query.
-     */
-    void setSearchQuery(String query);
-
-    /**
-     * Refreshes the current view.
-     */
-    void refresh();
-
-    /**
-     * Use this method to add sub views hosted by this view.
-     */
-    void addContentView(ViewType type, ContentView view, ContentViewDefinition contentViewDefintion);
 
     /**
      * Use this method to add an action bar to this sub app view.
      */
     void setActionbarView(ActionbarView actionbar);
 
-    void selectPath(String path);
+    void setWorkbenchView(WorkbenchView workbenchView);
 
-    ContentView getSelectedView();
+    /**
+     * TODO: refactor callers, so that they aren't trying to fetch workbench out out browser.
+     * @return workbench view.
+     */
+    WorkbenchView getWorkbenchView();
+
 }
