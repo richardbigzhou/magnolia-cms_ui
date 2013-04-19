@@ -34,14 +34,15 @@
 package info.magnolia.ui.contentapp.choosedialog;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.contentapp.browser.ContentPresenter;
-import info.magnolia.ui.contentapp.browser.BrowserView;
+import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.event.ChooseDialogEventBus;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.workbench.ContentPresenter;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.ContentViewBuilder;
-import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.workbench.WorkbenchView;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.TreeView;
 
 import javax.inject.Inject;
@@ -57,24 +58,39 @@ import com.rits.cloning.Cloner;
  */
 public class ChooseDialogContentPresenter extends ContentPresenter {
 
+    private AppContext appContext;
+
+    private EventBus chooseDialogEventBus;
+
     @Inject
-    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, AppContext context, @Named(ChooseDialogEventBus.NAME) EventBus chooseDialogEventBus, Shell shell) {
-        super(context, contentViewBuilder, chooseDialogEventBus, shell);
-        workbenchDefinition = new Cloner().deepClone(workbenchDefinition);
-        ((ConfiguredWorkbenchDefinition) workbenchDefinition).setDialogWorkbench(true);
+    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, @Named(ChooseDialogEventBus.NAME) EventBus chooseDialogEventBus,
+                                        AppContext appContext) {
+        super(contentViewBuilder);
+        this.appContext = appContext;
+        this.chooseDialogEventBus = chooseDialogEventBus;
+    }
+
+    public void startChooseDialog(WorkbenchView workbenchView) {
+        SubAppDescriptor subAppContext = appContext.getDefaultSubAppDescriptor();
+        if (subAppContext instanceof BrowserSubAppDescriptor) {
+            BrowserSubAppDescriptor bsd = (BrowserSubAppDescriptor)subAppContext;
+            WorkbenchDefinition clone = new Cloner().deepClone(bsd.getWorkbench());
+            super.start(workbenchView, clone, bsd.getImageProvider(), chooseDialogEventBus);
+        }
     }
 
     /**
      * Return the Root path.
      */
     public String getRootPath() {
-        return StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
+        return StringUtils.defaultIfEmpty(getWorkbenchDefinition().getPath(), "/");
     }
 
+
     @Override
-    public void initContentView(BrowserView parentView) {
-        super.initContentView(parentView);
-        parentView.setViewType(ContentView.ViewType.TREE);
-        ((TreeView)parentView.getSelectedView()).deactivateDragAndDrop();
+    protected void initContentView(WorkbenchView view) {
+        super.initContentView(view);
+        view.setViewType(ContentView.ViewType.TREE);
+        ((TreeView)view.getSelectedView()).deactivateDragAndDrop();
     }
 }

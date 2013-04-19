@@ -34,7 +34,6 @@
 package info.magnolia.ui.workbench.tree;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -75,7 +74,8 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             try {
                 return lhs.getName().compareTo(rhs.getName());
             } catch (RepositoryException e) {
-                throw new RuntimeRepositoryException(e);
+                log.warn("Cannot compare item names: " + e);
+                return 0;
             }
         }
     }
@@ -86,14 +86,15 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     @Override
     public Collection<String> getChildren(Object itemId) {
-        try {
-            long start = System.currentTimeMillis();
-            Collection<Item> children = getChildren(getItemByPath((String) itemId));
-            log.debug("Fetched {} children in {}ms", children.size(), System.currentTimeMillis() - start);
-            return createContainerIds(children);
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
+            try {
+                long start = System.currentTimeMillis();
+                Collection<Item> children = getChildren(getItemByPath((String) itemId));
+                log.debug("Fetched {} children in {}ms", children.size(), System.currentTimeMillis() - start);
+                return createContainerIds(children);
+            } catch (RepositoryException e) {
+                handleRepositoryException(log, "Cannot retrieve Children for item with id:" + itemId, e);
+            }
+            return Collections.emptySet();
     }
 
     @Override
@@ -105,7 +106,8 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             }
             return item.getParent().getPath();
         } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
+            handleRepositoryException(log, "Cannot determine parent for itemId: " + itemId, e);
+            return null;
         }
     }
 
@@ -114,7 +116,8 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         try {
             return createContainerIds(getRootItemIds());
         } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
+            handleRepositoryException(log, "Cannot retrieve root item id's", e);
+            return Collections.emptySet();
         }
     }
 
@@ -127,6 +130,9 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     @Override
     public boolean areChildrenAllowed(Object itemId) {
         final JcrItemAdapter item = ((JcrItemAdapter) getItem(itemId));
+        if (item == null) {
+            return false;
+        }
         return item.isNode() && hasChildren(itemId);
     }
 
@@ -140,7 +146,8 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         try {
             return isRoot(getItemByPath((String) itemId));
         } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
+            handleRepositoryException(log, "Cannot determine whether item is root - itemId: " + itemId, e);
+            return true;
         }
     }
 
@@ -150,14 +157,21 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             final Item item = getItemByPath((String) itemId);
             return item.isNode() && !getChildren(item).isEmpty();
         } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
+            handleRepositoryException(log, "Cannot determine children for item with id " + itemId, e);
+            return false;
         }
     }
 
-    protected Collection<String> createContainerIds(Collection<Item> children) throws RepositoryException {
+    protected Collection<String> createContainerIds(Collection<Item> children) {
         ArrayList<String> ids = new ArrayList<String>();
+        String currentPath;
         for (Item child : children) {
-            ids.add(child.getPath());
+            try {
+                currentPath = child.getPath();
+                ids.add(currentPath);
+            } catch (RepositoryException e) {
+                handleRepositoryException(log, "Cannot retrieve currentPath", e);
+            }
         }
         return ids;
     }
@@ -168,7 +182,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         return Collections.emptyList();
     }
 
-    public Collection<Item> getChildren(Item item) throws RepositoryException {
+    public Collection<Item> getChildren(Item item) {
         if (!item.isNode()) {
             return Collections.emptySet();
         }
@@ -177,36 +191,40 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
         ArrayList<Item> items = new ArrayList<Item>();
 
-        ArrayList<Node> nodesWithMatchingTypes = new ArrayList<Node>();
-        NodeIterator iterator = node.getNodes();
-        final List<NodeTypeDefinition> nodeTypes = getWorkbenchDefinition().getNodeTypes();
-        String currentNodeTypeName;
-        while (iterator.hasNext()) {
-            Node next = iterator.nextNode();
-            currentNodeTypeName = next.getPrimaryNodeType().getName();
-            for (NodeTypeDefinition current: nodeTypes) {
-                if (current.getName().equals(currentNodeTypeName)) {
-                    nodesWithMatchingTypes.add(next);
-                    break;
+        try {
+            ArrayList<Node> nodesWithMatchingTypes = new ArrayList<Node>();
+            NodeIterator iterator = node.getNodes();
+            final List<NodeTypeDefinition> nodeTypes = getWorkbenchDefinition().getNodeTypes();
+            String currentNodeTypeName;
+            while (iterator.hasNext()) {
+                Node next = iterator.nextNode();
+                currentNodeTypeName = next.getPrimaryNodeType().getName();
+                for (NodeTypeDefinition current : nodeTypes) {
+                    if (current.getName().equals(currentNodeTypeName)) {
+                        nodesWithMatchingTypes.add(next);
+                        break;
+                    }
                 }
             }
-        }
 
-        items.addAll(nodesWithMatchingTypes);
+            items.addAll(nodesWithMatchingTypes);
 
-        if (getWorkbenchDefinition().includeProperties()) {
-            ArrayList<Property> properties = new ArrayList<Property>();
-            PropertyIterator propertyIterator = node.getProperties();
-            while (propertyIterator.hasNext()) {
-                final Property property = propertyIterator.nextProperty();
-                final String propertyName = property.getName();
-                if (!propertyName.startsWith(NodeTypes.JCR_PREFIX) && !propertyName.startsWith(NodeTypes.MGNL_PREFIX)) {
-                    properties.add(property);
+            if (getWorkbenchDefinition().includeProperties()) {
+                ArrayList<Property> properties = new ArrayList<Property>();
+                PropertyIterator propertyIterator = node.getProperties();
+                while (propertyIterator.hasNext()) {
+                    final Property property = propertyIterator.nextProperty();
+                    final String propertyName = property.getName();
+                    if (!propertyName.startsWith(NodeTypes.JCR_PREFIX) && !propertyName.startsWith(NodeTypes.MGNL_PREFIX)) {
+                        properties.add(property);
+                    }
                 }
+                ItemNameComparator itemNameComparator = new ItemNameComparator();
+                Collections.sort(properties, itemNameComparator);
+                items.addAll(properties);
             }
-            ItemNameComparator itemNameComparator = new ItemNameComparator();
-            Collections.sort(properties, itemNameComparator);
-            items.addAll(properties);
+        } catch (RepositoryException e) {
+            handleRepositoryException(log, "Could not retrieve children", e);
         }
 
         return Collections.unmodifiableCollection(items);
@@ -221,8 +239,13 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
      * to remove unnecessary offset in trees.
      */
     public boolean isRoot(Item item) throws RepositoryException {
-        int rootDepth = getRootNode().getDepth();
-        return item.getDepth() <= rootDepth + 1;
+        try {
+            int rootDepth = getRootNode().getDepth();
+            return item.getDepth() <= rootDepth + 1;
+        } catch (RepositoryException e) {
+            handleRepositoryException(log, "Cannot determine depth of jcr item", e);
+            return true;
+        }
     }
 
     public Item getItemByPath(String path) throws RepositoryException {
@@ -243,7 +266,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             source.getSession().save();
             return true;
         } catch (RepositoryException re) {
-            log.warn("Got exception in drag and drop action", re);
+            handleRepositoryException(log, "Cannot execute drag and drop action", re);
             return false;
         }
     }
@@ -257,7 +280,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             source.getSession().save();
             return true;
         } catch (RepositoryException re) {
-            log.warn("Got exception in drag and drop action", re);
+            handleRepositoryException(log, "Could not execute drag and drop action", re);
             return false;
         }
     }
@@ -271,7 +294,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             source.getSession().save();
             return true;
         } catch (RepositoryException re) {
-            log.warn("Got exception in drag and drop action", re);
+            handleRepositoryException(log, "Cannot execute drag and drop action", re);
             return false;
         }
     }
@@ -292,7 +315,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             // Source can not be a child of target.
             return !NodeUtil.isSame((Node)target, source.getParent());
         } catch (RepositoryException re) {
-            log.warn("Got exception in drag and drop action", re);
+            handleRepositoryException(log, "Cannot determine whether drag and drop is possible", re);
             return false;
         }
     }
@@ -321,5 +344,4 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         String base = getWorkbenchDefinition().getPath();
         return base + pathInTree;
     }
-
 }

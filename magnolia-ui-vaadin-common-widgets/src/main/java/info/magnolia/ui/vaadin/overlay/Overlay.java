@@ -31,29 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.vaadin.overlay;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.connector.ModalState;
+import info.magnolia.ui.vaadin.gwt.client.dialog.connector.OverlayState;
 
 import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
 
 /**
  * A Single component container that includes a "glass" or "curtain" which dims out and prevents interaction on the elements
- * below it. It is different then a Vaadin Window in that ONLY the component that it is attached to recieves the modal glass.
+ * below it. It is different than a Vaadin Window in that ONLY the component that it is attached to receives the modal glass.
  * It is only modal within the component that it is added to.
  * Positioning of the glass and component depends on one of the parents having css position set to relative or absolute.
  */
-public class Modal extends AbstractSingleComponentContainer {
+public class Overlay extends AbstractSingleComponentContainer {
 
     /**
-     * The available levels of modality for opening a modal.
+     * The available locations of modality for opening a modal.
      * Represents what will be blocked by the opened modal.
      */
-    public static enum ModalityLevel {
+    public static enum ModalityDomain {
         SUB_APP("sub-app"),
         APP("app"),
         SHELL("shell");
+
+        private String cssClass;
+
+        private ModalityDomain(String cssClass) {
+            this.cssClass = cssClass;
+        }
+
+        public String getCssClass() {
+            return cssClass;
+        }
+
+    }
+
+    /**
+     * The available levels of modality.
+     * Determines how "modal" it is -
+     * -STRONG creates a dark background that prevents clicks.
+     * -LIGHT adds a border, creates a transparent background that prevents clicks.
+     * -NON_MODAL does not prevent clicks.
+     */
+    public static enum ModalityLevel {
+        STRONG("modality-strong"),
+        LIGHT("modality-light center-vertical"),
+        NON_MODAL("modality-non-modal");
 
         private String cssClass;
 
@@ -67,38 +91,26 @@ public class Modal extends AbstractSingleComponentContainer {
 
     }
 
-    final Modal.ModalityLevel modalityLevel;
+    final Overlay.ModalityDomain modalityDomain;
 
-    public Modal(final Component content, final Component modalityParent, Modal.ModalityLevel modalityLevel) {
+    public Overlay(final Component content, final Component overlayParent, final Overlay.ModalityDomain modalityDomain, final Overlay.ModalityLevel modalityLevel) {
         // setSizeFull();
         setImmediate(true);
 
-        content.addStyleName("modal-child");
+        content.addStyleName("overlay-child");
         setContent(content);
 
-        this.modalityLevel = modalityLevel;
-        getState().modalityParent = modalityParent;
+        this.modalityDomain = modalityDomain;
+        getState().overlayParent = overlayParent;
 
-        // Set css class of Modal
-        String cssClass = modalityLevel.getCssClass();
-        /*
-         * switch (modalityLevel) {
-         * case SUB_APP:
-         * cssClass="sub-app";
-         * break;
-         * case APP:
-         * cssClass="app";
-         * break;
-         * case SHELL:
-         * cssClass="shell";
-         * break;
-         * }
-         */
-        this.setStyleName(cssClass);
+        // Set css classes of Modal
+        this.addStyleName(modalityDomain.getCssClass());
+
+        this.addStyleName(modalityLevel.getCssClass());
     }
 
     @Override
-    protected ModalState getState() {
-        return (ModalState) super.getState();
+    protected OverlayState getState() {
+        return (OverlayState) super.getState();
     }
 }

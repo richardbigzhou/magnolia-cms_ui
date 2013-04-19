@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,37 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.event;
-
-import info.magnolia.event.Event;
-import info.magnolia.event.EventHandler;
+package info.magnolia.ui.vaadin.theme;
 
 /**
- * This event is fired when a search is launched, i.e. by hitting the ENTER key in the search box in the UI.
+ * UI constants for the magnolia theme.
  */
-public class SearchEvent implements Event<SearchEvent.Handler> {
+public class ThemeConstants {
 
-    /**
-     * Handles {@link SearchEvent} events.
-     */
-    public interface Handler extends EventHandler {
-
-        void onSearch(SearchEvent event);
-    }
-
-    private String searchExpression;
-
-    public SearchEvent(String searchExpression) {
-        this.searchExpression = searchExpression;
-    }
-
-    public String getSearchExpression() {
-        return searchExpression;
-    }
-
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onSearch(this);
-    }
+    public static final String MSG_WHITE_STYLENAME = "msgwhite";
+    public static final String MSG_INFO_STYLENAME = "msginfo";
+    public static final String MSG_WARNING_STYLENAME = "msgwarn";
+    public static final String MSG_ERROR_STYLENAME = "msgerror";
 
 }

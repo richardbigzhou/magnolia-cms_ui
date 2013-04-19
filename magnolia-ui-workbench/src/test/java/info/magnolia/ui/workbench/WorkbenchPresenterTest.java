@@ -31,28 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
+package info.magnolia.ui.workbench;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.connector.ModalConnector;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.SimplePanel;
+import info.magnolia.ui.workbench.config.WorkbenchBuilder;
+import info.magnolia.ui.workbench.list.ListContentViewDefinition;
+import info.magnolia.ui.workbench.tree.TreeContentViewDefinition;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * MagnoliaTabWidget.
+ * Tests for {@link WorkbenchPresenter}.
  */
-public class ModalWidget extends SimplePanel {
+public class WorkbenchPresenterTest {
 
-    private final Element modalityCurtain = DOM.createDiv();
+    private final static String WORKSPACE = "workspace";
 
-    public ModalWidget(ModalConnector connector) {
-        super();
+    private final static String ROOT_PATH = "/";
 
-        setStyleName("modal");
+    private WorkbenchPresenter presenter;
 
-        modalityCurtain.setClassName("modal-curtain");
-        this.getElement().appendChild(modalityCurtain);
+    @Before
+    public void setUp() {
+        initWorkbenchPresenter();
     }
 
+    private void initWorkbenchPresenter() {
+        WorkbenchView view = mock(WorkbenchView.class);
+        ContentPresenter contentPresenter = mock(ContentPresenter.class);
+        this.presenter = new WorkbenchPresenter(view, contentPresenter);
+        this.presenter.start(
+                new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreeContentViewDefinition(), new ListContentViewDefinition()).exec(),
+                null,
+                null
+        );
+    }
+
+    @Test
+    public void testGetDefaultViewType() {
+        // WHEN
+        ContentView.ViewType viewType = presenter.getDefaultViewType();
+        // THEN
+        assertEquals(ContentView.ViewType.TREE, viewType);
+    }
 }

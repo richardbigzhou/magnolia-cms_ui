@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.vaadin.view.ModalLayer;
+import info.magnolia.ui.vaadin.overlay.OverlayLayer;
 
 /**
  * Defines an app. Is called by the Magnolia shell as the user interacts with the app.
@@ -55,8 +55,8 @@ public interface App {
      * Open a dialog which enables a user to choose an item from the app.
      * 
      * @param path The path of an item that should be selected when the dialog is opened. Path relative to the tree root, must start with '/'.
-     * @param modalLayer The layer over which the opened dialog should be modal. See {@link Shell}, {@link SubAppContext}, {@link AppContext}.
+     * @param overlayLayer The layer over which the opened dialog should be presented and be modal. See Shell, {@link SubAppContext}, {@link AppContext}.
      * @param listener A listener to handle when user clicks one of the dialog buttons.
      */
-    void openChooseDialog(String path, ModalLayer modalLayer, ItemChosenListener listener);
+    void openChooseDialog(String path, OverlayLayer overlayLayer, ItemChosenListener listener);
 }

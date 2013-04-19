@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2011-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -45,7 +45,7 @@ import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.view.ModalLayer;
+import info.magnolia.ui.vaadin.overlay.OverlayLayer;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -64,7 +64,7 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
     private final JcrNodeAdapter itemToEdit;
     private FormDialogPresenter formDialogPresenter;
 
-    private final ModalLayer modalLayer;
+    private final OverlayLayer overlayLayer;
     private EventBus eventBus;
 
     @Inject
@@ -72,7 +72,7 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
         super(definition);
         this.itemToEdit = itemToEdit;
         this.formDialogPresenter = formDialogPresenter;
-        this.modalLayer = subAppContext;
+        this.overlayLayer = subAppContext;
         this.eventBus = eventBus;
     }
 
@@ -86,7 +86,7 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
         }
 
         final String parentNodePath = tempParentNodePath;
-        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), modalLayer, new EditorCallback() {
+        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), overlayLayer, new EditorCallback() {
             @Override
             public void onSuccess(String actionName) {
                 final String newItemId = (String) itemToEdit.getItemProperty(ModelConstants.JCR_NAME).getValue();
