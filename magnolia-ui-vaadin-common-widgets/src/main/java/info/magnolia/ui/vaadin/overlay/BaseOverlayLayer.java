@@ -43,6 +43,7 @@ import info.magnolia.ui.vaadin.icon.CompositeIcon;
 import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
 import info.magnolia.ui.vaadin.view.View;
 
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -83,7 +84,9 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
             @Override
             public void onActionExecuted(String actionName) {
                 overlayCloser.close();
-                cb.onOk();
+                if (cb != null) {
+                    cb.onOk();
+                }
             }
         });
 
@@ -140,11 +143,11 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
             public Component asVaadinComponent() {
                 Layout layout = new CssLayout();
 
-                Label titleLabel = new Label(title);
+                Label titleLabel = new Label(title, ContentMode.HTML);
                 titleLabel.addStyleName("title");
                 layout.addComponent(titleLabel);
 
-                Label bodyLabel = new Label(body);
+                Label bodyLabel = new Label(body, ContentMode.HTML);
                 bodyLabel.addStyleName("body");
                 layout.addComponent(bodyLabel);
 
@@ -232,7 +235,7 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
         View view = new View() {
             @Override
             public Component asVaadinComponent() {
-                return new Label(title);
+                return new Label(title, ContentMode.HTML);
             }
         };
         openNotification(type, doesTimeout, view);
@@ -249,7 +252,7 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
             public Component asVaadinComponent() {
                 HorizontalLayout layout = new HorizontalLayout();
                 layout.setSpacing(true);
-                layout.addComponent(new Label(title));
+                layout.addComponent(new Label(title, ContentMode.HTML));
 
                 Button button = new Button(linkText, new ClickListener() {
                     @Override
