@@ -34,7 +34,8 @@
 package info.magnolia.ui.vaadin.icon;
 
 /**
- * The ErrorIcon.
+ * The NullIcon.
+ * For when its convenient to have an icon, but which icon is not defined.
  */
 public class NullIcon extends CompositeIcon {
 
