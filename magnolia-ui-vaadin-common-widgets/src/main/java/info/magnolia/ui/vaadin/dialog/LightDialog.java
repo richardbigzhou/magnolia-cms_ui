@@ -31,18 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.view;
+package info.magnolia.ui.vaadin.dialog;
 
 /**
- * Implementers can open modal views over their display area.
+ * A thin component to create a dialog with a light style.
+ * LightDialogs are used for small simple dialogs like Confirmations and Alerts.
+ * Currently LightDialog client side implementation just sets the css style name.
  */
-public interface ModalLayer {
-
-    /**
-     * Open a Modal on top of the ModalLayer implementer.
-     * 
-     * @param view View of the component to be displayed modally.
-     */
-    ModalCloser openModal(View view);
+public class LightDialog extends BaseDialog {
 
 }

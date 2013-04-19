@@ -3,6 +3,7 @@
 @import "../commonbase/commonbase.scss";
 @import "fonts.scss";
 @import "colors.scss";
+@import "messages.scss";
 @import "button.scss";
 @import "inputfield.scss";
 @import "datefield.scss";
@@ -35,6 +36,7 @@
     display: none;
   }
 
+  @include messages;
   @include button;
   @include inputfield;
   @include datefield;

@@ -39,6 +39,7 @@ import info.magnolia.ui.vaadin.icon.CompositeIcon;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.ui.AbstractLayoutConnector;
+import com.vaadin.shared.ui.AbstractLayoutState;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -46,6 +47,7 @@ import com.vaadin.shared.ui.Connect;
  */
 @Connect(CompositeIcon.class)
 public class CompositeIconConnector extends AbstractLayoutConnector {
+
 
     @Override
     public IconWidget getWidget() {
@@ -58,8 +60,8 @@ public class CompositeIconConnector extends AbstractLayoutConnector {
     }
 
     @Override
-    protected CompositeIconState createState() {
-        return new CompositeIconState();
+    protected AbstractLayoutState createState() {
+        return new AbstractLayoutState();
     }
 
     @Override

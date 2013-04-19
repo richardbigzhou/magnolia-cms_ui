@@ -42,6 +42,7 @@ import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,26 +72,11 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     private static final long serialVersionUID = 1L;
     private static final Logger log = LoggerFactory.getLogger(BasicUploadField.class);
 
-    // Caption definition
-    protected String selectNewCaption;
-    protected String selectAnotherCaption;
-    protected String deleteCaption;
-    protected String dropZoneCaption;
-    protected String inProgressCaption;
-    protected String inProgressRatioCaption;
-    protected String fileDetailHeaderCaption;
-    protected String fileDetailNameCaption;
-    protected String fileDetailSizeCaption;
-    protected String fileDetailFormatCaption;
-    protected String fileDetailSourceCaption;
-    protected String successNoteCaption;
-    protected String warningNoteCaption;
-    protected String errorNoteCaption;
 
     // Root layout
     private final CssLayout layout;
     private UploadProgressIndicator progress;
-    private final ImageProvider imageProvider;
+    protected final ImageProvider imageProvider;
 
     public BasicUploadField(D fileWrapper, File tmpUploadDirectory, ImageProvider imageProvider) {
         super(fileWrapper, tmpUploadDirectory);
@@ -130,10 +116,10 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     protected void buildEmptyLayout() {
         layout.removeAllComponents();
         // Add Upload Button
-        getUpload().setButtonCaption(selectNewCaption);
+        getUpload().setButtonCaption(getCaption(selectNewCaption));
         layout.addComponent(getUpload());
         // Add DropZone Label
-        Label uploadText = new Label(dropZoneCaption, ContentMode.HTML);
+        Label uploadText = new Label(getCaption(dropZoneCaption), ContentMode.HTML);
         uploadText.addStyleName("upload-text");
         layout.addComponent(uploadText);
 
@@ -154,8 +140,10 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
      * - A Cancel Button <br>
      */
     @Override
-    protected void buildInProgressLayout() {
+    protected void buildInProgressLayout(String uploadedFileMimeType) {
         layout.removeAllComponents();
+        // Update the caption Extension
+        setCaptionExtension(uploadedFileMimeType);
         // Create the process Indigator
         progress = new BasicUploadProcessIndicator(inProgressCaption, inProgressRatioCaption);
         progress.setVisible(true);
@@ -195,6 +183,8 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     @Override
     protected void buildCompletedLayout() {
         layout.removeAllComponents();
+        // Update the caption Extension
+        setCaptionExtension(null);
         // Create the File Detail Component
         layout.addComponent(createFileInfoComponent());
         // Create the Action Layout
@@ -222,13 +212,13 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         actionLayout.addStyleName("buttons");
         actionLayout.setSpacing(true);
         // Add Upload Button
-        getUpload().setButtonCaption(selectAnotherCaption);
+        getUpload().setButtonCaption(getCaption(selectAnotherCaption));
         actionLayout.addComponent(getUpload());
         // Add Remove Button if a file is present.
         if (!getFileWrapper().isEmpty()) {
             Button delete = createDeleteButton();
             actionLayout.addComponent(delete);
-            actionLayout.setComponentAlignment(delete, Alignment.MIDDLE_LEFT);
+            actionLayout.setComponentAlignment(delete, Alignment.MIDDLE_RIGHT);
         }
         return actionLayout;
     }
@@ -258,7 +248,8 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         Button deleteButton = new Button();
         deleteButton.setHtmlContentAllowed(true);
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
-        deleteButton.setDescription(deleteCaption);
+        deleteButton.addStyleName("inline");
+        deleteButton.setDescription(MessagesUtil.get(deleteCaption));
 
         deleteButton.addClickListener(new Button.ClickListener() {
             private static final long serialVersionUID = 1L;
@@ -297,13 +288,13 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
 
         // Title
         sb.append("<span class=\"value\">");
-        sb.append(fileDetailHeaderCaption);
+        sb.append(getCaption(fileDetailHeaderCaption));
         sb.append("</span>");
         sb.append("<br/><br/>");
 
         // Name
         sb.append("<span class=\"key\">");
-        sb.append(fileDetailNameCaption);
+        sb.append(getCaption(fileDetailNameCaption));
         sb.append("</span>");
         sb.append("<span class=\"value\">");
         sb.append(getFileWrapper().getFileName());
@@ -312,7 +303,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
 
         // Size
         sb.append("<span class=\"key\">");
-        sb.append(fileDetailSizeCaption);
+        sb.append(getCaption(fileDetailSizeCaption));
         sb.append("</span>");
         sb.append("<span class=\"value\">");
         sb.append(FileUtils.byteCountToDisplaySize(getFileWrapper().getFileSize()));
@@ -321,7 +312,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
 
         // Format
         sb.append("<span class=\"key\">");
-        sb.append(fileDetailFormatCaption);
+        sb.append(getCaption(fileDetailFormatCaption));
         sb.append("</span>");
         sb.append("<span class=\"value\">");
         sb.append(getFileWrapper().getExtension());
@@ -359,66 +350,79 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         return getRootLayout();
     }
 
-    public void setSelectNewCaption(String selectNewCaption) {
-        this.selectNewCaption = MessagesUtil.get(selectNewCaption);
-    }
-
-    public void setSelectAnotherCaption(String selectAnotherCaption) {
-        this.selectAnotherCaption = MessagesUtil.get(selectAnotherCaption);
-    }
-
-    public void setDropZoneCaption(String dropZoneCaption) {
-        this.dropZoneCaption = MessagesUtil.get(dropZoneCaption);
-    }
-
     /**
-     * Process Indicator will resolve the i18n Message.
+     * Caption section.
      */
+    protected String captionExtension;
+
+    protected void setCaptionExtension(String mimeType) {
+        captionExtension = StringUtils.EMPTY;
+    }
+
+    protected String getCaption(String caption) {
+        if (StringUtils.isEmpty(caption)) {
+            return StringUtils.EMPTY;
+        }
+        caption = StringUtils.isNotBlank(captionExtension) ? caption + "." + captionExtension : caption;
+        return MessagesUtil.get(caption);
+    }
+
+    protected String selectNewCaption;
+    protected String selectAnotherCaption;
+    protected String deleteCaption;
+    protected String dropZoneCaption;
+    protected String inProgressCaption;
+    protected String inProgressRatioCaption;
+    protected String fileDetailHeaderCaption;
+    protected String fileDetailNameCaption;
+    protected String fileDetailSizeCaption;
+    protected String fileDetailFormatCaption;
+    protected String fileDetailSourceCaption;
+    protected String successNoteCaption;
+    protected String warningNoteCaption;
+    protected String errorNoteCaption;
+
+    public void setSelectNewCaption(String selectNewCaption) {
+        this.selectNewCaption = selectNewCaption;
+    }
+    public void setSelectAnotherCaption(String selectAnotherCaption) {
+        this.selectAnotherCaption = selectAnotherCaption;
+    }
+    public void setDropZoneCaption(String dropZoneCaption) {
+        this.dropZoneCaption = dropZoneCaption;
+    }
     public void setInProgressCaption(String inProgressCaption) {
         this.inProgressCaption = inProgressCaption;
     }
-
-    /**
-     * Process Indicator will resolve the i18n Message.
-     */
     public void setInProgressRatioCaption(String inProgressRatioCaption) {
         this.inProgressRatioCaption = inProgressRatioCaption;
     }
-
     public void setFileDetailHeaderCaption(String fileDetailHeaderCaption) {
-        this.fileDetailHeaderCaption = MessagesUtil.get(fileDetailHeaderCaption);
+        this.fileDetailHeaderCaption = fileDetailHeaderCaption;
     }
-
     public void setFileDetailNameCaption(String fileDetailNameCaption) {
-        this.fileDetailNameCaption = MessagesUtil.get(fileDetailNameCaption);
+        this.fileDetailNameCaption = fileDetailNameCaption;
     }
-
     public void setFileDetailSizeCaption(String fileDetailSizeCaption) {
-        this.fileDetailSizeCaption = MessagesUtil.get(fileDetailSizeCaption);
+        this.fileDetailSizeCaption = fileDetailSizeCaption;
     }
-
     public void setFileDetailFormatCaption(String fileDetailFormatCaption) {
-        this.fileDetailFormatCaption = MessagesUtil.get(fileDetailFormatCaption);
+        this.fileDetailFormatCaption = fileDetailFormatCaption;
     }
-
     public void setFileDetailSourceCaption(String fileDetailSourceCaption) {
-        this.fileDetailSourceCaption = MessagesUtil.get(fileDetailSourceCaption);
+        this.fileDetailSourceCaption = fileDetailSourceCaption;
     }
-
     public void setSuccessNoteCaption(String successNoteCaption) {
-        this.successNoteCaption = MessagesUtil.get(successNoteCaption);
+        this.successNoteCaption = successNoteCaption;
     }
-
     public void setWarningNoteCaption(String warningNoteCaption) {
-        this.warningNoteCaption = MessagesUtil.get(warningNoteCaption);
+        this.warningNoteCaption = warningNoteCaption;
     }
-
     public void setErrorNoteCaption(String errorNoteCaption) {
-        this.errorNoteCaption = MessagesUtil.get(errorNoteCaption);
+        this.errorNoteCaption = errorNoteCaption;
     }
-
     public void setDeteteCaption(String deleteCaption) {
-        this.deleteCaption = MessagesUtil.get(deleteCaption);
+        this.deleteCaption = deleteCaption;
     }
 
     @Override
@@ -434,6 +438,13 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     @Override
     protected void displayUploadFaildNote(String fileName) {
         // Do Nothing
+    }
+
+    /**
+     * For test cases.
+     */
+    public CssLayout getCssLayout() {
+        return this.layout;
     }
 
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -48,13 +48,15 @@ import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.vaadin.dialog.Modal;
-import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
-import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.overlay.BaseOverlayLayer;
+import info.magnolia.ui.vaadin.overlay.Overlay;
+import info.magnolia.ui.vaadin.overlay.OverlayCloser;
+import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
+import info.magnolia.ui.vaadin.overlay.Overlay.ModalityDomain;
 import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.view.Viewport;
 
@@ -73,7 +75,7 @@ import com.vaadin.ui.Component;
  * Admin shell.
  */
 @Singleton
-public class ShellImpl implements Shell, MessageEventHandler {
+public class ShellImpl extends BaseOverlayLayer implements Shell, MessageEventHandler {
 
     /**
      * Provides the current location of shell apps.
@@ -212,13 +214,13 @@ public class ShellImpl implements Shell, MessageEventHandler {
     }
 
     @Override
-    public ModalCloser openModal(final View view) {
-        return magnoliaShell.openModal(view, magnoliaShell, Modal.ModalityLevel.SHELL);
+    public OverlayCloser openOverlay(final View view, ModalityLevel modalityLevel) {
+        return magnoliaShell.openOverlay(view, magnoliaShell, Overlay.ModalityDomain.SHELL, modalityLevel);
     }
 
     @Override
-    public ModalCloser openModalOnView(View view, View parent, ModalityLevel modalityLevel) {
-        return magnoliaShell.openModal(view, parent, modalityLevel);
+    public OverlayCloser openOverlayOnView(View view, View parent, ModalityDomain modalityLocation, ModalityLevel modalityLevel) {
+        return magnoliaShell.openOverlay(view, parent, modalityLocation, modalityLevel);
     }
 
     @Override
@@ -349,5 +351,6 @@ public class ShellImpl implements Shell, MessageEventHandler {
     public MagnoliaShell getMagnoliaShell() {
         return magnoliaShell;
     }
+
 
 }

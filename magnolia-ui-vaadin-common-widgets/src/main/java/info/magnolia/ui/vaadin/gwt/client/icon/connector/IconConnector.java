@@ -49,16 +49,11 @@ public class IconConnector extends AbstractComponentConnector {
 
     @Override
     protected void init() {
-        addStateChangeHandler(new StateChangeHandler() {
-            @Override
-            public void onStateChanged(StateChangeEvent stateChangeEvent) {
-            }
-        });
+        super.init();
 
         addStateChangeHandler("iconName", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                IconState state = getState();
                 getWidget().setIconName(getState().iconName);
             }
         });
