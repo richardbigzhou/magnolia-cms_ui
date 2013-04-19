@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.contentapp.field;
 
-import info.magnolia.ui.contentapp.browser.BrowserView;
 import info.magnolia.ui.workbench.WorkbenchView;
 
 import com.vaadin.data.Property;
@@ -44,7 +43,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * A base custom field allowing to display a {@link BrowserView} and a TextField.
+ * A base custom field allowing to display a {@link info.magnolia.ui.contentapp.browser.BrowserView} and a TextField.
  * <ul>
  * <li>Text field can be hidden or placed on top or button.
  * <li>This field is mainly used to perform some selection in a list and to put the selected value into the text input field.
