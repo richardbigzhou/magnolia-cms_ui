@@ -74,7 +74,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             try {
                 return lhs.getName().compareTo(rhs.getName());
             } catch (RepositoryException e) {
-                log.warn("Cannot compare item names", e);
+                log.warn("Cannot compare item names: " + e);
                 return 0;
             }
         }
