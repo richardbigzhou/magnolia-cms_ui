@@ -40,7 +40,7 @@ import com.vaadin.ui.Component;
 
 /**
  * A Single component container that includes a "glass" or "curtain" which dims out and prevents interaction on the elements
- * below it. It is different then a Vaadin Window in that ONLY the component that it is attached to recieves the modal glass.
+ * below it. It is different than a Vaadin Window in that ONLY the component that it is attached to receives the modal glass.
  * It is only modal within the component that it is added to.
  * Positioning of the glass and component depends on one of the parents having css position set to relative or absolute.
  */
