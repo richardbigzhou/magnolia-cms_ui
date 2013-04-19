@@ -52,7 +52,7 @@ public class StatusBarViewImpl extends HorizontalLayout implements StatusBarView
     private String color;
 
     public StatusBarViewImpl() {
-        removeStyleName("v-horizontallayout");
+        setWidth(100, Unit.PERCENTAGE);
         setStyleName(STYLE_NAME);
     }
 
