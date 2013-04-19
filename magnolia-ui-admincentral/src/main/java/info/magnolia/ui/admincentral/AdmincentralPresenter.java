@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.app.simple.DefaultLocationHistoryMapper;
 import info.magnolia.ui.admincentral.shellapp.ShellAppController;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherShellApp;
@@ -41,19 +42,25 @@ import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesShellApp;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseShellApp;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.location.LocationHistoryHandler;
 import info.magnolia.ui.framework.message.LocalMessageDispatcher;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import com.vaadin.server.ErrorEvent;
+import com.vaadin.server.ErrorHandler;
+import com.vaadin.server.VaadinSession;
+import com.vaadin.ui.UI;
 
 /**
  * Presenter which starts up the components that make up Admincentral.
@@ -78,6 +85,15 @@ public class AdmincentralPresenter {
         locationHistoryHandler.register(locationController, eventBus, new DefaultLocation(Location.LOCATION_TYPE_SHELL_APP, "applauncher", "", ""));
 
         messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), messageDispatcher);
+
+        UI.getCurrent().setErrorHandler(new ErrorHandler() {
+
+            @Override
+            public void error(ErrorEvent event) {
+                shell.showError(new Message(MessageType.ERROR, event.getThrowable().getMessage(), event.getThrowable().getMessage()));
+            }
+        });
+        VaadinSession.getCurrent().setErrorHandler(null);
     }
 
     public View start() {
