@@ -33,14 +33,25 @@
  */
 package info.magnolia.ui.admincentral;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.vaadin.server.BootstrapFragmentResponse;
 import com.vaadin.server.BootstrapListener;
 import com.vaadin.server.BootstrapPageResponse;
+import com.vaadin.server.JsonPaintTarget;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.SessionInitListener;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinServletRequest;
+import com.vaadin.shared.ApplicationConstants;
 
 /**
  * The AdmincentralVaadinServlet.
@@ -66,6 +77,76 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
                 });
             }
         });
+    }
+
+    @Override
+    protected void criticalNotification(VaadinServletRequest request, HttpServletResponse response, String caption, String message, String details, String url) throws IOException {
+
+        if (isUidlRequest(request)) {
+            // override default error UIDL response with the RPC call to show an error message instead.
+
+            if (caption != null) {
+                caption = "\"" + JsonPaintTarget.escapeJSON(caption) + "\"";
+            }
+            if (details != null) {
+                if (message == null) {
+                    message = details;
+                } else {
+                    message += "<br/><br/>" + details;
+                }
+            }
+            if (message != null) {
+                message = "\"" + JsonPaintTarget.escapeJSON(message) + "\"";
+            }
+            if (url != null) {
+                url = "\"" + JsonPaintTarget.escapeJSON(url) + "\"";
+            }
+
+            String outrpc = "for(;;);[{\"changes\":[], \"rpc\" : ["
+                    + "[\"1\",\"info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc\",\"showMessage\","
+                    + "[\"ERROR\"," + caption + "," + message + ",null]]]}]";
+            writeResponse(response, "application/json; charset=UTF-8", outrpc);
+
+        } else {
+            super.criticalNotification(request, response, caption, message, details, url);
+        }
+    }
+
+    /**
+     * same as {@link com.vaadin.server.ServletPortletHelper#isUIDLRequest}.
+     */
+    private boolean isUidlRequest(HttpServletRequest request) {
+        String prefix = ApplicationConstants.UIDL_PATH + '/';
+        String pathInfo = request.getPathInfo();
+
+        if (pathInfo == null) {
+            return false;
+        }
+
+        if (!prefix.startsWith("/")) {
+            prefix = '/' + prefix;
+        }
+
+        if (pathInfo.startsWith(prefix)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * same as {@link VaadinServlet#writeResponse}.
+     */
+    private void writeResponse(HttpServletResponse response,
+            String contentType, String output) throws IOException {
+        response.setContentType(contentType);
+        final ServletOutputStream out = response.getOutputStream();
+        // Set the response type
+        final PrintWriter outWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(out, "UTF-8")));
+        outWriter.print(output);
+        outWriter.flush();
+        outWriter.close();
+        out.flush();
     }
 
 }
