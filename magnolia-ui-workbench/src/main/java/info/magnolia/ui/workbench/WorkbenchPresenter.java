@@ -103,7 +103,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         view.refresh();
     }
 
-    public ContentView.ViewType getDefaultView() {
+    public ContentView.ViewType getDefaultViewType() {
         for (ContentViewDefinition definition : this.workbenchDefinition.getContentViews()) {
             if (definition.isActive()) {
                 return definition.getViewType();
@@ -125,7 +125,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         boolean itemExists = itemExists(path);
         if (!itemExists) {
             log.warn(
-                    "Trying to resynch workbench with no longer existing path {} at workspace {}. Will reset path to root.",
+                    "Trying to re-synch workbench with no longer existing path {} at workspace {}. Will reset path to root.",
                     path, workbenchDefinition.getWorkspace());
         }
         view.selectPath(itemExists ? path : "/");

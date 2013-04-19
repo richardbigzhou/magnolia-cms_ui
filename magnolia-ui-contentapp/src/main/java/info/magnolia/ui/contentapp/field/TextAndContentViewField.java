@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.contentapp.field;
 
-import info.magnolia.ui.contentapp.browser.BrowserView;
+import info.magnolia.ui.workbench.WorkbenchView;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter.ConversionException;
@@ -43,7 +43,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * A base custom field allowing to display a {@link BrowserView} and a TextField.
+ * A base custom field allowing to display a {@link info.magnolia.ui.contentapp.browser.BrowserView} and a TextField.
  * <ul>
  * <li>Text field can be hidden or placed on top or button.
  * <li>This field is mainly used to perform some selection in a list and to put the selected value into the text input field.
@@ -51,7 +51,7 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class TextAndContentViewField extends CustomField<String> {
 
-    private BrowserView contentView;
+    private WorkbenchView contentView;
 
     private VerticalLayout layout;
 
@@ -90,7 +90,7 @@ public class TextAndContentViewField extends CustomField<String> {
         return this.textField;
     }
 
-    public BrowserView getContentView() {
+    public WorkbenchView getContentView() {
         return this.contentView;
     }
 
@@ -98,7 +98,7 @@ public class TextAndContentViewField extends CustomField<String> {
      * Set contentView, and Add it to the Layout.
      * Based on displayTextFieldOnTop, put it before or after the TextField.
      */
-    public void setContentView(BrowserView contentView) {
+    public void setContentView(WorkbenchView contentView) {
         if (this.contentView != null) {
             layout.removeComponent(this.contentView.asVaadinComponent());
         }

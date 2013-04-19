@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.framework.location;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -52,6 +51,7 @@ public class DefaultLocationTest {
         assertEquals("appType", new DefaultLocation("appType", null, "", null).toString());
         assertEquals("", new DefaultLocation("", "", "", "").toString());
         assertEquals("", new DefaultLocation(null, null, "", null).toString());
+        assertEquals("", new DefaultLocation(null, null, null, null).toString());
     }
 
     @Test
@@ -134,5 +134,29 @@ public class DefaultLocationTest {
 
         // THEN
         assertFalse(result);
+    }
+
+    @Test
+    public void testDefaultLocationFromFragment() throws Exception {
+        // GIVEN
+        DefaultLocation location = new DefaultLocation("appType:appId:subAppId;parameter:parameter2");
+
+        // WHEN
+        String appType = location.getAppType();
+        String appId = location.getAppId();
+        String subAppId = location.getSubAppId();
+        String parameter = location.getParameter();
+
+        // THEN
+        assertEquals("appType", appType);
+        assertEquals("appId", appId);
+        assertEquals("subAppId", subAppId);
+        assertEquals("parameter:parameter2", parameter);
+
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDefaultLocationFromNullFragmentThrowsException() throws Exception {
+        new DefaultLocation(null);
     }
 }

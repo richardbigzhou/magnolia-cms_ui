@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface BaseDialogView extends IsWidget, HasWidgets {
 
-    void setActions(Map<String, String> actionMap);
+    void setActions(Map<String, String> actionMap, String defaultButtonName);
 
     void setDescription(String description);
 

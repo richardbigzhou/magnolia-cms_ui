@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2011-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -268,9 +268,9 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     }
 
     @Override
-    public void openModalOnWidget(Widget modalWidget, Widget modalityParent) {
+    public void openOverlayOnWidget(Widget overlayWidget, Widget overlayParent) {
         // Insert a child widget into a parent element.
-        add(modalWidget, modalityParent.getElement());
+        add(overlayWidget, overlayParent.getElement());
     }
 
     private final ShellAppActivatedEvent.Handler navigationHandler = new ShellAppActivatedEvent.Handler() {
