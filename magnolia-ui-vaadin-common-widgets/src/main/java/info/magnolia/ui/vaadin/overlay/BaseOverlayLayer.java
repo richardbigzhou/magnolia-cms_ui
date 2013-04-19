@@ -251,8 +251,7 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
                 layout.setSpacing(true);
                 layout.addComponent(new Label(title));
 
-                String linkTextBrackets = "[" + linkText + "]";
-                Button button = new Button(linkTextBrackets, new ClickListener() {
+                Button button = new Button(linkText, new ClickListener() {
                     @Override
                     public void buttonClick(ClickEvent event) {
                         cb.onLinkClicked();
