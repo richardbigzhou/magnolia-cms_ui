@@ -49,9 +49,6 @@ public interface WorkbenchDefinition extends Serializable {
 
     String getWorkspace();
 
-    /**
-     * @return the path configured as root for this workspace. If not specified, defaults to root ("/").
-     */
     String getPath();
 
     /**
@@ -85,6 +82,7 @@ public interface WorkbenchDefinition extends Serializable {
     boolean isEditable();
 
     /**
+     * 
      * @return the DropConstraint class used to handle drag&drop.
      */
     Class<? extends DropConstraint> getDropConstraintClass();

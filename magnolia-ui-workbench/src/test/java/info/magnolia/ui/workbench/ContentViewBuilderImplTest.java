@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.workbench;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import info.magnolia.context.MgnlContext;
@@ -79,6 +79,7 @@ public class ContentViewBuilderImplTest {
         componentProvider.setInstance(ImageProviderDefinition.class, imageProvider);
 
         workbenchDef.setWorkspace(workspace);
+        workbenchDef.setPath("/");
 
         final ConfiguredNodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
         nodeTypeDefinition.setName("qux");
@@ -138,17 +139,6 @@ public class ContentViewBuilderImplTest {
 
         // THEN
         assertTrue(result instanceof SearchView);
-    }
-
-    @Test
-    public void testGetPathReturnsRootIfNotSet() throws Exception {
-        // GIVEN all conditions in setUp
-
-        // WHEN
-        String path = workbenchDef.getPath();
-
-        // THEN
-        assertEquals("/", path);
     }
 
     @After
