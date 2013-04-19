@@ -207,7 +207,7 @@
                 <sv:value>superuser</sv:value>
               </sv:property>
             </sv:node>
-            <sv:node sv:name="body">
+            <sv:node sv:name="message">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
                 <sv:value>mgnl:contentNode</sv:value>
               </sv:property>
@@ -224,7 +224,7 @@
                 <sv:value>admin</sv:value>
               </sv:property>
               <sv:property sv:name="label" sv:type="String">
-                <sv:value>Body</sv:value>
+                <sv:value>Message text</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:created" sv:type="Date">
                 <sv:value>2013-04-09T14:48:33.269+02:00</sv:value>
@@ -420,35 +420,6 @@
                 <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
                   <sv:value>superuser</sv:value>
                 </sv:property>
-                <sv:node sv:name="proceed">
-                  <sv:property sv:name="jcr:primaryType" sv:type="Name">
-                    <sv:value>mgnl:contentNode</sv:value>
-                  </sv:property>
-                  <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
-                    <sv:value>mix:lockable</sv:value>
-                  </sv:property>
-                  <sv:property sv:name="jcr:uuid" sv:type="String">
-                    <sv:value>aed13a8a-12fc-47a8-bd09-2b2755049634</sv:value>
-                  </sv:property>
-                  <sv:property sv:name="jcr:created" sv:type="Date">
-                    <sv:value>2013-04-09T13:29:26.377+02:00</sv:value>
-                  </sv:property>
-                  <sv:property sv:name="jcr:createdBy" sv:type="String">
-                    <sv:value>admin</sv:value>
-                  </sv:property>
-                  <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
-                    <sv:value>false</sv:value>
-                  </sv:property>
-                  <sv:property sv:name="mgnl:created" sv:type="Date">
-                    <sv:value>2013-04-08T16:48:05.332+02:00</sv:value>
-                  </sv:property>
-                  <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-                    <sv:value>2013-04-10T15:18:58.620+02:00</sv:value>
-                  </sv:property>
-                  <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
-                    <sv:value>superuser</sv:value>
-                  </sv:property>
-                </sv:node>
               </sv:node>
             </sv:node>
           </sv:node>
