@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
-
-import info.magnolia.objectfactory.Classes;
-import info.magnolia.ui.vaadin.icon.CompositeIcon;
-import info.magnolia.ui.vaadin.icon.ErrorIcon;
-import info.magnolia.ui.vaadin.icon.NullIcon;
-import info.magnolia.ui.vaadin.icon.WarningIcon;
+package info.magnolia.ui.vaadin.icon;
 
 /**
- * The type of message.
+ * The ErrorIcon.
  */
-public enum MessageStyleType {
+public class NullIcon extends CompositeIcon {
 
-    UNKNOWN("", "", NullIcon.class),
-    ERROR("Error", "msgerror", ErrorIcon.class),
-    WARNING("Warning", "msgwarn", WarningIcon.class),
-    INFO("Info", "msginfo", NullIcon.class);
-
-    private String caption;
-    private String cssClass;
-    private Class<? extends CompositeIcon> icon;
-
-    private MessageStyleType(final String caption, final String cssClass, final Class<? extends CompositeIcon> icon) {
-        this.caption = caption;
-        this.cssClass = cssClass;
-        this.icon = icon;
+    public NullIcon() {
+        super();
     }
-
-    @Override
-    public String toString() {
-        return caption;
-    }
-
-    public String getCssClass() {
-        return cssClass;
-    }
-
-    public CompositeIcon makeIcon() {
-        return Classes.getClassFactory().newInstance(icon);
-    }
-
 }
