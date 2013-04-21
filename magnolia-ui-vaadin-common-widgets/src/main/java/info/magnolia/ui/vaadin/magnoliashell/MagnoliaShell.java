@@ -105,8 +105,8 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     }
 
     private void initializeViewports() {
-        final ShellAppsViewport shellAppsViewport = new ShellAppsViewport(MagnoliaShell.this);
-        final AppsViewport appsViewport = new AppsViewport(MagnoliaShell.this);
+        final ShellAppsViewport shellAppsViewport = new ShellAppsViewport();
+        final AppsViewport appsViewport = new AppsViewport();
 
         getState().viewports.put(ViewportType.SHELL_APP, shellAppsViewport);
         getState().viewports.put(ViewportType.APP, appsViewport);
@@ -206,14 +206,6 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     public void closeOverlay(Component overlayComponent) {
         Overlay overlay = (Overlay) overlayComponent.getParent();
         getState().overlays.remove(overlay);
-    }
-
-    public void setActiveViewport(ShellViewport viewport) {
-
-    }
-
-    public ShellViewport getActiveViewport() {
-        return (ShellViewport) getState(false).activeViewport;
     }
 
     @Override

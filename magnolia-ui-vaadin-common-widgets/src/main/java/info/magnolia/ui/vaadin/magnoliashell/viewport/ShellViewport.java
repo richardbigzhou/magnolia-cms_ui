@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ViewportState;
 import info.magnolia.ui.vaadin.magnoliashell.DeckLayout;
-import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.view.Viewport;
 
@@ -47,22 +46,14 @@ import com.vaadin.ui.Component;
  */
 public class ShellViewport extends DeckLayout implements Viewport {
 
-    private MagnoliaShell parentShell;
-
     private View view;
 
-    public ShellViewport(MagnoliaShell shell) {
+    public ShellViewport() {
         super();
-        display(null);
-        this.parentShell = shell;
     }
 
     public void setCurrentShellFragment(String currentShellFragment) {
         getState().currentFragment = currentShellFragment;
-    }
-
-    public String getCurrentShellFragment() {
-        return getState(false).currentFragment;
     }
 
     @Override
@@ -70,7 +61,6 @@ public class ShellViewport extends DeckLayout implements Viewport {
         if (view != null) {
             this.view = view;
             display(this.view.asVaadinComponent());
-            parentShell.setActiveViewport(this);
         } else {
             super.pop();
             getState().activeComponent = null;
