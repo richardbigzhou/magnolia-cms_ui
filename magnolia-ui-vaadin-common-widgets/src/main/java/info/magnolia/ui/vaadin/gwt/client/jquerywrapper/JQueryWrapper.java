@@ -40,12 +40,9 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * JQuery library wrapper. The functionality covered is ruled by
- * the needs of MagnoliaShell (and its parts) implementation.
+ * JQuery library wrapper. The functionality covered is ruled by the needs of MagnoliaShell (and its parts) implementation.
  */
 public class JQueryWrapper extends JavaScriptObject {
-
-    public static final String TRANSITION_END_EVENT_ID = "transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd";
 
     protected JQueryWrapper() {
     }
@@ -238,6 +235,10 @@ public class JQueryWrapper extends JavaScriptObject {
     public native final JsArray<Element> get() /*-{
           return this.get();
     }-*/;
+
+    public final boolean isAnimationInProgress() {
+        return is(":animated");
+    }
 
     public static native Integer parseInt(final String value) /*-{
           var number = parseInt(value, 10);

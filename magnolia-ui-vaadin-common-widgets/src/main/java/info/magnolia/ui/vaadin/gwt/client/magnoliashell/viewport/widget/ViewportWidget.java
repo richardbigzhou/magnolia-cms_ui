@@ -43,7 +43,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
@@ -55,9 +55,7 @@ public class ViewportWidget extends FlowPanel {
 
     private final LoadingPane loadingPane = new LoadingPane();
 
-    private Widget visibleApp;
-
-    private EventBus eventBus;
+    private Widget visibleChild;
 
     private TransitionDelegate transitionDelegate;
 
@@ -75,7 +73,7 @@ public class ViewportWidget extends FlowPanel {
             public void onTouchEnd(TouchEndEvent event) {
                 final Element target = event.getNativeEvent().getEventTarget().cast();
                 if (target == getElement()) {
-                    eventBus.fireEvent(new ViewportCloseEvent(ViewportType.SHELL_APP));
+                    fireEvent(new ViewportCloseEvent(ViewportType.SHELL_APP));
                 }
             }
         });
@@ -87,14 +85,6 @@ public class ViewportWidget extends FlowPanel {
 
     public void hideLoadingPane() {
         loadingPane.hide();
-    }
-
-    public EventBus getEventBus() {
-        return eventBus;
-    }
-
-    public void setEventBus(EventBus eventBus) {
-        this.eventBus = eventBus;
     }
 
     public boolean isClosing() {
@@ -120,11 +110,7 @@ public class ViewportWidget extends FlowPanel {
     }
 
     public void setActive(boolean active) {
-        if (transitionDelegate != null) {
-            transitionDelegate.setActive(this, active);
-        } else {
-            doSetActive(active);
-        }
+        transitionDelegate.setActive(this, active);
         this.active = active;
     }
 
@@ -137,41 +123,41 @@ public class ViewportWidget extends FlowPanel {
 
     /* CHANGING VISIBLE APP */
 
-    public Widget getVisibleApp() {
-        return visibleApp;
+    public Widget getVisibleChild() {
+        return visibleChild;
     }
 
-    public void setVisibleApp(Widget w) {
-        if (w != visibleApp) {
-            if (transitionDelegate != null && isActive()) {
+    public void setVisibleChild(Widget w) {
+        if (w != visibleChild) {
+            if (isActive()) {
                 transitionDelegate.setVisibleApp(this, w);
             } else {
-                doSetVisibleApp(w);
+                setChildVisibleNoTransition(w);
             }
-            visibleApp = w;
+            visibleChild = w;
         }
     }
 
     /**
      * Default non-transitioning behavior, accessible to transition delegates as a fall back.
      */
-    public void doSetVisibleApp(Widget w) {
-        if (visibleApp != null) {
-            visibleApp.setVisible(false);
+    public void setChildVisibleNoTransition(Widget w) {
+        if (visibleChild != null) {
+            visibleChild.setVisible(false);
         }
         w.setVisible(true);
     }
 
     public void removeWidget(Widget w) {
-        removeWidgetWithoutTransition(w);
+        removeWithoutTransition(w);
     }
 
-    void removeWidgetWithoutTransition(Widget w) {
-        remove(w);
+    public void removeWithoutTransition(Widget w) {
+        super.remove(w);
     }
 
-    @Override
-    public boolean remove(Widget w) {
-        return super.remove(w);
+    public HandlerRegistration addCloseHandler(ViewportCloseEvent.Handler handler) {
+        return addHandler(handler, ViewportCloseEvent.TYPE);
     }
+
 }

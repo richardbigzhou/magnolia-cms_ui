@@ -42,10 +42,8 @@ import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -53,6 +51,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -76,7 +75,10 @@ public class ShellAppLauncher extends FlowPanel {
 
     private final static String ID = "main-launcher";
 
-    private class NavigatorButton extends FlowPanel {
+    /**
+     * NavigatorButton.
+     */
+    public class NavigatorButton extends FlowPanel {
 
         private final BadgeIconWidget indicator = new BadgeIconWidget();
 
@@ -139,21 +141,9 @@ public class ShellAppLauncher extends FlowPanel {
     protected void onLoad() {
         super.onLoad();
         getElement().getStyle().setTop(-60, Unit.PX);
-        JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {
-            {
+        JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {{
                 setProperty("top", 0);
-            }
-        });
-
-        History.addValueChangeHandler(new ValueChangeHandler<String>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<String> event) {
-                Fragment f = Fragment.fromString(event.getValue());
-                if (f.isShellApp()) {
-                    activateControl(f.resolveShellAppType());
-                }
-            }
-        });
+        }});
     }
 
     public final void updateDivet() {
@@ -179,15 +169,6 @@ public class ShellAppLauncher extends FlowPanel {
         for (final ShellAppType appType : ShellAppType.values()) {
             controlsMap.get(appType).removeStyleName("active");
         }
-    }
-
-    public ShellAppType getNextShellAppType() {
-        final ShellAppType cur = getActiveShellType();
-        if (cur != null) {
-            final List<ShellAppType> values = Arrays.asList(ShellAppType.values());
-            return values.get((values.indexOf(cur) + 1) % values.size());
-        }
-        return ShellAppType.APPLAUNCHER;
     }
 
     public void setIndication(ShellAppType type, int indication) {
@@ -239,21 +220,25 @@ public class ShellAppLauncher extends FlowPanel {
                 emergencyRestartApplication();
             }
         });
-
+        History.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                Fragment f = Fragment.fromString(event.getValue());
+                if (f.isShellApp()) {
+                    activateControl(f.resolveShellAppType());
+                }
+            }
+        });
     }
 
     private void doUpdateDivetPosition(final ShellAppType type, boolean animated) {
-        final Widget w = controlsMap.get(type);
+        Widget w = controlsMap.get(type);
         int divetPos = w.getAbsoluteLeft() + (w.getOffsetWidth() / 2) - divetWrapper.getOffsetWidth() / 2;
         divet.setVisible(true);
-        switch (type) {
-        case APPLAUNCHER:
-            divet.setResource(VShellImageBundle.BUNDLE.getDivetGreen());
-            break;
-        default:
-            divet.setResource(VShellImageBundle.BUNDLE.getDivetWhite());
-            break;
-        }
+        ImageResource res = type == ShellAppType.APPLAUNCHER ?
+                VShellImageBundle.BUNDLE.getDivetGreen() :
+                VShellImageBundle.BUNDLE.getDivetWhite();
+        divet.setResource(res);
         if (animated) {
             final AnimationSettings settings = new AnimationSettings();
             settings.setProperty("left", divetPos);
@@ -265,8 +250,9 @@ public class ShellAppLauncher extends FlowPanel {
     }
 
     /**
+     * TODO: Christopher Zimmermann CLZ
      * Restart the application by appending the &restartApplication querystring to the URL. This is
-     * handy as the application is not totally stable yet. TODO: Christopher Zimmermann CLZ
+     * handy as the application is not totally stable yet.
      * Developer Preview feature.
      */
     private void emergencyRestartApplication() {

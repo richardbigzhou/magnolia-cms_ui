@@ -36,14 +36,12 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppActivatedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget.MessageType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VInfoMessage;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellErrorMessage;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VWarningMessage;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ShellAppsViewportConnector;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget.PreloaderCallback;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ShellAppsViewportWidget;
@@ -62,8 +60,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
-import com.vaadin.client.Util;
-import com.vaadin.client.ui.AbstractComponentConnector;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
@@ -101,7 +97,6 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
     private void bindEventHandlers() {
         eventBus.addHandler(ViewportCloseEvent.TYPE, this);
-        eventBus.addHandler(ShellAppActivatedEvent.TYPE, navigationHandler);
     }
 
     protected AppsViewportWidget getAppViewport() {
@@ -202,7 +197,7 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         ViewportWidget oldViewport = viewports.get(type);
         if (oldViewport != viewport) {
             replaceWidget(oldViewport, viewport);
-            viewport.setEventBus(eventBus);
+            viewport.addCloseHandler(this);
             viewports.put(type, viewport);
         }
     }
@@ -237,11 +232,6 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         }
     }
 
-    /*
-     * @Override public void setPusher(final VICEPush pusher) { if
-     * (getWidgetIndex(pusher) != -1) { insert(pusher, 0); } }
-     */
-
     @Override
     public void setShellAppIndication(ShellAppType type, int indication) {
         mainAppLauncher.setIndication(type, indication);
@@ -273,50 +263,19 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         add(overlayWidget, overlayParent.getElement());
     }
 
-    private final ShellAppActivatedEvent.Handler navigationHandler = new ShellAppActivatedEvent.Handler() {
-        @Override
-        public void onShellAppActivated(final ShellAppActivatedEvent event) {
-
-            Widget shellApp = presenter.getShellAppWidget(event.getType());
-
-            // Loading shell app for the first time
-            if (shellApp == null) {
-                getShellAppViewport().showLoadingPane();
-                presenter.activateShellApp(Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken()));
-                return;
-            }
-
-            ShellAppsViewportWidget viewport = getShellAppViewport();
-            ShellAppActivatedEvent refreshEvent = viewport.getRefreshEvent();
-
-            // Start immediate client transition
-            // Stores the current event as refresh event, which will be fired once again when transition completes.
-            // Therefore if current event is the same as the refresh event, it means transition completed.
-            if (refreshEvent == null || event != refreshEvent) {
-
-                // Store refresh event
-                viewport.setRefreshEvent(event);
-
-                // Update main launcher immediately
-                mainAppLauncher.activateControl(event.getType());
-
-                viewport.setVisibleApp(shellApp);
-                // Set shell apps viewport active if it was not.
-                if (!viewport.isActive()) {
-                    setActiveViewport(viewport);
-                }
-            } else {
-                viewport.setRefreshEvent(null);
-
-                // Show loading pane only if refreshing a different shell app, otherwise client state does not change and loading pane cannot be hidden
-                ShellAppsViewportConnector viewportConnector = (ShellAppsViewportConnector) Util.findConnectorFor(viewport);
-                AbstractComponentConnector activeShellAppConnector = (AbstractComponentConnector) viewportConnector.getState().activeComponent;
-                if (activeShellAppConnector.getWidget() != shellApp) {
-                    getShellAppViewport().showLoadingPane();
-                }
-                presenter.activateShellApp(Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken()));
-            }
+    @Override
+    public void showShellApp(ShellAppType type) {
+        Widget shellApp = presenter.getShellAppWidget(type);
+        ShellAppsViewportWidget viewport = getShellAppViewport();
+        mainAppLauncher.activateControl(type);
+        viewport.setVisibleChild(shellApp);
+        if (!viewport.isActive()) {
+            setActiveViewport(viewport);
         }
-    };
+    }
 
+    @Override
+    public void setActiveViewport(boolean isAppViewport) {
+        setActiveViewport(isAppViewport ? getAppViewport() : getShellAppViewport());
+    }
 }

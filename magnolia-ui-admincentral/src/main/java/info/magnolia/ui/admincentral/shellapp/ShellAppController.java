@@ -89,6 +89,7 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
         appContext.setAppClass(clazz);
         appContext.start();
         contexts.put(name, appContext);
+        viewport.setView(appContext.getView());
     }
 
     public void setViewport(Viewport viewport) {
@@ -104,7 +105,6 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
 
         Location newLocation = event.getNewLocation();
         if (!newLocation.getAppType().equals(Location.LOCATION_TYPE_SHELL_APP)) {
-            viewport.setView(null);
             return;
         }
 
