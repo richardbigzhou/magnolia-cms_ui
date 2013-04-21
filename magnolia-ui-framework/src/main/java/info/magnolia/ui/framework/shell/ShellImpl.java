@@ -108,7 +108,6 @@ public class ShellImpl extends BaseOverlayLayer implements Shell, MessageEventHa
 
             @Override
             public void onAppFocused(AppLifecycleEvent event) {
-                magnoliaShell.setActiveViewport(magnoliaShell.getAppViewport());
             }
 
             @Override
@@ -261,7 +260,6 @@ public class ShellImpl extends BaseOverlayLayer implements Shell, MessageEventHa
         ShellViewport appViewport = magnoliaShell.getAppViewport();
         if (!appViewport.isEmpty()) {
             // An app is open.
-            magnoliaShell.setActiveViewport(appViewport);
             appController.focusCurrentApp();
         } else {
             // No apps are open.

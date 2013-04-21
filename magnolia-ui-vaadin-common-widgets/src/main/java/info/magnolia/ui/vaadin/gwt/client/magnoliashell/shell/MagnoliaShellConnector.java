@@ -160,10 +160,10 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 Fragment newFragment = Fragment.fromString(event.getValue());
-                Fragment currentFragment = Fragment.fromString(getActiveViewportFragment());
-                if (event.getValue().isEmpty() || !newFragment.isSameApp(currentFragment)) {
+                Fragment currentFragment = Fragment.fromString(History.getToken());
+                //if (!event.getValue().isEmpty()/* || !newFragment.isSameApp(currentFragment)*/) {
                     changeAppFromFragment(newFragment);
-                }
+                //}
 
                 view.setActiveViewport(newFragment.isApp());
             }
@@ -269,8 +269,4 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         eventBus.fireEvent(new ShellAppActivatedEvent(ShellAppType.APPLAUNCHER, parameter));
     }
 
-    public String getActiveViewportFragment() {
-        ViewportConnector cc = (ViewportConnector) getState().activeViewport;
-        return cc == null ? "" : cc.getState().currentFragment;
-    }
 }
