@@ -81,6 +81,10 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
      */
     void openOverlayOnWidget(Widget overlayWidget, Widget overlayParent);
 
+    void showShellApp(ShellAppType type);
+
+    void setActiveViewport(boolean isAppViewport);
+
     /**
      * Presenter for {@link MagnoliaShellView}.
      */

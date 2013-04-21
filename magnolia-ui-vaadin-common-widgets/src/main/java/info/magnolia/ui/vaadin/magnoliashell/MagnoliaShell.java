@@ -133,7 +133,6 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
 
     public void doNavigate(final ShellViewport viewport, Fragment fragment) {
         viewport.setCurrentShellFragment(fragment.toFragment());
-        setActiveViewport(viewport);
         notifyOnFragmentChanged(fragment.toFragment());
     }
 
@@ -169,14 +168,10 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         }
 
         getState().indications.put(type, incrementOrDecrement + value);
-        synchronized (UI.getCurrent()) {
-        }
     }
 
     public void setIndication(ShellAppType type, int indication) {
         getState().indications.put(type, indication);
-        synchronized (UI.getCurrent()) {
-        }
     }
 
 
@@ -214,10 +209,7 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     }
 
     public void setActiveViewport(ShellViewport viewport) {
-        final Connector currentActive = getState().activeViewport;
-        if (currentActive != viewport) {
-            getState().activeViewport = viewport;
-        }
+
     }
 
     public ShellViewport getActiveViewport() {
@@ -239,7 +231,7 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         return (MagnoliaShellState) super.getState(markDirty);
     }
 
-    private void notifyOnFragmentChanged(String fragment) {
+    public void notifyOnFragmentChanged(String fragment) {
         listener.onFragmentChanged(fragment);
     }
 

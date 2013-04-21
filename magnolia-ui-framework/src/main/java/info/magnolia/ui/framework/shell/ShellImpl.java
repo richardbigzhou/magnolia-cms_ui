@@ -54,9 +54,9 @@ import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
 import info.magnolia.ui.vaadin.overlay.BaseOverlayLayer;
 import info.magnolia.ui.vaadin.overlay.Overlay;
-import info.magnolia.ui.vaadin.overlay.OverlayCloser;
-import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
 import info.magnolia.ui.vaadin.overlay.Overlay.ModalityDomain;
+import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
+import info.magnolia.ui.vaadin.overlay.OverlayCloser;
 import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.view.Viewport;
 
@@ -69,6 +69,7 @@ import javax.inject.Singleton;
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.UI;
 
 
 /**
@@ -189,7 +190,7 @@ public class ShellImpl extends BaseOverlayLayer implements Shell, MessageEventHa
 
     @Override
     public String getFragment() {
-        return magnoliaShell.getActiveViewport().getCurrentShellFragment();
+        return UI.getCurrent().getPage().getUriFragment();
     }
 
     @Override
@@ -198,10 +199,7 @@ public class ShellImpl extends BaseOverlayLayer implements Shell, MessageEventHa
         f.setAppId(DefaultLocation.extractAppId(fragment));
         f.setSubAppId(DefaultLocation.extractSubAppId(fragment));
         f.setParameter(DefaultLocation.extractParameter(fragment));
-
         getMagnoliaShell().getUI().getPage().setUriFragment(fragment, false);
-        magnoliaShell.getActiveViewport().setCurrentShellFragment(f.toFragment());
-        magnoliaShell.propagateFragmentToClient(f);
     }
 
     @Override
@@ -269,20 +267,15 @@ public class ShellImpl extends BaseOverlayLayer implements Shell, MessageEventHa
             // No apps are open.
             String appLauncherNameLower = ShellAppType.APPLAUNCHER.name().toLowerCase();
             // Only navigate if the requested location is not the applauncher
-            if (magnoliaShell.getActiveViewport() != null) {
-                String fragmentCurrent = magnoliaShell.getActiveViewport().getCurrentShellFragment();
-                if (fragmentCurrent != null && !fragmentCurrent.startsWith(appLauncherNameLower)) {
-                    goToShellApp(Fragment.fromString("shell:applauncher"));
-                }
+            String fragmentCurrent = getFragment();
+            if (fragmentCurrent != null && !fragmentCurrent.startsWith(appLauncherNameLower)) {
+                goToShellApp(Fragment.fromString("shell:applauncher"));
             }
         }
     }
 
     @Override
     public void pushToClient() {
-        // synchronized (getApplication()) {
-        // getPusher().push();
-        // }
     }
 
     /**
