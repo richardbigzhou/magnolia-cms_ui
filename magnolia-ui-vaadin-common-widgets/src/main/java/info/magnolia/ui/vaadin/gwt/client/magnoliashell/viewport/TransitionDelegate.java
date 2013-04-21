@@ -63,7 +63,7 @@ public interface TransitionDelegate {
 
         @Override
         public void setVisibleApp(ViewportWidget viewport, Widget app) {
-            viewport.doSetVisibleApp(app);
+            viewport.setChildVisibleNoTransition(app);
         }
     }
 
