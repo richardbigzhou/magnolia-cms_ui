@@ -142,11 +142,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             public void hideAllMessages() {
                 view.hideAllMessages();
             }
-
-            @Override
-            public void setFragmentFromServer(Fragment fragment) {
-                History.newItem(fragment.toFragment(), true);
-            }
         });
 
         getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() {
@@ -164,7 +159,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 //if (!event.getValue().isEmpty()/* || !newFragment.isSameApp(currentFragment)*/) {
                     changeAppFromFragment(newFragment);
                 //}
-
                 view.setActiveViewport(newFragment.isApp());
             }
         });

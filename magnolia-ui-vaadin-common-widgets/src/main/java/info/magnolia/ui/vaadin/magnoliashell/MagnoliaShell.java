@@ -119,10 +119,6 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         appsViewport.setParent(this);
     }
 
-    public void propagateFragmentToClient(Fragment fragment) {
-        getRpcProxy(ShellClientRpc.class).setFragmentFromServer(fragment);
-    }
-
     public void goToApp(Fragment fragment) {
         listener.goToApp(fragment);
     }

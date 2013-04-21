@@ -33,16 +33,12 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc;
 
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
-
 import com.vaadin.shared.communication.ClientRpc;
 
 /**
  * ShellClientRpc.
  */
 public interface ShellClientRpc extends ClientRpc {
-
-    void setFragmentFromServer(Fragment fragment);
 
     void showMessage(String type, String topic, String msg, String id);
 
