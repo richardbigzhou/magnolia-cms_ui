@@ -160,7 +160,11 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
             addStyleName("v-favorites-entry");
             setSizeUndefined();
             setTitle(favorite.getItemProperty(ModelConstants.JCR_NAME).getValue().toString());
-            setIcon(favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue().toString());
+            String icon = "icon-app";
+            if (favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue() != null) {
+                icon = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue().toString();
+            }
+            setIcon(icon);
             iconElement.setContentMode(ContentMode.HTML);
             iconElement.setWidth(null);
             iconElement.setStyleName("icon");
@@ -194,6 +198,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     public void setFavorites(JcrItemNodeAdapter favoritesForCurrentUser) {
         this.favoritesForCurrentUser = favoritesForCurrentUser;
         Iterator<JcrItemNodeAdapter> favorites = favoritesForCurrentUser.getChildren().values().iterator();
+        newPages.removeAllComponents();
         while(favorites.hasNext()) {
             JcrItemNodeAdapter favorite = favorites.next();
             newPages.addComponent(new FavoriteEntry(favorite));
@@ -229,7 +234,6 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
                     try {
                         binder.commit();
                         listener.addFavorite(newFavorite);
-                        // refresh the app to display the new favorite.
                     } catch (CommitException e) {
                         // TODO how do we display validation errors?
                         Notification.show(e.getMessage());
