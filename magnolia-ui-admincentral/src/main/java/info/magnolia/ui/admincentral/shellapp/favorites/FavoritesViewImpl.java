@@ -135,8 +135,8 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
         public FavoriteEntry(final Item favorite) {
             addStyleName("v-favorites-entry");
-
-            setTitle(favorite.getItemProperty(ModelConstants.JCR_NAME).getValue().toString());
+            
+            setTitle(favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue().toString());
             String icon = "icon-app";
             if (favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue() != null) {
                 icon = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue().toString();
@@ -207,7 +207,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         private TextField title = new TextField("Title");
 
 
-        public FavoriteForm(final JcrItemNodeAdapter newFavorite) {
+        public FavoriteForm(final JcrNewNodeAdapter newFavorite) {
             addStyleName("favorites-form");
             FormLayout layout = new FormLayout();
             title.setWidth(800, Unit.PIXELS);
@@ -251,5 +251,4 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
             setCompositionRoot(layout);
         }
     }
-
 }

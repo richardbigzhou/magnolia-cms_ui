@@ -51,7 +51,7 @@ public interface FavoritesView extends View {
      * Listener.
      */
     interface Listener {
-        void addFavorite(JcrItemNodeAdapter newFavorite);
+        void addFavorite(JcrNewNodeAdapter newFavorite);
 
         void removeFavorite(String id);
     }

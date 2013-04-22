@@ -33,13 +33,16 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.favorite.bookmark.BookmarkStore;
+import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Inject;
@@ -47,7 +50,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * FavoritesManagerImpl.
+ * Implementation of a Manager for Favorites.
  */
 public class FavoritesManagerImpl implements FavoritesManager {
     private BookmarkStore bookmarkStore;
@@ -66,6 +69,7 @@ public class FavoritesManagerImpl implements FavoritesManager {
             JcrNodeAdapter currentChild;
             for (Node bookmark : bookmarks) {
                 currentChild = new JcrNodeAdapter(bookmark);
+                currentChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.TITLE)));
                 currentChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.URL)));
                 currentChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.ICON)));
                 favorites.addChild(currentChild);
@@ -76,12 +80,30 @@ public class FavoritesManagerImpl implements FavoritesManager {
         }
     }
     @Override
-    public void addFavorite(JcrItemNodeAdapter favorite) {
+    public void addFavorite(JcrNewNodeAdapter favorite) {
         try {
+            final String title = (String) favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue();
+            favorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(ModelConstants.JCR_NAME, "", Path.getValidatedLabel(title)));
             favorite.getNode().getSession().save();
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
+    }
+
+    @Override
+    public JcrNewNodeAdapter createFavoriteSuggestion(String location, String title, String icon) {
+        Node bookmarkRoot;
+        try {
+            bookmarkRoot = bookmarkStore.getBookmarkRoot();
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+
+        JcrNewNodeAdapter newFavorite = new JcrNewNodeAdapter(bookmarkRoot, AdmincentralNodeTypes.Favorite.NAME);
+        newFavorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", title));
+        newFavorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", location));
+        newFavorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", icon));
+        return newFavorite;
     }
 
     @Override

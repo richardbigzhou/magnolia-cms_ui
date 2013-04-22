@@ -33,16 +33,12 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.framework.AdmincentralNodeTypes;
-import info.magnolia.ui.model.ModelConstants;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import javax.inject.Inject;
 
 /**
- * FavoritesPresenter.
+ * Presenter for Favorites.
  */
 public class FavoritesPresenter implements FavoritesView.Listener {
 
@@ -69,7 +65,7 @@ public class FavoritesPresenter implements FavoritesView.Listener {
     }
 
     @Override
-    public void addFavorite(JcrItemNodeAdapter favorite) {
+    public void addFavorite(JcrNewNodeAdapter favorite) {
         favoritesManager.addFavorite(favorite);
         // Give view the updated favorites collection, so that the newly added one is immediately displayed.
         view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""));
@@ -79,11 +75,6 @@ public class FavoritesPresenter implements FavoritesView.Listener {
      * @return a {@link JcrNewNodeAdapter} used to pre-populate a form in the UI with a suggestion for a new favorite.
      */
     public JcrNewNodeAdapter createNewFavoriteSuggestion(String location, String title, String icon) {
-        JcrNewNodeAdapter newFavorite = new JcrNewNodeAdapter(favoritesManager.getFavorites().getNode(), AdmincentralNodeTypes.Favorite.NAME);
-        newFavorite.addItemProperty(ModelConstants.JCR_NAME, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", title));
-        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.URL, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", location));
-        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", icon));
-        return newFavorite;
+        return favoritesManager.createFavoriteSuggestion(location, title, icon);
     }
-
 }
