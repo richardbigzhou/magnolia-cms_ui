@@ -2,18 +2,16 @@
 
 @import "../admincentraltheme/admincentraltheme.scss";
 @import "../magnolia/magnolia.scss";
-@import "../contentapp/contentapp.scss";
 @import "../workbench/workbench.scss";
 
 @import "field/linkfield.scss";
 
-@import "dam-app-assets.scss";
+@import "../dam-app-assets/dam-app-assets.scss";
+@import "../ui-contentapp/ui-contentapp.scss";
 
 @include magnolia;
 @include admincentraltheme;
-@include contentapp;
 @include workbench;
-@include dam-app-assets;
 
 @mixin admincentral {
   @include linkfield;
@@ -26,3 +24,6 @@
   right: 0;
   bottom: 0;
 }
+
+@include dam-app-assets;
+@include ui-contentapp;

@@ -263,17 +263,6 @@ fieldset {
     margin-left: 3px;
 }
 
-.content-view-field-wrapper .v-form-field-label {
-    display: none;
-}
-
-/*
-* used by TextAndButtonField custom component.
-*/
-input[type="text"].small-textfield {
-   width: 100%;
-}
-
 .v-form-field.v-richtextarea {
     width: 523px !important;
 }
