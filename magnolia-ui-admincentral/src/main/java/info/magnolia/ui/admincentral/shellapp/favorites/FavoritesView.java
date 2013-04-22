@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.view.View;
 
 /**
@@ -45,7 +46,7 @@ public interface FavoritesView extends View {
 
     void setFavorites(JcrItemNodeAdapter favoritesRoot);
 
-    void setFavoriteLocation(FavoriteLocation location);
+    void setFavoriteLocation(JcrNewNodeAdapter location);
     /**
      * Listener.
      */

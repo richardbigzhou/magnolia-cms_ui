@@ -35,7 +35,6 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.model.ModelConstants;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
@@ -67,9 +66,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
     private VerticalLayout layout = new VerticalLayout();
     private FavoritesView.Listener listener;
-    private JcrItemNodeAdapter favoritesForCurrentUser;
     private FavoritesSection newPages;
-    private FavoriteLocation favoriteLocation;
     private FavoriteForm favoriteForm;
 
     @Override
@@ -136,14 +133,9 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     }
 
     @Override
-    public void setFavoriteLocation(FavoriteLocation favoriteLocation) {
-        this.favoriteLocation = favoriteLocation;
-
-        JcrNewNodeAdapter newFavorite = createNewFavorite(favoriteLocation);
-
+    public void setFavoriteLocation(JcrNewNodeAdapter newFavorite) {
         layout.removeComponent(favoriteForm);
         favoriteForm = new FavoriteForm(newFavorite);
-
         layout.addComponent(favoriteForm);
     }
 
@@ -196,7 +188,6 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
     @Override
     public void setFavorites(JcrItemNodeAdapter favoritesForCurrentUser) {
-        this.favoritesForCurrentUser = favoritesForCurrentUser;
         Iterator<JcrItemNodeAdapter> favorites = favoritesForCurrentUser.getChildren().values().iterator();
         newPages.removeAllComponents();
         while(favorites.hasNext()) {
@@ -258,11 +249,4 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         }
     }
 
-    private JcrNewNodeAdapter createNewFavorite(FavoriteLocation favoriteLocation) {
-        JcrNewNodeAdapter newFavorite = new JcrNewNodeAdapter(favoritesForCurrentUser.getNode(), AdmincentralNodeTypes.Favorite.NAME);
-        newFavorite.addItemProperty(ModelConstants.JCR_NAME, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", favoriteLocation.getTitle()));
-        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.URL, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", favoriteLocation.getUrl()));
-        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", favoriteLocation.getIcon()));
-        return newFavorite;
-    }
 }

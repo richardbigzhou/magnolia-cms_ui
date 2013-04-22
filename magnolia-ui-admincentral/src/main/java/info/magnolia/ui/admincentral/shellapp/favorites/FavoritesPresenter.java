@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
 import javax.inject.Inject;
+import javax.jcr.Node;
 
 /**
  * FavoritesPresenter.
@@ -62,5 +63,9 @@ public class FavoritesPresenter implements FavoritesView.Listener {
         favoritesManager.addFavoriteForCurrentUser(favorite);
         // Give view the updated favorites collection, so that the newly added one is immediately displayed.
         view.setFavorites(favoritesManager.getFavoritesForCurrentUser());
+    }
+
+    public Node getFavoritesNodeForCurrentUser() {
+        return favoritesManager.getFavoritesForCurrentUser().getNode();
     }
 }
