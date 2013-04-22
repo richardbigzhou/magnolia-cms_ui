@@ -39,7 +39,7 @@ import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.ShellImpl;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.View;
 
 import javax.inject.Inject;
 

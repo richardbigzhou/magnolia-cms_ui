@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.View;
 
 
 /**

@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
-import info.magnolia.ui.vaadin.view.View;
 
 import org.vaadin.cssinject.CSSInject;
 

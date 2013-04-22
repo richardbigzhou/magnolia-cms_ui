@@ -43,7 +43,7 @@ import info.magnolia.ui.form.FormBuilder;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.View;
 
 import javax.inject.Inject;
 

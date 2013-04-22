@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.icon.Icon;
-import info.magnolia.ui.vaadin.view.View;
 
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.ui.Component;

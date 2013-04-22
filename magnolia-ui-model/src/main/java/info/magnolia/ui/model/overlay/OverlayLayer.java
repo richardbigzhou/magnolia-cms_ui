@@ -31,16 +31,58 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
+package info.magnolia.ui.model.overlay;
 
-import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
-import info.magnolia.ui.vaadin.view.View;
 
 /**
  * Implementers can open overlay views (with a degree of modality) over their display area.
  */
 public interface OverlayLayer {
 
+    /**
+     * The available locations of modality for opening a modal.
+     * Represents what will be blocked by the opened modal.
+     */
+    public static enum ModalityDomain {
+        SUB_APP("sub-app"),
+        APP("app"),
+        SHELL("shell");
+
+        private String cssClass;
+
+        private ModalityDomain(String cssClass) {
+            this.cssClass = cssClass;
+        }
+
+        public String getCssClass() {
+            return cssClass;
+        }
+
+    }
+
+    /**
+     * The available levels of modality.
+     * Determines how "modal" it is -
+     * -STRONG creates a dark background that prevents clicks.
+     * -LIGHT adds a border, creates a transparent background that prevents clicks.
+     * -NON_MODAL does not prevent clicks.
+     */
+    public static enum ModalityLevel {
+        STRONG("modality-strong"),
+        LIGHT("modality-light center-vertical"),
+        NON_MODAL("modality-non-modal");
+
+        private String cssClass;
+
+        private ModalityLevel(String cssClass) {
+            this.cssClass = cssClass;
+        }
+
+        public String getCssClass() {
+            return cssClass;
+        }
+
+    }
 
     /**
      * Open an Overlay on top of the OverlayLayer implementer.

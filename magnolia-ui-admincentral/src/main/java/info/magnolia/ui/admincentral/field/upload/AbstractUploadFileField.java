@@ -40,8 +40,8 @@ import info.magnolia.ui.mediaeditor.MediaEditorPresenter;
 import info.magnolia.ui.mediaeditor.MediaEditorPresenterFactory;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent.Handler;
-import info.magnolia.ui.vaadin.overlay.OverlayCloser;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.OverlayCloser;
+import info.magnolia.ui.model.overlay.View;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

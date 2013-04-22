@@ -39,8 +39,8 @@ import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ShellImpl;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
-import info.magnolia.ui.vaadin.view.View;
 
 import java.util.Collection;
 import java.util.Date;

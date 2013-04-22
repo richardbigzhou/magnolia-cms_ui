@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
+package info.magnolia.ui.model.overlay;
 
-import info.magnolia.objectfactory.Classes;
-import info.magnolia.ui.vaadin.icon.CompositeIcon;
-import info.magnolia.ui.vaadin.icon.ErrorIcon;
-import info.magnolia.ui.vaadin.icon.NullIcon;
-import info.magnolia.ui.vaadin.icon.WarningIcon;
+//import info.magnolia.ui.vaadin.view.Viewport;
+
+import java.io.Serializable;
+
+import com.vaadin.ui.Component;
 
 /**
- * The type of message.
+ * Marker interface for views. Extends {@link Serializable} because all Vaadin components need to be serializable.
+ *
+ * @see Viewport
  */
-public enum MessageStyleType {
+public interface View extends Serializable {
 
-    UNKNOWN("", "", NullIcon.class),
-    ERROR("Error", "msgerror", ErrorIcon.class),
-    WARNING("Warning", "msgwarn", WarningIcon.class),
-    INFO("Info", "msginfo", NullIcon.class);
-
-    private String caption;
-    private String cssClass;
-    private Class<? extends CompositeIcon> icon;
-
-    private MessageStyleType(final String caption, final String cssClass, final Class<? extends CompositeIcon> icon) {
-        this.caption = caption;
-        this.cssClass = cssClass;
-        this.icon = icon;
-    }
-
-    @Override
-    public String toString() {
-        return caption;
-    }
-
-    public String getCssClass() {
-        return cssClass;
-    }
-
-    public CompositeIcon makeIcon() {
-        return Classes.getClassFactory().newInstance(icon);
-    }
-
+    /**
+     * Returns the Vaadin component representing this view.
+     */
+    Component asVaadinComponent();
 }

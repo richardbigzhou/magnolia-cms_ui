@@ -41,8 +41,8 @@ import info.magnolia.ui.form.field.builder.FieldBuilder;
 import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.form.FormView;
-import info.magnolia.ui.vaadin.view.View;
 
 import javax.inject.Inject;
 

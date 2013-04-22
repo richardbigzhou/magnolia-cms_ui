@@ -37,7 +37,7 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.ui.form.FormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.View;
 
 import com.vaadin.ui.Field;
 
