@@ -31,14 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.i18n;
+package info.magnolia.ui.admincentral.i18n;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.link.LinkUtil;
 import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.model.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.vaadin.integration.i18n.I18NAwareProperty;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
+
+import javax.jcr.Node;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -50,7 +55,7 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.HasComponents;
 
 /**
- * Default implementation of {@link I18NAuthoringSupport}.
+ * Default implementation of {@link info.magnolia.ui.model.i18n.I18NAuthoringSupport}.
  */
 public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
 
@@ -112,6 +117,22 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
         }
     }
 
+    @Override
+    public String createI18NURI(Node node, Locale locale){
+        // we are going to change the context language, this is ugly but is safe as only the current Thread is modified
+        Locale currentLocale = i18nContentSupport.getLocale();
+        String uri = null;
+        try {
+            // this is going to set the local in the aggregation state and hence wont change the i18nSupport object itself
+            i18nContentSupport.setLocale(locale);
+            uri = LinkUtil.createAbsoluteLink(node);
+        }
+        // make sure that we always reset to the original locale
+        finally{
+            i18nContentSupport.setLocale(currentLocale);
+        }
+        return uri;
+    }
     private String constructI18NPropertyName(CharSequence basePropertyName, Locale locale) {
         return basePropertyName + "_" + locale.toString();
     }

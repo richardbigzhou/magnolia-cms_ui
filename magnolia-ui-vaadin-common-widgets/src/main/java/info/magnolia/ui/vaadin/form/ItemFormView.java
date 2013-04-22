@@ -37,7 +37,7 @@ import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DescriptionVisibilityEvent;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-import info.magnolia.ui.vaadin.integration.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.model.i18n.I18NAuthoringSupport;
 
 import java.util.Collection;
 import java.util.Locale;

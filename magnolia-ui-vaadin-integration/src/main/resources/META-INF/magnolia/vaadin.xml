@@ -9,7 +9,7 @@
   <components>
     <id>main</id>
     <component>
-      <type>info.magnolia.ui.vaadin.integration.i18n.I18NAuthoringSupport</type>
+      <type>info.magnolia.ui.model.i18n.I18NAuthoringSupport</type>
       <workspace>config</workspace>
       <path>/server/i18n/authoring</path>
       <observed>true</observed>

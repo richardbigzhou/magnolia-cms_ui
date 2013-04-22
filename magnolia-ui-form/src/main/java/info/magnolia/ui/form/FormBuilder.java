@@ -42,7 +42,7 @@ import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
-import info.magnolia.ui.vaadin.integration.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.model.i18n.I18NAuthoringSupport;
 
 import javax.inject.Inject;
 

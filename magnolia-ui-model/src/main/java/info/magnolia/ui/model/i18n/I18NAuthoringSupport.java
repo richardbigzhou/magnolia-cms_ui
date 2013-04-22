@@ -31,9 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.i18n;
+package info.magnolia.ui.model.i18n;
 
 import java.util.Locale;
+
+import javax.jcr.Node;
 
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.HasComponents;
@@ -46,5 +48,7 @@ public interface I18NAuthoringSupport {
     AbstractSelect getLanguageChooser();
 
     void i18nize(HasComponents fieldContainer, Locale locale);
+
+    String createI18NURI(Node node, Locale locale);
 
 }
