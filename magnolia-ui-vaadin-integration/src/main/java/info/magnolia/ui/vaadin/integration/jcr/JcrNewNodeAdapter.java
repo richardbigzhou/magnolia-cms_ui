@@ -63,9 +63,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
      * @param nodeType Type node to create.
      */
     public JcrNewNodeAdapter(Node parentNode, String nodeType) {
-        super(parentNode);
-        setPrimaryNodeTypeName(nodeType);
-        setNodeName(null);
+        this(parentNode, nodeType, null);
     }
 
     /**

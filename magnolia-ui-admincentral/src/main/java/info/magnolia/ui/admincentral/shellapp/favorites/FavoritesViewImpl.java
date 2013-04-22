@@ -99,21 +99,9 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
         FavoritesSection newCampaigns = new FavoritesSection();
         newCampaigns.setCaption("New Campaigns");
-        /*
-         * newCampaigns.addComponent(new FavoriteEntry("Add a special offer", "icon-add-item"));
-         * newCampaigns.addComponent(new FavoriteEntry("Add a landing page", "icon-add-item"));
-         * newCampaigns.addComponent(new FavoriteEntry("Edit main landing page", "icon-edit"));
-         * newCampaigns.addComponent(new FavoriteEntry("Create a new micro site", "icon-add-item"));
-         * newCampaigns.addComponent(new FavoriteEntry("Add a seasonal campaign", "icon-add-item"));
-         */
 
         FavoritesSection assetShortcuts = new FavoritesSection();
         assetShortcuts.setCaption("Asset Shortcuts");
-        /*
-         * assetShortcuts.addComponent(new FavoriteEntry("Add a product image", "icon-add-item"));
-         * assetShortcuts.addComponent(new FavoriteEntry("Upload image(s) to image pool", "icon-assets-app"));
-         * assetShortcuts.addComponent(new FavoriteEntry("Upload review video", "icon-assets-app"));
-         */
 
         leftSide.addComponent(newPages);
         leftSide.addComponent(newCampaigns);
@@ -195,12 +183,12 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     }
 
     @Override
-    public void init(JcrItemNodeAdapter favoritesForCurrentUser, JcrNewNodeAdapter favoriteSuggestion) {
-        Iterator<JcrItemNodeAdapter> favorites = favoritesForCurrentUser.getChildren().values().iterator();
+    public void init(JcrItemNodeAdapter favorites, JcrNewNodeAdapter favoriteSuggestion) {
+        Iterator<JcrItemNodeAdapter> favoritesIterator = favorites.getChildren().values().iterator();
         newPages.removeAllComponents();
 
-        while(favorites.hasNext()) {
-            JcrItemNodeAdapter favorite = favorites.next();
+        while(favoritesIterator.hasNext()) {
+            JcrItemNodeAdapter favorite = favoritesIterator.next();
             newPages.addComponent(new FavoriteEntry(favorite));
         }
         if (favoriteForm != null) {

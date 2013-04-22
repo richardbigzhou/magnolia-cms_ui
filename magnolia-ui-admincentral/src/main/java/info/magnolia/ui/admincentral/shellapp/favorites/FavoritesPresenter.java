@@ -57,7 +57,7 @@ public class FavoritesPresenter implements FavoritesView.Listener {
 
     public FavoritesView start() {
         view.setListener(this);
-        view.init(favoritesManager.getFavoritesForCurrentUser(), createNewFavoriteSuggestion("", "", ""));
+        view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""));
         return view;
     }
 
@@ -70,16 +70,16 @@ public class FavoritesPresenter implements FavoritesView.Listener {
 
     @Override
     public void addFavorite(JcrItemNodeAdapter favorite) {
-        favoritesManager.addFavoriteForCurrentUser(favorite);
+        favoritesManager.addFavorite(favorite);
         // Give view the updated favorites collection, so that the newly added one is immediately displayed.
-        view.init(favoritesManager.getFavoritesForCurrentUser(), createNewFavoriteSuggestion("", "", ""));
+        view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""));
     }
 
     /**
      * @return a {@link JcrNewNodeAdapter} used to pre-populate a form in the UI with a suggestion for a new favorite.
      */
     public JcrNewNodeAdapter createNewFavoriteSuggestion(String location, String title, String icon) {
-        JcrNewNodeAdapter newFavorite = new JcrNewNodeAdapter(favoritesManager.getFavoritesForCurrentUser().getNode(), AdmincentralNodeTypes.Favorite.NAME);
+        JcrNewNodeAdapter newFavorite = new JcrNewNodeAdapter(favoritesManager.getFavorites().getNode(), AdmincentralNodeTypes.Favorite.NAME);
         newFavorite.addItemProperty(ModelConstants.JCR_NAME, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", title));
         newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.URL, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", location));
         newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", icon));

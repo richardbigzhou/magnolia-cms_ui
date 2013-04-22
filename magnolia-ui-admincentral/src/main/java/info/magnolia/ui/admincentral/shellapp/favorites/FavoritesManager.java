@@ -36,26 +36,13 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
 /**
- * Manages the favorites for all users.
- *
- * Needs to persist somewhere, for each user
- *
- * is bookmark a better term for the code?
- *
- * A favorite can be a place in the ui, or a specific action like: add news article
- * does it need parameters?
- * is it a named action or a class?
- * how would a named action be registered and handled
- *
- * what does an invitation to add a favorite look like in the ui?
- *
- * needs ordering so users can rearrange them
+ * Manages the favorites for the current user.
  */
 public interface FavoritesManager {
 
-    JcrItemNodeAdapter getFavoritesForCurrentUser();
+    JcrItemNodeAdapter getFavorites();
 
-    void addFavoriteForCurrentUser(JcrItemNodeAdapter favorite);
+    void addFavorite(JcrItemNodeAdapter favorite);
 
     void removeFavorite(String id);
 }
