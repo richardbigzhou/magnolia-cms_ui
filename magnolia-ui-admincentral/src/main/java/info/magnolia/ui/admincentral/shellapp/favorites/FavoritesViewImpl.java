@@ -171,12 +171,12 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     }
 
     @Override
-    public void init(JcrItemNodeAdapter favoritesForCurrentUser, JcrNewNodeAdapter favoriteSuggestion) {
-        Iterator<JcrItemNodeAdapter> favorites = favoritesForCurrentUser.getChildren().values().iterator();
+    public void init(JcrItemNodeAdapter favorites, JcrNewNodeAdapter favoriteSuggestion) {
+        Iterator<JcrItemNodeAdapter> favoritesIterator = favorites.getChildren().values().iterator();
         newPages.removeAllComponents();
 
-        while(favorites.hasNext()) {
-            JcrItemNodeAdapter favorite = favorites.next();
+        while(favoritesIterator.hasNext()) {
+            JcrItemNodeAdapter favorite = favoritesIterator.next();
             newPages.addComponent(new FavoriteEntry(favorite));
         }
         if (favoriteForm != null) {

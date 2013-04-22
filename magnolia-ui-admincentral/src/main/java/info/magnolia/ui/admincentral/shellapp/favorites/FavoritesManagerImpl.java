@@ -57,7 +57,7 @@ public class FavoritesManagerImpl implements FavoritesManager {
         this.bookmarkStore = bookmarkStore;
     }
     @Override
-    public JcrItemNodeAdapter getFavoritesForCurrentUser() {
+    public JcrItemNodeAdapter getFavorites() {
         try {
             Node bookmarksNode = bookmarkStore.getBookmarkRoot();
             JcrNodeAdapter favorites = new JcrNodeAdapter(bookmarksNode);
@@ -76,7 +76,7 @@ public class FavoritesManagerImpl implements FavoritesManager {
         }
     }
     @Override
-    public void addFavoriteForCurrentUser(JcrItemNodeAdapter favorite) {
+    public void addFavorite(JcrItemNodeAdapter favorite) {
         try {
             favorite.getNode().getSession().save();
         } catch (RepositoryException e) {
