@@ -44,7 +44,7 @@ public interface FavoritesView extends View {
 
     void setListener(Listener listener);
 
-    void setFavorites(JcrItemNodeAdapter favoritesRoot);
+    void init(JcrItemNodeAdapter favoritesRoot, JcrNewNodeAdapter favoriteSuggestion);
 
     void setFavoriteLocation(JcrNewNodeAdapter location);
     /**

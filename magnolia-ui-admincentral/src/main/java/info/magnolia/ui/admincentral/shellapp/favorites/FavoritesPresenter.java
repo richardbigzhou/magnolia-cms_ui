@@ -33,10 +33,13 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
+import info.magnolia.ui.model.ModelConstants;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
 
 /**
  * FavoritesPresenter.
@@ -54,7 +57,7 @@ public class FavoritesPresenter implements FavoritesView.Listener {
 
     public FavoritesView start() {
         view.setListener(this);
-        view.setFavorites(favoritesManager.getFavoritesForCurrentUser());
+        view.init(favoritesManager.getFavoritesForCurrentUser(), createNewFavoriteSuggestion("", "", ""));
         return view;
     }
 
@@ -62,10 +65,17 @@ public class FavoritesPresenter implements FavoritesView.Listener {
     public void addFavorite(JcrItemNodeAdapter favorite) {
         favoritesManager.addFavoriteForCurrentUser(favorite);
         // Give view the updated favorites collection, so that the newly added one is immediately displayed.
-        view.setFavorites(favoritesManager.getFavoritesForCurrentUser());
+        view.init(favoritesManager.getFavoritesForCurrentUser(), createNewFavoriteSuggestion("", "", ""));
     }
 
-    public Node getFavoritesNodeForCurrentUser() {
-        return favoritesManager.getFavoritesForCurrentUser().getNode();
+    /**
+     * @return a {@link JcrNewNodeAdapter} used to pre-populate a form in the UI with a suggestion for a new favorite.
+     */
+    public JcrNewNodeAdapter createNewFavoriteSuggestion(String location, String title, String icon) {
+        JcrNewNodeAdapter newFavorite = new JcrNewNodeAdapter(favoritesManager.getFavoritesForCurrentUser().getNode(), AdmincentralNodeTypes.Favorite.NAME);
+        newFavorite.addItemProperty(ModelConstants.JCR_NAME, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", title));
+        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.URL, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", location));
+        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", icon));
+        return newFavorite;
     }
 }
