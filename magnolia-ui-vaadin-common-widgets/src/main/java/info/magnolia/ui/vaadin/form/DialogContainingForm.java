@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.widget;
+package info.magnolia.ui.vaadin.form;
 
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent.HasActiveTabChangeHandlers;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent.HasTabSetChangedHandlers;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
-
-import java.util.List;
-
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 /**
- * VShellTabView.
+ * Dialog type that assumes that content is form.
+ * Dialog is setting the height of the tabsheet scroller inside the form.
+ * This was done because generally a dialog should not know about it's
+ * content, except in this case.
  */
-public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetChangedHandlers, HasActiveTabChangeHandlers {
+public class DialogContainingForm extends BaseDialog {
 
-    /**
-     * Presenter.
-     */
-    public interface Presenter {
-        void updateLayout();
-
-        void updateLayoutOfActiveTab();
-    }
-
-    List<MagnoliaTabWidget> getTabs();
-
-    void updateTab(MagnoliaTabWidget tab);
-
-    TabBarWidget getTabContainer();
-
-    MagnoliaTabWidget getActiveTab();
-
-    void setShowActiveTabFullscreen(boolean isFullscreen);
-
-    void setActiveTab(MagnoliaTabWidget tab);
-
-    void removeTab(MagnoliaTabWidget tabToOrphan);
-
-    void showAllTabContents(boolean visible);
-
-    void setMaxHeight(int height);
 }

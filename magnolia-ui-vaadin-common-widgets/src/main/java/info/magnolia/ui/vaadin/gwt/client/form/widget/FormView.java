@@ -49,6 +49,8 @@ public interface FormView extends IsWidget {
 
     void setErrorAmount(int errorAmount);
 
+    void setTabSheetMaxHeight(int height);
+
     /**
      * Presenter. Meant for Vaadin part of MagnoliaShell.
      */
