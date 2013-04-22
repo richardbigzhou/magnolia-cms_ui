@@ -64,7 +64,7 @@ public class FavoritesPresenter implements FavoritesView.Listener {
     @Override
     public void removeFavorite(String id) {
         favoritesManager.removeFavorite(id);
-        view.init(favoritesManager.getFavoritesForCurrentUser(), createNewFavoriteSuggestion("", "", ""));
+        view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""));
 
     }
 
