@@ -65,7 +65,7 @@ public class DateColumnFormatter extends AbstractColumnFormatter<MetaDataColumnD
     @Override
     public Object generateCell(Table source, Object itemId, Object columnId) {
         Item item = source.getItem(itemId);
-        Property prop = item.getItemProperty(columnId);
+        Property prop = (item == null) ? null : item.getItemProperty(columnId);
 
         // Need to check prop.getValue() before prop.getType() to avoid nullpointerexception if value is null.
         if (prop != null && prop.getValue() != null && prop.getType().equals(Date.class)) {
