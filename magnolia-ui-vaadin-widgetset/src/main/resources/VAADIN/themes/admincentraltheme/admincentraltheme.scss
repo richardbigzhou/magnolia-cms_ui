@@ -2,6 +2,7 @@
 @import "app-preloader.scss";
 @import "applauncher.scss";
 @import "dialog.scss";
+@import "overlay.scss";
 @import "favorites.scss";
 @import "form.scss";
 @import "fonts.scss";
@@ -14,7 +15,7 @@
 @import "table.scss";
 @import "tabsheet.scss";
 @import "thumbnail-layout.scss";
-@import "workbench.scss";
+@import "smallapp.scss";
 @import "uploadfield.scss";
 
 
@@ -23,6 +24,7 @@
   @include app-preloader;
   @include applauncher;
   @include dialog;
+  @include overlay;
   @include favorites;
   @include form;
   @include lightbox;
@@ -34,9 +36,9 @@
   @include splitfeed;
   @include table;
   @include thumbnail-layout;
-  @include workbench;
+  @include smallapp;
   @include uploadfield;
- 
+
   body{
       -webkit-user-select: none; /* Disable content selection on mobile safari */
       -webkit-tap-highlight-color: rgba(0,0,0,0); /* Disable grey box when you click on something */

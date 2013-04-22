@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -44,7 +44,7 @@ import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.view.ModalLayer;
+import info.magnolia.ui.vaadin.overlay.OverlayLayer;
 
 import javax.inject.Named;
 
@@ -58,14 +58,14 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
     private final JcrItemNodeAdapter parentItem;
     private FormDialogPresenter formDialogPresenter;
 
-    private final ModalLayer modalLayer;
+    private final OverlayLayer overlayLayer;
     private EventBus eventBus;
 
     public CreateDialogAction(CreateDialogActionDefinition definition, JcrItemNodeAdapter parentItem, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
         super(definition);
         this.parentItem = parentItem;
         this.formDialogPresenter = formDialogPresenter;
-        this.modalLayer = subAppContext;
+        this.overlayLayer = subAppContext;
         this.eventBus = eventBus;
     }
 
@@ -74,7 +74,7 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
 
         final JcrNodeAdapter item = new JcrNewNodeAdapter(parentItem.getNode(), getDefinition().getNodeType());
 
-        formDialogPresenter.start(item, getDefinition().getDialogName(), modalLayer, new EditorCallback() {
+        formDialogPresenter.start(item, getDefinition().getDialogName(), overlayLayer, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {

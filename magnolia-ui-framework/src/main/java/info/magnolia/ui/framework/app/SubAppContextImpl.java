@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,15 +35,17 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.dialog.Modal;
-import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.overlay.BaseOverlayLayer;
+import info.magnolia.ui.vaadin.overlay.Overlay;
+import info.magnolia.ui.vaadin.overlay.OverlayCloser;
+import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
 import info.magnolia.ui.vaadin.view.View;
 
 /**
  * Implementation of {@link SubAppContext}.
  * See MGNLUI-379.
  */
-public class SubAppContextImpl implements SubAppContext {
+public class SubAppContextImpl extends BaseOverlayLayer implements SubAppContext {
 
     private SubApp subApp;
 
@@ -114,14 +116,16 @@ public class SubAppContextImpl implements SubAppContext {
     }
 
     @Override
-    public ModalCloser openModal(View view) {
+    public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
         // Get the MagnoliaTab for the view
-        View modalityParent = getAppContext().getView().getSubAppViewContainer(instanceId);
-        return shell.openModalOnView(view, modalityParent, Modal.ModalityLevel.SUB_APP);
+        View overlayParent = getAppContext().getView().getSubAppViewContainer(instanceId);
+        return shell.openOverlayOnView(view, overlayParent, Overlay.ModalityDomain.SUB_APP, modalityLevel);
     }
 
     @Override
     public void close() {
         appContext.closeSubApp(instanceId);
     }
+
+
 }

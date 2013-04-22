@@ -50,11 +50,10 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.model.action.ActionExecutor;
-import info.magnolia.ui.statusbar.StatusBarPresenter;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.config.WorkbenchBuilder;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.list.ListContentViewDefinition;
@@ -74,7 +73,7 @@ import org.junit.Test;
  */
 public class BrowserPresenterTest {
 
-    private final static String APP_NAME = "browserPresenterTestApp";
+    private final static String APP_NAME = "workbenchPresenterTestApp";
 
     private final static String SUB_APP_NAME = "browser";
 
@@ -103,10 +102,10 @@ public class BrowserPresenterTest {
         ctx.setUser(createMockUser(USER));
         MgnlContext.setInstance(ctx);
 
-        initBrowserPresenter();
+        initContentWorkbenchPresenter();
     }
 
-    private void initBrowserPresenter() {
+    private void initContentWorkbenchPresenter() {
         // initialize test instance
         BrowserSubAppBuilder subAppBuilder = new ContentAppBuilder(APP_NAME).browserSubApp(SUB_APP_NAME);
         subAppBuilder.workbench(new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreeContentViewDefinition(), new ListContentViewDefinition()));
@@ -117,12 +116,11 @@ public class BrowserPresenterTest {
         subAppEventBus = new SimpleEventBus();
 
         EventBus adminCentralEventBus = mock(EventBus.class);
-        ContentPresenter mockContentPresenter = mock(ContentPresenter.class);
+        WorkbenchPresenter mockWorkbenchPresenter = mock(WorkbenchPresenter.class);
         ActionbarPresenter mockActionbarPresenter = mock(ActionbarPresenter.class);
-        StatusBarPresenter mockStatusBarPresenter = mock(StatusBarPresenter.class);
         ActionExecutor actionExecutor = mock(ActionExecutor.class);
 
-        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockContentPresenter, mockActionbarPresenter, mockStatusBarPresenter, null);
+        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockActionbarPresenter, null, mockWorkbenchPresenter);
 
         // start presenter (binds event handlers)
         presenter.start();
@@ -226,13 +224,5 @@ public class BrowserPresenterTest {
         assertEquals(firstModifiedBy, LastModified.getLastModifiedBy(node));
     }
 
-    @Test
-    public void testGetDefaultViewType() {
-        // GIVEN
 
-        // WHEN
-        ViewType viewType = presenter.getDefaultViewType();
-        // THEN
-        assertEquals(ViewType.TREE, viewType);
-    }
 }

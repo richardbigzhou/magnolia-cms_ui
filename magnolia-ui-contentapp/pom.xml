@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-contentapp</artifactId>
   <name>magnolia-ui-contentapp</name>
   <properties>
-    <cloverCoverageThreshold>26</cloverCoverageThreshold>
+    <cloverCoverageThreshold>20</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
@@ -42,11 +42,6 @@
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-framework</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-statusbar</artifactId>
       <version>${project.version}</version>
     </dependency>
 

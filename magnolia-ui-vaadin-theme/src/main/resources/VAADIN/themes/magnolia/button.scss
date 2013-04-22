@@ -7,21 +7,24 @@
   }
 
   .v-nativebutton-magnoliabutton,
-  button.btn-dialog,
-  button.btn-form {
+  button.btn-dialog{
     @include nativebutton;
   }
 
   .v-button,
   .v-nativebutton-magnoliabutton,
-  button.btn-dialog,
-  button.btn-form {
+  button.btn-dialog {
 
     &.commit,
-    &.btn-dialog-commit,
-    &.btn-form-commit {
+    &.btn-dialog-commit {
       background-color: $c09;
     }
+  }
+
+  .v-button-inline,
+  .v-nativebutton-inline {
+    background-color: transparent;
+  	color: $c01;
   }
 
   .v-button-link {

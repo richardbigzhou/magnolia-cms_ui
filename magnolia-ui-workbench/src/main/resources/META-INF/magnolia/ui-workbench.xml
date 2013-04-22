@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd">
+<module>
+  <name>ui-workbench</name>
+  <displayName>Workbench</displayName>
+  <description>Workbench Component for Content Apps.</description>
+  <class>info.magnolia.ui.workbench.WorkbenchModule</class>
+  <version>${project.version}</version>
+  <components>
+    <id>app</id>
+    <component>
+      <type>info.magnolia.ui.workbench.WorkbenchPresenter</type>
+      <implementation>info.magnolia.ui.workbench.WorkbenchPresenter</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.workbench.WorkbenchView</type>
+      <implementation>info.magnolia.ui.workbench.WorkbenchViewImpl</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.workbench.ContentPresenter</type>
+      <implementation>info.magnolia.ui.workbench.ContentPresenter</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.statusbar.StatusBarView</type>
+      <implementation>info.magnolia.ui.statusbar.StatusBarViewImpl</implementation>
+    </component>
+  </components>
+</module>

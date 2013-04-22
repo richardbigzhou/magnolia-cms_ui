@@ -29,6 +29,11 @@
       <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-statusbar</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>

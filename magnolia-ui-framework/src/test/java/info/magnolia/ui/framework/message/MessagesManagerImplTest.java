@@ -34,7 +34,6 @@
 package info.magnolia.ui.framework.message;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.SecuritySupport;
@@ -42,7 +41,6 @@ import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.MockWebContext;
@@ -53,7 +51,6 @@ import java.util.ArrayList;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -77,6 +74,8 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         MockUtil.initMockContext();
         MockUtil.setSystemContextSessionAndHierarchyManager(session);
 
+        MockUtil.getMockContext().setUser(createMockUser(Message.DEFAULT_SENDER));
+
         MessageStore messageStore = new MessageStore();
 
         ArrayList<User> users = new ArrayList<User>();
@@ -97,13 +96,6 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         User user = mock(User.class);
         when(user.getName()).thenReturn(name);
         return user;
-    }
-
-    @Override
-    @After
-    public void tearDown() throws Exception {
-        ComponentsTestUtil.clear();
-        MgnlContext.setInstance(null);
     }
 
     @Test

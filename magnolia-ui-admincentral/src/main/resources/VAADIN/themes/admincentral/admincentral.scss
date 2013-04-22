@@ -3,6 +3,7 @@
 @import "../admincentraltheme/admincentraltheme.scss";
 @import "../magnolia/magnolia.scss";
 @import "../contentapp/contentapp.scss";
+@import "../workbench/workbench.scss";
 
 @import "field/linkfield.scss";
 
@@ -11,6 +12,7 @@
 @include magnolia;
 @include admincentraltheme;
 @include contentapp;
+@include workbench;
 @include dam-app-assets;
 
 @mixin admincentral {

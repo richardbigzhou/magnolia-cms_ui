@@ -7,16 +7,22 @@
   <class>info.magnolia.ui.contentapp.ContentAppModule</class>
   <versionHandler>info.magnolia.ui.contentapp.setup.ContentAppModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
-
+  
   <components>
     <id>main</id>
   </components>
 
   <components>
     <id>app</id>
+
     <configurer>
       <class>info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer</class>
     </configurer>
+
+    <component>
+      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenterFactory</implementation>
+    </component>
     <component>
       <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter</type>
       <implementation>info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter</implementation>
@@ -29,18 +35,17 @@
       <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogView</type>
       <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</implementation>
     </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.browser.BrowserView</type>
-      <implementation>info.magnolia.ui.contentapp.browser.BrowserViewImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory</type>
-      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenterFactory</implementation>
-    </component>
+
   </components>
 
   <components>
     <id>subapp</id>
+
+    <component>
+      <type>info.magnolia.ui.contentapp.browser.BrowserView</type>
+      <implementation>info.magnolia.ui.contentapp.browser.BrowserViewImpl</implementation>
+    </component>
+
     <component>
       <type>info.magnolia.ui.contentapp.ContentSubAppView</type>
       <implementation>info.magnolia.ui.contentapp.ContentSubAppViewImpl</implementation>
@@ -52,21 +57,8 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.statusbar.StatusBarPresenter</type>
-      <implementation>info.magnolia.ui.contentapp.browser.BrowserStatusBarPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.statusbar.StatusBarView</type>
-      <implementation>info.magnolia.ui.statusbar.StatusBarViewImpl</implementation>
-    </component>
-
-    <component>
       <type>info.magnolia.ui.contentapp.detail.DetailEditorPresenter</type>
       <implementation>info.magnolia.ui.contentapp.detail.DetailEditorPresenter</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.browser.ContentPresenter</type>
-      <implementation>info.magnolia.ui.contentapp.browser.ContentPresenter</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.contentapp.detail.DetailEditorView</type>

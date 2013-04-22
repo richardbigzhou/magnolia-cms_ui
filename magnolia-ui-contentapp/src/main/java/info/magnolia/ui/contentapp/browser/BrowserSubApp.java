@@ -36,7 +36,7 @@ package info.magnolia.ui.contentapp.browser;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.contentapp.event.SearchEvent;
+import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
@@ -89,7 +89,7 @@ public class BrowserSubApp extends BaseSubApp {
 
         super(subAppContext, view);
         if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {
-            throw new IllegalArgumentException("Constructor does not allow for null args. Found AppContext = " + subAppContext + ", ContentSubAppView = " + view + ", ContentWorkbenchPresenter = " + browser + ", EventBus = " + subAppEventBus);
+            throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", ContentSubAppView = " + view + ", BrowserPresenter = " + browser + ", EventBus = " + subAppEventBus);
         }
         this.browser = browser;
         this.subAppEventBus = subAppEventBus;

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -50,16 +50,9 @@ public class IconConnector extends AbstractComponentConnector {
     @Override
     protected void init() {
         getWidget().updateBaseStyles();
-        addStateChangeHandler(new StateChangeHandler() {
-            @Override
-            public void onStateChanged(StateChangeEvent stateChangeEvent) {
-            }
-        });
-
         addStateChangeHandler("iconName", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                IconState state = getState();
                 getWidget().setIconName(getState().iconName);
             }
         });
