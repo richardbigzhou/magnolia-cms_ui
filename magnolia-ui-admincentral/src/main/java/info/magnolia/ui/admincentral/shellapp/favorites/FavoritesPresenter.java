@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+
+import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import javax.inject.Inject;
@@ -44,11 +46,13 @@ public class FavoritesPresenter implements FavoritesView.Listener {
 
     private FavoritesView view;
     private FavoritesManager favoritesManager;
+    private LocationController locationController;
 
     @Inject
-    public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager) {
+    public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager, final LocationController locationController) {
         this.view = view;
         this.favoritesManager = favoritesManager;
+        this.locationController = locationController;
     }
 
     public FavoritesView start() {
@@ -60,6 +64,7 @@ public class FavoritesPresenter implements FavoritesView.Listener {
     @Override
     public void removeFavorite(String id) {
         favoritesManager.removeFavorite(id);
+        // Give view the updated favorites collection, w/o that the newly removed one.
         view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""));
 
     }
@@ -69,6 +74,11 @@ public class FavoritesPresenter implements FavoritesView.Listener {
         favoritesManager.addFavorite(favorite);
         // Give view the updated favorites collection, so that the newly added one is immediately displayed.
         view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""));
+    }
+
+    @Override
+    public void goToLocation(String location) {
+        System.out.println("going to " + location);
     }
 
     /**

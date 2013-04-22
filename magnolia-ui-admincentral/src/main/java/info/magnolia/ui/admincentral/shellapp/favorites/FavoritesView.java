@@ -54,6 +54,8 @@ public interface FavoritesView extends View {
         void addFavorite(JcrNewNodeAdapter newFavorite);
 
         void removeFavorite(String id);
+
+        void goToLocation(String location);
     }
 
 }

@@ -45,7 +45,8 @@ import java.util.Iterator;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
-import com.vaadin.data.fieldgroup.PropertyId;
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -54,6 +55,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.Notification;
@@ -129,24 +131,20 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
      */
     public class FavoriteEntry extends CssLayout {
 
-        private final Label titleElement = new Label();
-
-        private final Label iconElement = new Label();
-
         public FavoriteEntry(final Item favorite) {
             addStyleName("v-favorites-entry");
-            
-            setTitle(favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue().toString());
+
+            String location = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue().toString();
+            String title = favorite.getItemProperty(ModelConstants.JCR_NAME).getValue().toString();
+
             String icon = "icon-app";
             if (favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue() != null) {
                 icon = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue().toString();
             }
-            setIcon(icon);
-            iconElement.setContentMode(ContentMode.HTML);
-            iconElement.setWidth(null);
-            iconElement.setStyleName("icon");
-            titleElement.setStyleName("text");
-            titleElement.setWidth(null);
+
+            Favorite fav = new Favorite(title, icon, location);
+            fav.setWidth(null);
+            addComponent(fav);
 
             NativeButton remove = new NativeButton("Remove", new ClickListener() {
 
@@ -158,17 +156,60 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
             remove.setWidth(null);
             remove.setData(favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue());
 
-            addComponent(iconElement);
-            addComponent(titleElement);
             addComponent(remove);
+
         }
 
-        public void setTitle(String title) {
-            titleElement.setValue(title);
-        }
+        /**
+         * Favorite.
+         */
+        public class Favorite extends CustomComponent {
 
-        public void setIcon(String icon) {
-            iconElement.setValue("<span class=\"" + icon + "\"></span>");
+            private HorizontalLayout root = new HorizontalLayout();
+            private String location;
+            private String icon;
+            private String title;
+
+            public Favorite(String title, String icon, String location) {
+                super();
+                this.icon = icon;
+                this.title = title;
+                this.location = location;
+                this.root.setSpacing(true);
+
+                Label iconLabel = new Label();
+                iconLabel.setValue("<span class=\"" + icon + "\"></span>");
+                iconLabel.setStyleName("icon");
+                iconLabel.setContentMode(ContentMode.HTML);
+                root.addComponent(iconLabel);
+
+                Label titleLabel = new Label();
+                titleLabel.setValue(title);
+                titleLabel.setStyleName("text");
+                root.addComponent(titleLabel);
+
+                root.addLayoutClickListener(new LayoutClickListener() {
+
+                    @Override
+                    public void layoutClick(LayoutClickEvent event) {
+                        listener.goToLocation(getLocationValue());
+                    }
+                });
+
+                setCompositionRoot(root);
+            }
+
+            public String getLocationValue() {
+                return location;
+            }
+
+            public String getIconValue() {
+                return icon;
+            }
+
+            public String getTitleValue() {
+                return title;
+            }
         }
     }
 
@@ -203,9 +244,8 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     private class FavoriteForm extends CustomComponent {
 
         private TextField url = new TextField("Location");
-        @PropertyId(ModelConstants.JCR_NAME)
-        private TextField title = new TextField("Title");
 
+        private TextField title = new TextField("Title");
 
         public FavoriteForm(final JcrNewNodeAdapter newFavorite) {
             addStyleName("favorites-form");

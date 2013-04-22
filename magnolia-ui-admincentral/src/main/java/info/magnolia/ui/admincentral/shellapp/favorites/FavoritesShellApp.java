@@ -101,7 +101,7 @@ public class FavoritesShellApp implements ShellApp {
                 throw new RuntimeException(e);
             }
             final String appIcon = StringUtils.defaultIfEmpty(appDescriptor.getIcon(), "icon-app");
-            final String title = appDescriptor.getLabel(); // + " " + (path == null ? "/" : path);
+            final String title = appDescriptor.getLabel() + " " + (path == null ? "/" : path);
             favoriteLocation = favoritesPresenter.createNewFavoriteSuggestion(previousLocation.toString(), title, appIcon);
         }
         return favoriteLocation;
