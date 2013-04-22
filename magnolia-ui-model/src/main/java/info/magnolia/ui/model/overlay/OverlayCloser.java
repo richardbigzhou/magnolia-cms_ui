@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
+package info.magnolia.ui.model.overlay;
 
 /**
  * Callback for closing an overlay.

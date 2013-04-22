@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,31 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.browser;
+package info.magnolia.ui.model.overlay;
 
-import info.magnolia.ui.model.overlay.View;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.workbench.WorkbenchView;
-
-import com.vaadin.ui.ComponentContainer;
 
 /**
- * Implementations of this interface are responsible for building a workbench and handling the UI
- * actions associated with it.
+ * Provides access to the css class and icon classname for a message.
  */
-public interface BrowserView extends ComponentContainer, View {
+public interface MessageStyleType {
 
     /**
-     * Use this method to add an action bar to this sub app view.
+     * @return The css class name to use for the message panel.
      */
-    void setActionbarView(ActionbarView actionbar);
-
-    void setWorkbenchView(WorkbenchView workbenchView);
+    public String getCssClass();
 
     /**
-     * TODO: refactor callers, so that they aren't trying to fetch workbench out out browser.
-     * @return workbench view.
+     * @return the java class of the icon.
      */
-    WorkbenchView getWorkbenchView();
+    public Class getIconClass();
 
 }

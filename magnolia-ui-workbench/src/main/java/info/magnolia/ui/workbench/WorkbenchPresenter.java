@@ -128,11 +128,10 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         // restore selection
         boolean itemExists = itemExists(path);
         if (!itemExists) {
-            log.warn(
-                    "Trying to re-synch workbench with no longer existing path {} at workspace {}. Will reset path to root.",
-                    path, workbenchDefinition.getWorkspace());
+            log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
+                    new Object[] { path, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
         }
-        view.selectPath(itemExists ? path : "/");
+        view.selectPath(itemExists ? path : workbenchDefinition.getPath());
     }
 
     public void doSearch(String searchExpression) {

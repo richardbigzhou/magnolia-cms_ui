@@ -31,14 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
-
+package info.magnolia.ui.model.overlay;
 
 /**
- * ConfirmationCallback.
+ * Callback interface for alert.
  */
-public interface ConfirmationCallback {
-    void onCancel();
-
-    void onSuccess();
+public interface AlertCallback {
+    void onOk();
 }

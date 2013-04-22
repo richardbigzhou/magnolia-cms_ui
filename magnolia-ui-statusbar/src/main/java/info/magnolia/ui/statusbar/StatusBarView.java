@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.statusbar;
 
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.View;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;

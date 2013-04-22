@@ -34,9 +34,9 @@
 package info.magnolia.ui.mediaeditor;
 
 import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.vaadin.view.View;
 
 import com.vaadin.ui.Component;
 

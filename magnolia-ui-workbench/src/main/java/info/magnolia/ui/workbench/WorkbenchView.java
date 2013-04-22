@@ -34,7 +34,7 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.ui.statusbar.StatusBarView;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.View;
 
 /**
  * WorkbenchView.

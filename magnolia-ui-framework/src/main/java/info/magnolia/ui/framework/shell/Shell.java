@@ -35,10 +35,9 @@ package info.magnolia.ui.framework.shell;
 
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.vaadin.overlay.Overlay;
-import info.magnolia.ui.vaadin.overlay.OverlayCloser;
-import info.magnolia.ui.vaadin.overlay.OverlayLayer;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.OverlayCloser;
+import info.magnolia.ui.model.overlay.OverlayLayer;
+import info.magnolia.ui.model.overlay.View;
 
 import java.util.List;
 
@@ -77,6 +76,6 @@ public interface Shell extends OverlayLayer {
      * @param parent
      * The View to open the Overlay on top of.
      */
-    OverlayCloser openOverlayOnView(View view, View parent, Overlay.ModalityDomain modalityLocation, Overlay.ModalityLevel modalityLevel);
+    OverlayCloser openOverlayOnView(View view, View parent, ModalityDomain modalityLocation, ModalityLevel modalityLevel);
 
 }

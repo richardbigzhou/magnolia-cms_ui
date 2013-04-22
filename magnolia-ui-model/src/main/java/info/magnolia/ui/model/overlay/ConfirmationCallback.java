@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.view;
+package info.magnolia.ui.model.overlay;
 
-import java.io.Serializable;
-
-import com.vaadin.ui.Component;
 
 /**
- * Marker interface for views. Extends {@link Serializable} because all Vaadin components need to be serializable.
- *
- * @see Viewport
+ * ConfirmationCallback.
  */
-public interface View extends Serializable {
+public interface ConfirmationCallback {
+    void onCancel();
 
-    /**
-     * Returns the Vaadin component representing this view.
-     */
-    Component asVaadinComponent();
+    void onSuccess();
 }

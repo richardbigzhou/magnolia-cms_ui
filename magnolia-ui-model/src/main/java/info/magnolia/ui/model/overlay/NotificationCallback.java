@@ -31,11 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
+package info.magnolia.ui.model.overlay;
 
 /**
- * Callback interface for alert.
+ * Callback interface for when a user clicks on the link in a Notfication.
  */
-public interface AlertCallback {
-    void onOk();
+public interface NotificationCallback {
+    void onLinkClicked();
+
 }
