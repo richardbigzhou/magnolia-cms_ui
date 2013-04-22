@@ -76,6 +76,7 @@ public class WorkbenchStatusBarPresenter {
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
                 setSelectedItem(event.getItem());
+                setSelectionCount(event.getItem() != null ? 1 : 0);
             }
         });
 
