@@ -8,6 +8,7 @@
 
 @import "../dam-app-assets/dam-app-assets.scss";
 @import "../ui-contentapp/ui-contentapp.scss";
+@import "../ui-app-pages/ui-app-pages.scss";
 
 @include magnolia;
 @include admincentraltheme;
@@ -27,3 +28,4 @@
 
 @include dam-app-assets;
 @include ui-contentapp;
+@include ui-app-pages;
