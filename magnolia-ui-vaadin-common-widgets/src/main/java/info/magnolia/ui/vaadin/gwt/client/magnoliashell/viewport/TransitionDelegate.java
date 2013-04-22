@@ -58,7 +58,7 @@ public interface TransitionDelegate {
 
         @Override
         public void setActive(ViewportWidget viewport, boolean active) {
-            viewport.doSetActive(active);
+            viewport.setActiveNoTransition(active);
         }
 
         @Override

@@ -98,7 +98,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
     /* CURTAIN INTEGRATION */
     @Override
-    public void doSetActive(boolean active) {
+    public void setActiveNoTransition(boolean active) {
         if (active) {
             setCurtainVisible(false);
         } else {

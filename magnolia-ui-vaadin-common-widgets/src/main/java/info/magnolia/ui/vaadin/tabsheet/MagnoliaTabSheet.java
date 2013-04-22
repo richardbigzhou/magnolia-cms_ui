@@ -157,7 +157,6 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
     }
 
     public void setActiveTab(final MagnoliaTab tab) {
-        //tab.setActive(true);
         getState().activeTab = tab;
         updateTabContentVisibility();
     }

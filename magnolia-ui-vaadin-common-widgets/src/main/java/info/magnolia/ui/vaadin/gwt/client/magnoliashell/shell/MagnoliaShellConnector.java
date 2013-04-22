@@ -90,6 +90,8 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
 
     private EventBus eventBus = new SimpleEventBus();
 
+    private boolean isHistoryInitialized = false;
+
     @Override
     protected void init() {
         super.init();
@@ -102,6 +104,11 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 while (it.hasNext()) {
                     final Entry<ShellAppType, Integer> entry = it.next();
                     view.setShellAppIndication(entry.getKey(), entry.getValue());
+                }
+
+                if (!isHistoryInitialized) {
+                    isHistoryInitialized = true;
+                    History.fireCurrentHistoryState();
                 }
             }
         });
@@ -155,10 +162,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 Fragment newFragment = Fragment.fromString(event.getValue());
-                Fragment currentFragment = Fragment.fromString(History.getToken());
-                //if (!event.getValue().isEmpty()/* || !newFragment.isSameApp(currentFragment)*/) {
-                    changeAppFromFragment(newFragment);
-                //}
+                changeAppFromFragment(newFragment);
                 view.setActiveViewport(newFragment.isApp());
             }
         });
@@ -192,8 +196,8 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     }
 
     @Override
-    public void activateApp(Fragment fragment) {
-        rpc.activateApp(fragment);
+    public void activateApp(Fragment f) {
+        rpc.activateApp(f);
     }
 
     @Override
