@@ -16,6 +16,7 @@
 @import "thumbnail-layout.scss";
 @import "workbench.scss";
 @import "uploadfield.scss";
+@import "page-editor";
 
 
 @mixin admincentraltheme {
@@ -36,6 +37,7 @@
   @include thumbnail-layout;
   @include workbench;
   @include uploadfield;
+  @include page-editor;
  
   body{
       -webkit-user-select: none; /* Disable content selection on mobile safari */

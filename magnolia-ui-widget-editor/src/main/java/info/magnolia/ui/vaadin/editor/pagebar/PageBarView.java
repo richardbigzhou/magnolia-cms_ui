@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,42 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.vaadin.editor.pagebar;
 
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.view.View;
 
+import java.util.Locale;
+
 /**
- * PageEditorView.
+ * Interface of the page bar view - a top-most component in the page editor that
+ * contains the name of the current displayed page and the selectors of language/platform.
  */
-public interface PageEditorView extends View {
+public interface PageBarView extends View {
+
+    void setPageName(String pageName);
 
     void setListener(Listener listener);
 
-    void refresh();
+    void setCurrentLanguage(Locale locale);
 
-    void load(PageEditorParameters parameters);
-
-    void init();
-
-    void update(PageEditorParameters parameters);
+    void togglePreviewMode(boolean isPreview);
 
     /**
-     * Listener.
+     * Listener interface for {@link PageBarView}.
      */
-    public interface Listener {
+    interface Listener {
 
-        void editComponent(String workspace, String path, String dialog);
+        void languageSelected(Locale locale);
 
-        void newArea(String workspace, String nodeType, String path);
+        void platformSelected(String platformId);
 
-        void newComponent(String workspace, String path, String availableComponents);
-
-        void deleteComponent(String workspace, String path);
-
-        void sortComponent(String workspace, String parentPath, String source, String target, String order);
-
-        void selectElement(AbstractElement nodeSelection);
     }
 }

@@ -117,7 +117,7 @@ public class PagesEditorSubAppTest {
         // GIVEN
         element = new AreaElement(null, null, null, null);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, null, null, null);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
@@ -135,7 +135,7 @@ public class PagesEditorSubAppTest {
         // GIVEN
         element = new ComponentElement(null, null, null);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, null, null, null);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
@@ -158,7 +158,7 @@ public class PagesEditorSubAppTest {
         element = new ComponentElement(null, null, null);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
         final Location location = new DetailLocation(null, null, "");
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, null, null, null);
 
         definition.setCanDelete("some-other-group,someNextGroup");
         definition.setCanEdit("this-user-group");
