@@ -33,8 +33,11 @@
  */
 package info.magnolia.ui.app.sample.main;
 
-import info.magnolia.ui.framework.app.AppEventBus;
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.app.AppEventBus;
+import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.vaadin.overlay.MessageStyleType;
+import info.magnolia.ui.vaadin.overlay.NotificationCallback;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,11 +49,13 @@ public class NavigationPresenter implements NavigationView.Listener {
 
     private EventBus appEventBus;
     private NavigationView view;
+    private SubAppContext subAppContext;
 
     @Inject
-    public NavigationPresenter(@Named(AppEventBus.NAME) EventBus appEventBus, NavigationView view) {
+    public NavigationPresenter(@Named(AppEventBus.NAME) EventBus appEventBus, NavigationView view, SubAppContext subAppContext) {
         this.appEventBus = appEventBus;
         this.view = view;
+        this.subAppContext = subAppContext;
     }
 
     public NavigationView start() {
@@ -61,5 +66,19 @@ public class NavigationPresenter implements NavigationView.Listener {
     @Override
     public void onItemSelected(String name) {
         appEventBus.fireEvent(new ContentItemSelectedEvent(name));
+
+        subAppContext.openNotification(
+                MessageStyleType.WARNING, false, "Hello there", "My button",
+                new NotificationCallback() {
+
+                    @Override
+                    public void onLinkClicked() {
+                        // nothing
+                        // Show notification
+                        subAppContext.openNotification(MessageStyleType.INFO, true, "Clicked.");
+
+                    }
+
+                });
     }
 }

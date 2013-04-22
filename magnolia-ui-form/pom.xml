@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-form</artifactId>
   <name>magnolia-ui-form</name>
   <properties>
-    <cloverCoverageThreshold>35</cloverCoverageThreshold>
+    <cloverCoverageThreshold>40</cloverCoverageThreshold>
   </properties>
 
   <build>
@@ -39,6 +39,14 @@
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-integration</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addon</groupId>
+      <artifactId>easyuploads</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.addons</groupId>
+      <artifactId>refresher</artifactId>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>

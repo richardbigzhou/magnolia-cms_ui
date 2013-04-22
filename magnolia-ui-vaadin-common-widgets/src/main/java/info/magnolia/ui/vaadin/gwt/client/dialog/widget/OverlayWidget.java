@@ -31,14 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
+package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
-import com.vaadin.shared.AbstractComponentState;
-import com.vaadin.shared.Connector;
+import info.magnolia.ui.vaadin.gwt.client.dialog.connector.OverlayConnector;
+
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * BaseDialogState.
+ * OverlayWidget.
  */
-public class ModalState extends AbstractComponentState {
-    public Connector modalityParent = null;
+public class OverlayWidget extends SimplePanel {
+
+    private final Element modalityCurtain = DOM.createDiv();
+
+    public OverlayWidget(OverlayConnector connector) {
+        super();
+
+        setStyleName("overlay");
+
+        modalityCurtain.setClassName("modal-curtain");
+        this.getElement().appendChild(modalityCurtain);
+    }
+
 }

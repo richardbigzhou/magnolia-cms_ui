@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
 
-import info.magnolia.ui.vaadin.dialog.Modal;
-import info.magnolia.ui.vaadin.gwt.client.dialog.widget.ModalWidget;
+import info.magnolia.ui.vaadin.gwt.client.dialog.widget.OverlayWidget;
+import info.magnolia.ui.vaadin.overlay.Overlay;
 
 import com.google.gwt.user.client.Timer;
 import com.vaadin.client.ComponentConnector;
@@ -43,10 +43,10 @@ import com.vaadin.client.ui.AbstractSingleComponentContainerConnector;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * Connector for Modal - Takes care of unregistering the widget at the proper time - so the modal dissapears when it is ready.
+ * Connector for Overlay - Takes care of unregistering the widget at the proper time - so the overlay dissapears when it is ready.
  */
-@Connect(Modal.class)
-public class ModalConnector extends AbstractSingleComponentContainerConnector {
+@Connect(Overlay.class)
+public class OverlayConnector extends AbstractSingleComponentContainerConnector {
 
     @Override
     protected void init() {
@@ -58,13 +58,13 @@ public class ModalConnector extends AbstractSingleComponentContainerConnector {
     }
 
     @Override
-    public ModalWidget getWidget() {
-        return (ModalWidget) super.getWidget();
+    public OverlayWidget getWidget() {
+        return (OverlayWidget) super.getWidget();
     }
 
     @Override
-    protected ModalWidget createWidget() {
-        return new ModalWidget(this);
+    protected OverlayWidget createWidget() {
+        return new OverlayWidget(this);
     }
 
 
@@ -75,7 +75,7 @@ public class ModalConnector extends AbstractSingleComponentContainerConnector {
 
             @Override
             public void run() {
-                ModalConnector.super.onUnregister();
+                OverlayConnector.super.onUnregister();
             }
         }.schedule(10);
     }
@@ -93,7 +93,7 @@ public class ModalConnector extends AbstractSingleComponentContainerConnector {
     }
 
     @Override
-    public ModalState getState() {
-        return (ModalState) super.getState();
+    public OverlayState getState() {
+        return (OverlayState) super.getState();
     }
 }

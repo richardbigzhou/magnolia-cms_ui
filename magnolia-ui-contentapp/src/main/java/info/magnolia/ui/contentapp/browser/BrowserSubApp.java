@@ -36,7 +36,7 @@ package info.magnolia.ui.contentapp.browser;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.contentapp.event.SearchEvent;
+import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;

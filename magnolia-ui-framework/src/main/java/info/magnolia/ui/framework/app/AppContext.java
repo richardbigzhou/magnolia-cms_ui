@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,12 +35,12 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.vaadin.view.ModalLayer;
+import info.magnolia.ui.vaadin.overlay.OverlayLayer;
 
 /**
  * Provides functionality used by an app to interact with the Magnolia shell.
  */
-public interface AppContext extends AppView.Listener, ModalLayer {
+public interface AppContext extends AppView.Listener, OverlayLayer {
 
     void enterFullScreenMode();
 

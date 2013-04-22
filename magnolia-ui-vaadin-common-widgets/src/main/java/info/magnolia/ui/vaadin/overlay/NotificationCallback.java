@@ -31,13 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.view;
+package info.magnolia.ui.vaadin.overlay;
 
 /**
- * Callback for closing a dialog.
+ * Callback interface for when a user clicks on the link in a Notfication.
  */
-public interface ModalCloser {
-
-    void close();
+public interface NotificationCallback {
+    void onLinkClicked();
 
 }

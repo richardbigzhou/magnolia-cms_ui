@@ -40,7 +40,6 @@ import static org.mockito.Mockito.*;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
-import info.magnolia.ui.contentapp.browser.BrowserView;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter;
 import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
 import info.magnolia.ui.form.field.builder.AbstractFieldBuilderTest;
@@ -49,6 +48,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.workbench.tree.TreeContentViewDefinition;
 
@@ -75,18 +75,19 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
     public void setUp() throws Exception {
         super.setUp();
         presenter = mock(ChooseDialogContentPresenter.class);
+        eventBus = new SimpleEventBus();
         // make sure that workbench view registers a content view so that restore selection doesn't fail.
         doAnswer(new Answer<Void>() {
 
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
-                BrowserView parentView = (BrowserView) args[0];
-                parentView.addContentView(ViewType.TREE, mock(ContentView.class), new TreeContentViewDefinition());
+                WorkbenchView workbenchView = (WorkbenchView) args[0];
+                workbenchView.addContentView(ViewType.TREE, mock(ContentView.class), new TreeContentViewDefinition());
                 return null;
             }
-        }).when(presenter).initContentView(any(BrowserView.class));
-        eventBus = new SimpleEventBus();
+        }).when(presenter).startChooseDialog(any(WorkbenchView.class));
+
     }
 
     @Test

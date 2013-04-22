@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -48,8 +48,8 @@ import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
-import info.magnolia.ui.vaadin.view.ModalCloser;
-import info.magnolia.ui.vaadin.view.ModalLayer;
+import info.magnolia.ui.vaadin.overlay.OverlayCloser;
+import info.magnolia.ui.vaadin.overlay.OverlayLayer;
 
 import javax.inject.Inject;
 
@@ -84,11 +84,11 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
 
     @Override
-    public DialogView start(final Item item, String dialogName, final ModalLayer modalLayer, EditorCallback callback) {
+    public DialogView start(final Item item, String dialogName, final OverlayLayer overlayLayer, EditorCallback callback) {
         try {
             DialogDefinition dialogDefinition = dialogDefinitionRegistry.get(dialogName);
 
-            return start(item, dialogDefinition, modalLayer, callback);
+            return start(item, dialogDefinition, overlayLayer, callback);
 
         } catch (RegistrationException e) {
             throw new RuntimeException("No dialogDefinition found for " + dialogName, e);
@@ -104,19 +104,19 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      * @param dialogDefinition
      */
     @Override
-    public DialogView start(final Item item, DialogDefinition dialogDefinition, final ModalLayer modalLayer, EditorCallback callback) {
+    public DialogView start(final Item item, DialogDefinition dialogDefinition, final OverlayLayer overlayLayer, EditorCallback callback) {
         this.callback = callback;
         this.item = item;
 
         actionExecutor.setDialogDefinition(dialogDefinition);
         buildView(dialogDefinition);
 
-        final ModalCloser modalCloser = modalLayer.openModal(view);
+        final OverlayCloser overlayCloser = overlayLayer.openOverlay(view);
 
          addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
              @Override
              public void onClose(BaseDialog.DialogCloseEvent event) {
-                modalCloser.close();
+                overlayCloser.close();
 
                  event.getView().asVaadinComponent().removeDialogCloseHandler(this);
              }

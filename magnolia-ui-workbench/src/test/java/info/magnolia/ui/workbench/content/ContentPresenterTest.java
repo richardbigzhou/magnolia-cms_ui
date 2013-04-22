@@ -31,16 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.browser;
+package info.magnolia.ui.workbench.content;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.workbench.ContentPresenter;
 import info.magnolia.ui.workbench.ContentViewBuilder;
+import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
@@ -55,11 +55,7 @@ import org.mockito.ArgumentCaptor;
 public class ContentPresenterTest {
     protected ContentViewBuilder contentViewBuilder;
 
-    protected AppContext context;
-
     protected EventBus eventBus;
-
-    protected Shell shell;
 
     protected JcrItemAdapter item;
 
@@ -69,27 +65,24 @@ public class ContentPresenterTest {
 
     private static final String TEST_WORKBENCHDEF_PATH = "/path/to/somewhere";
 
+    private WorkbenchDefinition workbench;
     @Before
     public void setUp() {
+        this.workbench = mock(WorkbenchDefinition.class);
         contentViewBuilder = mock(ContentViewBuilder.class);
-        context = mock(AppContext.class);
-        final BrowserSubAppDescriptor descr = mock(BrowserSubAppDescriptor.class);
-        when(context.getDefaultSubAppDescriptor()).thenReturn(descr);
-        final WorkbenchDefinition workbench = mock(WorkbenchDefinition.class);
-        when(descr.getWorkbench()).thenReturn(workbench);
         when(workbench.getWorkspace()).thenReturn(TEST_WORKSPACE_NAME);
         when(workbench.getPath()).thenReturn(TEST_WORKBENCHDEF_PATH);
         eventBus = mock(EventBus.class);
-        shell = mock(Shell.class);
         item = mock(JcrItemAdapter.class);
         when(item.getPath()).thenReturn(TEST_ITEM_PATH);
+
     }
 
     @Test
     public void testOnItemSelectionFiresOnEventBus() {
         // GIVEN
-        final ContentPresenter presenter = new ContentPresenter((BrowserSubAppDescriptor) context.getDefaultSubAppDescriptor(), contentViewBuilder, eventBus, shell);
-
+        final ContentPresenter presenter = new ContentPresenter(contentViewBuilder);
+        presenter.start(mock(WorkbenchView.class), workbench, null, eventBus);
         // WHEN
         presenter.onItemSelection(item);
 
@@ -103,7 +96,8 @@ public class ContentPresenterTest {
     @Test
     public void testOnDoubleClickFiresOnEventBus() {
         // GIVEN
-        final ContentPresenter presenter = new ContentPresenter((BrowserSubAppDescriptor) context.getDefaultSubAppDescriptor(), contentViewBuilder, eventBus, shell);
+        final ContentPresenter presenter = new ContentPresenter(contentViewBuilder);
+        presenter.start(mock(WorkbenchView.class), workbench, null, eventBus);
 
         // WHEN
         presenter.onDoubleClick(item);
@@ -118,8 +112,8 @@ public class ContentPresenterTest {
     @Test
     public void testOnItemSelectionWithNullItemSetSelectedPath() {
         // GIVEN
-        ContentPresenter presenter = new ContentPresenter((BrowserSubAppDescriptor) context.getDefaultSubAppDescriptor(), contentViewBuilder, eventBus, shell);
-
+        ContentPresenter presenter = new ContentPresenter(contentViewBuilder);
+        presenter.start(mock(WorkbenchView.class), workbench, null, eventBus);
         // WHEN
         presenter.onItemSelection(null);
 

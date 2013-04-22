@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -48,8 +48,10 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.dialog.Modal;
-import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.vaadin.overlay.BaseOverlayLayer;
+import info.magnolia.ui.vaadin.overlay.Overlay;
+import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
+import info.magnolia.ui.vaadin.overlay.OverlayCloser;
 import info.magnolia.ui.vaadin.view.View;
 
 import java.util.Collection;
@@ -66,7 +68,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Implements both - the controlling of an app instance as well as the housekeeping of the context for an app.
  */
-public class AppInstanceControllerImpl implements AppContext, AppInstanceController {
+public class AppInstanceControllerImpl extends BaseOverlayLayer implements AppContext, AppInstanceController {
 
     private static final Logger log = LoggerFactory.getLogger(AppInstanceControllerImpl.class);
 
@@ -153,10 +155,12 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     }
 
     @Override
-    public ModalCloser openModal(View view) {
-        View modalityParent = getView();
-        return shell.openModalOnView(view, modalityParent, Modal.ModalityLevel.APP);
+    public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
+        View overlayParent = getView();
+        return shell.openOverlayOnView(view, overlayParent, Overlay.ModalityDomain.APP, modalityLevel);
     }
+
+
 
     /**
      * Called when the app is launched from the app launcher OR a location change event triggers
@@ -422,4 +426,6 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
         return subAppDetails;
     }
+
+
 }
