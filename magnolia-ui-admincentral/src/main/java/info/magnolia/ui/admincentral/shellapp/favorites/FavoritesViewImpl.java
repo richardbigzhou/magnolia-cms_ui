@@ -135,7 +135,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
             addStyleName("v-favorites-entry");
 
             String location = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue().toString();
-            String title = favorite.getItemProperty(ModelConstants.JCR_NAME).getValue().toString();
+            String title = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue().toString();
 
             String icon = "icon-app";
             if (favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue() != null) {
@@ -154,7 +154,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
                 }
             });
             remove.setWidth(null);
-            remove.setData(favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue());
+            remove.setData(favorite.getItemProperty(ModelConstants.JCR_NAME).getValue());
 
             addComponent(remove);
 
