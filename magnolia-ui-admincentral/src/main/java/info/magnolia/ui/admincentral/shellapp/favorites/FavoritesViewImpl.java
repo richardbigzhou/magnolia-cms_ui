@@ -55,6 +55,7 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -138,7 +139,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     /**
      * Favorite entry.
      */
-    public static class FavoriteEntry extends CssLayout {
+    public class FavoriteEntry extends CssLayout {
 
         private final Label titleElement = new Label();
 
@@ -146,7 +147,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
         public FavoriteEntry(final Item favorite) {
             addStyleName("v-favorites-entry");
-            setSizeUndefined();
+
             setTitle(favorite.getItemProperty(ModelConstants.JCR_NAME).getValue().toString());
             String icon = "icon-app";
             if (favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue() != null) {
@@ -159,8 +160,19 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
             titleElement.setStyleName("text");
             titleElement.setWidth(null);
 
+            NativeButton remove = new NativeButton("Remove", new ClickListener() {
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    listener.removeFavorite((String) event.getButton().getData());
+                }
+            });
+            remove.setWidth(null);
+            remove.setData(favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue());
+
             addComponent(iconElement);
             addComponent(titleElement);
+            addComponent(remove);
         }
 
         public void setTitle(String title) {

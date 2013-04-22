@@ -62,6 +62,13 @@ public class FavoritesPresenter implements FavoritesView.Listener {
     }
 
     @Override
+    public void removeFavorite(String id) {
+        favoritesManager.removeFavorite(id);
+        view.init(favoritesManager.getFavoritesForCurrentUser(), createNewFavoriteSuggestion("", "", ""));
+
+    }
+
+    @Override
     public void addFavorite(JcrItemNodeAdapter favorite) {
         favoritesManager.addFavoriteForCurrentUser(favorite);
         // Give view the updated favorites collection, so that the newly added one is immediately displayed.
@@ -78,4 +85,5 @@ public class FavoritesPresenter implements FavoritesView.Listener {
         newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", icon));
         return newFavorite;
     }
+
 }
