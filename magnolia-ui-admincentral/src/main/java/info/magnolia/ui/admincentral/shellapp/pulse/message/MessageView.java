@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,29 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import java.util.List;
+
+import info.magnolia.ui.model.overlay.View;
 
 /**
- * Manager for the users activity streams.
- *
- * need persistence
- *
- * need to clean up old entries
- *
- * can you post to more than one user? all? by group?
+ * View interface for displaying a message.
  */
-public interface ActivityStreamManager {
+public interface MessageView extends View {
+
+    void setMessageView(View formView);
+    void setActionbarView(View actionbarView);
+    void setListener(Listener listener);
+
+    void setTitle(String subject);
 
     /**
-     * Returns the activity stream for a user, entries sorted most recent first.
+     * Listener interface used for communicating with the presenter.
      */
-    List<ActivityStreamEntry> getActivityStreamForUser(String userId);
-
-    /**
-     * Adds the entry to the users activity stream, assigns an id and records the timestamp, any values for these fields
-     * already in the instance is ignored.
-     */
-    void postEntry(String userId, ActivityStreamEntry entry);
+    public interface Listener {
+        void onNavigateToList();
+    }
 }

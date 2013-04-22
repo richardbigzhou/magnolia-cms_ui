@@ -31,18 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.view;
+package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
+
+import info.magnolia.ui.vaadin.dialog.LightDialog;
+import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
+import info.magnolia.ui.vaadin.gwt.client.dialog.widget.LightDialogViewImpl;
+
+import com.vaadin.shared.ui.Connect;
 
 /**
- * Implementers can open modal views over their display area.
+ * Connector for LightDialog.
+ * See {@link LightDialog}.
  */
-public interface ModalLayer {
+@Connect(LightDialog.class)
+public class LightDialogConnector extends BaseDialogConnector {
 
-    /**
-     * Open a Modal on top of the ModalLayer implementer.
-     * 
-     * @param view View of the component to be displayed modally.
-     */
-    ModalCloser openModal(View view);
+    protected BaseDialogView createView() {
+        return new LightDialogViewImpl();
+    }
 
 }

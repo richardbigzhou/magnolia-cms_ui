@@ -2,6 +2,7 @@
 @import "app-preloader.scss";
 @import "applauncher.scss";
 @import "dialog.scss";
+@import "overlay.scss";
 @import "favorites.scss";
 @import "form.scss";
 @import "fonts.scss";
@@ -24,6 +25,7 @@
   @include app-preloader;
   @include applauncher;
   @include dialog;
+  @include overlay;
   @include favorites;
   @include form;
   @include lightbox;

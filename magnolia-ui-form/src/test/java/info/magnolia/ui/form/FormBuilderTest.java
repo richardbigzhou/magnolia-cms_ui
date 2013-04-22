@@ -33,10 +33,8 @@
  */
 package info.magnolia.ui.form;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
@@ -50,24 +48,11 @@ import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
-import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.form.field.builder.FieldFactory;
-import info.magnolia.ui.form.field.builder.TextFieldBuilder;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.vaadin.form.FormView;
-import info.magnolia.ui.vaadin.form.ItemFormView;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Locale;
 
-import javax.jcr.Node;
-
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 /**
  * FormBuilderTest.

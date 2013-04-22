@@ -51,21 +51,20 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
 
-    private static final String CLASSNAME = "dialog-panel";
 
-    private static final String CLASSNAME_CONTENT = "dialog-content";
+    protected static final String CLASSNAME_CONTENT = "dialog-content";
 
-    private static final String CLASSNAME_FOOTER = "dialog-footer";
+    protected static final String CLASSNAME_FOOTER = "dialog-footer";
 
-    private static final String CLASSNAME_FOOTER_TOOLBAR = "dialog-footer-toolbar";
+    protected static final String CLASSNAME_FOOTER_TOOLBAR = "dialog-footer-toolbar";
 
     private static final String CLASSNAME_BUTTON = "btn-dialog";
 
-    private final DialogHeaderWidget header = createHeader();
+    protected final DialogHeaderWidget header = createHeader();
 
-    private final Element contentEl = DOM.createDiv();
-    private final Element footerEl = DOM.createDiv();
-    private final Element footerToolbarEl = DOM.createDiv();
+    protected final Element contentEl = DOM.createDiv();
+    protected final Element footerEl = DOM.createDiv();
+    protected final Element footerToolbarEl = DOM.createDiv();
 
     private final Map<String, Button> actionMap = new HashMap<String, Button>();
 
@@ -80,13 +79,17 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
         setElement(root);
         add(header, root);
         root.appendChild(contentEl);
-        setStylePrimaryName(CLASSNAME);
+        setStylePrimaryName(getClassname());
         contentEl.addClassName(CLASSNAME_CONTENT);
 
         root.appendChild(footerEl);
         footerEl.addClassName(CLASSNAME_FOOTER);
         footerEl.appendChild(footerToolbarEl);
         footerToolbarEl.addClassName(CLASSNAME_FOOTER_TOOLBAR);
+    }
+
+    protected String getClassname() {
+        return "dialog-panel";
     }
 
     protected DialogHeaderWidget createHeader() {
@@ -166,7 +169,7 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
     }
 
     @Override
-    public void setActions(Map<String, String> actions) {
+    public void setActions(Map<String, String> actions, String defaultActionName) {
         for (final Button actionButton : this.actionMap.values()) {
             remove(actionButton);
         }
@@ -177,6 +180,9 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
             final Button button = new Button(entry.getValue());
             button.setStyleName(CLASSNAME_BUTTON);
             button.addStyleDependentName(entry.getKey());
+            if (entry.getKey().equalsIgnoreCase(defaultActionName)) {
+                button.addStyleDependentName("default");
+            }
             button.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(final ClickEvent event) {

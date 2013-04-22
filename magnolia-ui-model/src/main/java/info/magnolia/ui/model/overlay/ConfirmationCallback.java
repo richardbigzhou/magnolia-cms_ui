@@ -31,28 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
+package info.magnolia.ui.model.overlay;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.connector.ModalConnector;
-
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * MagnoliaTabWidget.
+ * ConfirmationCallback.
  */
-public class ModalWidget extends SimplePanel {
+public interface ConfirmationCallback {
+    void onCancel();
 
-    private final Element modalityCurtain = DOM.createDiv();
-
-    public ModalWidget(ModalConnector connector) {
-        super();
-
-        setStyleName("modal");
-
-        modalityCurtain.setClassName("modal-curtain");
-        this.getElement().appendChild(modalityCurtain);
-    }
-
+    void onSuccess();
 }

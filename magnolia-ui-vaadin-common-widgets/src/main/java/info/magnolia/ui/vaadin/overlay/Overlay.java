@@ -31,74 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.vaadin.overlay;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.connector.ModalState;
+import info.magnolia.ui.model.overlay.OverlayLayer;
+import info.magnolia.ui.vaadin.gwt.client.dialog.connector.OverlayState;
 
 import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
 
 /**
  * A Single component container that includes a "glass" or "curtain" which dims out and prevents interaction on the elements
- * below it. It is different then a Vaadin Window in that ONLY the component that it is attached to recieves the modal glass.
+ * below it. It is different than a Vaadin Window in that ONLY the component that it is attached to receives the modal glass.
  * It is only modal within the component that it is added to.
  * Positioning of the glass and component depends on one of the parents having css position set to relative or absolute.
  */
-public class Modal extends AbstractSingleComponentContainer {
+public class Overlay extends AbstractSingleComponentContainer {
 
-    /**
-     * The available levels of modality for opening a modal.
-     * Represents what will be blocked by the opened modal.
-     */
-    public static enum ModalityLevel {
-        SUB_APP("sub-app"),
-        APP("app"),
-        SHELL("shell");
 
-        private String cssClass;
 
-        private ModalityLevel(String cssClass) {
-            this.cssClass = cssClass;
-        }
+    final OverlayLayer.ModalityDomain modalityDomain;
 
-        public String getCssClass() {
-            return cssClass;
-        }
-
-    }
-
-    final Modal.ModalityLevel modalityLevel;
-
-    public Modal(final Component content, final Component modalityParent, Modal.ModalityLevel modalityLevel) {
+    public Overlay(final Component content, final Component overlayParent, final OverlayLayer.ModalityDomain modalityDomain, final OverlayLayer.ModalityLevel modalityLevel) {
         // setSizeFull();
         setImmediate(true);
 
-        content.addStyleName("modal-child");
+        content.addStyleName("overlay-child");
         setContent(content);
 
-        this.modalityLevel = modalityLevel;
-        getState().modalityParent = modalityParent;
+        this.modalityDomain = modalityDomain;
+        getState().overlayParent = overlayParent;
 
-        // Set css class of Modal
-        String cssClass = modalityLevel.getCssClass();
-        /*
-         * switch (modalityLevel) {
-         * case SUB_APP:
-         * cssClass="sub-app";
-         * break;
-         * case APP:
-         * cssClass="app";
-         * break;
-         * case SHELL:
-         * cssClass="shell";
-         * break;
-         * }
-         */
-        this.setStyleName(cssClass);
+        // Set css classes of Modal
+        this.addStyleName(modalityDomain.getCssClass());
+
+        this.addStyleName(modalityLevel.getCssClass());
     }
 
     @Override
-    protected ModalState getState() {
-        return (ModalState) super.getState();
+    protected OverlayState getState() {
+        return (OverlayState) super.getState();
     }
 }

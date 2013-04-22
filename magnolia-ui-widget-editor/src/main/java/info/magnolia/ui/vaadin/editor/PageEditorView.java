@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.vaadin.editor;
 
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
-import info.magnolia.ui.vaadin.view.View;
 
 /**
  * PageEditorView.

@@ -36,7 +36,19 @@
       <type>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</type>
       <implementation>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionManager</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionManager</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageViewDefinitionRegistry</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageViewDefinitionRegistry</implementation>
+    </component>
 
+    <type-mapping>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.definition.ConfiguredMessageViewDefinition</implementation>
+    </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppDescriptor</type>
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
@@ -172,18 +184,34 @@
       <implementation>info.magnolia.ui.admincentral.AdmincentralPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesView</type>
-      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesPresenter</type>
-      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseMessagesPresenter</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesView</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.admincentral.shellapp.pulse.PulseDashboardView</type>
-      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.PulseDashboardViewImpl</implementation>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.message.MessageView</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.MessageViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.pulse.dashboard.PulseDashboardView</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.pulse.dashboard.PulseDashboardViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.form.field.builder.FieldFactory</type>
+      <implementation>info.magnolia.ui.form.field.builder.FieldFactory</implementation>
     </component>
 
+    <type-mapping>
+      <type>info.magnolia.ui.vaadin.form.FormView</type>
+      <implementation>info.magnolia.ui.vaadin.form.ItemFormView</implementation>
+    </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppInstanceController</type>
       <implementation>info.magnolia.ui.framework.app.AppInstanceControllerImpl</implementation>
@@ -259,7 +287,6 @@
       <type>info.magnolia.ui.vaadin.form.FormViewReduced</type>
       <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
-
     <component>
       <type>info.magnolia.ui.admincentral.app.tools.EmbeddedPageView</type>
       <implementation>info.magnolia.ui.admincentral.app.tools.EmbeddedPageViewImpl</implementation>

@@ -34,9 +34,9 @@
 package info.magnolia.ui.vaadin.form;
 
 
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-import info.magnolia.ui.vaadin.view.View;
 
 import java.util.Collection;
 import java.util.Locale;

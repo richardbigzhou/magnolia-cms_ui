@@ -36,11 +36,14 @@ package info.magnolia.ui.contentapp.field;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
-import info.magnolia.ui.contentapp.browser.BrowserViewImpl;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter;
 import info.magnolia.ui.form.field.builder.AbstractFieldBuilder;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.framework.app.AppController;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.ChooseDialogEventBus;
+import info.magnolia.ui.workbench.WorkbenchView;
+import info.magnolia.ui.workbench.WorkbenchViewImpl;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 
 import javax.inject.Inject;
@@ -67,6 +70,8 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
     private static final Logger log = LoggerFactory.getLogger(LinkFieldSelectionBuilder.class);
 
     private final EventBus chooseDialogEventBus;
+    private AppController appController;
+    private SubAppContext subAppContext;
 
     private final ChooseDialogContentPresenter contentPresenter;
 
@@ -75,10 +80,14 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
     private TextAndContentViewField textContent;
 
     @Inject
-    public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem, ChooseDialogContentPresenter contentPresenter, @Named(ChooseDialogEventBus.NAME) final EventBus chooseDialogEventBus) {
+    public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem,
+                                     ChooseDialogContentPresenter contentPresenter,
+                                     @Named(ChooseDialogEventBus.NAME) final EventBus chooseDialogEventBus) {
         super(definition, relatedFieldItem);
         this.contentPresenter = contentPresenter;
         this.chooseDialogEventBus = chooseDialogEventBus;
+        this.appController = appController;
+        this.subAppContext = subAppContext;
         // Item is build by the LinkFieldBuilder and has only one property.
         // This property has the name of property we are supposed to propagate.
         propertyName = String.valueOf(relatedFieldItem.getItemPropertyIds().iterator().next());
@@ -89,9 +98,9 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
 
     @Override
     protected Field<String> buildField() {
-        final BrowserViewImpl parentView = new BrowserViewImpl();
+        final WorkbenchView parentView = new WorkbenchViewImpl();
         textContent = new TextAndContentViewField(definition.isDisplayTextField(), definition.isDisplayTextFieldOnTop());
-        contentPresenter.startChooseDialog(parentView.getWorkbenchView());
+        contentPresenter.startChooseDialog(parentView);
         textContent.setContentView(parentView);
         // Set selected item.
         restoreContentSelection();
@@ -125,6 +134,6 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
     private void restoreContentSelection() {
         final String propertyValue = String.valueOf(item.getItemProperty(propertyName).getValue());
         final String path = LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && StringUtils.isNotBlank(propertyValue) ? propertyValue : contentPresenter.getRootPath();
-        textContent.getContentView().getWorkbenchView().selectPath(path);
+        textContent.getContentView().selectPath(path);
     }
 }

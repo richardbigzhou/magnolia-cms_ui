@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,15 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
-
-import com.vaadin.ui.HasComponents;
+package info.magnolia.ui.model.overlay;
 
 /**
- * Dashboard Pulse tab UI.
+ * Callback interface for when a user clicks on the link in a Notfication.
  */
-public interface PulseDashboardView extends PulseSubView {
+public interface NotificationCallback {
+    void onLinkClicked();
 
-    @Override
-    public HasComponents asVaadinComponent();
 }

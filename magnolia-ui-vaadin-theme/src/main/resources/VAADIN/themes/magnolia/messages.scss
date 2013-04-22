@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+@mixin messages {
+  .msgwhite {
+    background-color: $c21;
+  }
+  .msginfo {
+    background-color: $c07;
+    color: $c22;
+  }
+  .msgwarn {
+    background-color: $c13;
+    color: $c22;
+  }
+  .msgerror {
+    background-color: $c17;
+    color: $c21;
+  }
+}

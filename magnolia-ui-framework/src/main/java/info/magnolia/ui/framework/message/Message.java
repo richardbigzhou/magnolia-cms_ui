@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.framework.message;
 
-import static info.magnolia.ui.framework.AdmincentralNodeTypes.SystemMessage.*;
-
 import info.magnolia.context.MgnlContext;
 
 import java.util.Collection;
@@ -47,6 +45,15 @@ import java.util.Set;
  */
 public class Message implements Cloneable, Map<String, Object> {
 
+    public static String ID = "id";
+    public static String TIMESTAMP = "timestamp";
+    public static String MESSAGETYPE = "messagetype";
+    public static String MESSAGE_VIEW = "messageView";
+
+    public static String SUBJECT = "subject";
+    public static String MESSAGE = "message";
+    public static String CLEARED = "cleared";
+    public static String SENDER = "sender";
     public static String DEFAULT_SENDER = "system";
 
     private Map<String, Object> data = new HashMap<String, Object>();
