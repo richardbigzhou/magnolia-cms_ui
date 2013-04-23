@@ -52,6 +52,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
@@ -128,8 +129,11 @@ public class FormBuilder {
         }
         view.setShowAllEnabled(formDefinition.getTabs().size() > 1);
         if (hasI18NAwareFields) {
-            view.setLocaleSelector(i18NAuthoringSupport.getLanguageChooser());
-            view.setCurrentLocale(i18nContentSupport.getFallbackLocale());
+            final AbstractSelect languageChoser = i18NAuthoringSupport.getLanguageChooser();
+            if (languageChoser != null) {
+                view.setLocaleSelector(languageChoser);
+                view.setCurrentLocale(i18nContentSupport.getFallbackLocale());
+            }
         }
         return view;
     }

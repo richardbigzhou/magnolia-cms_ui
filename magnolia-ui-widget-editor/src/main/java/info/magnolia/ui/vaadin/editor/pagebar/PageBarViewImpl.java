@@ -66,9 +66,6 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
 
     private I18NAuthoringSupport i18NAuthoringSupport;
 
-    private boolean isPreview = false;
-
-
     @Inject
     public PageBarViewImpl(I18NAuthoringSupport i18NAuthoringSupport) {
         super();
@@ -97,18 +94,21 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
 
 
         this.languageSelector = i18NAuthoringSupport.getLanguageChooser();
-        languageSelector.setSizeUndefined();
-        languageSelector.addValueChangeListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                if (listener != null) {
-                    listener.languageSelected((Locale) event.getProperty().getValue());
+        if (languageSelector != null) {
+            languageSelector.setSizeUndefined();
+            languageSelector.addValueChangeListener(new Property.ValueChangeListener() {
+                @Override
+                public void valueChange(Property.ValueChangeEvent event) {
+                    if (listener != null) {
+                        listener.languageSelected((Locale) event.getProperty().getValue());
+                    }
+                    updateStatusLabel();
                 }
-                updateStatusLabel();
-            }
-        });
-        this.platformSelector.setValue("Desktop");
+            });
+        }
 
+        this.platformSelector.setValue("Desktop");
+        this.platformSelector.setEnabled(false);
         this.pageNameLabel.setSizeUndefined();
         this.pageNameLabel.addStyleName("title");
 
@@ -116,7 +116,9 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
         settingsStatus.setSizeUndefined();
 
         root.addComponent(pageNameLabel);
-        root.addComponent(languageSelector);
+        if (languageSelector != null) {
+            root.addComponent(languageSelector);
+        }
         root.addComponent(platformSelector);
         root.addComponent(settingsStatus);
     }
@@ -137,13 +139,16 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
 
     @Override
     public void setCurrentLanguage(Locale locale) {
-        languageSelector.setValue(locale);
+        if (languageSelector != null) {
+            languageSelector.setValue(locale);
+        }
     }
 
     @Override
     public void togglePreviewMode(boolean isPreview) {
-        this.isPreview = isPreview;
-        languageSelector.setVisible(!isPreview);
+        if (languageSelector != null) {
+            languageSelector.setVisible(!isPreview);
+        }
         platformSelector.setVisible(!isPreview);
 
         settingsStatus.setVisible(isPreview);

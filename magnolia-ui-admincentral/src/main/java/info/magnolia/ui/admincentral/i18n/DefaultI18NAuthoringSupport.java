@@ -69,20 +69,24 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
 
     @Override
     public AbstractSelect getLanguageChooser() {
-        Collection<Locale> locales = i18nContentSupport.getLocales();
-        IndexedContainer c = new IndexedContainer();
-        c.addContainerProperty("displayLanguage", String.class, "");
-        for (Locale locale : locales) {
-            Item it = c.addItem(locale);
-            it.getItemProperty("displayLanguage").setValue(locale.getDisplayName());
+        if (enabled && i18nContentSupport.isEnabled()) {
+            Collection<Locale> locales = i18nContentSupport.getLocales();
+            IndexedContainer c = new IndexedContainer();
+            c.addContainerProperty("displayLanguage", String.class, "");
+            for (Locale locale : locales) {
+                Item it = c.addItem(locale);
+                it.getItemProperty("displayLanguage").setValue(locale.getDisplayName());
+            }
+            ComboBox languageSelector = new ComboBox();
+            languageSelector.setImmediate(true);
+            languageSelector.setItemCaptionPropertyId("displayLanguage");
+            languageSelector.setContainerDataSource(c);
+            languageSelector.setNullSelectionAllowed(false);
+            languageSelector.setTextInputAllowed(false);
+            return languageSelector;
+        } else {
+            return null;
         }
-        ComboBox languageSelector = new ComboBox();
-        languageSelector.setImmediate(true);
-        languageSelector.setItemCaptionPropertyId("displayLanguage");
-        languageSelector.setContainerDataSource(c);
-        languageSelector.setNullSelectionAllowed(false);
-        languageSelector.setTextInputAllowed(false);
-        return languageSelector;
     }
 
     @Override
