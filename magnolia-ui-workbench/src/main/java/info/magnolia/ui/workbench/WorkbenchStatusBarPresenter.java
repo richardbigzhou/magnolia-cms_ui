@@ -55,7 +55,6 @@ public class WorkbenchStatusBarPresenter {
     private int selectionCount;
     private int itemCount;
 
-    // TODO externalize in properties file, leave door open to specialization as per app content type.
     private String countPattern = "%d item(s), %d selected";
 
     private final Label selectionLabel = new Label();
