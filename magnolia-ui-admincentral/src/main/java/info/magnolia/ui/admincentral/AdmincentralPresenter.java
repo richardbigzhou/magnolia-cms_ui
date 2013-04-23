@@ -54,6 +54,8 @@ import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.model.overlay.View;
 
+import java.lang.reflect.InvocationTargetException;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -93,7 +95,37 @@ public class AdmincentralPresenter {
 
             @Override
             public void error(ErrorEvent event) {
-                AdmincentralPresenter.this.messagesManager.sendLocalMessage(new Message(MessageType.ERROR, event.getThrowable().getMessage(), event.getThrowable().getMessage()));
+                Throwable e = event.getThrowable();
+                String subject = e.getClass().getSimpleName();
+                StringBuilder message = new StringBuilder(subject);
+                if (e.getMessage() != null) {
+                    message.append(": ");
+                    message.append(e.getMessage());
+                }
+                addMessageDetails(message, e);
+                AdmincentralPresenter.this.messagesManager.sendLocalMessage(new Message(MessageType.ERROR, subject, message.toString()));
+            }
+
+            private void addMessageDetails(StringBuilder message, Throwable e) {
+                if (e == null || e == e.getCause()) {
+                    return;
+                }
+                Throwable cause = e.getCause();
+
+                if (e.getCause() instanceof InvocationTargetException) {
+                    // add details for RPC exceptions
+                    cause = ((InvocationTargetException) cause).getTargetException();
+                }
+                if (cause != null) {
+                    message.append("\n");
+                    message.append("caused by ");
+                    message.append(cause.getClass().getSimpleName());
+                    if (cause.getMessage() != null) {
+                        message.append(": ");
+                        message.append(cause.getMessage());
+                    }
+                }
+                addMessageDetails(message, cause);
             }
         });
         VaadinSession.getCurrent().setErrorHandler(null);
