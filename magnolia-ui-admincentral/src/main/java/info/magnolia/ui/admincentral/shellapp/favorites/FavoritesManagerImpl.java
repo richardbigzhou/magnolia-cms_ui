@@ -38,7 +38,7 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
-import info.magnolia.ui.framework.favorite.bookmark.BookmarkStore;
+import info.magnolia.ui.framework.favorite.FavoriteStore;
 import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
@@ -53,10 +53,10 @@ import javax.jcr.RepositoryException;
  * Implementation of a Manager for Favorites.
  */
 public class FavoritesManagerImpl implements FavoritesManager {
-    private BookmarkStore bookmarkStore;
+    private FavoriteStore bookmarkStore;
 
     @Inject
-    public FavoritesManagerImpl(final BookmarkStore bookmarkStore) {
+    public FavoritesManagerImpl(final FavoriteStore bookmarkStore) {
         this.bookmarkStore = bookmarkStore;
     }
     @Override

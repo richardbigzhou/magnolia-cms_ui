@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.favorite.bookmark;
+package info.magnolia.ui.framework.favorite;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -40,6 +40,7 @@ import info.magnolia.cms.security.User;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.framework.favorite.FavoriteStore;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
@@ -50,29 +51,53 @@ import org.junit.Test;
 /**
  * Tests.
  */
-public class BookmarkStoreTest extends MgnlTestCase {
+public class FavoriteStoreTest extends MgnlTestCase {
     public static final String TEST_USER = "phantomas";
 
-    private BookmarkStore store;
+    private FavoriteStore store;
     Session session;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        session = new MockSession(BookmarkStore.WORKSPACE_NAME);
-        MockUtil.getMockContext().addSession(BookmarkStore.WORKSPACE_NAME, session);
+        session = new MockSession(FavoriteStore.WORKSPACE_NAME);
+        MockUtil.getMockContext().addSession(FavoriteStore.WORKSPACE_NAME, session);
         User user = mock(User.class);
         when(user.getName()).thenReturn(TEST_USER);
         MockUtil.getMockContext().setUser(user);
 
-        store = new BookmarkStore();
+        store = new FavoriteStore();
     }
 
     @Test
-    public void testGetBookmarkRoot() throws Exception {
+    public void testGetFavoriteRoot() throws Exception {
         // GIVEN
-        final Node bookmarkNode = session.getRootNode().addNode(TEST_USER).addNode(BookmarkStore.FAVORITES_PATH).addNode(BookmarkStore.BOOKMARKS_PATH);
+        session.getRootNode().addNode(TEST_USER).addNode(FavoriteStore.FAVORITES_PATH);
+        session.save();
+
+        // WHEN
+        final Node favoriteRoot = store.getFavoriteRoot();
+
+        // THEN
+        assertEquals("/phantomas/favorites", favoriteRoot.getPath());
+    }
+
+    @Test
+    public void testGetFavoriteRootWhenNotYetExisting() throws Exception {
+        // GIVEN
+
+        // WHEN
+        final Node favoriteRoot = store.getFavoriteRoot();
+
+        // THEN
+        assertEquals("/phantomas/favorites", favoriteRoot.getPath());
+    }
+
+
+    @Test
+    public void testGetBookmarkRootWhenNotYetExisting() throws Exception {
+        // GIVEN
 
         // WHEN
         final Node bookmarkRoot = store.getBookmarkRoot();

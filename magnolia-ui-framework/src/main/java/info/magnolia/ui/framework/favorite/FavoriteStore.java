@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.favorite.bookmark;
+package info.magnolia.ui.framework.favorite;
 
 import info.magnolia.context.MgnlContext;
 
@@ -46,34 +46,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Stores and retrieves bookmarks.
+ * Retrieves root node for favorites or bookmarks. Creates those nodes if not yet around.
  */
 @Singleton
-public class BookmarkStore {
-
-    public static final String BOOKMARK_URL_PROPERTY_NAME = "url";
-    private final Logger log = LoggerFactory.getLogger(getClass());
+public class FavoriteStore {
 
     public static final String WORKSPACE_NAME = "profiles";
     public static final String FAVORITES_PATH = "favorites";
     public static final String BOOKMARKS_PATH = "bookmarks";
-    public static final String BOOKMARK_NODETYPE = JcrConstants.NT_BASE;
-
 
     protected Session getSession() throws RepositoryException{
         return MgnlContext.getJCRSession(WORKSPACE_NAME);
     }
 
     /**
-     * @return the root node of all bookmarks for the current user
+     * Get the bookmark root - create it if it's not yet around.
+     *
+     * @return the bookmark node for all favorites
      */
     public Node getBookmarkRoot() throws RepositoryException {
-        final String userName = MgnlContext.getInstance().getUser().getName();
-        final Node userNode =  JcrUtils.getOrAddNode(getSession().getRootNode(), userName, JcrConstants.NT_UNSTRUCTURED);
-        final Node favoriteNode = JcrUtils.getOrAddNode(userNode, FAVORITES_PATH, JcrConstants.NT_UNSTRUCTURED);
-        final Node bookmarkNode = JcrUtils.getOrAddNode(favoriteNode, BOOKMARKS_PATH, JcrConstants.NT_UNSTRUCTURED);
+        final Node bookmarkNode = JcrUtils.getOrAddNode(getFavoriteRoot(), BOOKMARKS_PATH, JcrConstants.NT_UNSTRUCTURED);
         getSession().save();
 
         return bookmarkNode;
+    }
+
+    /**
+     * Get the favorites root - create it if it's not yet around.
+     *
+     * @return the root node for all favorites
+     */
+    public Node getFavoriteRoot() throws RepositoryException {
+        final String userName = MgnlContext.getInstance().getUser().getName();
+        final Node userNode =  JcrUtils.getOrAddNode(getSession().getRootNode(), userName, JcrConstants.NT_UNSTRUCTURED);
+        final Node favoriteNode = JcrUtils.getOrAddNode(userNode, FAVORITES_PATH, JcrConstants.NT_UNSTRUCTURED);
+        getSession().save();
+
+        return favoriteNode;
     }
 }
