@@ -126,6 +126,7 @@ public abstract class OverlayPresenter implements OverlayLayer {
     private ConfirmationDialog createConfirmationDialog(View contentView, String confirmButtonText, String cancelButtonText, String stylename, boolean cancelIsDefault) {
         ConfirmationDialog dialog = new ConfirmationDialog(contentView, cancelIsDefault);
         dialog.addStyleName(stylename);
+        dialog.addStyleName("confirmation");
         dialog.setConfirmActionLabel(confirmButtonText);
         if (cancelButtonText != null) {
             dialog.setRejectActionLabel(cancelButtonText);
@@ -137,6 +138,7 @@ public abstract class OverlayPresenter implements OverlayLayer {
     private BaseDialog createAlertDialog(View contentView, String confirmButtonText, String stylename) {
         BaseDialog dialog = new LightDialog();
         dialog.addStyleName(stylename);
+        dialog.addStyleName("alert");
         dialog.setContent(contentView.asVaadinComponent());
         dialog.addAction(ACTION_CONFIRM, confirmButtonText);
         dialog.setDefaultAction(ACTION_CONFIRM);
