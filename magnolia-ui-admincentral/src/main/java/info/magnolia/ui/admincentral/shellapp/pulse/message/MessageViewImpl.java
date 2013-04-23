@@ -105,6 +105,7 @@ public class MessageViewImpl  extends HorizontalLayout implements MessageView {
         return this;
     }
 
+    @Override
     public void setListener(MessageView.Listener listener) {
         this.listener = listener;
     }

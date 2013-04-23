@@ -64,11 +64,13 @@ public enum MessageStyleTypeEnum implements MessageStyleType {
         return caption;
     }
 
+    @Override
     public String getCssClass() {
         return cssClass;
     }
 
-    public Class getIconClass() {
+    @Override
+    public Class<?> getIconClass() {
         return iconClass;
     }
 
