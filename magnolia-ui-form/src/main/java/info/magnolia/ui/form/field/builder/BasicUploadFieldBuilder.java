@@ -98,7 +98,7 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder<BasicUploadFie
     }
 
     /**
-     * Get or Create the imageBinary Item. If this Item doesn't exist yet,
+     * Get or Create the Binary Item. If this Item doesn't exist yet,
      * initialize all fields (as Property).
      */
     public JcrItemNodeAdapter getOrCreateSubItemWithBinaryData() {
