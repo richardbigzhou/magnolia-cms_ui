@@ -33,6 +33,14 @@
  */
 package info.magnolia.ui.vaadin.overlay;
 
+import info.magnolia.objectfactory.Classes;
+import info.magnolia.ui.model.overlay.AlertCallback;
+import info.magnolia.ui.model.overlay.ConfirmationCallback;
+import info.magnolia.ui.model.overlay.MessageStyleType;
+import info.magnolia.ui.model.overlay.NotificationCallback;
+import info.magnolia.ui.model.overlay.OverlayCloser;
+import info.magnolia.ui.model.overlay.OverlayLayer;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
@@ -40,8 +48,6 @@ import info.magnolia.ui.vaadin.dialog.LightDialog;
 import info.magnolia.ui.vaadin.dialog.Notification;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
-import info.magnolia.ui.vaadin.overlay.Overlay.ModalityLevel;
-import info.magnolia.ui.vaadin.view.View;
 
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
@@ -55,9 +61,9 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
- * Provides default implementations for many OverlayLayer methods.
+ * Provides implementations for most OverlayLayer methods.
  */
-public abstract class BaseOverlayLayer implements OverlayLayer {
+public abstract class OverlayPresenter implements OverlayLayer {
 
     private static final String ACTION_CONFIRM = "confirm";
 
@@ -151,7 +157,7 @@ public abstract class BaseOverlayLayer implements OverlayLayer {
                 bodyLabel.addStyleName("body");
                 layout.addComponent(bodyLabel);
 
-                CompositeIcon icon = type.makeIcon();
+                CompositeIcon icon = (CompositeIcon) Classes.getClassFactory().newInstance(type.getIconClass());
                 icon.setStyleName("dialog-icon");
                 layout.addComponent(icon);
 

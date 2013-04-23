@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
+package info.magnolia.ui.admincentral.shellapp.pulse.dashboard;
 
-import info.magnolia.objectfactory.Classes;
-import info.magnolia.ui.vaadin.icon.CompositeIcon;
-import info.magnolia.ui.vaadin.icon.ErrorIcon;
-import info.magnolia.ui.vaadin.icon.NullIcon;
-import info.magnolia.ui.vaadin.icon.WarningIcon;
+import info.magnolia.ui.admincentral.shellapp.pulse.PulseSubView;
+
+import com.vaadin.ui.HasComponents;
 
 /**
- * The type of message.
+ * Dashboard Pulse tab UI.
  */
-public enum MessageStyleType {
-
-    UNKNOWN("", "", NullIcon.class),
-    ERROR("Error", "msgerror", ErrorIcon.class),
-    WARNING("Warning", "msgwarn", WarningIcon.class),
-    INFO("Info", "msginfo", NullIcon.class);
-
-    private String caption;
-    private String cssClass;
-    private Class<? extends CompositeIcon> icon;
-
-    private MessageStyleType(final String caption, final String cssClass, final Class<? extends CompositeIcon> icon) {
-        this.caption = caption;
-        this.cssClass = cssClass;
-        this.icon = icon;
-    }
+public interface PulseDashboardView extends PulseSubView {
 
     @Override
-    public String toString() {
-        return caption;
-    }
-
-    public String getCssClass() {
-        return cssClass;
-    }
-
-    public CompositeIcon makeIcon() {
-        return Classes.getClassFactory().newInstance(icon);
-    }
-
+    public HasComponents asVaadinComponent();
 }

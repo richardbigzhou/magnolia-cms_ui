@@ -38,8 +38,8 @@ import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent;
 import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.mediaeditor.editmode.provider.EditModeProvider;
 import info.magnolia.ui.model.action.ActionExecutor;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
-import info.magnolia.ui.vaadin.view.View;
 
 import java.io.InputStream;
 

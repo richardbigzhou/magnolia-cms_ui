@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.registry;
 
-import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
 
 /**
- * An entry in the activity stream for a user.
+ * Provides a message view definition.
+ *
+ * @see MessageViewDefinitionRegistry
  */
-public class ActivityStreamEntry {
+public interface MessageViewDefinitionProvider {
+    String getId();
 
-    private String id;
-    private long timestamp;
-    private MessageType type;
-    private String label;
-    private String message;
+    MessageViewDefinition getMessageViewDefinition() throws RegistrationException;
 }

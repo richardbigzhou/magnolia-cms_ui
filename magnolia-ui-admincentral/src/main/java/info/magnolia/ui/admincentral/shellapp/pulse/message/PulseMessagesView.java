@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
+package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
+import info.magnolia.ui.admincentral.shellapp.pulse.PulseSubView;
+
+import java.util.Collection;
+
+import com.vaadin.data.Container;
+import com.vaadin.ui.HasComponents;
 
 /**
- * ConfirmationCallback.
+ * Messages Pulse tab UI.
  */
-public interface ConfirmationCallback {
-    void onCancel();
+public interface PulseMessagesView extends PulseSubView {
 
-    void onSuccess();
+    @Override
+    public HasComponents asVaadinComponent();
+
+    void setDataSource(Container dataSource);
+
+    void setListener(Listener listener);
+
+    /**
+     * Listener interface to call back to {@link PulseMessagesPresenter}.
+     */
+    public interface Listener{
+
+        void filterByMessageCategory(PulseMessageCategoryNavigator.MessageCategory category);
+
+        void onMessageClicked(String itemId);
+
+        Object getParent(Object child);
+
+        Collection<?> getGroup(Object parent);
+
+        void setGrouping(boolean checked);
+    }
 }

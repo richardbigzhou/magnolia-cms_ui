@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.view;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.definition;
 
-import java.io.Serializable;
+import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.model.action.ActionDefinition;
 
-import com.vaadin.ui.Component;
+import java.util.Map;
 
 /**
- * Marker interface for views. Extends {@link Serializable} because all Vaadin components need to be serializable.
- *
- * @see Viewport
+ * Definition used for building a view for messages.
  */
-public interface View extends Serializable {
+public interface MessageViewDefinition {
 
-    /**
-     * Returns the Vaadin component representing this view.
-     */
-    Component asVaadinComponent();
+    Map<String, ActionDefinition> getActions();
+
+    FormDefinition getForm();
+
+    ActionbarDefinition getActionbar();
 }

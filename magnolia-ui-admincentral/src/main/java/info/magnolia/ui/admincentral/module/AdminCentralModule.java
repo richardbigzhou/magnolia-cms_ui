@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.module;
 
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionManager;
 import info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
@@ -51,19 +52,22 @@ public class AdminCentralModule implements ModuleLifecycle {
     private AppLauncherLayoutManager appLauncherLayoutManager;
     private ConfiguredAppDescriptorManager configuredAppDescriptorManager;
     private ConfiguredDialogDefinitionManager configuredDialogDefinitionManager;
+    private ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager;
 
     @Inject
-    public AdminCentralModule(AppLauncherLayoutManager appLauncherLayoutManager, ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager) {
+    public AdminCentralModule(AppLauncherLayoutManager appLauncherLayoutManager, ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager, ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager) {
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.configuredAppDescriptorManager = configuredAppDescriptorManager;
         this.configuredDialogDefinitionManager = configuredDialogDefinitionManager;
+        this.configuredMessageViewDefinitionManager = configuredMessageViewDefinitionManager;
     }
 
     @Override
     public void start(ModuleLifecycleContext context) {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
-            this.configuredAppDescriptorManager.start();
-            this.configuredDialogDefinitionManager.start();
+            configuredAppDescriptorManager.start();
+            configuredDialogDefinitionManager.start();
+            configuredMessageViewDefinitionManager.start();
             appLauncherLayoutManager.setLayout(getAppLauncherLayout());
         }
         if (context.getPhase() == ModuleLifecycleContext.PHASE_MODULE_RESTART) {

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,12 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
+package info.magnolia.ui.admincentral.shellapp.pulse.activity;
 
 /**
- * Callback interface for when a user clicks on the link in a Notfication.
+ * The type of entries in the activity stream.
  */
-public interface NotificationCallback {
-    void onLinkClicked();
+public enum ActivityStreamEntryType {
 
+    ACCEPTED, REJECTED, URGENT
 }

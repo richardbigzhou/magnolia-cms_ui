@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.vaadin.view.View;
 
 /**
  * View for favorites.

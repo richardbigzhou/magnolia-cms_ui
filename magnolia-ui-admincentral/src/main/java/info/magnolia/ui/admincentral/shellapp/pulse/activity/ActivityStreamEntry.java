@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
+package info.magnolia.ui.admincentral.shellapp.pulse.activity;
+
+import info.magnolia.ui.framework.message.MessageType;
 
 /**
- * Callback for closing an overlay.
+ * An entry in the activity stream for a user.
  */
-public interface OverlayCloser {
+public class ActivityStreamEntry {
 
-    void close();
-
+    private String id;
+    private long timestamp;
+    private MessageType type;
+    private String label;
+    private String message;
 }

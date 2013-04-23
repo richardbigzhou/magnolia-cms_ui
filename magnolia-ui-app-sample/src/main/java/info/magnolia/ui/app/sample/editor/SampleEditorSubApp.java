@@ -39,7 +39,7 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.View;
 
 import javax.inject.Inject;
 import javax.inject.Named;

@@ -57,13 +57,14 @@ public class IconWidget extends Widget {
     public IconWidget() {
         setElement(root);
         setStylePrimaryName(CLASSNAME);
+        initDefaultStyles();
     }
 
     public void setInnerIcon(boolean innerIcon) {
         this.innerIcon = innerIcon;
     }
 
-    public void updateBaseStyles() {
+    private void initDefaultStyles() {
         if (!innerIcon) {
             Style style = root.getStyle();
             style.setFontSize(SIZE_DEFAULT, Unit.PX);
