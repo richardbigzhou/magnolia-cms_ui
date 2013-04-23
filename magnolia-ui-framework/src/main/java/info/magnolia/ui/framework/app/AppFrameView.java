@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
-import info.magnolia.ui.vaadin.view.View;
 
 import org.vaadin.cssinject.CSSInject;
 
@@ -47,6 +47,7 @@ import com.vaadin.ui.Component;
 
 /**
  * View used to give all apps a uniform look-and-feel.
+ * @see AppView
  */
 public class AppFrameView implements AppView {
 

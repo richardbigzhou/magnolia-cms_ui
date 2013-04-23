@@ -44,7 +44,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -207,16 +206,6 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     @Override
     protected FormState getState(boolean markAsDirty) {
         return (FormState) super.getState(markAsDirty);
-    }
-
-    @Override
-    public void setLocale(Locale newLocale) {
-        super.setLocale(newLocale);
-        Iterator<Component> it = tabSheet.iterator();
-        while (it.hasNext()) {
-            FormSection fs = ((MagnoliaFormTab)it.next()).getContent();
-            fs.setLocale(newLocale);
-        }
     }
 
     @Override

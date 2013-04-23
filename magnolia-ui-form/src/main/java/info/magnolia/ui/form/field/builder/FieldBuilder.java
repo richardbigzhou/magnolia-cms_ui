@@ -34,9 +34,11 @@
 package info.magnolia.ui.form.field.builder;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.FormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
+import info.magnolia.ui.model.overlay.View;
 
 import com.vaadin.ui.Field;
 
@@ -63,9 +65,13 @@ public interface FieldBuilder extends FormItem {
      */
     Field<?> getField();
 
+    View getView();
+
     FieldDefinition getFieldDefinition();
 
     void setValidatorFieldFactory(ValidatorFieldFactory validatorFieldFactory);
 
     void setI18nContentSupport(I18nContentSupport i18nContentSupport);
+
+    void setComponentProvider(ComponentProvider componentProvider);
 }

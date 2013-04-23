@@ -34,14 +34,15 @@
 package info.magnolia.ui.form.field.builder;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.vaadin.integration.i18n.I18NAwareProperty;
 import info.magnolia.ui.form.field.validation.FieldValidatorBuilder;
 import info.magnolia.ui.form.field.validation.FieldValidatorDefinition;
 import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
+import info.magnolia.ui.model.i18n.I18NAwareProperty;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -53,7 +54,10 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.Label;
 
 /**
  * Abstract FieldBuilder implementations. This class handle all common attributes defined in {@link FieldDefinition} and binds Vaadin {@link Field} instances created
@@ -69,6 +73,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
     protected D definition;
     private ValidatorFieldFactory validatorFieldFactory;
     private I18nContentSupport i18nContentSupport;
+    private ComponentProvider componentProvider;
 
     public AbstractFieldBuilder(D definition, Item relatedFieldItem) {
         this.definition = definition;
@@ -88,17 +93,12 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
     @Override
     public Field<T> getField() {
         if (field == null) {
-
             // Build the Vaadin field
             this.field = buildField();
 
-            // Get and set the DataSource property
-            // Set i18n property name
             Property<?> property = getOrCreateProperty();
             setPropertyDataSource(property);
 
-            // TODO fgrilli review: do we really want to provide users with the possibility
-            // of defining their custom styles risking that they screw up AdminCentral look&feel?
             if (StringUtils.isNotBlank(definition.getStyleName())) {
                 this.field.addStyleName(definition.getStyleName());
             }
@@ -129,20 +129,54 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
      */
     protected abstract Field<T> buildField();
 
+
+    @Override
+    public View getView() {
+        Property<?> property = getOrCreateProperty();
+
+        final CssLayout fieldView = new CssLayout();
+        fieldView.setStyleName("field-view");
+
+        Label label = new Label();
+        label.setSizeUndefined();
+        label.setCaption(getFieldDefinition().getLabel());
+        label.setPropertyDataSource(property);
+
+        fieldView.addComponent(label);
+
+        return new View() {
+            @Override
+            public Component asVaadinComponent() {
+                return fieldView;
+            }
+        };
+    }
+
     /**
      * Get a property from the current Item.
-     * If the property already exists, return this property.
      * <p>
+     *     if the field is i18n-aware - create a special property that would delegate
+     *     the values to the proper localized properties. Otherwise - follow the default pattern.
+     * </p>
+     *
+     * <p>
+     * If the property already exists, return this property.
      * If the property does not exist, create a new property based on the defined type, default value, and saveInfo.
+     * </p>
      */
     protected Property<?> getOrCreateProperty() {
+        String propertyName = definition.getName();
+        Class<?> fieldType = getFieldType(definition);
+        String defaultValue = definition.getDefaultValue();
         if (definition.isI18n()) {
-            return new I18NAwareProperty(definition.getName(), (JcrItemNodeAdapter) item, i18nContentSupport);
+            I18NAwareProperty<?> property = componentProvider.newInstance(I18NAwareProperty.class, propertyName, fieldType, item);
+            property.setDefaultValue(defaultValue);
+            return property;
+
         } else {
-            String propertyName = definition.getName();
             Property<?> property = item.getItemProperty(propertyName);
             if (property == null) {
-                property = DefaultPropertyUtil.newDefaultProperty(propertyName, getFieldType(definition).getSimpleName(), definition.getDefaultValue());
+                property = DefaultPropertyUtil.newDefaultProperty(propertyName, fieldType.getSimpleName(), defaultValue);
                 item.addItemProperty(propertyName, property);
             }
             return property;
@@ -213,5 +247,10 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
         if (field.getPropertyDataSource() != null) {
             field.getPropertyDataSource().setReadOnly(definition.isReadOnly());
         }
+    }
+
+    @Override
+    public void setComponentProvider(ComponentProvider componentProvider) {
+        this.componentProvider = componentProvider;
     }
 }

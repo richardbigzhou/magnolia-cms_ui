@@ -46,6 +46,10 @@ public class PageEditorParameters implements Serializable {
 
     private boolean preview;
 
+    private String platformId;
+
+    private String url;
+
     public PageEditorParameters() {
     }
 
@@ -77,5 +81,21 @@ public class PageEditorParameters implements Serializable {
 
     public boolean isPreview() {
         return preview;
+    }
+
+    public String getPlatformId() {
+        return platformId;
+    }
+
+    public void setPlatformId(String platformId) {
+        this.platformId = platformId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

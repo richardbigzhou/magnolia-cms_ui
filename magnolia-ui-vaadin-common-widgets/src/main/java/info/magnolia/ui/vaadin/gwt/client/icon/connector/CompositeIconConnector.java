@@ -48,10 +48,6 @@ import com.vaadin.shared.ui.Connect;
 @Connect(CompositeIcon.class)
 public class CompositeIconConnector extends AbstractLayoutConnector {
 
-    @Override
-    protected void init() {
-        getWidget().updateBaseStyles();
-    }
 
     @Override
     public IconWidget getWidget() {

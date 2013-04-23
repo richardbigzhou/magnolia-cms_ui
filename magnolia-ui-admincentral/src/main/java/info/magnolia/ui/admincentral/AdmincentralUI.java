@@ -42,9 +42,9 @@ import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.framework.event.EventBusProtector;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.shell.ShellImpl;
-import info.magnolia.ui.vaadin.view.View;
 
 import java.util.List;
 

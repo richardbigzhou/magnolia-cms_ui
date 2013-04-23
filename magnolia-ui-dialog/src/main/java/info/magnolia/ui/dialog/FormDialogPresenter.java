@@ -35,9 +35,9 @@ package info.magnolia.ui.dialog;
 
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.model.overlay.OverlayLayer;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
-import info.magnolia.ui.vaadin.overlay.OverlayLayer;
 
 import com.vaadin.data.Item;
 

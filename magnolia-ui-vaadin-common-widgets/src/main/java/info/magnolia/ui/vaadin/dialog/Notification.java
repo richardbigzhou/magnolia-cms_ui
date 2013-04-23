@@ -33,9 +33,10 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
+import info.magnolia.objectfactory.Classes;
+import info.magnolia.ui.model.overlay.MessageStyleType;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
-import info.magnolia.ui.vaadin.overlay.MessageStyleType;
-import info.magnolia.ui.vaadin.view.View;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -74,7 +75,7 @@ public class Notification implements View {
         // Set the type
         layout.addStyleName(type.getCssClass());
 
-        CompositeIcon icon = type.makeIcon();
+        CompositeIcon icon = (CompositeIcon) Classes.getClassFactory().newInstance(type.getIconClass());
         icon.setStyleName("dialog-icon");
         layout.addComponent(icon);
 

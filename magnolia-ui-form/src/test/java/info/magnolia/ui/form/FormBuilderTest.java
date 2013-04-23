@@ -33,10 +33,8 @@
  */
 package info.magnolia.ui.form;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.i18n.DefaultI18nContentSupport;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
@@ -50,24 +48,11 @@ import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
-import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.form.field.builder.FieldFactory;
-import info.magnolia.ui.form.field.builder.TextFieldBuilder;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.vaadin.form.FormView;
-import info.magnolia.ui.vaadin.form.ItemFormView;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Locale;
 
-import javax.jcr.Node;
-
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 /**
  * FormBuilderTest.
@@ -97,56 +82,5 @@ public class FormBuilderTest {
     public void tearDown() {
         MgnlContext.setInstance(null);
         ComponentsTestUtil.clear();
-    }
-
-    @Test
-    public void testBuildingWithoutTabsAndActions() {
-        // GIVEN
-        final FormDefinition def = new ConfiguredFormDefinition();
-        final FormView form = new ItemFormView();
-        final FormBuilder builder = new FormBuilder(null, form, null);
-
-        // WHEN
-        final FormView result = builder.buildForm(def, null, null);
-
-        // THEN
-        assertEquals(result, form);
-    }
-
-    @Test
-    public void testBuildingWithTabsAndActions() throws Exception {
-        // GIVEN
-        final String propertyName = "test";
-        final ConfiguredFormDefinition formDef = new ConfiguredFormDefinition();
-        final TextFieldDefinition fieldTypeDef = new TextFieldDefinition();
-        fieldTypeDef.setName(propertyName);
-
-        final Node underlyingNode = session.getRootNode().addNode("underlying");
-        final String propertyValue = "value";
-        underlyingNode.setProperty(propertyName, propertyValue);
-        final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
-
-        final FormView form = new ItemFormView();
-
-
-        final ConfiguredTabDefinition tabDef = new ConfiguredTabDefinition();
-        final ConfiguredFieldDefinition fieldDef = new ConfiguredFieldDefinition();
-        fieldDef.setName(propertyName);
-        tabDef.addField(fieldDef);
-        formDef.addTab(tabDef);
-
-        final FieldFactory fieldFactory = mock(FieldFactory.class);
-        TextFieldBuilder editField = new TextFieldBuilder(fieldTypeDef, item);
-        DefaultI18nContentSupport i18nContentSupport = new DefaultI18nContentSupport();
-        i18nContentSupport.setFallbackLocale(new Locale("en"));
-        editField.setI18nContentSupport(i18nContentSupport);
-        when(fieldFactory.create(same(fieldDef), same(item))).thenReturn(editField);
-
-        final FormBuilder builder = new FormBuilder(fieldFactory, form, null);
-        // WHEN
-        final FormView result = builder.buildForm(formDef, item, null);
-
-        // THEN
-        assertEquals(result, form);
     }
 }

@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.workbench.WorkbenchView;
 
 import com.vaadin.ui.ComponentContainer;

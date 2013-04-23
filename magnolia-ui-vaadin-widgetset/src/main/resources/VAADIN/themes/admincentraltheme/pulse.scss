@@ -71,6 +71,31 @@
 	width:340px !important;
 }
 
+.v-pulse {
+  background-color: #FFF;
+}
+
+.v-pulse .back-button {
+  display: inline-block;
+  color: #666;
+  cursor: pointer;
+}
+
+.v-pulse .back-button .v-label {
+  padding-left: 5px;
+  cursor: inherit;
+}
+
+.v-pulse .message-title {
+  text-align: center;
+  font-weight: bold;
+  margin: 25px 0;
+}
+
+.v-pulse .v-shell-tabsheet {
+    background-color: #FFF;
+}
+
 .v-pulse .v-feed-title-link {
     width: 16px;
     height: 16px;

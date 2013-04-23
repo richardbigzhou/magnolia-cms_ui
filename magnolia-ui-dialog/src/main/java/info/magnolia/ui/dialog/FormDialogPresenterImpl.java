@@ -43,13 +43,13 @@ import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.form.FormBuilder;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.overlay.OverlayCloser;
+import info.magnolia.ui.model.overlay.OverlayLayer;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
-import info.magnolia.ui.vaadin.overlay.OverlayCloser;
-import info.magnolia.ui.vaadin.overlay.OverlayLayer;
 
 import javax.inject.Inject;
 

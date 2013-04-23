@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.actionbar;
 
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
 import com.vaadin.server.Resource;

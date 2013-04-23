@@ -34,14 +34,15 @@
 package info.magnolia.ui.vaadin.form;
 
 
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-import info.magnolia.ui.vaadin.view.View;
 
 import java.util.Collection;
 import java.util.Locale;
 
 import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Field;
 
 /**
@@ -70,9 +71,9 @@ public interface FormView extends View, Item.Editor {
 
     void setShowAllEnabled(boolean enabled);
 
-    void setAvailableLocales(Collection<Locale> locales);
-
     void setCurrentLocale(Locale locale);
+
+    void setLocaleSelector(AbstractSelect languageChooser);
 
     boolean isValid();
 

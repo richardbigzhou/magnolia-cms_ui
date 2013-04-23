@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.workbench;
 
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 
 import com.vaadin.data.Item;

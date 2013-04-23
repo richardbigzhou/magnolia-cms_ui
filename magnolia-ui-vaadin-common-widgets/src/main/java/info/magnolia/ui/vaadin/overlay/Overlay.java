@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.overlay;
 
+import info.magnolia.ui.model.overlay.OverlayLayer;
 import info.magnolia.ui.vaadin.gwt.client.dialog.connector.OverlayState;
 
 import com.vaadin.ui.AbstractSingleComponentContainer;
@@ -46,54 +47,11 @@ import com.vaadin.ui.Component;
  */
 public class Overlay extends AbstractSingleComponentContainer {
 
-    /**
-     * The available locations of modality for opening a modal.
-     * Represents what will be blocked by the opened modal.
-     */
-    public static enum ModalityDomain {
-        SUB_APP("sub-app"),
-        APP("app"),
-        SHELL("shell");
 
-        private String cssClass;
 
-        private ModalityDomain(String cssClass) {
-            this.cssClass = cssClass;
-        }
+    final OverlayLayer.ModalityDomain modalityDomain;
 
-        public String getCssClass() {
-            return cssClass;
-        }
-
-    }
-
-    /**
-     * The available levels of modality.
-     * Determines how "modal" it is -
-     * -STRONG creates a dark background that prevents clicks.
-     * -LIGHT adds a border, creates a transparent background that prevents clicks.
-     * -NON_MODAL does not prevent clicks.
-     */
-    public static enum ModalityLevel {
-        STRONG("modality-strong"),
-        LIGHT("modality-light center-vertical"),
-        NON_MODAL("modality-non-modal");
-
-        private String cssClass;
-
-        private ModalityLevel(String cssClass) {
-            this.cssClass = cssClass;
-        }
-
-        public String getCssClass() {
-            return cssClass;
-        }
-
-    }
-
-    final Overlay.ModalityDomain modalityDomain;
-
-    public Overlay(final Component content, final Component overlayParent, final Overlay.ModalityDomain modalityDomain, final Overlay.ModalityLevel modalityLevel) {
+    public Overlay(final Component content, final Component overlayParent, final OverlayLayer.ModalityDomain modalityDomain, final OverlayLayer.ModalityLevel modalityLevel) {
         // setSizeFull();
         setImmediate(true);
 
