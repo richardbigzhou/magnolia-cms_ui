@@ -34,10 +34,28 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 /**
  * View for favorites.
  */
 public interface FavoritesView extends View {
+
+    void setListener(Listener listener);
+
+    void init(JcrItemNodeAdapter favoritesRoot, JcrNewNodeAdapter favoriteSuggestion);
+
+    void setFavoriteLocation(JcrNewNodeAdapter location);
+    /**
+     * Listener.
+     */
+    interface Listener {
+        void addFavorite(JcrNewNodeAdapter newFavorite);
+
+        void removeFavorite(String id);
+
+        void goToLocation(String location);
+    }
 
 }

@@ -33,12 +33,19 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-/**
- * Represents a favorite.
- */
-public class Favorite {
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
-    private String id;
-    private String label;
-    private String location;
+/**
+ * Manages the favorites for the current user.
+ */
+public interface FavoritesManager {
+
+    JcrItemNodeAdapter getFavorites();
+
+    void addFavorite(JcrNewNodeAdapter favorite);
+
+    JcrNewNodeAdapter createFavoriteSuggestion(String location, String title, String icon);
+
+    void removeFavorite(String id);
 }
