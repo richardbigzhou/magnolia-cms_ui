@@ -53,7 +53,7 @@ import info.magnolia.ui.model.action.ActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.config.WorkbenchBuilder;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.list.ListContentViewDefinition;
@@ -116,11 +116,11 @@ public class BrowserPresenterTest {
         subAppEventBus = new SimpleEventBus();
 
         EventBus adminCentralEventBus = mock(EventBus.class);
-        ContentPresenter mockContentPresenter = mock(ContentPresenter.class);
+        WorkbenchPresenter mockWorkbenchPresenter = mock(WorkbenchPresenter.class);
         ActionbarPresenter mockActionbarPresenter = mock(ActionbarPresenter.class);
         ActionExecutor actionExecutor = mock(ActionExecutor.class);
 
-        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockContentPresenter, mockActionbarPresenter, null);
+        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockActionbarPresenter, null, mockWorkbenchPresenter);
 
         // start presenter (binds event handlers)
         presenter.start();
@@ -224,13 +224,5 @@ public class BrowserPresenterTest {
         assertEquals(firstModifiedBy, LastModified.getLastModifiedBy(node));
     }
 
-    @Test
-    public void testGetDefaultViewType() {
-        // GIVEN
 
-        // WHEN
-        ViewType viewType = presenter.getDefaultViewType();
-        // THEN
-        assertEquals(ViewType.TREE, viewType);
-    }
 }

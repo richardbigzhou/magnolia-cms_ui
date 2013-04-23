@@ -61,6 +61,6 @@ public abstract class AbstractColumnFormatter<D extends ColumnDefinition> implem
      */
     protected Item getJcrItem(Table source, Object itemId) {
         final JcrItemAdapter item = (JcrItemAdapter) source.getItem(itemId);
-        return item.getJcrItem();
+        return item == null ? null : item.getJcrItem();
     }
 }

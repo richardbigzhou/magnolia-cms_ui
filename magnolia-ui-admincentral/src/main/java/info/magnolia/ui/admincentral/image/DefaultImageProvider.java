@@ -59,13 +59,16 @@ public class DefaultImageProvider implements ImageProvider {
 
     private ImageProviderDefinition definition;
 
+    public DefaultImageProvider() {
+    }
+
     public DefaultImageProvider(ImageProviderDefinition definition) {
         this.definition = definition;
     }
 
     private static final Logger log = LoggerFactory.getLogger(DefaultImageProvider.class);
 
-    private final String ICON_CLASS_DEFAULT = "file";
+    public final String ICON_CLASS_DEFAULT = "file";
 
     @Override
     public String getPortraitPath(final String workspace, final String path) {
@@ -172,7 +175,8 @@ public class DefaultImageProvider implements ImageProvider {
     /**
      * Simple MimeType to Icon Class Mapping.
      */
-    private String resolveIconClassName(String mimeType) {
+    @Override
+    public String resolveIconClassName(String mimeType) {
 
         String fileType = resolveFileTypeFromMimeType(mimeType);
 
@@ -187,6 +191,9 @@ public class DefaultImageProvider implements ImageProvider {
      * Simple MimeType to FileType Mapping.
      */
     private String resolveFileTypeFromMimeType(String mimeType) {
+        if (StringUtils.isBlank(mimeType)) {
+            return StringUtils.EMPTY;
+        }
         if (mimeType.contains("application/pdf")) {
             return "pdf";
         }
@@ -212,10 +219,10 @@ public class DefaultImageProvider implements ImageProvider {
             return "audio";
         }
         if (mimeType.matches(".*(zip|compress)")) {
-            return "";
+            return StringUtils.EMPTY;
         }
 
-        return "";
+        return StringUtils.EMPTY;
     }
 
     private boolean isImage(String mimeType) {

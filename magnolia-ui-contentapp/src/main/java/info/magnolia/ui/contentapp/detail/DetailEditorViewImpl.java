@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.view.View;
 
 import java.util.EnumMap;
 import java.util.Map;

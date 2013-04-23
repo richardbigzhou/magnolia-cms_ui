@@ -3,16 +3,12 @@
 @mixin dialog {
 
 .detail-view {
-	overflow-x: auto;
+    overflow-x: auto;
 }
 
 .dialog-panel {
   width:720px;
   padding:0;
-}
-
-.modal .dialog-panel {
-  width:720px;
 }
 
 .v-dialog-layout {
@@ -21,10 +17,9 @@
   vertical-align: middle;
 }
 
-.dialog-content {
-	width:100%;
+.dialog-panel .dialog-content {
+    width:100%;
 }
-
 
 .dialog-content .v-shell-tabsheet-scroller {
     position:static !important;
@@ -32,27 +27,24 @@
 }
 .tablet .dialog-content .v-shell-tabsheet-scroller {max-height:385px;} /* Ensure form footer is visible on the iPad */
 
-.choose-dialog .mgnl-content-view{
+.choose-dialog .mgnl-content-view {
     height:300px;
     position:static;
 }
 
 
 .dialog-header {
-  background-color: #666;
-  display: block;
-  height: 16px;
-  color: #AABF2F;
+    background-color:#666;
+    color: #AABF2F;
+    font-size:15px;
+    line-height:15px;
+    height:15px;
 }
 
 .dialog-header span {
-  font-family:DINWebPro;
-  font-size:16px;
-}
-
-.dialog-header-toolbar {
-  float:right;
-  padding-right:12px;
+    color:#aabf2f;
+    font-family:DINWebPro;
+    font-size:16px;
 }
 
 .dialog-header-toolbar {
@@ -68,79 +60,14 @@
   margin-right: 35px;
 }
 
-.modal{
-	position: absolute;
-	top: 0px;
-	bottom:0px;
-	left: 0px;
-	right: 0px;
-	text-align: center;
-}
-
-.modal-child {
-  display: inline-block;
-  position: relative;
-  margin-top: 2px;
-}
-
-.lightbox-image > img {
-    max-width: 720px;
-    max-height: 400px;
-    cursor: pointer;
-}
-
-.modal-curtain{
-    position:absolute;
-    top:0px;
-    bottom:0px;
-    left:0px;
-    right:0px;
-    background-color:#000;
-    opacity:0.8;
-    filter:alpha(opacity = 80);
-}
-
-/* Set proper stacking for modals */
-.modal.app,
-.modal.sub-app {
-    z-index: 110;
-    overflow: hidden;
-}
-
-.modal.shell{
-	z-index:500;
-}
-
-.modal.shell .modal-child{
-  top:60px;
-}
-
-.dialog-header {
-    background-color:#666;
-    font-size:15px;
-    line-height:15px;
-    height:15px;
-}
-
-.dialog-header span {
-    color:#aabf2f;
-    font-family:DINWebPro;
-}
-
-.dialog-header-toolbar{
-    float:right;
-    padding-right:12px;
-}
-
-
-
-
 .dialog-footer {
   background-color: #ccc;
   text-align: right;
   left: 0;
   right: 0;
 }
+
+
 
 .dialog-header,
 .dialog-description,
@@ -153,7 +80,9 @@
 .dialog-content,
 .dialog-footer {margin-top:2px;}
 
-.dialog-footer button.btn-dialog-commit { float: right; margin-left: 10px; margin-right:0px; }
+.dialog-footer button.btn-dialog { margin-left: 10px; margin-right:0px; min-width:60px;}
+.dialog-footer button.btn-dialog-commit { float: right; }
+
 .dialog-footer-toolbar {
   float:left;
 }
@@ -193,20 +122,141 @@ button.btn-dialog-help {
   width: 20px;
 }
 
-/*
-* Forms in a Modal.
-*/
-.modal .form-panel {
-    width: 720px;
+
+
+
+
+
+
+
+/* Light Dialog */
+
+
+.light-dialog-panel {
+    width:400px;
+    padding:0;
+    text-align:center;
+    color:black;
+    padding-bottom:5px;
+    border: solid 1px;
+ }
+
+.light-dialog-panel .dialog-header {
+    background-color:transparent;
+}
+.light-dialog-panel .dialog-header button.btn-form-help {
+    display:none;
 }
 
-.modal .v-form-layout {
-    background-color: #E6E6E6;
+.light-dialog-panel .dialog-content{
+    padding:0 42px;
+    width:auto;
+    position:relative;
 }
 
-.modal .form-panel .v-shell-tabsheet,
-.modal .form-panel .v-shell-tabsheet .nav li.active {
-    background-color: #E6E6E6;
+.light-dialog-panel .dialog-footer {
+    display:inline-block;
+    background-color: transparent;
+    margin-top:20px;
+    margin-bottom:9px;
+}
+
+
+.light-dialog-panel .title {
+    font-weight:bold;
+    padding-bottom:5px;
+}
+
+ .dialog-icon {
+    position:absolute;
+    top:-4px;
+    left:10px;
+ }
+
+.light-dialog-panel button,
+.light-dialog-panel .btn-default,
+.light-dialog-panel .btn-other {
+    color:white;
+}
+
+.light-dialog-panel .v-button-link .v-button-caption{
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    text-decoration:none;
+}
+.light-dialog-panel .v-button-link .v-button-caption:before
+{
+content:"[";
+}
+.light-dialog-panel .v-button-link .v-button-caption:after
+{
+content:"]";
+}
+
+/* MessageTypes */
+
+.light-dialog-panel .btn-dialog-default { float:right;}
+
+.light-dialog-panel.msginfo {                       border-color:   #A1ADAF;}
+.light-dialog-panel.msginfo .m-closebutton {        color:          $c05;
+    &:hover,&:active {                              color:          #A1ADAF;}}
+.light-dialog-panel.msginfo .btn-dialog-default {   background:     $c05;}
+.light-dialog-panel.msginfo button {                background:     #A1ADAF;}
+
+.light-dialog-panel.msgwarn {                       background:     $c15;
+                                                    border-color:   #BEB099;}
+.light-dialog-panel.msgwarn .m-closebutton {        color:          #F6A51C;}
+.light-dialog-panel.msgwarn .btn-dialog-default {   background:     #F6A51C;}
+.light-dialog-panel.msgwarn button {                background:     #BEB099;}
+
+.light-dialog-panel.msgerror {                      background:     $c19;
+                                                    border-color:   #AE9D9D;}
+.light-dialog-panel.msgerror .m-closebutton {       color:          $c17;}
+.light-dialog-panel.msgerror .btn-dialog-default {  background:     $c17;}
+.light-dialog-panel.msgerror button {               background:     #AE9D9D;}
+
+
+/* Alerts */
+
+.alert-progressbar {
+    display: none;
+}
+
+/* Notifications */
+
+.notification-dialog {
+    vertical-align: top !important;
+    padding: 12px 0;
+    text-align:left;
+    width:400px;
+}
+
+.notification-dialog >.icon {
+    position:absolute;
+    top:10px;
+    left:10px;
+}
+
+.notification-dialog .m-closebutton {
+    background-color: transparent;
+    float: right;
+    padding: 0;
+    font-size: 15px;
+    position: absolute;
+    top: 6px;
+    right: 12px;
+}
+
+.notification-dialog-selected {
+    border-width: 2px;
+    margin-left: -1px;
+}
+
+/* Lightbox */
+
+.lightbox-image > img {
+    max-width: 720px;
+    max-height: 400px;
+    cursor: pointer;
 }
 
 }

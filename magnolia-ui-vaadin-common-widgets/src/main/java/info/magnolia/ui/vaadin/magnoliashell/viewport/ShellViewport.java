@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ViewportState;
 import info.magnolia.ui.vaadin.magnoliashell.DeckLayout;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
-import info.magnolia.ui.vaadin.view.View;
 import info.magnolia.ui.vaadin.view.Viewport;
 
 import com.vaadin.ui.Component;
