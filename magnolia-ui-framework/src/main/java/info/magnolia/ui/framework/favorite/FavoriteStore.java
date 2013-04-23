@@ -42,8 +42,6 @@ import javax.jcr.Session;
 
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.commons.JcrUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Retrieves root node for favorites or bookmarks. Creates those nodes if not yet around.
