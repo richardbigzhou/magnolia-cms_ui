@@ -37,7 +37,7 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.link.LinkUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.model.i18n.I18NAuthoringSupport;
-import info.magnolia.ui.vaadin.integration.i18n.I18NAwareProperty;
+import info.magnolia.ui.model.i18n.I18NAwareProperty;
 
 import java.util.Collection;
 import java.util.Iterator;

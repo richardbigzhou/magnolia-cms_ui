@@ -31,34 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor.pagebar;
-
-import info.magnolia.ui.model.overlay.View;
+package info.magnolia.ui.model.i18n;
 
 import java.util.Locale;
 
+import com.vaadin.data.Property;
+
 /**
- * Interface of the page bar view - a top-most component in the page editor that
- * contains the name of the current displayed page and the selectors of language/platform.
+ * Interface for locale-dependent property.
+ * @param <T> property value type.
  */
-public interface PageBarView extends View {
+public interface I18NAwareProperty<T> extends Property<T> {
 
-    void setPageName(String pageName);
+    void setDefaultValue(String defaultValue);
 
-    void setListener(Listener listener);
+    void setLocale(Locale locale);
 
-    void setCurrentLanguage(Locale locale);
+    void setI18NPropertyName(String i18NPropertyName);
 
-    void togglePreviewMode(boolean isPreview);
+    Locale getLocale();
 
-    /**
-     * Listener interface for {@link PageBarView}.
-     */
-    interface Listener {
+    String getBasePropertyName();
 
-        void languageSelected(Locale locale);
+    String getLocalizedPropertyName();
 
-        void platformSelected(String platformId);
-
-    }
 }

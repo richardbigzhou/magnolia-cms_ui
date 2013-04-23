@@ -31,9 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.i18n;
+package info.magnolia.ui.admincentral.i18n;
 
 
+import info.magnolia.ui.model.i18n.I18NAwareProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
@@ -45,22 +46,27 @@ import com.vaadin.data.util.AbstractProperty;
 /**
  * Simple Property that manages one or more localized JCR properties internally. Depending on the Locale set
  * it delegates the value read/write to the corresponding JCR property.
+ * @param <T> property type.
  */
-public class I18NAwareProperty extends AbstractProperty<String> {
+public class I18NAwarePropertyImpl<T> extends AbstractProperty<T> implements I18NAwareProperty<T> {
 
     private String basePropertyName;
 
     private String i18NPropertyName;
 
-    private String type;
-
-    private String defaultValue;
+    private Object defaultValue;
 
     private Locale locale;
 
+    private Class<T> type;
+
     private JcrItemNodeAdapter parentNodeAdapter;
 
-    public I18NAwareProperty(String baseName, String type, String defaultValue, JcrItemNodeAdapter parentNodeAdapter) {
+    public I18NAwarePropertyImpl(String baseName, Class<T> type, JcrItemNodeAdapter parentNodeAdapter) {
+        this(baseName, type, parentNodeAdapter, "");
+    }
+
+    public I18NAwarePropertyImpl(String baseName, Class<T> type, JcrItemNodeAdapter parentNodeAdapter, Object defaultValue) {
         super();
         this.type = type;
         this.defaultValue = defaultValue;
@@ -69,19 +75,20 @@ public class I18NAwareProperty extends AbstractProperty<String> {
         this.basePropertyName = baseName;
     }
 
+    @Override
     public void setI18NPropertyName(String i18NPropertyName) {
         this.i18NPropertyName = i18NPropertyName;
         fireValueChange();
     }
 
     @Override
-    public String getValue() {
+    public T getValue() {
         return getOrCreateProperty().getValue();
     }
 
     @Override
-    public void setValue(String newValue) throws ReadOnlyException {
-        if (newValue != null && !newValue.isEmpty()) {
+    public void setValue(T newValue) throws ReadOnlyException {
+        if (newValue != null) {
             getOrCreateProperty().setValue(newValue);
         } else {
             parentNodeAdapter.removeItemProperty(getLocalizedPropertyName());
@@ -89,33 +96,44 @@ public class I18NAwareProperty extends AbstractProperty<String> {
     }
 
     @Override
-    public Class<? extends String> getType() {
-        return String.class;
+    public Class<? extends T> getType() {
+        return type;
     }
 
-    protected String getLocalizedPropertyName() {
+
+    @Override
+    public String getLocalizedPropertyName() {
         return i18NPropertyName;
     }
 
-    protected DefaultProperty<String> getOrCreateProperty() {
+    protected DefaultProperty<T> getOrCreateProperty() {
         String propertyName = getLocalizedPropertyName();
-        DefaultProperty<String> property = (DefaultProperty<String>) parentNodeAdapter.getItemProperty(propertyName);
+        DefaultProperty<T> property = (DefaultProperty<T>) parentNodeAdapter.getItemProperty(propertyName);
         if (property == null) {
-            property = DefaultPropertyUtil.newDefaultProperty(propertyName, type, defaultValue);
+            property = DefaultPropertyUtil.newDefaultProperty(propertyName, type.getSimpleName(), String.valueOf(defaultValue));
             parentNodeAdapter.addItemProperty(propertyName, property);
         }
         return property;
     }
 
+    @Override
     public String getBasePropertyName() {
         return basePropertyName;
     }
 
+    @Override
     public void setLocale(Locale locale) {
         this.locale = locale;
     }
 
+    @Override
     public Locale getLocale() {
         return locale;
     }
+
+    @Override
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue == null ? "" : defaultValue;
+    }
+
 }
