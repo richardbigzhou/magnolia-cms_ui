@@ -69,9 +69,12 @@ public class AdmincentralPresenter {
 
     private final ShellImpl shell;
 
+    private final MessagesManager messagesManager;
+
     @Inject
     public AdmincentralPresenter(final ShellImpl shell, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
         this.shell = shell;
+        this.messagesManager = messagesManager;
 
         shellAppController.setViewport(this.shell.getShellAppViewport());
         shellAppController.addShellApp("applauncher", AppLauncherShellApp.class);
@@ -90,7 +93,7 @@ public class AdmincentralPresenter {
 
             @Override
             public void error(ErrorEvent event) {
-                shell.showError(new Message(MessageType.ERROR, event.getThrowable().getMessage(), event.getThrowable().getMessage()));
+                AdmincentralPresenter.this.messagesManager.sendLocalMessage(new Message(MessageType.ERROR, event.getThrowable().getMessage(), event.getThrowable().getMessage()));
             }
         });
         VaadinSession.getCurrent().setErrorHandler(null);
