@@ -6,17 +6,6 @@
   <class>info.magnolia.ui.vaadin.integration.module.VaadinModule</class>
   <version>${project.version}</version>
 
-  <components>
-    <id>main</id>
-    <component>
-      <type>info.magnolia.ui.model.i18n.I18NAuthoringSupport</type>
-      <workspace>config</workspace>
-      <path>/server/i18n/authoring</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-  </components>
-
   <dependencies>
     <dependency>
       <name>core</name>

@@ -12,6 +12,14 @@
     <id>main</id>
 
     <component>
+      <type>info.magnolia.ui.model.i18n.I18NAuthoringSupport</type>
+      <workspace>config</workspace>
+      <path>/server/i18n/authoring50</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
+    </component>
+
+    <component>
       <type>info.magnolia.ui.framework.message.MessagesManager</type>
       <implementation>info.magnolia.ui.framework.message.MessagesManagerImpl</implementation>
     </component>
