@@ -54,6 +54,7 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
+import info.magnolia.ui.model.context.UiContext;
 import info.magnolia.ui.model.overlay.OverlayLayer;
 import info.magnolia.ui.vaadin.view.Viewport;
 
@@ -429,6 +430,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         // Add the AppContext instance into the component provider.
         configuration.addComponent(InstanceConfiguration.valueOf(AppContext.class, appInstanceController));
+        configuration.addComponent(InstanceConfiguration.valueOf(UiContext.class, appInstanceController));
 
         eventBusProtector = new EventBusProtector();
         configuration.addConfigurer(eventBusProtector);

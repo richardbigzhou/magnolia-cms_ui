@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,43 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.model.context;
 
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.model.context.UiContext;
+import info.magnolia.ui.model.overlay.OverlayLayer;
 
 /**
- * Provides functionality used by an app to interact with the Magnolia shell.
+ * Represents a UI context and allows components, views and presenters to interact with the context that contains them.
  */
-public interface AppContext extends AppView.Listener, UiContext {
-
-    void enterFullScreenMode();
-
-    void exitFullScreenMode();
-
-    void sendUserMessage(String user, Message message);
-
-    void sendLocalMessage(Message message);
-
-    void broadcastMessage(Message message);
-
-    void showConfirmationMessage(String message);
-
-    String getName();
-
-    String getLabel();
-
-    AppView getView();
-
-    void openSubApp(Location location);
-
-    void closeSubApp(String instanceId);
-
-    void updateSubAppLocation(SubAppContext subAppContext, Location location);
-
-    SubAppDescriptor getDefaultSubAppDescriptor();
-
-    SubAppContext getActiveSubAppContext();
-
+public interface UiContext extends OverlayLayer {
 }

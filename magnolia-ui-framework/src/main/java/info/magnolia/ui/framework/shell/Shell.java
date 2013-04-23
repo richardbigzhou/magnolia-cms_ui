@@ -35,8 +35,8 @@ package info.magnolia.ui.framework.shell;
 
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.model.context.UiContext;
 import info.magnolia.ui.model.overlay.OverlayCloser;
-import info.magnolia.ui.model.overlay.OverlayLayer;
 import info.magnolia.ui.model.overlay.View;
 
 import java.util.List;
@@ -44,7 +44,7 @@ import java.util.List;
 /**
  * Decouples the presenters and the Vaadin application. Provides methods to show messages and configuration dialogs.
  */
-public interface Shell extends OverlayLayer {
+public interface Shell extends UiContext {
 
     void askForConfirmation(String message, ConfirmationHandler listener);
 

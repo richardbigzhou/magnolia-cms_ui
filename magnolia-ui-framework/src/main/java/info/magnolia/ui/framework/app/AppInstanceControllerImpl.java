@@ -48,6 +48,7 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.model.context.UiContext;
 import info.magnolia.ui.model.overlay.AlertCallback;
 import info.magnolia.ui.model.overlay.ConfirmationCallback;
 import info.magnolia.ui.model.overlay.MessageStyleType;
@@ -424,6 +425,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
         // Add the SubAppContext instance into the component provider.
         configuration.addComponent(InstanceConfiguration.valueOf(SubAppContext.class, subAppContext));
+        configuration.addComponent(InstanceConfiguration.valueOf(UiContext.class, subAppContext));
 
         EventBusProtector eventBusProtector = new EventBusProtector();
         configuration.addConfigurer(eventBusProtector);
