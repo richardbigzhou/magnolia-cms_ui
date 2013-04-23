@@ -31,14 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.builder;
+package info.magnolia.ui.admincentral.i18n;
 
 import static org.junit.Assert.assertEquals;
 
 import info.magnolia.cms.i18n.LocaleDefinition;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.test.mock.MockComponentProvider;
+import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
+import info.magnolia.ui.form.field.builder.AbstractFieldBuilder;
+import info.magnolia.ui.form.field.builder.AbstractFieldBuilderTest;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.model.i18n.I18NAwareProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Locale;
@@ -69,8 +74,7 @@ public class AbstractFieldBuilderI18NPropertyTest extends AbstractBuilderTest<Co
     @Test
     public void i18nPropertyNotDefined_CurrentIsDefault() throws Exception {
         // GIVEN
-        abstractDialogField = new AbstractFieldBuilderTest.TestTextFieldBuilder(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
+        initBuilder();
         Field<Object> field = abstractDialogField.getField();
         field.setValue("new Value");
         // WHEN
@@ -80,12 +84,12 @@ public class AbstractFieldBuilderI18NPropertyTest extends AbstractBuilderTest<Co
         assertEquals(true, res.hasProperty(propertyName));
     }
 
+
     @Test
     public void i18nPropertyNotDefined_CurrentIsNotDefault() throws Exception {
         // GIVEN
         MgnlContext.getInstance().setLocale(Locale.FRENCH);
-        abstractDialogField = new AbstractFieldBuilderTest.TestTextFieldBuilder(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
+        initBuilder();
         Field<Object> field = abstractDialogField.getField();
         field.setValue("new Value");
         // WHEN
@@ -100,8 +104,7 @@ public class AbstractFieldBuilderI18NPropertyTest extends AbstractBuilderTest<Co
     public void i18nPropertyDefined_CurrentIsDefault() throws Exception {
         // GIVEN
         this.definition.setI18n(true);
-        abstractDialogField = new AbstractFieldBuilderTest.TestTextFieldBuilder(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
+        initBuilder();
         Field<Object> field = abstractDialogField.getField();
         field.setValue("new Value");
         // WHEN
@@ -116,33 +119,27 @@ public class AbstractFieldBuilderI18NPropertyTest extends AbstractBuilderTest<Co
         // GIVEN
         this.definition.setI18n(true);
         MgnlContext.getInstance().setLocale(Locale.FRENCH);
-        abstractDialogField = new AbstractFieldBuilderTest.TestTextFieldBuilder(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
+        initBuilder();
         Field<Object> field = abstractDialogField.getField();
         field.setValue("new Value");
-        // WHEN
-        Node res = ((JcrNodeAdapter) baseItem).getNode();
 
         // THEN
         // Should not be sufixed by _fr --> setI18n(false)
-        assertEquals(true, res.hasProperty(propertyName + "_fr"));
+        assertEquals(true, field.getPropertyDataSource() instanceof I18NAwareProperty);
     }
 
     @Test
     public void i18nPropertyDefined_CurrentIsNotDefaultAndDefaultAlreadyExist() throws Exception {
         // GIVEN
         this.definition.setI18n(true);
-        abstractDialogField = new AbstractFieldBuilderTest.TestTextFieldBuilder(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
+        initBuilder();
         Field<Object> field = abstractDialogField.getField();
         field.setValue("new Value");
         Node res = ((JcrNodeAdapter) baseItem).getNode();
         assertEquals(true, res.hasProperty(propertyName));
 
-        MgnlContext.getInstance().setLocale(Locale.FRENCH);
-        abstractDialogField = new AbstractFieldBuilderTest.TestTextFieldBuilder(definition, baseItem);
-        abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        field = abstractDialogField.getField();
+
+        ((I18NAwarePropertyImpl)field.getPropertyDataSource()).setI18NPropertyName(propertyName + "_fr");
         field.setValue("new Value FR");
         // WHEN
         res = ((JcrNodeAdapter) baseItem).getNode();
@@ -151,6 +148,15 @@ public class AbstractFieldBuilderI18NPropertyTest extends AbstractBuilderTest<Co
         assertEquals(true, res.hasProperty(propertyName + "_fr"));
         assertEquals("new Value FR", res.getProperty(propertyName + "_fr").getString());
         assertEquals("new Value", res.getProperty(propertyName).getString());
+    }
+
+    protected void initBuilder() {
+        abstractDialogField = new AbstractFieldBuilderTest.TestTextFieldBuilder(definition, baseItem);
+        abstractDialogField.setI18nContentSupport(i18nContentSupport);
+
+        MockComponentProvider cc = new MockComponentProvider();
+        cc.registerImplementation(I18NAwareProperty.class, I18NAwarePropertyImpl.class);
+        abstractDialogField.setComponentProvider(cc);
     }
 
     @Override

@@ -31,36 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.form;
-
+package info.magnolia.ui.vaadin.editor.pagebar;
 
 import info.magnolia.ui.model.overlay.View;
 
-import java.util.Collection;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
+import java.util.Locale;
 
 /**
- * Interface for {@link Form}.
+ * Interface of the page bar view - a top-most component in the page editor that
+ * contains the name of the current displayed page and the selectors of language/platform.
  */
-public interface FormViewReduced extends View, Item.Editor {
+public interface PageBarView extends View {
 
-    void addField(Field<?> field);
+    void setPageName(String pageName);
 
-    void setDescriptionVisibility(boolean isVisible);
+    void setListener(Listener listener);
 
-    @Override
-    public Form asVaadinComponent();
+    void setCurrentLanguage(Locale locale);
 
-    void addFormSection(String tabName, FormSection inputFields);
+    void togglePreviewMode(boolean isPreview);
 
-    void showValidation(boolean isVisible);
+    /**
+     * Listener interface for {@link PageBarView}.
+     */
+    interface Listener {
 
-    void setShowAllEnabled(boolean enabled);
+        void languageSelected(Locale locale);
 
-    boolean isValid();
+        void platformSelected(String platformId);
 
-    Collection<Field<?>> getFields();
-
+    }
 }

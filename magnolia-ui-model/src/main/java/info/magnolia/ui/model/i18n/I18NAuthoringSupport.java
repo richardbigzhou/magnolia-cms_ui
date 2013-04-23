@@ -31,36 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.form;
+package info.magnolia.ui.model.i18n;
 
+import java.util.Locale;
 
-import info.magnolia.ui.model.overlay.View;
+import javax.jcr.Node;
 
-import java.util.Collection;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.HasComponents;
 
 /**
- * Interface for {@link Form}.
+ * Allows authors to create components with locale-dependent controls.
  */
-public interface FormViewReduced extends View, Item.Editor {
+public interface I18NAuthoringSupport {
 
-    void addField(Field<?> field);
+    AbstractSelect getLanguageChooser();
 
-    void setDescriptionVisibility(boolean isVisible);
+    void i18nize(HasComponents fieldContainer, Locale locale);
 
-    @Override
-    public Form asVaadinComponent();
-
-    void addFormSection(String tabName, FormSection inputFields);
-
-    void showValidation(boolean isVisible);
-
-    void setShowAllEnabled(boolean enabled);
-
-    boolean isValid();
-
-    Collection<Field<?>> getFields();
+    String createI18NURI(Node node, Locale locale);
 
 }

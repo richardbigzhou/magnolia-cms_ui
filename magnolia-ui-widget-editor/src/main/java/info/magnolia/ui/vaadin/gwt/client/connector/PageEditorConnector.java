@@ -116,7 +116,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
                 PageEditorParameters params = getState().parameters;
-                view.setUrl(params.getContextPath() + params.getNodePath());
+                view.setUrl(params.getUrl());
             }
         });
 

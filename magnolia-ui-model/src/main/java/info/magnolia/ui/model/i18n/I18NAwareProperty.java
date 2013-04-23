@@ -31,36 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.form;
+package info.magnolia.ui.model.i18n;
 
+import java.util.Locale;
 
-import info.magnolia.ui.model.overlay.View;
-
-import java.util.Collection;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
+import com.vaadin.data.Property;
 
 /**
- * Interface for {@link Form}.
+ * Interface for locale-dependent property.
+ * @param <T> property value type.
  */
-public interface FormViewReduced extends View, Item.Editor {
+public interface I18NAwareProperty<T> extends Property<T> {
 
-    void addField(Field<?> field);
+    void setDefaultValue(String defaultValue);
 
-    void setDescriptionVisibility(boolean isVisible);
+    void setLocale(Locale locale);
 
-    @Override
-    public Form asVaadinComponent();
+    void setI18NPropertyName(String i18NPropertyName);
 
-    void addFormSection(String tabName, FormSection inputFields);
+    Locale getLocale();
 
-    void showValidation(boolean isVisible);
+    String getBasePropertyName();
 
-    void setShowAllEnabled(boolean enabled);
-
-    boolean isValid();
-
-    Collection<Field<?>> getFields();
+    String getLocalizedPropertyName();
 
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,10 +33,9 @@
  */
 package info.magnolia.ui.form.field.builder;
 
-import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
 import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.model.builder.MappingFactoryBase;
 
@@ -55,13 +54,11 @@ import com.vaadin.data.Item;
 public class FieldFactory extends MappingFactoryBase<FieldDefinition, FieldBuilder> implements Serializable {
 
     private ValidatorFieldFactory validatorFieldFactory;
-    private I18nContentSupport i18nContentSupport;
 
     @Inject
-    public FieldFactory(ComponentProvider componentProvider, DialogFieldRegistry dialogFieldRegistry, ValidatorFieldFactory validatorFieldFactory, I18nContentSupport i18nContentSupport) {
+    public FieldFactory(ComponentProvider componentProvider, DialogFieldRegistry dialogFieldRegistry, ValidatorFieldFactory validatorFieldFactory) {
         super(componentProvider);
         this.validatorFieldFactory = validatorFieldFactory;
-        this.i18nContentSupport = i18nContentSupport;
         for (DefinitionToImplementationMapping<FieldDefinition, FieldBuilder> definitionToImplementationMapping : dialogFieldRegistry.getDefinitionToImplementationMappings()) {
             addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
         }
@@ -70,7 +67,6 @@ public class FieldFactory extends MappingFactoryBase<FieldDefinition, FieldBuild
     public FieldBuilder create(FieldDefinition definition, Item item, Object... parameters) {
         FieldBuilder fieldBuilder = super.create(definition, item, parameters);
         fieldBuilder.setValidatorFieldFactory(validatorFieldFactory);
-        fieldBuilder.setI18nContentSupport(i18nContentSupport);
         return fieldBuilder;
     }
 }

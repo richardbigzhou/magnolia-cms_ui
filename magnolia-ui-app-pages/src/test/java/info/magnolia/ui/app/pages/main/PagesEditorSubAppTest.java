@@ -56,6 +56,7 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.model.action.ActionExecutor;
+import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
@@ -79,6 +80,7 @@ public class PagesEditorSubAppTest {
     private PagesEditorSubAppView view;
     private EventBus eventBus;
     private ActionbarPresenter actionbarPresenter;
+    private PageBarView pageBarView;
     private AbstractElement element;
     private final ConfiguredTemplateDefinition definition = new ConfiguredTemplateDefinition();
 
@@ -110,6 +112,8 @@ public class PagesEditorSubAppTest {
         when(pageEditorPresenter.getTemplateDefinitionRegistry()).thenReturn(registry);
         when(registry.getTemplateDefinition(anyString())).thenReturn(definition);
         actionbarPresenter = mock(ActionbarPresenter.class);
+
+        pageBarView = mock(PageBarView.class);
     }
 
     @Test
@@ -117,7 +121,7 @@ public class PagesEditorSubAppTest {
         // GIVEN
         element = new AreaElement(null, null, null, null);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
@@ -135,7 +139,7 @@ public class PagesEditorSubAppTest {
         // GIVEN
         element = new ComponentElement(null, null, null);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
@@ -158,7 +162,7 @@ public class PagesEditorSubAppTest {
         element = new ComponentElement(null, null, null);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
         final Location location = new DetailLocation(null, null, "");
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
 
         definition.setCanDelete("some-other-group,someNextGroup");
         definition.setCanEdit("this-user-group");
