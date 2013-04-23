@@ -34,17 +34,15 @@
 package info.magnolia.ui.form.field.builder;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.AbstractFormItem;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.vaadin.integration.i18n.I18NAwareProperty;
 import info.magnolia.ui.form.field.validation.FieldValidatorBuilder;
 import info.magnolia.ui.form.field.validation.FieldValidatorDefinition;
 import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
+import info.magnolia.ui.model.i18n.I18NAwareProperty;
 import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -75,6 +73,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
     protected D definition;
     private ValidatorFieldFactory validatorFieldFactory;
     private I18nContentSupport i18nContentSupport;
+    private ComponentProvider componentProvider;
 
     public AbstractFieldBuilder(D definition, Item relatedFieldItem) {
         this.definition = definition;
@@ -167,14 +166,17 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
      */
     protected Property<?> getOrCreateProperty() {
         String propertyName = definition.getName();
-        String fieldType = getFieldType(definition).getSimpleName();
+        Class<?> fieldType = getFieldType(definition);
         String defaultValue = definition.getDefaultValue();
         if (definition.isI18n()) {
-            return new I18NAwareProperty(propertyName, fieldType, defaultValue, (JcrItemNodeAdapter) item);
+            I18NAwareProperty<?> property = componentProvider.newInstance(I18NAwareProperty.class, propertyName, fieldType, item);
+            property.setDefaultValue(defaultValue);
+            return property;
+
         } else {
             Property<?> property = item.getItemProperty(propertyName);
             if (property == null) {
-                property = DefaultPropertyUtil.newDefaultProperty(propertyName, fieldType, defaultValue);
+                property = DefaultPropertyUtil.newDefaultProperty(propertyName, fieldType.getSimpleName(), defaultValue);
                 item.addItemProperty(propertyName, property);
             }
             return property;
@@ -245,5 +247,10 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
         if (field.getPropertyDataSource() != null) {
             field.getPropertyDataSource().setReadOnly(definition.isReadOnly());
         }
+    }
+
+    @Override
+    public void setComponentProvider(ComponentProvider componentProvider) {
+        this.componentProvider = componentProvider;
     }
 }

@@ -35,8 +35,6 @@ package info.magnolia.ui.form;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
@@ -44,9 +42,9 @@ import info.magnolia.ui.form.field.builder.FieldBuilder;
 import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.model.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.form.FormView;
-import info.magnolia.ui.model.i18n.I18NAuthoringSupport;
 
 import javax.inject.Inject;
 
@@ -64,17 +62,15 @@ import com.vaadin.ui.Field;
 public class FormBuilder {
 
     private FieldFactory fieldFactory;
-    private FormView view;
     private I18nContentSupport i18nContentSupport;
     private I18NAuthoringSupport i18NAuthoringSupport;
     private ComponentProvider componentProvider;
     
     @Inject
-    public FormBuilder(FieldFactory fieldFactory, FormView view, I18nContentSupport i18nContentSupport,
+    public FormBuilder(FieldFactory fieldFactory, I18nContentSupport i18nContentSupport,
                        I18NAuthoringSupport i18NAuthoringSupport, ComponentProvider componentProvider) {
         this.fieldFactory = fieldFactory;
         this.componentProvider = componentProvider;
-        this.view = view;
         this.i18nContentSupport = i18nContentSupport;
         this.i18NAuthoringSupport = i18NAuthoringSupport;
     }
@@ -116,6 +112,7 @@ public class FormBuilder {
                 }
                 hasI18NAwareFields |= fieldDefinition.isI18n();
                 final FieldBuilder formField = fieldFactory.create(fieldDefinition, item);
+                formField.setComponentProvider(componentProvider);
                 formField.setParent(tab);
                 final Field<?> field = formField.getField();
                 if (field instanceof AbstractComponent) {
