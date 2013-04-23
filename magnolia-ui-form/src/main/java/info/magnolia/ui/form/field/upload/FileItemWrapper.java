@@ -39,13 +39,14 @@ import com.vaadin.data.Item;
 
 /**
  * Used by Upload fields to handle Items and perform the bridge between a Vaadin Item and a UploadReceiver <br>
- * <b>FileItemWrapper is used to :</b><br>
- * - Access in order to display: newly Uploaded File information or already Stored File information by using the <b>getter's</b><br>
- * - Update the Item based on the Uploaded File: This is done by the {@link AbstractUploadField} when handling events like UploadFinished or UploadFailed...
+ * <b>FileItemWrapper is used by :</b><br>
+ * - Implementation class of {@link AbstractUploadField} in order to display File information's: newly Uploaded File or already Stored File by using the <b>getter's</b><br>
+ * - {@link AbstractUploadField} in order to update the Item based on the Uploaded File (Dropped File): This is done during handling of events like UploadFinished or UploadFailed...
  */
 public interface FileItemWrapper {
     /**
-     * Populate the FileItemWrapper with the provided {@link Item}.
+     * Populate the FileItemWrapper with the provided {@link Item}.<br>
+     * Generally done in the constructor (in Builder).
      */
     public void populateFromItem(Item item);
 
