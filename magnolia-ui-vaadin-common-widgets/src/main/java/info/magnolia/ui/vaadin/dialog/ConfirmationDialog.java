@@ -106,10 +106,12 @@ public class ConfirmationDialog extends LightDialog {
         return message;
     }
 
+    @Override
     public void setContent(Component content) {
         super.setContent(content);
     }
 
+    @Override
     protected Component createDefaultContent() {
         return new Label();
     }

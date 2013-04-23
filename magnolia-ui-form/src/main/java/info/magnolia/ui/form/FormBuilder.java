@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form;
 
+import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.definition.FormDefinition;
@@ -41,6 +42,7 @@ import info.magnolia.ui.form.field.builder.FieldBuilder;
 import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.model.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.form.FormView;
 
@@ -50,6 +52,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
@@ -60,12 +63,17 @@ import com.vaadin.ui.Field;
 public class FormBuilder {
 
     private FieldFactory fieldFactory;
+    private I18nContentSupport i18nContentSupport;
+    private I18NAuthoringSupport i18NAuthoringSupport;
     private ComponentProvider componentProvider;
-
+    
     @Inject
-    public FormBuilder(FieldFactory fieldFactory, ComponentProvider componentProvider) {
+    public FormBuilder(FieldFactory fieldFactory, I18nContentSupport i18nContentSupport,
+                       I18NAuthoringSupport i18NAuthoringSupport, ComponentProvider componentProvider) {
         this.fieldFactory = fieldFactory;
         this.componentProvider = componentProvider;
+        this.i18nContentSupport = i18nContentSupport;
+        this.i18NAuthoringSupport = i18NAuthoringSupport;
     }
 
     /**
@@ -93,6 +101,7 @@ public class FormBuilder {
             view.setCaption(i18nLabel);
         }
 
+        boolean hasI18NAwareFields = false;
         for (TabDefinition tabDefinition : formDefinition.getTabs()) {
             FormTab tab = new FormTab(tabDefinition);
             tab.setParent(form);
@@ -102,7 +111,9 @@ public class FormBuilder {
                 if (fieldDefinition.getClass().equals(ConfiguredFieldDefinition.class)) {
                     continue;
                 }
+                hasI18NAwareFields |= fieldDefinition.isI18n();
                 final FieldBuilder formField = fieldFactory.create(fieldDefinition, item);
+                formField.setComponentProvider(componentProvider);
                 formField.setParent(tab);
                 final Field<?> field = formField.getField();
                 if (field instanceof AbstractComponent) {
@@ -114,11 +125,16 @@ public class FormBuilder {
                 }
                 view.addField(field);
             }
-
             view.addFormSection(tab.getMessage(tabDefinition.getLabel()), tab.getContainer());
         }
         view.setShowAllEnabled(formDefinition.getTabs().size() > 1);
-
+        if (hasI18NAwareFields) {
+            final AbstractSelect languageChoser = i18NAuthoringSupport.getLanguageChooser();
+            if (languageChoser != null) {
+                view.setLocaleSelector(languageChoser);
+                view.setCurrentLocale(i18nContentSupport.getFallbackLocale());
+            }
+        }
         return view;
     }
 
@@ -149,4 +165,5 @@ public class FormBuilder {
             }
         };
     }
+
 }

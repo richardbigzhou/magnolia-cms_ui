@@ -92,6 +92,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     private AbstractElement selectedElement;
 
     private final SubAppContext subAppContext;
+
     private final ComponentProvider componentProvider;
 
     @Inject
@@ -102,7 +103,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
         this.templateDefinitionRegistry = templateDefinitionRegistry;
         this.subAppContext = subAppContext;
         this.componentProvider = componentProvider;
-
         registerHandlers();
     }
 
@@ -364,4 +364,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     public TemplateDefinitionRegistry getTemplateDefinitionRegistry() {
         return templateDefinitionRegistry;
     }
+
+
 }

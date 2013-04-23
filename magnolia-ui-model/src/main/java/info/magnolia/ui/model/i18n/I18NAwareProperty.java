@@ -31,24 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
+package info.magnolia.ui.model.i18n;
 
-import info.magnolia.ui.vaadin.dialog.LightDialog;
-import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
-import info.magnolia.ui.vaadin.gwt.client.dialog.widget.LightDialogViewImpl;
+import java.util.Locale;
 
-import com.vaadin.shared.ui.Connect;
+import com.vaadin.data.Property;
 
 /**
- * Connector for LightDialog.
- * See {@link LightDialog}.
+ * Interface for locale-dependent property.
+ * @param <T> property value type.
  */
-@Connect(LightDialog.class)
-public class LightDialogConnector extends BaseDialogConnector {
+public interface I18NAwareProperty<T> extends Property<T> {
 
-    @Override
-    protected BaseDialogView createView() {
-        return new LightDialogViewImpl();
-    }
+    void setDefaultValue(String defaultValue);
+
+    void setLocale(Locale locale);
+
+    void setI18NPropertyName(String i18NPropertyName);
+
+    Locale getLocale();
+
+    String getBasePropertyName();
+
+    String getLocalizedPropertyName();
 
 }

@@ -92,7 +92,6 @@ public class ReadyStateWatch {
         }
     }
 
-    @SuppressWarnings("unused")
     // used in native function
     private void fireReadyStateChange() {
         iframe.fireEvent(new ValueChangeEvent<ReadyState>(getReadyState()) {

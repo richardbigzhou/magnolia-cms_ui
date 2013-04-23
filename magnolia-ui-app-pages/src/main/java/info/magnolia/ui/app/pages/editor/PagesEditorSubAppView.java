@@ -36,6 +36,7 @@ package info.magnolia.ui.app.pages.editor;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
+import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 
 /**
  * PagesEditorSubAppView.
@@ -45,11 +46,13 @@ public interface PagesEditorSubAppView extends ContentSubAppView {
     /**
      * Listener.
      */
-    public interface Listener {
+    public interface Listener extends PageBarView.Listener {
 
     }
 
     void setListener(Listener listener);
+
+    void setPageBarView(PageBarView pageBarView);
 
     void setPageEditorView(PageEditorView pageEditor);
 

@@ -31,24 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
+package info.magnolia.ui.vaadin.editor.pagebar;
 
-import info.magnolia.ui.vaadin.dialog.LightDialog;
-import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
-import info.magnolia.ui.vaadin.gwt.client.dialog.widget.LightDialogViewImpl;
+import info.magnolia.ui.model.overlay.View;
 
-import com.vaadin.shared.ui.Connect;
+import java.util.Locale;
 
 /**
- * Connector for LightDialog.
- * See {@link LightDialog}.
+ * Interface of the page bar view - a top-most component in the page editor that
+ * contains the name of the current displayed page and the selectors of language/platform.
  */
-@Connect(LightDialog.class)
-public class LightDialogConnector extends BaseDialogConnector {
+public interface PageBarView extends View {
 
-    @Override
-    protected BaseDialogView createView() {
-        return new LightDialogViewImpl();
+    void setPageName(String pageName);
+
+    void setListener(Listener listener);
+
+    void setCurrentLanguage(Locale locale);
+
+    void togglePreviewMode(boolean isPreview);
+
+    /**
+     * Listener interface for {@link PageBarView}.
+     */
+    interface Listener {
+
+        void languageSelected(Locale locale);
+
+        void platformSelected(String platformId);
+
     }
-
 }

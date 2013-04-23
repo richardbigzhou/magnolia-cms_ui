@@ -31,24 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
+package info.magnolia.ui.model.i18n;
 
-import info.magnolia.ui.vaadin.dialog.LightDialog;
-import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
-import info.magnolia.ui.vaadin.gwt.client.dialog.widget.LightDialogViewImpl;
+import java.util.Locale;
 
-import com.vaadin.shared.ui.Connect;
+import javax.jcr.Node;
+
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.HasComponents;
 
 /**
- * Connector for LightDialog.
- * See {@link LightDialog}.
+ * Allows authors to create components with locale-dependent controls.
  */
-@Connect(LightDialog.class)
-public class LightDialogConnector extends BaseDialogConnector {
+public interface I18NAuthoringSupport {
 
-    @Override
-    protected BaseDialogView createView() {
-        return new LightDialogViewImpl();
-    }
+    AbstractSelect getLanguageChooser();
+
+    void i18nize(HasComponents fieldContainer, Locale locale);
+
+    String createI18NURI(Node node, Locale locale);
 
 }
