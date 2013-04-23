@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,13 +33,31 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import com.vaadin.ui.HasComponents;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
+import info.magnolia.ui.model.action.AbstractActionExecutor;
+import info.magnolia.ui.model.action.ActionDefinition;
+
+import javax.inject.Inject;
 
 /**
- * Messages Pulse tab UI.
+ * MessageActionExecutor.
  */
-public interface PulseMessagesView extends PulseSubView {
+public class MessageActionExecutor extends AbstractActionExecutor {
+
+    private MessageViewDefinition messageViewDefinition;
+
+    @Inject
+    public MessageActionExecutor(ComponentProvider componentProvider) {
+        super(componentProvider);
+    }
 
     @Override
-    public HasComponents asVaadinComponent();
+    public ActionDefinition getActionDefinition(String actionName) {
+        return messageViewDefinition.getActions().get(actionName);
+    }
+
+    public void setMessageViewDefinition(MessageViewDefinition messageViewDefinition) {
+        this.messageViewDefinition = messageViewDefinition;
+    }
 }

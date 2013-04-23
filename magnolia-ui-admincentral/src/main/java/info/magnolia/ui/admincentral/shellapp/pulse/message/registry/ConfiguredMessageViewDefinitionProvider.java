@@ -31,46 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.registry;
 
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.jcr.node2bean.Node2BeanException;
+import info.magnolia.jcr.node2bean.Node2BeanProcessor;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
+
+import javax.inject.Singleton;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * AppView interface used by Apps. Acts as a wrapper between the tabsheet used inside to display the subApps and.
- *
+ * ConfiguredMessageViewDefinitionProvider.
  */
-public interface AppView extends View {
+@Singleton
+public class ConfiguredMessageViewDefinitionProvider implements MessageViewDefinitionProvider {
+    private final String id;
 
-    void updateCaption(String instanceId, String caption);
+    private final MessageViewDefinition messageViewDefinition;
 
-    /**
-     * Listens to events coming from the TabSheet.
-     */
-    interface Listener {
-
-        void onFocus(String instanceId);
-
-        void onClose(String instanceId);
-
+    public ConfiguredMessageViewDefinitionProvider(String id, Node configNode) throws RepositoryException, Node2BeanException {
+        this.id = id;
+        this.messageViewDefinition = (MessageViewDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, MessageViewDefinition.class);
     }
 
-    void setFullscreen(boolean fullscreen);
+    @Override
+    public String getId() {
+        return id;
+    }
 
-    void setTheme(String value);
-
-    void setListener(Listener listener);
-
-    String addSubAppView(View view, String caption, boolean closable);
-
-    void closeSubAppView(String instanceId);
-
-    void setActiveSubAppView(String instanceId);
-
-    String getActiveSubAppView();
-
-    /**
-     * Get the view of the container of a SubApp.
-     * Enables working with the Tab component for example, which is necessary for attaching dialogs.
-     */
-    View getSubAppViewContainer(String instanceId);
+    @Override
+    public MessageViewDefinition getMessageViewDefinition() throws RegistrationException {
+        return messageViewDefinition;
+    }
 }

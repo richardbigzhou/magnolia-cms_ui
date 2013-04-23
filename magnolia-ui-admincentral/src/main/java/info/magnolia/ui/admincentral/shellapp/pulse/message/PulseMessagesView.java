@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.admincentral.shellapp.pulse.PulseSubView;
+
+import java.util.Collection;
+
+import com.vaadin.data.Container;
+import com.vaadin.ui.HasComponents;
 
 /**
- * AppView interface used by Apps. Acts as a wrapper between the tabsheet used inside to display the subApps and.
- *
+ * Messages Pulse tab UI.
  */
-public interface AppView extends View {
+public interface PulseMessagesView extends PulseSubView {
 
-    void updateCaption(String instanceId, String caption);
+    @Override
+    public HasComponents asVaadinComponent();
 
-    /**
-     * Listens to events coming from the TabSheet.
-     */
-    interface Listener {
-
-        void onFocus(String instanceId);
-
-        void onClose(String instanceId);
-
-    }
-
-    void setFullscreen(boolean fullscreen);
-
-    void setTheme(String value);
+    void setDataSource(Container dataSource);
 
     void setListener(Listener listener);
 
-    String addSubAppView(View view, String caption, boolean closable);
-
-    void closeSubAppView(String instanceId);
-
-    void setActiveSubAppView(String instanceId);
-
-    String getActiveSubAppView();
-
     /**
-     * Get the view of the container of a SubApp.
-     * Enables working with the Tab component for example, which is necessary for attaching dialogs.
+     * Listener interface to call back to {@link PulseMessagesPresenter}.
      */
-    View getSubAppViewContainer(String instanceId);
+    public interface Listener{
+
+        void filterByMessageCategory(PulseMessageCategoryNavigator.MessageCategory category);
+
+        void onMessageClicked(String itemId);
+
+        Object getParent(Object child);
+
+        Collection<?> getGroup(Object parent);
+
+        void setGrouping(boolean checked);
+    }
 }

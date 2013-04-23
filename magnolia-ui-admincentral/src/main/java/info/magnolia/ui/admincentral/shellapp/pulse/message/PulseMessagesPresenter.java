@@ -31,17 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategory;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ShellImpl;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 
@@ -49,22 +49,20 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.vaadin.data.Container;
 import com.vaadin.data.Container.Filter;
-import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 
 /**
  * Presenter of {@link PulseMessagesView}.
  */
-public class PulseMessagesPresenter implements Serializable {
+public class PulseMessagesPresenter implements PulseMessagesView.Listener {
 
     public static final String GROUP_PLACEHOLDER_ITEMID = "##SUBSECTION##";
 
     public static final String GROUP_COLUMN = "type";
 
-    private static final String[] order = new String[]{"new", "type", "text", "sender", "date", "quickdo"};
+    private final PulseMessagesView view;
 
     private HierarchicalContainer container = null;
 
@@ -73,9 +71,11 @@ public class PulseMessagesPresenter implements Serializable {
     private final ShellImpl shell;
 
     private boolean grouping = false;
+    private Listener listener;
 
     @Inject
-    public PulseMessagesPresenter(final ShellImpl shellImpl, final MessagesManager messagesManager) {
+    public PulseMessagesPresenter(final PulseMessagesView view, final ShellImpl shellImpl, final MessagesManager messagesManager) {
+        this.view = view;
         this.shell = shellImpl;
         this.messagesManager = messagesManager;
 
@@ -108,14 +108,20 @@ public class PulseMessagesPresenter implements Serializable {
                 messagesManager.getNumberOfUnclearedMessagesForUser(MgnlContext.getUser().getName()));
     }
 
-    public Container getMessageDataSource() {
-        if (container == null) {
-            createMessageDataSource();
-        }
-        return container;
+    public View start() {
+        view.setListener(this);
+        container = createMessageDataSource();
+        view.setDataSource(container);
+
+        return view;
     }
 
-    private Filterable createMessageDataSource() {
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    private HierarchicalContainer createMessageDataSource() {
         container = new HierarchicalContainer();
         container.addContainerProperty("new", String.class, null);
         container.addContainerProperty("type", MessageType.class, MessageType.UNKNOWN);
@@ -156,6 +162,7 @@ public class PulseMessagesPresenter implements Serializable {
     /*
      * Sets the grouping of messages
      */
+    @Override
     public void setGrouping(boolean checked) {
         grouping = checked;
 
@@ -174,6 +181,7 @@ public class PulseMessagesPresenter implements Serializable {
      *
      * @param itemId parent itemId
      */
+    @Override
     public Collection<?> getGroup(Object itemId) {
         return container.getChildren(itemId);
     }
@@ -181,6 +189,7 @@ public class PulseMessagesPresenter implements Serializable {
     /**
      * Return parent itemId for an item.
      */
+    @Override
     public Object getParent(Object itemId) {
         return container.getParent(itemId);
     }
@@ -248,10 +257,7 @@ public class PulseMessagesPresenter implements Serializable {
         }
     }
 
-    public Object[] getColumnOrder() {
-        return order;
-    }
-
+    @Override
     public void filterByMessageCategory(MessageCategory category) {
         if (container != null) {
             container.removeAllContainerFilters();
@@ -288,7 +294,16 @@ public class PulseMessagesPresenter implements Serializable {
         container.addContainerFilter(filter);
     }
 
+    @Override
     public void onMessageClicked(String messageId) {
-        this.messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
+        listener.openMessage(messageId);
+        messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
+    }
+
+    /**
+     * Listener interface used to call back to parent presenter.
+     */
+    public interface Listener {
+        public void openMessage(String messageId);
     }
 }

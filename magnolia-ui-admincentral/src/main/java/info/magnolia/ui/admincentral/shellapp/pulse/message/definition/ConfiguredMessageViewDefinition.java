@@ -31,46 +31,49 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.definition;
 
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.model.action.ActionDefinition;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * AppView interface used by Apps. Acts as a wrapper between the tabsheet used inside to display the subApps and.
- *
+ * A definition of a configured message view.
  */
-public interface AppView extends View {
+public class ConfiguredMessageViewDefinition implements MessageViewDefinition {
 
-    void updateCaption(String instanceId, String caption);
+    private Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
 
-    /**
-     * Listens to events coming from the TabSheet.
-     */
-    interface Listener {
+    private FormDefinition form;
 
-        void onFocus(String instanceId);
+    private ActionbarDefinition actionbar;
 
-        void onClose(String instanceId);
-
+    @Override
+    public Map<String, ActionDefinition> getActions() {
+        return actions;
     }
 
-    void setFullscreen(boolean fullscreen);
+    public void setActions(Map<String, ActionDefinition> actions) {
+        this.actions = actions;
+    }
+    @Override
+    public FormDefinition getForm() {
+        return form;
+    }
 
-    void setTheme(String value);
+    public void setForm(FormDefinition form) {
+        this.form = form;
+    }
 
-    void setListener(Listener listener);
+    @Override
+    public ActionbarDefinition getActionbar() {
+        return actionbar;
+    }
 
-    String addSubAppView(View view, String caption, boolean closable);
-
-    void closeSubAppView(String instanceId);
-
-    void setActiveSubAppView(String instanceId);
-
-    String getActiveSubAppView();
-
-    /**
-     * Get the view of the container of a SubApp.
-     * Enables working with the Tab component for example, which is necessary for attaching dialogs.
-     */
-    View getSubAppViewContainer(String instanceId);
+    public void setActionbar(ActionbarDefinition actionbar) {
+        this.actionbar = actionbar;
+    }
 }

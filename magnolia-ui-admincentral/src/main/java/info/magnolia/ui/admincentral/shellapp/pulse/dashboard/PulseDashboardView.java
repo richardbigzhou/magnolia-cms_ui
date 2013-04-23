@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.admincentral.shellapp.pulse.dashboard;
 
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.admincentral.shellapp.pulse.PulseSubView;
+
+import com.vaadin.ui.HasComponents;
 
 /**
- * AppView interface used by Apps. Acts as a wrapper between the tabsheet used inside to display the subApps and.
- *
+ * Dashboard Pulse tab UI.
  */
-public interface AppView extends View {
+public interface PulseDashboardView extends PulseSubView {
 
-    void updateCaption(String instanceId, String caption);
-
-    /**
-     * Listens to events coming from the TabSheet.
-     */
-    interface Listener {
-
-        void onFocus(String instanceId);
-
-        void onClose(String instanceId);
-
-    }
-
-    void setFullscreen(boolean fullscreen);
-
-    void setTheme(String value);
-
-    void setListener(Listener listener);
-
-    String addSubAppView(View view, String caption, boolean closable);
-
-    void closeSubAppView(String instanceId);
-
-    void setActiveSubAppView(String instanceId);
-
-    String getActiveSubAppView();
-
-    /**
-     * Get the view of the container of a SubApp.
-     * Enables working with the Tab component for example, which is necessary for attaching dialogs.
-     */
-    View getSubAppViewContainer(String instanceId);
+    @Override
+    public HasComponents asVaadinComponent();
 }

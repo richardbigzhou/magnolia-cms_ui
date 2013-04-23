@@ -43,7 +43,9 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Date;
+
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -119,18 +121,35 @@ public class BasicFileItemWrapper implements FileItemWrapper {
             if (item.getItemProperty(FileProperties.PROPERTY_EXTENSION) != null) {
                 extension = String.valueOf(item.getItemProperty(FileProperties.PROPERTY_EXTENSION).getValue());
             }
-            try {
-                uploadedFile = File.createTempFile(StringUtils.rightPad(fileName, 5, "x"), null, tmpDirectory);
-                FileOutputStream fileOuputStream = new FileOutputStream(uploadedFile);
-                if (data.getValue() instanceof BinaryImpl) {
-                    IOUtils.copy(((BinaryImpl) data.getValue()).getStream(), fileOuputStream);
-                } else {
-                    fileOuputStream.write((byte[]) data.getValue());
+            // Create a file based on the Items Binary informations.
+            setFile(data);
+        }
+    }
+
+    /**
+     * Create a tmp {@link File} based on the {@link Item} data.
+     */
+    private void setFile(Property<?> data) {
+        FileOutputStream fileOuputStream = null;
+        try {
+            uploadedFile = File.createTempFile(StringUtils.rightPad(fileName, 5, "x"), null, tmpDirectory);
+            fileOuputStream = new FileOutputStream(uploadedFile);
+            if (data.getValue() instanceof BinaryImpl) {
+                IOUtils.copy(((BinaryImpl) data.getValue()).getStream(), fileOuputStream);
+            } else {
+                fileOuputStream.write((byte[]) data.getValue());
+            }
+            fileOuputStream.close();
+            uploadedFile.deleteOnExit();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (fileOuputStream != null) {
+                try {
+                    fileOuputStream.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(), e);
                 }
-                fileOuputStream.close();
-                uploadedFile.deleteOnExit();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
             }
         }
     }
@@ -145,14 +164,6 @@ public class BasicFileItemWrapper implements FileItemWrapper {
         populateItem();
     }
 
-    protected void populateWrapperFromReceiver(UploadReceiver receiver) {
-        uploadedFile = receiver.getFile();
-        fileName = receiver.getFileName();
-        extension = receiver.getExtension();
-        fileSize = receiver.getFileSize();
-        mimeType = receiver.getMimeType();
-    }
-
     /**
      * Clear the local variables.
      * Clear the Item.
@@ -164,7 +175,9 @@ public class BasicFileItemWrapper implements FileItemWrapper {
         extension = null;
         fileSize = -1;
         mimeType = null;
-
+        uploadedFile = null;
+        // Remove reference between the File Item and his parent.
+        // Doing so, when the parent Item is saved, no child File Item will be created.
         item.getParent().removeChild(item);
     }
 
@@ -179,6 +192,17 @@ public class BasicFileItemWrapper implements FileItemWrapper {
     @Override
     public boolean isEmpty() {
         return uploadedFile == null;
+    }
+
+    /**
+     * Populate this {@link FileItemWrapper} with the {@link UploadReceiver} informations.
+     */
+    protected void populateWrapperFromReceiver(UploadReceiver receiver) {
+        uploadedFile = receiver.getFile();
+        fileName = receiver.getFileName();
+        extension = receiver.getExtension();
+        fileSize = receiver.getFileSize();
+        mimeType = receiver.getMimeType();
     }
 
     /**
@@ -244,4 +268,5 @@ public class BasicFileItemWrapper implements FileItemWrapper {
     public File getFile() {
         return this.uploadedFile;
     }
+
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,46 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.admincentral.shellapp.pulse.activity;
 
-import info.magnolia.ui.model.overlay.View;
+import java.util.List;
 
 /**
- * AppView interface used by Apps. Acts as a wrapper between the tabsheet used inside to display the subApps and.
+ * Manager for the users activity streams.
  *
+ * need persistence
+ *
+ * need to clean up old entries
+ *
+ * can you post to more than one user? all? by group?
  */
-public interface AppView extends View {
-
-    void updateCaption(String instanceId, String caption);
+public interface ActivityStreamManager {
 
     /**
-     * Listens to events coming from the TabSheet.
+     * Returns the activity stream for a user, entries sorted most recent first.
      */
-    interface Listener {
-
-        void onFocus(String instanceId);
-
-        void onClose(String instanceId);
-
-    }
-
-    void setFullscreen(boolean fullscreen);
-
-    void setTheme(String value);
-
-    void setListener(Listener listener);
-
-    String addSubAppView(View view, String caption, boolean closable);
-
-    void closeSubAppView(String instanceId);
-
-    void setActiveSubAppView(String instanceId);
-
-    String getActiveSubAppView();
+    List<ActivityStreamEntry> getActivityStreamForUser(String userId);
 
     /**
-     * Get the view of the container of a SubApp.
-     * Enables working with the Tab component for example, which is necessary for attaching dialogs.
+     * Adds the entry to the users activity stream, assigns an id and records the timestamp, any values for these fields
+     * already in the instance is ignored.
      */
-    View getSubAppViewContainer(String instanceId);
+    void postEntry(String userId, ActivityStreamEntry entry);
 }

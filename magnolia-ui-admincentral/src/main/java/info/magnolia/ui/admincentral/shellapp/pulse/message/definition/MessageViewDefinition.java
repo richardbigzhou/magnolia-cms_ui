@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,12 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.definition;
+
+import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.model.action.ActionDefinition;
+
+import java.util.Map;
 
 /**
- * The type of entries in the activity stream.
+ * Definition used for building a view for messages.
  */
-public enum ActivityStreamEntryType {
+public interface MessageViewDefinition {
 
-    ACCEPTED, REJECTED, URGENT
+    Map<String, ActionDefinition> getActions();
+
+    FormDefinition getForm();
+
+    ActionbarDefinition getActionbar();
 }
