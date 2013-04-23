@@ -209,12 +209,12 @@
       <implementation>info.magnolia.ui.form.field.validation.ValidatorFieldFactory</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition</type>
-      <implementation>info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
+      <type>info.magnolia.ui.imageprovider.definition.ImageProviderDefinition</type>
+      <implementation>info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.model.imageprovider.definition.ImageProvider</type>
-      <implementation>info.magnolia.ui.admincentral.image.DefaultImageProvider</implementation>
+      <type>info.magnolia.ui.imageprovider.ImageProvider</type>
+      <implementation>info.magnolia.ui.imageprovider.DefaultImageProvider</implementation>
     </component>
   </components>
 

@@ -31,35 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.imageprovider.definition;
+package info.magnolia.ui.imageprovider;
 
 /**
  * Defines a provider for Thumbnail images.
  */
-public interface ImageProviderDefinition {
+public interface ImageProvider {
 
-    static final String ORIGINAL_IMAGE_NODE_NAME = "originalImage";
-    static final String IMAGING_SERVLET_PATH = ".imaging";
-    static final String IMAGE_EXTENSION = "png";
+    static final String PORTRAIT_GENERATOR = "portrait";
 
-    /**
-     * Defaults to {@value #ORIGINAL_IMAGE_NODE_NAME}.
-     */
-    String getOriginalImageNodeName();
+    static final String THUMBNAIL_GENERATOR = "thumbnail";
 
-    /**
-     * Defaults to {@value #IMAGING_SERVLET_PATH}.
-     */
-    String getImagingServletPath();
+    String getPortraitPath(String workspace, String path);
 
-    /**
-     * Defaults to {@value #IMAGE_EXTENSION}.
-     */
-    String getImageExtension();
+    String getThumbnailPath(String workspace, String path);
+
+    String getPortraitPathByIdentifier(String workspace, String uuid);
+
+    String getThumbnailPathByIdentifier(String workspace, String uuid);
+
+    String resolveIconClassName(String mimeType);
 
     /**
-     *
+     * Get a Preview Resource.
+     * This preview is an image or an icon representing the Document type.
      */
-    Class<? extends ImageProvider> getImageProviderClass();
+    Object getThumbnailResourceByPath(String workspace, String path, String generator);
 
+    Object getThumbnailResourceById(String workspace, String identifier, String generator);
 }

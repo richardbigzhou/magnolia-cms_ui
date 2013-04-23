@@ -43,7 +43,7 @@ import info.magnolia.module.pageexport.renderer.registry.RendererRegistry;
 import info.magnolia.ui.admincentral.image.ImageSize;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import org.apache.jackrabbit.JcrConstants;
 import org.slf4j.Logger;

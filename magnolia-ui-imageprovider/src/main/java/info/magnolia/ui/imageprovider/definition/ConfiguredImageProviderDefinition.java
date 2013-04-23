@@ -31,7 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.imageprovider.definition;
+package info.magnolia.ui.imageprovider.definition;
+
+import info.magnolia.ui.imageprovider.ImageProvider;
 
 /**
  * Superclass for all thumbnail providers.
@@ -76,12 +78,9 @@ public class ConfiguredImageProviderDefinition implements ImageProviderDefinitio
     @Override
     public Class<? extends ImageProvider> getImageProviderClass() {
         return imageProviderClass;
-
     }
 
     public void setImageProviderClass(Class<? extends ImageProvider> imageProviderClass) {
         this.imageProviderClass = imageProviderClass;
-
     }
-
 }

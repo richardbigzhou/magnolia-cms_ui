@@ -31,15 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.image;
+package info.magnolia.ui.imageprovider;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.util.LinkUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
-import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 
 import java.util.Calendar;
 

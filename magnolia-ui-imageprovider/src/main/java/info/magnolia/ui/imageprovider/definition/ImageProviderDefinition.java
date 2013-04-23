@@ -31,32 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.imageprovider.definition;
+package info.magnolia.ui.imageprovider.definition;
+
+import info.magnolia.ui.imageprovider.ImageProvider;
 
 /**
  * Defines a provider for Thumbnail images.
  */
-public interface ImageProvider {
+public interface ImageProviderDefinition {
 
-    static final String PORTRAIT_GENERATOR = "portrait";
-
-    static final String THUMBNAIL_GENERATOR = "thumbnail";
-
-    String getPortraitPath(String workspace, String path);
-
-    String getThumbnailPath(String workspace, String path);
-
-    String getPortraitPathByIdentifier(String workspace, String uuid);
-
-    String getThumbnailPathByIdentifier(String workspace, String uuid);
-
-    String resolveIconClassName(String mimeType);
+    static final String ORIGINAL_IMAGE_NODE_NAME = "originalImage";
+    static final String IMAGING_SERVLET_PATH = ".imaging";
+    static final String IMAGE_EXTENSION = "png";
 
     /**
-     * Get a Preview Resource.
-     * This preview is an image or an icon representing the Document type.
+     * Defaults to {@value #ORIGINAL_IMAGE_NODE_NAME}.
      */
-    Object getThumbnailResourceByPath(String workspace, String path, String generator);
+    String getOriginalImageNodeName();
 
-    Object getThumbnailResourceById(String workspace, String identifier, String generator);
+    /**
+     * Defaults to {@value #IMAGING_SERVLET_PATH}.
+     */
+    String getImagingServletPath();
+
+    /**
+     * Defaults to {@value #IMAGE_EXTENSION}.
+     */
+    String getImageExtension();
+
+    /**
+     *
+     */
+    Class<? extends ImageProvider> getImageProviderClass();
+
 }
