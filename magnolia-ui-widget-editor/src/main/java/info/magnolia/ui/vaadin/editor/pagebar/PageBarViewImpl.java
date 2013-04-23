@@ -124,7 +124,11 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
     }
 
     private void updateStatusLabel() {
-        settingsStatus.setValue(platformSelector.getValue() + " - " + String.valueOf(languageSelector.getValue()));
+        String value = platformSelector.getValue() + " - ";
+        if (languageSelector != null) {
+            value += languageSelector.getValue();
+        }
+        settingsStatus.setValue(value);
     }
 
     @Override
