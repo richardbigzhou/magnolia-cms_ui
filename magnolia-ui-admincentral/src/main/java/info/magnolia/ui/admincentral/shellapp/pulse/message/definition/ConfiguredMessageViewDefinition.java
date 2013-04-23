@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,49 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.icon.connector;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.definition;
 
-import info.magnolia.ui.vaadin.gwt.client.icon.widget.IconWidget;
-import info.magnolia.ui.vaadin.icon.Icon;
+import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.model.action.ActionDefinition;
 
-import com.vaadin.client.communication.StateChangeEvent;
-import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
-import com.vaadin.client.ui.AbstractComponentConnector;
-import com.vaadin.shared.ui.Connect;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * IconConnector.
+ * A definition of a configured message view.
  */
-@Connect(Icon.class)
-public class IconConnector extends AbstractComponentConnector {
+public class ConfiguredMessageViewDefinition implements MessageViewDefinition {
+
+    private Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
+
+    private FormDefinition form;
+
+    private ActionbarDefinition actionbar;
 
     @Override
-    protected void init() {
-        super.init();
+    public Map<String, ActionDefinition> getActions() {
+        return actions;
+    }
 
-        addStateChangeHandler("iconName", new StateChangeHandler() {
-            @Override
-            public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                getWidget().setIconName(getState().iconName);
-            }
-        });
+    public void setActions(Map<String, ActionDefinition> actions) {
+        this.actions = actions;
+    }
+    @Override
+    public FormDefinition getForm() {
+        return form;
+    }
+
+    public void setForm(FormDefinition form) {
+        this.form = form;
     }
 
     @Override
-    public IconWidget getWidget() {
-        return (IconWidget) super.getWidget();
+    public ActionbarDefinition getActionbar() {
+        return actionbar;
     }
 
-    public void setInnerIcon(boolean innerIcon) {
-        getWidget().setInnerIcon(innerIcon);
-    }
-
-    @Override
-    public IconState getState() {
-        return (IconState) super.getState();
+    public void setActionbar(ActionbarDefinition actionbar) {
+        this.actionbar = actionbar;
     }
 }

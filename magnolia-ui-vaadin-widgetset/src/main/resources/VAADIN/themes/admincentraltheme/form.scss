@@ -278,4 +278,28 @@ input[type="text"].small-textfield {
     width: 523px !important;
 }
 
+/*
+* styles for rendering views of the form
+*/
+
+
+.field-view .v-caption {
+  display: inline-block;
+  color: #666666;
+  line-height: 25px;
+  margin-right: 12px;
+  overflow: hidden;
+  text-align: right;
+  text-overflow: ellipsis;
+  vertical-align: top;
+  width: 140px;
+}
+
+.field-view .v-label {
+  padding-top: 3px;
+  white-space: normal;
+  vertical-align: middle;
+  width: 410px;
+}
+
 }

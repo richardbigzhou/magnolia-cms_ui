@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.icon.connector;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.registry;
 
-import info.magnolia.ui.vaadin.gwt.client.icon.widget.IconWidget;
-import info.magnolia.ui.vaadin.icon.Icon;
+import info.magnolia.jcr.node2bean.Node2BeanException;
+import info.magnolia.jcr.node2bean.Node2BeanProcessor;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
 
-import com.vaadin.client.communication.StateChangeEvent;
-import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
-import com.vaadin.client.ui.AbstractComponentConnector;
-import com.vaadin.shared.ui.Connect;
+import javax.inject.Singleton;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * IconConnector.
+ * ConfiguredMessageViewDefinitionProvider.
  */
-@Connect(Icon.class)
-public class IconConnector extends AbstractComponentConnector {
+@Singleton
+public class ConfiguredMessageViewDefinitionProvider implements MessageViewDefinitionProvider {
+    private final String id;
 
-    @Override
-    protected void init() {
-        super.init();
+    private final MessageViewDefinition messageViewDefinition;
 
-        addStateChangeHandler("iconName", new StateChangeHandler() {
-            @Override
-            public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                getWidget().setIconName(getState().iconName);
-            }
-        });
+    public ConfiguredMessageViewDefinitionProvider(String id, Node configNode) throws RepositoryException, Node2BeanException {
+        this.id = id;
+        this.messageViewDefinition = (MessageViewDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, MessageViewDefinition.class);
     }
 
     @Override
-    public IconWidget getWidget() {
-        return (IconWidget) super.getWidget();
-    }
-
-    public void setInnerIcon(boolean innerIcon) {
-        getWidget().setInnerIcon(innerIcon);
+    public String getId() {
+        return id;
     }
 
     @Override
-    public IconState getState() {
-        return (IconState) super.getState();
+    public MessageViewDefinition getMessageViewDefinition() throws RegistrationException {
+        return messageViewDefinition;
     }
 }

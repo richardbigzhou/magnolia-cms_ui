@@ -116,10 +116,10 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     protected void buildEmptyLayout() {
         layout.removeAllComponents();
         // Add Upload Button
-        getUpload().setButtonCaption(getCaption(selectNewCaption));
+        getUpload().setButtonCaption(getCaption(selectNewCaption, null));
         layout.addComponent(getUpload());
         // Add DropZone Label
-        Label uploadText = new Label(getCaption(dropZoneCaption), ContentMode.HTML);
+        Label uploadText = new Label(getCaption(dropZoneCaption, null), ContentMode.HTML);
         uploadText.addStyleName("upload-text");
         layout.addComponent(uploadText);
 
@@ -212,7 +212,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         actionLayout.addStyleName("buttons");
         actionLayout.setSpacing(true);
         // Add Upload Button
-        getUpload().setButtonCaption(getCaption(selectAnotherCaption));
+        getUpload().setButtonCaption(getCaption(selectAnotherCaption, null));
         actionLayout.addComponent(getUpload());
         // Add Remove Button if a file is present.
         if (!getFileWrapper().isEmpty()) {
@@ -234,7 +234,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
 
             @Override
             public void buttonClick(ClickEvent event) {
-                interruptUpload();
+                interruptUpload(InterruptionReason.USER);
             }
         });
         cancelButton.addStyleName("cancel");
@@ -288,13 +288,13 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
 
         // Title
         sb.append("<span class=\"value\">");
-        sb.append(getCaption(fileDetailHeaderCaption));
+        sb.append(getCaption(fileDetailHeaderCaption, null));
         sb.append("</span>");
         sb.append("<br/><br/>");
 
         // Name
         sb.append("<span class=\"key\">");
-        sb.append(getCaption(fileDetailNameCaption));
+        sb.append(getCaption(fileDetailNameCaption, null));
         sb.append("</span>");
         sb.append("<span class=\"value\">");
         sb.append(getFileWrapper().getFileName());
@@ -303,7 +303,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
 
         // Size
         sb.append("<span class=\"key\">");
-        sb.append(getCaption(fileDetailSizeCaption));
+        sb.append(getCaption(fileDetailSizeCaption, null));
         sb.append("</span>");
         sb.append("<span class=\"value\">");
         sb.append(FileUtils.byteCountToDisplaySize(getFileWrapper().getFileSize()));
@@ -312,7 +312,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
 
         // Format
         sb.append("<span class=\"key\">");
-        sb.append(getCaption(fileDetailFormatCaption));
+        sb.append(getCaption(fileDetailFormatCaption, null));
         sb.append("</span>");
         sb.append("<span class=\"value\">");
         sb.append(getFileWrapper().getExtension());
@@ -359,12 +359,16 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         captionExtension = StringUtils.EMPTY;
     }
 
-    protected String getCaption(String caption) {
+    protected String getCaption(String caption, String[] args) {
         if (StringUtils.isEmpty(caption)) {
             return StringUtils.EMPTY;
         }
         caption = StringUtils.isNotBlank(captionExtension) ? caption + "." + captionExtension : caption;
-        return MessagesUtil.get(caption);
+        if (args != null && args.length > 0) {
+            return MessagesUtil.get(caption, args);
+        } else {
+            return MessagesUtil.get(caption);
+        }
     }
 
     protected String selectNewCaption;
@@ -426,7 +430,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     }
 
     @Override
-    protected void displayUploadInterruptNote() {
+    protected void displayUploadInterruptNote(InterruptionReason reason) {
         // Do Nothing
     }
 

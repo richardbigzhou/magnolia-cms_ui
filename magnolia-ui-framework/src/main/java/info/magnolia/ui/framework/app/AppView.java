@@ -36,7 +36,7 @@ package info.magnolia.ui.framework.app;
 import info.magnolia.ui.model.overlay.View;
 
 /**
- * AppView. Should we refer to the tabs as tab or subApp instance. Keep in mind that it is not the subAppId. There are multiple instances of the subapp.
+ * AppView interface used by Apps. Acts as a wrapper between the tabsheet used inside to display the subApps and.
  *
  */
 public interface AppView extends View {

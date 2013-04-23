@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.activity;
 
 import info.magnolia.ui.framework.message.MessageType;
 

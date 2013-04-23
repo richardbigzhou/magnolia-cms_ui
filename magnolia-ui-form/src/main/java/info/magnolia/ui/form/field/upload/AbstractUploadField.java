@@ -46,6 +46,7 @@ import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.server.StreamVariable;
+import com.vaadin.server.UploadException;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.DragAndDropWrapper;
@@ -135,7 +136,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
      */
     protected abstract void buildCompletedLayout();
 
-    protected abstract void displayUploadInterruptNote();
+    protected abstract void displayUploadInterruptNote(InterruptionReason reason);
 
     protected abstract void displayUploadFinisheddNote(String fileName);
 
@@ -160,8 +161,8 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
      * Interrupt upload based on a user Action.
      * An {@link UploadInterruptedException} will be throws by the underlying Vaadin classes.
      */
-    protected void interruptUpload() {
-        displayUploadInterruptNote();
+    protected void interruptUpload(InterruptionReason reason) {
+        displayUploadInterruptNote(reason);
         if (upload.isUploading()) {
             upload.interruptUpload();
         } else {
@@ -175,6 +176,13 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
 
     private boolean isDragAndDropUploadInterrupted() {
         return interruptedDragAndDropUpload;
+    }
+
+    /**
+     * Simple Enumeration listing all available Interruption reason.
+     */
+    protected enum InterruptionReason {
+        USER, FILE_NOT_ALLOWED, FILE_SIZE;
     }
 
     /**
@@ -324,7 +332,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
         if (isValidFile(event)) {
             buildInProgressLayout(event.getMIMEType());
         } else {
-            interruptUpload();
+            interruptUpload(InterruptionReason.FILE_NOT_ALLOWED);
         }
     }
 
@@ -335,7 +343,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
     @Override
     public void updateProgress(long readBytes, long contentLength) {
         if (readBytes > this.maxUploadSize || contentLength > this.maxUploadSize) {
-            this.interruptUpload();
+            this.interruptUpload(InterruptionReason.FILE_SIZE);
             return;
         }
         refreshInProgressLayout(readBytes, contentLength, receiver.getLastFileName());
@@ -375,7 +383,9 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
 
     @Override
     public void uploadFailed(FailedEvent event) {
-        displayUploadFaildNote(event.getFilename());
+        if (event.getReason() instanceof UploadException) {
+            displayUploadFaildNote(event.getFilename());
+        }
         this.fileWrapper.reloadPrevious();
         updateDisplay();
         log.warn("Upload failed for file {} ", event.getFilename());

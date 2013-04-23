@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.icon.connector;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.registry;
 
-import info.magnolia.ui.vaadin.gwt.client.icon.widget.IconWidget;
-import info.magnolia.ui.vaadin.icon.Icon;
-
-import com.vaadin.client.communication.StateChangeEvent;
-import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
-import com.vaadin.client.ui.AbstractComponentConnector;
-import com.vaadin.shared.ui.Connect;
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
 
 /**
- * IconConnector.
+ * Provides a message view definition.
+ *
+ * @see MessageViewDefinitionRegistry
  */
-@Connect(Icon.class)
-public class IconConnector extends AbstractComponentConnector {
+public interface MessageViewDefinitionProvider {
+    String getId();
 
-    @Override
-    protected void init() {
-        super.init();
-
-        addStateChangeHandler("iconName", new StateChangeHandler() {
-            @Override
-            public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                getWidget().setIconName(getState().iconName);
-            }
-        });
-    }
-
-    @Override
-    public IconWidget getWidget() {
-        return (IconWidget) super.getWidget();
-    }
-
-    public void setInnerIcon(boolean innerIcon) {
-        getWidget().setInnerIcon(innerIcon);
-    }
-
-    @Override
-    public IconState getState() {
-        return (IconState) super.getState();
-    }
+    MessageViewDefinition getMessageViewDefinition() throws RegistrationException;
 }

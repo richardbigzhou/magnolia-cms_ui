@@ -47,6 +47,7 @@ import com.vaadin.ui.Component;
 
 /**
  * View used to give all apps a uniform look-and-feel.
+ * @see AppView
  */
 public class AppFrameView implements AppView {
 

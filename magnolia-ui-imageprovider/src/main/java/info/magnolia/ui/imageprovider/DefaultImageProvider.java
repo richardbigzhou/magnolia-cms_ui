@@ -190,6 +190,9 @@ public class DefaultImageProvider implements ImageProvider {
      * Simple MimeType to FileType Mapping.
      */
     private String resolveFileTypeFromMimeType(String mimeType) {
+        if (StringUtils.isBlank(mimeType)) {
+            return StringUtils.EMPTY;
+        }
         if (mimeType.contains("application/pdf")) {
             return "pdf";
         }
@@ -215,10 +218,10 @@ public class DefaultImageProvider implements ImageProvider {
             return "audio";
         }
         if (mimeType.matches(".*(zip|compress)")) {
-            return "";
+            return StringUtils.EMPTY;
         }
 
-        return "";
+        return StringUtils.EMPTY;
     }
 
     private boolean isImage(String mimeType) {

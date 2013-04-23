@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.icon.connector;
+package info.magnolia.ui.admincentral.shellapp.pulse.activity;
 
-import info.magnolia.ui.vaadin.gwt.client.icon.widget.IconWidget;
-import info.magnolia.ui.vaadin.icon.Icon;
-
-import com.vaadin.client.communication.StateChangeEvent;
-import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
-import com.vaadin.client.ui.AbstractComponentConnector;
-import com.vaadin.shared.ui.Connect;
+import java.util.List;
 
 /**
- * IconConnector.
+ * Manager for the users activity streams.
+ *
+ * need persistence
+ *
+ * need to clean up old entries
+ *
+ * can you post to more than one user? all? by group?
  */
-@Connect(Icon.class)
-public class IconConnector extends AbstractComponentConnector {
+public interface ActivityStreamManager {
 
-    @Override
-    protected void init() {
-        super.init();
+    /**
+     * Returns the activity stream for a user, entries sorted most recent first.
+     */
+    List<ActivityStreamEntry> getActivityStreamForUser(String userId);
 
-        addStateChangeHandler("iconName", new StateChangeHandler() {
-            @Override
-            public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                getWidget().setIconName(getState().iconName);
-            }
-        });
-    }
-
-    @Override
-    public IconWidget getWidget() {
-        return (IconWidget) super.getWidget();
-    }
-
-    public void setInnerIcon(boolean innerIcon) {
-        getWidget().setInnerIcon(innerIcon);
-    }
-
-    @Override
-    public IconState getState() {
-        return (IconState) super.getState();
-    }
+    /**
+     * Adds the entry to the users activity stream, assigns an id and records the timestamp, any values for these fields
+     * already in the instance is ignored.
+     */
+    void postEntry(String userId, ActivityStreamEntry entry);
 }

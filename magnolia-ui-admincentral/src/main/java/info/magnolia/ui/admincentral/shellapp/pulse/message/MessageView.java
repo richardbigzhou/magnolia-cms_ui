@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,15 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import com.vaadin.ui.HasComponents;
+
+import info.magnolia.ui.model.overlay.View;
 
 /**
- * Dashboard Pulse tab UI.
+ * View interface for displaying a message.
  */
-public interface PulseDashboardView extends PulseSubView {
+public interface MessageView extends View {
 
-    @Override
-    public HasComponents asVaadinComponent();
+    void setMessageView(View formView);
+    void setActionbarView(View actionbarView);
+    void setListener(Listener listener);
+
+    void setTitle(String subject);
+
+    /**
+     * Listener interface used for communicating with the presenter.
+     */
+    public interface Listener {
+        void onNavigateToList();
+    }
 }

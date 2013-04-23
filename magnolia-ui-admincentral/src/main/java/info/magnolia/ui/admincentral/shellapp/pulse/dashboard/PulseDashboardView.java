@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.icon.connector;
+package info.magnolia.ui.admincentral.shellapp.pulse.dashboard;
 
-import info.magnolia.ui.vaadin.gwt.client.icon.widget.IconWidget;
-import info.magnolia.ui.vaadin.icon.Icon;
+import info.magnolia.ui.admincentral.shellapp.pulse.PulseSubView;
 
-import com.vaadin.client.communication.StateChangeEvent;
-import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
-import com.vaadin.client.ui.AbstractComponentConnector;
-import com.vaadin.shared.ui.Connect;
+import com.vaadin.ui.HasComponents;
 
 /**
- * IconConnector.
+ * Dashboard Pulse tab UI.
  */
-@Connect(Icon.class)
-public class IconConnector extends AbstractComponentConnector {
+public interface PulseDashboardView extends PulseSubView {
 
     @Override
-    protected void init() {
-        super.init();
-
-        addStateChangeHandler("iconName", new StateChangeHandler() {
-            @Override
-            public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                getWidget().setIconName(getState().iconName);
-            }
-        });
-    }
-
-    @Override
-    public IconWidget getWidget() {
-        return (IconWidget) super.getWidget();
-    }
-
-    public void setInnerIcon(boolean innerIcon) {
-        getWidget().setInnerIcon(innerIcon);
-    }
-
-    @Override
-    public IconState getState() {
-        return (IconState) super.getState();
-    }
+    public HasComponents asVaadinComponent();
 }

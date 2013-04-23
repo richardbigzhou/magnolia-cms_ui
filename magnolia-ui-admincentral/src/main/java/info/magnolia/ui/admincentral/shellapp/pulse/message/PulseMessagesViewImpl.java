@@ -31,12 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import info.magnolia.ui.workbench.column.DateColumnFormatter;
-import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.CategoryChangedEvent;
-import info.magnolia.ui.admincentral.shellapp.pulse.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.CategoryChangedEvent;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
+import info.magnolia.ui.workbench.column.DateColumnFormatter;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -69,13 +69,15 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
 
     private static final String[] headers = new String[]{"New", "Type", "Message text", "Sender", "Date", "Quick action"};
 
+    private static final String[] order = new String[]{"new", "type", "text", "sender", "date", "quickdo"};
+
     private final TreeTable messageTable = new MagnoliaTreeTable();
 
     private final VerticalLayout root = new VerticalLayout();
 
     private final PulseMessageCategoryNavigator navigator = new PulseMessageCategoryNavigator();
 
-    private final PulseMessagesPresenter presenter;
+    private PulseMessagesView.Listener listener;
 
     private final FastDateFormat dateFormatter = FastDateFormat.getInstance();
 
@@ -84,12 +86,26 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     private Label emptyPlaceHolder = new Label("No messages to display.");
 
     @Inject
-    public PulseMessagesViewImpl(final PulseMessagesPresenter presenter) {
-        this.presenter = presenter;
+    public PulseMessagesViewImpl() {
         setSizeFull();
         root.setSizeFull();
         setCompositionRoot(root);
         construct();
+    }
+
+    @Override
+    public void setListener(PulseMessagesView.Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void setDataSource(Container dataSource) {
+        messageTable.setContainerDataSource(dataSource);
+        messageTable.setVisibleColumns(order);
+        messageTable.setSortContainerPropertyId("date");
+        messageTable.setSortAscending(false);
+        messageTable.setColumnHeaders(headers);
+
     }
 
     private void construct() {
@@ -98,7 +114,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
 
             @Override
             public void messageCategoryChanged(CategoryChangedEvent event) {
-                presenter.filterByMessageCategory(event.getCategory());
+                listener.filterByMessageCategory(event.getCategory());
             }
         });
         constructTable();
@@ -116,17 +132,13 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         messageTable.setCellStyleGenerator(cellStyleGenerator);
         navigator.addGroupingListener(groupingListener);
 
-        messageTable.setContainerDataSource(presenter.getMessageDataSource());
-        messageTable.setVisibleColumns(presenter.getColumnOrder());
-        messageTable.setSortContainerPropertyId("date");
-        messageTable.setSortAscending(false);
-        messageTable.setColumnHeaders(headers);
+
 
         messageTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent event) {
                 Object itemId = event.getItemId();
-                presenter.onMessageClicked((String) itemId);
+                listener.onMessageClicked((String) itemId);
             }
         });
 
@@ -187,7 +199,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
 
             // Item deselection will always deselect group
             for (Object child : removed) {
-                Object parent = presenter.getParent(child);
+                Object parent = listener.getParent(child);
                 if (parent != null) {
                     messageTable.unselect(parent);
                     prevSelected.remove(parent);
@@ -198,7 +210,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
              * Selecting item must check that all siblings are also selected
              */
             for (Object child : added) {
-                Object parent = presenter.getParent(child);
+                Object parent = listener.getParent(child);
                 if (isAllChildrenSelected(parent)) {
                     messageTable.select(parent);
                     prevSelected.add(parent);
@@ -208,7 +220,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
                 }
             }
 
-            messageTable.addListener(this);
+            messageTable.addValueChangeListener(this);
         }
 
         private boolean isAllChildrenSelected(Object parent) {
@@ -216,7 +228,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
                 return false;
             }
 
-            Collection<?> siblings = presenter.getGroup(parent);
+            Collection<?> siblings = listener.getGroup(parent);
             boolean allSelected = true;
 
             if (siblings != null) {
@@ -234,7 +246,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
 
         private void selectChildren(Set<Object> parents, boolean check) {
             for (Object parent : parents) {
-                Collection<?> group = presenter.getGroup(parent);
+                Collection<?> group = listener.getGroup(parent);
                 if (group != null) {
                     for (Object child : group) {
                         if (check) {
@@ -255,7 +267,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         @Override
         public void valueChange(ValueChangeEvent event) {
             boolean checked = event.getProperty().getValue().equals(Boolean.TRUE);
-            presenter.setGrouping(checked);
+            listener.setGrouping(checked);
             grouping = checked;
 
             if (checked) {
