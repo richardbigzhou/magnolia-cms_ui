@@ -42,9 +42,7 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.imageprovider.DefaultImageProvider;
 import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
-import info.magnolia.ui.imageprovider.ImageProvider;
 
 import java.io.ByteArrayInputStream;
 
