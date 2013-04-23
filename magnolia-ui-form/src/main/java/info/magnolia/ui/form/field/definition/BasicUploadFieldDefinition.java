@@ -44,6 +44,11 @@ public class BasicUploadFieldDefinition extends ConfiguredFieldDefinition {
     private long maxUploadSize = Long.MAX_VALUE;
     // Define allowed uploadMimeType
     private String allowedMimeTypePattern = ".*";
+    // Define if the File Name can be edited
+    private boolean editFileName = false;
+    // Define if the File Format can be edited
+    private boolean editFileFormat = false;
+
     // Define the Captions
     private String selectNewCaption = "field.upload.basic.select.new";
     private String selectAnotherCaption = "field.upload.basic.select.another";
@@ -194,6 +199,22 @@ public class BasicUploadFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setDeleteCaption(String deleteCaption) {
         this.deleteCaption = deleteCaption;
+    }
+
+    public boolean isEditFileName() {
+        return editFileName;
+    }
+
+    public void setEditFileName(boolean editFileName) {
+        this.editFileName = editFileName;
+    }
+
+    public boolean isEditFileFormat() {
+        return editFileFormat;
+    }
+
+    public void setEditFileFormat(boolean editFileFormat) {
+        this.editFileFormat = editFileFormat;
     }
 
 }
