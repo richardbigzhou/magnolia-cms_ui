@@ -180,6 +180,14 @@
       <implementation>info.magnolia.ui.admincentral.shellapp.favorites.FavoritesViewImpl</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.admincentral.shellapp.favorites.FavoritesPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.favorites.FavoritesPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.favorites.FavoritesManager</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.favorites.FavoritesManagerImpl</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.AdmincentralPresenter</type>
       <implementation>info.magnolia.ui.admincentral.AdmincentralPresenter</implementation>
     </component>
@@ -341,6 +349,13 @@
         <workspace>messages</workspace>
       </workspaces>
       <nodeTypeFile>/mgnl-nodetypes/magnolia-message-nodetypes.xml</nodeTypeFile>
+    </repository>
+    <repository>
+      <name>magnolia</name>
+      <workspaces>
+        <workspace>profiles</workspace>
+      </workspaces>
+      <nodeTypeFile>/mgnl-nodetypes/magnolia-favorite-nodetypes.xml</nodeTypeFile>
     </repository>
   </repositories>
 </module>
