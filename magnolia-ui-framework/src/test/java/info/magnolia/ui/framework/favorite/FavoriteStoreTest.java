@@ -40,7 +40,6 @@ import info.magnolia.cms.security.User;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.framework.favorite.FavoriteStore;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
