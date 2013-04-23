@@ -94,10 +94,13 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
      * Get Vaadin Property from a Jcr Property.
      * If the Property was already modified, get this Property from the local changedProperties map - else
      * delegate to super implementation.
+     *
+     * @param propertyId id of the property to be retrieved
+     * @return the Property with the provided propertyId
      */
     @Override
-    public Property getItemProperty(Object id) {
-        return getChangedProperties().containsKey(id) ? getChangedProperties().get(id) : super.getItemProperty(id);
+    public Property getItemProperty(Object propertyId) {
+        return getChangedProperties().containsKey(propertyId) ? getChangedProperties().get(propertyId) : super.getItemProperty(propertyId);
     }
 
     @Override
@@ -105,17 +108,24 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
         return Collections.unmodifiableCollection(getChangedProperties().keySet());
     }
 
+    /**
+     * Convenience - add the provided property using the contained propertyName as propertId.
+     */
+    public boolean addItemProperty(DefaultProperty property) throws UnsupportedOperationException {
+        return addItemProperty(property.getPropertyName(), property);
+    }
+
     @Override
-    public boolean addItemProperty(Object id, Property property) throws UnsupportedOperationException {
-        log.debug("Adding new Property Item named [{}] with value [{}]", id, property.getValue());
+    public boolean addItemProperty(Object propertyId, Property property) throws UnsupportedOperationException {
+        log.debug("Adding new Property Item named [{}] with value [{}]", propertyId, property.getValue());
 
         // add PropertyChange Listener
         if (!((DefaultProperty) property).getListeners(ValueChangeEvent.class).contains(this)) {
-            ((DefaultProperty) property).addListener(this);
+            ((DefaultProperty) property).addValueChangeListener(this);
         }
 
         // Store Property.
-        getChangedProperties().put((String) id, property);
+        getChangedProperties().put((String) propertyId, property);
 
         return true;
     }

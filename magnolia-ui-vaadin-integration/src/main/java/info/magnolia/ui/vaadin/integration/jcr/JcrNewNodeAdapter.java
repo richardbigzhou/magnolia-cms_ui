@@ -63,9 +63,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
      * @param nodeType Type node to create.
      */
     public JcrNewNodeAdapter(Node parentNode, String nodeType) {
-        super(parentNode);
-        setPrimaryNodeTypeName(nodeType);
-        setNodeName(null);
+        this(parentNode, nodeType, null);
     }
 
     /**
@@ -83,11 +81,11 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
      * Create pure Vaadin Property fully decoupled for Jcr.
      */
     @Override
-    public Property getItemProperty(Object id) {
+    public Property getItemProperty(Object propertyId) {
         DefaultProperty property = null;
 
-        if (getChangedProperties().containsKey(id)) {
-            property = (DefaultProperty) getChangedProperties().get(id);
+        if (getChangedProperties().containsKey(propertyId)) {
+            property = (DefaultProperty) getChangedProperties().get(propertyId);
         }
 
         return property;
