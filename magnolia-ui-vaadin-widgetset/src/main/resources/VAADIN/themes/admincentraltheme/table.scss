@@ -36,8 +36,6 @@
 
 .v-magnolia-table .v-table-cell-wrapper {
 	position: relative;
-	margin-top: 2px;
-	margin-bottom: -2px;
 }
 
 .v-magnolia-table .v-table-resizer {
@@ -96,7 +94,7 @@
 
 .v-magnolia-table .v-select-all {
 	position:absolute;
-	margin-top:-20px;
+	margin-top:-22px;
 	left:10px;
 }
 .tablet .v-magnolia-table .v-select-all {margin-top:-23px;}
@@ -110,12 +108,10 @@
 	outline:none;
 }
 
-/*.v-table-focus .v-table-cell-wrapper {margin:0;}*/
+.v-table-focus .v-table-cell-wrapper {margin:0;}
 .v-table-focus .v-table-cell-content {border-top:none;}
 
 .v-magnolia-table .v-selection-cb {
-    position: relative;
-    top: -2px;
     margin-left:5px;
     margin-right: 10px;
 }
