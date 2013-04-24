@@ -1,12 +1,17 @@
 @charset "UTF-8";
 
 @import "browser.scss";
+@import "detail.scss";
 @import "choosedialog.scss";
 
 @mixin ui-contentapp {
 
   .v-horizontallayout-browser {
     @include browser;
+  }
+
+  .v-horizontallayout-detail {
+    @include detail;
   }
 
   .dialog-panel-choose-dialog {
