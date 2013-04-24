@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -48,9 +48,14 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.dialog.Modal;
-import info.magnolia.ui.vaadin.view.ModalCloser;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.AlertCallback;
+import info.magnolia.ui.model.overlay.ConfirmationCallback;
+import info.magnolia.ui.model.overlay.MessageStyleType;
+import info.magnolia.ui.model.overlay.NotificationCallback;
+import info.magnolia.ui.model.overlay.OverlayCloser;
+import info.magnolia.ui.model.overlay.OverlayLayer;
+import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.vaadin.overlay.OverlayPresenter;
 
 import java.util.Collection;
 import java.util.List;
@@ -96,14 +101,27 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
     private SubAppContext currentSubAppContext;
 
+    private OverlayLayer overlayPresenter;
+
     @Inject
-    public AppInstanceControllerImpl(ModuleRegistry moduleRegistry, AppController appController, LocationController locationController, Shell shell, MessagesManager messagesManager, AppDescriptor appDescriptor) {
+    public AppInstanceControllerImpl(ModuleRegistry moduleRegistry, AppController appController, LocationController locationController, Shell shell,
+            MessagesManager messagesManager, AppDescriptor appDescriptor) {
         this.moduleRegistry = moduleRegistry;
         this.appController = appController;
         this.locationController = locationController;
         this.shell = shell;
         this.messagesManager = messagesManager;
         this.appDescriptor = appDescriptor;
+
+        overlayPresenter = new OverlayPresenter() {
+
+            @Override
+            public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
+                View overlayParent = getView();
+                return AppInstanceControllerImpl.this.shell.openOverlayOnView(view, overlayParent, OverlayLayer.ModalityDomain.APP, modalityLevel);
+            }
+
+        };
     }
 
     @Override
@@ -152,11 +170,9 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         return app.getView();
     }
 
-    @Override
-    public ModalCloser openModal(View view) {
-        View modalityParent = getView();
-        return shell.openModalOnView(view, modalityParent, Modal.ModalityLevel.APP);
-    }
+
+
+
 
     /**
      * Called when the app is launched from the app launcher OR a location change event triggers
@@ -251,10 +267,8 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         // launch running subapp
         SubAppContext subAppContext = getSupportingSubAppContext(location);
         if (subAppContext != null) {
-            if (!location.equals(subAppContext.getLocation())) {
-                subAppContext.setLocation(location);
-                subAppContext.getSubApp().locationChanged(location);
-            }
+            subAppContext.setLocation(location);
+            subAppContext.getSubApp().locationChanged(location);
             // update the caption
             getView().updateCaption(subAppContext.getInstanceId(), subAppContext.getSubApp().getCaption());
 
@@ -424,4 +438,50 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
         return subAppDetails;
     }
+
+    @Override
+    public OverlayCloser openOverlay(View view) {
+        return overlayPresenter.openOverlay(view);
+    }
+
+    @Override
+    public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
+        return overlayPresenter.openOverlay(view, modalityLevel);
+    }
+
+    @Override
+    public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
+        overlayPresenter.openAlert(type, viewToShow, confirmButtonText, cb);
+    }
+
+    @Override
+    public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
+        overlayPresenter.openAlert(type, title, body, confirmButtonText, cb);
+    }
+
+    @Override
+    public void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        overlayPresenter.openConfirmation(type, viewToShow, confirmButtonText, cancelButtonText, cancelIsDefault, cb);
+    }
+
+    @Override
+    public void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        overlayPresenter.openConfirmation(type, title, body, confirmButtonText, cancelButtonText, cancelIsDefault, cb);
+    }
+
+    @Override
+    public void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow) {
+        overlayPresenter.openNotification(type, doesTimeout, viewToShow);
+    }
+
+    @Override
+    public void openNotification(MessageStyleType type, boolean doesTimeout, String title) {
+        overlayPresenter.openNotification(type, doesTimeout, title);
+    }
+
+    @Override
+    public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
+        overlayPresenter.openNotification(type, doesTimeout, title, linkText, cb);
+    }
+
 }

@@ -2,6 +2,7 @@
 @import "app-preloader.scss";
 @import "applauncher.scss";
 @import "dialog.scss";
+@import "overlay.scss";
 @import "favorites.scss";
 @import "form.scss";
 @import "fonts.scss";
@@ -23,6 +24,7 @@
   @include app-preloader;
   @include applauncher;
   @include dialog;
+  @include overlay;
   @include favorites;
   @include form;
   @include lightbox;
@@ -36,7 +38,7 @@
   @include thumbnail-layout;
   @include workbench;
   @include uploadfield;
- 
+
   body{
       -webkit-user-select: none; /* Disable content selection on mobile safari */
       -webkit-tap-highlight-color: rgba(0,0,0,0); /* Disable grey box when you click on something */

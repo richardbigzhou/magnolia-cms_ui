@@ -193,6 +193,10 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         getState().actions.put(actionName, actionLabel);
     }
 
+    public void setDefaultAction(String actionName) {
+        getState().defaultActionName = actionName;
+    }
+
     @Deprecated
     public void setActionLabel(String actionName, String actionLabel) {
         addAction(actionName, actionLabel);

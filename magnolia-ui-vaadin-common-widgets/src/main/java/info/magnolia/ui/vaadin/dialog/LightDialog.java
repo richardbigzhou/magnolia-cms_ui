@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,12 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.vaadin.dialog;
 
 /**
- * The type of entries in the activity stream.
+ * A thin component to create a dialog with a light style.
+ * LightDialogs are used for small simple dialogs like Confirmations and Alerts.
+ * Currently LightDialog client side implementation just sets the css style name.
  */
-public enum ActivityStreamEntryType {
+public class LightDialog extends BaseDialog {
 
-    ACCEPTED, REJECTED, URGENT
 }

@@ -34,10 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.icon.widget;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
@@ -60,23 +57,27 @@ public class IconWidget extends Widget {
     public IconWidget() {
         setElement(root);
         setStylePrimaryName(CLASSNAME);
+        initDefaultStyles();
     }
 
     public void setInnerIcon(boolean innerIcon) {
         this.innerIcon = innerIcon;
     }
 
-    public void updateBaseStyles() {
-        Style style = root.getStyle();
+    private void initDefaultStyles() {
         if (!innerIcon) {
+            Style style = root.getStyle();
             style.setFontSize(SIZE_DEFAULT, Unit.PX);
             style.setProperty("lineHeight", "1");
-            style.setVerticalAlign(VerticalAlign.MIDDLE);
-        } else {
-            style.setMarginLeft(-1, Unit.EM);
-            style.setPosition(Position.ABSOLUTE);
         }
-        style.setDisplay(Display.INLINE_BLOCK);
+    }
+
+    public void updateInnerStyles() {
+        Style style = root.getStyle();
+        style.setFontSize(1, Unit.EM);
+        if (innerIcon) {
+            style.setMarginLeft(-1, Unit.EM);
+        }
     }
 
     public void setIconName(String iconName) {

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,12 +34,12 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.vaadin.view.ModalLayer;
+import info.magnolia.ui.model.overlay.OverlayLayer;
 
 /**
  * Provides functionality used by a sub app to interact with the Magnolia shell.
  */
-public interface SubAppContext extends ModalLayer {
+public interface SubAppContext extends OverlayLayer {
 
     String getSubAppId();
 

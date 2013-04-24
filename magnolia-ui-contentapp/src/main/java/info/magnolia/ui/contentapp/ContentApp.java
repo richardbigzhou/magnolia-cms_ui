@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -40,8 +40,8 @@ import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.AppView;
 import info.magnolia.ui.framework.app.BaseApp;
 import info.magnolia.ui.framework.app.ItemChosenListener;
-import info.magnolia.ui.vaadin.view.ModalLayer;
-import info.magnolia.ui.vaadin.view.ModalCloser;
+import info.magnolia.ui.model.overlay.OverlayCloser;
+import info.magnolia.ui.model.overlay.OverlayLayer;
 
 import javax.inject.Inject;
 
@@ -59,17 +59,17 @@ public class ContentApp extends BaseApp {
     }
 
     @Override
-    public void openChooseDialog(String path, ModalLayer modalLayer, final ItemChosenListener listener) {
+    public void openChooseDialog(String path, OverlayLayer overlayLayer, final ItemChosenListener listener) {
 
         final ChooseDialogPresenter chooseDialogPresenter = chooseDialogPresenterFactory.createChooseDialogPresenter(path, listener);
 
-        final ModalCloser modalCloser = modalLayer.openModal(chooseDialogPresenter.start());
+        final OverlayCloser overlayCloser = overlayLayer.openOverlay(chooseDialogPresenter.start());
 
         chooseDialogPresenter.setListener(new ChooseDialogPresenter.Listener() {
 
             @Override
             public void onClose() {
-                modalCloser.close();
+                overlayCloser.close();
             }
         });
     }

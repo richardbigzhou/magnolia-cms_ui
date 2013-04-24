@@ -133,6 +133,11 @@ public class MessagesManagerImpl implements MessagesManager {
     }
 
     @Override
+    public Message getMessageById(String userName, String messageId) {
+        return messageStore.findMessageById(userName, messageId);
+    }
+
+    @Override
     public void registerMessagesListener(String userName, MessageListener listener) {
         synchronized (listeners) {
             listeners.put(userName, listener);

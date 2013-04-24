@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
-
-import info.magnolia.ui.framework.message.MessageType;
+package info.magnolia.ui.vaadin.icon;
 
 /**
- * An entry in the activity stream for a user.
+ * The NullIcon.
+ * For when its convenient to have an icon, but which icon is not defined.
  */
-public class ActivityStreamEntry {
+public class NullIcon extends CompositeIcon {
 
-    private String id;
-    private long timestamp;
-    private MessageType type;
-    private String label;
-    private String message;
+    public NullIcon() {
+        super();
+    }
 }

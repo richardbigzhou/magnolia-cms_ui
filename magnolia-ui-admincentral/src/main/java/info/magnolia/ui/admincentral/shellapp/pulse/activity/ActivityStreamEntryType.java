@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.view;
+package info.magnolia.ui.admincentral.shellapp.pulse.activity;
 
 /**
- * Callback for closing a dialog.
+ * The type of entries in the activity stream.
  */
-public interface ModalCloser {
+public enum ActivityStreamEntryType {
 
-    void close();
-
+    ACCEPTED, REJECTED, URGENT
 }

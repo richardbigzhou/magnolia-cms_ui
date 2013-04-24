@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2011-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,17 +35,16 @@ package info.magnolia.ui.framework.shell;
 
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.vaadin.dialog.Modal;
-import info.magnolia.ui.vaadin.view.ModalCloser;
-import info.magnolia.ui.vaadin.view.ModalLayer;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.OverlayCloser;
+import info.magnolia.ui.model.overlay.OverlayLayer;
+import info.magnolia.ui.model.overlay.View;
 
 import java.util.List;
 
 /**
  * Decouples the presenters and the Vaadin application. Provides methods to show messages and configuration dialogs.
  */
-public interface Shell extends ModalLayer {
+public interface Shell extends OverlayLayer {
 
     void askForConfirmation(String message, ConfirmationHandler listener);
 
@@ -70,13 +69,13 @@ public interface Shell extends ModalLayer {
     void showWarning(Message message);
 
     /**
-     * Open a Modal on top of a specific View.
+     * Open an Overlay on top of a specific View.
      * 
      * @param view
-     *            View to be displayed modally.
+     * View to be displayed over the view.
      * @param parent
-     *            The View to open the Modal on top of.
+     * The View to open the Overlay on top of.
      */
-    ModalCloser openModalOnView(View view, View parent, Modal.ModalityLevel modalityLevel);
+    OverlayCloser openOverlayOnView(View view, View parent, ModalityDomain modalityLocation, ModalityLevel modalityLevel);
 
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,15 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
-import com.vaadin.ui.HasComponents;
+import info.magnolia.ui.vaadin.gwt.client.dialog.connector.OverlayConnector;
+
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * Messages Pulse tab UI.
+ * OverlayWidget.
  */
-public interface PulseMessagesView extends PulseSubView {
+public class OverlayWidget extends SimplePanel {
 
-    @Override
-    public HasComponents asVaadinComponent();
+    private final Element modalityCurtain = DOM.createDiv();
+
+    public OverlayWidget(OverlayConnector connector) {
+        super();
+
+        setStyleName("overlay");
+
+        modalityCurtain.setClassName("modal-curtain");
+        this.getElement().appendChild(modalityCurtain);
+    }
+
 }

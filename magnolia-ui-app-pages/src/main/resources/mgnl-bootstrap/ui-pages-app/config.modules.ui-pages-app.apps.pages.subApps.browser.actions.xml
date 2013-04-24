@@ -235,6 +235,9 @@
     <sv:property sv:name="class" sv:type="String">
       <sv:value>info.magnolia.ui.admincentral.activation.action.ActivationActionDefinition</sv:value>
     </sv:property>
+    <sv:property sv:name="catalog" sv:type="String">
+      <sv:value>website</sv:value>
+    </sv:property>
     <sv:property sv:name="command" sv:type="String">
       <sv:value>activate</sv:value>
     </sv:property>
@@ -269,6 +272,9 @@
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
       <sv:value>info.magnolia.ui.admincentral.activation.action.ActivationActionDefinition</sv:value>
+    </sv:property>
+    <sv:property sv:name="catalog" sv:type="String">
+      <sv:value>website</sv:value>
     </sv:property>
     <sv:property sv:name="command" sv:type="String">
       <sv:value>activate</sv:value>

@@ -33,9 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.vaadin.view.View;
-
-import java.util.List;
+import info.magnolia.ui.model.overlay.View;
 
 
 /**
@@ -43,15 +41,6 @@ import java.util.List;
  */
 public interface PulseView extends View {
 
-    /**
-     * PulseView presenter.
-     */
-    public interface Presenter {
-        void onPulseTabChanged(final String tabId);
-    }
-
-    String setCurrentPulseTab(final String tabId, List<String> pathParams);
-
-    void setPresenter(final Presenter presenter);
+    void setPulseView(View view);
 
 }

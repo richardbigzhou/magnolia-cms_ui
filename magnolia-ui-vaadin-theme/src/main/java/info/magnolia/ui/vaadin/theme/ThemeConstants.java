@@ -31,14 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
-
-import com.vaadin.shared.AbstractComponentState;
-import com.vaadin.shared.Connector;
+package info.magnolia.ui.vaadin.theme;
 
 /**
- * BaseDialogState.
+ * UI constants for the magnolia theme.
  */
-public class ModalState extends AbstractComponentState {
-    public Connector modalityParent = null;
+public class ThemeConstants {
+
+    public static final String MSG_WHITE_STYLENAME = "msgwhite";
+    public static final String MSG_INFO_STYLENAME = "msginfo";
+    public static final String MSG_WARNING_STYLENAME = "msgwarn";
+    public static final String MSG_ERROR_STYLENAME = "msgerror";
+
 }
