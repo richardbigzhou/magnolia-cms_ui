@@ -63,9 +63,8 @@ public class FavoritesPresenter implements FavoritesView.Listener {
     @Override
     public void removeFavorite(String id) {
         favoritesManager.removeFavorite(id);
-        // Give view the updated favorites collection, w/o that the newly removed one.
+        // Give view the updated favorites collection, w/o the one we just removed.
         view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""));
-
     }
 
     @Override
@@ -85,5 +84,11 @@ public class FavoritesPresenter implements FavoritesView.Listener {
      */
     public JcrNewNodeAdapter createNewFavoriteSuggestion(String location, String title, String icon) {
         return favoritesManager.createFavoriteSuggestion(location, title, icon);
+    }
+
+    @Override
+    public void editFavorite(String id, String newTitle) {
+        favoritesManager.editFavorite(id, newTitle);
+        view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""));
     }
 }

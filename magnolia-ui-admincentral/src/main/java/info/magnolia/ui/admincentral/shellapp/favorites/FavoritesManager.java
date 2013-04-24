@@ -48,4 +48,6 @@ public interface FavoritesManager {
     JcrNewNodeAdapter createFavoriteSuggestion(String location, String title, String icon);
 
     void removeFavorite(String id);
+
+    void editFavorite(String id, String newTitle);
 }

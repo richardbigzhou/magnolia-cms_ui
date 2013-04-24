@@ -49,6 +49,8 @@ import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Implementation of a Manager for Favorites.
  */
@@ -79,6 +81,7 @@ public class FavoritesManagerImpl implements FavoritesManager {
             throw new RuntimeRepositoryException(e);
         }
     }
+
     @Override
     public void addFavorite(JcrNewNodeAdapter favorite) {
         try {
@@ -102,7 +105,7 @@ public class FavoritesManagerImpl implements FavoritesManager {
         JcrNewNodeAdapter newFavorite = new JcrNewNodeAdapter(bookmarkRoot, AdmincentralNodeTypes.Favorite.NAME);
         newFavorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", title));
         newFavorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", location));
-        newFavorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", icon));
+        newFavorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", StringUtils.defaultIfEmpty(icon, "icon-app")));
         return newFavorite;
     }
 
@@ -111,6 +114,28 @@ public class FavoritesManagerImpl implements FavoritesManager {
         try {
             Node bookmarkRoot = favoriteStore.getBookmarkRoot();
             bookmarkRoot.getNode(id).remove();
+            bookmarkRoot.getSession().save();
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+    }
+
+    @Override
+    public void editFavorite(String id, String title) {
+        try {
+            // we get the props we need from the node being edited, then delete it and re-create it anew. This to ensure that title and jcr node name are kept in "sync",
+            // the latter being the title with jcr invalid characters replaced with dashes.
+            Node bookmarkRoot = favoriteStore.getBookmarkRoot();
+            Node oldFavorite = bookmarkRoot.getNode(id);
+            String url = oldFavorite.getProperty(AdmincentralNodeTypes.Favorite.URL).getString();
+            String icon = oldFavorite.getProperty(AdmincentralNodeTypes.Favorite.ICON).getString();
+            oldFavorite.remove();
+
+            Node editedFavorite = bookmarkRoot.addNode(Path.getValidatedLabel(title), AdmincentralNodeTypes.Favorite.NAME);
+            editedFavorite.setProperty(AdmincentralNodeTypes.Favorite.TITLE, title);
+            editedFavorite.setProperty(AdmincentralNodeTypes.Favorite.URL, url);
+            editedFavorite.setProperty(AdmincentralNodeTypes.Favorite.ICON, icon);
+
             bookmarkRoot.getSession().save();
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
