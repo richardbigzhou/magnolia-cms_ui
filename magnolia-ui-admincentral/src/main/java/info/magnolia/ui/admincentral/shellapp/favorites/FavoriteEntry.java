@@ -169,7 +169,7 @@ public class FavoriteEntry extends CustomComponent {
     public void setEditable(boolean editable) {
         this.editable = editable;
         this.selected = !editable;
-        titleField.setReadOnly(false);
+        titleField.setReadOnly(!editable);
         String icon = editable ? "icon-tick" : "icon-edit";
         editButton.setCaption("<span class=\"" + icon + "\"></span>");
     }
