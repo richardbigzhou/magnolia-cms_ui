@@ -23,19 +23,18 @@
 	padding-bottom:48px;
 }
 
-.v-favorites-entry {
-	border-bottom: 1px solid #CCCCCC;
+.favorites-entry {
 	padding: 10px 10px 10px 3px;
 	font-size:15px;
 	line-height:18px;
 	height:40px;
 }
 
-.v-favorites-entry .v-label {
+.favorites-entry .v-label {
 	display:inline-block;
 }
 
-.v-favorites-entry .v-label-icon {
+.favorites-entry .v-label-icon {
 	width:24px;
 	height:24px;
 	color:#679600;
@@ -45,6 +44,5 @@
 }
 .favorites-form {
     background-color: #ccc; 
-}
-
+   }
 }

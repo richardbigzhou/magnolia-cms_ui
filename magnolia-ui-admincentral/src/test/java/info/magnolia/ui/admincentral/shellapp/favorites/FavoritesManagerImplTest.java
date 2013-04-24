@@ -111,4 +111,19 @@ public class FavoritesManagerImplTest {
         assertEquals(location, suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue());
         assertEquals(icon, suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue());
     }
+
+    @Test
+    public void testCreateFavoriteSuggestionWithDefaultIcon() throws Exception {
+        // GIVEN
+        final String location = "/somewhere/over/the/rainbow";
+        final String title = "Mr. LoverLover";
+
+        // WHEN
+        JcrNewNodeAdapter suggestion = favoritesManager.createFavoriteSuggestion(location, title, null);
+
+        // THEN
+        assertEquals(title, suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue());
+        assertEquals(location, suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue());
+        assertEquals("icon-app", suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue());
+    }
 }

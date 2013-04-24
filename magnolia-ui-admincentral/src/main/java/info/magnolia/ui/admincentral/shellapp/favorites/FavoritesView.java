@@ -53,6 +53,8 @@ public interface FavoritesView extends View {
     interface Listener {
         void addFavorite(JcrNewNodeAdapter newFavorite);
 
+        void editFavorite(String id, String newTitle);
+
         void removeFavorite(String id);
 
         void goToLocation(String location);
