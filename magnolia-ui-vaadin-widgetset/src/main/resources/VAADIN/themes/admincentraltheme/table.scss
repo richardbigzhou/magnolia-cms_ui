@@ -21,9 +21,9 @@
 }
 
 .v-magnolia-table .v-table-header-wrap {
-	background:none;
+	background: #f2f2f2;
 	border: none;
-	border-bottom:1px solid #aaa;
+	border-bottom:1px solid #ccc;
 }
 
 .v-magnolia-table .v-table-body-wrapper {
@@ -36,12 +36,14 @@
 
 .v-magnolia-table .v-table-cell-wrapper {
 	position: relative;
+	margin-top: 1px;
+	margin-bottom: -1px;
 }
 
 .v-magnolia-table .v-table-resizer {
     width:1px;
     height:20px;
-    margin-top:13px;
+    margin-top:10px;
     padding-left:0;
     border-right:1px dotted #ccc;
     background:none;
@@ -51,9 +53,10 @@
 .v-magnolia-table .v-table-caption-container {
 	color:#333333;
 	font-size:12px;
-	font-weight:bold;
+	font-color: #333;
+	font-weight:normal;
 	font-family:Verdana,sans-serif;
-	padding:15px 5px 4px;
+	padding:10px 5px 4px;
 	margin:0;
 }
 
@@ -84,13 +87,17 @@
 }
 
 .v-magnolia-table .v-table-header td:first-child span {
-	padding-left: 30px;
+	padding-left: 29px;
+}
+
+.v-treetable .v-table-header td:first-child span {
+    padding-left: 50px;
 }
 
 .v-magnolia-table .v-select-all {
 	position:absolute;
-	margin-top:-20px;
-	left:6px;
+	margin-top:-22px;
+	left:10px;
 }
 .tablet .v-magnolia-table .v-select-all {margin-top:-23px;}
 
@@ -103,11 +110,14 @@
 	outline:none;
 }
 
-.v-table-focus .v-table-cell-wrapper {margin:0;}
+/*.v-table-focus .v-table-cell-wrapper {margin:0;}*/
 .v-table-focus .v-table-cell-content {border-top:none;}
 
 .v-magnolia-table .v-selection-cb {
-    margin-left:1px;
+    position: relative;
+    top: -1px;
+    margin-left:5px;
+    margin-right: 10px;
 }
 
 .v-magnolia-table .v-table-row:hover,
@@ -116,7 +126,8 @@
 .v-magnolia-table .v-selected:hover {background-color: #666666;}
 
 .v-magnolia-table .v-treetable-treespacer {
-  position: static;
+  position: relative;
+  top: -1px;
   display: inline-block;
   height: 16px;
   vertical-align: text-bottom;
@@ -124,14 +135,15 @@
   color: #999999;
   font-size: 20px;
   text-align: right;
+  width: 20px;
 }
 .tablet .v-magnolia-table .v-treetable-treespacer {
   font-size: 28px;
 }
 
 .v-table-icon-element {
-    margin-left:2px;
-    margin-right:7px;
+    margin-left:0px;
+    margin-right:4px;
     font-size:19px;
     vertical-align:middle;
 }
