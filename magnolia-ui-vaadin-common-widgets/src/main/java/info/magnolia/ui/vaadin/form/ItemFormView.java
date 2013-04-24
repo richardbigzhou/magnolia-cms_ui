@@ -33,13 +33,18 @@
  */
 package info.magnolia.ui.vaadin.form;
 
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DescriptionVisibilityEvent;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
+import info.magnolia.ui.model.i18n.I18NAuthoringSupport;
 
 import java.util.Collection;
+import java.util.Locale;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Field;
 
 /**
@@ -47,22 +52,21 @@ import com.vaadin.ui.Field;
  */
 public class ItemFormView implements FormView {
 
+    private AbstractSelect languageSelector;
+
     private BaseDialog dialog;
 
     private Form form;
 
     public ItemFormView() {
-
         form = new Form();
-
         dialog = new DialogContainingForm();
         dialog.setContent(form);
-
         dialog.addDescriptionVisibilityHandler(new BaseDialog.DescriptionVisibilityEvent.Handler() {
 
             @Override
             public void onDescriptionVisibilityChanged(DescriptionVisibilityEvent event) {
-                form.setDescriptionVisbility(event.isVisible());
+                form.setDescriptionVisibility(event.isVisible());
             }
         });
     }
@@ -73,14 +77,14 @@ public class ItemFormView implements FormView {
     }
 
     @Override
-    public void setItemDataSource(Item newDataSource) {
-        form.setItemDataSource(newDataSource);
-    }
-
-    @Override
     public Item getItemDataSource() {
 
         return form.getItemDataSource();
+    }
+
+    @Override
+    public void setItemDataSource(Item newDataSource) {
+        form.setItemDataSource(newDataSource);
     }
 
     @Override
@@ -90,8 +94,8 @@ public class ItemFormView implements FormView {
     }
 
     @Override
-    public void setDescriptionVisbility(boolean isVisible) {
-        form.setDescriptionVisbility(isVisible);
+    public void setDescriptionVisibility(boolean isVisible) {
+        form.setDescriptionVisibility(isVisible);
 
     }
 
@@ -138,4 +142,23 @@ public class ItemFormView implements FormView {
         return form.getFields();
     }
 
+    @Override
+    public void setCurrentLocale(Locale locale) {
+        this.languageSelector.setValue(locale);
+    }
+
+    @Override
+    public void setLocaleSelector(AbstractSelect languageChooser) {
+        this.languageSelector = languageChooser;
+        languageSelector.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                I18NAuthoringSupport i18NAuthoringSupport = Components.getComponent(I18NAuthoringSupport.class);
+                if (i18NAuthoringSupport != null) {
+                    i18NAuthoringSupport.i18nize(form, (Locale) event.getProperty().getValue());
+                }
+            }
+        });
+        dialog.setFooterToolbar(languageSelector);
+    }
 }

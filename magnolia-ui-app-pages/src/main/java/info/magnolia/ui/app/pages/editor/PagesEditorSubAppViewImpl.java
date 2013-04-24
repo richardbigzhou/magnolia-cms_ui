@@ -33,9 +33,12 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
+import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
+
+import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -56,7 +59,11 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
 
     private ActionbarView actionbar;
 
-    public PagesEditorSubAppViewImpl() {
+    private PageBarView pageBarView;
+
+    @Inject
+    public PagesEditorSubAppViewImpl(PageBarView pageBarView) {
+        this.pageBarView = pageBarView;
 
         root.setSizeFull();
         root.setStyleName("workbench");
@@ -73,12 +80,20 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
     @Override
     public void setListener(Listener listener) {
         this.listener = listener;
+        this.pageBarView.setListener(listener);
+    }
+
+    @Override
+    public void setPageBarView(PageBarView pageBarView) {
+        this.pageBarView = pageBarView;
+        container.addComponentAsFirst(pageBarView.asVaadinComponent());
     }
 
     @Override
     public void setPageEditorView(PageEditorView pageEditor) {
-        container.addComponent(pageEditor.asVaadinComponent());
         this.pageEditor = pageEditor;
+        container.addComponent(pageEditor.asVaadinComponent(), 1);
+        container.setExpandRatio(pageEditor.asVaadinComponent(), 1f);
     }
 
     @Override

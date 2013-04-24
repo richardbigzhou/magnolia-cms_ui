@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -40,11 +40,11 @@ import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.model.overlay.OverlayLayer;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-import info.magnolia.ui.vaadin.view.ModalLayer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -149,7 +149,7 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public DialogView start(Item item, DialogDefinition dialogDefinition, ModalLayer modalLayer, EditorCallback callback) {
+        public DialogView start(Item item, DialogDefinition dialogDefinition, OverlayLayer overlayLayer, EditorCallback callback) {
             return null;
         }
 
@@ -158,7 +158,7 @@ public class CallbackDialogActionTest {
         }
 
         @Override
-        public DialogView start(Item item, String dialogName, ModalLayer modalLayer, EditorCallback callback) {
+        public DialogView start(Item item, String dialogName, OverlayLayer overlayLayer, EditorCallback callback) {
             return null;
         }
 

@@ -38,7 +38,6 @@ import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.PageBar;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
@@ -60,13 +59,6 @@ public class PageProcessor extends AbstractMgnlElementProcessor {
 
     @Override
     public void attach() {
-
-        // map null to pageelement??
-        Element body = getMgnlElement().getStartComment().getOwnerDocument().getBody();
-
-        body.insertFirst(getEditBar().getElement());
-
-        getEditBar().onAttach();
     }
 
 }

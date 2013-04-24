@@ -57,8 +57,8 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
             Action action = createAction(actionName, args);
             action.execute();
         }
-        catch (ConfigurationException e) {
-            throw new ActionExecutionException(e);
+        catch (Throwable t) {
+            throw new ActionExecutionException(t);
         }
     }
 

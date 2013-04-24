@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,8 +33,10 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell;
 
+import info.magnolia.ui.model.overlay.OverlayCloser;
+import info.magnolia.ui.model.overlay.OverlayLayer;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.common.ComponentIterator;
-import info.magnolia.ui.vaadin.dialog.Modal;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellState;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget.MessageType;
@@ -45,8 +47,7 @@ import info.magnolia.ui.vaadin.magnoliashell.rpc.MagnoliaShellRpcDelegate;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.AppsViewport;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellAppsViewport;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
-import info.magnolia.ui.vaadin.view.ModalCloser;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.vaadin.overlay.Overlay;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -57,7 +58,6 @@ import com.vaadin.shared.Connector;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HasComponents;
-import com.vaadin.ui.UI;
 
 /**
  * Server side implementation of the MagnoliaShell container.
@@ -138,27 +138,27 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     }
 
     public void showInfo(String id, String subject, String message) {
-        synchronized (UI.getCurrent()) {
-            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.INFO.name(), subject, message, id);
-        }
+        getSession().lock();
+        getRpcProxy(ShellClientRpc.class).showMessage(MessageType.INFO.name(), subject, message, id);
+        getSession().unlock();
     }
 
     public void showError(String id, String subject, String message) {
-        synchronized (UI.getCurrent()) {
-            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.ERROR.name(), subject, message, id);
-        }
+        getSession().lock();
+        getRpcProxy(ShellClientRpc.class).showMessage(MessageType.ERROR.name(), subject, message, id);
+        getSession().unlock();
     }
 
     public void showWarning(String id, String subject, String message) {
-        synchronized (UI.getCurrent()) {
-            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.WARNING.name(), subject, message, id);
-        }
+        getSession().lock();
+        getRpcProxy(ShellClientRpc.class).showMessage(MessageType.WARNING.name(), subject, message, id);
+        getSession().unlock();
     }
 
     public void hideAllMessages() {
-        synchronized (UI.getCurrent()) {
-            getRpcProxy(ShellClientRpc.class).hideAllMessages();
-        }
+        getSession().lock();
+        getRpcProxy(ShellClientRpc.class).hideAllMessages();
+        getSession().unlock();
     }
 
     public void updateShellAppIndication(ShellAppType type, int incrementOrDecrement) {
@@ -169,48 +169,44 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         }
 
         getState().indications.put(type, incrementOrDecrement + value);
-        synchronized (UI.getCurrent()) {
-        }
     }
 
     public void setIndication(ShellAppType type, int indication) {
         getState().indications.put(type, indication);
-        synchronized (UI.getCurrent()) {
-        }
     }
 
 
     /**
-     * Open a Modal on top of a specific View.
-     *
+     * Open an Overlay on top of a specific View.
+     * 
      * @param child
-     *            View to be displayed modally.
+     * View to be displayed over another view.
      * @param parent
-     *            The View to open the Modal on top of.
+     * The View to open the Overlay on top of.
      */
-    public ModalCloser openModal(final View child, View parent, Modal.ModalityLevel modalityLevel) {
-        Modal modal = new Modal(child.asVaadinComponent(), parent.asVaadinComponent(), modalityLevel);
-        getState().modals.add(modal);
+    public OverlayCloser openOverlay(final View child, View parent, OverlayLayer.ModalityDomain modalityLocation, OverlayLayer.ModalityLevel modalityLevel) {
+        Overlay overlay = new Overlay(child.asVaadinComponent(), parent.asVaadinComponent(), modalityLocation, modalityLevel);
+        getState().overlays.add(overlay);
 
-        // modal has Vaadin parent of MagnoliaShell
-        modal.setParent(this);
+        // overlay has Vaadin parent of MagnoliaShell
+        overlay.setParent(this);
 
-        return new ModalCloser() {
+        return new OverlayCloser() {
             @Override
             public void close() {
-                MagnoliaShell.this.closeModal(child.asVaadinComponent());
+                MagnoliaShell.this.closeOverlay(child.asVaadinComponent());
             }
         };
     }
 
     /**
-     * Close an open modal, such as a dialog.
-     *
-     * @param modalComponent The component of the view which was opened modally.
+     * Close an open overlay, such as a dialog.
+     * 
+     * @param overlayComponent The component of the view which was opened in an overlay.
      */
-    public void closeModal(Component modalComponent) {
-        Modal modal = (Modal) modalComponent.getParent();
-        getState().modals.remove(modal);
+    public void closeOverlay(Component overlayComponent) {
+        Overlay overlay = (Overlay) overlayComponent.getParent();
+        getState().overlays.remove(overlay);
     }
 
     public void setActiveViewport(ShellViewport viewport) {
@@ -266,13 +262,13 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     }
 
     /**
-     * Must also include any modals that have been attached to the shell.
+     * Must also include any overlays that have been attached to the shell.
      */
     @Override
     public Iterator<Component> iterator() {
 
         Iterator<Connector> viewportIterator = getState(false).viewports.values().iterator();
-        Iterator<Connector> modalIterator = getState(false).modals.iterator();
+        Iterator<Connector> overlayIterator = getState(false).overlays.iterator();
 
         ArrayList<Connector> connectors = new ArrayList<Connector>();
 
@@ -281,9 +277,9 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
             connectors.add(viewportIterator.next());
         }
 
-        // Add modals
-        while (modalIterator.hasNext()) {
-            connectors.add(modalIterator.next());
+        // Add overlays
+        while (overlayIterator.hasNext()) {
+            connectors.add(overlayIterator.next());
         }
 
         return new ComponentIterator<Connector>(connectors.iterator());

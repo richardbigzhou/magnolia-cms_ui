@@ -46,8 +46,6 @@ import java.util.List;
 import com.vaadin.shared.Connector;
 import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * Simple lightweight tabsheet component.
@@ -95,12 +93,6 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
         } else {
             addTab("", c);
         }
-    }
-
-    public ComponentContainer addTabStub(String string) {
-        final VerticalLayout c = new VerticalLayout();
-        addTab(string, c).setHeight(null);
-        return c;
     }
 
     public MagnoliaTab addTab(final String caption, final Component c) {

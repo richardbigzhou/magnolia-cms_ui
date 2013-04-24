@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import com.vaadin.ui.Component;
@@ -41,16 +42,33 @@ import com.vaadin.ui.Label;
 /**
  * ConfirmationDialog.
  */
-public class ConfirmationDialog extends BaseDialog {
+public class ConfirmationDialog extends LightDialog {
 
-    public static final String CONFIRM_ACTION = "DIALOG_ACTION_CONFIRM";
+    public static final String CONFIRM_ACTION = "confirm";
 
-    public static final String REJECT_ACTION = "DIALOG_ACTION_REJECT";
+    public static final String CANCEL_ACTION = "cancel";
 
     private String message;
 
-    public ConfirmationDialog(final String message) {
+    public ConfirmationDialog(final String message, boolean cancelIsDefault) {
         setMessage(message);
+        init(cancelIsDefault);
+    }
+
+    public ConfirmationDialog(final View contents, boolean cancelIsDefault) {
+        message = "";
+        setContent(contents.asVaadinComponent());
+        init(cancelIsDefault);
+    }
+
+    public void init(boolean cancelIsDefault) {
+        // Add a class to the default button
+        if (cancelIsDefault) {
+            this.setDefaultAction(CANCEL_ACTION);
+        } else {
+            this.setDefaultAction(CONFIRM_ACTION);
+        }
+
         addAction(CONFIRM_ACTION, "OK", new DialogActionListener() {
 
             @Override
@@ -60,7 +78,7 @@ public class ConfirmationDialog extends BaseDialog {
 
         });
 
-        addAction(REJECT_ACTION, "Cancel", new DialogActionListener() {
+        addAction(CANCEL_ACTION, "Cancel", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
                 fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));
@@ -68,12 +86,13 @@ public class ConfirmationDialog extends BaseDialog {
         });
     }
 
+
     public void setConfirmActionLabel(final String label) {
-        setActionLabel(CONFIRM_ACTION, label);
+        addAction(CONFIRM_ACTION, label);
     }
 
     public void setRejectActionLabel(final String label) {
-        setActionLabel(REJECT_ACTION, label);
+        addAction(CANCEL_ACTION, label);
     }
 
     public void setMessage(String message) {
@@ -89,9 +108,7 @@ public class ConfirmationDialog extends BaseDialog {
 
     @Override
     public void setContent(Component content) {
-        if (content instanceof Label) {
-            super.setContent(content);
-        }
+        super.setContent(content);
     }
 
     @Override

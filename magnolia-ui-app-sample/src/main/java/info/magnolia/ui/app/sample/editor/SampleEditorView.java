@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.sample.editor;
 
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.View;
 
 /**
  * View for editor tabs in sample app.

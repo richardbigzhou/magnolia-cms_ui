@@ -71,6 +71,14 @@ public interface MessagesManager {
     List<Message> getMessagesForUser(String userName);
 
     /**
+     * Returns a message.
+     *
+     * @param userName name of the user
+     * @return list of messages kept for the user
+     */
+    Message getMessageById(String userName, String messageId);
+
+    /**
      * Send message to a specific user.
      *
      * @param userName name of the user to receive the message

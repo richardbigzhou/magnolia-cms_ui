@@ -35,6 +35,8 @@ package info.magnolia.ui.framework.app.registry;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.jcr.node2bean.Node2BeanException;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
@@ -44,8 +46,6 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.event.EventBus;
-import info.magnolia.event.SimpleEventBus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,7 +67,6 @@ public class AppDescriptorRegistryTest {
     private AppDescriptorRegistry appDescriptorRegistry;
     private EventCollectingAppRegistryEventHandler eventHandler;
 
-    @SuppressWarnings("deprecation")
     @Before
     public void setUp() throws Exception {
         EventBus eventBus = new SimpleEventBus();

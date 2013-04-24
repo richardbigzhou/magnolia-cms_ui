@@ -98,8 +98,6 @@ public class DetailPresenter implements DialogActionListener, EditorCallback, Ed
         case EDIT:
         default:
             this.formView = formBuilder.buildForm(editorDefinition.getForm(), item, null);
-            ;
-
             initActions();
             view.setItemView(formView.asVaadinComponent(), viewType);
             break;

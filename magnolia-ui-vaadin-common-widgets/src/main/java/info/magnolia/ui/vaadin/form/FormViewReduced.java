@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.form;
 
 
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.View;
 
 import java.util.Collection;
 
@@ -48,7 +48,7 @@ public interface FormViewReduced extends View, Item.Editor {
 
     void addField(Field<?> field);
 
-    void setDescriptionVisbility(boolean isVisible);
+    void setDescriptionVisibility(boolean isVisible);
 
     @Override
     public Form asVaadinComponent();
