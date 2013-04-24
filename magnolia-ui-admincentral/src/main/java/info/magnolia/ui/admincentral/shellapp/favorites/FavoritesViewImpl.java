@@ -240,7 +240,9 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
     }
 
-    // A form component that allows editing an item
+    /**
+     * A form component that allows editing an item.
+     */
     private class FavoriteForm extends CustomComponent {
 
         private TextField url = new TextField("Location");
