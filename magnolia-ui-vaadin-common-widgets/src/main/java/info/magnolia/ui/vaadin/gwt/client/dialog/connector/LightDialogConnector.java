@@ -46,6 +46,7 @@ import com.vaadin.shared.ui.Connect;
 @Connect(LightDialog.class)
 public class LightDialogConnector extends BaseDialogConnector {
 
+    @Override
     protected BaseDialogView createView() {
         return new LightDialogViewImpl();
     }

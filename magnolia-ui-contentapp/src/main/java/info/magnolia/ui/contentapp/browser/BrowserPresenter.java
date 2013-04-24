@@ -77,6 +77,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.server.Resource;
 
+
 /**
  * The browser is a core component of AdminCentral. It represents the main hub through which users can interact with
  * JCR data. It is compounded by three main sub-components:
@@ -197,7 +198,8 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
 
     /**
      * @return The configured default view Type.<br>
-     * If non define, return the first Content Definition as default.
+     *         If non define, return the first Content Definition as default.
+     * 
      */
     public ViewType getDefaultViewType() {
         return workbenchPresenter.getDefaultViewType();

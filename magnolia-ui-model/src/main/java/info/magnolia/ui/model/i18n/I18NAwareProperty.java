@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.favorites;
+package info.magnolia.ui.model.i18n;
+
+import java.util.Locale;
+
+import com.vaadin.data.Property;
 
 /**
- * Represents a favorite.
+ * Interface for locale-dependent property.
+ * @param <T> property value type.
  */
-public class Favorite {
+public interface I18NAwareProperty<T> extends Property<T> {
 
-    private String id;
-    private String label;
-    private String location;
+    void setDefaultValue(String defaultValue);
+
+    void setLocale(Locale locale);
+
+    void setI18NPropertyName(String i18NPropertyName);
+
+    Locale getLocale();
+
+    String getBasePropertyName();
+
+    String getLocalizedPropertyName();
+
 }

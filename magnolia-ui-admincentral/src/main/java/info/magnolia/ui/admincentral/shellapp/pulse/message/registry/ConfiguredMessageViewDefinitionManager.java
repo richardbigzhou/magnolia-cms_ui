@@ -105,7 +105,6 @@ public class ConfiguredMessageViewDefinitionManager extends ModuleConfigurationO
         try {
             return new ConfiguredMessageViewDefinitionProvider(id, messageViewNode);
         } catch (IllegalArgumentException e) {
-            // TODO dlipp - suppress stacktrace as long as SCRUM-1749 is not fixed
             log.error("Unable to create provider for messageView [" + id + "]: " + e);
         } catch (Exception e) {
             log.error("Unable to create provider for messageView [" + id + "]", e);

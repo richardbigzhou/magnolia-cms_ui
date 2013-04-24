@@ -58,7 +58,6 @@ import com.vaadin.shared.Connector;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HasComponents;
-import com.vaadin.ui.UI;
 
 /**
  * Server side implementation of the MagnoliaShell container.
@@ -139,27 +138,27 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     }
 
     public void showInfo(String id, String subject, String message) {
-        synchronized (UI.getCurrent()) {
-            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.INFO.name(), subject, message, id);
-        }
+        getSession().lock();
+        getRpcProxy(ShellClientRpc.class).showMessage(MessageType.INFO.name(), subject, message, id);
+        getSession().unlock();
     }
 
     public void showError(String id, String subject, String message) {
-        synchronized (UI.getCurrent()) {
-            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.ERROR.name(), subject, message, id);
-        }
+        getSession().lock();
+        getRpcProxy(ShellClientRpc.class).showMessage(MessageType.ERROR.name(), subject, message, id);
+        getSession().unlock();
     }
 
     public void showWarning(String id, String subject, String message) {
-        synchronized (UI.getCurrent()) {
-            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.WARNING.name(), subject, message, id);
-        }
+        getSession().lock();
+        getRpcProxy(ShellClientRpc.class).showMessage(MessageType.WARNING.name(), subject, message, id);
+        getSession().unlock();
     }
 
     public void hideAllMessages() {
-        synchronized (UI.getCurrent()) {
-            getRpcProxy(ShellClientRpc.class).hideAllMessages();
-        }
+        getSession().lock();
+        getRpcProxy(ShellClientRpc.class).hideAllMessages();
+        getSession().unlock();
     }
 
     public void updateShellAppIndication(ShellAppType type, int incrementOrDecrement) {
@@ -170,14 +169,10 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         }
 
         getState().indications.put(type, incrementOrDecrement + value);
-        synchronized (UI.getCurrent()) {
-        }
     }
 
     public void setIndication(ShellAppType type, int indication) {
         getState().indications.put(type, indication);
-        synchronized (UI.getCurrent()) {
-        }
     }
 
 
