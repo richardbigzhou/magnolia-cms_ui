@@ -101,8 +101,13 @@
 
       .v-label {
         font-size: inherit;
-        line-height: inherit;
-        overflow: visible;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .v-spacing {
+        width: 16px;
       }
     }
   }

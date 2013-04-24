@@ -41,6 +41,7 @@ import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import javax.inject.Inject;
 
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
 /**
@@ -65,7 +66,6 @@ public class WorkbenchStatusBarPresenter {
     @Inject
     public WorkbenchStatusBarPresenter(StatusBarView view) {
         this.view = view;
-        selectionLabel.setSizeUndefined();
         countLabel.setSizeUndefined();
     }
 
@@ -78,14 +78,14 @@ public class WorkbenchStatusBarPresenter {
                 setSelectionCount(event.getItem() != null ? 1 : 0);
             }
         });
-
-        // TODO add subapp event handlers for selection and item count
     }
 
     public StatusBarView start(EventBus eventBus) {
         this.eventBus = eventBus;
         view.addComponent(selectionLabel, Alignment.MIDDLE_LEFT);
+        ((HorizontalLayout) view).setExpandRatio(selectionLabel, 1);
         view.addComponent(countLabel, Alignment.MIDDLE_RIGHT);
+        ((HorizontalLayout) view).setExpandRatio(countLabel, 0);
         bindHandlers();
 
         return view;
@@ -95,8 +95,10 @@ public class WorkbenchStatusBarPresenter {
         if (item != selectedItem) {
             if (item != null) {
                 selectionLabel.setValue(item.getPath());
+                selectionLabel.setDescription(item.getPath());
             } else {
                 selectionLabel.setValue("");
+                selectionLabel.setDescription(null);
             }
             this.selectedItem = item;
         }

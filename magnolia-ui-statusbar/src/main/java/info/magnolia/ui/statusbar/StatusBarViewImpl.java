@@ -53,6 +53,7 @@ public class StatusBarViewImpl extends HorizontalLayout implements StatusBarView
 
     public StatusBarViewImpl() {
         setWidth(100, Unit.PERCENTAGE);
+        setSpacing(true);
         setStyleName(STYLE_NAME);
     }
 

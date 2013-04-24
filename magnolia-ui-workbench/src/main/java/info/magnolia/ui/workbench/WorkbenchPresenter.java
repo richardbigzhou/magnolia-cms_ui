@@ -80,13 +80,15 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         this.eventBus = eventBus;
         contentPresenter.start(view, workbenchDefinition, imageProviderDefinition, eventBus);
 
-        view.getSelectedView().getContainer().addItemSetChangeListener(new ItemSetChangeListener() {
+        if (view.getSelectedView() != null && view.getSelectedView().getContainer() != null) {
+            view.getSelectedView().getContainer().addItemSetChangeListener(new ItemSetChangeListener() {
 
-            @Override
-            public void containerItemSetChange(ItemSetChangeEvent event) {
-                statusBarPresenter.setItemCount(event.getContainer().size());
-            }
-        });
+                @Override
+                public void containerItemSetChange(ItemSetChangeEvent event) {
+                    statusBarPresenter.setItemCount(event.getContainer().size());
+                }
+            });
+        }
 
         view.setStatusBarView(statusBarPresenter.start(eventBus));
         view.setListener(this);
