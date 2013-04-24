@@ -12,7 +12,7 @@
     <id>main</id>
 
     <component>
-      <type>info.magnolia.ui.model.i18n.I18NAuthoringSupport</type>
+      <type>info.magnolia.ui.api.i18n.I18NAuthoringSupport</type>
       <workspace>config</workspace>
       <path>/server/i18n/authoring50</path>
       <observed>true</observed>
@@ -126,7 +126,7 @@
       <implementation>info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherGroupEntryDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.model.i18n.I18NAwareProperty</type>
+      <type>info.magnolia.ui.api.i18n.I18NAwareProperty</type>
       <implementation>info.magnolia.ui.admincentral.i18n.I18NAwarePropertyImpl</implementation>
     </type-mapping>
 
@@ -272,7 +272,7 @@
       <class>info.magnolia.ui.framework.app.SubAppEventBusConfigurer</class>
     </configurer>
     <component>
-      <type>info.magnolia.ui.model.action.ActionExecutor</type>
+      <type>info.magnolia.ui.api.action.ActionExecutor</type>
       <implementation>info.magnolia.ui.framework.app.action.SubAppActionExecutor</implementation>
     </component>
 

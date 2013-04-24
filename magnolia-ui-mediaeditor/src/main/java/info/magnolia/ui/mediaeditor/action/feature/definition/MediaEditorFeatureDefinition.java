@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.mediaeditor.action.feature.definition;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
 
 /**
  * Definition of media editor actions that do not cause the edit mode to switch

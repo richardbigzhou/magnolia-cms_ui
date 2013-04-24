@@ -49,7 +49,7 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.view.View;
 
 import java.util.LinkedList;
 import java.util.List;

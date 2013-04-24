@@ -44,8 +44,8 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.framework.event.EventBusProtector;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.context.UiContext;
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.view.View;
 
 import java.util.List;
 

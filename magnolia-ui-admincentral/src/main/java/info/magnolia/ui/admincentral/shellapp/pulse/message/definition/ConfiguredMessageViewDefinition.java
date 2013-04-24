@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message.definition;
 
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
 
 import java.util.HashMap;
 import java.util.Map;

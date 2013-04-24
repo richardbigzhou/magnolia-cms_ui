@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.editor.pagebar;
 
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.view.View;
 
 import java.util.Locale;
 

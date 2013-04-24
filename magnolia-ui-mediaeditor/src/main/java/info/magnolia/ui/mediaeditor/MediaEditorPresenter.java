@@ -37,8 +37,8 @@ import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent;
 import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.mediaeditor.editmode.provider.EditModeProvider;
-import info.magnolia.ui.model.action.ActionExecutor;
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 
 import java.io.InputStream;

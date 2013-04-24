@@ -34,8 +34,8 @@
 package info.magnolia.ui.vaadin.dialog;
 
 import info.magnolia.objectfactory.Classes;
-import info.magnolia.ui.model.overlay.MessageStyleType;
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.overlay.MessageStyleType;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
 
 import java.util.Timer;

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.workbench.WorkbenchView;
 

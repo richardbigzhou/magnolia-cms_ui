@@ -35,7 +35,7 @@ package info.magnolia.ui.contentapp.choosedialog;
 
 import com.vaadin.data.Item;
 
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.view.View;
 
 /**
  * Dialog presenter for a dialog that allows for choosing an item.

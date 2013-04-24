@@ -42,9 +42,9 @@ import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.framework.location.LocationChangedEvent;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.framework.shell.ShellImpl;
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
-import info.magnolia.ui.model.view.Viewport;
+import info.magnolia.ui.api.view.Viewport;
 
 import java.util.HashMap;
 import java.util.Map;

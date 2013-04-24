@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse;
 
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.view.View;
 
 import javax.inject.Inject;
 

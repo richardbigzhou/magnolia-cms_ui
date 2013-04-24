@@ -37,7 +37,7 @@ import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.view.View;
 
 import javax.inject.Inject;
 

@@ -37,9 +37,9 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.overlay.ConfirmationCallback;
+import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 

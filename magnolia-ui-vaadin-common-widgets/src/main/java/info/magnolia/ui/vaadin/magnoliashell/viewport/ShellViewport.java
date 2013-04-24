@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ViewportState;
 import info.magnolia.ui.vaadin.magnoliashell.DeckLayout;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
-import info.magnolia.ui.model.view.Viewport;
+import info.magnolia.ui.api.view.Viewport;
 
 import com.vaadin.ui.Component;
 

@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell;
 
-import info.magnolia.ui.model.overlay.OverlayCloser;
-import info.magnolia.ui.model.overlay.OverlayLayer;
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.api.overlay.OverlayLayer;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.common.ComponentIterator;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellState;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc;

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.view.View;
 
 /**
  * app test view interface.

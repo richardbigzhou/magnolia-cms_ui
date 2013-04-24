@@ -42,8 +42,8 @@ import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageView
 import info.magnolia.ui.form.FormBuilder;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.view.View;
 
 import javax.inject.Inject;
 

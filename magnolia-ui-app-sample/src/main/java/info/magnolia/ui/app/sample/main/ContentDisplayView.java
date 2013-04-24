@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.sample.main;
 
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.view.View;
 
 /**
  * View for the content display.

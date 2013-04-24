@@ -65,7 +65,7 @@ import info.magnolia.ui.form.config.OptionBuilder;
 import info.magnolia.ui.framework.app.config.App;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.config.UiConfig;
-import info.magnolia.ui.model.ModelConstants;
+import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
 import info.magnolia.ui.workbench.column.StatusColumnFormatter;

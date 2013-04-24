@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.sample.editor;
 
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.view.View;
 
 /**
  * View for editor tabs in sample app.

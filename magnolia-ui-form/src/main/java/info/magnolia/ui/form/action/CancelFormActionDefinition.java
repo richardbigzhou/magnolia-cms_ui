@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.action;
 
-import info.magnolia.ui.model.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
  * CancelFormActionDefinition.

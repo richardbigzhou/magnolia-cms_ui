@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import com.vaadin.ui.Component;

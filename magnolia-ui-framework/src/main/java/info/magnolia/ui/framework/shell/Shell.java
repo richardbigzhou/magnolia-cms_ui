@@ -35,9 +35,9 @@ package info.magnolia.ui.framework.shell;
 
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.model.context.UiContext;
-import info.magnolia.ui.model.overlay.OverlayCloser;
-import info.magnolia.ui.model.view.View;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.api.view.View;
 
 import java.util.List;
 
