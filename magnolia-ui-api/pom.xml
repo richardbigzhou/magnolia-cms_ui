@@ -7,8 +7,8 @@
     <version>5.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>magnolia-ui-model</artifactId>
-  <name>magnolia-ui-model</name>
+  <artifactId>magnolia-ui-api</artifactId>
+  <name>magnolia-ui-api</name>
   <properties>
     <cloverCoverageThreshold>24</cloverCoverageThreshold>
   </properties>

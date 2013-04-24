@@ -244,7 +244,7 @@
   </profiles>
   <modules>
     <module>magnolia-ui-framework</module>
-    <module>magnolia-ui-model</module>
+    <module>magnolia-ui-api</module>
     <module>magnolia-ui-workbench</module>
     <module>magnolia-ui-form</module>
     <module>magnolia-ui-dialog</module>
