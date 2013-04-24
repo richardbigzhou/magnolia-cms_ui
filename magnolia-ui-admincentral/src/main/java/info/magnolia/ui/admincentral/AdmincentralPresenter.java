@@ -59,8 +59,14 @@ import java.lang.reflect.InvocationTargetException;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.event.ListenerMethod.MethodException;
 import com.vaadin.server.ErrorEvent;
 import com.vaadin.server.ErrorHandler;
+import com.vaadin.server.ServerRpcManager.RpcInvocationException;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
@@ -68,6 +74,8 @@ import com.vaadin.ui.UI;
  * Presenter which starts up the components that make up Admincentral.
  */
 public class AdmincentralPresenter {
+
+    private static final Logger log = LoggerFactory.getLogger(AdmincentralPresenter.class);
 
     private final ShellImpl shell;
 
@@ -93,40 +101,71 @@ public class AdmincentralPresenter {
 
         UI.getCurrent().setErrorHandler(new ErrorHandler() {
 
+            private static final String DEFAULT_MESSAGE = "AdmincentralUI has encountered an unhandled exception.";
+
             @Override
             public void error(ErrorEvent event) {
-                Throwable e = event.getThrowable();
-                String subject = e.getClass().getSimpleName();
-                StringBuilder message = new StringBuilder(subject);
-                if (e.getMessage() != null) {
-                    message.append(": ");
-                    message.append(e.getMessage());
-                }
+                log.error(DEFAULT_MESSAGE, event.getThrowable());
+
+                Message message = getErrorMessage(event.getThrowable());
+                AdmincentralPresenter.this.messagesManager.sendLocalMessage(message);
+            }
+
+            private Message getErrorMessage(Throwable e) {
+
+                Message message = new Message();
+                message.setType(MessageType.ERROR);
+
                 addMessageDetails(message, e);
-                AdmincentralPresenter.this.messagesManager.sendLocalMessage(new Message(MessageType.ERROR, subject, message.toString()));
+
+                // append details for RPC exceptions
+                if (e instanceof RpcInvocationException) {
+                    e = e.getCause();
+                    addMessageDetails(message, e);
+                }
+                if (e instanceof InvocationTargetException) {
+                    e = ((InvocationTargetException) e).getTargetException();
+                    addMessageDetails(message, e);
+                }
+                if (e instanceof MethodException) {
+                    e = e.getCause();
+                    addMessageDetails(message, e);
+                }
+
+                // append other potential causes
+                while (e != null && e != e.getCause()) {
+                    e = e.getCause();
+                    addMessageDetails(message, e);
+                }
+
+                if (StringUtils.isBlank(message.getSubject())) {
+                    message.setSubject(DEFAULT_MESSAGE);
+                }
+
+                return message;
             }
 
-            private void addMessageDetails(StringBuilder message, Throwable e) {
-                if (e == null || e == e.getCause()) {
-                    return;
-                }
-                Throwable cause = e.getCause();
+            private void addMessageDetails(Message message, Throwable e) {
+                if (e != null) {
 
-                if (e.getCause() instanceof InvocationTargetException) {
-                    // add details for RPC exceptions
-                    cause = ((InvocationTargetException) cause).getTargetException();
-                }
-                if (cause != null) {
-                    message.append("\n");
-                    message.append("caused by ");
-                    message.append(cause.getClass().getSimpleName());
-                    if (cause.getMessage() != null) {
-                        message.append(": ");
-                        message.append(cause.getMessage());
+                    // message details
+                    String content = message.getMessage();
+                    if (content == null) {
+                        content = "";
+                    } else {
+                        content += "\ncaused by ";
                     }
+                    content += e.getClass().getSimpleName();
+                    if (e.getMessage() != null) {
+                        content += ": " + e.getMessage();
+
+                        // message subject
+                        message.setSubject(e.getMessage());
+                    }
+                    message.setMessage(content);
                 }
-                addMessageDetails(message, cause);
             }
+
         });
         VaadinSession.getCurrent().setErrorHandler(null);
     }
