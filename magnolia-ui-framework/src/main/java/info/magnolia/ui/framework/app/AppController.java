@@ -35,7 +35,7 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.model.overlay.OverlayLayer;
-import info.magnolia.ui.vaadin.view.Viewport;
+import info.magnolia.ui.model.view.Viewport;
 
 /**
  * Controls all {@link App}s running for a single user. It takes care of starting, stopping and switching to already running apps.

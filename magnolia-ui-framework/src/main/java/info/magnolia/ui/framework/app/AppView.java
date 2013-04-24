@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.model.view.View;
 
 /**
  * AppView interface used by Apps. Acts as a wrapper between the tabsheet used inside to display the subApps and.

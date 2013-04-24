@@ -34,7 +34,7 @@
 package info.magnolia.ui.vaadin.form;
 
 
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.model.view.View;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 

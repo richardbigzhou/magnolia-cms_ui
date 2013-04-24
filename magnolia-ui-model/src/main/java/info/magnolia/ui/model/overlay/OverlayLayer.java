@@ -34,6 +34,8 @@
 package info.magnolia.ui.model.overlay;
 
 
+import info.magnolia.ui.model.view.View;
+
 /**
  * Implementers can open overlay views (with a degree of modality) over their display area.
  */

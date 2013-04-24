@@ -41,7 +41,7 @@ import info.magnolia.ui.form.field.validation.FieldValidatorBuilder;
 import info.magnolia.ui.form.field.validation.FieldValidatorDefinition;
 import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
 import info.magnolia.ui.model.i18n.I18NAwareProperty;
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.model.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;

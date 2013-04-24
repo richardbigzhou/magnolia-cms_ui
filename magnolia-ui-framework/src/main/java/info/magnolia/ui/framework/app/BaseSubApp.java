@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.model.view.View;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;

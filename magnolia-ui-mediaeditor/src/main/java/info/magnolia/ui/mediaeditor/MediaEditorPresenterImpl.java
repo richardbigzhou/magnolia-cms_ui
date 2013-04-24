@@ -51,7 +51,7 @@ import info.magnolia.ui.mediaeditor.editmode.provider.EditModeProvider.ActionCon
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.model.view.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;

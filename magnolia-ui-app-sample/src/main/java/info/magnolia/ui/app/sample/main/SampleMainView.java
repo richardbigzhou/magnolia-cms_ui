@@ -34,7 +34,7 @@
 package info.magnolia.ui.app.sample.main;
 
 import info.magnolia.ui.framework.app.SubApp;
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.model.view.View;
 
 /**
  * View for the main tab of sample app.

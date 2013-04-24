@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.model.view.View;
 
 /**
  * app test view interface.

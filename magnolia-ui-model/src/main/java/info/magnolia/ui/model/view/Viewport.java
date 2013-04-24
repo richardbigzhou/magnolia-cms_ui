@@ -31,9 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.view;
-
-import info.magnolia.ui.model.overlay.View;
+package info.magnolia.ui.model.view;
 
 /**
  * Implemented by displays that can be given an {@link View} to show.

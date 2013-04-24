@@ -40,7 +40,7 @@ import info.magnolia.ui.model.overlay.MessageStyleType;
 import info.magnolia.ui.model.overlay.NotificationCallback;
 import info.magnolia.ui.model.overlay.OverlayCloser;
 import info.magnolia.ui.model.overlay.OverlayLayer;
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.model.view.View;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;

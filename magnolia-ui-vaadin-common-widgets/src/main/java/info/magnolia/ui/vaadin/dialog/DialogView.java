@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.model.view.View;
 
 /**
  * Interface for {@link BaseDialog}.

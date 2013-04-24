@@ -31,9 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.model.overlay;
-
-//import info.magnolia.ui.vaadin.view.Viewport;
+package info.magnolia.ui.model.view;
 
 import java.io.Serializable;
 

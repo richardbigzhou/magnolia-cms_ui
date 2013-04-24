@@ -54,13 +54,13 @@ import info.magnolia.ui.model.overlay.MessageStyleType;
 import info.magnolia.ui.model.overlay.NotificationCallback;
 import info.magnolia.ui.model.overlay.OverlayCloser;
 import info.magnolia.ui.model.overlay.OverlayLayer;
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.model.view.View;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
 import info.magnolia.ui.vaadin.overlay.OverlayPresenter;
-import info.magnolia.ui.vaadin.view.Viewport;
+import info.magnolia.ui.model.view.Viewport;
 
 import java.util.List;
 
