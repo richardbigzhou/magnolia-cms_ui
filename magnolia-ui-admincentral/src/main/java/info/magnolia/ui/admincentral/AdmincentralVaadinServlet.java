@@ -67,5 +67,4 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
             }
         });
     }
-
 }

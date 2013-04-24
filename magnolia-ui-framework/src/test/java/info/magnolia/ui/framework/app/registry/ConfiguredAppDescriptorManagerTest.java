@@ -37,6 +37,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
@@ -50,8 +52,6 @@ import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.event.EventBus;
-import info.magnolia.event.SimpleEventBus;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -73,7 +73,6 @@ public class ConfiguredAppDescriptorManagerTest {
     private AppDescriptorRegistry appRegistry;
     private Session session;
 
-    @SuppressWarnings("deprecation")
     @Before
     public void setUp() throws Exception {
         // INIT

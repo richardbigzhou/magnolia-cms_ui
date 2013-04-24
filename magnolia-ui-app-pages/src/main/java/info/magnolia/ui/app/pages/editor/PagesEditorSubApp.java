@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
+import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.PropertyUtil;
@@ -54,16 +55,19 @@ import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.model.action.ActionDefinition;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.model.action.ActionExecutor;
+import info.magnolia.ui.model.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.view.View;
 
 import java.util.Collection;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -78,7 +82,7 @@ import org.slf4j.LoggerFactory;
 /**
  * PagesEditorSubApp.
  */
-public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppView.Listener, ActionbarPresenter.Listener {
+public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppView.Listener, ActionbarPresenter.Listener, PageBarView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
@@ -91,6 +95,9 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private final EventBus eventBus;
     private final PageEditorPresenter pageEditorPresenter;
     private final ActionbarPresenter actionbarPresenter;
+    private PageBarView pageBarView;
+    private I18NAuthoringSupport i18NAuthoringSupport;
+    private I18nContentSupport i18nContentSupport;
     private final EditorDefinition editorDefinition;
     private final String workspace;
     private final AppContext appContext;
@@ -99,13 +106,16 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private String caption;
 
     @Inject
-    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBus.NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter) {
+    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBus.NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView, I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
         this.eventBus = eventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
+        this.pageBarView = pageBarView;
+        this.i18NAuthoringSupport = i18NAuthoringSupport;
+        this.i18nContentSupport = i18nContentSupport;
         this.editorDefinition = ((DetailSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
         this.workspace = editorDefinition.getWorkspace();
         this.appContext = subAppContext.getAppContext();
@@ -125,12 +135,14 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         super.start(detailLocation);
 
         actionbarPresenter.setListener(this);
+        pageBarView.setListener(this);
         ActionbarDefinition actionbarDefinition = getSubAppContext().getSubAppDescriptor().getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition);
         view.setActionbarView(actionbar);
+        view.setPageBarView(pageBarView);
         view.setPageEditorView(pageEditorPresenter.start());
-
         goToLocation(detailLocation);
+        pageBarView.setCurrentLanguage(i18nContentSupport.getLocale());
         return view;
     }
 
@@ -244,9 +256,18 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private void setPageEditorParameters(DetailLocation location) {
         DetailView.ViewType action = location.getViewType();
         String path = location.getNodePath();
-
-        this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, DetailView.ViewType.VIEW.getText().equals(action.getText()));
-        this.caption = getPageTitle(path);
+        boolean isPreview = DetailView.ViewType.VIEW.getText().equals(action.getText());
+        this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, isPreview);
+        try {
+            Node node = MgnlContext.getJCRSession(workspace).getNode(path);
+            String uri = i18NAuthoringSupport.createI18NURI(node, new Locale("en"));
+            this.parameters.setUrl(uri);
+            this.caption = getPageTitle(path);
+            pageBarView.setPageName(getPageTitle(path) + "-" + path);
+            pageBarView.togglePreviewMode(isPreview);
+        } catch (RepositoryException e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     private boolean isLocationChanged(DetailLocation location) {
@@ -284,7 +305,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 AbstractElement element = event.getElement();
                 String path = element.getPath();
                 String dialog = element.getDialog();
-
+                pageBarView.setPageName(getPageTitle(path) + "-" + path);
                 if (StringUtils.isEmpty(path)) {
                         path = "/";
                 }
@@ -373,5 +394,23 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         } else {
             getSubAppContext().getAppContext().exitFullScreenMode();
         }
+    }
+
+    @Override
+    public void languageSelected(Locale locale) {
+        try {
+            Node node = MgnlContext.getJCRSession(workspace).getNode(parameters.getNodePath());
+            String uri = i18NAuthoringSupport.createI18NURI(node, locale);
+            this.parameters.setUrl(uri);
+            this.pageEditorPresenter.loadPageEditor(parameters);
+        } catch (RepositoryException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void platformSelected(String platformId) {
+        parameters.setPlatformId(platformId);
+        pageEditorPresenter.loadPageEditor(parameters);
     }
 }

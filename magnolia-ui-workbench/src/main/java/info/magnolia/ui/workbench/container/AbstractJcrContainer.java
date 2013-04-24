@@ -34,7 +34,6 @@
 package info.magnolia.ui.workbench.container;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.model.ModelConstants;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -238,7 +237,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             javax.jcr.Item item = jcrSession.getItem((String) itemId);
             return item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((javax.jcr.Property) item);
         } catch (RepositoryException e) {
-            log.error("", e);
+            handleRepositoryException(log, "Could not retrieve item with id: " + itemId, e);
             return null;
         }
     }
@@ -255,7 +254,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             return item.getItemProperty(propertyId);
         }
 
-        log.error("Couldn't find item {} so property {} can't be retrieved!", itemId, propertyId);
+        log.warn("Couldn't find item {} so property {} can't be retrieved!", itemId, propertyId);
         return null;
     }
 
@@ -277,7 +276,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             final Session jcrSession = MgnlContext.getJCRSession(getWorkspace());
             return jcrSession.itemExists((String) itemId);
         } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
+            handleRepositoryException(log, "Could not check whether item exists in session - itemId: " + itemId, e);
+            return false;
         }
     }
 
@@ -482,11 +482,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
         try {
             final QueryResult queryResult = executeQuery(stmt, QUERY_LANGUAGE, pageLength * cacheRatio, currentOffset);
-
             updateItems(queryResult);
-
-        } catch (RepositoryException re) {
-            throw new RuntimeRepositoryException(re);
+        } catch (RepositoryException e) {
+            handleRepositoryException(log, "Cannot get Page with statement: " + stmt, e);
         }
     }
 
@@ -600,8 +598,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * @see #getPage().
      */
     public final void updateSize() {
+        final String stmt = constructJCRQuery(false);
         try {
-            final String stmt = constructJCRQuery(false);
             // query for all items in order to get the size
             final QueryResult queryResult = executeQuery(stmt, QUERY_LANGUAGE, 0, 0);
 
@@ -610,7 +608,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
             updateCount((int) pageSize);
         } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
+            handleRepositoryException(log, "Could not update size with statement: " + stmt, e);
         }
     }
 
@@ -645,26 +643,32 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         this.size = size;
     }
 
-    protected QueryResult executeQuery(String statement, String language, long limit, long offset) {
-        try {
-            final Session jcrSession = MgnlContext.getJCRSession(getWorkspace());
-            final QueryManager jcrQueryManager = jcrSession.getWorkspace().getQueryManager();
-            final Query query = jcrQueryManager.createQuery(statement, language);
-            if (limit > 0) {
-                query.setLimit(limit);
-            }
-            if (offset >= 0) {
-                query.setOffset(offset);
-            }
-            log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{getWorkspace(), statement, limit, offset});
-            long start = System.currentTimeMillis();
-            final QueryResult result = query.execute();
-            log.debug("Query execution took {} ms", System.currentTimeMillis() - start);
-
-            return result;
-
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
+    protected QueryResult executeQuery(String statement, String language, long limit, long offset) throws RepositoryException {
+        final Session jcrSession = MgnlContext.getJCRSession(getWorkspace());
+        final QueryManager jcrQueryManager = jcrSession.getWorkspace().getQueryManager();
+        final Query query = jcrQueryManager.createQuery(statement, language);
+        if (limit > 0) {
+            query.setLimit(limit);
         }
+        if (offset >= 0) {
+            query.setOffset(offset);
+        }
+        log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{getWorkspace(), statement, limit, offset});
+        long start = System.currentTimeMillis();
+        final QueryResult result = query.execute();
+        log.debug("Query execution took {} ms", System.currentTimeMillis() - start);
+
+        return result;
+    }
+
+    /**
+     * Central method for uniform treatment of RepositoryExceptions in JcrContainers.
+     *
+     * @param logger logger to be used - passed in so subclasses can still user their proper logger
+     * @param message message to be used in the handling
+     * @param repositoryException exception to be handled
+     */
+    protected void handleRepositoryException(final Logger logger, final String message, final RepositoryException repositoryException) {
+        logger.warn(message + ": " + repositoryException);
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -48,14 +48,18 @@ import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.vaadin.dialog.Modal;
-import info.magnolia.ui.vaadin.dialog.Modal.ModalityLevel;
+import info.magnolia.ui.model.overlay.AlertCallback;
+import info.magnolia.ui.model.overlay.ConfirmationCallback;
+import info.magnolia.ui.model.overlay.MessageStyleType;
+import info.magnolia.ui.model.overlay.NotificationCallback;
+import info.magnolia.ui.model.overlay.OverlayCloser;
+import info.magnolia.ui.model.overlay.OverlayLayer;
+import info.magnolia.ui.model.overlay.View;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
-import info.magnolia.ui.vaadin.view.ModalCloser;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.vaadin.overlay.OverlayPresenter;
 import info.magnolia.ui.vaadin.view.Viewport;
 
 import java.util.List;
@@ -94,6 +98,8 @@ public class ShellImpl implements Shell, MessageEventHandler {
     private final EventHandlerCollection<FragmentChangedHandler> handlers = new EventHandlerCollection<FragmentChangedHandler>();
 
     private ShellAppLocationProvider shellAppLocationProvider;
+
+    private OverlayLayer overlayPresenter;
 
     @Inject
     public ShellImpl(@Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, final AppController appController, final MessagesManager messagesManager) {
@@ -154,6 +160,15 @@ public class ShellImpl implements Shell, MessageEventHandler {
                 ShellImpl.this.goToShellApp(fragment);
             }
         });
+
+        overlayPresenter = new OverlayPresenter() {
+
+            @Override
+            public OverlayCloser openOverlay(final View view, ModalityLevel modalityLevel) {
+                return magnoliaShell.openOverlay(view, magnoliaShell, ModalityDomain.SHELL, modalityLevel);
+            }
+
+        };
     }
 
     public void setShellAppLocationProvider(ShellAppLocationProvider shellAppLocationProvider) {
@@ -211,14 +226,10 @@ public class ShellImpl implements Shell, MessageEventHandler {
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
     }
 
-    @Override
-    public ModalCloser openModal(final View view) {
-        return magnoliaShell.openModal(view, magnoliaShell, Modal.ModalityLevel.SHELL);
-    }
 
     @Override
-    public ModalCloser openModalOnView(View view, View parent, ModalityLevel modalityLevel) {
-        return magnoliaShell.openModal(view, parent, modalityLevel);
+    public OverlayCloser openOverlayOnView(View view, View parent, ModalityDomain modalityLocation, ModalityLevel modalityLevel) {
+        return magnoliaShell.openOverlay(view, parent, modalityLocation, modalityLevel);
     }
 
     @Override
@@ -348,6 +359,51 @@ public class ShellImpl implements Shell, MessageEventHandler {
 
     public MagnoliaShell getMagnoliaShell() {
         return magnoliaShell;
+    }
+
+    @Override
+    public OverlayCloser openOverlay(View view) {
+        return overlayPresenter.openOverlay(view);
+    }
+
+    @Override
+    public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
+        return overlayPresenter.openOverlay(view, modalityLevel);
+    }
+
+    @Override
+    public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
+        overlayPresenter.openAlert(type, viewToShow, confirmButtonText, cb);
+    }
+
+    @Override
+    public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
+        overlayPresenter.openAlert(type, title, body, confirmButtonText, cb);
+    }
+
+    @Override
+    public void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        overlayPresenter.openConfirmation(type, viewToShow, confirmButtonText, cancelButtonText, cancelIsDefault, cb);
+    }
+
+    @Override
+    public void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        overlayPresenter.openConfirmation(type, title, body, confirmButtonText, cancelButtonText, cancelIsDefault, cb);
+    }
+
+    @Override
+    public void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow) {
+        overlayPresenter.openNotification(type, doesTimeout, viewToShow);
+    }
+
+    @Override
+    public void openNotification(MessageStyleType type, boolean doesTimeout, String title) {
+        overlayPresenter.openNotification(type, doesTimeout, title);
+    }
+
+    @Override
+    public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
+        overlayPresenter.openNotification(type, doesTimeout, title, linkText, cb);
     }
 
 }

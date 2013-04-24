@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.vaadin.view.ModalLayer;
+import info.magnolia.ui.model.overlay.OverlayLayer;
 
 import javax.inject.Inject;
 
@@ -80,6 +80,6 @@ public class BaseApp implements App {
     }
 
     @Override
-    public void openChooseDialog(String path, ModalLayer modalLayer, ItemChosenListener listener) {
+    public void openChooseDialog(String path, OverlayLayer overlayLayer, ItemChosenListener listener) {
     }
 }

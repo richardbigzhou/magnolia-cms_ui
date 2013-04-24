@@ -33,12 +33,23 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.shellapp.ShellApp;
 import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+
+import java.net.URI;
 
 import javax.inject.Inject;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.server.Page;
 
 /**
  * Favorites shell app.
@@ -47,17 +58,52 @@ public class FavoritesShellApp implements ShellApp {
 
     private FavoritesView favoritesView;
 
+    private FavoritesPresenter favoritesPresenter;
+
+    private AppDescriptorRegistry appDescriptorRegistry;
+
     @Inject
-    public FavoritesShellApp(FavoritesView favoritesView) {
-        this.favoritesView = favoritesView;
+    public FavoritesShellApp(FavoritesPresenter favoritesPresenter, AppDescriptorRegistry appDescriptorRegistry) {
+        this.favoritesPresenter = favoritesPresenter;
+        this.appDescriptorRegistry = appDescriptorRegistry;
     }
 
     @Override
     public View start(ShellAppContext context) {
+        favoritesView = favoritesPresenter.start();
         return favoritesView;
     }
 
     @Override
     public void locationChanged(Location location) {
+        JcrNewNodeAdapter favoriteLocation = determinePreviousLocation();
+        favoritesView.setFavoriteLocation(favoriteLocation);
+    }
+
+    private JcrNewNodeAdapter determinePreviousLocation() {
+        // at this point the current location in the browser hasn't yet changed to favorite shellapp,
+        // so it is what we need to pre-populate the form for creating a new favorite
+        final URI previousLocation = Page.getCurrent().getLocation();
+        final String previousLocationFragment = previousLocation.getFragment();
+        final String appId = DefaultLocation.extractAppId(previousLocationFragment);
+        final String appType = DefaultLocation.extractAppType(previousLocationFragment);
+        // TODO MGNLUI-1190 should this be added to DefaultLocation as a convenience static method?
+        final String path = StringUtils.substringBetween(previousLocationFragment, ";", ":");
+        JcrNewNodeAdapter favoriteLocation;
+        // skip bookmarking shell apps
+        if (Location.LOCATION_TYPE_SHELL_APP.equals(appType)) {
+            favoriteLocation = favoritesPresenter.createNewFavoriteSuggestion("", "", "");
+        } else {
+            AppDescriptor appDescriptor;
+            try {
+                appDescriptor = appDescriptorRegistry.getAppDescriptor(appId);
+            } catch (RegistrationException e) {
+                throw new RuntimeException(e);
+            }
+            final String appIcon = StringUtils.defaultIfEmpty(appDescriptor.getIcon(), "icon-app");
+            final String title = appDescriptor.getLabel() + " " + (path == null ? "/" : path);
+            favoriteLocation = favoritesPresenter.createNewFavoriteSuggestion(previousLocation.toString(), title, appIcon);
+        }
+        return favoriteLocation;
     }
 }

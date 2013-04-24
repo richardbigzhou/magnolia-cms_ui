@@ -53,8 +53,6 @@ import javax.jcr.RepositoryException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vaadin.data.Item;
-
 /**
  * SaveFormActionTest.
  */
@@ -64,7 +62,7 @@ public class SaveFormActionTest extends RepositoryTestCase {
     private CallbackFormActionTest.TestEditorValidator validator;
     private MockSession session;
     private Node node;
-    private Item item;
+    private JcrNodeAdapter item;
     private SaveFormAction formAction;
 
     @Override

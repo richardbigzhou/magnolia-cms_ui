@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.vaadin.view.View;
+import info.magnolia.ui.model.overlay.View;
 
 /**
  * Defines a shell app.

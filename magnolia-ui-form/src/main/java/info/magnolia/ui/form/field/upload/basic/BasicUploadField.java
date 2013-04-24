@@ -52,10 +52,12 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.TextField;
 
 /**
  * Basic implementation of {@link AbstractUploadField}.<br>
@@ -77,6 +79,8 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     private final CssLayout layout;
     private UploadProgressIndicator progress;
     protected final ImageProvider imageProvider;
+    private boolean editFileName = false;
+    private boolean editFileFormat = false;
 
     public BasicUploadField(D fileWrapper, File tmpUploadDirectory, ImageProvider imageProvider) {
         super(fileWrapper, tmpUploadDirectory);
@@ -116,10 +120,10 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     protected void buildEmptyLayout() {
         layout.removeAllComponents();
         // Add Upload Button
-        getUpload().setButtonCaption(getCaption(selectNewCaption));
+        getUpload().setButtonCaption(getCaption(selectNewCaption, null));
         layout.addComponent(getUpload());
         // Add DropZone Label
-        Label uploadText = new Label(getCaption(dropZoneCaption), ContentMode.HTML);
+        Label uploadText = new Label(getCaption(dropZoneCaption, null), ContentMode.HTML);
         uploadText.addStyleName("upload-text");
         layout.addComponent(uploadText);
 
@@ -212,7 +216,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         actionLayout.addStyleName("buttons");
         actionLayout.setSpacing(true);
         // Add Upload Button
-        getUpload().setButtonCaption(getCaption(selectAnotherCaption));
+        getUpload().setButtonCaption(getCaption(selectAnotherCaption, null));
         actionLayout.addComponent(getUpload());
         // Add Remove Button if a file is present.
         if (!getFileWrapper().isEmpty()) {
@@ -234,7 +238,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
 
             @Override
             public void buttonClick(ClickEvent event) {
-                interruptUpload();
+                interruptUpload(InterruptionReason.USER);
             }
         });
         cancelButton.addStyleName("cancel");
@@ -265,62 +269,78 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
 
     /**
      * Initialize a Component displaying some File Informations.
-     * Override getFileInfo() in order to display the infos you may want to display.
-     *
-     * @return A file Info Component. Generally a {@link Label}.
+     * Override getFileDetail...() in order to display custom info's you may want to display.
+     * 
+     * @return A file Info Component. Generally a {@link FormLayout}.
      */
     private Component createFileInfoComponent() {
-        Label fileDetail = new Label("", ContentMode.HTML);
-        fileDetail.setSizeUndefined();
-        fileDetail.addStyleName("file-details");
-        fileDetail.setValue(getFileInfo());
-        return fileDetail;
+        FormLayout fileInfo = new FormLayout();
+        fileInfo.setSizeUndefined();
+        fileInfo.addStyleName("file-details");
+        fileInfo.addComponent(getFileDetailHeader());
+        fileInfo.addComponent(getFileDetailFileName());
+        fileInfo.addComponent(getFileDetailSize());
+        fileInfo.addComponent(getFileDetailFileFormat());
+        return fileInfo;
     }
 
     /**
-     * Create the Detail File Message. <br>
-     * <b>Override this method in order to change the Displayed detail values.</b>
-     *
-     * @return File Informations.
+     * Add Title.
      */
-    protected String getFileInfo() {
-        StringBuilder sb = new StringBuilder();
-
-        // Title
-        sb.append("<span class=\"value\">");
-        sb.append(getCaption(fileDetailHeaderCaption));
-        sb.append("</span>");
-        sb.append("<br/><br/>");
-
-        // Name
-        sb.append("<span class=\"key\">");
-        sb.append(getCaption(fileDetailNameCaption));
-        sb.append("</span>");
-        sb.append("<span class=\"value\">");
-        sb.append(getFileWrapper().getFileName());
-        sb.append("</span>");
-        sb.append("<br/>");
-
-        // Size
-        sb.append("<span class=\"key\">");
-        sb.append(getCaption(fileDetailSizeCaption));
-        sb.append("</span>");
-        sb.append("<span class=\"value\">");
-        sb.append(FileUtils.byteCountToDisplaySize(getFileWrapper().getFileSize()));
-        sb.append("</span>");
-        sb.append("<br/>");
-
-        // Format
-        sb.append("<span class=\"key\">");
-        sb.append(getCaption(fileDetailFormatCaption));
-        sb.append("</span>");
-        sb.append("<span class=\"value\">");
-        sb.append(getFileWrapper().getExtension());
-        sb.append("</span>");
-        sb.append("<br/>");
-
-        return sb.toString();
+    protected Component getFileDetailHeader() {
+        Label label = new Label("", ContentMode.HTML);
+        label.setValue(getCaption(fileDetailHeaderCaption, null));
+        return label;
     }
+
+    /**
+     * Add File Name.<br>
+     * If editFileName is true, display an Input Text Field. <br>
+     * Else display a simple label.
+     */
+    protected Component getFileDetailFileName() {
+        if (this.editFileName) {
+            TextField textField = new TextField(getFileWrapper().getFileNameProperty());
+            textField.setNullRepresentation("");
+            textField.setCaption(MessagesUtil.get(fileDetailNameCaption));
+            return textField;
+        } else {
+            Label label = new Label("", ContentMode.HTML);
+            label.setCaption(MessagesUtil.get(fileDetailNameCaption));
+            label.setValue(getFileWrapper().getFileName());
+            return label;
+        }
+    }
+
+    /**
+     * Add File Info.
+     */
+    protected Component getFileDetailSize() {
+        Label label = new Label("", ContentMode.HTML);
+        label.setCaption(MessagesUtil.get(fileDetailSizeCaption));
+        label.setValue(FileUtils.byteCountToDisplaySize(getFileWrapper().getFileSize()));
+        return label;
+    }
+
+    /**
+     * Add File Format.<br>
+     * If editFileFormat is true, display an Input Text Field. <br>
+     * Else display a simple label.
+     */
+    protected Component getFileDetailFileFormat() {
+        if (this.editFileFormat) {
+            TextField textField = new TextField(getFileWrapper().getFileFormatProperty());
+            textField.setNullRepresentation("");
+            textField.setCaption(MessagesUtil.get(fileDetailFormatCaption));
+            return textField;
+        } else {
+            Label label = new Label("File Format", ContentMode.HTML);
+            label.setValue(getFileWrapper().getExtension());
+            label.setCaption(MessagesUtil.get(fileDetailFormatCaption));
+            return label;
+        }
+    }
+
 
     /**
      * @return Thumbnail Component.
@@ -359,12 +379,16 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         captionExtension = StringUtils.EMPTY;
     }
 
-    protected String getCaption(String caption) {
+    protected String getCaption(String caption, String[] args) {
         if (StringUtils.isEmpty(caption)) {
             return StringUtils.EMPTY;
         }
         caption = StringUtils.isNotBlank(captionExtension) ? caption + "." + captionExtension : caption;
-        return MessagesUtil.get(caption);
+        if (args != null && args.length > 0) {
+            return MessagesUtil.get(caption, args);
+        } else {
+            return MessagesUtil.get(caption);
+        }
     }
 
     protected String selectNewCaption;
@@ -426,7 +450,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     }
 
     @Override
-    protected void displayUploadInterruptNote() {
+    protected void displayUploadInterruptNote(InterruptionReason reason) {
         // Do Nothing
     }
 
@@ -438,6 +462,14 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     @Override
     protected void displayUploadFaildNote(String fileName) {
         // Do Nothing
+    }
+
+    public void setEditFileName(boolean editFileName) {
+        this.editFileName = editFileName;
+    }
+
+    public void setEditFileFormat(boolean editFileFormat) {
+        this.editFileFormat = editFileFormat;
     }
 
     /**

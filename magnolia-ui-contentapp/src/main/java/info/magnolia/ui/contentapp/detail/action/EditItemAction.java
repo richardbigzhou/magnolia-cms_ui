@@ -39,11 +39,12 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.model.action.ActionBase;
 import info.magnolia.ui.model.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.RepositoryException;
 
 /**
  * Action for editing items in {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.

@@ -93,6 +93,12 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
                 updateActionsFromState();
             }
         });
+        addStateChangeHandler("defaultButtonName", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                updateActionsFromState();
+            }
+        });
     }
 
     @Override
@@ -118,7 +124,7 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
     }
 
     protected void updateActionsFromState() {
-        view.setActions(getState().actions);
+        view.setActions(getState().actions, getState().defaultActionName);
     }
 
     @Override

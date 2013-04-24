@@ -2,6 +2,7 @@
 @import "app-preloader.scss";
 @import "applauncher.scss";
 @import "dialog.scss";
+@import "overlay.scss";
 @import "favorites.scss";
 @import "form.scss";
 @import "fonts.scss";
@@ -16,6 +17,7 @@
 @import "thumbnail-layout.scss";
 @import "workbench.scss";
 @import "uploadfield.scss";
+@import "page-editor";
 
 
 @mixin admincentraltheme {
@@ -23,6 +25,7 @@
   @include app-preloader;
   @include applauncher;
   @include dialog;
+  @include overlay;
   @include favorites;
   @include form;
   @include lightbox;
@@ -36,6 +39,7 @@
   @include thumbnail-layout;
   @include workbench;
   @include uploadfield;
+  @include page-editor;
  
   body{
       -webkit-user-select: none; /* Disable content selection on mobile safari */
