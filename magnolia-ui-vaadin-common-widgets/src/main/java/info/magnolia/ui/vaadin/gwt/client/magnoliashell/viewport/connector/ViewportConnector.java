@@ -39,6 +39,7 @@ import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
 
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
@@ -109,7 +110,15 @@ public class ViewportConnector extends AbstractLayoutConnector {
             if (w.getParent() != viewport) {
                 viewport.insert(w, index);
                 getLayoutManager().addElementResizeListener(w.getElement(), childCenterer);
-                w.getElement().getStyle().setDisplay(Display.NONE);
+                Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        if (getState().activeComponent != cc) {
+                            w.getElement().getStyle().setDisplay(Display.NONE);
+                        }
+                    }
+                });
+
             }
             ++index;
         }
