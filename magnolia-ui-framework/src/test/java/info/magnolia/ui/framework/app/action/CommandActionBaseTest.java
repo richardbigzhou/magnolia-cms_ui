@@ -42,7 +42,7 @@ import info.magnolia.context.WebContext;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
-import info.magnolia.ui.model.action.CommandActionDefinition;
+import info.magnolia.ui.api.action.CommandActionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import org.junit.After;
 import org.junit.Before;

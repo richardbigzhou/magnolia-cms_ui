@@ -34,7 +34,7 @@
 package info.magnolia.ui.mediaeditor.editmode.factory;
 
 import info.magnolia.ui.mediaeditor.editmode.provider.EditModeProvider;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
+import info.magnolia.ui.api.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.mediaeditor.provider.EditModeProviderActionDefinition;
 
 import java.io.Serializable;

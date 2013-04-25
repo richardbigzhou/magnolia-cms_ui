@@ -34,8 +34,8 @@
 package info.magnolia.ui.form.field.validation;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.builder.MappingFactoryBase;
+import info.magnolia.ui.api.builder.DefinitionToImplementationMapping;
+import info.magnolia.ui.api.builder.MappingFactoryBase;
 
 import java.io.Serializable;
 

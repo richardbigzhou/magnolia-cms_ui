@@ -35,8 +35,8 @@ package info.magnolia.ui.workbench.thumbnail;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
-import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.imageprovider.ImageProvider;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailDblClickListener;

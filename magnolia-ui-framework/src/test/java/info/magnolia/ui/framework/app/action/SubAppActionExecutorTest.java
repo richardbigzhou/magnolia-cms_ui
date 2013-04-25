@@ -43,10 +43,10 @@ import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
-import info.magnolia.ui.model.action.AbstractActionExecutorTest;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.action.ActionExecutor;
+import info.magnolia.ui.api.action.AbstractActionExecutorTest;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionExecutor;
 
 import java.util.HashMap;
 import java.util.Map;

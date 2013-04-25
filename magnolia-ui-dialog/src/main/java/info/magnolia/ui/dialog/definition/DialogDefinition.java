@@ -34,7 +34,7 @@
 package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
 
 import java.util.Map;
 

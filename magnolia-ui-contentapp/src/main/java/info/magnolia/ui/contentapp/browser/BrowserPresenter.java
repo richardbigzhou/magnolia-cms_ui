@@ -45,11 +45,11 @@ import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.action.ActionExecutor;
-import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
-import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.imageprovider.ImageProvider;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
@@ -76,6 +76,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.server.Resource;
+
 
 /**
  * The browser is a core component of AdminCentral. It represents the main hub through which users can interact with
@@ -197,7 +198,8 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
 
     /**
      * @return The configured default view Type.<br>
-     * If non define, return the first Content Definition as default.
+     *         If non define, return the first Content Definition as default.
+     * 
      */
     public ViewType getDefaultViewType() {
         return workbenchPresenter.getDefaultViewType();

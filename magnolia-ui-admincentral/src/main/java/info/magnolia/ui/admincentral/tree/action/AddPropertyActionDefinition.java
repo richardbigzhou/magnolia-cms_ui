@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.model.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
  * Adds a property to a node.

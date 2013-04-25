@@ -34,13 +34,13 @@
 package info.magnolia.ui.vaadin.overlay;
 
 import info.magnolia.objectfactory.Classes;
-import info.magnolia.ui.model.overlay.AlertCallback;
-import info.magnolia.ui.model.overlay.ConfirmationCallback;
-import info.magnolia.ui.model.overlay.MessageStyleType;
-import info.magnolia.ui.model.overlay.NotificationCallback;
-import info.magnolia.ui.model.overlay.OverlayCloser;
-import info.magnolia.ui.model.overlay.OverlayLayer;
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.api.overlay.AlertCallback;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
+import info.magnolia.ui.api.overlay.MessageStyleType;
+import info.magnolia.ui.api.overlay.NotificationCallback;
+import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.api.overlay.OverlayLayer;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
@@ -126,6 +126,7 @@ public abstract class OverlayPresenter implements OverlayLayer {
     private ConfirmationDialog createConfirmationDialog(View contentView, String confirmButtonText, String cancelButtonText, String stylename, boolean cancelIsDefault) {
         ConfirmationDialog dialog = new ConfirmationDialog(contentView, cancelIsDefault);
         dialog.addStyleName(stylename);
+        dialog.addStyleName("confirmation");
         dialog.setConfirmActionLabel(confirmButtonText);
         if (cancelButtonText != null) {
             dialog.setRejectActionLabel(cancelButtonText);
@@ -137,6 +138,7 @@ public abstract class OverlayPresenter implements OverlayLayer {
     private BaseDialog createAlertDialog(View contentView, String confirmButtonText, String stylename) {
         BaseDialog dialog = new LightDialog();
         dialog.addStyleName(stylename);
+        dialog.addStyleName("alert");
         dialog.setContent(contentView.asVaadinComponent());
         dialog.addAction(ACTION_CONFIRM, confirmButtonText);
         dialog.setDefaultAction(ACTION_CONFIRM);

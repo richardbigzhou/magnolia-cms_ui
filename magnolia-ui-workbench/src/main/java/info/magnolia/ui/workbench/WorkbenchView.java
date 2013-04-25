@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.workbench;
 
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.statusbar.StatusBarView;
-import info.magnolia.ui.model.overlay.View;
 
 /**
  * WorkbenchView.

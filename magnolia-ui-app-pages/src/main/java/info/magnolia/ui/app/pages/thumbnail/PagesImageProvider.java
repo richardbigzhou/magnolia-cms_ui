@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.app.pages.thumbnail;
 
-import info.magnolia.ui.admincentral.image.DefaultImageProvider;
-import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.imageprovider.DefaultImageProvider;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 
 /**
  * PagesImageProvider.

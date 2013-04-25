@@ -181,7 +181,7 @@ public class BasicFileItemWrapperTest {
         basicFileItemWrapper.populateFromReceiver(receiver);
 
         // THEN
-        assertEquals("you.jpg", basicFileItemWrapper.getFileName());
+        assertEquals("you", basicFileItemWrapper.getFileName());
         assertEquals("jpg", basicFileItemWrapper.getExtension());
         assertEquals(uploadFileYou.length(), basicFileItemWrapper.getFileSize());
         assertEquals("image/jpeg", basicFileItemWrapper.getMimeType());
@@ -247,7 +247,7 @@ public class BasicFileItemWrapperTest {
         basicFileItemWrapper.populateFromReceiver(receiver);
 
         // THEN
-        assertEquals("me.jpg", basicFileItemWrapper.getFileName());
+        assertEquals("me", basicFileItemWrapper.getFileName());
         assertEquals("jpg", basicFileItemWrapper.getExtension());
         assertEquals(uploadFileMe.length(), basicFileItemWrapper.getFileSize());
         assertEquals("image/jpeg", basicFileItemWrapper.getMimeType());

@@ -62,7 +62,7 @@ public class MessageStore {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    static final String MESSAGE_NODE_TYPE = "mgnl:systemMessage";
+    static final String MESSAGE_NODE_TYPE = AdmincentralNodeTypes.SystemMessage.NAME;
 
     private static final String WORKSPACE_NAME = "messages";
     private static final String WORKSPACE_PATH = "/";
@@ -148,10 +148,10 @@ public class MessageStore {
                     return messages;
 
                 } catch (RepositoryException e) {
-                    logger.error("Saving message failed for user: " + userName, e);
+                    logger.error("Retrieving messages from JCR failed for user: " + userName, e);
                     return new ArrayList<Message>();
                 } catch (Node2BeanException e) {
-                    logger.error("Saving message failed for user: " + userName, e);
+                    logger.error("Unmarshalling message failed for user: " + userName, e);
                     return new ArrayList<Message>();
                 }
             }

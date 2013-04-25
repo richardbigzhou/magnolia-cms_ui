@@ -36,8 +36,8 @@ package info.magnolia.ui.mediaeditor.action;
 import info.magnolia.ui.mediaeditor.MediaEditorPresenter;
 import info.magnolia.ui.mediaeditor.editmode.factory.EditModeProviderFactory;
 import info.magnolia.ui.mediaeditor.editmode.provider.EditModeProvider;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.mediaeditor.provider.EditModeProviderActionDefinition;
 
 import org.apache.log4j.Logger;

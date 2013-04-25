@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import info.magnolia.ui.model.action.CommandActionDefinition;
+import info.magnolia.ui.api.action.CommandActionDefinition;
 
 /**
  * Defines an action for saving an imported file.

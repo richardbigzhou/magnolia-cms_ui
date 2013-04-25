@@ -21,6 +21,11 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-imageprovider</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-integration</artifactId>
       <version>${project.version}</version>
     </dependency>

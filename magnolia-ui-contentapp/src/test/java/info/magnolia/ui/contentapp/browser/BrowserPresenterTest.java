@@ -49,7 +49,7 @@ import info.magnolia.ui.contentapp.config.ContentAppBuilder;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.action.ActionExecutor;
+import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -73,7 +73,7 @@ import org.junit.Test;
  */
 public class BrowserPresenterTest {
 
-    private final static String APP_NAME = "workbenchPresenterTestApp";
+    private final static String APP_NAME = "browserPresenterTestApp";
 
     private final static String SUB_APP_NAME = "browser";
 
@@ -102,10 +102,10 @@ public class BrowserPresenterTest {
         ctx.setUser(createMockUser(USER));
         MgnlContext.setInstance(ctx);
 
-        initContentWorkbenchPresenter();
+        initBrowserPresenter();
     }
 
-    private void initContentWorkbenchPresenter() {
+    private void initBrowserPresenter() {
         // initialize test instance
         BrowserSubAppBuilder subAppBuilder = new ContentAppBuilder(APP_NAME).browserSubApp(SUB_APP_NAME);
         subAppBuilder.workbench(new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreeContentViewDefinition(), new ListContentViewDefinition()));

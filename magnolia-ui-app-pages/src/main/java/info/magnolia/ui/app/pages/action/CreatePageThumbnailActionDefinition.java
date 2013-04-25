@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.model.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
  * CreatePageThumbnailActionDefinition.

@@ -12,6 +12,14 @@
     <id>main</id>
 
     <component>
+      <type>info.magnolia.ui.api.i18n.I18NAuthoringSupport</type>
+      <workspace>config</workspace>
+      <path>/server/i18n/authoring50</path>
+      <observed>true</observed>
+      <scope>singleton</scope>
+    </component>
+
+    <component>
       <type>info.magnolia.ui.framework.message.MessagesManager</type>
       <implementation>info.magnolia.ui.framework.message.MessagesManagerImpl</implementation>
     </component>
@@ -117,6 +125,10 @@
       <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherGroupEntryDefinition</type>
       <implementation>info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherGroupEntryDefinition</implementation>
     </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.api.i18n.I18NAwareProperty</type>
+      <implementation>info.magnolia.ui.admincentral.i18n.I18NAwarePropertyImpl</implementation>
+    </type-mapping>
 
   </components>
 
@@ -180,6 +192,14 @@
       <implementation>info.magnolia.ui.admincentral.shellapp.favorites.FavoritesViewImpl</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.admincentral.shellapp.favorites.FavoritesPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.favorites.FavoritesPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.shellapp.favorites.FavoritesManager</type>
+      <implementation>info.magnolia.ui.admincentral.shellapp.favorites.FavoritesManagerImpl</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.AdmincentralPresenter</type>
       <implementation>info.magnolia.ui.admincentral.AdmincentralPresenter</implementation>
     </component>
@@ -237,12 +257,12 @@
       <implementation>info.magnolia.ui.form.field.validation.ValidatorFieldFactory</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition</type>
-      <implementation>info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
+      <type>info.magnolia.ui.imageprovider.definition.ImageProviderDefinition</type>
+      <implementation>info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.model.imageprovider.definition.ImageProvider</type>
-      <implementation>info.magnolia.ui.admincentral.image.DefaultImageProvider</implementation>
+      <type>info.magnolia.ui.imageprovider.ImageProvider</type>
+      <implementation>info.magnolia.ui.imageprovider.DefaultImageProvider</implementation>
     </component>
   </components>
 
@@ -252,7 +272,7 @@
       <class>info.magnolia.ui.framework.app.SubAppEventBusConfigurer</class>
     </configurer>
     <component>
-      <type>info.magnolia.ui.model.action.ActionExecutor</type>
+      <type>info.magnolia.ui.api.action.ActionExecutor</type>
       <implementation>info.magnolia.ui.framework.app.action.SubAppActionExecutor</implementation>
     </component>
 
@@ -278,6 +298,10 @@
       <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
       <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
     </component>
+    <!-- The FormView is mapped twice because of it two use-cases:
+    in admin-central scope without app-contexts visible and in app-scope, where the app-context is actually needed,
+    so the interface has to be provided by the correct ComponentProvider.
+    !-->
     <component>
       <type>info.magnolia.ui.vaadin.form.FormView</type>
       <implementation>info.magnolia.ui.vaadin.form.ItemFormView</implementation>
@@ -341,6 +365,13 @@
         <workspace>messages</workspace>
       </workspaces>
       <nodeTypeFile>/mgnl-nodetypes/magnolia-message-nodetypes.xml</nodeTypeFile>
+    </repository>
+    <repository>
+      <name>magnolia</name>
+      <workspaces>
+        <workspace>profiles</workspace>
+      </workspaces>
+      <nodeTypeFile>/mgnl-nodetypes/magnolia-favorite-nodetypes.xml</nodeTypeFile>
     </repository>
   </repositories>
 </module>

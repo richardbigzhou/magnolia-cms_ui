@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.overlay;
 
-import info.magnolia.ui.model.overlay.MessageStyleType;
+import info.magnolia.ui.api.overlay.MessageStyleType;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
 import info.magnolia.ui.vaadin.icon.ErrorIcon;
 import info.magnolia.ui.vaadin.icon.NullIcon;
@@ -70,7 +70,7 @@ public enum MessageStyleTypeEnum implements MessageStyleType {
     }
 
     @Override
-    public Class getIconClass() {
+    public Class<?> getIconClass() {
         return iconClass;
     }
 

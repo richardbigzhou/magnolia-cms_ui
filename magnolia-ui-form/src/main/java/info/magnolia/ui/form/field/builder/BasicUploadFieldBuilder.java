@@ -40,7 +40,7 @@ import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.upload.basic.BasicFileItemWrapper;
 import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
-import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
+import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -98,7 +98,7 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder<BasicUploadFie
     }
 
     /**
-     * Get or Create the imageBinary Item. If this Item doesn't exist yet,
+     * Get or Create the Binary Item. If this Item doesn't exist yet,
      * initialize all fields (as Property).
      */
     public JcrItemNodeAdapter getOrCreateSubItemWithBinaryData() {
@@ -132,6 +132,9 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder<BasicUploadFie
         return Binary.class;
     }
 
+    /**
+     * Configure Field based on the definition.
+     */
     protected void setMessages(BasicUploadField<BasicFileItemWrapper> field) {
         field.setSelectNewCaption(definition.getSelectNewCaption());
         field.setSelectAnotherCaption(definition.getSelectAnotherCaption());
@@ -147,6 +150,8 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder<BasicUploadFie
         field.setWarningNoteCaption(definition.getWarningNoteCaption());
         field.setErrorNoteCaption(definition.getErrorNoteCaption());
         field.setDeteteCaption(definition.getDeleteCaption());
+        field.setEditFileFormat(definition.isEditFileFormat());
+        field.setEditFileName(definition.isEditFileName());
     }
 
 }

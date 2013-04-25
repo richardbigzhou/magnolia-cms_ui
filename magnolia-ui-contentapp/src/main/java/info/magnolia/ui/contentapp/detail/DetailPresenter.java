@@ -43,9 +43,9 @@ import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.action.ActionExecutor;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -98,8 +98,6 @@ public class DetailPresenter implements DialogActionListener, EditorCallback, Ed
         case EDIT:
         default:
             this.formView = formBuilder.buildForm(editorDefinition.getForm(), item, null);
-            ;
-
             initActions();
             view.setItemView(formView.asVaadinComponent(), viewType);
             break;
