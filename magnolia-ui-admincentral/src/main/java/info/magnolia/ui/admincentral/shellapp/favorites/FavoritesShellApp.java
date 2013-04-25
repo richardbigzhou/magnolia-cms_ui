@@ -36,11 +36,11 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.admincentral.shellapp.ShellApp;
 import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.net.URI;
@@ -77,7 +77,7 @@ public class FavoritesShellApp implements ShellApp {
     @Override
     public void locationChanged(Location location) {
         JcrNewNodeAdapter favoriteLocation = determinePreviousLocation();
-        favoritesView.setFavoriteLocation(favoriteLocation);
+        favoritesView.setFavoriteLocation(favoriteLocation, favoritesPresenter.createNewGroupSuggestion(), favoritesPresenter.getAvailableGroupsNames());
     }
 
     private JcrNewNodeAdapter determinePreviousLocation() {

@@ -33,9 +33,11 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
@@ -57,7 +59,8 @@ public class FavoriteEntry extends CustomComponent {
     private String location;
     private String icon;
     private String title;
-    private String favoriteId;
+    private String group;
+    private String relPath;
     private TextField titleField;
     private NativeButton editButton;
     private NativeButton removeButton;
@@ -66,9 +69,18 @@ public class FavoriteEntry extends CustomComponent {
 
     public FavoriteEntry(final JcrItemNodeAdapter favorite, final FavoritesView.Listener listener) {
         super();
-        this.favoriteId = favorite.getItemProperty(ModelConstants.JCR_NAME).getValue().toString();
+        String nodeName = favorite.getItemProperty(ModelConstants.JCR_NAME).getValue().toString();
         this.location = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue().toString();
         this.title = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue().toString();
+        this.group = "";
+        this.relPath = nodeName;
+
+        if (favorite.getItemProperty(AdmincentralNodeTypes.Favorite.GROUP) != null) {
+            this.group = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.GROUP).getValue().toString();
+        }
+        if (StringUtils.isNotBlank(this.group)) {
+            this.relPath = this.group + "/" + nodeName;
+        }
 
         String icon = "icon-app";
         if (favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue() != null) {
@@ -103,8 +115,7 @@ public class FavoriteEntry extends CustomComponent {
                 }
                 boolean titleHasChanged = !getTitleValue().equals(titleField.getValue());
                 if (isEditable() && titleHasChanged) {
-                    System.out.println("title has changed to " + titleField.getValue());
-                    listener.editFavorite(getFavoriteId(), titleField.getValue());
+                    listener.editFavorite(getRelPath(), titleField.getValue());
                 }
                 setEditable(false);
             }
@@ -120,7 +131,7 @@ public class FavoriteEntry extends CustomComponent {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                listener.removeFavorite(getFavoriteId());
+                listener.removeFavorite(getRelPath());
             }
         });
         removeButton.setVisible(false);
@@ -146,10 +157,6 @@ public class FavoriteEntry extends CustomComponent {
         setCompositionRoot(root);
     }
 
-    public String getFavoriteId() {
-        return favoriteId;
-    }
-
     public String getLocationValue() {
         return location;
     }
@@ -164,6 +171,14 @@ public class FavoriteEntry extends CustomComponent {
 
     public boolean isEditable() {
         return editable;
+    }
+
+    public String getGroupValue() {
+        return group;
+    }
+
+    public String getRelPath() {
+        return relPath;
     }
 
     public void setEditable(boolean editable) {

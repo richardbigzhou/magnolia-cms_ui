@@ -36,6 +36,8 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
+import java.util.Set;
+
 import javax.inject.Inject;
 
 import com.vaadin.server.Page;
@@ -56,22 +58,20 @@ public class FavoritesPresenter implements FavoritesView.Listener {
 
     public FavoritesView start() {
         view.setListener(this);
-        view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""));
+        initializeView();
         return view;
     }
 
     @Override
-    public void removeFavorite(String id) {
-        favoritesManager.removeFavorite(id);
-        // Give view the updated favorites collection, w/o the one we just removed.
-        view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""));
+    public void removeFavorite(String relPath) {
+        favoritesManager.removeFavorite(relPath);
+        initializeView();
     }
 
     @Override
     public void addFavorite(JcrNewNodeAdapter favorite) {
         favoritesManager.addFavorite(favorite);
-        // Give view the updated favorites collection, so that the newly added one is immediately displayed.
-        view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""));
+        initializeView();
     }
 
     @Override
@@ -86,9 +86,39 @@ public class FavoritesPresenter implements FavoritesView.Listener {
         return favoritesManager.createFavoriteSuggestion(location, title, icon);
     }
 
+    public JcrNewNodeAdapter createNewGroupSuggestion() {
+        return favoritesManager.createFavoriteGroupSuggestion("");
+    }
+
+    public Set<String> getAvailableGroupsNames() {
+        return favoritesManager.getGroupsNames();
+    }
+
     @Override
-    public void editFavorite(String id, String newTitle) {
-        favoritesManager.editFavorite(id, newTitle);
-        view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""));
+    public void editFavorite(String relPath, String newTitle) {
+        favoritesManager.editFavorite(relPath, newTitle);
+        initializeView();
+    }
+
+    @Override
+    public void addGroup(JcrNewNodeAdapter newGroup) {
+        favoritesManager.addGroup(newGroup);
+        initializeView();
+    }
+
+    @Override
+    public void editGroup(String relPath, String newTitle) {
+        favoritesManager.editGroup(relPath, newTitle);
+        initializeView();
+    }
+
+    @Override
+    public void removeGroup(String relPath) {
+        favoritesManager.removeGroup(relPath);
+        initializeView();
+    }
+
+    private void initializeView() {
+        view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""), createNewGroupSuggestion(), getAvailableGroupsNames());
     }
 }

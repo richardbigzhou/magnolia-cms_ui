@@ -37,17 +37,22 @@ import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
-import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.inject.Inject;
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -61,19 +66,35 @@ public class FavoritesManagerImpl implements FavoritesManager {
     public FavoritesManagerImpl(final FavoriteStore favoriteStore) {
         this.favoriteStore = favoriteStore;
     }
+
     @Override
     public JcrItemNodeAdapter getFavorites() {
         try {
             Node bookmarksNode = favoriteStore.getBookmarkRoot();
             JcrNodeAdapter favorites = new JcrNodeAdapter(bookmarksNode);
 
-            Iterable<Node> bookmarks = NodeUtil.getNodes(bookmarksNode, AdmincentralNodeTypes.Favorite.NAME);
+            Iterable<Node> bookmarks = NodeUtil.getNodes(bookmarksNode);
             JcrNodeAdapter currentChild;
             for (Node bookmark : bookmarks) {
                 currentChild = new JcrNodeAdapter(bookmark);
                 currentChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.TITLE)));
-                currentChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.URL)));
-                currentChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.ICON)));
+
+                final String bookmarkNodeType = bookmark.getPrimaryNodeType().getName();
+
+                if (AdmincentralNodeTypes.Favorite.NAME.equals(bookmarkNodeType)) {
+                    currentChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.URL)));
+                    currentChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.ICON)));
+                } else if (AdmincentralNodeTypes.FavoriteGroup.NAME.equals(bookmarkNodeType)) {
+                    Iterable<Node> bookmarksWithGroup = NodeUtil.getNodes(bookmark, AdmincentralNodeTypes.Favorite.NAME);
+                    JcrNodeAdapter favoriteChild;
+                    for (Node bookmarkWithGroup : bookmarksWithGroup) {
+                        favoriteChild = new JcrNodeAdapter(bookmarkWithGroup);
+                        favoriteChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", PropertyUtil.getString(bookmarkWithGroup, AdmincentralNodeTypes.Favorite.TITLE)));
+                        favoriteChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", PropertyUtil.getString(bookmarkWithGroup, AdmincentralNodeTypes.Favorite.URL)));
+                        favoriteChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", PropertyUtil.getString(bookmarkWithGroup, AdmincentralNodeTypes.Favorite.ICON)));
+                        currentChild.addChild(favoriteChild);
+                    }
+                }
                 favorites.addChild(currentChild);
             }
             return favorites;
@@ -83,11 +104,35 @@ public class FavoritesManagerImpl implements FavoritesManager {
     }
 
     @Override
+    public Set<String> getGroupsNames() {
+        Set<String> groupNames = new HashSet<String>();
+        Iterable<Node> groups;
+        try {
+            Node bookmarksNode = favoriteStore.getBookmarkRoot();
+            groups = NodeUtil.getNodes(bookmarksNode, AdmincentralNodeTypes.FavoriteGroup.NAME);
+            for (Node group : groups) {
+                groupNames.add(PropertyUtil.getString(group, AdmincentralNodeTypes.Favorite.TITLE));
+            }
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+
+        return groupNames;
+    }
+
+    @Override
     public void addFavorite(JcrNewNodeAdapter favorite) {
         try {
             final String title = (String) favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue();
             favorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(ModelConstants.JCR_NAME, "", Path.getValidatedLabel(title)));
-            favorite.getNode().getSession().save();
+            Node newFavorite = favorite.getNode();
+            Session session = newFavorite.getSession();
+            final String group = (String) favorite.getItemProperty(AdmincentralNodeTypes.Favorite.GROUP).getValue();
+            if (StringUtils.isNotBlank(group)) {
+                Node parent = session.getNode(newFavorite.getParent().getPath() + "/" + group);
+                NodeUtil.moveNode(newFavorite, parent);
+            }
+            session.save();
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
@@ -105,6 +150,7 @@ public class FavoritesManagerImpl implements FavoritesManager {
         JcrNewNodeAdapter newFavorite = new JcrNewNodeAdapter(bookmarkRoot, AdmincentralNodeTypes.Favorite.NAME);
         newFavorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", title));
         newFavorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", location));
+        newFavorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.GROUP, "", ""));
         newFavorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", StringUtils.defaultIfEmpty(icon, "icon-app")));
         return newFavorite;
     }
@@ -126,15 +172,21 @@ public class FavoritesManagerImpl implements FavoritesManager {
             // we get the props we need from the node being edited, then delete it and re-create it anew. This to ensure that title and jcr node name are kept in "sync",
             // the latter being the title with jcr invalid characters replaced with dashes.
             Node bookmarkRoot = favoriteStore.getBookmarkRoot();
-            Node oldFavorite = bookmarkRoot.getNode(id);
-            String url = oldFavorite.getProperty(AdmincentralNodeTypes.Favorite.URL).getString();
-            String icon = oldFavorite.getProperty(AdmincentralNodeTypes.Favorite.ICON).getString();
-            oldFavorite.remove();
+            Node staleFavorite = bookmarkRoot.getNode(id);
+            Node parent = staleFavorite.getParent();
+            String url = staleFavorite.getProperty(AdmincentralNodeTypes.Favorite.URL).getString();
+            String icon = staleFavorite.getProperty(AdmincentralNodeTypes.Favorite.ICON).getString();
+            String group = "";
+            if (staleFavorite.hasProperty(AdmincentralNodeTypes.Favorite.GROUP)) {
+                group = staleFavorite.getProperty(AdmincentralNodeTypes.Favorite.GROUP).getString();
+            }
+            staleFavorite.remove();
 
-            Node editedFavorite = bookmarkRoot.addNode(Path.getValidatedLabel(title), AdmincentralNodeTypes.Favorite.NAME);
+            Node editedFavorite = parent.addNode(Path.getValidatedLabel(title), AdmincentralNodeTypes.Favorite.NAME);
             editedFavorite.setProperty(AdmincentralNodeTypes.Favorite.TITLE, title);
             editedFavorite.setProperty(AdmincentralNodeTypes.Favorite.URL, url);
             editedFavorite.setProperty(AdmincentralNodeTypes.Favorite.ICON, icon);
+            editedFavorite.setProperty(AdmincentralNodeTypes.Favorite.GROUP, group);
 
             bookmarkRoot.getSession().save();
         } catch (RepositoryException e) {
@@ -142,4 +194,69 @@ public class FavoritesManagerImpl implements FavoritesManager {
         }
     }
 
+    @Override
+    public JcrNewNodeAdapter createFavoriteGroupSuggestion(String title) {
+        Node bookmarkRoot;
+        try {
+            bookmarkRoot = favoriteStore.getBookmarkRoot();
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+
+        JcrNewNodeAdapter newGroup = new JcrNewNodeAdapter(bookmarkRoot, AdmincentralNodeTypes.FavoriteGroup.NAME);
+        newGroup.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", title));
+
+        return newGroup;
+    }
+
+    @Override
+    public void addGroup(JcrNewNodeAdapter newGroup) {
+        try {
+            final String title = (String) newGroup.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue();
+            newGroup.addItemProperty(DefaultPropertyUtil.newDefaultProperty(ModelConstants.JCR_NAME, "", Path.getValidatedLabel(title)));
+            newGroup.getNode().getSession().save();
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+    }
+
+
+    @Override
+    // TODO
+    public void editGroup(String id, String newTitle) {
+        try {
+            // we get the props we need from the node being edited, then delete it and re-create it anew. This to ensure that title and jcr node name are kept in "sync",
+            // the latter being the title with jcr invalid characters replaced with dashes.
+            Node bookmarkRoot = favoriteStore.getBookmarkRoot();
+            Node oldGroup = bookmarkRoot.getNode(id);
+            NodeIterator favorites = oldGroup.getNodes(AdmincentralNodeTypes.Favorite.NAME);
+            oldGroup.remove();
+
+            Node editedGroup = bookmarkRoot.addNode(Path.getValidatedLabel(newTitle), AdmincentralNodeTypes.FavoriteGroup.NAME);
+            while (favorites.hasNext()) {
+                Node favorite = favorites.nextNode();
+
+            }
+
+            bookmarkRoot.getSession().save();
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+
+    }
+
+    @Override
+    // TODO
+    public void removeGroup(String id) {
+        try {
+            Node bookmarkRoot = favoriteStore.getBookmarkRoot();
+            Node groupToBeRemoved = bookmarkRoot.getNode(id);
+            // These ones will remain orphans :(
+            NodeIterator favorites = groupToBeRemoved.getNodes(AdmincentralNodeTypes.Favorite.NAME);
+            groupToBeRemoved.remove();
+            bookmarkRoot.getSession().save();
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+    }
 }

@@ -37,6 +37,8 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
+import java.util.Set;
+
 /**
  * View for favorites.
  */
@@ -44,20 +46,26 @@ public interface FavoritesView extends View {
 
     void setListener(Listener listener);
 
-    void init(JcrItemNodeAdapter favoritesRoot, JcrNewNodeAdapter favoriteSuggestion);
+    void init(JcrItemNodeAdapter favoritesRoot, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Set<String> availableGroups);
 
-    void setFavoriteLocation(JcrNewNodeAdapter location);
+    void setFavoriteLocation(JcrNewNodeAdapter location, JcrNewNodeAdapter groupSuggestion, Set<String> availableGroups);
     /**
      * Listener.
      */
     interface Listener {
         void addFavorite(JcrNewNodeAdapter newFavorite);
 
-        void editFavorite(String id, String newTitle);
+        void editFavorite(String relPath, String newTitle);
 
-        void removeFavorite(String id);
+        void removeFavorite(String relPath);
 
         void goToLocation(String location);
+
+        void addGroup(JcrNewNodeAdapter newGroup);
+
+        void editGroup(String relPath, String newTitle);
+
+        void removeGroup(String relPath);
     }
 
 }

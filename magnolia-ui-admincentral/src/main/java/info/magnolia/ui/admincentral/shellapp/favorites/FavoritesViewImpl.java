@@ -33,23 +33,27 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed.FeedSection;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -60,8 +64,10 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
     private VerticalLayout layout = new VerticalLayout();
     private FavoritesView.Listener listener;
-    private FavoritesSection newPages;
-    private FavoriteForm favoriteForm;
+    private FavoritesSection noGroup;
+    private TabSheet favoriteForm;
+    private FeedSection leftSide;
+    private FeedSection rightSide;
 
     @Override
     public String getId() {
@@ -84,21 +90,11 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         layout.setWidth("900px");
 
         final SplitFeed splitPanel = new SplitFeed();
-        final FeedSection leftSide = splitPanel.getLeftContainer();
-        final FeedSection rightSide = splitPanel.getRightContainer();
+        leftSide = splitPanel.getLeftContainer();
+        rightSide = splitPanel.getRightContainer();
 
-        newPages = new FavoritesSection();
-        newPages.setCaption("New Pages");
-
-        FavoritesSection newCampaigns = new FavoritesSection();
-        newCampaigns.setCaption("New Campaigns");
-
-        FavoritesSection assetShortcuts = new FavoritesSection();
-        assetShortcuts.setCaption("Asset Shortcuts");
-
-        leftSide.addComponent(newPages);
-        leftSide.addComponent(newCampaigns);
-        rightSide.addComponent(assetShortcuts);
+        noGroup = new FavoritesSection();
+        leftSide.addComponent(noGroup);
 
         layout.addComponent(splitPanel);
         layout.setExpandRatio(splitPanel, 1f);
@@ -111,9 +107,9 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     }
 
     @Override
-    public void setFavoriteLocation(JcrNewNodeAdapter newFavorite) {
+    public void setFavoriteLocation(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup, Set<String> availableGroupsNames) {
         layout.removeComponent(favoriteForm);
-        favoriteForm = new FavoriteForm(newFavorite);
+        favoriteForm = createFavoritesTabsheetForm(newFavorite, newGroup, availableGroupsNames);
         layout.addComponent(favoriteForm);
     }
 
@@ -128,19 +124,33 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     }
 
     @Override
-    public void init(JcrItemNodeAdapter favorites, JcrNewNodeAdapter favoriteSuggestion) {
-        newPages.removeAllComponents();
+    public void init(JcrItemNodeAdapter favorites, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Set<String> availableGroups) {
+        noGroup.removeAllComponents();
+        leftSide.removeAllComponents();
+        rightSide.removeAllComponents();
         Iterator<JcrItemNodeAdapter> favoritesIterator = favorites.getChildren().values().iterator();
 
         while(favoritesIterator.hasNext()) {
-            final JcrItemNodeAdapter favorite = favoritesIterator.next();
-            final FavoriteEntry fav = new FavoriteEntry(favorite, listener);
-            newPages.addComponent(fav);
+            final JcrItemNodeAdapter favoriteAdapter = favoritesIterator.next();
+            if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
+                final FavoriteEntry favEntry = new FavoriteEntry(favoriteAdapter, listener);
+                noGroup.addComponent(favEntry);
+            } else {
+                FavoritesSection group = new FavoritesSection();
+                group.setCaption(favoriteAdapter.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue().toString());
+                for (JcrItemNodeAdapter fav : favoriteAdapter.getChildren().values()) {
+                    final FavoriteEntry favEntry = new FavoriteEntry(fav, listener);
+                    group.addComponent(favEntry);
+                }
+                rightSide.addComponent(group);
+            }
         }
+        leftSide.addComponent(noGroup);
+
         if (favoriteForm != null) {
             layout.removeComponent(favoriteForm);
         }
-        favoriteForm = new FavoriteForm(favoriteSuggestion);
+        favoriteForm = createFavoritesTabsheetForm(favoriteSuggestion, groupSuggestion, availableGroups);
         layout.addComponent(favoriteForm);
     }
 
@@ -153,7 +163,9 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
         private TextField title = new TextField("Title");
 
-        public FavoriteForm(final JcrNewNodeAdapter newFavorite) {
+        private ComboBox group;
+
+        public FavoriteForm(final JcrNewNodeAdapter newFavorite, Set<String> availableGroups) {
             addStyleName("favorites-form");
             FormLayout layout = new FormLayout();
             title.setWidth(800, Unit.PIXELS);
@@ -162,6 +174,9 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
             url.setRequired(true);
             layout.addComponent(url);
             layout.addComponent(title);
+
+            group = new ComboBox("Add to group", availableGroups);
+            layout.addComponent(group);
 
             // Now use a binder to bind the members
             final FieldGroup binder = new FieldGroup(newFavorite);
@@ -196,5 +211,63 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
             setCompositionRoot(layout);
         }
+    }
+
+    /**
+     * A form component that allows editing an item.
+     */
+    private class FavoriteGroupForm extends CustomComponent {
+
+        private TextField title = new TextField("Title");
+
+        public FavoriteGroupForm(final JcrNewNodeAdapter newGroup) {
+            addStyleName("favorites-form");
+            FormLayout layout = new FormLayout();
+            title.setWidth(800, Unit.PIXELS);
+            title.setRequired(true);
+            layout.addComponent(title);
+
+            // Now use a binder to bind the members
+            final FieldGroup binder = new FieldGroup(newGroup);
+            binder.bindMemberFields(this);
+
+            Button addButton = new Button("Add", new ClickListener() {
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    try {
+                        binder.commit();
+                        listener.addGroup(newGroup);
+                    } catch (CommitException e) {
+                        // TODO how do we display validation errors?
+                        Notification.show(e.getMessage());
+                    }
+                }
+            });
+            addButton.addStyleName("btn-dialog-commit");
+
+            // A button to commit the buffer
+            layout.addComponent(addButton);
+
+            // A button to discard the buffer
+            layout.addComponent(new Button("Cancel", new ClickListener() {
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    binder.discard();
+                    // TODO remove form
+                }
+            }));
+
+            setCompositionRoot(layout);
+        }
+    }
+
+    private TabSheet createFavoritesTabsheetForm(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup, Set<String> availableGroups) {
+        FavoriteForm favoriteFormEntry = new FavoriteForm(newFavorite, availableGroups);
+        FavoriteGroupForm favoriteGroupForm = new FavoriteGroupForm(newGroup);
+        TabSheet favoriteForm = new TabSheet();
+        favoriteForm.addTab(favoriteFormEntry, "Add a new favorite");
+        favoriteForm.addTab(favoriteGroupForm, "Add a new group");
+        return favoriteForm;
     }
 }

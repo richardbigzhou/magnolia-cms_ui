@@ -42,12 +42,12 @@ import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.SecuritySupportImpl;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.context.SystemContext;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import javax.jcr.Node;
@@ -88,6 +88,7 @@ public class FavoritesManagerImplTest {
         };
         sec.addUserManager(Realm.REALM_SYSTEM.getName(), userMgr);
         ComponentsTestUtil.setInstance(SecuritySupport.class, sec);
+        ComponentsTestUtil.setInstance(SystemContext.class, ctx);
 
         MgnlContext.setInstance(ctx);
 
@@ -103,10 +104,8 @@ public class FavoritesManagerImplTest {
     @Test
     public void testAddFavorite() throws Exception {
         // GIVEN
-        JcrNewNodeAdapter newNodeAdapter = new JcrNewNodeAdapter(favoriteStore.getBookmarkRoot(), AdmincentralNodeTypes.Favorite.NAME);
         final String bookmarkTitle = "justATest";
-        newNodeAdapter.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", bookmarkTitle));
-
+        JcrNewNodeAdapter newNodeAdapter = favoritesManager.createFavoriteSuggestion("/foo/bar", bookmarkTitle, "");
         // WHEN
         favoritesManager.addFavorite(newNodeAdapter);
 
@@ -114,6 +113,21 @@ public class FavoritesManagerImplTest {
         final Node newBookmarkNode = favoriteStore.getBookmarkRoot().getNode(bookmarkTitle);
         assertEquals(bookmarkTitle, newBookmarkNode.getName());
         assertEquals(bookmarkTitle, newBookmarkNode.getProperty(AdmincentralNodeTypes.Favorite.TITLE).getString());
+    }
+
+    @Test
+    public void testAddGroup() throws Exception {
+        // GIVEN
+        final String groupTitle = "justATest";
+        JcrNewNodeAdapter newNodeAdapter = favoritesManager.createFavoriteGroupSuggestion(groupTitle);
+
+        // WHEN
+        favoritesManager.addGroup(newNodeAdapter);
+
+        // THEN
+        final Node newGroupNode = favoriteStore.getBookmarkRoot().getNode(groupTitle);
+        assertEquals(groupTitle, newGroupNode.getName());
+        assertEquals(groupTitle, newGroupNode.getProperty(AdmincentralNodeTypes.Favorite.TITLE).getString());
     }
 
     @Test
