@@ -41,7 +41,7 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
  */
 public interface FieldTypeDefinition {
 
-    FieldDefinition getDefinition();
+    Class<? extends FieldDefinition> getDefinition();
 
     Class<? extends FieldBuilder> getBuilder();
 }

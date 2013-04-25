@@ -41,7 +41,7 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
  */
 public class ConfiguredFieldTypeDefinition implements FieldTypeDefinition {
 
-    private FieldDefinition definition;
+    private Class<? extends FieldDefinition> definition;
     private Class<? extends FieldBuilder> builder;
 
     @Override
@@ -50,7 +50,7 @@ public class ConfiguredFieldTypeDefinition implements FieldTypeDefinition {
     }
 
     @Override
-    public FieldDefinition getDefinition() {
+    public Class<? extends FieldDefinition> getDefinition() {
         return definition;
     }
 
@@ -58,7 +58,7 @@ public class ConfiguredFieldTypeDefinition implements FieldTypeDefinition {
         this.builder = builder;
     }
 
-    public void setDefinition(FieldDefinition definition) {
+    public void setDefinition(Class<? extends FieldDefinition> definition) {
         this.definition = definition;
     }
 }
