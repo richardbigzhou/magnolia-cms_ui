@@ -34,10 +34,12 @@
 package info.magnolia.ui.form.field.builder;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.registry.FieldTypeDefinition;
+import info.magnolia.ui.form.field.registry.FieldTypeDefinitionRegistry;
 import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.model.builder.MappingFactoryBase;
+import info.magnolia.ui.model.builder.FactoryBase;
 
 import java.io.Serializable;
 
@@ -51,22 +53,32 @@ import com.vaadin.data.Item;
  * @see FieldDefinition
  * @see FieldBuilder
  */
-public class FieldFactory extends MappingFactoryBase<FieldDefinition, FieldBuilder> implements Serializable {
+public class FieldFactory extends FactoryBase<FieldDefinition, FieldBuilder> implements Serializable {
 
+    private FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry;
     private ValidatorFieldFactory validatorFieldFactory;
 
     @Inject
-    public FieldFactory(ComponentProvider componentProvider, DialogFieldRegistry dialogFieldRegistry, ValidatorFieldFactory validatorFieldFactory) {
+    public FieldFactory(ComponentProvider componentProvider, FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry, ValidatorFieldFactory validatorFieldFactory) {
         super(componentProvider);
+        this.fieldTypeDefinitionRegistry = fieldTypeDefinitionRegistry;
         this.validatorFieldFactory = validatorFieldFactory;
-        for (DefinitionToImplementationMapping<FieldDefinition, FieldBuilder> definitionToImplementationMapping : dialogFieldRegistry.getDefinitionToImplementationMappings()) {
-            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
-        }
     }
 
     public FieldBuilder create(FieldDefinition definition, Item item, Object... parameters) {
         FieldBuilder fieldBuilder = super.create(definition, item, parameters);
         fieldBuilder.setValidatorFieldFactory(validatorFieldFactory);
         return fieldBuilder;
+    }
+
+    @Override
+    protected Class<? extends FieldBuilder> resolveImplementationClass(FieldDefinition definition) {
+        FieldTypeDefinition fieldTypeDefinition = null;
+        try {
+            fieldTypeDefinition = fieldTypeDefinitionRegistry.get(definition.getClass().getName());
+        } catch (RegistrationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return fieldTypeDefinition.getBuilder();
     }
 }
