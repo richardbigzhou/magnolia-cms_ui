@@ -48,25 +48,13 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.location.LocationHistoryHandler;
 import info.magnolia.ui.framework.message.LocalMessageDispatcher;
-import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.model.overlay.View;
 
-import java.lang.reflect.InvocationTargetException;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.vaadin.event.ListenerMethod.MethodException;
-import com.vaadin.server.ErrorEvent;
-import com.vaadin.server.ErrorHandler;
-import com.vaadin.server.ServerRpcManager.RpcInvocationException;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
@@ -75,11 +63,9 @@ import com.vaadin.ui.UI;
  */
 public class AdmincentralPresenter {
 
-    private static final Logger log = LoggerFactory.getLogger(AdmincentralPresenter.class);
-
     private final ShellImpl shell;
 
-    private final MessagesManager messagesManager;
+    final MessagesManager messagesManager;
 
     @Inject
     public AdmincentralPresenter(final ShellImpl shell, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
@@ -99,74 +85,7 @@ public class AdmincentralPresenter {
 
         messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), messageDispatcher);
 
-        UI.getCurrent().setErrorHandler(new ErrorHandler() {
-
-            private static final String DEFAULT_MESSAGE = "AdmincentralUI has encountered an unhandled exception.";
-
-            @Override
-            public void error(ErrorEvent event) {
-                log.error(DEFAULT_MESSAGE, event.getThrowable());
-
-                Message message = getErrorMessage(event.getThrowable());
-                AdmincentralPresenter.this.messagesManager.sendLocalMessage(message);
-            }
-
-            private Message getErrorMessage(Throwable e) {
-
-                Message message = new Message();
-                message.setType(MessageType.ERROR);
-
-                addMessageDetails(message, e);
-
-                // append details for RPC exceptions
-                if (e instanceof RpcInvocationException) {
-                    e = e.getCause();
-                    addMessageDetails(message, e);
-                }
-                if (e instanceof InvocationTargetException) {
-                    e = ((InvocationTargetException) e).getTargetException();
-                    addMessageDetails(message, e);
-                }
-                if (e instanceof MethodException) {
-                    e = e.getCause();
-                    addMessageDetails(message, e);
-                }
-
-                // append other potential causes
-                while (e != null && e != e.getCause()) {
-                    e = e.getCause();
-                    addMessageDetails(message, e);
-                }
-
-                if (StringUtils.isBlank(message.getSubject())) {
-                    message.setSubject(DEFAULT_MESSAGE);
-                }
-
-                return message;
-            }
-
-            private void addMessageDetails(Message message, Throwable e) {
-                if (e != null) {
-
-                    // message details
-                    String content = message.getMessage();
-                    if (content == null) {
-                        content = "";
-                    } else {
-                        content += "\ncaused by ";
-                    }
-                    content += e.getClass().getSimpleName();
-                    if (e.getMessage() != null) {
-                        content += ": " + e.getMessage();
-
-                        // message subject
-                        message.setSubject(e.getMessage());
-                    }
-                    message.setMessage(content);
-                }
-            }
-
-        });
+        UI.getCurrent().setErrorHandler(new AdmincentralErrorHandler(this.messagesManager));
         VaadinSession.getCurrent().setErrorHandler(null);
     }
 
