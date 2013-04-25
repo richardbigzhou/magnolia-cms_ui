@@ -38,6 +38,7 @@ import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppActivatedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.JQueryAnimation;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
@@ -74,6 +75,8 @@ public class ShellAppLauncher extends FlowPanel {
     private final static int DIVET_ANIMATION_SPEED = 200;
 
     private final static String ID = "main-launcher";
+
+    private JQueryAnimation divetAnimation;
 
     /**
      * NavigatorButton.
@@ -132,6 +135,7 @@ public class ShellAppLauncher extends FlowPanel {
     public ShellAppLauncher(final EventBus eventBus) {
         super();
         this.eventBus = eventBus;
+        this.divetAnimation = new JQueryAnimation();
         getElement().setId(ID);
         construct();
         bindHandlers();
@@ -240,9 +244,9 @@ public class ShellAppLauncher extends FlowPanel {
                 VShellImageBundle.BUNDLE.getDivetWhite();
         divet.setResource(res);
         if (animated) {
-            final AnimationSettings settings = new AnimationSettings();
-            settings.setProperty("left", divetPos);
-            JQueryWrapper.select(divetWrapper).animate(DIVET_ANIMATION_SPEED, settings);
+            divetAnimation.setProperty("left", divetPos);
+            divetAnimation.run(DIVET_ANIMATION_SPEED, divetWrapper);
+
         } else {
             divetWrapper.getStyle().setLeft(divetPos, Unit.PX);
         }
