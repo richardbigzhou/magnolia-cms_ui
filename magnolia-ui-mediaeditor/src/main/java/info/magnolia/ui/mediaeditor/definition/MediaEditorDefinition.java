@@ -34,7 +34,7 @@
 package info.magnolia.ui.mediaeditor.definition;
 
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
 
 import java.util.Map;
 

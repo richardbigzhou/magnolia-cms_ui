@@ -99,7 +99,7 @@
       <sv:value>7ab95f0d-9b27-4a1c-8f25-4c0da8c3081b</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.model.action.ConfiguredActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.api.action.ConfiguredActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-redo</sv:value>
@@ -134,7 +134,7 @@
       <sv:value>99c779e1-f082-411e-a0d3-d3a21e427372</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.model.action.ConfiguredActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.api.action.ConfiguredActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-undo</sv:value>
@@ -204,7 +204,7 @@
       <sv:value>6f260082-3e86-4c74-8591-fa69adc07f70</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.model.action.ConfiguredActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.api.action.ConfiguredActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-paste</sv:value>
@@ -437,7 +437,7 @@
       <sv:value>a8b7bf3b-4fc5-4826-b198-3a1bfaad3710</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.model.action.ConfiguredActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.api.action.ConfiguredActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-copy</sv:value>
@@ -472,7 +472,7 @@
       <sv:value>6127c44e-1042-46d3-a2d1-6dac1bea5c3d</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.model.action.ConfiguredActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.api.action.ConfiguredActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-move</sv:value>

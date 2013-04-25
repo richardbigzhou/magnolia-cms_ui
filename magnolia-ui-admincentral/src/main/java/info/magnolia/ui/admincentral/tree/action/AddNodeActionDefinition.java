@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.model.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
  * Defines the type of the new node. Defaults to {@link NodeTypes.Content#NAME} if not set.

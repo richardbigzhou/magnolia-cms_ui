@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.editor.pagebar;
 
-import info.magnolia.ui.model.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 
 import java.util.Locale;
 

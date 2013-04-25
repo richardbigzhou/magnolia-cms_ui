@@ -53,7 +53,7 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.model.action.ActionExecutor</type>
+      <type>info.magnolia.ui.api.action.ActionExecutor</type>
       <implementation>info.magnolia.ui.mediaeditor.action.MediaEditorActionExecutor</implementation>
     </component>
 

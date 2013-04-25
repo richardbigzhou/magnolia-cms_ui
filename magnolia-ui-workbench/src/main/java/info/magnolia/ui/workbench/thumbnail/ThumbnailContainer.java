@@ -37,7 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer.ThumbnailItem;
-import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
+import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 

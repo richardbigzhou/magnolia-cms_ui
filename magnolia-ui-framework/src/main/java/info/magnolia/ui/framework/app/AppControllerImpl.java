@@ -54,8 +54,9 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.model.overlay.OverlayLayer;
-import info.magnolia.ui.vaadin.view.Viewport;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.overlay.OverlayLayer;
+import info.magnolia.ui.api.view.Viewport;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -121,7 +122,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     /**
      * This method is called to create an instance of an app independent from the {@link LocationController} and the {@link AppController} handling.
-     * It will not open in the {@link info.magnolia.ui.vaadin.view.Viewport} and will not register itself to the running apps.
+     * It will not open in the {@link info.magnolia.ui.api.view.Viewport} and will not register itself to the running apps.
      * This is e.g. used to pass the {@link App} into a dialog and obtain app-specific information from outside the app.
      *
      * @param appId of the {@link App} to instantiate.
@@ -152,7 +153,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
     /**
      * This method is called to launch an app independent from the {@link LocationController}.
-     * It will not open in the {@link info.magnolia.ui.vaadin.view.Viewport}.
+     * It will not open in the {@link info.magnolia.ui.api.view.Viewport}.
      * This is e.g. used to pass the {@link App} into a dialog and obtain app-specific information from outside the app.
      *
      * See MGNLUI-379.
@@ -429,6 +430,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         // Add the AppContext instance into the component provider.
         configuration.addComponent(InstanceConfiguration.valueOf(AppContext.class, appInstanceController));
+        configuration.addComponent(InstanceConfiguration.valueOf(UiContext.class, appInstanceController));
 
         eventBusProtector = new EventBusProtector();
         configuration.addConfigurer(eventBusProtector);

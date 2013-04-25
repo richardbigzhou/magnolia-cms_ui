@@ -36,7 +36,7 @@ package info.magnolia.ui.vaadin.integration.jcr;
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.model.ModelConstants;
+import info.magnolia.ui.api.ModelConstants;
 
 import java.util.Collection;
 
@@ -124,7 +124,7 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
     }
 
     /**
-     * JcrPropertyAdapter custom logic to update one single vaadin property. If updated propertyId is {@link info.magnolia.ui.model.ModelConstants#JCR_NAME}, then rename JCR Property. If propertyId
+     * JcrPropertyAdapter custom logic to update one single vaadin property. If updated propertyId is {@link info.magnolia.ui.api.ModelConstants#JCR_NAME}, then rename JCR Property. If propertyId
      * is {@link #VALUE_PROPERTY}, set new property value. If propertyId is {@link #TYPE_PROPERTY}, set new property
      * type. Otherwise, do nothing.
      */

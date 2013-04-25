@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.form.action;
 
-import info.magnolia.ui.model.action.Action;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
+import info.magnolia.ui.api.action.Action;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.builder.DefinitionToImplementationMapping;
 
 import java.io.Serializable;
 import java.util.ArrayList;

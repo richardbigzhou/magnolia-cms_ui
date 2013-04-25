@@ -34,9 +34,9 @@
 package info.magnolia.ui.mediaeditor.action;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.model.action.AbstractActionExecutor;
+import info.magnolia.ui.api.action.AbstractActionExecutor;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
 
 import javax.inject.Inject;
 

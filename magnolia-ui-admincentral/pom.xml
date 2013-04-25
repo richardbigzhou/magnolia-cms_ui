@@ -34,7 +34,7 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-model</artifactId>
+      <artifactId>magnolia-ui-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
