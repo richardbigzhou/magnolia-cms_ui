@@ -34,6 +34,7 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.statusbar.StatusBarView;
 
 /**
  * WorkbenchView.
@@ -67,6 +68,11 @@ public interface WorkbenchView extends View {
     void addContentView(ContentView.ViewType type, ContentView view, ContentViewDefinition contentViewDefintion);
 
     void setViewType(ContentView.ViewType type);
+
+    /**
+     * Use this method to add a status bar to this sub app view.
+     */
+    void setStatusBarView(StatusBarView statusBar);
 
     void selectPath(String path);
 
