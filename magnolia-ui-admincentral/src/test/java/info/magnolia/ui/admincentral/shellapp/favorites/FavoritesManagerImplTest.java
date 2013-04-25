@@ -42,6 +42,7 @@ import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.SecuritySupportImpl;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.context.SystemContext;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -88,6 +89,7 @@ public class FavoritesManagerImplTest {
         };
         sec.addUserManager(Realm.REALM_SYSTEM.getName(), userMgr);
         ComponentsTestUtil.setInstance(SecuritySupport.class, sec);
+        ComponentsTestUtil.setInstance(SystemContext.class, ctx);
 
         MgnlContext.setInstance(ctx);
 

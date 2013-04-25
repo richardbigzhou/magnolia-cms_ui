@@ -130,7 +130,7 @@ public class JcrNodeAdapterTest {
 
         // THEN
         assertEquals(propertyValue, property.getValue());
-        assertNotSame(property, adapter.getItemProperty(propertyName));
+        assertSame(property, adapter.getItemProperty(propertyName));
     }
 
     @Test

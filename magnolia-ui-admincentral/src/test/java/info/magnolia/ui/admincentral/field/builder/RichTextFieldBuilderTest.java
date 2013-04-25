@@ -31,43 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.upload;
+package info.magnolia.ui.admincentral.field.builder;
 
-import org.vaadin.easyuploads.FileBuffer;
+import static org.junit.Assert.assertEquals;
+
+import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
+import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
+
+import org.junit.Test;
+
+import com.vaadin.ui.Field;
 
 /**
- * Implements {@link FilePropertiesAdapter} for {@link FileBuffer}.
+ * Main testcase for {@link RichTextFieldBuilder}.
  */
-public class FileBufferPropertiesAdapter implements FilePropertiesAdapter {
+public class RichTextFieldBuilderTest extends AbstractBuilderTest<RichTextFieldDefinition> {
 
-    private final FileBuffer buffer;
+    private RichTextFieldBuilder richTextFieldBuilder;
 
-    public static FileBufferPropertiesAdapter adapt(final FileBuffer buffer) {
-        return new FileBufferPropertiesAdapter(buffer);
+    @Test
+    public void simpleRichTextFieldBuilderTest() throws Exception {
+        // GIVEN
+        richTextFieldBuilder = new RichTextFieldBuilder(definition, baseItem, null, null);
+        richTextFieldBuilder.setI18nContentSupport(i18nContentSupport);
+        // WHEN
+        Field field = richTextFieldBuilder.getField();
+
+        // THEN
+        assertEquals(true, field instanceof MagnoliaRichTextField);
+        assertEquals(0, ((AbstractJcrNodeAdapter) baseItem).getChildren().size());
     }
 
-    protected FileBufferPropertiesAdapter(final FileBuffer buffer) {
-        this.buffer = buffer;
-    }
 
     @Override
-    public byte[] getBinaryData() {
-        return (byte[]) buffer.getValue();
-    }
-
-    @Override
-    public String getFileName() {
-        return buffer.getLastFileName();
-    }
-
-    @Override
-    public long getFileSize() {
-        return buffer.getLastFileSize();
-    }
-
-    @Override
-    public String getMimeType() {
-        return buffer.getLastMimeType();
+    protected void createConfiguredFieldDefinition() {
+        RichTextFieldDefinition fieldDefinition = new RichTextFieldDefinition();
+        fieldDefinition.setName(propertyName);
+        this.definition = fieldDefinition;
     }
 
 }
