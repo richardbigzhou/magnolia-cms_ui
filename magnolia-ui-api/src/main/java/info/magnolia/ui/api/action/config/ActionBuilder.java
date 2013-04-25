@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action.builder;
+package info.magnolia.ui.api.action.config;
 
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.action.Action;

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action.builder;
+package info.magnolia.ui.api.action.config;
 
 /**
  * Config object creating builders for action definitions.

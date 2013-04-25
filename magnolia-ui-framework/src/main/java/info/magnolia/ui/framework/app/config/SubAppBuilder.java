@@ -37,7 +37,7 @@ import info.magnolia.ui.actionbar.config.ActionbarBuilder;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
-import info.magnolia.ui.api.action.builder.ActionBuilder;
+import info.magnolia.ui.api.action.config.ActionBuilder;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 
 /**
