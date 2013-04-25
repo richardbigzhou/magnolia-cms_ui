@@ -65,7 +65,7 @@ public class NodeTypeDropConstraint implements DropConstraint {
     @Override
     public boolean allowedToMove(Item sourceItem) {
         JcrItemAdapter jcrSourceItem = (JcrItemAdapter) sourceItem;
-        return jcrSourceItem.isNode();
+        return jcrSourceItem != null && jcrSourceItem.isNode();
     }
 
 }
