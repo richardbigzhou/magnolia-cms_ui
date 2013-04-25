@@ -43,7 +43,7 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.form.field.definition.DateFieldDefinition;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
+import info.magnolia.ui.api.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 import java.util.List;

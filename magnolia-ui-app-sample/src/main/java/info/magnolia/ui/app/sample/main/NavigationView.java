@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.sample.main;
 
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.api.view.View;
 
 /**
  * View for the navigation.

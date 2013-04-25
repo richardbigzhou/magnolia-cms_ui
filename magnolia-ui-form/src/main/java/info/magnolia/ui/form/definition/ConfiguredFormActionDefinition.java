@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.definition;
 
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
 
 /**
  * ConfiguredFormActionDefinition.

@@ -38,11 +38,14 @@ import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationBuilder;
+import info.magnolia.objectfactory.configuration.ImplementationConfiguration;
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.framework.event.EventBusProtector;
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.view.View;
 
 import java.util.List;
 
@@ -76,6 +79,7 @@ public class AdmincentralUI extends UI {
 
         ComponentProviderConfiguration configuration = admincentralConfig.clone();
         configuration.addComponent(InstanceConfiguration.valueOf(UI.class, this));
+        configuration.addComponent(ImplementationConfiguration.valueOf(UiContext.class, Shell.class));
 
         eventBusProtector = new EventBusProtector();
         configuration.addConfigurer(eventBusProtector);

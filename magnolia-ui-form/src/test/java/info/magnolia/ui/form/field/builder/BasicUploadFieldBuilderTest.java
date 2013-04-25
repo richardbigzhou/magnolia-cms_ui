@@ -42,7 +42,7 @@ import info.magnolia.cms.core.SystemProperty;
 import info.magnolia.init.MagnoliaConfigurationProperties;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
-import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
+import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 
 import java.io.File;
@@ -53,6 +53,7 @@ import org.junit.Test;
 import com.google.common.io.Files;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Upload;
@@ -121,8 +122,8 @@ public class BasicUploadFieldBuilderTest extends AbstractBuilderTest<BasicUpload
         // THEN
         CssLayout layout = field.getCssLayout();
         assertEquals(3, layout.getComponentCount());
-        assertTrue(layout.getComponent(0) instanceof Label);
-        assertTrue(((Label) layout.getComponent(0)).getStyleName().contains("file-details"));
+        assertTrue(layout.getComponent(0) instanceof FormLayout);
+        assertTrue(((FormLayout) layout.getComponent(0)).getStyleName().contains("file-details"));
         assertTrue(layout.getComponent(1) instanceof HorizontalLayout);
         HorizontalLayout horizontalLayout = (HorizontalLayout) layout.getComponent(1);
         assertEquals(1, horizontalLayout.getComponentCount());

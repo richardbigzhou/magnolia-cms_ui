@@ -59,17 +59,16 @@ public class DefaultPropertyUtil {
 
     /**
      * Create a new DefaultProperty by passing the value as a String.
-     * If fieldType is define, create a Typed Value.
+     * If fieldType is defined, create a Typed Value.
      * If fieldType is not defined, create a String Value.
      * If stringValue is defined, create a typed value based ont fieldType.
      */
     public static DefaultProperty newDefaultProperty(String name, String fieldType, String stringValue) throws NumberFormatException {
-        Object value = null;
+        Object value = "";
         try {
             value = createTypedValue(fieldType, stringValue);
         } catch (Exception e) {
             log.error("Exception during Value creation", e);
-            value = "";
         }
         return new DefaultProperty(name, getFieldTypeClass(fieldType), value);
     }

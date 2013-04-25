@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.overlay;
 
-import info.magnolia.ui.model.overlay.OverlayLayer;
+import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.vaadin.gwt.client.dialog.connector.OverlayState;
 
 import com.vaadin.ui.AbstractSingleComponentContainer;

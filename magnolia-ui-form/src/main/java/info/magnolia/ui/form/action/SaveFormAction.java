@@ -36,8 +36,8 @@ package info.magnolia.ui.form.action;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
@@ -45,8 +45,6 @@ import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.Item;
 
 /**
  * Action for saving Items in Forms.
@@ -59,9 +57,9 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
 
     protected EditorCallback callback;
     protected final EditorValidator validator;
-    protected final Item item;
+    protected final JcrNodeAdapter item;
 
-    public SaveFormAction(SaveFormActionDefinition definition, Item item, EditorCallback callback, EditorValidator validator) {
+    public SaveFormAction(SaveFormActionDefinition definition, JcrNodeAdapter item, EditorCallback callback, EditorValidator validator) {
         super(definition);
         this.callback = callback;
         this.validator = validator;
@@ -73,9 +71,8 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
         // First Validate
         validator.showValidation(true);
         if (validator.isValid()) {
-            final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
-                final Node node = itemChanged.getNode();
+                final Node node = item.getNode();
                 NodeTypes.LastModified.update(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
@@ -83,15 +80,7 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
             }
             callback.onSuccess(getDefinition().getName());
         } else {
-            log.info("Validation error(s) occured. No save performed.");
+            log.info("Validation error(s) occurred. No save performed.");
         }
-    }
-
-    protected EditorValidator getValidator() {
-        return validator;
-    }
-
-    protected Item getItem() {
-        return item;
     }
 }

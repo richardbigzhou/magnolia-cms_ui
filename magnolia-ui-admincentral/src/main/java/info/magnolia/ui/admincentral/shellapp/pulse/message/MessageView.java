@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.api.view.View;
 
 /**
  * View interface for displaying a message.

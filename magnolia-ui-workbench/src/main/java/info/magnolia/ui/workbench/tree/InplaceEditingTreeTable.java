@@ -79,7 +79,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         super();
         setEditable(true);
         setTableFieldFactory(new InplaceEditingFieldFactory());
-        addListener(asItemClickListener());
+        addItemClickListener(asItemClickListener());
         getActionManager().addActionHandler(new EditingKeyboardHandler());
     }
 
@@ -116,7 +116,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         this.editingItemId = itemId;
         this.editingPropertyId = propertyId;
         refreshRowCache();
-        requestRepaint();
+        markAsDirty();
     }
 
     // INPLACE EDITING FIELD FACTORY
@@ -127,25 +127,25 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
     private class InplaceEditingFieldFactory extends DefaultFieldFactory {
 
         @Override
-        public Field createField(Container container, final Object itemId, final Object propertyId, Component uiContext) {
+        public Field<?> createField(Container container, final Object itemId, final Object propertyId, Component uiContext) {
 
             // add TextField only for selected row/column.
             if (editableColumns.contains(propertyId) && itemId.equals(editingItemId) && propertyId.equals(editingPropertyId)) {
 
-                Field field = super.createField(container, itemId, propertyId, uiContext);
+                Field<?> field = super.createField(container, itemId, propertyId, uiContext);
 
                 // set TextField Focus listeners
                 if (field instanceof AbstractTextField) {
                     final AbstractTextField tf = (AbstractTextField) field;
-                    tf.addListener(new FieldEvents.FocusListener() {
+                    tf.addFocusListener(new FieldEvents.FocusListener() {
 
                         @Override
                         public void focus(FocusEvent event) {
-                            tf.setCursorPosition(tf.toString().length());
+                            tf.setCursorPosition(tf.getValue().length());
                         }
                     });
 
-                    tf.addListener(new FieldEvents.BlurListener() {
+                    tf.addBlurListener(new FieldEvents.BlurListener() {
 
                         @Override
                         public void blur(BlurEvent event) {
@@ -193,11 +193,11 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
      * @param source the vaadin {{Field}} where the editing occured
      * @return the vaadin {{Item}} if it could be fetched, null otherwise.
      */
-    private Item getItemFromField(Field source) {
+    private Item getItemFromField(Field<?> source) {
         if (source != null) {
-            Property property = source.getPropertyDataSource();
+            Property<?> property = source.getPropertyDataSource();
             if (property != null && property instanceof AbstractProperty) {
-                Collection<?> listeners = ((AbstractProperty) property).getListeners(Property.ValueChangeEvent.class);
+                Collection<?> listeners = ((AbstractProperty<?>) property).getListeners(Property.ValueChangeEvent.class);
                 Iterator<?> iterator = listeners.iterator();
                 while (iterator.hasNext()) {
                     Object listener = iterator.next();
@@ -256,7 +256,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
             ShortcutAction shortcut = (ShortcutAction) action;
 
             if (target != InplaceEditingTreeTable.this && target instanceof Field) {
-                Field field = (Field) target;
+                Field<?> field = (Field<?>) target;
 
                 if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
                     fireItemEditedEvent(getItemFromField(field));

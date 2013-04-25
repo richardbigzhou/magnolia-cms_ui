@@ -34,17 +34,17 @@
 package info.magnolia.ui.form.field.builder;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.validation.FieldValidatorBuilder;
 import info.magnolia.ui.form.field.validation.FieldValidatorDefinition;
 import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.api.i18n.I18NAwareProperty;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-
-import java.util.Locale;
 
 import javax.jcr.Node;
 
@@ -73,6 +73,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
     protected D definition;
     private ValidatorFieldFactory validatorFieldFactory;
     private I18nContentSupport i18nContentSupport;
+    private ComponentProvider componentProvider;
 
     public AbstractFieldBuilder(D definition, Item relatedFieldItem) {
         this.definition = definition;
@@ -92,17 +93,12 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
     @Override
     public Field<T> getField() {
         if (field == null) {
-
             // Build the Vaadin field
             this.field = buildField();
 
-            // Get and set the DataSource property
-            // Set i18n property name
             Property<?> property = getOrCreateProperty();
             setPropertyDataSource(property);
 
-            // TODO fgrilli review: do we really want to provide users with the possibility
-            // of defining their custom styles risking that they screw up AdminCentral look&feel?
             if (StringUtils.isNotBlank(definition.getStyleName())) {
                 this.field.addStyleName(definition.getStyleName());
             }
@@ -158,18 +154,33 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
 
     /**
      * Get a property from the current Item.
-     * If the property already exists, return this property.
      * <p>
+     *     if the field is i18n-aware - create a special property that would delegate
+     *     the values to the proper localized properties. Otherwise - follow the default pattern.
+     * </p>
+     *
+     * <p>
+     * If the property already exists, return this property.
      * If the property does not exist, create a new property based on the defined type, default value, and saveInfo.
+     * </p>
      */
     protected Property<?> getOrCreateProperty() {
-        String propertyName = getPropertyName();
-        Property<?> property = item.getItemProperty(propertyName);
-        if (property == null) {
-            property = DefaultPropertyUtil.newDefaultProperty(propertyName, getFieldType(definition).getSimpleName(), definition.getDefaultValue());
-            item.addItemProperty(propertyName, property);
+        String propertyName = definition.getName();
+        Class<?> fieldType = getFieldType(definition);
+        String defaultValue = definition.getDefaultValue();
+        if (definition.isI18n()) {
+            I18NAwareProperty<?> property = componentProvider.newInstance(I18NAwareProperty.class, propertyName, fieldType, item);
+            property.setDefaultValue(defaultValue);
+            return property;
+
+        } else {
+            Property<?> property = item.getItemProperty(propertyName);
+            if (property == null) {
+                property = DefaultPropertyUtil.newDefaultProperty(propertyName, fieldType.getSimpleName(), defaultValue);
+                item.addItemProperty(propertyName, property);
+            }
+            return property;
         }
-        return property;
     }
 
     /**
@@ -199,6 +210,10 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
         } else {
             return ((JcrNodeAdapter) fieldRelatedItem).getNode();
         }
+    }
+
+    public String getPropertyName() {
+        return definition.getName();
     }
 
     @Override
@@ -234,22 +249,8 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
         }
     }
 
-    /**
-     * Handle i18n definition.
-     * If i18n is set to true, prefix the property name by the current language
-     * (fr_, de_) if the current language is not the default one.
-     */
-    protected String getPropertyName() {
-        if (definition.isI18n()) {
-            Locale locale = getMessages().getLocale();
-            boolean isFallbackLanguage = i18nContentSupport.getFallbackLocale().equals(locale);
-            String newName = definition.getName();
-            if (!isFallbackLanguage) {
-                newName = newName + "_" + locale.toString();
-            }
-            return newName;
-        } else {
-            return definition.getName();
-        }
+    @Override
+    public void setComponentProvider(ComponentProvider componentProvider) {
+        this.componentProvider = componentProvider;
     }
 }

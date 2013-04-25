@@ -50,7 +50,7 @@ import info.magnolia.ui.framework.location.LocationHistoryHandler;
 import info.magnolia.ui.framework.message.LocalMessageDispatcher;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ShellImpl;
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.api.view.View;
 
 import javax.inject.Inject;
 import javax.inject.Named;

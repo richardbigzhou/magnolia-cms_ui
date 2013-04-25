@@ -57,7 +57,7 @@ import info.magnolia.ui.form.config.TabBuilder;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
-import info.magnolia.ui.model.ModelConstants;
+import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
@@ -92,6 +92,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     private AbstractElement selectedElement;
 
     private final SubAppContext subAppContext;
+
     private final ComponentProvider componentProvider;
 
     @Inject
@@ -102,7 +103,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
         this.templateDefinitionRegistry = templateDefinitionRegistry;
         this.subAppContext = subAppContext;
         this.componentProvider = componentProvider;
-
         registerHandlers();
     }
 
@@ -364,4 +364,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     public TemplateDefinitionRegistry getTemplateDefinitionRegistry() {
         return templateDefinitionRegistry;
     }
+
+
 }

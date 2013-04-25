@@ -113,6 +113,9 @@ public class BasicFileItemWrapper implements FileItemWrapper {
      * Populate the wrapper variable based on the current Item.
      */
     protected void populateWrapperFromItem() {
+        if (item.getParent() != null) {
+            item.getParent().addChild(item);
+        }
         fileName = item.getItemProperty(FileProperties.PROPERTY_FILENAME) != null ? (String) item.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue() : "";
         Property<?> data = item.getItemProperty(JcrConstants.JCR_DATA);
         if (data != null) {
@@ -199,7 +202,7 @@ public class BasicFileItemWrapper implements FileItemWrapper {
      */
     protected void populateWrapperFromReceiver(UploadReceiver receiver) {
         uploadedFile = receiver.getFile();
-        fileName = receiver.getFileName();
+        fileName = StringUtils.substringBeforeLast(receiver.getFileName(), ".");
         extension = receiver.getExtension();
         fileSize = receiver.getFileSize();
         mimeType = receiver.getMimeType();
@@ -224,7 +227,7 @@ public class BasicFileItemWrapper implements FileItemWrapper {
                 return;
             }
         }
-        item.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(StringUtils.substringBeforeLast(fileName, "."));
+        item.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(fileName);
         item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).setValue(mimeType);
         item.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED).setValue(new Date());
         item.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(fileSize);
@@ -267,6 +270,16 @@ public class BasicFileItemWrapper implements FileItemWrapper {
     @Override
     public File getFile() {
         return this.uploadedFile;
+    }
+
+    /**
+     * Used to access the Item property in order to set the input dataSource of a TextField.
+     */
+    protected Property<?> getFileNameProperty() {
+        return this.item.getItemProperty(FileProperties.PROPERTY_FILENAME);
+    }
+    protected Property<?> getFileFormatProperty() {
+        return this.item.getItemProperty(FileProperties.PROPERTY_EXTENSION);
     }
 
 }

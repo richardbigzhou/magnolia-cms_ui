@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.mediaeditor.action.feature.definition;
 
-import info.magnolia.ui.model.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
  * Implementation of {@link MediaEditorFeatureDefinition}.

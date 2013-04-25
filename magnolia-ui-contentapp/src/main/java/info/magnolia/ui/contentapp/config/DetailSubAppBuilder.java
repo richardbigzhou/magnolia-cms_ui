@@ -37,9 +37,9 @@ import info.magnolia.ui.actionbar.config.ActionbarBuilder;
 import info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.builder.ActionBuilder;
-import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.builder.ActionBuilder;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 
 /**
  * Builds a {@link info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor} used for configuring a {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
