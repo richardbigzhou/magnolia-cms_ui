@@ -45,11 +45,7 @@ public interface TransitionDelegate {
 
     void setActive(ViewportWidget viewport, boolean active);
 
-    void setVisibleApp(ViewportWidget viewport, Widget app);
-
-    final static TransitionDelegate SHELL_APPS_TRANSITION_DELEGATE = new ShellAppsTransitionDelegate();
-
-    final static TransitionDelegate APPS_TRANSITION_DELEGATE = new AppsTransitionDelegate();
+    void setVisibleChild(ViewportWidget viewport, Widget app);
 
     /**
      * The Class BaseTransitionDelegate with the bypass mechanism.
@@ -62,7 +58,7 @@ public interface TransitionDelegate {
         }
 
         @Override
-        public void setVisibleApp(ViewportWidget viewport, Widget app) {
+        public void setVisibleChild(ViewportWidget viewport, Widget app) {
             viewport.setChildVisibleNoTransition(app);
         }
     }
