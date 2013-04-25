@@ -33,66 +33,28 @@
  */
 package info.magnolia.ui.dialog.action;
 
-import info.magnolia.cms.beans.config.ConfigurationException;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.action.AbstractActionExecutor;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
-import info.magnolia.ui.api.action.Action;
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ActionExecutor;
 
 import javax.inject.Inject;
 
 /**
- * DialogActionExecutor.
+ * Executes actions configured in a {@link DialogDefinition}.
  */
-public class DialogActionExecutor implements ActionExecutor {
+public class DialogActionExecutor extends AbstractActionExecutor {
 
-
-    private final ComponentProvider componentProvider;
     private DialogDefinition dialogDefinition;
 
-
     @Inject
-    public DialogActionExecutor(final ComponentProvider componentProvider) {
-        this.componentProvider = componentProvider;
-    }
-
-    @Override
-    public final void execute(String actionName, Object... args) throws ActionExecutionException {
-        try {
-            Action action = createAction(actionName, args);
-            action.execute();
-        }
-        catch (ConfigurationException e) {
-            throw new ActionExecutionException(e);
-        }
+    public DialogActionExecutor(ComponentProvider componentProvider) {
+        super(componentProvider);
     }
 
     @Override
     public ActionDefinition getActionDefinition(String actionName) {
-        return dialogDefinition.getActions().get(actionName);
-    }
-
-    /**
-     * Creates an action using the implementation configured for the given action definition. The
-     * parameters are made available for injection when the instance is created. The definition
-     * object given is also available for injection.
-     */
-    protected Action createAction(String actionName, Object... args) throws ConfigurationException {
-        final ActionDefinition actionDefinition = getActionDefinition(actionName);
-        if (actionDefinition != null) {
-            Class<? extends Action> implementationClass = actionDefinition.getImplementationClass();
-            if (implementationClass != null) {
-                Object[] combinedParameters = new Object[args.length + 1];
-                combinedParameters[0] = actionDefinition;
-                System.arraycopy(args, 0, combinedParameters, 1, args.length);
-
-                return componentProvider.newInstance(implementationClass, combinedParameters);
-            }
-        }
-
-        throw new ConfigurationException("Could not create action: " + actionName);
+        return dialogDefinition != null ? dialogDefinition.getActions().get(actionName) : null;
     }
 
     public void setDialogDefinition(DialogDefinition dialogDefinition) {

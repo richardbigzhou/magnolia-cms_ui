@@ -34,7 +34,7 @@
 package info.magnolia.ui.api.action.builder;
 
 /**
- * ActionConfig.
+ * Config object creating builders for action definitions.
  */
 public class ActionConfig {
 

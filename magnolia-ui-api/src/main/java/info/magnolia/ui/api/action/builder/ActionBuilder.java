@@ -37,7 +37,7 @@ import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.action.Action;
 
 /**
- * ActionBuilder.
+ * Builder for building an action definition.
  */
 public class ActionBuilder {
 
@@ -79,6 +79,4 @@ public class ActionBuilder {
     public ConfiguredActionDefinition exec() {
         return definition;
     }
-
-
 }

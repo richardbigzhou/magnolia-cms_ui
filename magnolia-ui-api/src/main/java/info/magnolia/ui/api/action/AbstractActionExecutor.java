@@ -33,21 +33,26 @@
  */
 package info.magnolia.ui.api.action;
 
-import info.magnolia.cms.beans.config.ConfigurationException;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.MgnlInstantiationException;
 
 import javax.inject.Inject;
 
 /**
- * A base implementation of {@link ActionExecutor}. Creates the {@link Action} from the implementation class using componentProvider and binds the ActionDefinition to the Action.
- * Subclasses need only to implement {@link #getActionDefinition(String)}.
+ * Abstract base implementation of {@link ActionExecutor}. Creates the {@link Action} from the implementation class
+ * using a {@link ComponentProvider} and binds the ActionDefinition to the Action. Subclasses need only implement
+ * {@link #getActionDefinition(String)}.
+ *
+ * @see Action
+ * @see ActionDefinition
+ * @see ActionExecutor
  */
 public abstract class AbstractActionExecutor implements ActionExecutor {
 
     private ComponentProvider componentProvider;
 
     @Inject
-    public AbstractActionExecutor(final ComponentProvider componentProvider) {
+    public AbstractActionExecutor(ComponentProvider componentProvider) {
         this.componentProvider = componentProvider;
     }
 
@@ -56,9 +61,8 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
         try {
             Action action = createAction(actionName, args);
             action.execute();
-        }
-        catch (Throwable t) {
-            throw new ActionExecutionException(t);
+        } catch (RuntimeException e) {
+            throw new ActionExecutionException("Action execution failed for action: " + actionName, e);
         }
     }
 
@@ -67,20 +71,26 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
      * parameters are made available for injection when the instance is created. The definition
      * object given is also available for injection.
      */
-    protected Action createAction(String actionName, Object... args) throws ConfigurationException {
-        final ActionDefinition actionDefinition = getActionDefinition(actionName);
-        if (actionDefinition != null) {
-            Class<? extends Action> implementationClass = actionDefinition.getImplementationClass();
-            if (implementationClass != null) {
-                Object[] combinedParameters = new Object[args.length + 1];
-                combinedParameters[0] = actionDefinition;
-                System.arraycopy(args, 0, combinedParameters, 1, args.length);
+    protected Action createAction(String actionName, Object... args) throws ActionExecutionException {
 
-                return componentProvider.newInstance(implementationClass, combinedParameters);
-            }
+        final ActionDefinition actionDefinition = getActionDefinition(actionName);
+        if (actionDefinition == null) {
+            throw new ActionExecutionException("No definition exists for action: " + actionName);
         }
 
-        throw new ConfigurationException("Could not create action: " + actionName);
-    }
+        Class<? extends Action> implementationClass = actionDefinition.getImplementationClass();
+        if (implementationClass == null) {
+            throw new ActionExecutionException("No action class set for action: " + actionName);
+        }
 
+        Object[] combinedParameters = new Object[args.length + 1];
+        combinedParameters[0] = actionDefinition;
+        System.arraycopy(args, 0, combinedParameters, 1, args.length);
+
+        try {
+            return componentProvider.newInstance(implementationClass, combinedParameters);
+        } catch (MgnlInstantiationException e) {
+            throw new ActionExecutionException("Could not instantiate action class for action: " + actionName, e);
+        }
+    }
 }
