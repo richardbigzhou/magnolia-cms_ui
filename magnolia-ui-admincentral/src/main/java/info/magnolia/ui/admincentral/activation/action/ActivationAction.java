@@ -35,17 +35,22 @@ package info.magnolia.ui.admincentral.activation.action;
 
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.action.CommandActionBase;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * UI action that allows to activate a single page (node) or recursively with all its sub-nodes depending on the value of {@link ActivationActionDefinition#isRecursive()}.
@@ -56,11 +61,14 @@ public class ActivationAction extends CommandActionBase<ActivationActionDefiniti
 
     private final EventBus eventBus;
 
+    private final SubAppContext subAppContext;
+
     @Inject
-    public ActivationAction(final ActivationActionDefinition definition, final JcrItemNodeAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
-        super(definition, item, commandsManager);
+    public ActivationAction(final ActivationActionDefinition definition, final JcrItemNodeAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
+        super(definition, item, commandsManager, subAppContext);
         this.node = item;
         this.eventBus = eventBus;
+        this.subAppContext = subAppContext;
     }
 
     @Override
@@ -71,8 +79,32 @@ public class ActivationAction extends CommandActionBase<ActivationActionDefiniti
     }
 
     @Override
+    protected void onError(Exception e) {
+        subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, getDefinition().getErrorMessage());
+    }
+
+    @Override
     protected void onPostExecute() throws Exception {
         Node jcrNode = node.getNodeFromRepository();
         eventBus.fireEvent(new ContentChangedEvent(jcrNode.getSession().getWorkspace().getName(), jcrNode.getPath()));
+
+        // Display a notification
+
+        Context context = MgnlContext.getInstance();
+        boolean result = (Boolean) context.getAttribute(COMMAND_RESULT);
+        String message;
+        MessageStyleTypeEnum messageStyleType;
+        if (result) {
+            message = getDefinition().getSuccessMessage();
+            messageStyleType = MessageStyleTypeEnum.INFO;
+        } else {
+            message = getDefinition().getFailureMessage();
+            messageStyleType = MessageStyleTypeEnum.ERROR;
+        }
+
+        if (StringUtils.isNotBlank(message)) {
+            subAppContext.openNotification(messageStyleType, true, message);
+        }
+
     }
 }
