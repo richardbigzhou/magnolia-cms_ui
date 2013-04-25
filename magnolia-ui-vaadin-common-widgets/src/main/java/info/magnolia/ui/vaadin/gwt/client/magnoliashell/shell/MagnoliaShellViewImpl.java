@@ -42,6 +42,7 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessag
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VInfoMessage;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellErrorMessage;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VWarningMessage;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.JQueryAnimation;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget.PreloaderCallback;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ShellAppsViewportWidget;
@@ -53,6 +54,7 @@ import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 import java.util.EnumMap;
 import java.util.Map;
 
+import com.github.wolfie.refresher.Refresher;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.DOM;
@@ -82,6 +84,8 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
     private Presenter presenter;
 
+    private JQueryAnimation viewportShifter = new JQueryAnimation();
+
     private final Element viewportSlot = DOM.createDiv();
 
     public MagnoliaShellViewImpl(final EventBus eventBus) {
@@ -93,6 +97,12 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         getElement().appendChild(viewportSlot);
         viewportSlot.setClassName("v-shell-viewport-slot");
         bindEventHandlers();
+        viewportShifter.addCallback(new JQueryCallback() {
+            @Override
+            public void execute(JQueryWrapper query) {
+                presenter.updateViewportLayout(getAppViewport());
+            }
+        });
     }
 
     private void bindEventHandlers() {
@@ -218,18 +228,8 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
     @Override
     public void shiftViewportsVertically(int shiftPx, boolean animated) {
-        for (final ViewportWidget viewport : viewports.values()) {
-            final AnimationSettings settings = new AnimationSettings();
-            settings.setProperty("top", "+=" + shiftPx);
-            settings.setProperty("height", "+=" + -shiftPx);
-            settings.addCallback(new JQueryCallback() {
-                @Override
-                public void execute(JQueryWrapper query) {
-                    presenter.updateViewportLayout(viewport);
-                }
-            });
-            JQueryWrapper.select(viewport).animate(animated ? 300 : 0, settings);
-        }
+        viewportShifter.setProperty("top", mainAppLauncher.getOffsetHeight() + shiftPx);
+        viewportShifter.run(animated ? 300 : 0, viewportSlot);
     }
 
     @Override
@@ -269,6 +269,7 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         ShellAppsViewportWidget viewport = getShellAppViewport();
         mainAppLauncher.activateControl(type);
         viewport.setVisibleChild(shellApp);
+        viewport.setClosing(false);
         if (!viewport.isActive()) {
             setActiveViewport(viewport);
         }
