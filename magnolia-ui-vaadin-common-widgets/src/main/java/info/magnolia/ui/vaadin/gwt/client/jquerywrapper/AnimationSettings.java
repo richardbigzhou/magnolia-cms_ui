@@ -33,24 +33,20 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.jquerywrapper;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
+import com.vaadin.client.FastStringMap;
 
 /**
  * Helper class that holds the animation settings.
  */
 public class AnimationSettings {
 
-    private final Map<String, Object> properties = new HashMap<String, Object>();
+    private final FastStringMap<String> properties = FastStringMap.create();
 
     private Callbacks callbacks = Callbacks.create();
 
     public void setProperty(final String properyName, final Object value) {
-        properties.put(properyName, value);
+        properties.put(properyName, String.valueOf(value));
     }
 
     public void addCallback(final JQueryCallback callback) {
@@ -66,14 +62,7 @@ public class AnimationSettings {
     }
 
     JavaScriptObject asJSO() {
-        final JSONObject parameter = new JSONObject();
-        if (properties != null) {
-            for (String key : properties.keySet()) {
-                String value = String.valueOf(properties.get(key));
-                parameter.put(key, new JSONString(value));
-            }
-        }
-        return parameter.getJavaScriptObject();
+        return properties;
     }
 
 }

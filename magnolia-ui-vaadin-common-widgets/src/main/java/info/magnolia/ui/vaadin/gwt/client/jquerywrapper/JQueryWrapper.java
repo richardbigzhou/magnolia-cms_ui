@@ -111,6 +111,18 @@ public class JQueryWrapper extends JavaScriptObject {
                });
     }-*/;
 
+    public final native void animate(int duration, double delay, AnimationSettings settings) /*-{
+        var json = settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::asJSO()();
+        var jq = this;
+        this.delay(delay).animate(json, duration,
+                function() {
+                    if (settings != null) {
+                        settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::getCallbacks()()
+                                .fire(jq);
+                    }
+                });
+    }-*/;
+
     public final native JQueryWrapper stop() /*-{
           this.stop();
           return this;
