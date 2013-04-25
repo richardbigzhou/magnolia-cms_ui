@@ -253,7 +253,7 @@ public class TreeViewImpl implements TreeView {
 
     @Override
     public AbstractJcrContainer getContainer() {
-        throw new UnsupportedOperationException(getClass().getName() + " does not support this operation");
+        return container;
     }
 
     @Override

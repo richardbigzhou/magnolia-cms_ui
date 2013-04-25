@@ -1,0 +1,10 @@
+@charset "UTF-8";
+
+@mixin choosedialog {
+
+  .v-verticallayout-workbench {
+    height: 400px !important;
+    background-color: $c04;
+    padding: 16px;
+  }
+}

@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+@mixin browser {
+
+  & > div > .v-spacing {
+    width: 25px;
+  }
+
+  .v-verticallayout-workbench {
+    padding-top: 20px;
+    padding-left: 40px;
+  }
+
+  .v-csslayout-actionbar {
+    padding-top: 20px;
+    padding-bottom: 40px;
+    overflow: visible;
+  }
+}
