@@ -48,19 +48,13 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.location.LocationHistoryHandler;
 import info.magnolia.ui.framework.message.LocalMessageDispatcher;
-import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ShellImpl;
 import info.magnolia.ui.api.view.View;
 
-import java.lang.reflect.InvocationTargetException;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.vaadin.server.ErrorEvent;
-import com.vaadin.server.ErrorHandler;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
@@ -71,7 +65,7 @@ public class AdmincentralPresenter {
 
     private final ShellImpl shell;
 
-    private final MessagesManager messagesManager;
+    final MessagesManager messagesManager;
 
     @Inject
     public AdmincentralPresenter(final ShellImpl shell, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, final LocalMessageDispatcher messageDispatcher, MessagesManager messagesManager) {
@@ -91,43 +85,7 @@ public class AdmincentralPresenter {
 
         messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), messageDispatcher);
 
-        UI.getCurrent().setErrorHandler(new ErrorHandler() {
-
-            @Override
-            public void error(ErrorEvent event) {
-                Throwable e = event.getThrowable();
-                String subject = e.getClass().getSimpleName();
-                StringBuilder message = new StringBuilder(subject);
-                if (e.getMessage() != null) {
-                    message.append(": ");
-                    message.append(e.getMessage());
-                }
-                addMessageDetails(message, e);
-                AdmincentralPresenter.this.messagesManager.sendLocalMessage(new Message(MessageType.ERROR, subject, message.toString()));
-            }
-
-            private void addMessageDetails(StringBuilder message, Throwable e) {
-                if (e == null || e == e.getCause()) {
-                    return;
-                }
-                Throwable cause = e.getCause();
-
-                if (e.getCause() instanceof InvocationTargetException) {
-                    // add details for RPC exceptions
-                    cause = ((InvocationTargetException) cause).getTargetException();
-                }
-                if (cause != null) {
-                    message.append("\n");
-                    message.append("caused by ");
-                    message.append(cause.getClass().getSimpleName());
-                    if (cause.getMessage() != null) {
-                        message.append(": ");
-                        message.append(cause.getMessage());
-                    }
-                }
-                addMessageDetails(message, cause);
-            }
-        });
+        UI.getCurrent().setErrorHandler(new AdmincentralErrorHandler(this.messagesManager));
         VaadinSession.getCurrent().setErrorHandler(null);
     }
 
