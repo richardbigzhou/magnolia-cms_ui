@@ -36,8 +36,13 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.MgnlUserManager;
+import info.magnolia.cms.security.Realm;
+import info.magnolia.cms.security.SecuritySupport;
+import info.magnolia.cms.security.SecuritySupportImpl;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
@@ -65,10 +70,25 @@ public class FavoritesManagerImplTest {
     public void setUp() {
         session = new MockSession(FavoriteStore.WORKSPACE_NAME);
         MockContext ctx = new MockContext();
-        User user = mock(User.class);
+        final User user = mock(User.class);
         when(user.getName()).thenReturn(TEST_USER);
         ctx.setUser(user);
         ctx.addSession(FavoriteStore.WORKSPACE_NAME, session);
+
+        final SecuritySupportImpl sec = new SecuritySupportImpl();
+
+        MgnlUserManager userMgr = new MgnlUserManager() {
+            {
+                setName(Realm.REALM_SYSTEM.getName());
+            }
+            @Override
+            public User getSystemUser() {
+                return user;
+            }
+        };
+        sec.addUserManager(Realm.REALM_SYSTEM.getName(), userMgr);
+        ComponentsTestUtil.setInstance(SecuritySupport.class, sec);
+
         MgnlContext.setInstance(ctx);
 
         favoriteStore = new FavoriteStore();
