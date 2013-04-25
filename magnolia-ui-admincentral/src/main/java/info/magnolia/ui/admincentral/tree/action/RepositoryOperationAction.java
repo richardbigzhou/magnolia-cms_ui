@@ -36,9 +36,9 @@ package info.magnolia.ui.admincentral.tree.action;
 import info.magnolia.cms.core.Path;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.jcr.AccessDeniedException;

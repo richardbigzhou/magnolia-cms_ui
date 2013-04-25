@@ -35,12 +35,12 @@ package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.model.overlay.OverlayLayer;
+import info.magnolia.ui.api.context.UiContext;
 
 /**
  * Provides functionality used by an app to interact with the Magnolia shell.
  */
-public interface AppContext extends AppView.Listener, OverlayLayer {
+public interface AppContext extends AppView.Listener, UiContext {
 
     void enterFullScreenMode();
 

@@ -39,9 +39,9 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
-import info.magnolia.ui.model.action.CommandActionDefinition;
+import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.CommandActionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +56,7 @@ import java.util.Map;
 /**
  * Base action supporting execution of commands.
  *
- * @param <D> {@link info.magnolia.ui.model.action.CommandActionDefinition}.
+ * @param <D> {@link info.magnolia.ui.api.action.CommandActionDefinition}.
  */
 public class CommandActionBase<D extends CommandActionDefinition> extends ActionBase<D> {
 
@@ -139,7 +139,7 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
      * Handles the retrieval of the {@link Command} instance defined in the {@link CommandActionDefinition} associated with this action and then
      * performs the actual command execution.
      *
-     * @throws info.magnolia.ui.model.action.ActionExecutionException if no command is found or if command execution throws an exception.
+     * @throws info.magnolia.ui.api.action.ActionExecutionException if no command is found or if command execution throws an exception.
      */
     @Override
     public final void execute() throws ActionExecutionException {

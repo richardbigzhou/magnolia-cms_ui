@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.contentapp.detail.action;
 
-import info.magnolia.ui.model.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 import org.apache.commons.lang.StringUtils;
 

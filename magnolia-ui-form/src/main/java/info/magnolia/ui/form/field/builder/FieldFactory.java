@@ -39,7 +39,8 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.registry.FieldTypeDefinition;
 import info.magnolia.ui.form.field.registry.FieldTypeDefinitionRegistry;
 import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
-import info.magnolia.ui.model.builder.FactoryBase;
+import info.magnolia.ui.api.builder.FactoryBase;
+
 
 import java.io.Serializable;
 

@@ -34,8 +34,8 @@
 package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.ActionExecutionException;
 
 /**
  * Implements an action for Callback handling on dialog {@link info.magnolia.ui.vaadin.dialog.FormDialog}.

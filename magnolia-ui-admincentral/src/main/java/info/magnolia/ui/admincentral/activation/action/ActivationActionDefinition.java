@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
-import info.magnolia.ui.model.action.CommandActionDefinition;
+import info.magnolia.ui.api.action.CommandActionDefinition;
 
 
 /**

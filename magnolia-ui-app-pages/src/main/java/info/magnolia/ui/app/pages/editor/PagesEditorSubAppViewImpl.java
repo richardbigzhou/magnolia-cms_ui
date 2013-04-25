@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;

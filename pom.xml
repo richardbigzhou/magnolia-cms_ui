@@ -244,11 +244,12 @@
   </profiles>
   <modules>
     <module>magnolia-ui-framework</module>
-    <module>magnolia-ui-model</module>
+    <module>magnolia-ui-api</module>
     <module>magnolia-ui-workbench</module>
     <module>magnolia-ui-form</module>
     <module>magnolia-ui-dialog</module>
     <module>magnolia-ui-contentapp</module>
+    <module>magnolia-ui-imageprovider</module>
     <module>magnolia-ui-vaadin-integration</module>
     <module>magnolia-ui-vaadin-common-widgets</module>
     <module>magnolia-ui-widget-editor</module>

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.workbench;
 
-import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 /**

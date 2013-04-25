@@ -36,8 +36,8 @@ package info.magnolia.ui.actionbar.builder;
 import static org.junit.Assert.*;
 
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.model.action.ActionDefinition;
-import info.magnolia.ui.model.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;

@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.i18n;
 
 
-import info.magnolia.ui.model.i18n.I18NAwareProperty;
+import info.magnolia.ui.api.i18n.I18NAwareProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;

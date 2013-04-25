@@ -60,7 +60,7 @@ public class FieldTypeDefinitionRegistry {
         try {
             provider = registry.getRequired(id);
         } catch (RegistrationException e) {
-            throw new RegistrationException("No fieldType definition registered for id: " + id, e);
+            throw new RegistrationException("No fieldTypeFieldFactory. definition registered for id: " + id, e);
         }
         return provider.getFieldTypeDefinition();
     }
