@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-statusbar</artifactId>
   <name>magnolia-ui-statusbar</name>
   <properties>
-    <cloverCoverageThreshold>0</cloverCoverageThreshold>
+    <cloverCoverageThreshold>76</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
