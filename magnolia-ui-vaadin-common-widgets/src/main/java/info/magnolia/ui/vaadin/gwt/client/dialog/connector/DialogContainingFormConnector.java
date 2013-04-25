@@ -49,7 +49,9 @@ import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * Dialog that contains a form.
+ * DialogContainingForm assumes that content of dialog is
+ * FormView. This connector will set the height of form view
+ * based on how much space this dialog can provide to the form.
  */
 @Connect(DialogContainingForm.class)
 public class DialogContainingFormConnector extends BaseDialogConnector {
@@ -87,6 +89,9 @@ public class DialogContainingFormConnector extends BaseDialogConnector {
         getLayoutManager().removeElementResizeListener(getWidget().getElement(), listener);
     }
     
+    /**
+     * Calculates and sets the max height of form view.
+     */
     private void updateSize() {
         Widget content = getContent().getWidget();
         if (content instanceof FormViewImpl) {
@@ -109,7 +114,7 @@ public class DialogContainingFormConnector extends BaseDialogConnector {
                 }
             }
 
-            formview.setTabSheetMaxHeight(view.asWidget().getElement().getOffsetHeight() - footerHeight - headerHeight);
+            formview.setMaxHeight(view.asWidget().getElement().getOffsetHeight() - footerHeight - headerHeight);
         }
     }
 }
