@@ -36,7 +36,12 @@ package info.magnolia.ui.framework.favorite;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.MgnlUserManager;
+import info.magnolia.cms.security.Realm;
+import info.magnolia.cms.security.SecuritySupport;
+import info.magnolia.cms.security.SecuritySupportImpl;
 import info.magnolia.cms.security.User;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -54,16 +59,30 @@ public class FavoriteStoreTest extends MgnlTestCase {
     public static final String TEST_USER = "phantomas";
 
     private FavoriteStore store;
-    Session session;
+    private Session session;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         session = new MockSession(FavoriteStore.WORKSPACE_NAME);
-        MockUtil.getMockContext().addSession(FavoriteStore.WORKSPACE_NAME, session);
-        User user = mock(User.class);
+        MockUtil.getSystemMockContext().addSession(FavoriteStore.WORKSPACE_NAME, session);
+        final User user = mock(User.class);
         when(user.getName()).thenReturn(TEST_USER);
+        final SecuritySupportImpl sec = new SecuritySupportImpl();
+
+        MgnlUserManager userMgr = new MgnlUserManager() {
+            {
+                setName(Realm.REALM_SYSTEM.getName());
+            }
+            @Override
+            public User getSystemUser() {
+                return user;
+            }
+        };
+
+        sec.addUserManager(Realm.REALM_SYSTEM.getName(), userMgr);
+        ComponentsTestUtil.setInstance(SecuritySupport.class, sec);
         MockUtil.getMockContext().setUser(user);
 
         store = new FavoriteStore();
