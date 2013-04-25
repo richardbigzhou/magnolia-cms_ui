@@ -34,7 +34,6 @@
 package info.magnolia.ui.app.sample.main;
 
 import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.vaadin.icon.Icon;
 
 import javax.inject.Inject;
 
@@ -77,8 +76,6 @@ public class NavigationViewImpl implements NavigationView {
             layout.addComponent(createButton("Charlie"));
             layout.addComponent(createButton("Delta"));
             layout.addComponent(createButton("Echo"));
-
-            Icon icon1 = new Icon("alert");
         }
         return layout;
     }

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.mediaeditor.provider;
 
-import info.magnolia.ui.model.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
  * Basic definition for all the acctions that cause the change of edit mode in

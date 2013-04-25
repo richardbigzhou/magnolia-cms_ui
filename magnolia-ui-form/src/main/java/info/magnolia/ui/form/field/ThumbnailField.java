@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.field;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
+import info.magnolia.ui.imageprovider.ImageProvider;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;

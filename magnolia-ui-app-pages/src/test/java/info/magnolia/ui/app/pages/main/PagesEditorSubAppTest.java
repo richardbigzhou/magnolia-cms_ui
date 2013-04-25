@@ -55,7 +55,7 @@ import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.model.action.ActionExecutor;
+import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;

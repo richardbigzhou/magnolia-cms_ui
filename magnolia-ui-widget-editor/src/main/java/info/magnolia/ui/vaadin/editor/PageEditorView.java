@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.editor;
 
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 

@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.field.builder;
 
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.model.builder.DefinitionToImplementationMapping;
+import info.magnolia.ui.api.builder.DefinitionToImplementationMapping;
 
 import java.io.Serializable;
 import java.util.ArrayList;

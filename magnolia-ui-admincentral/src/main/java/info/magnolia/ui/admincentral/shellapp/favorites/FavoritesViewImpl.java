@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
+import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
@@ -40,8 +42,12 @@ import info.magnolia.ui.vaadin.splitfeed.SplitFeed.FeedSection;
 
 import java.util.Iterator;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -49,6 +55,9 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -117,11 +126,97 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         layout.addComponent(favoriteForm);
     }
 
+    /**
+     * Favorite entry.
+     */
+    public class FavoriteEntry extends CssLayout {
+
+        public FavoriteEntry(final Item favorite) {
+            addStyleName("v-favorites-entry");
+
+            String location = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue().toString();
+            String title = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue().toString();
+
+            String icon = "icon-app";
+            if (favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue() != null) {
+                icon = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue().toString();
+            }
+
+            Favorite fav = new Favorite(title, icon, location);
+            fav.setWidth(null);
+            addComponent(fav);
+
+            NativeButton remove = new NativeButton("Remove", new ClickListener() {
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    listener.removeFavorite((String) event.getButton().getData());
+                }
+            });
+            remove.setWidth(null);
+            remove.setData(favorite.getItemProperty(ModelConstants.JCR_NAME).getValue());
+
+            addComponent(remove);
+
+        }
+
+        /**
+         * Favorite.
+         */
+        public class Favorite extends CustomComponent {
+
+            private HorizontalLayout root = new HorizontalLayout();
+            private String location;
+            private String icon;
+            private String title;
+
+            public Favorite(String title, String icon, String location) {
+                super();
+                this.icon = icon;
+                this.title = title;
+                this.location = location;
+                this.root.setSpacing(true);
+
+                Label iconLabel = new Label();
+                iconLabel.setValue("<span class=\"" + icon + "\"></span>");
+                iconLabel.setStyleName("icon");
+                iconLabel.setContentMode(ContentMode.HTML);
+                root.addComponent(iconLabel);
+
+                Label titleLabel = new Label();
+                titleLabel.setValue(title);
+                titleLabel.setStyleName("text");
+                root.addComponent(titleLabel);
+
+                root.addLayoutClickListener(new LayoutClickListener() {
+
+                    @Override
+                    public void layoutClick(LayoutClickEvent event) {
+                        listener.goToLocation(getLocationValue());
+                    }
+                });
+
+                setCompositionRoot(root);
+            }
+
+            public String getLocationValue() {
+                return location;
+            }
+
+            public String getIconValue() {
+                return icon;
+            }
+
+            public String getTitleValue() {
+                return title;
+            }
+        }
+    }
 
     /**
      * Favorite section.
      */
-    private static class FavoritesSection extends CssLayout {
+    public static class FavoritesSection extends CssLayout {
 
         public FavoritesSection() {
             addStyleName("favorites-section");
@@ -146,7 +241,9 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
     }
 
-    // A form component that allows editing an item
+    /**
+     * A form component that allows editing an item.
+     */
     private class FavoriteForm extends CustomComponent {
 
         private TextField url = new TextField("Location");

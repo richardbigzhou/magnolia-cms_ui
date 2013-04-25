@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.api.view.View;
 
 /**
  * Marker interface for the embedded page App's view.

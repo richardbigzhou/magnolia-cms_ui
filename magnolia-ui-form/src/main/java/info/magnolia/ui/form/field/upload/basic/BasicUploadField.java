@@ -37,7 +37,7 @@ import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.form.field.upload.AbstractUploadField;
 import info.magnolia.ui.form.field.upload.FileItemWrapper;
 import info.magnolia.ui.form.field.upload.UploadProgressIndicator;
-import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
+import info.magnolia.ui.imageprovider.ImageProvider;
 
 import java.io.File;
 

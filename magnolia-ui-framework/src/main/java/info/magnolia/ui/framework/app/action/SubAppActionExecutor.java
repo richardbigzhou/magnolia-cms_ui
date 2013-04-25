@@ -36,13 +36,13 @@ package info.magnolia.ui.framework.app.action;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
-import info.magnolia.ui.model.action.AbstractActionExecutor;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.api.action.AbstractActionExecutor;
+import info.magnolia.ui.api.action.ActionDefinition;
 
 import javax.inject.Inject;
 
 /**
- * {@link info.magnolia.ui.model.action.ActionExecutor} used in the scope of sub apps. Reads the {@link ActionDefinition} from the {@link SubAppDescriptor} bound to the current {@link SubAppContext}.
+ * {@link info.magnolia.ui.api.action.ActionExecutor} used in the scope of sub apps. Reads the {@link ActionDefinition} from the {@link SubAppDescriptor} bound to the current {@link SubAppContext}.
  */
 public class SubAppActionExecutor extends AbstractActionExecutor {
 

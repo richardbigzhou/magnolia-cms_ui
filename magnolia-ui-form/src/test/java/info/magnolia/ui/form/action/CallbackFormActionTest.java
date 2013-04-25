@@ -37,7 +37,7 @@ import static org.junit.Assert.assertEquals;
 
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
-import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionExecutionException;
 
 import org.junit.Before;
 import org.junit.Test;

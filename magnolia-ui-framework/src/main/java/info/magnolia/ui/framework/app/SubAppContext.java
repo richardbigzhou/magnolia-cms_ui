@@ -34,12 +34,12 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.model.overlay.OverlayLayer;
+import info.magnolia.ui.api.context.UiContext;
 
 /**
  * Provides functionality used by a sub app to interact with the Magnolia shell.
  */
-public interface SubAppContext extends OverlayLayer {
+public interface SubAppContext extends UiContext {
 
     String getSubAppId();
 
