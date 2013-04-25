@@ -43,7 +43,7 @@ import com.vaadin.client.LayoutManager;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * Client-side connector for @link{AppsViewport}.
+ * Client-side connector for {@link AppsViewport}.
  */
 @Connect(AppsViewport.class)
 public class AppsViewportConnector extends ViewportConnector {
@@ -65,7 +65,7 @@ public class AppsViewportConnector extends ViewportConnector {
     public AppsViewportWidget getWidget() {
         return (AppsViewportWidget) super.getWidget();
     }
-    
+
     /**
      * Leave this empty so the viewport doesn't actually center out the children.
      */

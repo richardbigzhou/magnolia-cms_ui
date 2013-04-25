@@ -62,7 +62,8 @@ public class WorkbenchPresenterTest {
     private void initWorkbenchPresenter() {
         WorkbenchView view = mock(WorkbenchView.class);
         ContentPresenter contentPresenter = mock(ContentPresenter.class);
-        this.presenter = new WorkbenchPresenter(view, contentPresenter);
+        WorkbenchStatusBarPresenter statusBarPresenter = mock(WorkbenchStatusBarPresenter.class);
+        this.presenter = new WorkbenchPresenter(view, contentPresenter, statusBarPresenter);
         this.presenter.start(
                 new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreeContentViewDefinition(), new ListContentViewDefinition()).exec(),
                 null,

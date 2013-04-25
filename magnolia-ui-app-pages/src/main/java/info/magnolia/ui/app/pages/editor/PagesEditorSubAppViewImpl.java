@@ -40,7 +40,9 @@ import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 
 import javax.inject.Inject;
 
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
@@ -57,7 +59,9 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
 
     private PageEditorView pageEditor;
 
-    private ActionbarView actionbar;
+    private ActionbarView actionBar;
+
+    private final CssLayout actionBarWrapper = new CssLayout();
 
     private PageBarView pageBarView;
 
@@ -66,14 +70,19 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
         this.pageBarView = pageBarView;
 
         root.setSizeFull();
-        root.setStyleName("workbench");
+        root.setStyleName("pageeditor");
         root.addComponent(container);
         root.setExpandRatio(container, 1);
         root.setSpacing(true);
-        root.setMargin(true);
+        root.setMargin(false);
 
         container.setSizeFull();
-        container.setImmediate(true);
+        container.addStyleName("editor");
+
+        actionBarWrapper.setHeight(100, Unit.PERCENTAGE);
+        actionBarWrapper.addStyleName("actionbar");
+        root.addComponent(actionBarWrapper);
+        root.setExpandRatio(actionBarWrapper, 0);
 
     }
 
@@ -97,10 +106,15 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
     }
 
     @Override
-    public void setActionbarView(final ActionbarView actionbar) {
-        actionbar.asVaadinComponent().setWidth(null);
-        root.addComponent(actionbar.asVaadinComponent());
-        this.actionbar = actionbar;
+    public void setActionbarView(final ActionbarView actionBar) {
+        Component c = actionBar.asVaadinComponent();
+        Component old = actionBarWrapper.getComponentCount() != 0 ? actionBarWrapper.getComponent(0) : null;
+        if (old == null) {
+            actionBarWrapper.addComponent(c);
+        } else {
+            actionBarWrapper.replaceComponent(old, c);
+        }
+        this.actionBar = actionBar;
     }
 
     @Override
@@ -110,8 +124,8 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
 
     @Override
     public void hideActionbar(boolean hide) {
-        if (actionbar != null) {
-            actionbar.asVaadinComponent().setVisible(!hide);
+        if (actionBar != null) {
+            actionBar.asVaadinComponent().setVisible(!hide);
         }
     }
 

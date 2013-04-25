@@ -31,51 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench;
+package info.magnolia.ui.statusbar;
 
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.statusbar.StatusBarView;
+
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
 
 /**
- * WorkbenchView.
+ * The status bar view consists of a horizontal container, with basic support for horizontal alignment. It is intended
+ * for displaying status information relative to the content that is currently presented in an adjacent view.
+ * Additionally, it can draw several levels of attention of feedback by changing color.
  */
-public interface WorkbenchView extends View {
-    /**
-     * Listener interface for events concerning the workbench.
-     */
-    interface Listener {
+public interface StatusBarView extends View {
 
-        void onSearch(String searchExpression);
+    void addComponent(Component c, Alignment align);
 
-        void onViewTypeChanged(ContentView.ViewType viewType);
-    }
+    void removeComponent(Component c);
 
-    void setListener(Listener listener);
-
-    /**
-     * Updates the search box with given search query.
-     */
-    void setSearchQuery(String query);
-
-    /**
-     * Refreshes the current view.
-     */
-    void refresh();
-
-    /**
-     * Use this method to add sub views hosted by this view.
-     */
-    void addContentView(ContentView.ViewType type, ContentView view, ContentViewDefinition contentViewDefintion);
-
-    void setViewType(ContentView.ViewType type);
-
-    /**
-     * Use this method to add a status bar to this sub app view.
-     */
-    void setStatusBarView(StatusBarView statusBar);
-
-    void selectPath(String path);
-
-    ContentView getSelectedView();
+    void setColor(String colorStyleName);
 
 }

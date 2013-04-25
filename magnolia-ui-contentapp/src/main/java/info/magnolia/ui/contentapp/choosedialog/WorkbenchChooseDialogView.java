@@ -49,7 +49,6 @@ public class WorkbenchChooseDialogView extends BaseDialog implements ChooseDialo
     @Inject
     public WorkbenchChooseDialogView(WorkbenchView view) {
         addStyleName("choose-dialog");
-        addStyleName("content-view-field-wrapper");
         setContent(view.asVaadinComponent());
         addAction(CHOOSE_ACTION_NAME, "Choose");
         addAction(CANCEL_ACTION_NAME, "Cancel");

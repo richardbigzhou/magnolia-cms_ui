@@ -126,6 +126,7 @@ public class ListViewImpl implements ListView {
         buildColumns(workbenchDefinition, componentProvider);
 
         layout.setStyleName("mgnl-content-view");
+        layout.setSizeFull();
         layout.addComponent(table);
     }
 

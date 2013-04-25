@@ -34,7 +34,6 @@
 package info.magnolia.ui.contentapp.detail;
 
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import java.util.EnumMap;
@@ -53,22 +52,29 @@ public class DetailEditorViewImpl extends HorizontalLayout implements DetailEdit
     private final CssLayout itemViewContainer = new CssLayout();
     private final Map<DetailView.ViewType, DetailView> itemViews = new EnumMap<DetailView.ViewType, DetailView>(DetailView.ViewType.class);
 
-    private ActionbarView actionbar;
+    private ActionbarView actionBar;
+
+    private final CssLayout actionBarWrapper = new CssLayout();
 
     private DetailView.ViewType currentViewType = DetailView.ViewType.VIEW;
 
     private DetailEditorView.Listener contentWorkbenchViewListener;
 
     public DetailEditorViewImpl() {
-        super();
         setSizeFull();
-        setStyleName("workbench");
-        setMargin(true);
+        setMargin(false);
         setSpacing(true);
+        addStyleName("detail");
+
         itemViewContainer.setSizeFull();
-        itemViewContainer.setStyleName("detail-view");
+        itemViewContainer.setStyleName("detailview");
         addComponent(itemViewContainer);
         setExpandRatio(itemViewContainer, 1);
+
+        actionBarWrapper.setHeight(100, Unit.PERCENTAGE);
+        actionBarWrapper.addStyleName("actionbar");
+        addComponent(actionBarWrapper);
+        setExpandRatio(actionBarWrapper, 0);
     }
 
     @Override
@@ -113,19 +119,18 @@ public class DetailEditorViewImpl extends HorizontalLayout implements DetailEdit
     }
 
     @Override
-    public void setActionbarView(final ActionbarView actionbar) {
-        Actionbar actionbarComponent = (Actionbar) actionbar.asVaadinComponent();
+    public void setActionbarView(final ActionbarView actionBar) {
+        Component c = actionBar.asVaadinComponent();
+        c.addStyleName("stub");
+        actionBar.setOpen(false);
 
-        actionbarComponent.setWidth(null);
-        actionbarComponent.addStyleName("stub");
-        actionbarComponent.setOpen(false);
-
-        if (this.actionbar == null) {
-            addComponent(actionbarComponent);
+        Component old = actionBarWrapper.getComponentCount() != 0 ? actionBarWrapper.getComponent(0) : null;
+        if (old == null) {
+            actionBarWrapper.addComponent(c);
         } else {
-            replaceComponent(this.actionbar.asVaadinComponent(), actionbarComponent);
+            actionBarWrapper.replaceComponent(old, c);
         }
-        this.actionbar = actionbar;
+        this.actionBar = actionBar;
     }
 
 }
