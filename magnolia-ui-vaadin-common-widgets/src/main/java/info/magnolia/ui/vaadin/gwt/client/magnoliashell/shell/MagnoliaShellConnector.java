@@ -78,8 +78,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         public void onShellAppActivated(final ShellAppActivatedEvent event) {
             view.showShellApp(event.getType());
             activateShellApp(Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken()));
-            getLayoutManager().setNeedsMeasure(Util.findConnectorFor(getShellAppWidget(event.getType())));
-            getLayoutManager().layoutNow();
         }
 
     };
@@ -208,6 +206,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     @Override
     public void updateViewportLayout(ViewportWidget activeViewport) {
         getLayoutManager().setNeedsMeasure(Util.findConnectorFor(activeViewport));
+        getLayoutManager().layoutNow();
     }
 
     @Override

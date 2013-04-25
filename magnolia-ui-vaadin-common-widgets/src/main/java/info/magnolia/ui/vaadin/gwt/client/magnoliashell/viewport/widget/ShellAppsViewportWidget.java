@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.ShellAppsTransitionDelegate;
 
 /**
  * Shell apps viewport client side.
@@ -42,6 +42,6 @@ public class ShellAppsViewportWidget extends ViewportWidget {
 
     public ShellAppsViewportWidget() {
         super();
-        setTransitionDelegate(TransitionDelegate.SHELL_APPS_TRANSITION_DELEGATE);
+        setTransitionDelegate(new ShellAppsTransitionDelegate(this));
     }
 }

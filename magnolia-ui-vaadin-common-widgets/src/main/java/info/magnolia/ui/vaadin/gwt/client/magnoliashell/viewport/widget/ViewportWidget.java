@@ -111,7 +111,7 @@ public class ViewportWidget extends FlowPanel {
     public void setVisibleChild(Widget w) {
         if (w != visibleChild) {
             if (isActive()) {
-                transitionDelegate.setVisibleApp(this, w);
+                transitionDelegate.setVisibleChild(this, w);
             } else {
                 setChildVisibleNoTransition(w);
             }

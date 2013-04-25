@@ -41,7 +41,6 @@ import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.AppsTransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.MagnoliaSwipeRecognizer;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
 import java.util.Iterator;
@@ -93,7 +92,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     public AppsViewportWidget() {
         super();
         bindTouchHandlers();
-        setTransitionDelegate(TransitionDelegate.APPS_TRANSITION_DELEGATE);
+        setTransitionDelegate(new AppsTransitionDelegate(this));
     }
 
     /* CURTAIN INTEGRATION */
@@ -120,15 +119,10 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         ((AppsTransitionDelegate) getTransitionDelegate()).setCurtainVisible(this, visible);
     }
 
-    /**
-     * Default non-transitioning behavior, accessible to transition delegates as
-     * a fall back.
-     */
-    public void doSetCurtainVisible(boolean visible) {
-        boolean curtainAttached = getCurtain().getParentElement() == getElement();
-        if (visible && !curtainAttached) {
+    public void setCurtainAttached(boolean visible) {
+        if (visible) {
             getElement().appendChild(getCurtain());
-        } else if (!visible && curtainAttached) {
+        } else if (getElement().isOrHasChild(curtain)) {
             getElement().removeChild(getCurtain());
         }
     }
@@ -138,7 +132,6 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     }
 
     /* APP CLOSING */
-
     @Override
     public void setChildVisibleNoTransition(Widget w) {
         if (getVisibleChild() != null) {
@@ -153,11 +146,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
     @Override
     public void removeWidget(Widget w) {
-        if (getTransitionDelegate() != null) {
-            ((AppsTransitionDelegate) getTransitionDelegate()).removeWidget(this, w);
-        } else {
-            removeWithoutTransition(w);
-        }
+       ((AppsTransitionDelegate) getTransitionDelegate()).removeWidget(this, w);
     }
 
     @Override
@@ -339,12 +328,13 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         preloader.setCaption(appName);
         preloader.addStyleName("zoom-in");
         RootPanel.get().add(preloader);
-        new Timer() {
+        callback.onPreloaderShown(appName);
+        /*new Timer() {
             @Override
             public void run() {
-                callback.onPreloaderShown(appName);
+
             }
-        }.schedule(500);
+        }.schedule(500);*/
     }
 
     public boolean hasPreloader() {

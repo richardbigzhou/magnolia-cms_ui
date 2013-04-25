@@ -94,7 +94,7 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
         void activateShellApp(Fragment f);
 
-        void updateViewportLayout(ViewportWidget activeViewport);
+        void updateViewportLayout(ViewportWidget viewport);
 
         void closeCurrentApp();
 
