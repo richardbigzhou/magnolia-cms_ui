@@ -40,7 +40,8 @@ import info.magnolia.ui.form.fieldtype.registry.ConfiguredFieldTypeDefinitionMan
 import javax.inject.Inject;
 
 /**
- * Registers the observed manager for field types: {@link ConfiguredFieldTypeDefinitionManager}
+ * Registers the observed manager for field types.
+ * @see ConfiguredFieldTypeDefinitionManager
  */
 public class FormModule implements ModuleLifecycle {
 
