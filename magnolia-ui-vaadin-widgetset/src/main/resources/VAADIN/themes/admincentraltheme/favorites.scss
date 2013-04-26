@@ -4,9 +4,15 @@
 
 /* FAVORITES STYLES */
 
+.favorites {
+   background-color: white;
+ }
+
+
 .favorites .v-splitpanel-hsplitter-locked {
-	border:none;
-	margin-top:35px;
+  border:none;
+  margin-top:35px;
+  background: transparent;
 }
 
 .favorites .v-feed-section > .v-csslayout-margin-top {
@@ -14,35 +20,76 @@
 }
 
 .v-caption-favorites-section {
-	color:#679600;
-	font-family:DINWebPro, sans-serif;
-	font-size:16px;
+  color:#679600;
+  font-family:DINWebPro, sans-serif;
+  font-size:16px;
 }
 
 .favorites-section {
-	padding-bottom:48px;
+  padding-bottom:48px;
 }
 
 .favorites-entry {
-	padding: 10px 10px 10px 3px;
-	font-size:15px;
-	line-height:18px;
-	height:40px;
+  padding: 10px 10px 10px 3px;
+  font-size:15px;
+  line-height:18px;
+  height:40px;
 }
 
 .favorites-entry .v-label {
-	display:inline-block;
+  display:inline-block;
 }
 
 .favorites-entry .v-label-icon {
-	width:24px;
-	height:24px;
-	color:#679600;
-	margin-right:10px;
-	font-size:24px;
-	position: relative;
+  width:24px;
+  height:24px;
+  color:#679600;
+  margin-right:10px;
+  font-size:24px;
+  position: relative;
 }
+
 .favorites-form {
-    background-color: #ccc; 
-   }
+  margin-left: 30px;
+  width: 840px !important;
+}
+
+.favorites-form .dialog-header {
+  height: 35px;
+  padding-top: 0 !important;
+  cursor: pointer;
+}
+
+.favorites-form .dialog-header .title {
+   position: absolute;
+   font-family:DINWebPro, sans-serif;
+   font-size: 16px;
+   color: white;
+   top: 10px;
+   left: 50px;
+   cursor: pointer;
+}
+.favorites-form .dialog-header .icon span{
+  position: absolute;
+  color: white;
+  font-size: 25px;
+  top:0;
+  cursor: pointer;
+}
+.favorites-form-content, .favorites-tabs {
+    background-color: #E6E6E6;
+}
+
+.favorites-form-content input[type="text"] {
+  width: 700px !important;
+ }
+ .favorites-form-content .buttons {
+   margin-left: 591px;
+ }
+
+ .favorites-form-content .buttons .btn-dialog-commit {
+   margin-left: 10px;
+ }
+
+
 }

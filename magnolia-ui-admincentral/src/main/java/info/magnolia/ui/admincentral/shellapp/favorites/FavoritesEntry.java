@@ -51,9 +51,9 @@ import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
 
 /**
- * FavoriteEntry.
+ * FavoritesEntry.
  */
-public class FavoriteEntry extends CustomComponent {
+public class FavoritesEntry extends CustomComponent {
 
     private HorizontalLayout root = new HorizontalLayout();
     private String location;
@@ -67,7 +67,7 @@ public class FavoriteEntry extends CustomComponent {
     private boolean editable;
     private boolean selected;
 
-    public FavoriteEntry(final JcrItemNodeAdapter favorite, final FavoritesView.Listener listener) {
+    public FavoritesEntry(final JcrItemNodeAdapter favorite, final FavoritesView.Listener listener) {
         super();
         String nodeName = favorite.getItemProperty(ModelConstants.JCR_NAME).getValue().toString();
         this.location = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue().toString();
