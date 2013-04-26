@@ -41,12 +41,12 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.ZoomA
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.Util;
+import com.vaadin.client.VConsole;
 
 /**
  * The AppsTransitionDelegate provides custom transition logic when launching, closing an app, or
@@ -64,17 +64,32 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
 
     private static final int CURTAIN_FADE_OUT_DELAY = 200;
 
+    private AppsViewportWidget viewport;
+
+    private ZoomAnimation zoomOutAnimation = new ZoomAnimation(false) {
+        @Override
+        protected void onComplete() {
+            super.onComplete();
+            viewport.removeWithoutTransition(Util.<Widget>findWidget((Element)getElement(), null));
+        }
+    };
+
     private ZoomAnimation zoomInAnimation = new ZoomAnimation(true) {
         @Override
         protected void onStart() {
             super.onStart();
             Util.findConnectorFor(viewport).getConnection().suspendReponseHandling(lock);
         }
+
+        @Override
+        protected void onComplete() {
+            super.onComplete();
+            Util.findConnectorFor(viewport).getConnection().resumeResponseHandling(lock);
+        }
     };
 
-    private ZoomAnimation zoomOutAnimation = new ZoomAnimation(false);
-
-    private FadeAnimation fadeInAnimation = new FadeAnimation(CURTAIN_ALPHA, true, true) {
+    private FadeAnimation curtainFadeOutAnimation = new FadeAnimation(0, false, false);
+    private FadeAnimation curtainFadeInAnimation = new FadeAnimation(CURTAIN_ALPHA, true, true) {
         @Override
         protected void onStart() {
             super.onStart();
@@ -82,29 +97,12 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         }
     };
 
-    private FadeAnimation fadeOutAnimation = new FadeAnimation(0, false, false);
-
-    private ViewportWidget viewport;
-
-    public AppsTransitionDelegate(final ViewportWidget viewport) {
+    public AppsTransitionDelegate(final AppsViewportWidget viewport) {
         this.viewport = viewport;
-        zoomInAnimation.addCallback(new JQueryCallback() {
-            @Override
-            public void execute(JQueryWrapper query) {
-                Util.findConnectorFor(viewport).getConnection().resumeResponseHandling(lock);
-            }
-        });
-        zoomOutAnimation.addCallback(new JQueryCallback() {
-            @Override
-            public void execute(JQueryWrapper query) {
-                viewport.removeWithoutTransition(Util.<Widget>findWidget(query.get(0), null));
-            }
-        });
-
-        fadeOutAnimation.addCallback(new JQueryCallback() {
+        curtainFadeOutAnimation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper jq) {
-                ((AppsViewportWidget)viewport).setCurtainAttached(false);
+                viewport.setCurtainAttached(false);
             }
         });
     }
@@ -117,34 +115,31 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
     public void setVisibleChild(final ViewportWidget viewport, final Widget app) {
         if (!viewport.isClosing() && isWidgetVisibilityHidden(app)) {
             viewport.setChildVisibleNoTransition(app);
-            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-                @Override
-                public void execute() {
-                    zoomInAnimation.run(500, app.getElement());
-                }
-            });
+            zoomInAnimation.run(500, app.getElement());
         } else {
+            VConsole.log("Setting visible with no transition");
             viewport.setChildVisibleNoTransition(app);
         }
     }
 
-    public void setCurtainVisible(final AppsViewportWidget viewport, boolean visible) {
+    public void setCurtainVisible(boolean visible) {
         final Element curtain = viewport.getCurtain();
         if (visible) {
             viewport.setCurtainAttached(true);
-            fadeOutAnimation.cancel();
-            fadeInAnimation.run(CURTAIN_FADE_IN_DURATION, curtain);
+            curtainFadeOutAnimation.cancel();
+            curtainFadeInAnimation.run(CURTAIN_FADE_IN_DURATION, curtain);
         } else {
-            fadeInAnimation.cancel();
-            fadeOutAnimation.run(CURTAIN_FADE_OUT_DURATION + CURTAIN_FADE_OUT_DELAY, curtain);
+            curtainFadeInAnimation.cancel();
+            curtainFadeOutAnimation.run(CURTAIN_FADE_OUT_DURATION + CURTAIN_FADE_OUT_DELAY, curtain);
         }
     }
 
-    public void removeWidget(final AppsViewportWidget viewport, final Widget w) {
+    public void removeWidget(Widget w) {
         zoomOutAnimation.run(500, w.getElement());
     }
 
     private boolean isWidgetVisibilityHidden(final Widget app) {
-        return Visibility.HIDDEN.getCssName().equals(app.getElement().getStyle().getVisibility());
+        return Visibility.HIDDEN.getCssName().equals(app.getElement().getStyle().getVisibility()) ||
+                Style.Display.NONE.getCssName().equals(app.getElement().getStyle().getDisplay());
     }
 }

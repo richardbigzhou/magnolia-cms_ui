@@ -59,10 +59,7 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
 
     private final static int ALPHA_MAX = 1;
 
-    private FadeAnimation fadeOutAnimation = new FadeAnimation(ALPHA_MIN, true, false);
-
     private SlideAnimation slideUpAnimation = new SlideAnimation(true);
-
     private SlideAnimation slideDownAnimation = new SlideAnimation(true) {
         @Override
         protected void onStart() {
@@ -71,6 +68,7 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
         }
     };
 
+    private FadeAnimation fadeOutAnimation = new FadeAnimation(ALPHA_MIN, true, false);
     private FadeAnimation fadeInAnimation = new FadeAnimation(ALPHA_MAX, true, true) {
         @Override
         protected void onStart() {
@@ -131,9 +129,6 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
             // do not fade if first widget or viewport not active yet
             viewport.setChildVisibleNoTransition(visibleChild);
         } else {
-            fadeInAnimation.cancel();
-            fadeOutAnimation.cancel();
-
             fadeInAnimation.run(FADE_DURATION, visibleChild.getElement());
             fadeOutAnimation.run(FADE_DURATION, viewport.getVisibleChild().getElement());
         }
