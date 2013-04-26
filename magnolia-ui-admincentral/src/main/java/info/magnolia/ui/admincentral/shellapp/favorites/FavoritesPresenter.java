@@ -34,11 +34,24 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 
+import info.magnolia.context.MgnlContext;
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.framework.app.AppDescriptor;
+import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.server.Page;
 
@@ -47,13 +60,17 @@ import com.vaadin.server.Page;
  */
 public class FavoritesPresenter implements FavoritesView.Listener {
 
+    private final Logger log = LoggerFactory.getLogger(FavoritesPresenter.class);
+
     private FavoritesView view;
     private FavoritesManager favoritesManager;
+    private AppDescriptorRegistry appDescriptorRegistry;
 
     @Inject
-    public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager) {
+    public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager, final AppDescriptorRegistry appDescriptorRegistry) {
         this.view = view;
         this.favoritesManager = favoritesManager;
+        this.appDescriptorRegistry = appDescriptorRegistry;
     }
 
     public FavoritesView start() {
@@ -76,7 +93,36 @@ public class FavoritesPresenter implements FavoritesView.Listener {
 
     @Override
     public void goToLocation(final String location) {
-        Page.getCurrent().setLocation(location);
+        final String completeLocation = getCompleteURIFromFragment(location);
+        Page.getCurrent().setLocation(completeLocation);
+    }
+
+    protected JcrNewNodeAdapter determinePreviousLocation() {
+        // at this point the current location in the browser hasn't yet changed to favorite shellapp,
+        // so it is what we need to pre-populate the form for creating a new favorite
+        final URI previousLocation = Page.getCurrent().getLocation();
+        final String previousLocationFragment = previousLocation.getFragment();
+        final String appId = DefaultLocation.extractAppId(previousLocationFragment);
+        final String appType = DefaultLocation.extractAppType(previousLocationFragment);
+        // TODO MGNLUI-1190 should this be added to DefaultLocation as a convenience static method?
+        final String path = StringUtils.substringBetween(previousLocationFragment, ";", ":");
+        JcrNewNodeAdapter favoriteLocation;
+        // skip bookmarking shell apps
+        if (Location.LOCATION_TYPE_SHELL_APP.equals(appType)) {
+            favoriteLocation = createNewFavoriteSuggestion("", "", "");
+        } else {
+            AppDescriptor appDescriptor;
+            try {
+                appDescriptor = appDescriptorRegistry.getAppDescriptor(appId);
+            } catch (RegistrationException e) {
+                throw new RuntimeException(e);
+            }
+            final String appIcon = StringUtils.defaultIfEmpty(appDescriptor.getIcon(), "icon-app");
+            final String title = appDescriptor.getLabel() + " " + (path == null ? "/" : path);
+            final String urlFragment = getUrlFragmentFrom(previousLocation);
+            favoriteLocation = createNewFavoriteSuggestion(urlFragment, title, appIcon);
+        }
+        return favoriteLocation;
     }
 
     /**
@@ -116,6 +162,35 @@ public class FavoritesPresenter implements FavoritesView.Listener {
     public void removeGroup(String relPath) {
         favoritesManager.removeGroup(relPath);
         initializeView();
+    }
+
+    protected String getWebAppRootURI() {
+        final HttpServletRequest request = MgnlContext.getWebContext().getRequest();
+        final String fullProtocolString = request.getProtocol();
+        String instancePrefix = fullProtocolString.substring(0, fullProtocolString.indexOf("/")).toLowerCase() + "://" + request.getServerName() + ":" + request.getServerPort();
+        instancePrefix += MgnlContext.getContextPath();
+        return instancePrefix;
+    }
+
+    public String getUrlFragmentFrom(URI location) {
+        final String url = location.toString();
+        String instancePrefix = getWebAppRootURI();
+
+        final String urlFragment =  url.contains(instancePrefix) ? url.substring(url.indexOf(instancePrefix) + instancePrefix.length(), url.length()) : url;
+        return urlFragment;
+    }
+
+    public String getCompleteURIFromFragment(final String fragment) {
+        URI uri = null;
+        try {
+            uri = new URI(fragment);
+        } catch (URISyntaxException e) {
+            log.warn("Could not creat URI from fragment {}. Exception: {}", fragment, e.toString());
+        }
+        if (uri == null || uri.isAbsolute()) {
+            return fragment;
+        }
+        return getWebAppRootURI() + fragment;
     }
 
     private void initializeView() {
