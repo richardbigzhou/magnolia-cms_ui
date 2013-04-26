@@ -1,0 +1,10 @@
+@charset "UTF-8";
+
+@import "pageeditor.scss";
+
+@mixin ui-app-pages {
+
+  .v-horizontallayout-pageeditor {
+    @include pageeditor;
+  }
+}

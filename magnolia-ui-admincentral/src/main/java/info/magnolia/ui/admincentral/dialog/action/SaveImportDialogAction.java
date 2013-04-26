@@ -39,8 +39,8 @@ import info.magnolia.commands.chain.Command;
 import info.magnolia.commands.impl.ImportCommand;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
-import info.magnolia.ui.model.action.ActionBase;
-import info.magnolia.ui.model.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 

@@ -37,7 +37,7 @@ import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.model.ModelConstants;
+import info.magnolia.ui.api.ModelConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -172,6 +172,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         DefaultProperty property = DefaultPropertyUtil.newDefaultProperty((String) id, type, value);
         // add PropertyChange Listener
         property.addValueChangeListener(this);
+        getChangedProperties().put((String) id, property);
         return property;
     }
 
@@ -259,17 +260,18 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         Node node = (Node) item;
         if (ModelConstants.JCR_NAME.equals(propertyId)) {
             String jcrName = (String) property.getValue();
-            if (jcrName != null && !jcrName.isEmpty()) {
-                try {
+            try {
+                if (jcrName != null && !jcrName.isEmpty() && !jcrName.equals(node.getName())) {
+
                     // make sure new path is clear
                     jcrName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), jcrName);
                     String newPath = NodeUtil.combinePathAndName(node.getParent().getPath(), jcrName);
                     node.getSession().move(node.getPath(), newPath);
                     setPath(node.getPath());
-                } catch (RepositoryException e) {
+                }
+            } catch (RepositoryException e) {
                     log.error("Could not rename JCR Node.", e);
                 }
-            }
         } else if (propertyId != null && !propertyId.isEmpty()) {
             if (property.getValue() != null && StringUtils.isNotEmpty(property.getValue().toString())) {
                 try {

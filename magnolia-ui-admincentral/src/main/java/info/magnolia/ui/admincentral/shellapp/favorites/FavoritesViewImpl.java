@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
-import info.magnolia.ui.model.ModelConstants;
+import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
@@ -240,7 +240,9 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
     }
 
-    // A form component that allows editing an item
+    /**
+     * A form component that allows editing an item.
+     */
     private class FavoriteForm extends CustomComponent {
 
         private TextField url = new TextField("Location");

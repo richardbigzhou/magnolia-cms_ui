@@ -36,8 +36,8 @@ package info.magnolia.ui.admincentral.i18n;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.link.LinkUtil;
 import info.magnolia.objectfactory.Components;
-import info.magnolia.ui.model.i18n.I18NAuthoringSupport;
-import info.magnolia.ui.model.i18n.I18NAwareProperty;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.api.i18n.I18NAwareProperty;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -55,7 +55,7 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.HasComponents;
 
 /**
- * Default implementation of {@link info.magnolia.ui.model.i18n.I18NAuthoringSupport}.
+ * Default implementation of {@link info.magnolia.ui.api.i18n.I18NAuthoringSupport}.
  */
 public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
 

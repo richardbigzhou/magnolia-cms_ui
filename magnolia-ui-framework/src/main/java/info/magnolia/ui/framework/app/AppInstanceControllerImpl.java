@@ -48,13 +48,14 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.model.overlay.AlertCallback;
-import info.magnolia.ui.model.overlay.ConfirmationCallback;
-import info.magnolia.ui.model.overlay.MessageStyleType;
-import info.magnolia.ui.model.overlay.NotificationCallback;
-import info.magnolia.ui.model.overlay.OverlayCloser;
-import info.magnolia.ui.model.overlay.OverlayLayer;
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.overlay.AlertCallback;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
+import info.magnolia.ui.api.overlay.MessageStyleType;
+import info.magnolia.ui.api.overlay.NotificationCallback;
+import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.api.overlay.OverlayLayer;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.overlay.OverlayPresenter;
 
 import java.util.Collection;
@@ -424,6 +425,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
         // Add the SubAppContext instance into the component provider.
         configuration.addComponent(InstanceConfiguration.valueOf(SubAppContext.class, subAppContext));
+        configuration.addComponent(InstanceConfiguration.valueOf(UiContext.class, subAppContext));
 
         EventBusProtector eventBusProtector = new EventBusProtector();
         configuration.addConfigurer(eventBusProtector);

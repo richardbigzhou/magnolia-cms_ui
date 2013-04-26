@@ -35,7 +35,7 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.model.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
@@ -48,6 +48,9 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Container.ItemSetChangeEvent;
+import com.vaadin.data.Container.ItemSetChangeListener;
+
 /**
  * TODO: Add JavaDoc for WorkbenchPresenter.
  */
@@ -59,20 +62,35 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     private final ContentPresenter contentPresenter;
 
+    private final WorkbenchStatusBarPresenter statusBarPresenter;
+
     private WorkbenchDefinition workbenchDefinition;
 
     private EventBus eventBus;
 
     @Inject
-    public WorkbenchPresenter(WorkbenchView view, ContentPresenter contentPresenter) {
+    public WorkbenchPresenter(WorkbenchView view, ContentPresenter contentPresenter, WorkbenchStatusBarPresenter statusBarPresenter) {
         this.view = view;
         this.contentPresenter = contentPresenter;
+        this.statusBarPresenter = statusBarPresenter;
     }
 
     public WorkbenchView start(WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, EventBus eventBus) {
         this.workbenchDefinition = workbenchDefinition;
         this.eventBus = eventBus;
         contentPresenter.start(view, workbenchDefinition, imageProviderDefinition, eventBus);
+
+        if (view.getSelectedView() != null && view.getSelectedView().getContainer() != null) {
+            view.getSelectedView().getContainer().addItemSetChangeListener(new ItemSetChangeListener() {
+
+                @Override
+                public void containerItemSetChange(ItemSetChangeEvent event) {
+                    statusBarPresenter.setItemCount(event.getContainer().size());
+                }
+            });
+        }
+
+        view.setStatusBarView(statusBarPresenter.start(eventBus));
         view.setListener(this);
         return view;
     }

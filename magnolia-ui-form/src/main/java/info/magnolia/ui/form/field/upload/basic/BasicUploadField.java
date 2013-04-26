@@ -34,10 +34,12 @@
 package info.magnolia.ui.form.field.upload.basic;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.upload.AbstractUploadField;
 import info.magnolia.ui.form.field.upload.FileItemWrapper;
 import info.magnolia.ui.form.field.upload.UploadProgressIndicator;
-import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
+import info.magnolia.ui.imageprovider.ImageProvider;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.io.File;
 
@@ -81,12 +83,14 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     protected final ImageProvider imageProvider;
     private boolean editFileName = false;
     private boolean editFileFormat = false;
+    protected UiContext uiContext;
 
-    public BasicUploadField(D fileWrapper, File tmpUploadDirectory, ImageProvider imageProvider) {
+    public BasicUploadField(D fileWrapper, File tmpUploadDirectory, ImageProvider imageProvider, UiContext uiContext) {
         super(fileWrapper, tmpUploadDirectory);
         this.imageProvider = imageProvider;
         this.layout = new CssLayout();
         this.layout.setSizeUndefined();
+        this.uiContext = uiContext;
         setRootLayout(createDropZone(layout));
 
         // Update Style Name
@@ -405,6 +409,9 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     protected String successNoteCaption;
     protected String warningNoteCaption;
     protected String errorNoteCaption;
+    private String sizeInterruption;
+    private String typeInterruption;
+    private String userInterruption;
 
     public void setSelectNewCaption(String selectNewCaption) {
         this.selectNewCaption = selectNewCaption;
@@ -449,19 +456,39 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         this.deleteCaption = deleteCaption;
     }
 
+    public void setSizeInterruption(String sizeInterruption) {
+        this.sizeInterruption = sizeInterruption;
+    }
+
+    public void setTypeInterruption(String typeInterruption) {
+        this.typeInterruption = typeInterruption;
+    }
+
+    public void setUserInterruption(String userInterruption) {
+        this.userInterruption = userInterruption;
+    }
+
     @Override
     protected void displayUploadInterruptNote(InterruptionReason reason) {
-        // Do Nothing
+        String caption = "";
+        if (reason.equals(InterruptionReason.USER)) {
+            caption = userInterruption;
+        } else if (reason.equals(InterruptionReason.FILE_SIZE)) {
+            caption = sizeInterruption;
+        } else {
+            caption = typeInterruption;
+        }
+        uiContext.openNotification(MessageStyleTypeEnum.WARNING, true, getCaption(warningNoteCaption, new String[] { MessagesUtil.get(caption) }));
     }
 
     @Override
     protected void displayUploadFinisheddNote(String fileName) {
-        // Do Nothing
+        uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getCaption(successNoteCaption, new String[] { fileName }));
     }
 
     @Override
     protected void displayUploadFaildNote(String fileName) {
-        // Do Nothing
+        uiContext.openAlert(MessageStyleTypeEnum.ERROR, "ERROR", getCaption(errorNoteCaption, new String[] { fileName }), "ok", null);
     }
 
     public void setEditFileName(boolean editFileName) {

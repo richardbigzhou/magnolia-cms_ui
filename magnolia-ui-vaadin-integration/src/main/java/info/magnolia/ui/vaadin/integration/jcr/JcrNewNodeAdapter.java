@@ -35,7 +35,7 @@ package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.ui.model.ModelConstants;
+import info.magnolia.ui.api.ModelConstants;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Item;

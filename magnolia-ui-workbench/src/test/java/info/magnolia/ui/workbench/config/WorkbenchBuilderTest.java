@@ -36,7 +36,7 @@ package info.magnolia.ui.workbench.config;
 import static org.junit.Assert.assertEquals;
 
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.ui.model.ModelConstants;
+import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.drop.AlwaysTrueDropConstraint;
 

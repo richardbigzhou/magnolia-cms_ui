@@ -35,8 +35,8 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
-import info.magnolia.ui.model.action.AbstractActionExecutor;
-import info.magnolia.ui.model.action.ActionDefinition;
+import info.magnolia.ui.api.action.AbstractActionExecutor;
+import info.magnolia.ui.api.action.ActionDefinition;
 
 import javax.inject.Inject;
 

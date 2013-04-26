@@ -37,7 +37,7 @@ import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DescriptionVisibilityEvent;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-import info.magnolia.ui.model.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -60,7 +60,7 @@ public class ItemFormView implements FormView {
 
     public ItemFormView() {
         form = new Form();
-        dialog = new BaseDialog();
+        dialog = new DialogContainingForm();
         dialog.setContent(form);
         dialog.addDescriptionVisibilityHandler(new BaseDialog.DescriptionVisibilityEvent.Handler() {
 

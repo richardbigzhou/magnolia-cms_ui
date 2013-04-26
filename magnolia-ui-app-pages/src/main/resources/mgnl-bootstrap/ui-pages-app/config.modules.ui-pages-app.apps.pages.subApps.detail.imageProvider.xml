@@ -10,7 +10,7 @@
     <sv:value>3e62fd00-cffb-488e-924e-a0aa3714bbc9</sv:value>
   </sv:property>
   <sv:property sv:name="class" sv:type="String">
-    <sv:value>info.magnolia.ui.model.imageprovider.definition.ConfiguredImageProviderDefinition</sv:value>
+    <sv:value>info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition</sv:value>
   </sv:property>
   <sv:property sv:name="imageProviderClass" sv:type="String">
     <sv:value>info.magnolia.ui.app.pages.thumbnail.PagesImageProvider</sv:value>

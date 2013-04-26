@@ -64,6 +64,9 @@ public class BasicUploadFieldDefinition extends ConfiguredFieldDefinition {
     private String successNoteCaption = "field.upload.basic.note.success";
     private String warningNoteCaption = "field.upload.basic.note.warning";
     private String errorNoteCaption = "field.upload.basic.note.error";
+    private String sizeInterruption = "field.upload.interupted.size";
+    private String typeInterruption = "field.upload.interupted.type";
+    private String userInterruption = "field.upload.interupted.user";
 
     public String getBinaryNodeName() {
         return binaryNodeName;
@@ -217,4 +220,27 @@ public class BasicUploadFieldDefinition extends ConfiguredFieldDefinition {
         this.editFileFormat = editFileFormat;
     }
 
+    public String getSizeInterruption() {
+        return sizeInterruption;
+    }
+
+    public void setSizeInterruption(String sizeInterruption) {
+        this.sizeInterruption = sizeInterruption;
+    }
+
+    public String getTypeInterruption() {
+        return typeInterruption;
+    }
+
+    public void setTypeInterruption(String typeInterruption) {
+        this.typeInterruption = typeInterruption;
+    }
+
+    public String getUserInterruption() {
+        return userInterruption;
+    }
+
+    public void setUserInterruption(String userInterruption) {
+        this.userInterruption = userInterruption;
+    }
 }

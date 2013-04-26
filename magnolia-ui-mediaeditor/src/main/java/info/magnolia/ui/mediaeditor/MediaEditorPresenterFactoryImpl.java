@@ -50,7 +50,7 @@ import info.magnolia.ui.mediaeditor.action.MediaEditorActionExecutor;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 import info.magnolia.ui.mediaeditor.editmode.factory.EditModeProviderFactory;
 import info.magnolia.ui.mediaeditor.registry.MediaEditorRegistry;
-import info.magnolia.ui.model.action.ActionExecutor;
+import info.magnolia.ui.api.action.ActionExecutor;
 
 import java.util.List;
 

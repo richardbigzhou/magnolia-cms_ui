@@ -40,7 +40,7 @@ import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.model.overlay.View;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.net.URI;
@@ -87,7 +87,7 @@ public class FavoritesShellApp implements ShellApp {
         final String previousLocationFragment = previousLocation.getFragment();
         final String appId = DefaultLocation.extractAppId(previousLocationFragment);
         final String appType = DefaultLocation.extractAppType(previousLocationFragment);
-        // TODO should this be added to DefaultLocation as a convenience static method?
+        // TODO MGNLUI-1190 should this be added to DefaultLocation as a convenience static method?
         final String path = StringUtils.substringBetween(previousLocationFragment, ";", ":");
         JcrNewNodeAdapter favoriteLocation;
         // skip bookmarking shell apps

@@ -48,8 +48,8 @@ public class FieldsConfig {
         return new SelectFieldBuilder(name);
     }
 
-    public FileUploadFieldBuilder fileUpload(String name) {
-        return new FileUploadFieldBuilder(name);
+    public BasicUploadFieldBuilder fileUpload(String name) {
+        return new BasicUploadFieldBuilder(name);
     }
 
     public CheckboxFieldBuilder checkbox(String name) {

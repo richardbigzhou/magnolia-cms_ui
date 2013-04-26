@@ -36,11 +36,12 @@ package info.magnolia.ui.form.field.builder;
 import info.magnolia.cms.core.SystemProperty;
 import info.magnolia.init.MagnoliaConfigurationProperties;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.upload.basic.BasicFileItemWrapper;
 import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
-import info.magnolia.ui.model.imageprovider.definition.ImageProvider;
+import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -69,12 +70,14 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder<BasicUploadFie
 
     private MagnoliaConfigurationProperties properties;
     private final ImageProvider imageProvider;
+    private UiContext uiContext;
 
     @Inject
-    public BasicUploadFieldBuilder(BasicUploadFieldDefinition definition, Item relatedFieldItem, MagnoliaConfigurationProperties properties, ImageProvider imageProvider) {
+    public BasicUploadFieldBuilder(BasicUploadFieldDefinition definition, Item relatedFieldItem, MagnoliaConfigurationProperties properties, ImageProvider imageProvider, UiContext uiContext) {
         super(definition, relatedFieldItem);
         this.properties = properties;
         this.imageProvider = imageProvider;
+        this.uiContext = uiContext;
     }
 
     @Override
@@ -88,7 +91,7 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder<BasicUploadFie
         BasicFileItemWrapper fileItem = new BasicFileItemWrapper(binaryDataSubNodeItem, tmpDirectory);
 
         // Create Upload Filed.
-        BasicUploadField<BasicFileItemWrapper> uploadField = new BasicUploadField<BasicFileItemWrapper>(fileItem, tmpDirectory, imageProvider);
+        BasicUploadField<BasicFileItemWrapper> uploadField = new BasicUploadField<BasicFileItemWrapper>(fileItem, tmpDirectory, imageProvider, uiContext);
 
         uploadField.setMaxUploadSize(definition.getMaxUploadSize());
         uploadField.setAllowedMimeTypePattern(definition.getAllowedMimeTypePattern());
@@ -152,6 +155,9 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder<BasicUploadFie
         field.setDeteteCaption(definition.getDeleteCaption());
         field.setEditFileFormat(definition.isEditFileFormat());
         field.setEditFileName(definition.isEditFileName());
+        field.setUserInterruption(definition.getUserInterruption());
+        field.setTypeInterruption(definition.getTypeInterruption());
+        field.setSizeInterruption(definition.getSizeInterruption());
     }
 
 }

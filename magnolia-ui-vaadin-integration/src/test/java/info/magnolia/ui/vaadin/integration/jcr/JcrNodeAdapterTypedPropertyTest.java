@@ -45,6 +45,7 @@ import java.util.Calendar;
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.value.BinaryValue;
 import org.junit.After;
 import org.junit.Before;
@@ -307,5 +308,28 @@ public class JcrNodeAdapterTypedPropertyTest {
 
         // THEN
         assertEquals(res.getProperty(id).getType(), PropertyType.BINARY);
+    }
+
+    @Test
+    public void testGetAndStoreBinaryPropertyCreatedByVaadinStoredIntoJcr() throws Exception {
+        // GIVEN
+        // Create a NewNodeAdapter
+        String nodeName = "rootNode";
+        String id = "propertyID";
+        BinaryValue value = new BinaryValue("text");
+        Node parentNode = session.getRootNode().addNode(nodeName);
+        parentNode.setProperty(id, value);
+        JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
+
+        // Get the property
+        Property propertyInitial = adapter.getItemProperty(id);
+        propertyInitial.setValue(new BinaryValue("newText").getBinary());
+
+        // WHEN
+        Node res = adapter.getNode();
+
+        // THEN
+        assertEquals(res.getProperty(id).getType(), PropertyType.BINARY);
+        assertEquals(IOUtils.toString(res.getProperty(id).getBinary().getStream(), "UTF-8"), "newText");
     }
 }

@@ -71,4 +71,5 @@ public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetCha
 
     void showAllTabContents(boolean visible);
 
+    void setMaxHeight(int height);
 }
