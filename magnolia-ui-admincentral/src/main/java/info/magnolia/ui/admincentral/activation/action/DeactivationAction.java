@@ -93,7 +93,7 @@ public class DeactivationAction extends CommandActionBase<DeactivationActionDefi
         boolean result = (Boolean) context.getAttribute(COMMAND_RESULT);
         String message;
         MessageStyleTypeEnum messageStyleType;
-        if (result) {
+        if (!result) {
             message = getDefinition().getSuccessMessage();
             messageStyleType = MessageStyleTypeEnum.INFO;
         } else {
