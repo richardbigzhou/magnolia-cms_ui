@@ -50,6 +50,12 @@ public class ConfiguredActionDefinition implements ActionDefinition {
 
     private String description;
 
+    private String successMessage;
+
+    private String failureMessage;
+
+    private String errorMessage;
+
     public void setName(String name) {
         this.name = name;
     }
@@ -104,4 +110,30 @@ public class ConfiguredActionDefinition implements ActionDefinition {
         this.description = description;
     }
 
+    @Override
+    public String getSuccessMessage() {
+        return successMessage;
+    }
+
+    public void setSuccessMessage(String successMessage) {
+        this.successMessage = successMessage;
+    }
+
+    @Override
+    public String getFailureMessage() {
+        return failureMessage;
+    }
+
+    public void setFailureMessage(String failureMessage) {
+        this.failureMessage = failureMessage;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage() {
+        this.errorMessage = errorMessage;
+    }
 }
