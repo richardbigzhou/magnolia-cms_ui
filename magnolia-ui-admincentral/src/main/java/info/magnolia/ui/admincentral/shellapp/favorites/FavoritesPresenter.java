@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
-import java.util.Set;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -90,7 +90,7 @@ public class FavoritesPresenter implements FavoritesView.Listener {
         return favoritesManager.createFavoriteGroupSuggestion("");
     }
 
-    public Set<String> getAvailableGroupsNames() {
+    public Map<String, String> getAvailableGroupsNames() {
         return favoritesManager.getGroupsNames();
     }
 

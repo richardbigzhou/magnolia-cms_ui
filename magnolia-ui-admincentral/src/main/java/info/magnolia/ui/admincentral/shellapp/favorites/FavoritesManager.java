@@ -36,7 +36,7 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Manages the favorites for the current user.
@@ -45,7 +45,10 @@ public interface FavoritesManager {
 
     JcrItemNodeAdapter getFavorites();
 
-    Set<String> getGroupsNames();
+    /**
+     * @return A map whose key is the group jcr name and whose value is its title (human-readable) property.
+     */
+    Map<String, String> getGroupsNames();
 
     void addFavorite(JcrNewNodeAdapter newFavorite);
 

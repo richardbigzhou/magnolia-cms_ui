@@ -45,12 +45,11 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -104,14 +103,14 @@ public class FavoritesManagerImpl implements FavoritesManager {
     }
 
     @Override
-    public Set<String> getGroupsNames() {
-        Set<String> groupNames = new HashSet<String>();
+    public Map<String, String> getGroupsNames() {
+        Map<String, String> groupNames = new HashMap<String, String>();
         Iterable<Node> groups;
         try {
             Node bookmarksNode = favoriteStore.getBookmarkRoot();
             groups = NodeUtil.getNodes(bookmarksNode, AdmincentralNodeTypes.FavoriteGroup.NAME);
             for (Node group : groups) {
-                groupNames.add(PropertyUtil.getString(group, AdmincentralNodeTypes.Favorite.TITLE));
+                groupNames.put(group.getName(), PropertyUtil.getString(group, AdmincentralNodeTypes.Favorite.TITLE));
             }
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
@@ -156,10 +155,10 @@ public class FavoritesManagerImpl implements FavoritesManager {
     }
 
     @Override
-    public void removeFavorite(String id) {
+    public void removeFavorite(String path) {
         try {
             Node bookmarkRoot = favoriteStore.getBookmarkRoot();
-            bookmarkRoot.getNode(id).remove();
+            bookmarkRoot.getNode(path).remove();
             bookmarkRoot.getSession().save();
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
@@ -222,41 +221,45 @@ public class FavoritesManagerImpl implements FavoritesManager {
 
 
     @Override
-    // TODO
     public void editGroup(String id, String newTitle) {
-        try {
-            // we get the props we need from the node being edited, then delete it and re-create it anew. This to ensure that title and jcr node name are kept in "sync",
-            // the latter being the title with jcr invalid characters replaced with dashes.
-            Node bookmarkRoot = favoriteStore.getBookmarkRoot();
-            Node oldGroup = bookmarkRoot.getNode(id);
-            NodeIterator favorites = oldGroup.getNodes(AdmincentralNodeTypes.Favorite.NAME);
-            oldGroup.remove();
-
-            Node editedGroup = bookmarkRoot.addNode(Path.getValidatedLabel(newTitle), AdmincentralNodeTypes.FavoriteGroup.NAME);
-            while (favorites.hasNext()) {
-                Node favorite = favorites.nextNode();
-
-            }
-
-            bookmarkRoot.getSession().save();
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
+        throw new UnsupportedOperationException("Not yet implemented");
+        /*
+         * try {
+         * // we get the props we need from the node being edited, then delete it and re-create it anew. This to ensure that title and jcr node name are kept in "sync",
+         * // the latter being the title with jcr invalid characters replaced with dashes.
+         * Node bookmarkRoot = favoriteStore.getBookmarkRoot();
+         * Node oldGroup = bookmarkRoot.getNode(id);
+         * NodeIterator favorites = oldGroup.getNodes(AdmincentralNodeTypes.Favorite.NAME);
+         * oldGroup.remove();
+         * 
+         * Node editedGroup = bookmarkRoot.addNode(Path.getValidatedLabel(newTitle), AdmincentralNodeTypes.FavoriteGroup.NAME);
+         * while (favorites.hasNext()) {
+         * Node favorite = favorites.nextNode();
+         * 
+         * }
+         * 
+         * bookmarkRoot.getSession().save();
+         * } catch (RepositoryException e) {
+         * throw new RuntimeRepositoryException(e);
+         * }
+         */
 
     }
 
     @Override
-    // TODO
     public void removeGroup(String id) {
-        try {
-            Node bookmarkRoot = favoriteStore.getBookmarkRoot();
-            Node groupToBeRemoved = bookmarkRoot.getNode(id);
-            // These ones will remain orphans :(
-            NodeIterator favorites = groupToBeRemoved.getNodes(AdmincentralNodeTypes.Favorite.NAME);
-            groupToBeRemoved.remove();
-            bookmarkRoot.getSession().save();
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
+        throw new UnsupportedOperationException("Not yet implemented");
+        /*
+         * try {
+         * Node bookmarkRoot = favoriteStore.getBookmarkRoot();
+         * Node groupToBeRemoved = bookmarkRoot.getNode(id);
+         * // These ones will remain orphans :(
+         * NodeIterator favorites = groupToBeRemoved.getNodes(AdmincentralNodeTypes.Favorite.NAME);
+         * groupToBeRemoved.remove();
+         * bookmarkRoot.getSession().save();
+         * } catch (RepositoryException e) {
+         * throw new RuntimeRepositoryException(e);
+         * }
+         */
     }
 }

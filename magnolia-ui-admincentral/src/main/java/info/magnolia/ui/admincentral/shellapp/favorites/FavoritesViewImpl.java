@@ -39,8 +39,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed.FeedSection;
 
-import java.util.Iterator;
-import java.util.Set;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
@@ -107,7 +107,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     }
 
     @Override
-    public void setFavoriteLocation(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup, Set<String> availableGroupsNames) {
+    public void setFavoriteLocation(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup, Map<String, String> availableGroupsNames) {
         layout.removeComponent(favoriteForm);
         favoriteForm = createFavoritesTabsheetForm(newFavorite, newGroup, availableGroupsNames);
         layout.addComponent(favoriteForm);
@@ -116,7 +116,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     /**
      * Favorite section.
      */
-    public static class FavoritesSection extends CssLayout {
+    private class FavoritesSection extends CssLayout {
 
         public FavoritesSection() {
             addStyleName("favorites-section");
@@ -124,14 +124,12 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     }
 
     @Override
-    public void init(JcrItemNodeAdapter favorites, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Set<String> availableGroups) {
+    public void init(JcrItemNodeAdapter favorites, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups) {
         noGroup.removeAllComponents();
         leftSide.removeAllComponents();
         rightSide.removeAllComponents();
-        Iterator<JcrItemNodeAdapter> favoritesIterator = favorites.getChildren().values().iterator();
 
-        while(favoritesIterator.hasNext()) {
-            final JcrItemNodeAdapter favoriteAdapter = favoritesIterator.next();
+        for (JcrItemNodeAdapter favoriteAdapter : favorites.getChildren().values()) {
             if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
                 final FavoriteEntry favEntry = new FavoriteEntry(favoriteAdapter, listener);
                 noGroup.addComponent(favEntry);
@@ -165,7 +163,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
         private ComboBox group;
 
-        public FavoriteForm(final JcrNewNodeAdapter newFavorite, Set<String> availableGroups) {
+        public FavoriteForm(final JcrNewNodeAdapter newFavorite, Map<String, String> availableGroups) {
             addStyleName("favorites-form");
             FormLayout layout = new FormLayout();
             title.setWidth(800, Unit.PIXELS);
@@ -175,7 +173,12 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
             layout.addComponent(url);
             layout.addComponent(title);
 
-            group = new ComboBox("Add to group", availableGroups);
+            group = new ComboBox("Add to group");
+            for (Entry<String, String> entry : availableGroups.entrySet()) {
+                String id = entry.getKey();
+                group.addItem(id);
+                group.setItemCaption(id, entry.getValue());
+            }
             layout.addComponent(group);
 
             // Now use a binder to bind the members
@@ -262,7 +265,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         }
     }
 
-    private TabSheet createFavoritesTabsheetForm(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup, Set<String> availableGroups) {
+    private TabSheet createFavoritesTabsheetForm(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup, Map<String, String> availableGroups) {
         FavoriteForm favoriteFormEntry = new FavoriteForm(newFavorite, availableGroups);
         FavoriteGroupForm favoriteGroupForm = new FavoriteGroupForm(newGroup);
         TabSheet favoriteForm = new TabSheet();
@@ -270,4 +273,5 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         favoriteForm.addTab(favoriteGroupForm, "Add a new group");
         return favoriteForm;
     }
+
 }
