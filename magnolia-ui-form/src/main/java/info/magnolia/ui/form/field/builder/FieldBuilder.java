@@ -37,7 +37,7 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.FormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.validator.registry.ValidatorFieldFactory;
+import info.magnolia.ui.form.validator.registry.FieldValidatorFactory;
 import info.magnolia.ui.api.view.View;
 
 import com.vaadin.ui.Field;
@@ -69,7 +69,7 @@ public interface FieldBuilder extends FormItem {
 
     FieldDefinition getFieldDefinition();
 
-    void setValidatorFieldFactory(ValidatorFieldFactory validatorFieldFactory);
+    void setFieldValidatorFactory(FieldValidatorFactory fieldValidatorFactory);
 
     void setI18nContentSupport(I18nContentSupport i18nContentSupport);
 

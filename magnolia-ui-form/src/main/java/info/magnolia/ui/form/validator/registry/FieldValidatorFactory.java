@@ -36,22 +36,22 @@ package info.magnolia.ui.form.validator.registry;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.builder.DefinitionToImplementationMapping;
 import info.magnolia.ui.api.builder.MappingFactoryBase;
-import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 import info.magnolia.ui.form.validator.builder.FieldValidatorBuilder;
+import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 
 import java.io.Serializable;
 
 import javax.inject.Inject;
 
 /**
- * Factory for creating DialogField instances using an internal set of mappings connecting a {@link info.magnolia.ui.form.validator.definition.FieldValidatorDefinition} class with a {@link info.magnolia.ui.form.validator.builder.FieldValidatorBuilder} class.
+ * Factory for creating validator instances using an internal set of mappings connecting a {@link info.magnolia.ui.form.validator.definition.FieldValidatorDefinition} class with a {@link info.magnolia.ui.form.validator.builder.FieldValidatorBuilder} class.
  *
- * @see info.magnolia.ui.form.field.definition.FieldDefinition
+ * @see info.magnolia.ui.form.validator.definition.FieldValidatorDefinition
  */
-public class ValidatorFieldFactory extends MappingFactoryBase<FieldValidatorDefinition, FieldValidatorBuilder> implements Serializable {
+public class FieldValidatorFactory extends MappingFactoryBase<FieldValidatorDefinition, FieldValidatorBuilder> implements Serializable {
 
     @Inject
-    public ValidatorFieldFactory(ComponentProvider componentProvider, ValidatorFieldRegistry validatorFieldRegistery) {
+    public FieldValidatorFactory(ComponentProvider componentProvider, FieldValidatorRegistry validatorFieldRegistery) {
         super(componentProvider);
 
         for (DefinitionToImplementationMapping<FieldValidatorDefinition, FieldValidatorBuilder> definitionToImplementationMapping : validatorFieldRegistery.getDefinitionToImplementationMappings()) {

@@ -44,15 +44,15 @@ import java.util.List;
 import javax.inject.Singleton;
 
 /**
- * Validator Field Registry. This registry currently listen to changes
- * coming from the following path: /modules/ui-admincentral/validatorFieldRegistry
+ * Field Validator Registry. This registry currently listens to changes
+ * coming from the following path: /modules/ui-admincentral/fieldValidatorRegistry
  */
 @Singleton
-public class ValidatorFieldRegistry implements Serializable {
+public class FieldValidatorRegistry implements Serializable {
 
     private List<DefinitionToImplementationMapping<FieldValidatorDefinition, FieldValidatorBuilder>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<FieldValidatorDefinition, FieldValidatorBuilder>>();
 
-    public ValidatorFieldRegistry() {
+    public FieldValidatorRegistry() {
         super();
     }
 
