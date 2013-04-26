@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -144,10 +145,15 @@ public class ShellAppLauncher extends FlowPanel {
     @Override
     protected void onLoad() {
         super.onLoad();
-        getElement().getStyle().setTop(-60, Unit.PX);
-        JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {{
-                setProperty("top", 0);
-        }});
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                getElement().getStyle().setTop(-60, Unit.PX);
+                JQueryWrapper.select(getElement()).animate(250, new AnimationSettings() {{
+                    setProperty("top", 0);
+                }});
+            }
+        });
     }
 
     public final void updateDivet() {
