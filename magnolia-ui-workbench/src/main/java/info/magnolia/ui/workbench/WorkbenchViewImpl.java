@@ -34,6 +34,7 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.statusbar.StatusBarView;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -42,27 +43,33 @@ import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * TODO: Add JavaDoc for WorkbenchViewImpl.
  */
-public class WorkbenchViewImpl extends CssLayout implements WorkbenchView {
+public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
+
+    private final CssLayout toolBar = new CssLayout();
+
+    private final CssLayout viewModes = new CssLayout();
 
     private TextField searchBox;
+
+    private StatusBarView statusBar;
 
     private Map<ContentView.ViewType, ContentView> contentViews = new EnumMap<ContentView.ViewType, ContentView>(ContentView.ViewType.class);
 
     private Map<ContentView.ViewType, Button> contentViewsButton = new EnumMap<ContentView.ViewType, Button>(ContentView.ViewType.class);
 
     private ContentView.ViewType currentViewType = ContentView.ViewType.TREE;
-
-    private CssLayout viewModes;
 
     /**
      * for going back from search view if search expression is empty.
@@ -80,18 +87,23 @@ public class WorkbenchViewImpl extends CssLayout implements WorkbenchView {
     private WorkbenchView.Listener listener;
 
     public WorkbenchViewImpl(){
-        super();
-        addStyleName("v-workbench-content");
+
         setSizeFull();
+        setMargin(new MarginInfo(true, false, false, true));
+        addStyleName("workbench");
+
+        viewModes.setStyleName("view-modes");
 
         searchBox = buildBasicSearchBox();
         searchBox.setVisible(false);
 
-        viewModes = new CssLayout();
-        viewModes.setStyleName("view-modes");
+        toolBar.addStyleName("toolbar");
+        toolBar.setWidth(100, Unit.PERCENTAGE);
+        toolBar.addComponent(viewModes);
+        toolBar.addComponent(searchBox);
 
-        addComponent(searchBox);
-        addComponent(viewModes);
+        addComponent(toolBar);
+        setExpandRatio(toolBar, 0);
     }
 
     @Override
@@ -141,9 +153,8 @@ public class WorkbenchViewImpl extends CssLayout implements WorkbenchView {
     public void setViewType(ContentView.ViewType type) {
         removeComponent(getSelectedView().asVaadinComponent());
         final Component c = contentViews.get(type).asVaadinComponent();
-        c.setSizeFull();
-        addComponent(c);
-        c.setSizeUndefined();
+        addComponent(c, 1); // between tool bar and status bar
+        setExpandRatio(c, 1);
 
         if (type != ContentView.ViewType.SEARCH) {
             previousViewType = type;
@@ -155,6 +166,18 @@ public class WorkbenchViewImpl extends CssLayout implements WorkbenchView {
         refresh();
 
         this.listener.onViewTypeChanged(currentViewType);
+    }
+
+    @Override
+    public void setStatusBarView(StatusBarView statusBar) {
+        Component c = statusBar.asVaadinComponent();
+        if (this.statusBar == null) {
+            addComponent(c, getComponentCount()); // add last
+        } else {
+            replaceComponent(this.statusBar.asVaadinComponent(), c);
+        }
+        setExpandRatio(c, 0);
+        this.statusBar = statusBar;
     }
 
     @Override

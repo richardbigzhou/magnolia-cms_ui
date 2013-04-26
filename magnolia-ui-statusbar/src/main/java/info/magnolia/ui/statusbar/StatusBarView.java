@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,43 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.upload;
+package info.magnolia.ui.statusbar;
 
-import org.vaadin.easyuploads.FileBuffer;
+import info.magnolia.ui.api.view.View;
+
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
 
 /**
- * Implements {@link FilePropertiesAdapter} for {@link FileBuffer}.
+ * The status bar view consists of a horizontal container, with basic support for horizontal alignment. It is intended
+ * for displaying status information relative to the content that is currently presented in an adjacent view.
+ * Additionally, it can draw several levels of attention of feedback by changing color.
  */
-public class FileBufferPropertiesAdapter implements FilePropertiesAdapter {
+public interface StatusBarView extends View {
 
-    private final FileBuffer buffer;
+    void addComponent(Component c, Alignment align);
 
-    public static FileBufferPropertiesAdapter adapt(final FileBuffer buffer) {
-        return new FileBufferPropertiesAdapter(buffer);
-    }
+    void removeComponent(Component c);
 
-    protected FileBufferPropertiesAdapter(final FileBuffer buffer) {
-        this.buffer = buffer;
-    }
-
-    @Override
-    public byte[] getBinaryData() {
-        return (byte[]) buffer.getValue();
-    }
-
-    @Override
-    public String getFileName() {
-        return buffer.getLastFileName();
-    }
-
-    @Override
-    public long getFileSize() {
-        return buffer.getLastFileSize();
-    }
-
-    @Override
-    public String getMimeType() {
-        return buffer.getLastMimeType();
-    }
+    void setColor(String colorStyleName);
 
 }

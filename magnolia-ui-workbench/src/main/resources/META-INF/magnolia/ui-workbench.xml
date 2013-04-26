@@ -22,5 +22,10 @@
       <type>info.magnolia.ui.workbench.ContentPresenter</type>
       <implementation>info.magnolia.ui.workbench.ContentPresenter</implementation>
     </component>
+
+    <component>
+      <type>info.magnolia.ui.statusbar.StatusBarView</type>
+      <implementation>info.magnolia.ui.statusbar.StatusBarViewImpl</implementation>
+    </component>
   </components>
 </module>

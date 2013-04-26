@@ -15,7 +15,7 @@
 @import "table.scss";
 @import "tabsheet.scss";
 @import "thumbnail-layout.scss";
-@import "workbench.scss";
+@import "smallapp.scss";
 @import "uploadfield.scss";
 @import "page-editor";
 
@@ -37,7 +37,7 @@
   @include splitfeed;
   @include table;
   @include thumbnail-layout;
-  @include workbench;
+  @include smallapp;
   @include uploadfield;
   @include page-editor;
  
