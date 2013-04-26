@@ -58,7 +58,7 @@ public interface AppView extends View {
 
     void setTheme(String value);
 
-    void setCompanyLogo(String logo, String bgcolor);
+    void setAppLogo(String logo, String bgcolor);
 
     void setListener(Listener listener);
 

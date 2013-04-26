@@ -157,11 +157,8 @@ public class AppFrameView implements AppView {
     }
 
     @Override
-    public void setCompanyLogo(String logo, String bgcolor) {
-        if (logo != null && !logo.isEmpty()) {
-            // TODO: .resources/ folder resolver.
-            tabsheet.setCompanyLogo("/.resources/" + logo, bgcolor);
-        }
+    public void setAppLogo(String logo, String bgcolor) {
+        tabsheet.setLogo(logo, bgcolor);
     }
 
 }

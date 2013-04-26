@@ -200,7 +200,7 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
         updateTabContentVisibility();
     }
 
-    public void setCompanyLogo(String logo, String bgcolor) {
+    public void setLogo(String logo, String bgcolor) {
         getState().logo = logo;
         getState().logoBgColor = bgcolor;
     }

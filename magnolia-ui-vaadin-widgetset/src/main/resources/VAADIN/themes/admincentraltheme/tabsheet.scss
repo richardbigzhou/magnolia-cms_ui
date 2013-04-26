@@ -24,11 +24,13 @@
     position: relative;
     float: left;
     display: inline-block;
-    min-height: 25px;
-    min-width: 1px;
-    margin-left: 16px;
-    max-height: 25px;
-    max-width: 25px;
+    text-align: center;
+    width: 17px;
+    height: 17px;
+    line-height: 17px;
+    margin: 4px 6px 4px 23px;
+    font-size: 16px;
+    color: #fff;
 }
 
 .fullscreen .v-shell-tabsheet-scroller {

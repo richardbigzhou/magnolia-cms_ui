@@ -43,10 +43,12 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.util.CollectionUtil;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.user.client.Element;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -72,7 +74,7 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     private final Presenter presenter;
 
-    private Image logo;
+    private Element logo;
 
     private final List<MagnoliaTabWidget> tabs = new LinkedList<MagnoliaTabWidget>();
 
@@ -84,14 +86,14 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         super();
         this.presenter = presenter;
         this.tabBar = new TabBarWidget(eventBus);
-        this.logo = new Image();
+        this.logo = DOM.createDiv();
         this.eventBus = eventBus;
 
         addStyleName("v-shell-tabsheet");
         scroller.addStyleName("v-shell-tabsheet-scroller");
         tabPanel.addStyleName("v-shell-tabsheet-tab-wrapper");
-        logo.addStyleName("v-shell-tabsheet-logo");
-        add(logo);
+        logo.addClassName("v-shell-tabsheet-logo");
+        getElement().appendChild(logo);
         add(tabBar);
         add(scroller);
         scroller.setWidget(tabPanel);
@@ -204,7 +206,7 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     @Override
     public void setLogo(String logo, String logoBgColor) {
-        this.logo.setUrl(logo);
-        this.logo.getElement().getStyle().setBackgroundColor(logoBgColor);
+        this.logo.addClassName(logo);
+        this.logo.getStyle().setBackgroundColor(logoBgColor);
     }
 }
