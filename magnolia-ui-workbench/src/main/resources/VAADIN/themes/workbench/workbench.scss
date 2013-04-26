@@ -1,0 +1,114 @@
+@charset "UTF-8";
+
+@mixin workbench {
+
+  .v-verticallayout-workbench {
+
+    .v-csslayout-toolbar {
+      height: 47px;
+    }
+
+    div.v-csslayout-view-modes {
+      display: inline-block;
+      padding-left: 21px;
+      padding-bottom: 20px;
+    }
+
+    .view-modes .v-nativebutton {
+      font-style: normal;
+      font-size: 24px;
+      color: $c02;
+      line-height: 1;
+      border-left: 1px solid $c03;
+
+      .v-nativebutton-caption {
+        text-decoration: none;
+
+        span:first-child {
+          padding: 0 14px;
+        }
+      }
+
+      .view-type-arrow {
+        display: none;
+        position: absolute;
+        width: 1em;
+        height: 20px;
+        margin-left: 10px;
+        font-size: 32px;
+      }
+
+      &:first-child {
+        border-left: none;
+      }
+
+      &:hover,
+      &:focus,
+      &.active {
+        color: $c21;
+      }
+
+      &.active .view-type-arrow {
+        display: block;
+      }
+
+      &::-moz-focus-inner {
+        padding: 0;
+        border: 0
+      }
+    }
+
+    .v-textfield-searchbox {
+      float: right;
+      width: 246px;
+      height: 22px !important;
+      margin: 0;
+      padding: 0 2px 1px;
+      border: none;
+      background: url("img/icon-search.png") no-repeat right center $c21;
+      color: $c01;
+      font-size:12px;
+
+      &.v-textfield-prompt {
+        background-color: $c24;
+        color: $c02;
+      }
+    }
+
+    .mgnl-content-view {
+      background: $c24;
+    }
+
+    .activation-status {
+      display: block !important;
+      font-size: 18px;
+      line-height: 1;
+      text-align: center;
+
+      &.color-green {color: $c09;}
+      &.color-yellow {color: $c13;}
+      &.color-red {color: $c17;}
+    }
+
+    .v-horizontallayout-statusbar {
+      height: 40px !important;
+      padding-left: 24px;
+      padding-right: 24px;
+      color: $c01;
+      font-size: 12px;
+      line-height: 1;
+
+      .v-label {
+        font-size: inherit;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .v-spacing {
+        width: 16px;
+      }
+    }
+  }
+
+}
