@@ -49,6 +49,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.web.bindery.event.shared.EventBus;
@@ -71,6 +72,8 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     private final Presenter presenter;
 
+    private Image logo;
+
     private final List<MagnoliaTabWidget> tabs = new LinkedList<MagnoliaTabWidget>();
 
     private final LoadingPane loadingPane = new LoadingPane();
@@ -81,11 +84,14 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         super();
         this.presenter = presenter;
         this.tabBar = new TabBarWidget(eventBus);
+        this.logo = new Image();
         this.eventBus = eventBus;
 
         addStyleName("v-shell-tabsheet");
         scroller.addStyleName("v-shell-tabsheet-scroller");
         tabPanel.addStyleName("v-shell-tabsheet-tab-wrapper");
+        logo.addStyleName("v-shell-tabsheet-logo");
+        add(logo);
         add(tabBar);
         add(scroller);
         scroller.setWidget(tabPanel);
@@ -194,5 +200,11 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     @Override
     public HandlerRegistration addActiveTabChangedHandler(ActiveTabChangedEvent.Handler handler) {
         return addHandler(handler, ActiveTabChangedEvent.TYPE);
+    }
+
+    @Override
+    public void setLogo(String logo, String logoBgColor) {
+        this.logo.setUrl(logo);
+        this.logo.getElement().getStyle().setBackgroundColor(logoBgColor);
     }
 }

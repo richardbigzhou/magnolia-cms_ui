@@ -314,6 +314,10 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
         String instanceId = app.getView().addSubAppView(subApp.start(location), subApp.getCaption(), isClosable);
 
+        if (this.getAppBranding() != null) {
+            app.getView().setCompanyLogo(this.getAppBranding().getLogoNarrow(), this.getAppBranding().getBackgroundColor());
+        }
+
         subAppContext.setInstanceId(instanceId);
 
         subApps.put(instanceId, subAppDetails);
