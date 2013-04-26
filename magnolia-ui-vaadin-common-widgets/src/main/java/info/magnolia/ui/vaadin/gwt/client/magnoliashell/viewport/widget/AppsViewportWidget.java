@@ -116,7 +116,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     }
 
     public void setCurtainVisible(boolean visible) {
-        ((AppsTransitionDelegate) getTransitionDelegate()).setCurtainVisible(this, visible);
+        ((AppsTransitionDelegate) getTransitionDelegate()).setCurtainVisible(visible);
     }
 
     public void setCurtainAttached(boolean visible) {
@@ -146,7 +146,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
     @Override
     public void removeWidget(Widget w) {
-       ((AppsTransitionDelegate) getTransitionDelegate()).removeWidget(this, w);
+       ((AppsTransitionDelegate) getTransitionDelegate()).removeWidget(w);
     }
 
     @Override
