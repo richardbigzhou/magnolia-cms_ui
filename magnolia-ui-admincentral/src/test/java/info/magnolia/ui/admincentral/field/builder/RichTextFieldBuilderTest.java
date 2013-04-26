@@ -31,18 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.upload;
+package info.magnolia.ui.admincentral.field.builder;
+
+import static org.junit.Assert.assertEquals;
+
+import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
+import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
+
+import org.junit.Test;
+
+import com.vaadin.ui.Field;
 
 /**
- * Adapter for various ways of updating the file properties.
+ * Main testcase for {@link RichTextFieldBuilder}.
  */
-public interface FilePropertiesAdapter {
+public class RichTextFieldBuilderTest extends AbstractBuilderTest<RichTextFieldDefinition> {
 
-    byte[] getBinaryData();
+    private RichTextFieldBuilder richTextFieldBuilder;
 
-    long getFileSize();
+    @Test
+    public void simpleRichTextFieldBuilderTest() throws Exception {
+        // GIVEN
+        richTextFieldBuilder = new RichTextFieldBuilder(definition, baseItem, null, null);
+        richTextFieldBuilder.setI18nContentSupport(i18nContentSupport);
+        // WHEN
+        Field field = richTextFieldBuilder.getField();
 
-    String getFileName();
+        // THEN
+        assertEquals(true, field instanceof MagnoliaRichTextField);
+        assertEquals(0, ((AbstractJcrNodeAdapter) baseItem).getChildren().size());
+    }
 
-    String getMimeType();
+
+    @Override
+    protected void createConfiguredFieldDefinition() {
+        RichTextFieldDefinition fieldDefinition = new RichTextFieldDefinition();
+        fieldDefinition.setName(propertyName);
+        this.definition = fieldDefinition;
+    }
+
 }

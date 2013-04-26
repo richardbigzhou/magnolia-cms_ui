@@ -60,7 +60,7 @@ public class ItemFormView implements FormView {
 
     public ItemFormView() {
         form = new Form();
-        dialog = new BaseDialog();
+        dialog = new DialogContainingForm();
         dialog.setContent(form);
         dialog.addDescriptionVisibilityHandler(new BaseDialog.DescriptionVisibilityEvent.Handler() {
 

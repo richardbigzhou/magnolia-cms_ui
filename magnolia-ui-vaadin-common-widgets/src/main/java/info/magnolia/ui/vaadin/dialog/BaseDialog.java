@@ -135,7 +135,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
     }
 
     public void setHeaderToolbar(Component newHeader) {
-        final Component actualHeader = newHeader == null ? createDefaultFooter() : newHeader;
+        final Component actualHeader = newHeader == null ? createDefaultHeader() : newHeader;
         getState().headerToolbar = actualHeader;
 
         replaceComponent((Component) getState().headerToolbar);
@@ -165,7 +165,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
                 } else {
                     // If the component already has a parent, try to remove it
                     AbstractSingleComponentContainer
-                            .removeFromParent(newContent);
+                    .removeFromParent(newContent);
                 }
             }
             newContent.setParent(this);

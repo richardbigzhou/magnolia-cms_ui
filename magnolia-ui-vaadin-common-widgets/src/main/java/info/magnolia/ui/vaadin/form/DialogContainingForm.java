@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.upload;
+package info.magnolia.ui.vaadin.form;
 
-import com.vaadin.ui.ProgressIndicator;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 /**
- * Definition used to create a custom display for {@link com.vaadin.ui.ProgressIndicator}.
+ * Dialog type that assumes that content is form.
+ * Dialog is setting the height of the tabsheet scroller inside the form.
+ * This was done because generally a dialog should not know about it's
+ * content, except in this case.
  */
-public interface ProgressIndicatorComponent {
-
-    /**
-     * Refresh Upload Layout.
-     * Used to update the ProgressIndicator Components.
-     */
-    public void refreshOnProgressUploadLayout(long readBytes, long contentLength, String fileName);
-
-    /**
-     * Return the {@link ProgressIndicator} used internally.
-     * Could be needed for Upload File Field.
-     */
-    public ProgressIndicator getProgressIndicator();
-
-    /**
-     * Convenience setter allowing to directly set the value of the {@link ProgressIndicator} component.
-     */
-    public void setProgressIndicatorValue(float newValue);
-
-    /**
-     * Set the Component Visible or not.
-     */
-    public void setVisible(boolean visible);
+public class DialogContainingForm extends BaseDialog {
 
 }

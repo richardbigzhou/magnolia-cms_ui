@@ -37,6 +37,7 @@ import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.workbench.WorkbenchView;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 
 /**
@@ -44,28 +45,34 @@ import com.vaadin.ui.HorizontalLayout;
  */
 public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
 
-    private ActionbarView actionbar;
+    private ActionbarView actionBar;
+
+    private final CssLayout actionBarWrapper = new CssLayout();
 
     private WorkbenchView workbench;
 
     public BrowserViewImpl() {
-        super();
         setSizeFull();
-        setStyleName("workbench");
+        setMargin(false);
         setSpacing(true);
-        setMargin(true);
+        addStyleName("browser");
 
+        actionBarWrapper.setHeight(100, Unit.PERCENTAGE);
+        actionBarWrapper.addStyleName("actionbar");
+        addComponent(actionBarWrapper);
+        setExpandRatio(actionBarWrapper, 0);
     }
 
     @Override
-    public void setActionbarView(final ActionbarView actionbar) {
-        actionbar.asVaadinComponent().setWidth(null);
-        if (this.actionbar == null) {
-            addComponent(actionbar.asVaadinComponent());
+    public void setActionbarView(final ActionbarView actionBar) {
+        Component c = actionBar.asVaadinComponent();
+        Component old = actionBarWrapper.getComponentCount() != 0 ? actionBarWrapper.getComponent(0) : null;
+        if (old == null) {
+            actionBarWrapper.addComponent(c);
         } else {
-            replaceComponent(this.actionbar.asVaadinComponent(), actionbar.asVaadinComponent());
+            actionBarWrapper.replaceComponent(old, c);
         }
-        this.actionbar = actionbar;
+        this.actionBar = actionBar;
     }
 
     @Override
@@ -73,18 +80,16 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
         return this;
     }
 
-
     @Override
     public void setWorkbenchView(WorkbenchView workbench) {
         if (this.workbench == null) {
-            addComponent(workbench.asVaadinComponent());
+            addComponent(workbench.asVaadinComponent(), 0); // add as first
         } else {
             replaceComponent(this.workbench.asVaadinComponent(), workbench.asVaadinComponent());
         }
         setExpandRatio(workbench.asVaadinComponent(), 1);
         this.workbench = workbench;
     }
-
 
     @Override
     public WorkbenchView getWorkbenchView() {
