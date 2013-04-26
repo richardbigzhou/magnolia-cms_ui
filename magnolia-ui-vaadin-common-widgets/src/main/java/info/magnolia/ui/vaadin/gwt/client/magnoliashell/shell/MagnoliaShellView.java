@@ -102,6 +102,8 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
         void removeMessage(String id);
 
+        void initHistory();
+
         boolean isAppRegistered(String appName);
 
         boolean isAppRunning(String appName);

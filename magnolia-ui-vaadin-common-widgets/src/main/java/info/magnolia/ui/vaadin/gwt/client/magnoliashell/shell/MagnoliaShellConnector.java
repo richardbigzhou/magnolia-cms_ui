@@ -49,6 +49,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
@@ -77,7 +78,8 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         @Override
         public void onShellAppActivated(final ShellAppActivatedEvent event) {
             view.showShellApp(event.getType());
-            activateShellApp(Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken()));
+            lastHandledFragment =  Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken());
+            activateShellApp(lastHandledFragment);
         }
 
     };
@@ -87,6 +89,8 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     private MagnoliaShellView view;
 
     private EventBus eventBus = new SimpleEventBus();
+
+    private Fragment lastHandledFragment;
 
     private boolean isHistoryInitialized = false;
 
@@ -103,31 +107,22 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                     final Entry<ShellAppType, Integer> entry = it.next();
                     view.setShellAppIndication(entry.getKey(), entry.getValue());
                 }
-
-                if (!isHistoryInitialized) {
-                    isHistoryInitialized = true;
-                    History.fireCurrentHistoryState();
-                }
             }
         });
 
         addStateChangeHandler("overlays", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
-
                 MagnoliaShellState state = getState();
                 Iterator<Connector> it = state.overlays.iterator();
-
                 // Check for overlays that have not yet been added.
                 while (it.hasNext()) {
                     final Connector overlay = it.next();
                     // Test if overlay is attached.
                     Widget overlayWidget = ((ComponentConnector) overlay).getWidget();
-
                     if (overlayWidget.getParent() == null) {
                         // Add the widget
                         ComponentConnector overlayParent = (ComponentConnector) (((OverlayConnector) overlay).getState().overlayParent);
-
                         Widget parentWidget = overlayParent.getWidget();
                         view.openOverlayOnWidget(overlayWidget, parentWidget);
                     }
@@ -137,7 +132,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         });
 
         registerRpc(ShellClientRpc.class, new ShellClientRpc() {
-
             @Override
             public void showMessage(String type, String topic, String msg, String id) {
                 view.showMessage(MessageType.valueOf(type), topic, msg, id);
@@ -162,9 +156,11 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 Fragment newFragment = Fragment.fromString(event.getValue());
                 changeAppFromFragment(newFragment);
                 view.setActiveViewport(newFragment.isApp());
+                lastHandledFragment =  newFragment;
             }
         });
     }
+
 
     @Override
     public void updateCaption(ComponentConnector connector) {
@@ -225,6 +221,19 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     }
 
     @Override
+    public void initHistory() {
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                if (!isHistoryInitialized) {
+                    isHistoryInitialized = true;
+                    History.fireCurrentHistoryState();
+                }
+            }
+        });
+    }
+
+    @Override
     public boolean isAppRegistered(String appName) {
         return getState().registeredAppNames.contains(appName);
     }
@@ -234,7 +243,16 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         return getState().runningAppNames.contains(appName);
     }
 
+    @Override
+    public Widget getShellAppWidget(ShellAppType type) {
+        final Connector c = getState().shellApps.get(type);
+        return c != null ? ((ComponentConnector) c).getWidget() : null;
+    }
+
     public void changeAppFromFragment(final Fragment f) {
+        if (f.isSameApp(lastHandledFragment)) {
+            return;
+        }
         if (f.isShellApp()) {
             eventBus.fireEvent(new ShellAppActivatedEvent(f.resolveShellAppType(), f.getParameter()));
         } else {
@@ -256,14 +274,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         }
     }
 
-    @Override
-    public Widget getShellAppWidget(ShellAppType type) {
-        final Connector c = getState().shellApps.get(type);
-        return c != null ? ((ComponentConnector) c).getWidget() : null;
-    }
-
     private void goToAppLauncher(String parameter) {
         eventBus.fireEvent(new ShellAppActivatedEvent(ShellAppType.APPLAUNCHER, parameter));
     }
-
 }

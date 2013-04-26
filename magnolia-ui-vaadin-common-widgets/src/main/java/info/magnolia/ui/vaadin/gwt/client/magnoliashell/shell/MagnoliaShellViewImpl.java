@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
@@ -54,7 +53,6 @@ import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 import java.util.EnumMap;
 import java.util.Map;
 
-import com.github.wolfie.refresher.Refresher;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.DOM;
@@ -69,6 +67,8 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellView, ViewportCloseEvent.Handler {
 
     public static final String CLASSNAME = "v-magnolia-shell";
+
+    public static final String VIEWPORT_SLOT_CLASS_NAME = "v-shell-viewport-slot";
 
     private final Map<ViewportType, ViewportWidget> viewports = new EnumMap<ViewportType, ViewportWidget>(ViewportType.class);
 
@@ -92,17 +92,18 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         super();
         this.eventBus = eventBus;
         this.mainAppLauncher = new ShellAppLauncher(eventBus);
-        setStyleName(CLASSNAME);
+        getElement().setClassName(CLASSNAME);
+        viewportSlot.setClassName(VIEWPORT_SLOT_CLASS_NAME);
+
         add(mainAppLauncher, getElement());
         getElement().appendChild(viewportSlot);
-        viewportSlot.setClassName("v-shell-viewport-slot");
-        bindEventHandlers();
         viewportShifter.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
                 presenter.updateViewportLayout(getAppViewport());
             }
         });
+        bindEventHandlers();
     }
 
     private void bindEventHandlers() {
@@ -269,14 +270,16 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         ShellAppsViewportWidget viewport = getShellAppViewport();
         mainAppLauncher.activateControl(type);
         viewport.setVisibleChild(shellApp);
-        viewport.setClosing(false);
-        if (!viewport.isActive()) {
-            setActiveViewport(viewport);
-        }
     }
 
     @Override
     public void setActiveViewport(boolean isAppViewport) {
         setActiveViewport(isAppViewport ? getAppViewport() : getShellAppViewport());
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        presenter.initHistory();
     }
 }
