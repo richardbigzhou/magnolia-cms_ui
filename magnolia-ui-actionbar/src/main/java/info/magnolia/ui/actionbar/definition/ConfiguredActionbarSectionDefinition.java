@@ -50,6 +50,8 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
 
     private List<ActionbarGroupDefinition> groups = new ArrayList<ActionbarGroupDefinition>();
 
+    private SectionRestrictionsDefinition restrictions = new ConfiguredSectionRestrictionsDefinition();
+
     @Override
     public String getName() {
         return name;
@@ -95,4 +97,11 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
         groups.add(groupDefinition);
     }
 
+    public SectionRestrictionsDefinition getRestrictions() {
+        return restrictions;
+    }
+
+    public void setRestrictions(SectionRestrictionsDefinition restrictions) {
+        this.restrictions = restrictions;
+    }
 }

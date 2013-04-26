@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,30 +33,30 @@
  */
 package info.magnolia.ui.api.action;
 
+import java.util.Collection;
+
 /**
- * Action definitions describe actions are used to configure actions in many parts of the UI. The definition holds a
- * name which is used to identify the action within a certain scope, for instance within a sub app. Many actions have
- * dedicated action definition classes implementing this interface that allows supplying additional parameters to the
- * action.
- *
- * Implementations are expected to provide correct {@link Object#equals(Object)} and {@link Object#hashCode()} methods.
- *
- * @see Action
- * @see ActionExecutor
+ * Definition of restrictions on when an action is available.
  */
-public interface ActionDefinition {
+public interface ActionRestrictionsDefinition {
 
-    String getName();
+    /**
+     * If true the action is available when there's no selection.
+     */
+    boolean isRoot();
 
-    String getLabel();
+    /**
+     * If true the action is available for properties.
+     */
+    boolean isProperties();
 
-    String getDescription();
+    /**
+     * Unless this is empty the action is available only for these node types.
+     */
+    Collection<String> getNodeTypes();
 
-    String getIcon();
-
-    String getI18nBasename();
-
-    Class<? extends Action> getImplementationClass();
-
-    ActionRestrictionsDefinition getRestrictions();
+    /**
+     * Unless this is empty the action is available for the current user only if he/she has one of these roles.
+     */
+    Collection<String> getRoles();
 }

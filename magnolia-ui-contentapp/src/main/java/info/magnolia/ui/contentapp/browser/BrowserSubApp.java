@@ -33,9 +33,17 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
+import info.magnolia.ui.actionbar.definition.SectionRestrictionsDefinition;
+import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.contentapp.ContentSubAppView;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -46,7 +54,16 @@ import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 
+import java.util.List;
+
 import javax.inject.Named;
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.workbench.ContentView}
@@ -82,17 +99,20 @@ import javax.inject.Named;
  */
 public class BrowserSubApp extends BaseSubApp {
 
+    private static final Logger log = LoggerFactory.getLogger(BrowserSubApp.class);
+
     private final BrowserPresenter browser;
     private final EventBus subAppEventBus;
+    private ActionExecutor actionExecutor;
 
-    public BrowserSubApp(final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
-
+    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
         super(subAppContext, view);
         if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {
             throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", ContentSubAppView = " + view + ", BrowserPresenter = " + browser + ", EventBus = " + subAppEventBus);
         }
         this.browser = browser;
         this.subAppEventBus = subAppEventBus;
+        this.actionExecutor = actionExecutor;
     }
 
     /**
@@ -150,10 +170,9 @@ public class BrowserSubApp extends BaseSubApp {
     }
 
     /**
-     * Updates the actions available in the browser's actionbar.
-     * Depending on the selected item or on other conditions specific to a concrete app, certain actions will be enabled or disabled.
-     * By default if no path is selected in the browser, namely root is selected, "delete" and "edit" actions are not available.
-     * If some path other than root is selected, "edit" and "delete" actions become available.
+     * Updates the actions available in the browser's actionbar. Decides which section to show and which actions in the
+     * section to enable based on the selection in the workbench. This method can be overridden to implement custom
+     * conditions.
      *
      * @see #restoreBrowser(BrowserLocation)
      * @see #locationChanged(Location)
@@ -161,6 +180,85 @@ public class BrowserSubApp extends BaseSubApp {
      */
     public void updateActionbar(ActionbarPresenter actionbar) {
 
+        BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+        WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
+        List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
+
+        try {
+
+            Item item = null;
+            String absItemPath = getBrowser().getSelectedItemId();
+            if (absItemPath != null && !absItemPath.equals(workbench.getPath())) {
+                final Session session = MgnlContext.getJCRSession(workbench.getWorkspace());
+                item = session.getItem(absItemPath);
+            }
+
+            // Figure out which section to show, only one
+            ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, item);
+
+            // If there no section matched the selection we just hide everything
+            if (sectionDefinition == null) {
+                for (ActionbarSectionDefinition section : sections) {
+                    actionbar.hideSection(section.getName());
+                }
+                return;
+            }
+
+            // Hide all other sections
+            for (ActionbarSectionDefinition section : sections) {
+                if (section != sectionDefinition) {
+                    actionbar.hideSection(section.getName());
+                }
+            }
+
+            // Show our section
+            actionbar.showSection(sectionDefinition.getName());
+
+            // Evaluate availability of each action within the section
+            for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
+                for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
+
+                    String actionName = itemDefinition.getName();
+                    if (actionExecutor.isAvailable(actionName, item)) {
+                        actionbar.enable(actionName);
+                    } else {
+                        actionbar.disable(actionName);
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            log.error("Failed to updated actionbar", e);
+            for (ActionbarSectionDefinition section : sections) {
+                actionbar.hideSection(section.getName());
+            }
+        }
+    }
+
+    private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections, Item item) throws RepositoryException {
+        for (ActionbarSectionDefinition section : sections) {
+            if (isSectionVisible(section, item))
+                return section;
+        }
+        return null;
+    }
+
+    private boolean isSectionVisible(ActionbarSectionDefinition section, Item item) throws RepositoryException {
+        SectionRestrictionsDefinition restrictions = section.getRestrictions();
+
+        // If this is the root item we display the section only if the root property is set
+        if (item == null)
+            return restrictions.isRoot();
+
+        // If its a property we display it only if the properties property is set
+        if (!item.isNode())
+            return restrictions.isProperties();
+
+        // The node must match at least one of the configured node types
+        for (String nodeType : restrictions.getNodeTypes()) {
+            if (NodeUtil.isNodeType((Node)item, nodeType))
+                return true;
+        }
+        return false;
     }
 
     protected final BrowserPresenter getBrowser() {

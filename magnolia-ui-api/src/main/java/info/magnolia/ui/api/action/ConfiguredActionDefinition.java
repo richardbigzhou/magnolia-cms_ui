@@ -44,6 +44,7 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     private String icon;
     private String i18nBasename;
     private Class<? extends Action> implementationClass;
+    private ActionRestrictionsDefinition restrictions = new ConfiguredActionRestrictionsDefinition();
 
     @Override
     public String getName() {
@@ -97,5 +98,14 @@ public class ConfiguredActionDefinition implements ActionDefinition {
 
     public void setImplementationClass(Class<? extends Action> implementationClass) {
         this.implementationClass = implementationClass;
+    }
+
+    @Override
+    public ActionRestrictionsDefinition getRestrictions() {
+        return restrictions;
+    }
+
+    public void setRestrictions(ActionRestrictionsDefinition restrictions) {
+        this.restrictions = restrictions;
     }
 }

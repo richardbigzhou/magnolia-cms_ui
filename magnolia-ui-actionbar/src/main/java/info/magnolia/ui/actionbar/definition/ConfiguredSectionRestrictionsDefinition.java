@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action;
+package info.magnolia.ui.actionbar.definition;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
- * Action definitions describe actions are used to configure actions in many parts of the UI. The definition holds a
- * name which is used to identify the action within a certain scope, for instance within a sub app. Many actions have
- * dedicated action definition classes implementing this interface that allows supplying additional parameters to the
- * action.
- *
- * Implementations are expected to provide correct {@link Object#equals(Object)} and {@link Object#hashCode()} methods.
- *
- * @see Action
- * @see ActionExecutor
+ * Simple implementation for {@link SectionRestrictionsDefinition}.
  */
-public interface ActionDefinition {
+public class ConfiguredSectionRestrictionsDefinition implements SectionRestrictionsDefinition {
 
-    String getName();
+    private boolean root = false;
+    private boolean properties = false;
+    private Collection<String> nodeTypes = new ArrayList<String>();
 
-    String getLabel();
+    @Override
+    public boolean isRoot() {
+        return root;
+    }
 
-    String getDescription();
+    public void setRoot(boolean root) {
+        this.root = root;
+    }
 
-    String getIcon();
+    @Override
+    public boolean isProperties() {
+        return properties;
+    }
 
-    String getI18nBasename();
+    public void setProperties(boolean properties) {
+        this.properties = properties;
+    }
 
-    Class<? extends Action> getImplementationClass();
+    @Override
+    public Collection<String> getNodeTypes() {
+        return nodeTypes;
+    }
 
-    ActionRestrictionsDefinition getRestrictions();
+    public void setNodeTypes(Collection<String> nodeTypes) {
+        this.nodeTypes = nodeTypes;
+    }
+
+    public void addNodeType(String nodeType) {
+        nodeTypes.add(nodeType);
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,32 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action;
+package info.magnolia.ui.actionbar.definition;
+
+import java.util.Collection;
 
 /**
- * Action definitions describe actions are used to configure actions in many parts of the UI. The definition holds a
- * name which is used to identify the action within a certain scope, for instance within a sub app. Many actions have
- * dedicated action definition classes implementing this interface that allows supplying additional parameters to the
- * action.
- *
- * Implementations are expected to provide correct {@link Object#equals(Object)} and {@link Object#hashCode()} methods.
- *
- * @see Action
- * @see ActionExecutor
+ * Definition of restrictions on when a section is shown.
  */
-public interface ActionDefinition {
+public interface SectionRestrictionsDefinition {
 
-    String getName();
+    /**
+     * If true the section is only displayed when there's no selection.
+     */
+    boolean isRoot();
 
-    String getLabel();
+    /**
+     * If true the section is only displayed when a property is selected.
+     */
+    boolean isProperties();
 
-    String getDescription();
-
-    String getIcon();
-
-    String getI18nBasename();
-
-    Class<? extends Action> getImplementationClass();
-
-    ActionRestrictionsDefinition getRestrictions();
+    /**
+     * The section is only displayed if a selected node has one of these node types.
+     */
+    Collection<String> getNodeTypes();
 }

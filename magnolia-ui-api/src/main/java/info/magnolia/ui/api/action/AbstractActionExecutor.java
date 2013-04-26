@@ -33,10 +33,20 @@
  */
 package info.magnolia.ui.api.action;
 
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.MgnlInstantiationException;
 
+import java.util.Collection;
+
 import javax.inject.Inject;
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract base implementation of {@link ActionExecutor}. Creates the {@link Action} from the implementation class
@@ -48,6 +58,8 @@ import javax.inject.Inject;
  * @see ActionExecutor
  */
 public abstract class AbstractActionExecutor implements ActionExecutor {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private ComponentProvider componentProvider;
 
@@ -92,5 +104,43 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
         } catch (MgnlInstantiationException e) {
             throw new ActionExecutionException("Could not instantiate action class for action: " + actionName, e);
         }
+    }
+
+    @Override
+    public boolean isAvailable(String actionName, Item item) {
+
+        ActionDefinition actionDefinition = getActionDefinition(actionName);
+        if (actionDefinition == null) {
+            return false;
+        }
+
+        ActionRestrictionsDefinition restrictions = actionDefinition.getRestrictions();
+
+        // Validate that the user has all required roles
+        Collection<String> assignedRoles = MgnlContext.getUser().getAllRoles();
+        Collection<String> requiredRoles = restrictions.getRoles();
+        for (String requiredRole : requiredRoles) {
+            if (!assignedRoles.contains(requiredRole)) {
+                return false;
+            }
+        }
+
+        if (item == null)
+            return restrictions.isRoot();
+
+        if (!item.isNode() && restrictions.isProperties())
+            return  true;
+
+        // Must have _any_ of the node types if any are specified, otherwise its available by default
+        for (String nodeType : restrictions.getNodeTypes()) {
+            try {
+                if (NodeUtil.isNodeType((Node)item, nodeType))
+                    return true;
+            } catch (RepositoryException e) {
+                log.error("Could not determine node type of node " + NodeUtil.getNodePathIfPossible((Node) item));
+            }
+        }
+
+        return true;
     }
 }
