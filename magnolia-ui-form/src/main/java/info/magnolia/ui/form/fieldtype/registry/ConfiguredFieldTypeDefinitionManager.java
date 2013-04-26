@@ -109,7 +109,7 @@ public class ConfiguredFieldTypeDefinitionManager extends ModuleConfigurationObs
 
     protected FieldTypeDefinitionProvider createProvider(Node fieldTypeNode) throws RepositoryException {
 
-        final String id = fieldTypeNode.getProperty("definition").getValue().getString();
+        final String id = fieldTypeNode.getName();
 
         try {
             return new ConfiguredFieldTypeDefinitionProvider(id, fieldTypeNode);
