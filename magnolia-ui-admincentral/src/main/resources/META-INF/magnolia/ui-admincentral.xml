@@ -158,13 +158,6 @@
       <scope>singleton</scope>
     </component>
     <component>
-      <type>info.magnolia.ui.form.field.builder.DialogFieldRegistry</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-admincentral/dialogFieldRegistry</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-    <component>
       <type>info.magnolia.ui.form.field.validation.ValidatorFieldRegistry</type>
       <workspace>config</workspace>
       <path>/modules/ui-admincentral/dialogFieldValidatorRegistry</path>
