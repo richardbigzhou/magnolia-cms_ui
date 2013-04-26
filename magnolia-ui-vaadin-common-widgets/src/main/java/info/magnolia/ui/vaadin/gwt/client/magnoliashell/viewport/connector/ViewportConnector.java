@@ -78,6 +78,7 @@ public class ViewportConnector extends AbstractLayoutConnector {
             public void onStateChanged(StateChangeEvent event) {
                 final ComponentConnector candidate = (ComponentConnector) getState().activeComponent;
                 if (candidate != null && getWidget().getVisibleChild() != candidate) {
+                    candidate.getWidget().getElement().getStyle().clearVisibility();
                     getWidget().setVisibleChild(candidate.getWidget());
                 }
             }
@@ -110,12 +111,14 @@ public class ViewportConnector extends AbstractLayoutConnector {
             if (w.getParent() != viewport) {
                 viewport.insert(w, index);
                 getLayoutManager().addElementResizeListener(w.getElement(), childCenterer);
+                w.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
                 Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
                     @Override
                     public void execute() {
-                        if (getState().activeComponent != cc) {
+                        if (getWidget().getVisibleChild() != cc.getWidget()) {
                             w.getElement().getStyle().setDisplay(Display.NONE);
                         }
+                        w.getElement().getStyle().clearVisibility();
                     }
                 });
 
