@@ -51,7 +51,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.web.bindery.event.shared.EventBus;
@@ -208,5 +207,11 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     public void setLogo(String logo, String logoBgColor) {
         this.logo.addClassName(logo);
         this.logo.getStyle().setBackgroundColor(logoBgColor);
+    }
+
+    @Override
+    public void setMaxHeight(int height) {
+        height -= tabBar.getOffsetHeight();
+        scroller.getElement().setAttribute("style", "overflow:auto; position:absolute; zoom:1; max-height:" + height + "px;");
     }
 }
