@@ -169,10 +169,6 @@ public class FavoritesEntry extends CustomComponent {
         return title;
     }
 
-    public boolean isEditable() {
-        return editable;
-    }
-
     public String getGroupValue() {
         return group;
     }
@@ -198,7 +194,19 @@ public class FavoritesEntry extends CustomComponent {
         removeButton.setVisible(selected);
     }
 
+    /**
+     * @return true if this favorite is selected, meaning the available actions (edit, remove) are displayed next to the fav title. Bear in mind that selected does not necessarily mean editable.
+     * @see #isEditable()
+     */
     public boolean isSelected() {
         return selected;
+    }
+
+    /**
+     * @return true if this fav is editable, meaning that its title can be changed in line.
+     * @see #isSelected()
+     */
+    public boolean isEditable() {
+        return editable;
     }
 }
