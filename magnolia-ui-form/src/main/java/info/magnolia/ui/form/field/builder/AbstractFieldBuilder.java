@@ -37,9 +37,9 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.field.validation.FieldValidatorBuilder;
-import info.magnolia.ui.form.field.validation.FieldValidatorDefinition;
-import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
+import info.magnolia.ui.form.validator.builder.FieldValidatorBuilder;
+import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
+import info.magnolia.ui.form.validator.registry.FieldValidatorFactory;
 import info.magnolia.ui.api.i18n.I18NAwareProperty;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
@@ -71,7 +71,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
     protected Item item;
     protected Field<T> field;
     protected D definition;
-    private ValidatorFieldFactory validatorFieldFactory;
+    private FieldValidatorFactory fieldValidatorFactory;
     private I18nContentSupport i18nContentSupport;
     private ComponentProvider componentProvider;
 
@@ -81,8 +81,8 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
     }
 
     @Override
-    public void setValidatorFieldFactory(ValidatorFieldFactory validatorFieldFactory) {
-        this.validatorFieldFactory = validatorFieldFactory;
+    public void setFieldValidatorFactory(FieldValidatorFactory fieldValidatorFactory) {
+        this.fieldValidatorFactory = fieldValidatorFactory;
     }
 
     @Override
@@ -230,7 +230,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
     private void setConstraints() {
         // Set Validation
         for (FieldValidatorDefinition validatorDefinition : definition.getValidators()) {
-            FieldValidatorBuilder validatorBuilder = this.validatorFieldFactory.create(validatorDefinition);
+            FieldValidatorBuilder validatorBuilder = this.fieldValidatorFactory.create(validatorDefinition);
             if (validatorBuilder != null) {
                 this.field.addValidator(validatorBuilder.buildValidator());
             } else {

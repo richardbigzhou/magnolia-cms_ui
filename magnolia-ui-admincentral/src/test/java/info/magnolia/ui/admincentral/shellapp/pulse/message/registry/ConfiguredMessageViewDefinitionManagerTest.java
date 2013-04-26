@@ -148,7 +148,7 @@ public class ConfiguredMessageViewDefinitionManagerTest {
 
     }
 
-    @Test(expected = RegistrationException.class)
+    @Test
     public void testMessageViewDefinitionReloadsOnChange() throws RegistrationException, RepositoryException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
@@ -173,6 +173,21 @@ public class ConfiguredMessageViewDefinitionManagerTest {
         Thread.sleep(6000);
         // THEN c
         MessageViewDefinition cMessageView = messageViewRegistry.get("aModule:cMessageView");
+    }
+
+    @Test(expected = RegistrationException.class)
+    public void testMessageViewDefinitionReloadsOnRemoval() throws RegistrationException, RepositoryException, InterruptedException {
+        // GIVEN
+        MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
+        ConfiguredMessageViewDefinitionManager messageViewManager = new ConfiguredMessageViewDefinitionManager(moduleRegistry, messageViewRegistry);
+
+        // WHEN
+        messageViewManager.start();
+
+        // THEN
+        // Make sure messageView a is there.
+        MessageViewDefinition aMessageView = messageViewRegistry.get("aModule:aMessageView");
+        assertNotNull(aMessageView);
 
         // WHEN
         // Remove messageView a:

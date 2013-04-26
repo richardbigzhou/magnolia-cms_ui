@@ -56,6 +56,14 @@ public interface ActionDefinition {
 
     String getI18nBasename();
 
+    String getDescription();
+
+    String getSuccessMessage();
+
+    String getFailureMessage();
+
+    String getErrorMessage();
+
     Class<? extends Action> getImplementationClass();
 
     ActionRestrictionsDefinition getRestrictions();

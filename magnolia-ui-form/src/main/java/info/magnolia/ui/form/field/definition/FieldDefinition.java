@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import info.magnolia.ui.form.field.validation.FieldValidatorDefinition;
+import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 
 import java.util.List;
 

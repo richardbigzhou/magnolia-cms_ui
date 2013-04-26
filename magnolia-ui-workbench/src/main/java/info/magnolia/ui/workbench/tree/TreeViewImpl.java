@@ -58,8 +58,6 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Layout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TreeTable;
@@ -70,8 +68,6 @@ import com.vaadin.ui.TreeTable;
 public class TreeViewImpl implements TreeView {
 
     private static final Logger log = LoggerFactory.getLogger(TreeViewImpl.class);
-
-    private final Layout layout;
 
     private final TreeTable treeTable;
 
@@ -102,9 +98,6 @@ public class TreeViewImpl implements TreeView {
             treeTable.setDragMode(TableDragMode.ROW);
             log.debug("Set following drop container {} to the treeTable", dropContainerClass.getName());
         }
-
-        layout = buildLayout();
-        layout.addComponent(treeTable);
 
         treeTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
 
@@ -287,18 +280,9 @@ public class TreeViewImpl implements TreeView {
         }
     }
 
-    // VAADIN VIEW
-
-    private Layout buildLayout() {
-        CssLayout layout = new CssLayout();
-        layout.setStyleName("mgnl-content-view");
-        layout.setSizeFull();
-        return layout;
-    }
-
     @Override
     public Component asVaadinComponent() {
-        return layout;
+        return treeTable;
     }
 
     private String presenterGetIcon(Object itemId, Object propertyId) {

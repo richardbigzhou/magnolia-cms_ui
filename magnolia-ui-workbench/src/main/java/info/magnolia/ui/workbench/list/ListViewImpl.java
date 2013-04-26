@@ -53,7 +53,6 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Table;
 
 /**
@@ -66,8 +65,6 @@ public class ListViewImpl implements ListView {
     private ContentView.Listener listener;
 
     private final Table table;
-
-    private final CssLayout layout = new CssLayout();
 
     private final AbstractJcrContainer container;
 
@@ -124,10 +121,6 @@ public class ListViewImpl implements ListView {
             this.container = new SearchJcrContainer(workbenchDefinition);
         }
         buildColumns(workbenchDefinition, componentProvider);
-
-        layout.setStyleName("mgnl-content-view");
-        layout.setSizeFull();
-        layout.addComponent(table);
     }
 
     @Override
@@ -144,7 +137,7 @@ public class ListViewImpl implements ListView {
 
     @Override
     public Component asVaadinComponent() {
-        return layout;
+        return table;
     }
 
     @Override
