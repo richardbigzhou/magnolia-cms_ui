@@ -6,4 +6,84 @@
   <description>Magnolia Form Module</description>
   <class>info.magnolia.ui.form.module.FormModule</class>
   <version>${project.version}</version>
+
+  <components>
+  <id>main</id>
+    <component>
+      <type>info.magnolia.ui.form.field.registry.ConfiguredFieldTypeDefinitionManager</type>
+      <implementation>info.magnolia.ui.form.field.registry.ConfiguredFieldTypeDefinitionManager</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.form.field.registry.FieldTypeDefinitionRegistry</type>
+      <implementation>info.magnolia.ui.form.field.registry.FieldTypeDefinitionRegistry</implementation>
+    </component>
+
+    <type-mapping>
+      <type>info.magnolia.ui.form.field.registry.FieldTypeDefinition</type>
+      <implementation>info.magnolia.ui.form.field.registry.ConfiguredFieldTypeDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.form.definition.FormDefinition</type>
+      <implementation>info.magnolia.ui.form.definition.ConfiguredFormDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.form.definition.FormActionDefinition</type>
+      <implementation>info.magnolia.ui.form.definition.ConfiguredFormActionDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.dialog.definition.DialogDefinition</type>
+      <implementation>info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.form.definition.TabDefinition</type>
+      <implementation>info.magnolia.ui.form.definition.ConfiguredTabDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.form.field.definition.FieldDefinition</type>
+      <implementation>info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.form.field.validation.FieldValidatorDefinition</type>
+      <implementation>info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition</implementation>
+    </type-mapping>
+  </components>
+
+  <components>
+    <id>admincentral</id>
+    <component>
+      <type>info.magnolia.ui.form.field.builder.FieldFactory</type>
+      <implementation>info.magnolia.ui.form.field.builder.FieldFactory</implementation>
+    </component>
+
+    <type-mapping>
+      <type>info.magnolia.ui.vaadin.form.FormView</type>
+      <implementation>info.magnolia.ui.vaadin.form.ItemFormView</implementation>
+    </type-mapping>
+  </components>
+
+  <components>
+    <id>subapp</id>
+    <component>
+      <type>info.magnolia.ui.form.field.builder.FieldFactory</type>
+      <implementation>info.magnolia.ui.form.field.builder.FieldFactory</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.form.action.SaveFormActionDefinition</type>
+      <implementation>info.magnolia.ui.form.action.SaveFormActionDefinition</implementation>
+    </component>
+    <!--
+    The FormView is mapped twice because of it two use-cases:
+    in admin-central scope without app-contexts visible and in app-scope, where the app-context is actually needed,
+    so the interface has to be provided by the correct ComponentProvider.
+    !-->
+    <component>
+      <type>info.magnolia.ui.vaadin.form.FormView</type>
+      <implementation>info.magnolia.ui.vaadin.form.ItemFormView</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.vaadin.form.FormViewReduced</type>
+      <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
+    </component>
+  </components>
 </module>
