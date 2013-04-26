@@ -43,8 +43,6 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.framework.event.EventBusProtector;
 import info.magnolia.ui.model.overlay.View;
-import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.framework.shell.ShellImpl;
 
 import java.util.List;
 
@@ -94,7 +92,6 @@ public class AdmincentralUI extends UI {
         AdmincentralPresenter presenter = componentProvider.newInstance(AdmincentralPresenter.class);
         View view = presenter.start();
         setContent(view.asVaadinComponent());
-        ((ShellImpl)componentProvider.getComponent(Shell.class)).getMagnoliaShell().notifyOnFragmentChanged(getPage().getUriFragment());
     }
 
     @Override
