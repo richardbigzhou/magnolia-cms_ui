@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-actionbar</artifactId>
   <name>magnolia-ui-actionbar</name>
   <properties>
-    <cloverCoverageThreshold>27</cloverCoverageThreshold>
+    <cloverCoverageThreshold>25</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
