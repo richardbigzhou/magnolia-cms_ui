@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 
 
@@ -40,7 +41,7 @@ import info.magnolia.ui.api.action.CommandActionDefinition;
  * Activation action definition. By default performs a non-recursive activation.
  */
 public class ActivationActionDefinition extends CommandActionDefinition {
-    
+
     private boolean recursive = false;
 
 
@@ -54,6 +55,28 @@ public class ActivationActionDefinition extends CommandActionDefinition {
 
     public boolean isRecursive() {
         return recursive;
+    }
+
+    public String getSuccessMessage() {
+        if (workflowInstalled()) {
+            return "The workflow has been started.";
+        }
+        return "Activation has been started.";
+    }
+
+    public String getFailureMessage() {
+        if (workflowInstalled()) {
+            return "The workflow could not be launched.";
+        }
+        return "Activation has failed.";
+    }
+
+    public String getErrorMessage() {
+        return "Activation failed. Please contact the system administrator for assistance.";
+    }
+
+    private boolean workflowInstalled() {
+        return SessionUtil.getNode("config", "/modules/workflow-base") != null;
     }
 
 }

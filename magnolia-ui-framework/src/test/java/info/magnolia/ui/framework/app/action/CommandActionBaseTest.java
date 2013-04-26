@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.framework.app.action;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.MgnlCommand;
 import info.magnolia.context.Context;
@@ -44,15 +47,12 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test case for CommandActionBaseTest.
@@ -98,7 +98,8 @@ public class CommandActionBaseTest {
                 new CommandActionBase<CommandActionDefinition>(
                         new CommandActionDefinition(),
                         new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub")),
-                        commandsManager);
+                        commandsManager,
+                        null);
 
         // WHEN
         Map<String, Object> params = action.getParams();
@@ -126,7 +127,8 @@ public class CommandActionBaseTest {
                 new CommandActionBase<CommandActionDefinition>(
                         definition,
                         new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub")),
-                        commandsManager);
+                        commandsManager,
+                        null);
 
         // WHEN
         Map<String, Object> params = action.getParams();
@@ -155,7 +157,8 @@ public class CommandActionBaseTest {
         CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(
                 definition,
                 new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
-                commandsManager);
+                commandsManager,
+                null);
 
         // WHEN
         action.execute();
@@ -170,7 +173,8 @@ public class CommandActionBaseTest {
         CommandActionBase<CommandActionDefinition> action = new CommandActionBase<CommandActionDefinition>(
                 new CommandActionDefinition(),
                 new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub")),
-                commandsManager);
+                commandsManager,
+                null);
         Map<String, Object> params = action.getParams();
 
         // WHEN

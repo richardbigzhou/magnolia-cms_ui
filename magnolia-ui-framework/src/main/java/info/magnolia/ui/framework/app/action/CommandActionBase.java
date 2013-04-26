@@ -42,16 +42,20 @@ import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.CommandActionDefinition;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base action supporting execution of commands.
@@ -68,11 +72,16 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
 
     private Map<String, Object> params;
 
+    private final SubAppContext subAppContext;
+
+    public static final String COMMAND_RESULT = "command_result";
+
     @Inject
-    public CommandActionBase(final D definition, final JcrItemNodeAdapter node, final CommandsManager commandsManager) {
+    public CommandActionBase(final D definition, final JcrItemNodeAdapter node, final CommandsManager commandsManager, SubAppContext subAppContext) {
         super(definition);
         this.commandsManager = commandsManager;
         this.params = buildParams(node.getNode());
+        this.subAppContext = subAppContext;
         // Init Command.
         String commandName = getDefinition().getCommand();
         String catalog = getDefinition().getCatalog();
@@ -151,10 +160,13 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
         long start = System.currentTimeMillis();
         try {
             log.debug("Executing command [{}] from catalog [{}] with the following parameters [{}]...", new Object[] {  getDefinition().getCommand(),  getDefinition().getCatalog(), getParams() });
-            commandsManager.executeCommand(command, getParams());
+
+            boolean result = commandsManager.executeCommand(command, getParams());
+            MgnlContext.getInstance().setAttribute(COMMAND_RESULT, result, Context.LOCAL_SCOPE);
             onPostExecute();
             log.debug("Command executed successfully in {} ms ", System.currentTimeMillis() - start);
         } catch (Exception e) {
+            onError(e);
             log.debug("Command execution failed after {} ms ", System.currentTimeMillis() - start);
             throw new ActionExecutionException(e);
         }
@@ -166,6 +178,15 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
      */
     protected void onPostExecute() throws Exception {
         // Sub Class can override this method.
+    }
+
+    /**
+     * Class that implement CommansActionBase should use
+     * this in order to perform tasks or notification in case of error.
+     */
+    protected void onError(Exception e) {
+        String message = "Action execution failed.";
+        subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, message);
     }
 
     /**
