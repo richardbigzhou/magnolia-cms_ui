@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.grid.connector;
+package info.magnolia.ui.vaadin.form;
 
-import info.magnolia.ui.vaadin.grid.MagnoliaTable;
-import info.magnolia.ui.vaadin.gwt.client.grid.VMagnoliaTable;
-
-import com.vaadin.client.ui.table.TableConnectorPatched;
-import com.vaadin.shared.ui.Connect;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 /**
- * Connector class for magnolia table.
+ * Dialog type that assumes that content is form.
+ * Dialog is setting the height of the tabsheet scroller inside the form.
+ * This was done because generally a dialog should not know about it's
+ * content, except in this case.
  */
-@Connect(MagnoliaTable.class)
-public class MagnoliaTableConnector extends TableConnectorPatched {
+public class DialogContainingForm extends BaseDialog {
 
-    @Override
-    public VMagnoliaTable getWidget() {
-        return (VMagnoliaTable) super.getWidget();
-    }
 }
