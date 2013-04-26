@@ -256,6 +256,7 @@
     <module>magnolia-ui-vaadin-widgetset</module>
     <module>magnolia-ui-admincentral</module>
     <module>magnolia-ui-actionbar</module>
+    <module>magnolia-ui-statusbar</module>
     <module>magnolia-ui-app-sample</module>
     <module>magnolia-ui-app-config</module>
     <module>magnolia-ui-app-messages</module>

@@ -30,6 +30,11 @@
 		font-style: normal;
   }
 
+  input.v-textfield-readonly, textarea.v-textarea-readonly {
+    border: 1px solid $c04 !important;
+    margin: 0 !important;
+  }
+
   .v-filterselect-input {
     &:focus, &.focus {
       & + .v-filterselect-button {
