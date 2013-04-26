@@ -73,7 +73,7 @@ public class FavoriteStoreTest extends MgnlTestCase {
 
         MgnlUserManager userMgr = new MgnlUserManager() {
             {
-                setName(Realm.REALM_SYSTEM.getName());
+                setRealmName(Realm.REALM_SYSTEM.getName());
             }
             @Override
             public User getSystemUser() {
