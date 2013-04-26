@@ -104,7 +104,7 @@ public class FavoritesEntry extends CustomComponent {
         editButton = new NativeButton();
         editButton.setHtmlContentAllowed(true);
         editButton.setCaption("<span class=\"icon-edit\"></span>");
-        editButton.addStyleName("icon");
+        editButton.addStyleName("favorite-action");
         editButton.addClickListener(new ClickListener() {
 
             @Override
@@ -126,7 +126,7 @@ public class FavoritesEntry extends CustomComponent {
         removeButton = new NativeButton();
         removeButton.setHtmlContentAllowed(true);
         removeButton.setCaption("<span class=\"icon-trash\"></span>");
-        removeButton.addStyleName("icon");
+        removeButton.addStyleName("favorite-action");
         removeButton.addClickListener(new ClickListener() {
 
             @Override
