@@ -37,7 +37,6 @@ import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionManager;
 import info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager;
-import info.magnolia.ui.form.field.registry.ConfiguredFieldTypeDefinitionManager;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager;
@@ -53,15 +52,13 @@ public class AdminCentralModule implements ModuleLifecycle {
     private AppLauncherLayoutManager appLauncherLayoutManager;
     private ConfiguredAppDescriptorManager configuredAppDescriptorManager;
     private ConfiguredDialogDefinitionManager configuredDialogDefinitionManager;
-    private ConfiguredFieldTypeDefinitionManager configuredFieldTypeDefinitionManager;
     private ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager;
 
     @Inject
-    public AdminCentralModule(AppLauncherLayoutManager appLauncherLayoutManager, ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager, ConfiguredFieldTypeDefinitionManager configuredFieldTypeDefinitionManager, ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager) {
+    public AdminCentralModule(AppLauncherLayoutManager appLauncherLayoutManager, ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager, ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager) {
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.configuredAppDescriptorManager = configuredAppDescriptorManager;
         this.configuredDialogDefinitionManager = configuredDialogDefinitionManager;
-        this.configuredFieldTypeDefinitionManager = configuredFieldTypeDefinitionManager;
         this.configuredMessageViewDefinitionManager = configuredMessageViewDefinitionManager;
     }
 
@@ -70,7 +67,6 @@ public class AdminCentralModule implements ModuleLifecycle {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
             configuredAppDescriptorManager.start();
             configuredDialogDefinitionManager.start();
-            configuredFieldTypeDefinitionManager.start();
             configuredMessageViewDefinitionManager.start();
             appLauncherLayoutManager.setLayout(getAppLauncherLayout());
         }

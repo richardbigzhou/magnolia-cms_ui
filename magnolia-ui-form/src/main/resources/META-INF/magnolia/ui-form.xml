@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd">
+<module>
+  <name>ui-form</name>
+  <displayName>Form</displayName>
+  <description>Magnolia Form Module</description>
+  <class>info.magnolia.ui.form.module.FormModule</class>
+  <version>${project.version}</version>
+</module>
