@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.registry;
 
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.registry.RegistryMap;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 import java.util.List;
 import java.util.Set;
@@ -60,9 +61,18 @@ public class FieldTypeDefinitionRegistry {
         try {
             provider = registry.getRequired(id);
         } catch (RegistrationException e) {
-            throw new RegistrationException("No fieldTypeFieldFactory. definition registered for id: " + id, e);
+            throw new RegistrationException("No fieldTypeProvider registered for id: " + id, e);
         }
         return provider.getFieldTypeDefinition();
+    }
+
+    public FieldTypeDefinition getByDefinition(Class<? extends FieldDefinition> definition) throws RegistrationException {
+        for (FieldTypeDefinitionProvider provider : registry.values()) {
+            if (definition.equals(provider.getFieldTypeDefinition().getDefinition())) {
+                return provider.getFieldTypeDefinition();
+            }
+        }
+        throw new RegistrationException("Could not find fieldType for definition " + definition.getName());
     }
 
     public void register(FieldTypeDefinitionProvider provider) {

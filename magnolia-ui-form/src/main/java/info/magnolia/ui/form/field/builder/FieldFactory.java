@@ -74,11 +74,11 @@ public class FieldFactory extends FactoryBase<FieldDefinition, FieldBuilder> imp
 
     @Override
     protected Class<? extends FieldBuilder> resolveImplementationClass(FieldDefinition definition) {
-        FieldTypeDefinition fieldTypeDefinition = null;
+        FieldTypeDefinition fieldTypeDefinition;
         try {
-            fieldTypeDefinition = fieldTypeDefinitionRegistry.get(definition.getClass().getName());
+            fieldTypeDefinition = fieldTypeDefinitionRegistry.getByDefinition(definition.getClass());
         } catch (RegistrationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            throw new RuntimeException("No FieldBuilder found for " + definition.getName(), e);
         }
         return fieldTypeDefinition.getBuilder();
     }
