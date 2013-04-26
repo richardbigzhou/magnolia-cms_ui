@@ -36,9 +36,9 @@ package info.magnolia.ui.form.field.builder;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.field.registry.FieldTypeDefinition;
-import info.magnolia.ui.form.field.registry.FieldTypeDefinitionRegistry;
-import info.magnolia.ui.form.field.validation.ValidatorFieldFactory;
+import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
+import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
+import info.magnolia.ui.form.validator.registry.ValidatorFieldFactory;
 import info.magnolia.ui.api.builder.FactoryBase;
 
 

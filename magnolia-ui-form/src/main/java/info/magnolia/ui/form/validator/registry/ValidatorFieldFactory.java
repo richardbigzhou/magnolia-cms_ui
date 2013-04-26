@@ -31,38 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.validation;
+package info.magnolia.ui.form.validator.registry;
 
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.builder.DefinitionToImplementationMapping;
+import info.magnolia.ui.api.builder.MappingFactoryBase;
+import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
+import info.magnolia.ui.form.validator.builder.FieldValidatorBuilder;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.inject.Singleton;
+import javax.inject.Inject;
 
 /**
- * Validator Field Registry. This registry currently listen to changes
- * coming from the following path: /modules/ui-admincentral/validatorFieldRegistry
+ * Factory for creating DialogField instances using an internal set of mappings connecting a {@link info.magnolia.ui.form.validator.definition.FieldValidatorDefinition} class with a {@link info.magnolia.ui.form.validator.builder.FieldValidatorBuilder} class.
+ *
+ * @see info.magnolia.ui.form.field.definition.FieldDefinition
  */
-@Singleton
-public class ValidatorFieldRegistry implements Serializable {
+public class ValidatorFieldFactory extends MappingFactoryBase<FieldValidatorDefinition, FieldValidatorBuilder> implements Serializable {
 
-    private List<DefinitionToImplementationMapping<FieldValidatorDefinition, FieldValidatorBuilder>> definitionToImplementationMappings = new ArrayList<DefinitionToImplementationMapping<FieldValidatorDefinition, FieldValidatorBuilder>>();
+    @Inject
+    public ValidatorFieldFactory(ComponentProvider componentProvider, ValidatorFieldRegistry validatorFieldRegistery) {
+        super(componentProvider);
 
-    public ValidatorFieldRegistry() {
-        super();
+        for (DefinitionToImplementationMapping<FieldValidatorDefinition, FieldValidatorBuilder> definitionToImplementationMapping : validatorFieldRegistery.getDefinitionToImplementationMappings()) {
+            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
+        }
     }
 
-    public List<DefinitionToImplementationMapping<FieldValidatorDefinition, FieldValidatorBuilder>> getDefinitionToImplementationMappings() {
-        return this.definitionToImplementationMappings;
-    }
-
-    public void setDefinitionToImplementationMappings(List<DefinitionToImplementationMapping<FieldValidatorDefinition, FieldValidatorBuilder>> definitionToImplementationMappings) {
-        this.definitionToImplementationMappings = definitionToImplementationMappings;
-    }
-
-    public void addDefinitionToImplementationMapping(DefinitionToImplementationMapping<FieldValidatorDefinition, FieldValidatorBuilder> mapping) {
-        this.definitionToImplementationMappings.add(mapping);
+    @Override
+    public FieldValidatorBuilder create(FieldValidatorDefinition definition, Object... parameters) {
+        return super.create(definition, parameters);
     }
 }

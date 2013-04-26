@@ -31,34 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.validation;
-
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.api.builder.MappingFactoryBase;
-
-import java.io.Serializable;
-
-import javax.inject.Inject;
+package info.magnolia.ui.form.validator.definition;
 
 /**
- * Factory for creating DialogField instances using an internal set of mappings connecting a {@link FieldValidatorDefinition} class with a {@link FieldValidatorBuilder} class.
- *
- * @see info.magnolia.ui.form.field.definition.FieldDefinition
+ * Defines a validator.
  */
-public class ValidatorFieldFactory extends MappingFactoryBase<FieldValidatorDefinition, FieldValidatorBuilder> implements Serializable {
+public interface FieldValidatorDefinition {
 
-    @Inject
-    public ValidatorFieldFactory(ComponentProvider componentProvider, ValidatorFieldRegistry validatorFieldRegistery) {
-        super(componentProvider);
+    /**
+     * Return the ErrorMessage to be displayed.
+     */
+    String getErrorMessage();
 
-        for (DefinitionToImplementationMapping<FieldValidatorDefinition, FieldValidatorBuilder> definitionToImplementationMapping : validatorFieldRegistery.getDefinitionToImplementationMappings()) {
-            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
-        }
-    }
-
-    @Override
-    public FieldValidatorBuilder create(FieldValidatorDefinition definition, Object... parameters) {
-        return super.create(definition, parameters);
-    }
+    /**
+     * Message bundle for localized field labels.
+     */
+    String getI18nBasename();
 }

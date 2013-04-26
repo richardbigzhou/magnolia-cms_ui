@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,20 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.validation;
+package info.magnolia.ui.form.fieldtype.definition;
+
+import info.magnolia.ui.form.field.builder.FieldBuilder;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 /**
- * Defines a validator.
+ * ConfiguredFieldTypeDefinition.
  */
-public interface FieldValidatorDefinition {
+public class ConfiguredFieldTypeDefinition implements FieldTypeDefinition {
 
-    /**
-     * Return the ErrorMessage to be displayed.
-     */
-    String getErrorMessage();
+    private Class<? extends FieldDefinition> definition;
+    private Class<? extends FieldBuilder> builder;
 
-    /**
-     * Message bundle for localized field labels.
-     */
-    String getI18nBasename();
+    @Override
+    public Class<? extends FieldBuilder> getBuilder() {
+        return builder;
+    }
+
+    @Override
+    public Class<? extends FieldDefinition> getDefinition() {
+        return definition;
+    }
+
+    public void setBuilder(Class<? extends FieldBuilder> builder) {
+        this.builder = builder;
+    }
+
+    public void setDefinition(Class<? extends FieldDefinition> definition) {
+        this.definition = definition;
+    }
 }

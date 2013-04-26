@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,34 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.registry;
+package info.magnolia.ui.form.validator.builder;
 
-import info.magnolia.ui.form.field.builder.FieldBuilder;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
+import com.vaadin.data.Validator;
 
 /**
- * ConfiguredFieldTypeDefinition.
+ * .
  */
-public class ConfiguredFieldTypeDefinition implements FieldTypeDefinition {
-
-    private Class<? extends FieldDefinition> definition;
-    private Class<? extends FieldBuilder> builder;
-
-    @Override
-    public Class<? extends FieldBuilder> getBuilder() {
-        return builder;
-    }
-
-    @Override
-    public Class<? extends FieldDefinition> getDefinition() {
-        return definition;
-    }
-
-    public void setBuilder(Class<? extends FieldBuilder> builder) {
-        this.builder = builder;
-    }
-
-    public void setDefinition(Class<? extends FieldDefinition> definition) {
-        this.definition = definition;
-    }
+public interface FieldValidatorBuilder {
+    Validator buildValidator();
 }

@@ -10,17 +10,17 @@
   <components>
   <id>main</id>
     <component>
-      <type>info.magnolia.ui.form.field.registry.ConfiguredFieldTypeDefinitionManager</type>
-      <implementation>info.magnolia.ui.form.field.registry.ConfiguredFieldTypeDefinitionManager</implementation>
+      <type>info.magnolia.ui.form.fieldtype.registry.ConfiguredFieldTypeDefinitionManager</type>
+      <implementation>info.magnolia.ui.form.fieldtype.registry.ConfiguredFieldTypeDefinitionManager</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.form.field.registry.FieldTypeDefinitionRegistry</type>
-      <implementation>info.magnolia.ui.form.field.registry.FieldTypeDefinitionRegistry</implementation>
+      <type>info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry</type>
+      <implementation>info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry</implementation>
     </component>
 
     <type-mapping>
-      <type>info.magnolia.ui.form.field.registry.FieldTypeDefinition</type>
-      <implementation>info.magnolia.ui.form.field.registry.ConfiguredFieldTypeDefinition</implementation>
+      <type>info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition</type>
+      <implementation>info.magnolia.ui.form.fieldtype.definition.ConfiguredFieldTypeDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.form.definition.FormDefinition</type>
@@ -43,8 +43,8 @@
       <implementation>info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.form.field.validation.FieldValidatorDefinition</type>
-      <implementation>info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition</implementation>
+      <type>info.magnolia.ui.form.validator.definition.FieldValidatorDefinition</type>
+      <implementation>info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition</implementation>
     </type-mapping>
   </components>
 

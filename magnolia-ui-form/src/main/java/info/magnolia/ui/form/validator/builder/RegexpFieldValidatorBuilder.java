@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,33 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.validation;
+package info.magnolia.ui.form.validator.builder;
+
+import info.magnolia.ui.form.validator.definition.RegexpValidatorDefinition;
+
+import com.vaadin.data.Validator;
+import com.vaadin.data.validator.RegexpValidator;
 
 /**
- * Default implementation of {@link FieldValidatorDefinition}.
+ * Build a {@link RegexpValidator}.
  */
-public class ConfiguredFieldValidatorDefinition implements FieldValidatorDefinition {
+public class RegexpFieldValidatorBuilder extends AbstractFieldValidatorBuilder<RegexpValidatorDefinition> {
 
-    private String errorMessage;
-
-    private String i18nBasename;
-
-    @Override
-    public String getErrorMessage() {
-        return errorMessage;
+    public RegexpFieldValidatorBuilder(RegexpValidatorDefinition definition) {
+        super(definition);
     }
 
     @Override
-    public String getI18nBasename() {
-        return i18nBasename;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public void setI18nBasename(String i18nBasename) {
-        this.i18nBasename = i18nBasename;
+    public Validator buildValidator() {
+        return new RegexpValidator(definition.getPattern(), getI18nErrorMessage());
     }
 
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,11 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.validation;
+package info.magnolia.ui.form.fieldtype.definition;
+
+import info.magnolia.ui.form.field.builder.FieldBuilder;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 /**
- * Defines an email validator.
+ * FieldTypeDefinition.
  */
-public class EmailValidatorDefinition extends ConfiguredFieldValidatorDefinition {
-    // No Specific property.
+public interface FieldTypeDefinition {
+
+    Class<? extends FieldDefinition> getDefinition();
+
+    Class<? extends FieldBuilder> getBuilder();
 }

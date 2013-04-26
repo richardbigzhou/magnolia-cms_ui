@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.validation;
-
-import com.vaadin.data.Validator;
-import com.vaadin.data.validator.RegexpValidator;
+package info.magnolia.ui.form.validator.definition;
 
 /**
- * Build a {@link RegexpValidator}.
+ * Defines a validator that uses a regular expression to validate the contents of a dialog field.
  */
-public class RegexpFieldValidatorBuilder extends AbstractFieldValidatorBuilder<RegexpValidatorDefinition> {
+public class RegexpValidatorDefinition extends ConfiguredFieldValidatorDefinition {
 
-    public RegexpFieldValidatorBuilder(RegexpValidatorDefinition definition) {
-        super(definition);
+    private String pattern;
+
+    public String getPattern() {
+        return pattern;
     }
 
-    @Override
-    public Validator buildValidator() {
-        return new RegexpValidator(definition.getPattern(), getI18nErrorMessage());
+    /**
+     * For the Java regular expression syntax, see {@link java.util.regex.Pattern#sum}.
+     */
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
     }
-
 }

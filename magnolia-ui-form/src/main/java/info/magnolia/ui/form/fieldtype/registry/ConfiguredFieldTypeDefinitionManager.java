@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.registry;
+package info.magnolia.ui.form.fieldtype.registry;
 
 import info.magnolia.cms.util.ModuleConfigurationObservingManager;
 import info.magnolia.jcr.predicate.NodeTypePredicate;

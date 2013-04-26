@@ -35,7 +35,7 @@ package info.magnolia.ui.form.module;
 
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
-import info.magnolia.ui.form.field.registry.ConfiguredFieldTypeDefinitionManager;
+import info.magnolia.ui.form.fieldtype.registry.ConfiguredFieldTypeDefinitionManager;
 
 import javax.inject.Inject;
 

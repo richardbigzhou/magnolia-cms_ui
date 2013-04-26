@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.validation;
+package info.magnolia.ui.form.fieldtype.registry;
 
-import info.magnolia.ui.form.AbstractFormItem;
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
 
 /**
- * Base type for FieldValidationBuilders.
- *
- * @param <D> definition type.
+ * FieldTypeDefinitionProvider.
  */
-public abstract class AbstractFieldValidatorBuilder<D extends ConfiguredFieldValidatorDefinition> extends AbstractFormItem implements FieldValidatorBuilder {
+public interface FieldTypeDefinitionProvider {
 
-    protected D definition;
+    String getId();
 
-    public AbstractFieldValidatorBuilder(D definition) {
-        this.definition = definition;
-    }
-
-    public String getI18nErrorMessage() {
-        return getMessage(definition.getErrorMessage());
-    }
-
-    @Override
-    protected String getI18nBasename() {
-        return definition.getI18nBasename();
-    }
-
+    FieldTypeDefinition getFieldTypeDefinition() throws RegistrationException;
 }

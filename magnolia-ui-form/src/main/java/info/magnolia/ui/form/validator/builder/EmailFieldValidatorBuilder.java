@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.validation;
+package info.magnolia.ui.form.validator.builder;
+
+import info.magnolia.ui.form.validator.definition.EmailValidatorDefinition;
+
+import com.vaadin.data.Validator;
+import com.vaadin.data.validator.EmailValidator;
 
 /**
- * Defines a validator that uses a regular expression to validate the contents of a dialog field.
+ * Build a {@link EmailValidator}.
  */
-public class RegexpValidatorDefinition extends ConfiguredFieldValidatorDefinition {
+public class EmailFieldValidatorBuilder extends AbstractFieldValidatorBuilder<EmailValidatorDefinition> {
 
-    private String pattern;
-
-    public String getPattern() {
-        return pattern;
+    public EmailFieldValidatorBuilder(EmailValidatorDefinition definition) {
+        super(definition);
     }
 
-    /**
-     * For the Java regular expression syntax, see {@link java.util.regex.Pattern#sum}.
-     */
-    public void setPattern(String pattern) {
-        this.pattern = pattern;
+    @Override
+    public Validator buildValidator() {
+        return new EmailValidator(getI18nErrorMessage());
     }
+
 }

@@ -31,11 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.registry;
+package info.magnolia.ui.form.fieldtype.registry;
 
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
 
 import java.util.List;
 import java.util.Set;

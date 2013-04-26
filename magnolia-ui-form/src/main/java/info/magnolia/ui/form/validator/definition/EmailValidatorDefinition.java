@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.registry;
-
-import info.magnolia.jcr.node2bean.Node2BeanException;
-import info.magnolia.jcr.node2bean.Node2BeanProcessor;
-import info.magnolia.objectfactory.Components;
-import info.magnolia.registry.RegistrationException;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
+package info.magnolia.ui.form.validator.definition;
 
 /**
- * ConfiguredFieldTypeDefinitionProvider.
+ * Defines an email validator.
  */
-public class ConfiguredFieldTypeDefinitionProvider implements FieldTypeDefinitionProvider {
-
-
-    private final String id;
-
-    private final FieldTypeDefinition fieldTypeDefinition;
-
-    public ConfiguredFieldTypeDefinitionProvider(String id, Node configNode) throws RepositoryException, Node2BeanException {
-        this.id = id;
-        this.fieldTypeDefinition = (FieldTypeDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, FieldTypeDefinition.class);
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public FieldTypeDefinition getFieldTypeDefinition() throws RegistrationException {
-        return fieldTypeDefinition;
-    }
+public class EmailValidatorDefinition extends ConfiguredFieldValidatorDefinition {
+    // No Specific property.
 }

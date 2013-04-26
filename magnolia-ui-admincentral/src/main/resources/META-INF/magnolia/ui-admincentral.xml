@@ -122,7 +122,7 @@
       <scope>singleton</scope>
     </component>
     <component>
-      <type>info.magnolia.ui.form.field.validation.ValidatorFieldRegistry</type>
+      <type>info.magnolia.ui.form.validator.registry.ValidatorFieldRegistry</type>
       <workspace>config</workspace>
       <path>/modules/ui-admincentral/dialogFieldValidatorRegistry</path>
       <observed>true</observed>
@@ -213,8 +213,8 @@
       <implementation>info.magnolia.ui.workbench.ContentViewBuilderImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.form.field.validation.ValidatorFieldFactory</type>
-      <implementation>info.magnolia.ui.form.field.validation.ValidatorFieldFactory</implementation>
+      <type>info.magnolia.ui.form.validator.registry.ValidatorFieldFactory</type>
+      <implementation>info.magnolia.ui.form.validator.registry.ValidatorFieldFactory</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.imageprovider.definition.ImageProviderDefinition</type>
