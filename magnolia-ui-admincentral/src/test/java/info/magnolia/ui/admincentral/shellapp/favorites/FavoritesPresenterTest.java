@@ -136,10 +136,24 @@ public class FavoritesPresenterTest {
         // GIVEN
 
         // WHEN
-        final String serverNamePortAndWebAppContext = presenter.getCompleteURIFromFragment(FRAGMENT);
+        final String result = presenter.getCompleteURIFromFragment(FRAGMENT);
 
         // THEN
-        assertEquals(WEB_APP_URL + FRAGMENT, serverNamePortAndWebAppContext);
+        assertThat("Fragment should have been completed.", result, equalTo(WEB_APP_URL + FRAGMENT));
+    }
+
+    @Test
+    public void testGetCompleteURIFromFragmentWithAbsoluteURI() {
+        // GIVEN
+        final String completeUri = "http://www.magnolia-cms.com/magnolia-cms.html";
+
+        // WHEN
+        final String result = presenter.getCompleteURIFromFragment(completeUri);
+
+        // THEN
+        assertThat("Complete URIs should be returned unchanged.", result, equalTo(completeUri));
+
+
     }
 
     @Test
