@@ -44,15 +44,9 @@ import com.vaadin.shared.ui.Connect;
  */
 @Connect(MagnoliaTable.class)
 public class MagnoliaTableConnector extends TableConnectorPatched {
+
     @Override
     public VMagnoliaTable getWidget() {
         return (VMagnoliaTable) super.getWidget();
-    }
-
-    @Override
-    public void postLayout() {
-        getWidget().updateWidth();
-        getWidget().updateHeight();
-        super.postLayout();
     }
 }
