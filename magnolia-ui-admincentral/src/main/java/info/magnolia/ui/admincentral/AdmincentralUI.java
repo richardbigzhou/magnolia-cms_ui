@@ -100,7 +100,12 @@ public class AdmincentralUI extends UI {
 
     @Override
     public void detach() {
-        super.detach();
+        try {
+            // make sure the error handler covers the detach phase (it does not happen in service phase).
+            super.detach();
+        } catch (Exception e) {
+            getErrorHandler().error(new com.vaadin.server.ErrorEvent(e));
+        }
         eventBusProtector.resetEventBuses();
         componentProvider.destroy();
     }

@@ -43,7 +43,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * A base custom field allowing to display a {@link info.magnolia.ui.contentapp.browser.BrowserView} and a TextField.
+ * A base custom field allowing to display a {@link WorkbenchView} and a TextField.
  * <ul>
  * <li>Text field can be hidden or placed on top or button.
  * <li>This field is mainly used to perform some selection in a list and to put the selected value into the text input field.
@@ -140,11 +140,5 @@ public class TextAndContentViewField extends CustomField<String> {
     @Override
     public void setCaption(String caption) {
         super.setCaption(null);
-    }
-
-    @Override
-    public void attach() {
-        super.attach();
-        getParent().addStyleName("content-view-field-wrapper");
     }
 }

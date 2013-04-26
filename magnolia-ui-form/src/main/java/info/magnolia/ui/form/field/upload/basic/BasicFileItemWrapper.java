@@ -137,13 +137,10 @@ public class BasicFileItemWrapper implements FileItemWrapper {
         try {
             uploadedFile = File.createTempFile(StringUtils.rightPad(fileName, 5, "x"), null, tmpDirectory);
             fileOuputStream = new FileOutputStream(uploadedFile);
-            if (data.getValue() instanceof BinaryImpl) {
-                IOUtils.copy(((BinaryImpl) data.getValue()).getStream(), fileOuputStream);
-            } else {
-                fileOuputStream.write((byte[]) data.getValue());
-            }
+            IOUtils.copy(((BinaryImpl) data.getValue()).getStream(), fileOuputStream);
             fileOuputStream.close();
             uploadedFile.deleteOnExit();
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
