@@ -53,10 +53,4 @@ public interface ActionDefinition {
 
     String getDescription();
 
-    String getSuccessMessage();
-
-    String getFailureMessage();
-
-    String getErrorMessage();
-
 }
