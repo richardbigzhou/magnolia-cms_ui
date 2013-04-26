@@ -50,8 +50,6 @@ public interface ActionDefinition {
 
     String getLabel();
 
-    String getDescription();
-
     String getIcon();
 
     String getI18nBasename();
