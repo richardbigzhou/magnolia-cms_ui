@@ -36,8 +36,6 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
-import com.vaadin.client.VConsole;
-
 /**
  * Fades an element in or out.
  */
@@ -56,20 +54,6 @@ public class FadeAnimation extends JQueryAnimation {
                 }
             });
         }
-    }
-
-    @Override
-    protected void onCancel() {
-        VConsole.error("Cancelling fade "  + (fadeIn ? "in " : "out"));
-        super.onCancel();
-    }
-
-    @Override
-    protected void onComplete() {
-        if (!wasCanceled()) {
-            VConsole.error("Firing callbacks for fade "  + (fadeIn ? "in " : "out"));
-        }
-        super.onComplete();
     }
 
     public boolean isFadeIn() {

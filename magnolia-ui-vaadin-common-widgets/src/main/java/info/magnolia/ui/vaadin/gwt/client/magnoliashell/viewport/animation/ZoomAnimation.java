@@ -33,15 +33,15 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation;
 
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-
+import com.google.gwt.animation.client.Animation;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 
 /**
  * CSS3 Zoom Animation.
  */
-public class ZoomAnimation extends JQueryAnimation {
+public class ZoomAnimation extends Animation {
 
     private final static String ZOOM_OUT_CLASS_NAME = "zoom-out";
 
@@ -49,19 +49,39 @@ public class ZoomAnimation extends JQueryAnimation {
 
     private boolean isZoomIn;
 
+    private Element element;
+
+
     public ZoomAnimation(boolean isZoomIn) {
         this.isZoomIn = isZoomIn;
-        addCallback(new JQueryCallback() {
-            @Override
-            public void execute(JQueryWrapper query) {
-                query.get(0).removeClassName(ZoomAnimation.this.isZoomIn ? ZOOM_IN_CLASS_NAME : ZOOM_OUT_CLASS_NAME);
-            }
-        });
     }
 
     @Override
-    public void run(int duration, double startTime, Element element) {
-        element.addClassName(isZoomIn ? ZOOM_IN_CLASS_NAME : ZOOM_OUT_CLASS_NAME);
-        super.run(duration, startTime, element);
+    public void run(final int duration, final double startTime, final Element element) {
+        this.element = element;
+        element.getStyle().setVisibility(Style.Visibility.HIDDEN);
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                element.getStyle().setVisibility(Style.Visibility.VISIBLE);
+                element.addClassName(isZoomIn ? ZOOM_IN_CLASS_NAME : ZOOM_OUT_CLASS_NAME);
+                ZoomAnimation.super.run(duration, startTime, element);
+            }
+        });
+
+    }
+
+    @Override
+    protected void onComplete() {
+        element.removeClassName(ZoomAnimation.this.isZoomIn ? ZOOM_IN_CLASS_NAME : ZOOM_OUT_CLASS_NAME);
+        super.onComplete();
+    }
+
+    @Override
+    protected void onUpdate(double progress) {
+    }
+
+    public Element getElement() {
+        return element;
     }
 }

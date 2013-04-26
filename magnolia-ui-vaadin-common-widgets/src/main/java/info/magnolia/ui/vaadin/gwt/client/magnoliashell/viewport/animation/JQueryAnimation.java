@@ -39,8 +39,8 @@ import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
 import com.google.gwt.animation.client.Animation;
-import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
+import com.vaadin.client.VConsole;
 
 /**
  * GWT Animation wrapper for JQuery Animations.
@@ -55,8 +55,6 @@ public class JQueryAnimation extends Animation {
 
     private Element currentElement;
 
-    private boolean wasCancelled = false;
-
     public void setProperty(String property, int value) {
         settings.setProperty(property, value);
     }
@@ -69,18 +67,16 @@ public class JQueryAnimation extends Animation {
         callbacks.add(callback);
     }
 
-    @Override
-    public void run(int duration, double startTime, Element element) {
-        runDelayed(duration, startTime - Duration.currentTimeMillis(), element);
+    public JQueryAnimation() {
+        settings.setCallbacks(callbacks);
     }
 
-    public void runDelayed(int duration, double delay, Element element) {
+    @Override
+    public void run(int duration, double startTime, Element element) {
         this.currentElement = element;
-        this.jQueryWrapper = JQueryWrapper.select((com.google.gwt.user.client.Element)element);
-        double currentTime = Duration.currentTimeMillis();
-        super.run(duration, currentTime + delay, element);
-        this.wasCancelled = false;
-        jQueryWrapper.animate(duration, settings);
+        this.jQueryWrapper = null;
+        super.run(duration, startTime, element);
+        getJQueryWrapper().animate(duration, settings);
     }
 
     protected JQueryWrapper getJQueryWrapper() {
@@ -91,32 +87,20 @@ public class JQueryAnimation extends Animation {
     }
 
     @Override
-    public void run(int duration) {
-        super.run(duration, currentElement);
-    }
-
-    @Override
     protected void onUpdate(double progress) {}
 
     @Override
     public void cancel() {
         if (getJQueryWrapper().isAnimationInProgress()) {
+            VConsole.log("Cancelling running animation");
             getJQueryWrapper().stop();
         }
-        wasCancelled = true;
         super.cancel();
     }
 
     @Override
     protected void onComplete() {
         super.onComplete();
-        if (!wasCancelled) {
-            callbacks.fire(getJQueryWrapper());
-        }
-    }
-
-    public boolean wasCanceled() {
-        return wasCancelled;
     }
 
     public Element getCurrentElement() {
