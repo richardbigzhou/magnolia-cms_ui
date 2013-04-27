@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
-import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 
 
@@ -76,7 +75,9 @@ public class ActivationActionDefinition extends CommandActionDefinition {
     }
 
     private boolean workflowInstalled() {
-        return SessionUtil.getNode("config", "/modules/workflow-base") != null;
+        // TODO dlipp: temporary commented out until MAGNOLIA-1205 is re-resolved
+        //return SessionUtil.getNode("config", "/modules/workflow-base") != null;
+        return false;
     }
 
 }
