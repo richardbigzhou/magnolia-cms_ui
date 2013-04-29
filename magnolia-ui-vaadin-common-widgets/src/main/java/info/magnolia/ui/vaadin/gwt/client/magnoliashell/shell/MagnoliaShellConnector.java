@@ -78,7 +78,8 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         @Override
         public void onShellAppActivated(final ShellAppActivatedEvent event) {
             view.showShellApp(event.getType());
-            activateShellApp(Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken()));
+            lastHandledFragment = Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken());
+            activateShellApp(lastHandledFragment);
         }
 
     };
@@ -88,6 +89,8 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     private MagnoliaShellView view;
 
     private EventBus eventBus = new SimpleEventBus();
+
+    private Fragment lastHandledFragment;
 
     private boolean isHistoryInitialized = false;
 
@@ -128,6 +131,17 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             }
         });
 
+        addStateChangeHandler("uriFragment", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                Fragment f = getState().uriFragment;
+                if (f != null) {
+                    view.setActiveViewport(f.isApp());
+                    History.newItem(f.toFragment(), !f.isSameApp(lastHandledFragment));
+                }
+            }
+        });
+
         registerRpc(ShellClientRpc.class, new ShellClientRpc() {
             @Override
             public void showMessage(String type, String topic, String msg, String id) {
@@ -152,7 +166,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             public void onValueChange(ValueChangeEvent<String> event) {
                 Fragment newFragment = Fragment.fromString(event.getValue());
                 changeAppFromFragment(newFragment);
-                view.setActiveViewport(newFragment.isApp());
+                lastHandledFragment =  newFragment;
             }
         });
     }

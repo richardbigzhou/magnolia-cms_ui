@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
@@ -62,4 +63,5 @@ public class MagnoliaShellState extends AbstractLayoutState {
 
     public List<Connector> overlays = new ArrayList<Connector>();
 
+    public Fragment uriFragment;
 }

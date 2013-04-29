@@ -82,8 +82,10 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
         @Override
         public void onClick(ClickEvent event) {
-            setClosing(true);
-            fireEvent(new ViewportCloseEvent(ViewportType.APP));
+            if (!isClosing()) {
+                setClosing(true);
+                fireEvent(new ViewportCloseEvent(ViewportType.APP));
+            }
         }
     };
 

@@ -70,7 +70,6 @@ import javax.inject.Singleton;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.vaadin.server.Page;
 import com.vaadin.ui.Component;
 
 
@@ -202,7 +201,7 @@ public class ShellImpl implements Shell, MessageEventHandler {
 
     @Override
     public String getFragment() {
-        return Page.getCurrent().getUriFragment();
+        return getMagnoliaShell().getUriFragment();
     }
 
     @Override
@@ -211,7 +210,7 @@ public class ShellImpl implements Shell, MessageEventHandler {
         f.setAppId(DefaultLocation.extractAppId(fragment));
         f.setSubAppId(DefaultLocation.extractSubAppId(fragment));
         f.setParameter(DefaultLocation.extractParameter(fragment));
-        getMagnoliaShell().getUI().getPage().setUriFragment(fragment, false);
+        getMagnoliaShell().setUriFragment(f);
     }
 
     @Override
