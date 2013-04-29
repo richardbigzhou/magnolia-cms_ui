@@ -35,6 +35,8 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.ShellAppsTransitionDelegate;
 
+import com.google.gwt.user.client.ui.Widget;
+
 /**
  * Shell apps viewport client side.
  */
@@ -43,5 +45,11 @@ public class ShellAppsViewportWidget extends ViewportWidget {
     public ShellAppsViewportWidget() {
         super();
         setTransitionDelegate(new ShellAppsTransitionDelegate(this));
+    }
+
+    @Override
+    public void setVisibleChild(Widget w) {
+        setClosing(false);
+        super.setVisibleChild(w);
     }
 }
