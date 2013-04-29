@@ -161,7 +161,7 @@ public class FavoritesPresenterTest {
         // GIVEN
 
         // WHEN
-        final String result = presenter.getUrlFragmentFrom(new URI(WEB_APP_URL + FRAGMENT));
+        final String result = presenter.getUrlFragmentFromURI(new URI(WEB_APP_URL + FRAGMENT));
 
         // THEN
         assertThat(result, equalTo(FRAGMENT));
