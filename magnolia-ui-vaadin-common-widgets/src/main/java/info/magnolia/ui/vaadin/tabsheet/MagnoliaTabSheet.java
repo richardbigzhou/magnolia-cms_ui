@@ -193,4 +193,9 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
     public void closeTabFromServer(MagnoliaTab tab) {
         getRpcProxy(MagnoliaTabSheetClientRpc.class).closeTab(tab);
     }
+
+    public void setLogo(String logo, String bgcolor) {
+        getState().logo = logo;
+        getState().logoBgColor = bgcolor;
+    }
 }

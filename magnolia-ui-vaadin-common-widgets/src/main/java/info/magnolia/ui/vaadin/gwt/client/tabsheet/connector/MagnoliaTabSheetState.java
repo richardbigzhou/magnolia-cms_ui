@@ -46,4 +46,8 @@ public class MagnoliaTabSheetState extends AbstractComponentState {
     public String showAllLabel;
 
     public boolean showAllEnabled;
+
+    public String logo;
+
+    public String logoBgColor;
 }
