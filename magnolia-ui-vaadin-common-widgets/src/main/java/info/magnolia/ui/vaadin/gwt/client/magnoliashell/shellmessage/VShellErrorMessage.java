@@ -74,13 +74,13 @@ public class VShellErrorMessage extends ShellMessageWidget {
 
     @Override
     public void hide() {
-        getShell().shiftViewportsVertically(-getOffsetHeight(), false);
+        getShell().shiftViewportsVertically(0, false);
         super.hide();
     }
 
     @Override
     public void hideWithoutTransition() {
-        getShell().shiftViewportsVertically(-getOffsetHeight(), false);
+        getShell().shiftViewportsVertically(0, false);
         super.hideWithoutTransition();
     }
 

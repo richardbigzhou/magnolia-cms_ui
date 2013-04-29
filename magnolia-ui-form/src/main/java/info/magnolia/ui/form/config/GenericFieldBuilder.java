@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.config;
 
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
  * Builder for creating a field using only the standard properties.

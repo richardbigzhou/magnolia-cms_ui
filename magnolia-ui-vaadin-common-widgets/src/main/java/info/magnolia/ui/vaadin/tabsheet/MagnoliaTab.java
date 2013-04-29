@@ -37,11 +37,12 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.connector.MagnoliaTabStat
 
 import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.SelectiveRenderer;
 
 /**
  * A tab in the shell tabsheet.
  */
-public class MagnoliaTab extends AbstractSingleComponentContainer {
+public class MagnoliaTab extends AbstractSingleComponentContainer implements SelectiveRenderer {
 
     public MagnoliaTab(final String caption, final Component c) {
         setSizeFull();
@@ -62,6 +63,11 @@ public class MagnoliaTab extends AbstractSingleComponentContainer {
     @Override
     protected MagnoliaTabState getState() {
         return (MagnoliaTabState) super.getState();
+    }
+
+    @Override
+    public boolean isRendered(Component childComponent) {
+        return getState().isActive;
     }
 
     public void setClosable(boolean isClosable) {
@@ -92,4 +98,12 @@ public class MagnoliaTab extends AbstractSingleComponentContainer {
         return getState(false).hasError;
     }
 
+    @Override
+    public MagnoliaTabSheet getParent() {
+        return (MagnoliaTabSheet) super.getParent();
+    }
+
+    public void setActive(boolean active) {
+        getState().isActive = active;
+    }
 }

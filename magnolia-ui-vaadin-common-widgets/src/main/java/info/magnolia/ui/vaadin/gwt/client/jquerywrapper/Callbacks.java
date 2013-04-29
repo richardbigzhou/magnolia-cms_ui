@@ -71,6 +71,10 @@ public class Callbacks extends JavaScriptObject {
         this.add(callback);
     }-*/;
 
+    public final native void fire(JQueryWrapper jQueryContext) /*-{
+        this.fire(jQueryContext);
+    }-*/;
+
     public final native void fire() /*-{
         this.fire();
     }-*/;

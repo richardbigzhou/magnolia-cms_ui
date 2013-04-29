@@ -36,8 +36,8 @@ package info.magnolia.ui.framework.app;
 import info.magnolia.ui.api.view.View;
 
 /**
- * AppView interface used by Apps. Acts as a wrapper between the tabsheet used inside to display the subApps and.
- *
+ * AppView interface used for displaying apps and adding and removing the subApp views.
+ * Creates an instance id when adding a new subApp view. This is used to identify the view associated with a {@link info.magnolia.ui.framework.app.SubAppContext}.
  */
 public interface AppView extends View {
 

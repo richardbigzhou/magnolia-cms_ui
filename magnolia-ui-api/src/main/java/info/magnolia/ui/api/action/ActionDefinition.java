@@ -40,9 +40,9 @@ package info.magnolia.ui.api.action;
  * place controller. Implementations are expected to provide correct {@link Object#equals(Object)} and {@link Object#hashCode()} methods.
  */
 public interface ActionDefinition {
-    
+
     Class<? extends Action> getImplementationClass();
-    
+
     String getName();
 
     String getLabel();
@@ -52,5 +52,11 @@ public interface ActionDefinition {
     String getIcon();
 
     String getDescription();
+
+    String getSuccessMessage();
+
+    String getFailureMessage();
+
+    String getErrorMessage();
 
 }
