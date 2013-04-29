@@ -95,7 +95,7 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder<BasicUploadFie
 
         uploadField.setMaxUploadSize(definition.getMaxUploadSize());
         uploadField.setAllowedMimeTypePattern(definition.getAllowedMimeTypePattern());
-        setMessages(uploadField);
+        populateFromDefinition(uploadField);
 
         return uploadField;
     }
@@ -138,7 +138,7 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder<BasicUploadFie
     /**
      * Configure Field based on the definition.
      */
-    protected void setMessages(BasicUploadField<BasicFileItemWrapper> field) {
+    protected void populateFromDefinition(BasicUploadField<BasicFileItemWrapper> field) {
         field.setSelectNewCaption(definition.getSelectNewCaption());
         field.setSelectAnotherCaption(definition.getSelectAnotherCaption());
         field.setDropZoneCaption(definition.getDropZoneCaption());
