@@ -63,6 +63,8 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
 
     private static final int CURTAIN_FADE_OUT_DELAY = 200;
 
+    private static final int ZOOM_DURATION = 500;
+
     private AppsViewportWidget viewport;
 
     private ZoomAnimation zoomOutAnimation = new ZoomAnimation(false) {
@@ -114,7 +116,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
     public void setVisibleChild(final ViewportWidget viewport, final Widget app) {
         if (!viewport.isClosing() && isWidgetVisibilityHidden(app)) {
             viewport.setChildVisibleNoTransition(app);
-            zoomInAnimation.run(500, app.getElement());
+            zoomInAnimation.run(ZOOM_DURATION, app.getElement());
         } else {
             viewport.setChildVisibleNoTransition(app);
         }
@@ -133,7 +135,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
     }
 
     public void removeWidget(Widget w) {
-        zoomOutAnimation.run(500, w.getElement());
+        zoomOutAnimation.run(ZOOM_DURATION, w.getElement());
     }
 
     private boolean isWidgetVisibilityHidden(final Widget app) {
