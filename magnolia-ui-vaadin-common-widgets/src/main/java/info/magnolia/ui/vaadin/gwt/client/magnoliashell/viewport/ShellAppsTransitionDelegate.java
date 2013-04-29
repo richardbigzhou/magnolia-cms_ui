@@ -33,15 +33,14 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport;
 
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.Callbacks;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.FadeAnimation;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.SlideAnimation;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ShellAppsViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -50,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * because it might animate other CSS properties and can then result in CSS3 transitions through the
  * jquery.transition.js plugin.
  */
-class ShellAppsTransitionDelegate implements TransitionDelegate {
+public class ShellAppsTransitionDelegate implements TransitionDelegate {
 
     private final static int SLIDE_DURATION = 600;
 
@@ -60,41 +59,64 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
 
     private final static int ALPHA_MAX = 1;
 
-    private boolean viewportReady = true;
+    private SlideAnimation slideUpAnimation = new SlideAnimation(true);
+    private SlideAnimation slideDownAnimation = new SlideAnimation(true) {
+        @Override
+        protected void onStart() {
+            getCurrentElement().getStyle().setTop(-getCurrentElement().getOffsetHeight(), Style.Unit.PX);
+            super.onStart();
+        }
+    };
 
-    private boolean visibleAppReady = true;
+    private FadeAnimation fadeOutAnimation = new FadeAnimation(ALPHA_MIN, true, false);
+    private FadeAnimation fadeInAnimation = new FadeAnimation(ALPHA_MAX, true, true) {
+        @Override
+        protected void onStart() {
+            super.onStart();
+            Style style = getCurrentElement().getStyle();
+            style.setOpacity(0d);
+            style.clearDisplay();
+        }
+    };
+
+    public ShellAppsTransitionDelegate(final ShellAppsViewportWidget viewport) {
+        this.slideUpAnimation.addCallback(new JQueryCallback() {
+            @Override
+            public void execute(JQueryWrapper query) {
+                viewport.setVisible(false);
+                viewport.setClosing(false);
+            }
+        });
+
+        this.fadeOutAnimation.addCallback(new JQueryCallback() {
+            @Override
+            public void execute(JQueryWrapper query) {
+                query.setCss("display", "none");
+            }
+        });
+    }
 
     /**
      * Slides down if active, fades out if inactive - except if the viewport is closing.
      */
     @Override
     public void setActive(final ViewportWidget viewport, boolean active) {
-        final Callbacks callbacks = Callbacks.create();
+        slideDownAnimation.cancel();
+        slideUpAnimation.cancel();
+        fadeOutAnimation.cancel();
         if (active) {
             viewport.setClosing(false);
-            viewportReady = false;
-            callbacks.add(new JQueryCallback() {
-                @Override
-                public void execute(JQueryWrapper query) {
-                    viewportReady = true;
-                    refreshShellApp((ShellAppsViewportWidget) viewport);
-                }
-            });
-            slideDown(viewport, callbacks);
+            viewport.setVisible(true);
+            slideDownAnimation.setTargetTop(0);
+            slideDownAnimation.run(SLIDE_DURATION, viewport.getElement());
         } else {
             // slide up only if closing shell app
             if (viewport.isClosing()) {
-                callbacks.add(new JQueryCallback() {
-                    @Override
-                    public void execute(JQueryWrapper query) {
-                        viewport.setClosing(false);
-                    }
-                });
-                slideUp(viewport, callbacks);
+                slideUpAnimation.setTargetTop(-viewport.getOffsetHeight());
+                slideUpAnimation.run(SLIDE_DURATION, viewport.getElement());
             } else {
-                fadeOut(viewport, callbacks);
+                fadeOutAnimation.run(FADE_DURATION, viewport.getElement());
             }
-
         }
     }
 
@@ -102,170 +124,13 @@ class ShellAppsTransitionDelegate implements TransitionDelegate {
      * Cross-fades between shell apps.
      */
     @Override
-    public void setVisibleApp(final ViewportWidget viewport, final Widget app) {
-        final Callbacks callbacks = Callbacks.create();
-        if (viewport.getVisibleApp() == null || !viewport.isActive()) {
+    public void setVisibleChild(final ViewportWidget viewport, final Widget visibleChild) {
+        if (viewport.getVisibleChild() == null || !viewport.isActive()) {
             // do not fade if first widget or viewport not active yet
-            viewport.doSetVisibleApp(app);
-            callbacks.fire();
+            viewport.setChildVisibleNoTransition(visibleChild);
         } else {
-            // do not trigger callbacks twice, only for visible app
-            fadeOut(viewport.getVisibleApp(), Callbacks.create());
-            visibleAppReady = false;
-            callbacks.add(new JQueryCallback() {
-
-                @Override
-                public void execute(JQueryWrapper query) {
-                    visibleAppReady = true;
-                    refreshShellApp((ShellAppsViewportWidget) viewport);
-                }
-            });
-            fadeIn(app, callbacks);
+            fadeInAnimation.run(FADE_DURATION, visibleChild.getElement());
+            fadeOutAnimation.run(FADE_DURATION, viewport.getVisibleChild().getElement());
         }
     }
-
-    private void refreshShellApp(ShellAppsViewportWidget viewport) {
-        if (viewportReady && visibleAppReady) {
-            viewport.refreshShellApp();
-        }
-    }
-
-
-    private void slideDown(final ViewportWidget viewport, final Callbacks callbacks) {
-        JQueryWrapper jq = JQueryWrapper.select(viewport);
-
-        // init
-        viewport.setVisible(true);
-        if (jq.is(":animated")) {
-            jq.stop();
-            // reset opacity if animation was a fade out
-            viewport.getElement().getStyle().clearOpacity();
-            GWT.log(viewport.getStyleName() + ": stopping animation");
-        } else {
-            viewport.getElement().getStyle().setTop(-viewport.getOffsetHeight(), Unit.PX);
-        }
-
-        // callback
-        callbacks.add(new JQueryCallback() {
-            @Override
-            public void execute(JQueryWrapper query) {
-                viewport.getElement().getStyle().clearTop();
-                GWT.log(viewport.getStyleName() + ": ACTIVE callback");
-            }
-
-        });
-
-        // animate
-        jq.animate(SLIDE_DURATION, new AnimationSettings() {
-            {
-                setProperty("top", 0);
-                setCallbacks(callbacks);
-            }
-        });
-    }
-
-    private void slideUp(final ViewportWidget viewport, final Callbacks callbacks) {
-        JQueryWrapper jq = JQueryWrapper.select(viewport);
-
-        // init
-        if (jq.is(":animated")) {
-            jq.stop();
-            GWT.log(viewport.getStyleName() + ": stopping animation");
-        }
-
-        // callback
-        callbacks.add(new JQueryCallback() {
-
-            @Override
-            public void execute(JQueryWrapper query) {
-                viewport.setVisible(false);
-                viewport.getElement().getStyle().clearTop();
-                GWT.log(viewport.getStyleName() + ": INACTIVE callback");
-            }
-
-        });
-
-        // animate
-        jq.animate(SLIDE_DURATION, new AnimationSettings() {
-
-            {
-                setProperty("top", (-viewport.getOffsetHeight()) + "px");
-                setCallbacks(callbacks);
-            }
-        });
-    }
-
-    private void fadeIn(final Widget w, final Callbacks callbacks) {
-
-        JQueryWrapper jq = JQueryWrapper.select(w);
-        final String debugId = jq.attr("id");
-
-        // init
-        if (jq.is(":animated")) {
-            jq.stop();
-            GWT.log(debugId + ": stopping animation");
-        } else {
-            w.getElement().getStyle().setOpacity(ALPHA_MIN);
-            w.setVisible(true);
-        }
-
-        // callback
-        callbacks.add(new JQueryCallback() {
-
-            @Override
-            public void execute(JQueryWrapper query) {
-                w.getElement().getStyle().clearOpacity();
-                GWT.log(debugId + ": ACTIVE callback");
-            }
-
-        });
-
-        // animate
-        jq.animate(FADE_DURATION, new AnimationSettings() {
-
-            {
-                setProperty("opacity", ALPHA_MAX);
-                setCallbacks(callbacks);
-            }
-        });
-    }
-
-    /**
-     * FADE OUT TRANSITION.
-     *
-     * @param w the app widget
-     * @param callbacks the callbacks
-     */
-    private void fadeOut(final Widget w, final Callbacks callbacks) {
-
-        JQueryWrapper jq = JQueryWrapper.select(w);
-        final String debugId = jq.attr("id");
-
-        // init
-        if (jq.is(":animated")) {
-            jq.stop();
-            GWT.log(debugId + ": stopping animation");
-        } else {
-            w.getElement().getStyle().setOpacity(ALPHA_MAX);
-        }
-
-        // callback
-        callbacks.add(new JQueryCallback() {
-            @Override
-            public void execute(JQueryWrapper jq) {
-                w.setVisible(false);
-                w.getElement().getStyle().clearOpacity();
-                GWT.log(debugId + ": INACTIVE callback");
-            }
-        });
-
-        // animate
-        jq.animate(FADE_DURATION, new AnimationSettings() {
-            {
-                setProperty("opacity", ALPHA_MIN);
-                setCallbacks(callbacks);
-            }
-        });
-    }
-
 }

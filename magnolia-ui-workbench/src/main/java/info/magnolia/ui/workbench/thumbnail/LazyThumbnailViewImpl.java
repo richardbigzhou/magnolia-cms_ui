@@ -52,7 +52,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 
 /**
  * Vaadin UI component that displays thumbnails.
@@ -67,24 +66,22 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private Listener listener;
 
-    private final LazyThumbnailLayout layout;
-
-    private final CssLayout margin = new CssLayout();
+    private final LazyThumbnailLayout thumbnailLayout;
 
     private final ImageProvider imageProvider;
 
     public LazyThumbnailViewImpl(final WorkbenchDefinition definition, ComponentProvider componentProvider, ImageProviderDefinition imageProviderDefinition) {
         this.workbenchDefinition = definition;
-        
+
         this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
         this.container = new ThumbnailContainer(workbenchDefinition, imageProvider);
-        
-        this.layout = new LazyThumbnailLayout();
-        
-        layout.setSizeFull();
-        layout.addStyleName("mgnl-workbench-thumbnail-view");
 
-        layout.addThumbnailSelectionListener(new ThumbnailSelectionListener() {
+        this.thumbnailLayout = new LazyThumbnailLayout();
+
+        thumbnailLayout.setSizeFull();
+        thumbnailLayout.addStyleName("mgnl-workbench-thumbnail-view");
+
+        thumbnailLayout.addThumbnailSelectionListener(new ThumbnailSelectionListener() {
 
             @Override
             public void onThumbnailSelected(final String thumbnailId) {
@@ -93,7 +90,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
             }
         });
 
-        layout.addDoubleClickListener(new ThumbnailDblClickListener() {
+        thumbnailLayout.addDoubleClickListener(new ThumbnailDblClickListener() {
 
             @Override
             public void onThumbnailDblClicked(final String thumbnailId) {
@@ -101,9 +98,6 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
                 listener.onDoubleClick(node);
             }
         });
-        margin.setSizeFull();
-        margin.setStyleName("mgnl-content-view");
-        margin.addComponent(layout);
     }
 
     @Override
@@ -122,8 +116,8 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         container.setWorkspaceName(workbenchDefinition.getWorkspace());
         container.setThumbnailHeight(73);
         container.setThumbnailWidth(73);
-        layout.setContainerDataSource(container);
-        layout.setThumbnailSize(73, 73);
+        thumbnailLayout.setContainerDataSource(container);
+        thumbnailLayout.setThumbnailSize(73, 73);
     }
 
     @Override
@@ -133,7 +127,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     @Override
     public Component asVaadinComponent() {
-        return margin;
+        return thumbnailLayout;
     }
 
     private JcrNodeAdapter getThumbnailNodeAdapterByIdentifier(final String thumbnailId) {

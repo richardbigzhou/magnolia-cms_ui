@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.security.dialog.field.validator;
 
-import info.magnolia.ui.form.field.validation.AbstractFieldValidatorBuilder;
+import info.magnolia.ui.form.validator.builder.AbstractFieldValidatorBuilder;
 
 import com.vaadin.data.Validator;
 

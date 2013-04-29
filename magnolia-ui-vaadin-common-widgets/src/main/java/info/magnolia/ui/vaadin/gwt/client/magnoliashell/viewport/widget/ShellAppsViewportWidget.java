@@ -33,53 +33,15 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppActivatedEvent;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate;
-
-import com.google.gwt.user.client.ui.Widget;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.ShellAppsTransitionDelegate;
 
 /**
  * Shell apps viewport client side.
  */
 public class ShellAppsViewportWidget extends ViewportWidget {
 
-    private ShellAppActivatedEvent refreshEvent;
-
     public ShellAppsViewportWidget() {
         super();
-        setTransitionDelegate(TransitionDelegate.SHELL_APPS_TRANSITION_DELEGATE);
+        setTransitionDelegate(new ShellAppsTransitionDelegate(this));
     }
-
-    /* SERVER REFRESH AFTER CLIENT TRANSITIONS */
-
-    public ShellAppActivatedEvent getRefreshEvent() {
-        return refreshEvent;
-    }
-
-    public void setRefreshEvent(ShellAppActivatedEvent event) {
-        this.refreshEvent = event;
-    }
-
-    public void refreshShellApp() {
-        if (refreshEvent != null) {
-            getEventBus().fireEvent(refreshEvent);
-        }
-    }
-
-    @Override
-    public void doSetActive(boolean active) {
-        super.doSetActive(active);
-        if (getTransitionDelegate() == null && active) {
-            refreshShellApp();
-        }
-    }
-
-    @Override
-    public void doSetVisibleApp(Widget w) {
-        super.doSetVisibleApp(w);
-        if (getTransitionDelegate() == null) {
-            refreshShellApp();
-        }
-    }
-
 }

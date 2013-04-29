@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 
 
@@ -45,4 +46,25 @@ public class DeactivationActionDefinition extends CommandActionDefinition {
         setImplementationClass(DeactivationAction.class);
     }
 
+    public String getSuccessMessage() {
+        if (workflowInstalled()) {
+            return "The workflow has been started.";
+        }
+        return "Deactivation has been started.";
+    }
+
+    public String getFailureMessage() {
+        if (workflowInstalled()) {
+            return "The workflow could not be launched.";
+        }
+        return "Deactivation has failed.";
+    }
+
+    public String getErrorMessage() {
+        return "Deactivation failed. Please contact the system administrator for assistance.";
+    }
+
+    private boolean workflowInstalled() {
+        return SessionUtil.getNode("config", "/modules/workflow-base") != null;
+    }
 }

@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.event.EventBus;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
@@ -52,6 +52,8 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+
+import com.vaadin.ui.ComponentContainer;
 
 /**
  * Manages the shell apps and raises callbacks to the app.
@@ -89,6 +91,7 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
         appContext.setAppClass(clazz);
         appContext.start();
         contexts.put(name, appContext);
+        ((ComponentContainer)viewport).addComponent(appContext.getView().asVaadinComponent());
     }
 
     public void setViewport(Viewport viewport) {
@@ -104,7 +107,6 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
 
         Location newLocation = event.getNewLocation();
         if (!newLocation.getAppType().equals(Location.LOCATION_TYPE_SHELL_APP)) {
-            viewport.setView(null);
             return;
         }
 

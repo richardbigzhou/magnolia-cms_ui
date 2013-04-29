@@ -189,11 +189,6 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
     }
 
     @Override
-    public void updateLayout() {
-        getLayoutManager().setNeedsMeasure(this);
-    }
-
-    @Override
     public void onUnregister() {
         new Timer() {
             @Override

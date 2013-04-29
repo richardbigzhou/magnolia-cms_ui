@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.cms.security.Permission;
 import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.commands.CommandsManager;
@@ -44,19 +47,17 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.Session;
+
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.jcr.Node;
-import javax.jcr.Session;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
 
 /**
  * Main Test class of {@link ExportAction}.
@@ -119,7 +120,7 @@ public class ExportActionTest extends RepositoryTestCase {
     @Test
     public void testExportActionGetParam() throws Exception {
         // GIVEN
-        ExportAction exportActionTmp = new ExportAction(definition, new JcrNodeAdapter(toCopyNode), commandsManager);
+        ExportAction exportActionTmp = new ExportAction(definition, new JcrNodeAdapter(toCopyNode), commandsManager, null);
         ExportAction exportAction = spy(exportActionTmp);
         doNothing().when(exportAction).onPostExecute();
         // WHEN

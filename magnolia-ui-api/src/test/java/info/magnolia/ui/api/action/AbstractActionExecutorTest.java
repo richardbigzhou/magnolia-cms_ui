@@ -120,6 +120,22 @@ public class AbstractActionExecutorTest {
             return "test description";
         }
 
+        @Override
+        public String getSuccessMessage() {
+
+            return "test success message";
+        }
+
+        @Override
+        public String getFailureMessage() {
+            return "test failure message";
+        }
+
+        @Override
+        public String getErrorMessage() {
+            return "test error message";
+        }
+
         public class TestAction extends ActionBase {
 
             private final TestActionParameters params;
@@ -135,6 +151,7 @@ public class AbstractActionExecutorTest {
                 params.setActionname(getDefinition().getName());
             }
         }
+
     }
 
     public class TestActionParameters {

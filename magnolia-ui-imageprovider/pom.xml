@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-imageprovider</artifactId>
   <name>magnolia-ui-imageprovider</name>
   <properties>
-    <cloverCoverageThreshold>0</cloverCoverageThreshold>
+    <cloverCoverageThreshold>47</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
