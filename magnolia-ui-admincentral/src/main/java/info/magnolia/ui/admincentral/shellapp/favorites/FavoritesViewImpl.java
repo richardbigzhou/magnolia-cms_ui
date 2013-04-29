@@ -34,12 +34,15 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed.FeedSection;
 
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -55,16 +58,19 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     private FavoritesView.Listener listener;
     private FavoritesSection noGroup;
     private Component favoriteForm;
-    private FeedSection leftSide;
-    private FeedSection rightSide;
+    private FeedSection leftColumn;
+    private FeedSection rightColumn;
+    private Shell shell;
 
     @Override
     public String getId() {
         return "favorite";
     }
 
-    public FavoritesViewImpl() {
+    @Inject
+    public FavoritesViewImpl(Shell shell) {
         super();
+        this.shell = shell;
         construct();
     }
 
@@ -79,11 +85,12 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         layout.setWidth("900px");
 
         final SplitFeed splitPanel = new SplitFeed();
-        leftSide = splitPanel.getLeftContainer();
-        rightSide = splitPanel.getRightContainer();
+        leftColumn = splitPanel.getLeftContainer();
+        rightColumn = splitPanel.getRightContainer();
 
         noGroup = new FavoritesSection();
-        leftSide.addComponent(noGroup);
+        noGroup.addStyleName("no-group");
+        leftColumn.addComponent(noGroup);
 
         layout.addComponent(splitPanel);
         layout.setExpandRatio(splitPanel, 1f);
@@ -98,15 +105,15 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     @Override
     public void setFavoriteLocation(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup, Map<String, String> availableGroupsNames) {
         layout.removeComponent(favoriteForm);
-        favoriteForm = new FavoritesForm(newFavorite, newGroup, availableGroupsNames, listener);
+        favoriteForm = new FavoritesForm(newFavorite, newGroup, availableGroupsNames, listener, shell);
         layout.addComponent(favoriteForm);
     }
 
     @Override
     public void init(JcrItemNodeAdapter favorites, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups) {
         noGroup.removeAllComponents();
-        leftSide.removeAllComponents();
-        rightSide.removeAllComponents();
+        leftColumn.removeAllComponents();
+        rightColumn.removeAllComponents();
 
         for (JcrItemNodeAdapter favoriteAdapter : favorites.getChildren().values()) {
             if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
@@ -119,15 +126,15 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
                     final FavoritesEntry favEntry = new FavoritesEntry(fav, listener);
                     group.addComponent(favEntry);
                 }
-                rightSide.addComponent(group);
+                rightColumn.addComponent(group);
             }
         }
-        leftSide.addComponent(noGroup);
+        leftColumn.addComponent(noGroup);
 
         if (favoriteForm != null) {
             layout.removeComponent(favoriteForm);
         }
-        favoriteForm = new FavoritesForm(favoriteSuggestion, groupSuggestion, availableGroups, listener);
+        favoriteForm = new FavoritesForm(favoriteSuggestion, groupSuggestion, availableGroups, listener, shell);
         layout.addComponent(favoriteForm);
     }
 

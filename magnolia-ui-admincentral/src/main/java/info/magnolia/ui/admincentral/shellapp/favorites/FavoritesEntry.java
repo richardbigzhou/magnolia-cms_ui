@@ -69,6 +69,8 @@ public class FavoritesEntry extends CustomComponent {
 
     public FavoritesEntry(final JcrItemNodeAdapter favorite, final FavoritesView.Listener listener) {
         super();
+        addStyleName("favorites-entry");
+
         String nodeName = favorite.getItemProperty(ModelConstants.JCR_NAME).getValue().toString();
         this.location = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue().toString();
         this.title = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue().toString();
@@ -88,7 +90,6 @@ public class FavoritesEntry extends CustomComponent {
         }
 
         this.icon = icon;
-        this.root.addStyleName("favorites-entry");
 
         final Label iconLabel = new Label();
         iconLabel.setValue("<span class=\"" + icon + "\"></span>");
@@ -142,14 +143,14 @@ public class FavoritesEntry extends CustomComponent {
             @Override
             public void layoutClick(LayoutClickEvent event) {
 
-                if (event.getClickedComponent() == titleField && !isSelected() && !isEditable()) {
+                if (event.getClickedComponent() == titleField && !isEditable()) {
                     if (event.isDoubleClick()) {
                         // setEditable(true);
                     } else {
                         listener.goToLocation(getLocationValue());
                     }
                 } else if (event.getClickedComponent() == iconLabel) {
-                    setSelected(true);
+                    setSelected(!isSelected());
                 }
             }
         });
@@ -182,6 +183,12 @@ public class FavoritesEntry extends CustomComponent {
         this.selected = !editable;
         titleField.setReadOnly(!editable);
         String icon = editable ? "icon-tick" : "icon-edit";
+        if (editable) {
+            titleField.addStyleName("editable");
+            titleField.focus();
+        } else {
+            titleField.removeStyleName("editable");
+        }
         editButton.setCaption("<span class=\"" + icon + "\"></span>");
     }
 
@@ -191,6 +198,11 @@ public class FavoritesEntry extends CustomComponent {
         titleField.setReadOnly(true);
         editButton.setVisible(selected);
         editButton.setCaption("<span class=\"icon-edit\"></span>");
+        if (selected) {
+            addStyleName("selected");
+        } else {
+            removeStyleName("selected");
+        }
         removeButton.setVisible(selected);
     }
 

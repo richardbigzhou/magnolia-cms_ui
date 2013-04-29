@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -51,7 +53,6 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -61,9 +62,11 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class FavoritesForm extends CustomComponent {
     private FavoritesView.Listener listener;
+    private Shell shell;
 
-    public FavoritesForm(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup, Map<String, String> availableGroups, FavoritesView.Listener listener) {
+    public FavoritesForm(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup, Map<String, String> availableGroups, FavoritesView.Listener listener, Shell shell) {
         this.listener = listener;
+        this.shell = shell;
         final VerticalLayout favoriteForm = new VerticalLayout();
         favoriteForm.addStyleName("favorites-form");
 
@@ -136,15 +139,6 @@ public class FavoritesForm extends CustomComponent {
             CssLayout buttons = new CssLayout();
             buttons.addStyleName("buttons");
 
-            // A button to discard the buffer
-            buttons.addComponent(new Button("Cancel", new ClickListener() {
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    binder.discard();
-                    // TODO remove form
-                }
-            }));
-
             Button addButton = new Button("Add", new ClickListener() {
 
                 @Override
@@ -153,8 +147,7 @@ public class FavoritesForm extends CustomComponent {
                         binder.commit();
                         listener.addFavorite(newFavorite);
                     } catch (CommitException e) {
-                        // TODO how do we display validation errors?
-                        Notification.show(e.getMessage());
+                        shell.openNotification(MessageStyleTypeEnum.ERROR, true, "Please enter required fields");
                     }
                 }
             });
@@ -189,15 +182,6 @@ public class FavoritesForm extends CustomComponent {
             CssLayout buttons = new CssLayout();
             buttons.addStyleName("buttons");
 
-            // A button to discard the buffer
-            buttons.addComponent(new Button("Cancel", new ClickListener() {
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    binder.discard();
-                    // TODO remove form
-                }
-            }));
-
             Button addButton = new Button("Add", new ClickListener() {
 
                 @Override
@@ -206,8 +190,7 @@ public class FavoritesForm extends CustomComponent {
                         binder.commit();
                         listener.addGroup(newGroup);
                     } catch (CommitException e) {
-                        // TODO how do we display validation errors?
-                        Notification.show(e.getMessage());
+                        shell.openNotification(MessageStyleTypeEnum.ERROR, true, "Please enter required field");
                     }
                 }
             });

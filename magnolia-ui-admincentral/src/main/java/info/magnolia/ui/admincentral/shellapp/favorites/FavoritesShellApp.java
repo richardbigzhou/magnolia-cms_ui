@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 import info.magnolia.ui.admincentral.shellapp.ShellApp;
 import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
@@ -51,12 +50,9 @@ public class FavoritesShellApp implements ShellApp {
 
     private FavoritesPresenter favoritesPresenter;
 
-    private AppDescriptorRegistry appDescriptorRegistry;
-
     @Inject
-    public FavoritesShellApp(FavoritesPresenter favoritesPresenter, AppDescriptorRegistry appDescriptorRegistry) {
+    public FavoritesShellApp(FavoritesPresenter favoritesPresenter) {
         this.favoritesPresenter = favoritesPresenter;
-        this.appDescriptorRegistry = appDescriptorRegistry;
     }
 
     @Override
